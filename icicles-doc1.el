@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  6 13:10:37 2011 (-0800)
+;; Last-Updated: Sun Jan 16 14:44:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25732
+;;     Update #: 25739
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -380,7 +380,7 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Customizing Icicle Mode Bindings")
 ;;    (@file :file-name "icicles-doc2.el" :to "Customizing Minibuffer Bindings")
 ;;
-;;  (@file :file-name "icicles-doc2.el" :to "Icicles Redefines Some Standard Commands")
+;;  (@file :file-name "icicles-doc2.el" :to "Icicles Redefines Some Standard Functions")
 ;;  (@file :file-name "icicles-doc2.el" :to "Programming with Fancy Candidates")
 ;;  (@file :file-name "icicles-doc2.el" :to "Programming Multi-Completions")
 ;;    (@file :file-name "icicles-doc2.el" :to "Variable icicle-list-use-nth-parts")
@@ -5756,6 +5756,11 @@
 ;;  * by major mode name
 ;;  * by mode-line mode name (mode name that appears in the mode line)
 ;;  * by (absolute) file or process name
+;;
+;;  Finally, several user options control the completion behavior.
+;;  See (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
+;;  and (@file :file-name "icicles-doc2.el" :to "Global Filters").
+;;
 ;;
 ;;  See Also:
 ;;

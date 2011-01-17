@@ -17,6 +17,57 @@ In XEmacs the `etags-table-alist' is actually called `tag-table-alist' and XEmac
 (setq etags-table-search-up-depth 10)
 }}} 
 
+== Search in standard headers with etags-table.el ==
+
+Setting
+
+{{{
+(require 'etags-table)
+(setq etags-table-search-up-depth 10)
+}}}
+
+allow you build TAGS file on root of project and move accross definition in project. But if you need jump in different project or in standard headers, just add:
+
+{{{
+(setq etags-table-alist
+      (list
+       ;; For jumping to standard headers:
+       '(".*\\.\\([ch]\\|cpp\\)" "c:/Program Files/Microsoft SDKs/Windows/v6.1/Include/TAGS")
+       ;; For jumping across project:
+       '("/home/devel/proj1/" "/home/devel/proj2/TAGS" "/home/devel/proj3/TAGS")
+       '("/home/devel/proj2/" "/home/devel/proj1/TAGS" "/home/devel/proj3/TAGS")
+       '("/home/devel/proj3/" "/home/devel/proj1/TAGS" "/home/devel/proj2/TAGS")
+       ))
+}}}
+
+Or may be you need <code>(add-to-list 'etags-table-alist ...)</code>.
+
+Also note that instead of updating `etags-table-alist' you can include all tag-symblols in project TAGS file:
+
+{{{
+  $ cd $proj
+  $ ( \
+       find . '(' -type d -name .svn -o -name dist -o -name lib ')' -prune -o -type f \
+          '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
+       ls lib/xulrunner-sdk/include/plugin/np*.h; \
+       ls lib/xulrunner-sdk/include/xpcom/*.h; \
+       ls /usr/include/win32/win*.h; \
+    ) | etags -
+}}}
+
+Or same with ctags:
+
+{{{
+  $ cd $proj
+  $ ( \
+       find . '(' -type d -name .svn -o -name dist -o -name lib ')' -prune -o -type f \
+          '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
+       ls lib/xulrunner-sdk/include/plugin/np*.h; \
+       ls lib/xulrunner-sdk/include/xpcom/*.h; \
+    ) | ctags --tag-relative=yes -e -L -
+}}}
+
+--[[gavenkoa]]
 
 ----
 

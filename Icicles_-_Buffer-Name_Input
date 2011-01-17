@@ -44,6 +44,12 @@ During completion, candidate sorting is specific to buffer names.
 * by mode-line mode name (''mode name'' that appears in the [[mode line]])
 * by (absolute) ''file'' or ''process'' name
 
+Finally, several [[user option]]s control the completion behavior.
+See [[Icicles - Customization and General Tips#icicle-buffer-match-regexp|buffer-name options]]
+and [[Icicles - Global Filters]].
+
+
+
 '''See Also:'''
 
 * [[Icicles - Ido and IswitchB]] to use '''Icicles''' with a buffer-switching

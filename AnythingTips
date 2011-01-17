@@ -6,6 +6,8 @@ See also Lisp:AnythingConfigThierryVolpiatto.el
 
 AndyStewart has added some cool extensions : Lisp:anything-extension.el
 
+MetaSandwich blog has a few interesting anything.el [http://metasandwich.com/tag/anything-el/ entries], including the best tutorial I have seen.
+
 == Tips ==
 
 === Only existing files in "File Name History" ===

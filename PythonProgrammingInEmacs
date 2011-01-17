@@ -190,7 +190,7 @@ my python integration is now like this:
               load-path))
 
 (require 'ipython)
-(setq py-python-command-args '( "-colors" "Linux"))
+(setq py-python-command-args '( "--colors" "Linux"))
 
 (require 'python-mode)
 
@@ -231,10 +231,10 @@ http://showmedo.com/videos/video?name=1000010&fromSeriesID=100
 
 Ipython provide good completion support without extra dependencies.
 
-However, to make it working in emacs, you will have to add this line to your .emacs:
+However, to make it working in emacs, you will have to add this line to your .emacs, the full patch for ipython.el is at https://github.com/ipython/ipython/issues/issue/204
 
 <pre>
-(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
+(setq ipython-completion-command-string "print(';'.join(get_ipython().Completer.complete('%s')[1])) #PYTHON-MODE SILENT\n")
 </pre>
 
 The definition in ipython.el is wrong (or deprecated may be).

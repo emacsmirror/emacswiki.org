@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- sudo support
-;; Time-stamp: <2010-10-22 08:16:35 rubikitch>
+;; Time-stamp: <2011-01-17 15:52:34 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -30,6 +30,8 @@
 ;; * `sudoedit' command opens files as root using sudoedit program.
 ;;   This command needs emacsserver or gnuserv.
 ;;   Try M-x server-start or M-x gnuserv-start first.
+;;   Be sure to you can run `sudoedit FILE' in shell.
+;;   
 ;; * `sudo' support in shell execution in Emacs.
 ;;   In executing sudo shell command, password prompt is appeared if needed.
 ;;   * M-x compile
@@ -134,7 +136,8 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
          (error (substitute-command-keys "Not running server. Start server by \\[server-start] or \\[gnuserv-start]")))))
 
 (defun sudoedit (file)
-  "Run `sudoedit FILE' to edit FILE as root."
+  "Run `sudoedit FILE' to edit FILE as root.
+Be sure to you can run `sudoedit FILE' in shell."
   (interactive "FSudoedit: ")
   (sudo-wrapper (file)
     (let ((process-environment (copy-sequence process-environment)))

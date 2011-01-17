@@ -110,7 +110,7 @@ REM those windows version can be installed via MSYS package (http://www.mingw.or
 set n=0
 set recursive=0
 set listonly=0
-set verbose =0
+set verbose=0
 
 set LIST_FILE=""
 set DATABASE_FILE=""

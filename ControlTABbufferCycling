@@ -99,7 +99,8 @@ IswitchBuffers, InteractivelyDoThings, or [[Icicles]] to streamline the process 
 
 I doubt, unfortunately, that ''most'' people use one window per frame.  If you do use one window per frame (as I do), then I think you're wasting your time if you use `bury-buffer'. I haven't (intentionally) used it for twenty years. If you use one window per frame, you want to just kill buffers or delete their windows; `bury-buffer' gives you nothing but annoying changes to the buffer stack. Unfortunately, some standard Emacs functions call `bury-buffer' -- this is one of the things that makes Emacs a bit unfriendly to frames.
 
-See OneOnOneEmacs for enhancements to Emacs that facilitate using it in a one-window-per-frame fashion, including commands to kill buffers and delete associated windows -- [[Delete Frames Easily - But Not Too Easily]].
+See OneOnOneEmacs for enhancements to Emacs that facilitate using it in a one-window-per-frame fashion, including commands to kill buffers and delete associated windows -- [[Delete Frames Easily - But Not Too Easily]]. -- DrewAdams
+
 
 [new]
 
@@ -281,10 +282,29 @@ I use Linux, and so the Windows key isn't generally used.  I've gone through and
 
 : -- SamuelTesla
 
+
+
+
+
 [:Icicles]
 = Icicles =
 
-Command `icicle-buffer' (bound by default to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then you cycle to another sort order -- several orders are available. You can alternatively impose a given order by default, by setting or binding user option `icicle-sort-function' appropriately.
+Command `icicle-buffer' (bound by default to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. 
+
+* Positive [[prefix argument]]: only file buffers are candidates.
+
+* Zero prefix arg: only buffer in same mode as current buffer are candidates.
+
+* Negative prefix arg: only buffers associated with the selected [[frame]] are candidates.
+
+* `C-x m' during completion to access buffer bookmarks (needs [[Bookmark+]]).
+
+* `C-x m' during completion: only buffers of a given [[major mode]]are candidates (you are prompted for the mode).
+
+By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then you cycle to another sort order -- several orders are available. You can alternatively impose a given order by default, by setting or binding user option `icicle-sort-comparer' appropriately.
+
+There are also several [[user option]]s that control the behavior.  For example, you can specify a predicate to satisfy or extra buffers to include as candidates.  See [[Icicles - Buffer-Name Input]].
+
 
 
 
@@ -299,7 +319,7 @@ For more info see SwBuff.
 = Cycbuf =
 
 * Author: Martin Pohlack
-* URL: http://os.inf.tu-dresden.de/~mp26/download/cycbuf.el
+* URL: https://github.com/martinp26/cycbuf
 
 This is a combination of some features of swbuff-x, which is a modification to swbuff and bs.
 

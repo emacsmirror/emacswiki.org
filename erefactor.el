@@ -73,31 +73,38 @@
 (defvar erefactor--read-symbol-history nil)
 (defvar erefactor--read-prefix-history nil)
 
-(defun erefactor-matched-prefix (symbol)
+(defun erefactor--symbol-group-prefix (symbol)
   (let ((symbol-name (symbol-name symbol))
         most-prefix len p)
     (mapatoms
      (lambda (s)
-       (when (setq p (get s 'custom-prefix))
-         (when (stringp p)
-           (when (string-match (concat "^" (regexp-quote p)) symbol-name)
-             (when (or (null len) (< len (match-end 0)))
-               (setq len (match-end 0))
-               (setq most-prefix p))))))
+       (when (and (setq p (get s 'custom-prefix))
+                  (stringp p)
+                  (string-match (concat "^" (regexp-quote p)) symbol-name)
+                  (or (null len) (< len (match-end 0))))
+         (setq len (match-end 0))
+         (setq most-prefix p)))
      obarray)
     most-prefix))
 
-(defun erefactor-defined-source-files (prefix)
-  (let ((prefix-regexp (concat "^" (regexp-quote prefix)))
-        ret file)
-    (mapatoms
-     (lambda (s)
-       (when (string-match prefix-regexp (symbol-name s))
-         (when (setq file (symbol-file s))
+(defun erefactor--guessed-using-files (symbol)
+  (let (ret file)
+    (let* ((prefix (erefactor--symbol-group-prefix symbol))
+           (prefix-regexp (concat "^" (regexp-quote prefix))))
+      (mapatoms
+       (lambda (s)
+         (when (and (string-match prefix-regexp (symbol-name s))
+                    (setq file (symbol-file s)))
+           ;; if byte compiled file
            (when (string-match "^\\(.*\\.el\\)c$" file)
              (setq file (match-string 1 file)))
-           (add-to-list 'ret file))))
-     obarray)
+           (add-to-list 'ret file)))
+       obarray))
+    ;;TODO refactor
+    (let ((files (append (erefactor--symbol-using-sources symbol 'defun)
+                         (erefactor--symbol-using-sources symbol 'defvar)
+                         (erefactor--symbol-using-sources symbol 'defface))))
+      (setq ret (union files ret)))
     ret))
 
 (defun erefactor--find-local-binding (name)
@@ -139,15 +146,17 @@
         nil))))
 
 (defun erefactor--binding-exists-p (name form)
-  (mapc
-   (lambda (f)
-     (when (or (erefactor--local-binding-p name f)
-               (erefactor--macroexpand-contains-p name f))
-       (throw 'found t))
-     (when (and (listp f)
-                (erefactor--binding-exists-p name f))
-       (throw 'found t)))
-   form))
+  (catch 'found
+    (mapc
+     (lambda (f)
+       (when (or (erefactor--local-binding-p name f)
+                 (erefactor--macroexpand-contains-p name f))
+         (throw 'found t))
+       (when (and (listp f)
+                  (erefactor--binding-exists-p name f))
+         (throw 'found t)))
+     form)
+    nil))
 
 (defun erefactor--let-binding-contains-p (let-arg name)
   (catch 'found
@@ -182,12 +191,10 @@
   (interactive 
    (erefactor-rename-symbol-read-args 'erefactor--read-symbol-history))
   (let* ((symbol (intern-soft old-name))
-         (prefix (erefactor-matched-prefix symbol))
-         guessed-files)
-    (when prefix
-      (setq guessed-files (erefactor-defined-source-files prefix)))
-    (unless (member buffer-file-name guessed-files)
-      (setq guessed-files (append (list buffer-file-name) guessed-files)))
+         (guessed-files (erefactor--guessed-using-files symbol)))
+    (when buffer-file-name
+      (unless (member buffer-file-name guessed-files)
+        (setq guessed-files (cons buffer-file-name guessed-files))))
     (mapc
      (lambda (file)
        (erefactor-with-file file
@@ -219,11 +226,11 @@
     (when (eq (cadr fnsym) new)
       (case (car fnsym)
         ((defvar defcustom defconst)
-         (erefactor-change-definition-name old new 'defvar))
+         (erefactor--change-load-name old new 'defvar))
         ((defun defmacro)
-         (erefactor-change-definition-name old new 'defun))
+         (erefactor--change-load-name old new 'defun))
         ((defface)
-         (erefactor-change-definition-name old new 'defface))))))
+         (erefactor--change-load-name old new 'defface))))))
 
 (defun erefactor--current-fnsym ()
   (save-excursion
@@ -238,7 +245,7 @@
         (scan-error nil))
       ret)))
 
-(defun erefactor-search-in-load-history (symbol)
+(defun erefactor--symbol-defined-alist (symbol)
   (let (funcs faces vars tmp)
     (mapc
      (lambda (def)
@@ -255,8 +262,8 @@
       (defface . ,faces)
       (defvar . ,vars))))
 
-(defun erefactor-change-definition-name (old-symbol new-symbol type)
-  (let* ((defs (erefactor-search-in-load-history old-symbol))
+(defun erefactor--change-load-name (old-symbol new-symbol type)
+  (let* ((defs (erefactor--symbol-defined-alist old-symbol))
          (files (cdr (assq type defs))))
     (mapc
      (lambda (file)
@@ -271,8 +278,8 @@
              (setcar tmp new-symbol))))))
      files)))
 
-(defun erefactor-symbol-package (symbol type)
-  (let* ((defs (erefactor-search-in-load-history symbol))
+(defun erefactor--symbol-package (symbol type)
+  (let* ((defs (erefactor--symbol-defined-alist symbol))
          (files (cdr (assq type defs))))
     (catch 'found
       (mapc
@@ -283,8 +290,9 @@
        files)
       nil)))
 
-(defun erefactor-symbol-using-packages (symbol type)
-  (let ((package (erefactor-symbol-package symbol type)))
+;;TODO merge to erefactor--guessed-using-files
+(defun erefactor--symbol-using-sources (symbol type)
+  (let ((package (erefactor--symbol-package symbol type)))
     (loop for defs in load-history
           when (loop for def in (cdr defs)
                      when (and (listp def) 
@@ -350,6 +358,17 @@
            (unless (buffer-modified-p buffer)
              (kill-buffer buffer)))))))
 
+(defun erefactor--call-before (func old-name new-name)
+  (save-match-data
+    (if func 
+        (funcall func old-name new-name)
+      (y-or-n-p "Rename? "))))
+
+(defun erefactor--call-after (func old-name new-name)
+  (save-match-data
+    (when func
+      (funcall func old-name new-name))))
+
 (defun erefactor-rename-region (symbol new &optional region before-func after-func)
   "Rename SYMBOL to NEW in REGION.
 Optional arg BEFORE-FUNC is called with two args SYMBOL and NEW before replacing.
@@ -374,14 +393,9 @@ Optional arg AFTER-FUNC is called with two args SYMBOL and NEW after replaced.
           (goto-char (match-end 1))
           (erefactor-highlight regexp (match-beginning 1) (match-end 1))
           (unwind-protect
-              (when (save-match-data
-                      (if before-func 
-                          (funcall before-func symbol new)
-                        (y-or-n-p "Rename? ")))
+              (when (erefactor--call-before before-func symbol new)
                 (replace-match new nil nil nil 1)
-                (save-match-data
-                  (when after-func
-                    (funcall after-func symbol new))))
+                (erefactor--call-after after-func symbol new))
             (erefactor-dehighlight)))))))
 
 (defun erefactor-change-symbol-prefix (prefix new &optional before-func after-func)
@@ -404,21 +418,16 @@ Optional arg AFTER-FUNC is called with two args old-name and new-name after repl
                (old-name (concat prefix suffix))
                (new-name (concat new suffix)))
           (unwind-protect
-              (when (save-match-data
-                      (if before-func 
-                          (funcall before-func old-name new-name)
-                        (y-or-n-p "Rename? ")))
+              (when (erefactor--call-before before-func old-name new-name)
                 (replace-match new nil nil nil 2)
-                (save-match-data
-                  (when after-func
-                    (funcall after-func old-name new-name)))))
+                (erefactor--call-after after-func old-name new-name)))
           (erefactor-dehighlight))))))
 
 (defun erefactor-rename-symbol-read-args (hist-var)
   (let (current-name prompt new-name)
     (barf-if-buffer-read-only)
     (unless (setq current-name (thing-at-point 'symbol))
-      (error "No symbol found at point"))
+      (error "No symbol at point"))
     (setq prompt (format "%s -> New name: " current-name))
     (setq new-name (read-string prompt current-name hist-var))
     (when (string= current-name new-name)
@@ -467,16 +476,15 @@ Examples:
 
 (defcustom erefactor-lint-path-alist nil
   "*Associate list key is file name of Elisp. 
-cdr is `load-path' required by linting key file.
+value is `load-path' that required by key file if key file require some module.
 
 Examples:
-TODO
 \(
-  (\"/home/bob/.emacs.d/erefactor.el\"
+  (\"/home/bob/.emacs.d/linting-file.el\"
     \"/home/bob/.emacs.d/misc\")
 )
 
-# \"/home/bob/.emacs.d/misc\" directory have \"refactor.el\"
+\"/home/bob/.emacs.d/misc\" directory have some requiring module(s).
 "
   :group 'erefactor
   :type '(list (list file)))
