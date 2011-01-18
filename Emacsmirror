@@ -44,3 +44,9 @@ emails about missing packages you may also report them here.
 The list of missing packages that used to be here has been removed.  Many
 packages have since been imported; even from http://www.archive.org/. The
 rest probably isn't worth making yet another effort to locate them.
+
+Having a github page mean these projects also get a wiki, nonetheless, a
+project might also have an emacswiki page.
+
+Maybe githubs 'gist' could be used to host many of the elisp snippets
+found here on emacswiki? --CH

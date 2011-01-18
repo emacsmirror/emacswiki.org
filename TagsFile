@@ -18,7 +18,30 @@ in the current directory and its subdirectories (recursively):
     find . -name "*.[ch]" -print | xargs etags -a
 
 You might want to add the target tags to their Makefile, so
-that they can easily be updated.
+that they can easily be updated. See example of complex command for GNU Make, which skip VCS dirs for performance reason, like another project dirs, and include system headers and some of project library headers, and tags all project .c/.h/.cpp files:
+
+[new]
+{{{
+define FIND_HEADERS_CMD
+( \
+    find . '(' -type d -name .svn -o -name $(DIST_DIR) -o -name $(LIB_DIR) ')' -prune -o -type f \
+        '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
+    ls $(LIB_DIR)/xulrunner-sdk/include/plugin/np*.h; \
+    ls /usr/include/*.h; \
+)
+endef
+
+.PHONY: etags
+etags:
+	rm -f TAGS
+	$(FIND_HEADERS_CMD) | etags -
+
+.PHONY: ctags
+ctags:
+	rm -f TAGS
+	$(FIND_HEADERS_CMD) | ctags --tag-relative=yes -e -L -
+}}}
+[new]
 
 The following will create a tags file if none exists. Just hit `##M-.##' and you're off.
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:20:11 2010 (-0800)
+;; Last-Updated: Mon Jan 17 08:46:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1356
+;;     Update #: 1357
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -175,9 +175,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
-(eval-when-compile                               ;; for Emacs < 21: push
- (when (< emacs-major-version 21) (require 'cl)));; for Emacs < 20: when, unless
 
 (require 'apropos-fn+var nil t) ;; (no error if not found): apropos-command,
                                 ;; apropos-function, apropos-option, apropos-variable

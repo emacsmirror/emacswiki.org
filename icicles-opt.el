@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 12 17:06:41 2011 (-0800)
+;; Last-Updated: Mon Jan 17 09:10:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3994
+;;     Update #: 4003
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -225,6 +225,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+;; Emacs 20 does not DTRT wrt `:type' and `:set' sexps at compile time,
+;; so there seems no way around this, short of coding without push and dolist.
+;; For Emacs < 21: dolist, push
+(eval-and-compile (when (< emacs-major-version 21) (require 'cl)))
 
 (require 'hexrgb nil t)     ;; (no error if not found): hexrgb-color-values-to-hex,
                             ;; hexrgb-increment-(red|green|blue), hexrgb-rgb-to-hsv,

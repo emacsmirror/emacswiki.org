@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan  7 22:14:08 2011 (-0800)
+;; Last-Updated: Mon Jan 17 09:28:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16420
+;;     Update #: 16463
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -319,7 +319,8 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; flet (plus for Emacs < 20, when, unless)
+(eval-when-compile (require 'cl)) ;; case, flet, lexical-let, loop
+                                  ;; plus, for Emacs < 21: dolist, push
 
 (eval-when-compile
  (or (condition-case nil
@@ -1281,6 +1282,7 @@ Bound to `M-_' in the minibuffer."
 ;;;         (icicle-inhibit-sort-p (message "Cannot sort candidates now"))
 ;;;         (t (call-interactively #'icicle-change-sort-order))))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-search-replace-common-match 'icicle-toggle-search-replace-common-match)
 ;;;###autoload
@@ -1295,6 +1297,7 @@ Bound to `M-;' in the minibuffer."
                                       "Replacing expanded common match is now ON"
                                     "Replacing expanded common match is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-search-replace-whole 'icicle-toggle-search-replace-whole)
 ;;;###autoload
@@ -1307,6 +1310,7 @@ Bound to `M-_' in the minibuffer when searching."
                                       "Replacing whole search context is now ON"
                                     "Replacing whole search context is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-dot 'icicle-toggle-dot)
 ;;;###autoload
@@ -2557,6 +2561,7 @@ Bound to `M-q' in the minibuffer."
   (cond (icicle-searching-p (icicle-toggle-search-whole-word))
         (t (icicle-insert-key-description arg))))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-search-whole-word 'icicle-toggle-search-whole-word)
 ;;;###autoload
@@ -6397,6 +6402,7 @@ Use `left', `right', or the mouse wheel to adjust
            (setq unread-command-events  ()))
       (unless mini (icicle-remove-Completions-window)))))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-WYSIWYG-Completions 'icicle-toggle-WYSIWYG-Completions)
 ;;;###autoload
@@ -6408,6 +6414,7 @@ Use `left', `right', or the mouse wheel to adjust
                                       "Using WYSIWYG for *Completions* display is now ON"
                                     "Using WYSIWYG for *Completions* display is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-~-for-home-dir 'icicle-toggle-~-for-home-dir)
 ;;;###autoload
@@ -6420,6 +6427,7 @@ Bound to `M-~' in the minibuffer."
                                       "Using `~' for home directory is now ON"
                                     "Using `~' for home directory is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-C-for-actions 'icicle-toggle-C-for-actions)
 ;;;###autoload
@@ -6433,6 +6441,7 @@ Bound to `M-g' in the minibuffer."
                                       "Using `C-' prefix for multi-command actions is now ON"
                                     "Using `C-' prefix for multi-command actions is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-alternative-sorting 'icicle-toggle-alternative-sorting)
 ;;;###autoload
@@ -6449,6 +6458,7 @@ Bound to `C-M-,' in the minibuffer."
      (format "Sorting: `%s', Alternative: `%s'"
              icicle-sort-comparer icicle-alternative-sort-comparer))))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-sorting 'icicle-toggle-sorting)
 ;;;###autoload
@@ -6467,6 +6477,7 @@ When sorting is active, comparison is done by `icicle-sort-comparer'."
                                         "Completion-candidate sorting is now ON"
                                       "Completion-candidate sorting is now OFF"))))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-angle-brackets 'icicle-toggle-angle-brackets)
 ;;;###autoload
@@ -6479,6 +6490,7 @@ When sorting is active, comparison is done by `icicle-sort-comparer'."
                                       "Displaying <...> in key descriptions is now ON"
                                     "Displaying <...> in key descriptions is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-proxy-candidates 'icicle-toggle-proxy-candidates)
 ;;;###autoload
@@ -6497,6 +6509,7 @@ to take effect.  (This is for performance reasons.)"
                                       "Including proxy candidates is now ON"
                                     "Including proxy candidates is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-transforming 'icicle-toggle-transforming)
 ;;;###autoload
@@ -6519,6 +6532,7 @@ Bound to `C-$' in the minibuffer."
                                       "Completion-candidate transformation is now ON"
                                     "Completion-candidate transformation is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-incremental-completion 'icicle-toggle-incremental-completion)
 ;;;###autoload
@@ -6536,6 +6550,7 @@ Bound to `C-#' in the minibuffer."
                                       "Incremental completion is now ON"
                                     "Incremental completion is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-expand-to-common-match 'icicle-toggle-expand-to-common-match)
 ;;;###autoload
@@ -6555,10 +6570,9 @@ When Icicles searching, call `icicle-toggle-highlight-all-current'.
 Otherwise, call `icicle-toggle-remote-file-testing'.
 Bound to `C-^' in the minibuffer."
   (interactive)
-  (if (eq icicle-candidate-action-fn 'icicle-search-action)
-      (icicle-toggle-highlight-all-current)
-    (icicle-toggle-remote-file-testing)))
+  (if icicle-searching-p (icicle-toggle-highlight-all-current) (icicle-toggle-remote-file-testing)))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-remote-file-testing 'icicle-toggle-remote-file-testing)
 ;;;###autoload
@@ -6590,6 +6604,7 @@ Bound to `C-^' in the minibuffer, except during Icicles searching."
                                       "Testing remote file names is now ON"
                                     "Testing remote file names is now OFF")))
 
+;; NOT a top-level command (most toggle commands can be used at top-level).
 ;;;###autoload
 (defalias 'toggle-icicle-highlight-all-current 'icicle-toggle-highlight-all-current)
 ;;;###autoload
@@ -6597,6 +6612,7 @@ Bound to `C-^' in the minibuffer, except during Icicles searching."
   "Toggle `icicle-search-highlight-all-current-flag'.
 Bound to `C-^' in the minibuffer during Icicles searching (only)."
   (interactive)
+  (icicle-barf-if-outside-Completions-and-minibuffer)
   (setq icicle-search-highlight-all-current-flag  (not icicle-search-highlight-all-current-flag))
   ;; Rehighlight to see effect of toggle.
   (let ((icicle-candidate-nb  icicle-candidate-nb))
@@ -6616,6 +6632,7 @@ Bound to `C-^' in the minibuffer during Icicles searching (only)."
        "Highlighting current input match in each main search hit is now ON"
      "Highlighting current input match in each main search hit is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-hiding-common-match 'icicle-toggle-hiding-common-match)
 ;;;###autoload
@@ -6630,6 +6647,7 @@ Bound to `C-M-.' in the minibuffer."
                                       "Hiding common match in *Completions* is now ON"
                                     "Hiding common match in *Completions* is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-show-multi-completion 'icicle-toggle-show-multi-completion)
 ;;;###autoload
@@ -6644,6 +6662,7 @@ Bound to `M-m' in the minibuffer."
        "Showing multi-completions (when available) is now ON"
      "Showing multi-completions (when available) is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
 ;;;###autoload
@@ -6665,6 +6684,7 @@ duration of `icicle-buffer'."
                                       "Ignoring space prefix is now ON"
                                     "Ignoring space prefix is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-highlight-historical-candidates
     'icicle-toggle-highlight-historical-candidates)
@@ -6692,6 +6712,7 @@ Bound to `C-.' in the minibuffer."
   (interactive)
   (if icicle-searching-p (icicle-toggle-search-cleanup) (icicle-toggle-ignored-extensions)))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-ignored-extensions 'icicle-toggle-ignored-extensions)
 ;;;###autoload
@@ -6714,6 +6735,7 @@ Bound to `C-.' in minibuffer during file-name input."
                                       "Ignoring selected file extensions is now ON"
                                     "Ignoring selected file extensions is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-search-cleanup 'icicle-toggle-search-cleanup)
 ;;;###autoload
@@ -6737,6 +6759,8 @@ Bound to `C-.' in the minibuffer, except for file-name input."
 ;;   (interactive)
 ;;   (if icicle-searching-p (icicle-toggle-literal-replacement) (icicle-toggle-regexp-quote)))
 
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-regexp-quote 'icicle-toggle-regexp-quote)
 ;;;###autoload
@@ -6779,6 +6803,7 @@ Bound to `C-M-;' in the minibuffer."
   (icicle-msg-maybe-in-minibuffer (substitute-command-keys "Expansion to common match is OFF. \
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-to-common-match]' to toggle")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-literal-replacement 'icicle-toggle-literal-replacement)
 ;;;###autoload
@@ -6793,6 +6818,7 @@ Bound to `C-M-`' in the minibuffer."
                                       "Replacement of text literally is now ON"
                                     "Replacement of text literally is now OFF")))
 
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-case-sensitivity 'icicle-toggle-case-sensitivity)
 ;;;###autoload
@@ -6852,7 +6878,8 @@ non-nil."
                  (not (eq (window-buffer (selected-window)) (get-buffer "*Completions*")))
                  (interactive-p)))
     ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
-    (condition-case nil (icicle-delete-windows-on "*Completions*")  (error nil))))
+    (condition-case nil (icicle-delete-windows-on "*Completions*")  (error nil))
+    (when (get-buffer "*Completions*") (bury-buffer (get-buffer "*Completions*")))))
 
 ;; This is actually a top-level command, but it is in this file because it is used by
 ;; `icicle-remove-Completions-window'.

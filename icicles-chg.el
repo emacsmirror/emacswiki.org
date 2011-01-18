@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 12 17:11:51 2011 (-0800)
+;; Last-Updated: Mon Jan 17 09:28:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5992
+;;     Update #: 6003
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2079,6 +2079,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2011/01/17 dadams
+;;     Require cl.el at compile time for Emacs 20.
 ;; 2011/01/06 dadams
 ;;     icicle-buffer-bindings: Zero prefix arg limits candidates to buffers with same mode as current.
 ;; 2010/12/26 dadams
@@ -2180,6 +2182,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/01/17 dadams
+;;     icicle-remove-Completions-window: Bury buffer.
+;;     icicle-toggle-highlight-all-current: barf if not in minibuf or Completions.
+;;     icicle-dispatch-C-^: Use icicle-searching-p.
 ;; 2011/01/05 dadams
 ;;     Added: icicle-sort-by-file-type.
 ;; 2010/12/26 dadams
@@ -4266,6 +4272,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/01/17 dadams
+;;     Added runtime require of cl.el for Emacs 20.  (Emacs 20 does not handle defcustom well.)
 ;; 2011/01/12 dadams
 ;;     Changed default value of icicle-Completions-text-scale-decrease from 0.66 to 0.75.
 ;; 2011/01/02 dadams
@@ -4809,6 +4817,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/01/17 dadams
+;;     Removed compile-time require of cl.el.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/11/07 dadams

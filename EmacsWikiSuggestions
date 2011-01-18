@@ -244,6 +244,10 @@ Also, you might consider not complaining anonymously.
 [new]
 I've added a sig, now its not anonymous. I _hope_ I do my best to try and contribute constructively and to make judicious commenting on libraries and xrefs. That said, I tend to put them in my source which seems like a reasonable way to voice support for particular authors, goals, pkgs etc. You are correct, and I agree, the matter is a bit of a philosophical point. If everyone xrefd with Drew's zeal as a philosophical matter I personally think the site would suffer, obv. YMMV. As I say, I truly do respect what Drew has done w/ Icicles; this doesn't make it OK to splatter it about at the vaguest possible connection. FWIW there is a search bar, it is quite useful and I'm surprised sometimes by how readily it will point _me_ to what _I_ am looking for.  -- mon_key
 
+[new]
+Maybe the problem is that Drew's libraries can be monolithic, [[Icicles]] in particular; There is some great stuff in [[Icicles]] but I don't want it all.
+That said, I don't find his cross-referencing excessive. --CH
+
 == CSS (headers, printing) ==
 
 [new]
@@ -394,6 +398,10 @@ independent of the primary content/context.  Such a page might serve as a good
 compromise between the existing pages (not all of which can/should/will be
 modified to reflect the new functionality) and pages which would clearly benefit
 from better granularity. -- [[mon_key]]
+
+[new]
+Brilliant. Maybe a new wiki mechanism is needed? or integration with something like Disqus? --CH
+
 
 ----
 CategoryEmacsWikiSite

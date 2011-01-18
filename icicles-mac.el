@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  6 08:56:13 2011 (-0800)
+;; Last-Updated: Mon Jan 17 08:38:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 561
+;;     Update #: 564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -94,7 +94,7 @@
 ;;
 ;; the function x-focus-frame is not known to be defined.
 
-(eval-when-compile (when (< emacs-major-version 20) (require 'cl))) ;; when, unless
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; for Emacs < 21: dolist, push
 
 ;; Quiet the byte compiler for Emacs versions before 22.  For some reason, a value is required.
 (unless (boundp 'minibuffer-completing-symbol)

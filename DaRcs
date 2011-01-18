@@ -45,7 +45,7 @@ properly (and changes to generalize it have been rejected).
 
 === Not VC-based ===
 
-* [http://joyful.com/repos/darcsum darcsum] is a vaguely
+* [http://joyful.com/repos/darcsum darcsum] ([http://joyful.com/darcsweb/darcsweb.cgi?r=darcsum browse repo]) is a vaguely
   PCL-CVS-like interface which allows you to select individual hunks
   to record, for instance.  See
   [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsDarcs.html],
