@@ -35,7 +35,8 @@
 ;; `quicklisp-hash-system-completions-slime-loadtime', `mon-prev-xref-slime',
 ;; `mon-next-xref-slime', `mon-quit-slime-description-window',
 ;; `mon-lisp-set-indent-hook', `mon-lisp-set-indent', `slime-echo-arglist-STFU',
-;; `slime-echo-arglist-behave-or-back-to-your-cage', `mon-insert-slime-arglist'
+;; `slime-echo-arglist-behave-or-back-to-your-cage', `mon-insert-slime-arglist',
+;; `mon-slime-start-sbcl',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -275,7 +276,7 @@
 :SEE-ALSO .\n►►►"
   ;; :prefix "<PREFIX>"
   :link '(url-link 
-          :tag ":SLIME-DEVEL (URL `http://news.gmane.org/gmane.lisp.slime.devel')"
+          :tag "\n:SLIME-DEVEL (URL `http://news.gmane.org/gmane.lisp.slime.devel')"
           "http://news.gmane.org/gmane.lisp.slime.devel")
   :link '(info-link
           :tag "\n:SLIME-INFO-NODE"
@@ -307,7 +308,7 @@
 (defcustom *mon-slime-xrefs*
   '(mon-insert-slime-arglist mon-lisp-set-indent mon-lisp-set-indent-hook
     mon-next-xref-slime mon-prev-xref-slime mon-quit-slime-description-window
-    mon-slime-quit-description mon-slime-setup-init
+    mon-slime-quit-description mon-slime-setup-init mon-slime-start-sbcl
     quicklisp-current-swank-loader quicklisp-dot-swank-current-p
     quicklisp-hash-system-completions
     quicklisp-hash-system-completions-slime-loadtime quicklisp-system-complete
@@ -337,28 +338,33 @@ The symbols contained of this list are defined in :FILE slime-loads-GNU-clbuild.
 (defgroup mon-qucklisp nil
   "Configuations for Zach Beane's Common Lisp Quicklisp related procedures.\n
 :SEE-ALSO .\n►►►"
-  :link '(url-link :tag ":EMACSWIKI-FILE" 
-                   "http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el")
-  ;;
+  :link '(url-link 
+          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el')" 
+          "http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el")
   :link '(emacs-library-link 
+          :tag "\n:FILE slime-loads-GNU-clbuild.el"
           "slime-loads-GNU-clbuild.el")
-  :link '(url-link :tag ":QUICKLISP" 
-                   "http://www.quicklisp.org/")
-  ;;
-  :link '(url-link :tag ":QUICKLISP-BLOG"
-                   "http://blog.quicklisp.org/")
-  :link '(url-link :tag ":QUICKLISP-GG-GROUP"
-                   "http://groups.google.com/group/quicklisp")
-  ;;
-  :link '(url-link :tag ":QUICKLISP-CLIENT-FROM-GIT"
-                    "http://github.com/quicklisp/quicklisp-client.git")
-  :link '(url-link :tag ":QUICKLISP-PROJECTS-FROM-GIT"
+  :link '(url-link 
+          :tag "\n:QUICKLISP (URL `http://www.quicklisp.org/')" 
+          "http://www.quicklisp.org/")
+  :link '(url-link 
+          :tag "\n:QUICKLISP-BLOG (URL `http://blog.quicklisp.org/')"
+          "http://blog.quicklisp.org/")
+  :link '(url-link 
+          :tag "\n:QUICKLISP-GG-GROUP (URL `http://groups.google.com/group/quicklisp')"
+          "http://groups.google.com/group/quicklisp")
+  :link '(url-link 
+          :tag "\n:QUICKLISP-CLIENT-FROM-GIT (URL `http://github.com/quicklisp/quicklisp-client.git')"
+          "http://github.com/quicklisp/quicklisp-client.git")
+  :link '(url-link 
+          :tag "\n:QUICKLISP-PROJECTS-FROM-GIT (URL `git://github.com/quicklisp/quicklisp-projects.git')"
           "git://github.com/quicklisp/quicklisp-projects.git")
-  :link '(url-link :tag ":QUICKLISP-BOOTSTRAP-FROM-GIT"
-                   "git://github.com/quicklisp/quicklisp-bootstrap.git")
-  ;;
-  ;; :link '(url-link :tag ":QUICKLISP-SLIME-HELPER"
-  ;;                        "http://github.com/quicklisp/quicklisp-slime-helper"')
+  :link '(url-link 
+          :tag "\n:QUICKLISP-BOOTSTRAP-FROM-GIT (URL `git://github.com/quicklisp/quicklisp-bootstrap.git')"
+          "git://github.com/quicklisp/quicklisp-bootstrap.git")
+  ;; :link '(url-link 
+  ;;         :tag ":QUICKLISP-SLIME-HELPER (URL `http://github.com/quicklisp/quicklisp-slime-helper')"
+  ;;         "http://github.com/quicklisp/quicklisp-slime-helper"')
   :prefix "quicklisp-"
   :group 'mon-slime
   :group 'mon-doc-help-utils)
@@ -404,7 +410,6 @@ in the software subdir of `*quicklisp-path*'.\n
 `quicklisp-write-dot-swank-loader-if', `quicklisp-dot-swank-current-p',
 `quicklisp-write-dot-swank-loader', `*quicklisp-path*'.\n►►►"
   (let* ((ql-softs (concat (or ql-path *quicklisp-path*) 
-                           ;; :WAS "software/"))
                            "dists/quicklisp/software/")) 
          (fnd-slm-rgxp "\\(slime-\\(%s\\)-cvs\\)") ;; %s -> "[0-9]+" & most-recent
          (ql-slimes 
@@ -681,7 +686,8 @@ in current-buffer moving point.\n
 Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
 :EXAMPLE\n\n\(quicklisp-system-complete-if \"^cl-*\" nil t\)\n
 \(call-interactively 'quicklisp-system-complete-if\\\)\)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `quicklisp-hash-system-completions', `*quicklisp-systems*'
+`mon-help-CL-symbols', `mon-help-CL-pkgs'.\n►►►"
   (interactive (list (read-regexp "Filter quiclklisp systems matching regexp")
                      current-prefix-arg
                      t))
@@ -826,7 +832,7 @@ Sets the following variables:\n
 Attempts to disable `slime-use-autodoc-mode' in various ways \(mostly w/out success\).\n
 Requires slime package.\n
 Evaluates `slime-setup', `slime-require'.\n
-:SEE-ALSO `mon-set-lisp-init', `mon-keybind-slime',
+:SEE-ALSO `mon-set-lisp-init', `mon-slime-start-sbcl', `mon-keybind-slime',
 `mon-help-CL-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init',
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `slime-setup-contribs', `slime-load-contribs', `slime-required-modules'.\n►►►"
@@ -865,6 +871,14 @@ Evaluates `slime-setup', `slime-require'.\n
    '(slime-use-autodoc-mode nil)
    '(slime-autodoc-delay 2)
    '(slime-autodoc-accuracy-depth 4) ;; The default: 10 is prob. way to much IMHO
+   '(slime-repl-history-remove-duplicates t)
+   '(slime-repl-history-trim-whitespaces t)
+   ;; '(slime-repl-history-file "~/.slime/.slime-history.eld") :DEFAULT "~/.slime-history.eld"
+   ;; `comint-replace-by-expanded-filename', `comint-dynamic-complete-as-filename'
+   '(slime-when-complete-filename-expand t)
+
+   ;; '(slime-asdf-collect-notes t)
+   ;;
    )
   (setq slime-lisp-modes '(lisp-mode lisp-interaction-mode))
   (progn 
@@ -872,10 +886,16 @@ Evaluates `slime-setup', `slime-require'.\n
     (when (or (slime-bytecode-stale-p)
               (not (file-exists-p (concat (file-name-sans-extension (locate-library "slime")) ".elc"))))
       (slime-recompile-bytecode)))
+  ;;
+  ;; (setq slime-protocol-version (slime-changelog-date))
+  ;;
   ;; (require 'slime-autoloads)
   (slime-setup '(slime-fancy slime-sbcl-exts slime-asdf slime-tramp
-                 slime-presentation-streams ;slime-highlight-edits 
-		 slime-repl slime-scratch ))
+                 slime-presentation-streams 
+		 slime-repl slime-scratch 
+                 ;; slime-sprof slime-cover
+                 ;; slime-highlight-edits
+                 )) 
   (slime-require :swank-sbcl-exts)
   (slime-require :swank-listener-hooks)
   ;; :NOTE `slime-setup-contribs' is a function and a variable
@@ -951,7 +971,6 @@ Evaluates `slime-setup', `slime-require'.\n
   )
 
 ;; (mon-slime-setup-init)
-
 
 ;;; ==============================
 ;;; :CHANGESET 2389
@@ -1032,6 +1051,82 @@ Return value is:
                  (get-buffer-window slm-dscr 'visible))
         (with-selected-window (get-buffer-window slm-dscr 'visible)
           (quit-window))))))
+
+
+(declare-function mon-file-truename-p          "mon-dir-utils"   t t)
+(declare-function mon-file-non-existent-ERROR  "mon-error-utils" t t)
+(declare-function mon-message                  "mon-error-utils" t t)
+;;; ==============================
+;;; :CHANGESET 2402
+;;; :CREATED <Timestamp: #{2011-01-18T13:56:13-05:00Z}#{11032} - by MON KEY>
+(defun mon-slime-start-sbcl (&optional core-file)
+  "Start a fresh SBCL as if by `slime-start'.\n
+Optional arg core-file names an SBCL <FILENAME>.core to initialize.\n
+Signal an error if it does not satisfy `mon-file-truename-p'.\n
+When `slime-connected-p' is non-nil and `slime-connection-name' returns \"sbcl\"
+this command will message it refusal to initialize a new SBCL and instead return
+a list of details about the state of `slime-current-connection'.\n
+This command locates the SBCL binary as if by `executable-find'. When one is
+found it then expands paths relative to the binary but does not traverse outside
+the local paths file tree. IOW, if SBCL is installed locally to <SBCL-PATH>, the
+sequence of traversal is as follows:\n
+ <SBCL-PATH>/bin/sbcl
+ <SBCL-PATH>
+ <SBCL-PATH>/lib/sbcl/sbcl.core | <PATH-TO>/<FILENAME>.core\n
+If any of these paths do not satisfy `mon-file-truename-p' an error is
+signalled. IOW, if your SBCL is installed to \"/usr/local/bin/sbcl\" and doesn't
+symlink to some other path you loose.\n
+:EXAMPLE\n\n\(mon-slime-start-sbcl\)\n
+;; Following fails successfully:
+ \(mon-slime-start-sbcl \"/some-nonexistent-core/sbcl-not.core\"\)\n
+:NOTE When `IS-MON-P-GNU', the most current SBCL is likely built from sources
+and its truename is to a local non-standard pathname. This is dereferenced via a
+symlink from the otherwise standard SBCL install location.\n
+:SEE-ALSO `mon-set-lisp-init', `mon-keybind-slime', `mon-help-CL-slime-keys',
+`slime-cheat-sheet', `mon-slime-setup-init',
+`mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
+`slime-setup-contribs', `slime-load-contribs', `slime-required-modules'.\n►►►"
+  (let* ((sbcl-exec (file-truename (or (executable-find "sbcl") "/SOME-NON-EXISTENT-FILE")))
+         (sbcl-exec (or (mon-file-truename-p  sbcl-exec) 
+                        (mon-file-non-existent-ERROR :w-error  t
+                                                     :fun-name "mon-slime-start-sbcl" 
+                                                     :locus    "sbcl-exec \(local-var\)" 
+                                                     :got-val  sbcl-exec)))
+         (sbcl-dir  (file-truename (expand-file-name  "../" (file-name-directory sbcl-exec))))
+         (sbcl-dir  (or (mon-file-truename-p sbcl-dir)
+                        (mon-file-non-existent-ERROR :w-error  t
+                                                     :fun-name "mon-slime-start-sbcl" 
+                                                     :locus    "sbcl-dir \(local-var\)"
+                                                     :got-val  sbcl-dir)))
+         (sbcl-core (or (and core-file (file-truename core-file))
+                        (file-truename (expand-file-name  "lib/sbcl/sbcl.core" sbcl-dir))))
+         (sbcl-core (or (mon-file-truename-p sbcl-core)
+                        (mon-file-non-existent-ERROR :w-error  t
+                                                     :fun-name "mon-slime-start-sbcl"
+                                                     :locus    (or (and core-file "core-file")
+                                                                   "sbcl-core \(local-var\)")
+                                                     :got-val sbcl-core))))
+    ;; :DEBUGGING 
+    ;; (mon-pairlis `(#::SBCL-EXEC #::SBCL-DIR #::SBCL-CORE)
+    ;;                          (list sbcl-exec sbcl-dir sbcl-core))))
+    (or (and (slime-connected-p)
+             (string= (slime-connection-name) "sbcl")
+             (let ((slc (slime-current-connection)))
+               (mon-message :msg-spec '(":FUNCTION `mon-slime-start-sbcl' "
+                                        "-- `slime-connected-p' returned non-nil, "
+                                        "not invoking `slime-start'"))
+               (sit-for 2)
+               `(#::LISP-CURRENT   ,slc
+                 #::LISP-NAME      ,(slime-connection-name)
+                 #::LISP-PROGRAM   ,(slime-lisp-implementation-program)
+                 #::LISP-PORT-NUM  ,(slime-connection-port slc)
+                 #::LISP-CONXION   ,(slime-connection-number slc)
+                 #::LISP-PROCESS   ,(slime-process )
+                 #::LISP-PROCESSES ,slime-net-processes)))
+        (slime-start :program sbcl-exec 
+                     :program-args (list "--core" sbcl-core) ;; "--dynamic-space-size" "<NNN>M"
+                   ;; :env (list (concat "SBCL_HOME=" sbcl-dir))))
+                   ))))
 
 ;;; ==============================
 ;; :WAS `slime-fancy'

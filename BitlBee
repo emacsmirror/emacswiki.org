@@ -5,7 +5,7 @@ InternetRelayChat client with it!
 
 bitlbee is at http://www.bitlbee.org Or, in Debian, 
 
- apt-get -t sarge -u install bitlbee
+ apt-get -u install bitlbee
 
 Or, in OS X,
 

@@ -20,6 +20,7 @@ I use Emacs daily for
 
 * RobertAdesamConfig -- the Mac Mini @work running Mac OS 10.5; the
 !ThinkPad @work running Mandriva 2010 and Windows 7 Enterprise; and my Samsung netbook @home running Windows 7 Starter.
+* RobertAdesamEmacsClientBat -- bat file for starting emacsclientw.exe on my netbook @home running Windows 7 Starter.
 
 == Contact ==
 

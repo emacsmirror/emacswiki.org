@@ -390,9 +390,9 @@ umbrella. Consider the following hypothetical EmacsPageFoo:
 The inline comments in the example above happen quite a bit. 
 
 IMHO these types of interludes often have little to do with the context of the page in which they
-appear and would be of better use seperated to a new location. 
+appear and would be of better use separated to a new location. 
 
-I would suggest that in addtion to or alternatively adding a ``HelpFixingFoo''
+I would suggest that in addition to or alternatively adding a ``HelpFixingFoo''
 page where package authors and other interested parties can answer questions
 independent of the primary content/context.  Such a page might serve as a good
 compromise between the existing pages (not all of which can/should/will be
@@ -401,6 +401,9 @@ from better granularity. -- [[mon_key]]
 
 [new]
 Brilliant. Maybe a new wiki mechanism is needed? or integration with something like Disqus? --CH
+
+[new]
+I guess we're at 2:2 right now. :) -- Alex
 
 
 ----

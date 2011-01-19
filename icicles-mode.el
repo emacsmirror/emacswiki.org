@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  1 07:23:29 2011 (-0800)
+;; Last-Updated: Tue Jan 18 15:31:30 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6827
+;;     Update #: 6869
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -132,6 +132,13 @@
 ;;;###autoload (autoload 'icicle-mode "icicles" "Toggle Icicle mode." t nil)
 ;;;###autoload (autoload 'icy-mode    "icicles" "Toggle Icicle mode." t nil)
 
+(eval-when-compile (require 'cl)) ;; pushnew, case
+                                  ;; plus, for Emacs < 21: push, dolist
+
+(require 'advice)
+  ;; ad-activate, ad-copy-advice-info, ad-deactivate, ad-disable-advice, ad-enable-advice,
+  ;; ad-find-some-advice, ad-get-arg, ad-is-active, ad-set-advice-info
+
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
   ;; icicle-default-cycling-mode, icicle-incremental-completion-flag,
@@ -167,8 +174,6 @@
 (when (>= emacs-major-version 22) (condition-case nil (require 'mb-depth+ nil t) (error nil)))
   ;; (no error if not found): minibuffer-depth-indicate-mode
 
-(eval-when-compile (require 'cl)) ;; push, dolist, case
-                                  ;; plus, for Emacs < 20: when, unless
 (require 'dired+ nil t) ;; (no error if not found):
                         ;; diredp-menu-bar-operate-menu, diredp-menu-bar-subdir-menu
 (require 'dired) ;; dired-mode-map
@@ -2614,7 +2619,7 @@ complete)"))
     '(menu-item "Retrieve Saved Candidates" icicle-candidate-set-retrieve
       :enable icicle-saved-completion-candidates
       :help "Retrieve the saved set of completion candidates, making it current"))
-  (define-key map [menu-bar minibuf separator-set2] '("--"))
+  (define-key map [menu-bar minibuf separator-complete] '("--"))
   (define-key map [menu-bar minibuf word-complete]
     '(menu-item "Word-Complete" icicle-prefix-word-complete
       :help "Complete at most one word of prefix"))

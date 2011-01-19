@@ -47,6 +47,8 @@ ClausBrunzema uses the following two commands to insert the variations of date f
 
 The functionality of the above two commands are combined into a single command, InsertDate, by JorgenSchaefer.
 
+There is a trade-off between simplicity and flexibility, and most solutions seem to favor simplicity over flexibility.  Here is an attempt to support the user's preference for different date and time formats while still minimizing keystrokes: http://www.emacswiki.org/emacs/insert-time-string.el
+
 ----
 CategoryCalendar
 CategoryEditing

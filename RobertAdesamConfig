@@ -71,7 +71,7 @@
       (setq explicit-shell-file-name shell-file-name)
       (setq ediff-shell shell-file-name)
       (setq explicit-shell-args '("--login" "-i"))
-      (setq w32-quote-process-args ?\")
+      (setq w32-quote-process-args ?\") ;"
       ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -93,6 +93,12 @@
       (mapc 'load (directory-files start-dir t "\\.el\\'"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Server
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(server-start)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Environment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -100,7 +106,7 @@
 (setq inhibit-startup-echo-area-message "robert"
       inhibit-startup-screen t
       initial-scratch-message nil)
-(menu-bar-mode nil)
+(menu-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode nil)
 (set-scroll-bar-mode nil)
@@ -478,7 +484,6 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
         ("From" ("@cling.gu.se" company "University of Gothenburg, Educational Programme in Language Technology, Department of Philosopy, Linguistics, and Theory of Science"))
         ("From" ("@cs.chalmers.se" company "Chalmers University of Technology, Department of Computer Science and Engineering "))
         ("From" ("@sics.se" company "SICS"))
-        ("From" ("@gu.se" company "University of Gothenburg"))
         ("From" ("@svenska.gu.se" company "University of Gothenburg, Department of Swedish Language"))
         ("Organization" (".*" company 0 t)))
       bbdb-notice-hook 'bbdb-auto-notes-hook

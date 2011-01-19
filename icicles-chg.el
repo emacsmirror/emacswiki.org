@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 17 09:28:14 2011 (-0800)
+;; Last-Updated: Tue Jan 18 15:28:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6003
+;;     Update #: 6005
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3318,6 +3318,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/01/18 dadams
+;;     Require advice.el.
 ;; 2011/01/01 dadams
 ;;     icicle-define-icicle-maps: Typo: icicle-search-tags-menu-map -> icicle-menu-map.  Thx Le Wang.
 ;; 2010/12/26 dadams

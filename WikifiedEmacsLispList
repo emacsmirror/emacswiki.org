@@ -1,4 +1,4 @@
-Timestamp: Fri Jan 14 19:45:46 GMT 2011
+Timestamp: Tue Jan 18 12:15:18 GMT 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -290,7 +290,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://dlpx1.dl.ac.uk/fx/emacs/cfengine.el cfengine.el] --- editing CFengine configuration files (by Dave Love)
 
-[http://davin.50webs.com/research/2006/cfm.el.html cfm.el] --- Displays the current function or method (by Davin Pearson)
+[http://davin.50webs.com/research/2006/cfm.el.html cfm.el] --- Displays the current function or method on the mode line. (by Davin Pearson)
 
 [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/cfs-el/cfs-el/src/cfs.el?rev=HEAD&content-type=text/plain cfs.el] --- A frontend to CFS [cryptographic file system]. (by Marco Parrone)
 
@@ -439,6 +439,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 = D =
 
 [http://davin.50webs.com/research/2010/d-appt.el.html d-appt.el] --- An improved appointment notification system. (by Davin Pearson)
+
+[http://davin.50webs.com/research/2010/d-flock.el.html d-flock.el] --- My personal syntax highlighting preferences (by Davin Pearson)
 
 [http://davin.50webs.com/research/2010/d-meal-timer.el.html d-meal-timer.el] --- A meal timer count-down system that improves over appt.el (by Davin Pearson)
 

@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Jan 12 14:51:05 2011 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Thu Jan 13 13:34:30 2011 (-0600)
+;; Last-Updated: Tue Jan 18 15:24:11 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 427
+;;     Update #: 438
 ;; URL: http://www.emacswiki.org/emacs/download/org-table-comment.el
 ;; Keywords: org-mode orgtbl
 ;; Compatibility: Tested with Org 7.4 on Windows Emacs 23.2 
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `org', `org-table'.
+;;   `org-table'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -90,6 +90,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 18-Jan-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Jan 18 15:23:04 2011 (-0600) #437 (Matthew L. Fidler)
+;;    Made permissive text only include a certain number (specified)
 ;; 13-Jan-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu Jan 13 12:44:44 2011 (-0600) #396 (Matthew L. Fidler)
 ;;    Initial version
@@ -126,7 +129,8 @@ IF ALLOW-BLANKS, a blank line is considered an org-table-comment"
   (save-excursion
     (goto-char (point-at-bol))
     (let (ret)
-      (if (not (and org-table-comment-permissive (not org-table-comment-permissive-text)))
+      (if (not (and (< 0 org-table-comment-permissive)
+		    (not org-table-comment-permissive-text)))
           (setq ret 
                 (looking-at (concat (if allow-blanks "\\(?:^[ \t]*$\\|" "")
                                     (if only-comment "" "\\(?:")
@@ -146,10 +150,15 @@ IF ALLOW-BLANKS, a blank line is considered an org-table-comment"
                                       (if allow-blanks "\\)" ""))))
         (when ret
           (setq org-table-comment-permissive-text (match-string-no-properties 1))
+	  (if (< org-table-comment-permissive (length org-table-comment-permissive-text))
+	      (progn
+		(setq ret nil)
+		(setq org-table-comment-permissive-text nil)
+		)
           (if org-table-comment-permissive-text
               (when (string-match "^[ \t]*$" org-table-comment-permissive-text)
                 (setq org-table-comment-permissive-text ""))
-            (setq org-table-comment-permissive-text ""))))
+            (setq org-table-comment-permissive-text "")))))
       (symbol-value 'ret))))
 
 (defun org-table-comment-region ()
@@ -327,10 +336,12 @@ END is the end of the region to check"
 
 (defvar org-table-comment-permissive-text nil
   "Variable storing what the permissive text is when `org-table-comment-permissive' is true.")
-(defcustom org-table-comment-permissive t
+(defcustom org-table-comment-permissive 4
   "The org-mode comment is permissive.  Therefore as long as it
-starts with `comment-start' and some combination of
-characters, followed by an org-table, it will be considered an org-comment-table.  For example:
+starts with `comment-start' and some combination of characters at
+a maximum length of `org-table-comment-permissive', followed by
+an org-table, it will be considered an org-comment-table.  For
+example:
 
 ;; % #+ORGTBL: SEND salesfigures orgtbl-to-latex
 ;; % |-------+------+---------+---------|
@@ -343,7 +354,11 @@ characters, followed by an org-table, it will be considered an org-comment-table
 ;; % #+TBLFM: $4=$3/$2;.1f
 
 can be edited in elisp mode.  In this example ' %' is stored as the `org-table-comment-permissive-text'
-")
+
+Zero or below is considered a non-permissive comment
+"
+  :type 'integer
+  :group 'org-table-comment)
 
 (defvar org-table-comment-editing nil
   "Variable to describe if we are editing a commented org-table")

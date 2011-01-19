@@ -57,6 +57,34 @@ The following works with Gnat:
 	  1 2 nil 3)
         flymake-err-line-patterns)
 
+=== Automake ===
+
+When using a moderately complex automake project, the trivial option of adding a <tt>check-syntax</tt> rule on every "interesting" <tt>Makefile</tt> is no longer enough, as you might have, for example, target-dependant compile flags, as well as files that must be compiled with different compilers.
+
+Instead, you can create a <tt>flymake.mk</tt> file (defining the <tt>check-syntax</tt> rule) somewhere on your project, and include it on every <tt>Makefile.am</tt> that you want to add syntax check support to:
+
+  include $(top_srcdir)/flymake.mk
+
+Then, the <tt>flymake.mk</tt> file, would look something like:
+
+  get_cs_flags = $(foreach target,$(subst .,_,$(subst -,_,$($(2)))),$($(target)_$(1)FLAGS))
+  get_cs_all_flags = $(foreach type,$(2),$(call get_cs_flags,$(1),$(type)))
+  get_cs_compile = $(if $(subst C,,$(1)),$($(1)COMPILE),$(COMPILE))
+  get_cs_cmdline = $(call get_cs_compile,$(1)) $(call get_cs_all_flags,$(1),check_PROGRAMS bin_PROGRAMS lib_LTLIBRARIES) -fsyntax-only
+
+  check-syntax:
+  	s=$(suffix $(CHK_SOURCES));\
+  	if   [ "$$s" = ".c"   ]; then $(call get_cs_cmdline,C)	 $(CHK_SOURCES);\
+  	elif [ "$$s" = ".cpp" ]; then $(call get_cs_cmdline,CXX) $(CHK_SOURCES);\
+  	else exit 1; fi
+
+  .PHONY: check-syntax
+
+* ''Note'': I've only added support for checking the syntax on C and C++ files, but others should be similarly handled.
+* ''Warning'': This will only work for files that are compiled using the automake-provided compilation rules.
+
+-- Lluís
+
 === SCons/bjam ===
 
 [new]

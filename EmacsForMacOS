@@ -39,7 +39,7 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 The newest available version is 20.6.  It does not support asynchronous processes or network connections, so Gnus and ViewMail do not work.  A hack using AppleEvents has been used to make RMAIL interface with Eudora if it exists on the Macintosh.
 
-The most recent available version of XEmacs is Pitts Jarvis's [http://homepage.mac.com/pjarvis/xemacs.html XEmacs 19.14][http://www.profischnell.com Deutsch Englisch Übersetzung][http://www.profi-fachuebersetzung.de Übersetzung Deutsch Französisch].
+The most recent available version of XEmacs is Pitts Jarvis's [http://homepage.mac.com/pjarvis/xemacs.html XEmacs 19.14].
 
 Thanks to SebastienKirche, a precompiled development release of [http://sebastien.kirche.free.fr/emacs_stuff/en.html GNU Emacs 21.3.50] is available for Mac OS 9. The cut/copy/paste buffer is not shared with the OS, so no pasting from other applications.  Drag and drop is not supported on the command line, but draging a text file to the application icon is.  Also, it works when QuickTime 5.0.5 is installed, but not with 4.1.2   If you're missing QT5 you should be able to get it [http://docs.info.apple.com/article.html?artnum=120132 here].
 
