@@ -145,6 +145,19 @@ The procedure described on [http://www.stratospark.com/blog/2010/fullscreen_emac
 
 [ftp://ftp.math.s.chiba-u.ac.jp/emacs/ Emacs 23 Mac Port] contains another patch; it's unclear whether it's related to the above.
 
+[https://github.com/mxcl/homebrew homebrew] builds emacs24 with the fullscreen patch with no extra work:
+
+{{{
+brew install emacs --cocoa --HEAD --use-git-head
+}}}
+
+Then use the function
+
+{{{
+ns-toggle-fullscreen
+}}}
+
+Using a dark background, I get a small square of pale color in the bottom right hand corner. Anyone know why and how to get rid of it?
 ==== Resizing the window ====
 
 If your Emacs does not support fullscreen, it can be faked with the maxframe library, which resizes the window to approximately cover the entire screen.  Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el] for Cocoa/Nextstep Emacs. You can see the original version from [http://files.emacsblog.org/ryan/elisp/maxframe.el maxframe.el], which works for Windows, X11, and Carbon.

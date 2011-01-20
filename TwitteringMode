@@ -183,6 +183,9 @@ Add the hook below to enable spell checking before tweets
 [[halloleo]]: i'm trying this mode and it works pretty good, but i'm not sure how to completely /finish/ using twitter. does 'q' (`twittering-suspend') do this? i don't think so: it only switches to another buffer, therefore the twitter timer still retrieves tweets...
 
 [new]
+[[citizen428]]: @halloleo Have you tried `M-x twittering-stop'?
+
+[new]
 RichardRiley : What packages are needed for icon support? Also, wouldnt
 
 

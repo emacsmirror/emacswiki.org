@@ -1,6 +1,6 @@
 ;; fastnav.el -- Fast navigation and editing routines.
 ;;
-;; Version 1.04
+;; Version 1.05
 ;;
 ;; Copyright (C) 2008, 2009, 2010  Zsolt Terek <zsolt@google.com>
 ;;
@@ -47,6 +47,7 @@
 ;;               Fix for electric characters in certain modes.
 ;;   2010-02-11: Yet another minor fix for switching to next/previous char.
 ;;   2010-05-28: Added sprint commands.
+;;   2011-01-19: Fixed removal of other overlays (like bookmarks for example).
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -124,12 +125,13 @@ search of occurences."
 	    (forwarders `(,forwarder forward-char next-line))
 	    (backwarders `(,backwarder backward-char previous-line)))
 	(while (not result)
-	  (remove-overlays)
+	  (remove-overlays nil nil 'fastnav t)
 	  (mapcar (lambda (p)
 		    (if p
 			(let ((ov (make-overlay p (1+ p))))
 			  (overlay-put ov 'priority 100)
 			  (overlay-put ov 'face lazy-highlight-face)
+			  (overlay-put ov 'fastnav t)
 			  ov)))
 		  (get-nth-chars arg))
 	  (let* ((event (read-event))
@@ -158,7 +160,7 @@ search of occurences."
 			      (+ arg (* 2 delta))
 			    (+ arg delta)))))))
 	result)
-    (remove-overlays)))
+    (remove-overlays nil nil 'fastnav t)))
 
 ;; For debugging.
 ;;(key-binding (vector (read-event)))

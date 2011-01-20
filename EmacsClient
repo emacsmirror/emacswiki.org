@@ -832,7 +832,7 @@ sudo mv /usr/bin/emacsclient /usr/bin/emacsclient.old # backup the original emac
 sudo ln /Applications/Emacs.app/Contents/MacOS/bin/emacsclient /usr/bin/emacsclient # symlink emacsclient from Emacs.app
 </pre>
 
-Rather than moving a file installed by the OS, I have symlinked /Applications/Emacs.app/Contents/MacOS/bin/emacsclient to /usr/local/bin/emacsclient. Of course you have to make sure that /usr/local/bin comes before /usr/bin in your $PATH. - citizen428
+Rather than moving a file installed by the OS, I have symlinked /Applications/Emacs.app/Contents/MacOS/bin/emacsclient to /usr/local/bin/emacsclient. Of course you have to make sure that /usr/local/bin comes before /usr/bin in your $PATH. - [[citizen428]]
 
 Setting emacs to work over tcp will create the <code>~/.emacs.d/server/server</code> socket file, you can then use emacsclient this way...
 

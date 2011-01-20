@@ -18,7 +18,7 @@ directories as opposed to regular files.
 [:AddSubDirectories]
 == Adding sub-directories ==
 
-Adding a directory to the ##load-path## does not add it's
+Adding a directory to the ##load-path## does not add its
 sub-directories also.  To add the sub-directories of the current
 directory to the ##load-path## do this:
 
@@ -61,12 +61,12 @@ steps from the previous sections.
       (normal-top-level-add-subdirs-to-load-path))
 
 Since various packages store information in ##~/.emacs.d/##, it is
-unwise to add all of it's sub-directories to ##load-path##.  Here we
+unwise to add all of its sub-directories to ##load-path##.  Here we
 only added the sub-directory ##site-lisp## to avoid loading files that
 aren't libraries.
 
 If you are using Emacs 23 you can use ##user-emacs-directory## to
-construct a path to one of it's sub-directories.
+construct a path to one of its sub-directories.
 
     (concat user-emacs-directory
             (convert-standard-filename "site-lisp/"))
@@ -202,7 +202,7 @@ I quickly looked at the code and couldn't make any sense of it.  Why
 is it needed? Isn't it only required during startup (and even then
 why)?  How is better than manually editing ##load-path##?  If it has
 benefits is it worth confusing people by suggesting to use an
-undocumented function?  If it is then it's use should be explained in
+undocumented function?  If it is then its use should be explained in
 ##Adding a directory## (without removing ##add-to-list##) but I
 frankly have some doubts.  -- JonasBernoulli
 

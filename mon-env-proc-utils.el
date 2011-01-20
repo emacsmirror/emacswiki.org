@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-env-proc-utils.el
@@ -24,10 +24,9 @@
 ;; FUNCTIONS:►►►
 ;; `mon-get-env-vars-symbols', `mon-get-env-vars-emacs',
 ;; `mon-get-env-vars-strings', `mon-get-emacsd-paths', `mon-get-proc-w-name',
-;; `mon-get-sys-proc-list', `mon-insert-sys-proc-list',
-;; `mon-get-process', `mon-get-system-specs', 
-;; `mon-escape-string-for-cmd',
-;; `mon-cmd', `mon-terminal', `mon-firefox', `mon-conkeror',
+;; `mon-get-sys-proc-list', `mon-insert-sys-proc-list', `mon-get-process',
+;; `mon-get-system-specs', `mon-escape-string-for-cmd', `mon-cmd',
+;; `mon-terminal', `mon-firefox', `mon-conkeror',
 ;;
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -42,8 +41,10 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
+;; `*mon-env-proc-utils-xrefs*',
 ;;
 ;; GROUPS:
+;; `mon-env-proc-utils',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
@@ -116,7 +117,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -131,6 +132,45 @@
 (declare-function w32-shell-execute "w32fns.c")
 
 ;;; ==============================
+;;; :CHANGESET 2405
+;;; :CREATED <Timestamp: #{2011-01-19T15:54:00-05:00Z}#{11033} - by MON KEY>
+(defgroup mon-env-proc-utils nil
+  "Customization group for variables and functions of :FILE mon-env-proc-utils.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-env-proc-utils.el')" 
+          "http://www.emacswiki.org/emacs/mon-env-proc-utils.el")
+  :link '(emacs-library-link 
+          :tag "\n:FILE mon-env-proc-utils.el"
+          "mon-env-proc-utils.el")
+  :group 'mon-base)
+
+;;; ==============================
+;;; :CHANGESET 2405
+;;; :CREATED <Timestamp: #{2011-01-19T15:54:06-05:00Z}#{11033} - by MON KEY>
+(defcustom *mon-env-proc-utils-xrefs* 
+  '(mon-get-system-specs mon-get-env-vars-symbols mon-get-env-vars-strings
+    mon-get-env-vars-emacs mon-get-sys-proc-list mon-insert-sys-proc-list
+    mon-get-proc-w-name mon-get-process mon-escape-string-for-cmd mon-terminal
+    mon-cmd mon-firefox mon-conkeror
+    *mon-env-proc-utils-xrefs*)
+  "Xrefing list of `mon-*-<TYP>'symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-env-proc-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-dir-utils-xrefs*', `*mon-keybindings-xrefs*',
+`*mon-testme-utils-xrefs*', `*mon-button-utils-xrefs*', `*mon-bzr-utils-xrefs*'
+`*mon-buffer-utils-xrefs*', `*mon-error-utils-xrefs*', `*mon-line-utils-xrefs*',
+`*mon-macs-xrefs*', `*mon-plist-utils-xrefs*', `*mon-post-load-hooks-xrefs*', 
+`*mon-seq-utils-xrefs*', `*mon-string-utils-xrefs*', `*mon-type-utils-xrefs*',
+`*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*', `*mon-slime-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*google-define-redux-xrefs*', `*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-env-proc-utils
+  :group 'mon-xrefs)
+
+;;; ==============================
 ;;; :PREFIX "mgss-"
 ;;; :CREATED <Timestamp: #{2009-12-09T11:54:07-05:00Z}#{09503} - by MON>
 (defun mon-get-system-specs (&optional insrtp intrp)
@@ -138,9 +178,15 @@
 When called-interactively or INSRTP is non-nil insert at point.\n
 Does not move point.\n
 :EXAMPLE\n\n\(mon-get-system-specs\)\n
+\(mon-with-inhibit-buffer-read-only
+  \(save-excursion 
+   \(newline\) 
+    \(mon-get-system-specs t\)\)\)\n
 :SEE-ALSO `system-name', `mon-get-env-vars-strings', `mon-get-env-vars-symbols',
 `mon-get-env-vars-emacs', `mon-get-proc-w-name', `mon-get-sys-proc-list',
-`mon-insert-sys-proc-list', `read-envvar-name'.\n►►►"
+`mon-insert-sys-proc-list', `setenv', `setenv-internal', `getenv',
+`read-envvar-name', `substitute-in-file-name', `substitute-env-vars',
+`process-environment', `initial-environment'.\n►►►"
   (interactive "i\np")
   (if (executable-find "uname")
       (let ((mgss-unm (shell-command-to-string "uname -a")))
@@ -151,6 +197,8 @@ Does not move point.\n
               (princ mgss-unm (current-buffer)))
           mgss-unm))
     (when (eq system-type 'windows-nt)
+      ;; (mon-message :w-spec '(":FUNCTION `mon-get-system-specs' "
+      ;;                          "-- the command `uname -a' is not available"))
       (message "The command `uname -a' is not available"))))
 ;;
 ;;; :TEST-ME (mon-get-system-specs)
@@ -158,22 +206,36 @@ Does not move point.\n
 
 ;;; ==============================
 ;;; :PREFIX "mgevsym-"
+;;; :CHANGESET 2349 <Timestamp: #{2010-12-04T14:07:56-05:00Z}#{10486} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-01-18T20:20:35-05:00Z}#{10032} - by MON>
 (defun mon-get-env-vars-symbols ()
   "Return a list of symbols for current-process' environmental-variables.\n
 like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
-:EXAMPLE\n\n(mon-get-env-vars-symbols)\n
-:SEE-ALSO `mon-get-env-vars-strings', `mon-get-system-specs', 
-`mon-help-emacs-introspect', `process-environment', `initial-environment',
-`getenv', `setenv', `read-envvar-name'.\n►►►"
+:EXAMPLE\n\n\(mon-get-env-vars-symbols\)\n
+:SEE-ALSO `mon-get-env-vars-strings', `mon-get-system-specs',
+`mon-help-emacs-introspect', `setenv', `setenv-internal', `getenv',
+`read-envvar-name', `substitute-in-file-name', `substitute-env-vars',
+`process-environment', `initial-environment'.\n►►►"
   (interactive) 
-  (let ((mgevsym-proc-env process-environment)
-        mgevsym-gthr)
-    (dolist (mgevsym-D-1 mgevsym-proc-env mgevsym-gthr)
-      (when (string-match "\\(.*\\)=.*" mgevsym-D-1)
-        (push 
-         (car (read-from-string mgevsym-D-1 (match-beginning 0) (match-end 1)))
-         mgevsym-gthr)))))
+  ;; :WAS 
+  ;; (let ((mgevsym-proc-env process-environment)
+  ;;       mgevsym-gthr)
+  ;;   (dolist (mgevsym-D-1 mgevsym-proc-env mgevsym-gthr)
+  ;;     (when (string-match "\\(.*\\)=.*" mgevsym-D-1)
+  ;;       (push (car (read-from-string mgevsym-D-1 (match-beginning 0) (match-end 1))) mgevsym-gthr)))))
+  (let* ((mgevsym-proc-env process-environment)
+         (mgevsym-obarray (make-vector (length mgevsym-proc-env) nil)))
+    (mapc #'(lambda (mgevsym-L-1)
+              (when (string-match "\\(.*\\)=.*" mgevsym-L-1)
+                (intern (substring mgevsym-L-1 (match-beginning 0) (match-end 1)) mgevsym-obarray)))
+          mgevsym-proc-env)
+    ;; Reuse local var mgevsym-proc-env to store symbols accumulated to mgevsym-obarray
+    (setq mgevsym-proc-env)
+    (mapatoms #'(lambda (mgevsym-L-2)
+                  (unless (null mgevsym-L-2)
+                    (push mgevsym-L-2 mgevsym-proc-env)))
+              mgevsym-obarray)
+    (setq mgevsym-proc-env (nreverse mgevsym-proc-env))))
 
 ;;; ==============================
 ;;; :PREFIX "mgevs-"
@@ -184,6 +246,11 @@ like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
 When AS-STRINGS is non-nil or called with a prefix-arg return as strings.
 When insrtp or called-interactively insert returned vars at point.\n
 :EXAMPLE\(mon-get-env-vars-strings\)\n
+\(mon-get-env-vars-strings t\)\n
+\(mon-with-inhibit-buffer-read-only
+  \(save-excursion 
+   \(newline\) 
+    \(mon-get-env-vars-strings nil t\)\)\)\n
 :SEE-ALSO `mon-get-env-vars-symbols', `mon-get-env-vars-emacs',
 `mon-get-system-specs', `mon-help-emacs-introspect', `process-environment',
 `initial-environment', `setenv', `getenv', `read-envvar-name'.\n►►►"
@@ -242,24 +309,24 @@ When called-interactively pretty-print return value in buffer named
 `process-environment', `initial-environment', `getenv', `setenv'.\n►►►"
   (interactive "i\np")
   (let ((mgeve-vars (mon-intersection 
-                         (mon-get-env-vars-symbols)
-                         (append 
-                          ;; MON-LOCAL-VARS                          
-                          (when (bound-and-true-p *mon-misc-path-alist*)
-                            (cadr (assq 'the-emacs-vars *mon-misc-path-alist*)))
-                          (do* ((i '(;; :LENNART-EMACS-W32-VARS
-                                     EMACSCLIENT_STARTING_SERVER EMACS_SERVER_FILE
-                                     ;; :GNUS-MAIL
-                                     ;; MH NNTPSERVER REPLYTO SAVEDIR SMTPSERVER  MAIL
-                                     ;; ORGANIZATION VERSION_CONTROL HISTFILE EMAIL EMACS_UNIBYTE CDPATH
-                                     ;; :STANDARD-EMACS-VARS 
-                                     emacs_dir INFOPATH ESHELL  INCPATH
-                                     EMACSLOADPATH EMACSDATA EMACSPATH EMACSDOC SHELL TERM)   i)
-                                (j (pop i) (pop i))
-                                (k))
-                               ((null j) (nreverse k))
-                            (when (getenv (format "%s" j))(push j k))))
-                         nil t))
+                     (mon-get-env-vars-symbols)
+                     (append 
+                      ;; MON-LOCAL-VARS                          
+                      (when (bound-and-true-p *mon-misc-path-alist*)
+                        (cadr (assq 'the-emacs-vars *mon-misc-path-alist*)))
+                      (do* ((i '( ;; :LENNART-EMACS-W32-VARS
+                                 EMACSCLIENT_STARTING_SERVER EMACS_SERVER_FILE
+                                 ;; :GNUS-MAIL
+                                 ;; MH NNTPSERVER REPLYTO SAVEDIR SMTPSERVER  MAIL
+                                 ;; ORGANIZATION VERSION_CONTROL HISTFILE EMAIL EMACS_UNIBYTE CDPATH
+                                 ;; :STANDARD-EMACS-VARS 
+                                 EMACS_DIR INFOPATH ESHELL INCPATH
+                                 EMACSLOADPATH EMACSDATA EMACSPATH EMACSDOC SHELL TERM)   i)
+                            (j (pop i) (pop i))
+                            (k))
+                          ((null j) (nreverse k))
+                        (when (getenv (format "%s" j))(push j k))))
+                     nil t))
         gthr-env-vars)
     (dolist (mgeve-D-1 mgeve-vars (setq gthr-env-vars (nreverse gthr-env-vars)))
       (let ((mgeve-D-lcl-is-var (car (memq mgeve-D-1 mgeve-vars)))
@@ -276,13 +343,15 @@ When called-interactively pretty-print return value in buffer named
         (push (car mgeve-D-lcl-var-prs) gthr-env-vars)
         (push (cadr mgeve-D-lcl-var-prs) gthr-env-vars)))
     insrtp ;; Not currently evaluating INSRTP.
-    (when intrp 
-      (let ((mgeve-get-bfr (get-buffer-create "*MON-EMACS-ENV-VARS*")))
-        (with-current-buffer (buffer-name mgeve-get-bfr)
-          (erase-buffer)
-          (pp-display-expression gthr-env-vars (buffer-name mgeve-get-bfr))
-          (mon-g2be -1) 
-          (insert ";; :MON-EMACS-ENV-VARS output from:\n;; (mon-get-env-vars-emacs nil t)\n;;\n"))))))
+    ;;(when intrp 
+    (or (and intrp
+             (let ((mgeve-get-bfr (get-buffer-create "*MON-EMACS-ENV-VARS*")))
+               (with-current-buffer (buffer-name mgeve-get-bfr)
+                 (erase-buffer)
+                 (pp-display-expression gthr-env-vars (buffer-name mgeve-get-bfr))
+                 (mon-g2be -1) 
+                 (insert ";; :MON-EMACS-ENV-VARS output from:\n;; (mon-get-env-vars-emacs nil t)\n;;\n"))))
+        gthr-env-vars)))
 ;;
 ;;; :TEST-ME (mon-get-env-vars-emacs)
 ;;; :TEST-ME (mapcar 'car (mon-get-env-vars-emacs))
@@ -304,10 +373,12 @@ When called-interactively return results in buffer \"*MON-GET-SYS-PROCESSES*\".\
 `mon-help-emacs-introspect', `emacs-pid'.\n►►►"
   (interactive "p")
   (let (mgspl)
-    (dolist (sys-proc (list-system-processes) (setq mgspl (nreverse mgspl)))
+    (dolist (sys-proc (list-system-processes) 
+                      (setq mgspl (nreverse mgspl)))
       (push (process-attributes sys-proc) mgspl))
-    (when intrp 
-      (pp-display-expression mgspl "*MON-GET-SYS-PROCESSES*"))))
+    (or (and intrp 
+             (pp-display-expression mgspl "*MON-GET-SYS-PROCESSES*"))
+        mgspl)))
 ;;
 ;;; :TEST-ME (mon-get-sys-proc-list)
 ;;; :TEST-ME (mon-get-sys-proc-list t)
@@ -333,24 +404,41 @@ Does not move point.\n
           (mon-get-sys-proc-list))))
 
 ;;; ==============================
+;;; :PREFIX "mgpwn-"
 ;;; :NOTE MON recently found the :FILE proced.el 
 ;;;       Some of this might be accomplished with that excellent package.
 ;;; :CREATED <Timestamp: #{2009-10-16T16:34:48-04:00Z}#{09425} - by MON KEY>
-(defun mon-get-proc-w-name (comm)
-  "Return list of `process-attributes' lists for Command name COMM.
-COMM (a string) is an executable name. 
-On w32 it is not required give the .exe suffix.\n
-:EXAMPLE\n\(mon-get-proc-w-name \"emacs\"\)\n
+(defun mon-get-proc-w-name (proc-w-name)
+  "Return list of `process-attributes' for all PROC-W-NAME.\n
+PROC-W-NAME \(a string\) names a process by command/executable name.\n
+When multiple commands of the same name exists return value is sorted youngest
+process first.\n
+:EXAMPLE\n\n\(mon-get-proc-w-name \"emacs\"\)\n
+:NOTE On w32 it is not required give the .exe suffix.\n
 :SEE-ALSO `mon-get-process', `mon-get-sys-proc-list', `mon-get-sys-proc-list',
-`mon-help-process-functions'.\n►►►"
-  (let (fnd-proc gthr)
-    (mapc #'(lambda (x)
-              (let ((t-aso (assoc 'comm x)))
-                (if (string-match comm (cdr t-aso)) ;"emacs.exe"
-                    (setq fnd-proc (cons x fnd-proc)))))
+`mon-help-process-functions', `list-system-processes'.\n►►►"
+  (eval-when-compile (require 'time-date))
+  (let (mgpwn-fnd-proc)
+    (mapc #'(lambda (mgpwn-L-1)
+              (let ((mgpwn-L-1-chk-com-nm (assq 'comm mgpwn-L-1)))
+                (and mgpwn-L-1-chk-com-nm 
+                     (string-match-p proc-w-name (cdr mgpwn-L-1-chk-com-nm)) ;"emacs.exe"
+                     (push mgpwn-L-1 mgpwn-fnd-proc))))
           (mon-get-sys-proc-list))
-    fnd-proc))
+    (and mgpwn-fnd-proc 
+         (or (and (> (length mgpwn-fnd-proc) 1)
+                  (sort mgpwn-fnd-proc
+                        #'(lambda (mgpwn-L-1-t1 mgpwn-L-1-t2)
+                            ;; Make sure the process has a start time. 
+                            (setq mgpwn-L-1-t1 (assq 'start mgpwn-L-1-t1))
+                            (setq mgpwn-L-1-t2 (assq 'start mgpwn-L-1-t2))
+                            (and mgpwn-L-1-t1 mgpwn-L-1-t2 
+                                 (time-less-p  
+                                               (cdr mgpwn-L-1-t2)
+                                               (cdr mgpwn-L-1-t1))))))
+             mgpwn-fnd-proc))))
 ;;
+;;; :TEST-ME (mon-get-proc-w-name "mrxvt")
 ;;; :TEST-ME (mon-get-proc-w-name "emacs")
 ;;; :TEST-ME (mon-get-proc-w-name "svchost")
 ;;; :TEST-ME (mon-get-proc-w-name "bubba")
@@ -374,30 +462,32 @@ this function can match multiple processes with identical invocation commands.\n
 :SEE-ALSO `mon-insert-sys-proc-list', `mon-get-sys-proc-list',
 `mon-help-process-functions'.\n►►►"
   (interactive)
-  (let* ((pmatch)
-         (prc-l (nreverse (list-system-processes)))
-         (map-prc #'(lambda (u) 
-                      (flet ((cl--fi (cl-pred cl-list &rest cl-keys) ;; `find-if'
-                               (apply 'find nil cl-list :if cl-pred cl-keys)))
-                        (let ((got-it 
-                               (cl--fi  #'(lambda (z) 
-                                            (and (eql (car z) 'comm)
-                                                 (equal (cdr z) 
-                                                        (if proc-comm 
-                                                            proc-comm 
-                                                            (invocation-name)))))
-                                        (process-attributes u))))
-                          (when got-it (if (not prc-l)
-                                           (push `(,u ,got-it) prc-l)
-                                           (push u pmatch))))))))
-    (mapc map-prc prc-l)
-    (if pmatch
+  (let* (mgp-mtchs
+         (mpg-prc-lst (list-system-processes)) ;;(nreverse (list-system-processes)))
+         (mgp-map-procs 
+          #'(lambda (mgp-L-1) 
+              (flet ((cl--fi (cl-pred cl-list &rest cl-keys) ;; `find-if'
+                             (apply 'find nil cl-list :if cl-pred cl-keys)))
+                (let ((mgp-L1-lcl-mtch 
+                       (cl--fi  #'(lambda (mgp-L1-flcl) 
+                                    (and (eql (car mgp-L1-flcl) 'comm)
+                                         (equal (cdr mgp-L1-flcl) 
+                                                (if proc-comm 
+                                                    proc-comm 
+                                                  (invocation-name)))))
+                                (process-attributes mgp-L-1))))
+                  (when mgp-L1-lcl-mtch 
+                    (if (not mpg-prc-lst)
+                        (push `(,mgp-L-1 ,mgp-L1-lcl-mtch) mpg-prc-lst)
+                      (push mgp-L-1 mgp-mtchs))))))))
+    (mapc mgp-map-procs mpg-prc-lst)
+    (if mgp-mtchs
         (progn 
-          (setq prc-l nil)
-          (mapc map-prc pmatch)
-          ;; :WAS (if prc-l prc-l))
-          (or prc-l))
-        pmatch)))
+          (setq mpg-prc-lst nil)
+          (mapc mgp-map-procs mgp-mtchs)
+          ;; :WAS (if mpg-prc-lst mpg-prc-lst))
+          (or mpg-prc-lst))
+      mgp-mtchs)))
 ;;
 ;;; :TEST-ME (if IS-W32-P 
 ;;;              (mon-get-process (concat (invocation-name) ".exe"))
@@ -471,8 +561,7 @@ in a cmd console.\n
 `browse-url-generic'.\n►►►"
   (interactive "i\np")
   (when intrp
-    (setq url (read-string (concat ":FUNCTION `mon-firefox' "
-                                   "-- which URL: "))))
+    (setq url (read-string ":FUNCTION `mon-firefox' -- which URL: ")))
   (browse-url-firefox url))
 
 ;;; ==============================
@@ -504,11 +593,13 @@ conkeror-rc file:
        ((and (intern-soft "IS-NOT-A-MON-SYSTEM" obarray)  ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-NOT-A-MON-SYSTEM))
         (browse-url-generic url))
-       (t (error (concat ":FUNCTION `mon-conkeror' "
-                         "-- can not grok your system and/or "
-                         "conkeror not set as `browse-url-generic-program'"))))
-    (error (concat ":FUNCTION `mon-conkeror' "
-                   "-- conkeror not set `browse-url-generic-program'"))))
+       (t (mon-format :w-fun   #'error
+                      :w-spec '(":FUNCTION `mon-conkeror' "
+                                "-- can not grok your system and/or "
+                                "conkeror not set as `browse-url-generic-program'"))))
+    (mon-format :w-fun   #'error
+                :w-spec '(":FUNCTION `mon-conkeror' "
+                          "-- conkeror not set `browse-url-generic-program'"))))
 
 ;;; ==============================
 (provide 'mon-env-proc-utils)

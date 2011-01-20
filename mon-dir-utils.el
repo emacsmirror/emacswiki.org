@@ -283,27 +283,27 @@
 ;;; :CHANGESET 2394
 ;;; :CREATED <Timestamp: #{2011-01-15T18:07:44-05:00Z}#{11026} - by MON KEY>
 (defcustom *mon-dir-utils-xrefs* 
-  '(%mon-dir-get-subdirs-filter-full mon-dir-get-subdirs-filter-no-full
-    %mon-add-subdirs-to-list mon-async-du-dir mon-buffer-written-p mon-build-path
-    %mon-copy-file-dired-as-list mon-copy-file-dired-as-string
-    %mon-copy-file-multiple mon-copy-file-path mon-copy-files-in-sub-dirs
-    %mon-dir-build-list mon-dir-common-paths mon-dir-get-subdirs
-    %mon-dir-make-xargs-arg-file mon-dired-buffers-complete
-    %mon-dired-find-file-other-frame mon-dired-insert-dirs-recursive
-    %mon-dired-other-window mon-dired-srt-alph mon-dired-srt-chrn mon-dired-srt-type
-    %mon-dired-srt-type-alph mon-dired-srt-type-chrn mon-dired-uninsert-subdir
-    %mon-dired-uninsert-subdir-all mon-dired-unmark-elc
-    %mon-dired-up-directory-this-buffer mon-file-dir-attributes->plist
-    %mon-file-ensure-extension-is-el mon-file-get-load-history-if
-    %mon-file-reduce-name mon-file-truename-p
-    %mon-find-buffer-visiting-other-live-frame mon-find-file
-    %mon-get-buffer-parent-dir mon-get-buffers-directories mon-get-dir-name-absolute
-    %mon-get-dir-size mon-get-dir-subdir-default mon-get-new-buffer-w-stamp
-    %mon-get-proc-buffers-directories mon-get-relative-w-absolute mon-insert-path
-    %mon-insert-subdirs-in-buffer mon-path mon-proc-buffers-directories
-    %mon-rename-file-serial mon-string-split-buffer-name
-    %mon-string-split-buffer-parent-dir mon-string-split-buffer-parent-dir-quick
-    %mon-string-split-dir-recurse mon-toggle-dired-dwim-target
+  '(%mon-dir-get-subdirs-filter-full %mon-dir-get-subdirs-filter-no-full
+    mon-add-subdirs-to-list mon-async-du-dir mon-buffer-written-p mon-build-path
+    mon-copy-file-dired-as-list mon-copy-file-dired-as-string
+    mon-copy-file-multiple mon-copy-file-path mon-copy-files-in-sub-dirs
+    mon-dir-build-list mon-dir-common-paths mon-dir-get-subdirs
+    mon-dir-make-xargs-arg-file mon-dired-buffers-complete
+    mon-dired-find-file-other-frame mon-dired-insert-dirs-recursive
+    mon-dired-other-window mon-dired-srt-alph mon-dired-srt-chrn mon-dired-srt-type
+    mon-dired-srt-type-alph mon-dired-srt-type-chrn mon-dired-uninsert-subdir
+    mon-dired-uninsert-subdir-all mon-dired-unmark-elc
+    mon-dired-up-directory-this-buffer mon-file-dir-attributes->plist
+    mon-file-ensure-extension-is-el mon-file-get-load-history-if
+    mon-file-reduce-name mon-file-truename-p
+    mon-find-buffer-visiting-other-live-frame mon-find-file
+    mon-get-buffer-parent-dir mon-get-buffers-directories mon-get-dir-name-absolute
+    mon-get-dir-size mon-get-dir-subdir-default mon-get-new-buffer-w-stamp
+    mon-get-proc-buffers-directories mon-get-relative-w-absolute mon-insert-path
+    mon-insert-subdirs-in-buffer mon-path mon-proc-buffers-directories
+    mon-rename-file-serial mon-string-split-buffer-name
+    mon-string-split-buffer-parent-dir mon-string-split-buffer-parent-dir-quick
+    mon-string-split-dir-recurse mon-toggle-dired-dwim-target
     ;; :VARIABLES
     *regexp-add-subdirs-to-list-filter-ignorables*
     *mon-add-subdirs-to-list-ignorables*
@@ -1237,8 +1237,8 @@ Invoke du as an asynchronous shell command.\n
         (async-shell-command 
          (format "du %s | sort -nr" madd-dir-du)
          (get-buffer-create (format "*DU-%s" madd-dir-du))))
-    (mon-message :w-spec '(":FUNCTION `mon-async-du-dir' "
-                           "-- the du command is not available on w32"))))
+    (mon-message :msg-spec '(":FUNCTION `mon-async-du-dir' "
+                             "-- the du command is not available on w32"))))
 ;;
 ;;; :TEST-ME (mon-async-du-dir data-directory)
 
@@ -1693,8 +1693,8 @@ Signal an error if any of the args aren't in the path.\n
          (mbwp-written-p (buffer-file-name))
 	 (mbwp-has-or-not (if mbwp-written-p "has or can be"  "_hasn't or can't_ be")))
     (when intrp
-      (mon-message :w-spec '("buffer `%s' %s written to file")
-                   :w-args  `(,(buffer-name) ,mbwp-has-or-not)))
+      (mon-message :msg-spec '("buffer `%s' %s written to file")
+                   :msg-args  `(,(buffer-name) ,mbwp-has-or-not)))
     (when insrtp 
       (insert (format "Buffer `%s' %s written to file" 
                       (buffer-name) mbwp-has-or-not)))
@@ -1950,9 +1950,9 @@ The last elt or return value is least deepest directory.\n
       (setq mdcp-pth-A (cdr mdcp-pth-A)))
     ;; Why are we messaging here?
     (when (not mdcp-got)
-      (mon-message :w-spec '(":FUNCTION `mon-dir-common-paths' "
+      (mon-message :msg-spec '(":FUNCTION `mon-dir-common-paths' "
                              "-- no common paths for:\n%s and\n %s") 
-                   :w-args `(,path-is ,path-in)))
+                   :msg-args `(,path-is ,path-in)))
     mdcp-got))
 ;;
 ;;; :TEST-ME (mon-dir-common-paths *mon-ebay-images-bmp-path* *mon-ebay-images-path*)
@@ -2300,9 +2300,9 @@ When current-buffer is in dired-mode the kill is as if by
             (kill-new (buffer-file-name))
             (when (or intrp (not insrtp))
               (progn
-                (mon-message :w-spec '(":FUNCTION `mon-copy-file-path' " 
+                (mon-message :msg-spec '(":FUNCTION `mon-copy-file-path' " 
                                        "-- put current path on kill-ring, path: %s")
-                             :w-args scfp)
+                             :msg-args scfp)
                 (sit-for 1))))
         (progn
           (setq scfp (buffer-name))
@@ -2310,9 +2310,9 @@ When current-buffer is in dired-mode the kill is as if by
                      "#P/not-written/not-readable/not-exisistent/buffer-name-is/%s" 
                      (buffer-name)))
           (cond ((or intrp (not insrtp))
-                 (mon-message :w-spec '(":FUNCTION `mon-copy-file-path' "
+                 (mon-message :msg-spec '(":FUNCTION `mon-copy-file-path' "
                                         "-- path non-existent buffer-name is: %s")
-                              :w-args (buffer-name))
+                              :msg-args (buffer-name))
                  (sit-for 1))
                 ((and insrtp (not intrp))
                  (setq scfp 
