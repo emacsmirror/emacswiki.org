@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 16 14:44:12 2011 (-0800)
+;; Last-Updated: Thu Jan 20 16:22:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25739
+;;     Update #: 25773
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1578,19 +1578,48 @@
 ;;  If you used `M--3 M-.', then you would immediately insert
 ;;  `differently if you'.
 ;;
-;;  In the case of `alternatives', there are four possibilities, by
-;;  default.  The first function in the list is `ffap-guesser'.  The
-;;  second function grabs text that has the syntax of an Emacs-Lisp
-;;  symbol name, which in practice can also be a file name or a URL -
-;;  it can include characters such as -, /, +, ., :, @, and _.  The
-;;  third function grabs a word, which includes letters, ' and -.  The
-;;  fourth function grabs a URL, adding prefix "http://" if needed.
-;;  These are the functions used by default, but you can add to them
-;;  or replace them.
+;;  In the case of `alternatives', the default possibilities depend on
+;;  whether or not you also use my library `thingatpt+.el'.  If not,
+;;  there are four alternatives:
 ;;
-;;  If you use my library `thingatpt+.el', then the cursor need not be
-;;  exactly on the text for the second and third alternatives - the
-;;  symbol or word *nearest* the cursor is grabbed.
+;;  * The first alternative inserts text that has the syntax of an
+;;    Emacs-Lisp symbol name.  In practice, this can also be a file
+;;    name or a URL - it can include characters such as -, /, +, ., :,
+;;    @, and _.
+;;
+;;  * The second alternative inserts a word, which includes letters,
+;;    ', and -.
+;;
+;;  * The third alternative inserts whatever `ffap-guesser' returns: a
+;;    file name or URL.
+;;
+;;  * The fourth alternative inserts a URL, adding prefix "http://" if
+;;    needed.
+;;
+;;  If you also use my library `thingatpt+.el', then:
+;;
+;;  * The first and second alternatives are like those for the case
+;;    where you do not use `thingatpt+.el', except that the cursor
+;;    need not be exactly on the text - the symbol or word *nearest*
+;;    the cursor is grabbed.
+;;
+;;  * If the region is active, then the second alternative inserts the
+;;    region text instead of just the nearest word.
+;;
+;;  * The third alternative inserts the (non-nil) list nearest point.
+;;    IOW, this grabs a sexp that is more than just an atom.
+;;
+;;  * The fourth and fifth alternatives are like the third, but they
+;;    grab wider sexps.  They first go up one and two list levels,
+;;    respectively.
+;;
+;;  * The sixth and seventh alternatives insert a file name and URL,
+;;    respectively.  They are the same as the third and fourth
+;;    alternatives that are provided if you do not use
+;;    `thingatpt+.el'.
+;;
+;;  You can of course add to or replace any of the alternatives
+;;  provided by default.
 ;;
 ;;  See Also:
 ;;
@@ -4838,7 +4867,7 @@
 ;;  * You can use `M-x' plus `RET' to execute any command.  But how
 ;;    would you insert text?
 ;;
-;;  * Similarly, for `M-:', which lets you evaluate any EmacsLisp
+;;  * Similarly, for `M-:', which lets you evaluate any Emacs-Lisp
 ;;    sexp.  You still need a way to type characters.
 ;;
 ;;  Icicles key completion lets you do almost anything in Emacs with
@@ -6051,6 +6080,9 @@
 ;;  * (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
 ;;  * (@file :file-name "icicles-doc2.el" :to "Support for Projects")
 ;;    for more about `icicle-find-file-in-tags-table'
+;;  * (@> "Completion On Demand") for information about on-demand
+;;    insertion of file names, using completion, from any minibuffer
+
  
 ;;(@* "Persistent Sets of Completion Candidates")
 ;;

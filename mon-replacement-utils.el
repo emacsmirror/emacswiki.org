@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;; Copyright © 2009-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-replacement-utils.el
@@ -56,7 +56,7 @@
 ;; `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list',
 ;; `mon-cln-mail-headers', `mon-cln-xml-escapes',
 ;; `mon-replace-unintern-w-query',
-;; `mon-make-iso-latin-1-approximation-loadtime',
+;; `mon-make-iso-latin-1-approximation-loadtime', `mon-cln-freenode-log',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -67,6 +67,11 @@
 ;;
 ;; VARIABLES:
 ;; `*iso-latin-1-approximation*', `*mon-regexp-unintern*',
+;; `*mon-replacement-utils-xrefs*',
+;;
+;; GROUPS:
+;; `mon-replacement-utils'
+;;
 ;; CONSTANTS:
 ;;
 ;; RENAMED: 
@@ -167,7 +172,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009, 2010 MON KEY 
+;; Copyright © 2009-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -180,6 +185,72 @@
 
 (require 'mon-regexp-symbols)
 
+
+
+;;; ==============================
+;;; :CHANGESET 2406
+;;; :CREATED <Timestamp: #{2011-01-20T18:59:00-05:00Z}#{11034} - by MON KEY>
+(defgroup mon-replacement-utils nil
+  "Customization group for variables and functions of :FILE mon-replacement-utils.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-replacement-utils.el')" 
+          "http://www.emacswiki.org/emacs/mon-replacement-utils.el")
+  :link '(emacs-library-link 
+          :tag "\n:FILE mon-replacement-utils.el"
+          "mon-replacement-utils.el")
+  :group 'mon-base)
+
+;;; ==============================
+;;; :CHANGESET 2406
+;;; :CREATED <Timestamp: #{2011-01-20T18:58:56-05:00Z}#{11034} - by MON KEY>
+(defcustom *mon-replacement-utils-xrefs* 
+  '(mon-is-naf-mode-p mon-is-naf-mode-and-llm-p mon-make-iso-latin-1-approximation
+    mon-make-iso-latin-1-approximation-loadtime mon-cln-iso-latin-1 deftransmogrify
+    mon-transmogrify mon-walk-regexps-in-file mon-replace-regexps-in-file-list
+    mon-replace-strings mon-replace-regexp-while mon-replace-string-while
+    mon-regexp-filter mon-string-canonical replace-string-pairs-region3
+    replace-string-pairs-region-no-props mon-replace-string-pairs-region-no-insert
+    mon-get-list-yorp mon-get-list-norp mon-replace-region-regexp-lists-nonint
+    mon-replace-region-regexp-lists mon-regexp-map-match
+    mon-regexp-map-match-in-region mon-replace-unintern-w-query mon-cln-mail-headers
+    mon-cln-csv-fields mon-cln-freenode-log mon-cln-file-name-string
+    mon-cln-html-chars mon-cln-html-tags mon-cln-xml-escapes mon-cln-xml<-parsed
+    mon-cln-tgm-xml-LF mon-cln-xml<-parsed-strip-nil mon-cln-up-colon
+    mon-downcase-hex-values mon-upcase-commented-lines mon-zippify-region
+    mon-toggle-case-query-user mon-toggle-case-regexp-region mon-toggle-case-regexp
+    mon-downcase-regexp-region mon-upcase-regexp-region mon-downcase-regexp
+    mon-upcase-regexp mon-cln-BIG-whitespace mon-cln-whitespace
+    mon-cln-trail-whitespace mon-kill-whitespace mon-cln-blank-lines
+    mon-cln-spc-tab-eol mon-cln-spc-tab-at-eol-in-region mon-cln-uniq-lines
+    mon-exchange-slash-and-backslash mon-cln-control-M mon-cln-piped-list
+    mon-delete-back-up-list naf-backup-the-list mon-cln-philsp mon-cln-ulan
+    mon-cln-imdb mon-cln-loc mon-cln-wiki mon-cln-bib mon-num-to-month
+    mon-num-to-month-whitespace mon-month-to-num mon-abr-to-month
+    mon-trans-cp1252-to-latin1 mon-ital-date-to-eng mon-defranc-dates
+    mon-defranc-places mon-cln-benezit mon-cln-benezit-fields
+    mon-replace-common-abbrevs bug-cln-gilt-group
+    ;; :VARIABLES
+    *naf-mode-buffer-local-llm* *iso-latin-1-approximation* *mon-regexp-unintern*
+    *mon-replacement-utils-xrefs*)
+  "Xrefing list of mon replacement functions, constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-replacement-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-doc-help-CL-xrefs*',
+`*mon-dir-utils-xrefs*', `*mon-keybindings-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*mon-bzr-utils-xrefs*' `*mon-buffer-utils-xrefs*',
+`*mon-env-proc-utils-xrefs*', `*mon-error-utils-xrefs*',
+`*mon-line-utils-xrefs*', `*mon-macs-xrefs*', `*mon-plist-utils-xrefs*',
+`*mon-post-load-hooks-xrefs*', `*mon-seq-utils-xrefs*',
+`*mon-string-utils-xrefs*', `*mon-type-utils-xrefs*',
+`*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*', `*mon-slime-xrefs*',
+`*mon-url-utils-xrefs*', `*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*',
+`*mon-ulan-utils-xrefs*', `*google-define-redux-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-replacement-utils
+  :group 'mon-xrefs)
 
  
 ;;; ==============================
@@ -1463,6 +1534,27 @@ Zipcode: 000000
 ;; | (mon-cln-csv-fields'
 ;; |  ("Name: " "Title: " "Institution: " "Address: " "City: " "State: " "Zipcode: ") "`" "|" t)
 ;; `----
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T12:46:10-05:00Z}#{11022} - by MON KEY>
+;;;###autoload
+(defun mon-cln-freenode-log ()
+"Clean IRC join/part/quit lines from current-buffer.\n
+Does not move point.\n
+Lines matching `*regexp-clean-IRC-logs*' which have the following general
+patterns are removed from current-buffer:\n
+NN:NN:NN --- join: <USER1> (~<USER1>@some.ip.address.abc) joined #<CHANNEL>
+NN:NN:NN --- quit: <USER2> (<ACTION-OR-REASON>)
+NN:NN:NN --- part: <USER3> left #<CHANNEL>\n
+:EXAMPLE\n\n\(mon-cln-freenode-log-TEST\)\n
+:SEE-ALSO `mon-cln-freenode-log-TEST', `mon-wget-freenode-lisp-logs',
+`*freenode-lisp-logs*', `mon-help-CL-minion'.\n►►►"
+  (interactive)
+  (save-excursion 
+    (while (search-forward-regexp *regexp-clean-irc-logs* nil t)
+      (replace-match "")
+      (backward-delete-char 1))))
 
 
 ;;; ==============================

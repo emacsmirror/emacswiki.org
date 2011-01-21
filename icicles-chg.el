@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 18 15:28:38 2011 (-0800)
+;; Last-Updated: Thu Jan 20 16:02:52 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6005
+;;     Update #: 6019
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2182,6 +2182,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/01/20 dadams
+;;     icicle-read+insert-file-name: Bind icicle-must-pass-after-match-predicate to nil.
+;;     icicle-insert-string-at-point:
+;;       A numeric prefix arg when use ALTERNATIVES means evaluate grabbed sexp and insert the value.
 ;; 2011/01/17 dadams
 ;;     icicle-remove-Completions-window: Bury buffer.
 ;;     icicle-toggle-highlight-all-current: barf if not in minibuf or Completions.
@@ -3318,6 +3322,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/01/20 dadams
+;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
+;;       Bind/restore keys C-M-S-[cf] (*-completing-read+insert-keys, *-read+insert-file-name-keys).
 ;; 2011/01/18 dadams
 ;;     Require advice.el.
 ;; 2011/01/01 dadams

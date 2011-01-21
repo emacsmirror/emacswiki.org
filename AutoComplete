@@ -424,6 +424,29 @@ Could you please write more documentation on how to use/reuse popup menus from p
 [new]
 In css-mode, as soon as I hit ';' to complete a declaration, the auto-complete menu appears and auto-selects a completion. Naturally, I'll hit RET to begin a new line, but instead the first-selected auto-completion is inserted! I have to use C-j to get new lines. How can I prevent this without disabling auto-complete in every other mode? --IanL
 
+[new]
+I got tired of removing a character from a function name in order to see the docstring for it popup. The code below will display the docstring for a function in a popup when the point is on the function name or over a space in the function call list. [http://jaderholm.com Scott Jaderholm]
+<pre>
+(require 'pos-tip)
+(defun jsj-ac-show-help ()
+  "show docs for symbol at point or at beginning of list if not on a symbol"
+  (interactive)
+  (let ((s (save-excursion
+             (or (symbol-at-point)
+                 (progn (backward-up-list)
+                        (forward-char)
+                        (symbol-at-point))))))
+    (pos-tip-show (if (equal major-mode 'emacs-lisp-mode)
+                      (ac-symbol-documentation s)
+                    (ac-slime-documentation (symbol-name s)))
+                  'popup-tip-face
+                  ;; 'alt-tooltip
+                  (point)
+                  nil
+                  -1)))
+
+(define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
+</pre>
 ----
 CategoryCompletion
 

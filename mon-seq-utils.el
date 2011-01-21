@@ -255,10 +255,12 @@
 :SEE-ALSO .\n►►►"
   ;; :prefix "<PREFIX>"
   :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-seq-utils.el")
-  :link '(emacs-library-link "mon-seq-utils.el")
+          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-seq-utils.el')" 
+          "http://www.emacswiki.org/emacs/mon-seq-utils.el")
+  :link '(emacs-library-link 
+          :tag ":FILE mon-seq-utils.el" 
+          "mon-seq-utils.el")
   :group 'mon-base)
-
 
 ;;; ==============================
 ;;; :CHANGESET 2387
@@ -307,9 +309,10 @@ The symbols contained of this list are defined in :FILE mon-seq-utils.el\n
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-remove-if', `mon-mapcar'.\n►►►"
   (unless (mon-list-proper-p  w-after-lst) 
-    (error (concat ":FUNCTION `mon-elt->' " 
-                   "-- arg W-AFTER-LST does not satisfy `mon-list-proper-p', got: %S")
-           w-after-lst))
+    (mon-list-proper-p-ERROR :w-error  t
+                             :function "mon-elt->"
+                             :locus    "w-after-lst"
+                             :got-val  w-after-lst))
   (push w-insert-after-elt (cdr (member after-elt w-after-lst)))
   w-after-lst)
 ;;
@@ -323,9 +326,10 @@ The symbols contained of this list are defined in :FILE mon-seq-utils.el\n
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-remove-if', `mon-mapcar'.\n►►►"
   (unless (mon-list-proper-p  w-before-lst) 
-    (error (concat ":FUNCTION `mon-elt-<' " 
-                   "-- arg W-BEFORE-LST does not satisfy `mon-list-proper-p', got: %S")
-           w-before-lst))
+    (mon-format :w-fun  #'error 
+                :w-spec '(":FUNCTION `mon-elt-<' " 
+                          "-- arg W-BEFORE-LST does not satisfy `mon-list-proper-p', got: %S")
+                :w-args w-before-lst))
   (nreverse (mon-elt-> (nreverse w-before-lst) before-elt w-insert-before-elt)))
 ;;
 (defun mon-elt->elt (w-old-make-new-lst w-old-elt w-new-elt)
@@ -336,9 +340,10 @@ The symbols contained of this list are defined in :FILE mon-seq-utils.el\n
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-mapcar'.\n►►►"
   (unless (mon-list-proper-p  w-old-make-new-lst) 
-    (error (concat ":FUNCTION 'mon-elt->elt " 
-                   "-- arg W-OLD-MAKE-NEW-LST does not satisfy `mon-list-proper-p', got: %S")
-           w-old-make-new-lst))
+    (mon-list-proper-p-ERROR :w-error  t
+                             :function "mon-elt->elt" 
+                             :locus    "w-old-make-new-lst"
+                             :got-val  w-old-make-new-lst))
   (setcar (member w-old-elt w-old-make-new-lst) w-new-elt)
   w-old-make-new-lst)
 ;;
@@ -354,17 +359,22 @@ Signal an error when wither is not.\n
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-remove-if', `mon-mapcar'.\n►►►"
   (or (and (not (mon-list-proper-p  w-exchange-lst))
-           (error (concat ":FUNCTION `mon-elt-<elt' " 
-                          "-- arg W-EXCHANGE-LST does not satisfy `mon-list-proper-p', got: %S")
-                  w-exchange-lst))
+           (mon-list-proper-p-ERROR :w-error  t
+                                    :function "mon-elt-<elt"
+                                    :locus    "w-exchange-lst"
+                                    :got-val  w-exchange-lst))
       (and (null (member w-exchange-from-elt w-exchange-lst))
-           (error (concat ":FUNCTION `mon-elt-<elt' "
-                          "-- arg W-EXCHANGE-FROM-ELT not member of W-EXCHANGE-LST, got: %S")
-                  w-exchange-from-elt))
+           (mon-format :w-fun  #'error 
+                       :w-spec '(":FUNCTION `mon-elt-<elt' "
+                                 "-- arg W-EXCHANGE-FROM-ELT not member " 
+                                 "of W-EXCHANGE-LST, got: %S")
+                       :w-args w-exchange-from-elt))
       (and (null (member w-exchange-to-elt  w-exchange-lst))
-           (error (concat ":FUNCTION `mon-elt-<elt' "
-                          "-- arg W-EXCHANGE-TO-ELT not member of W-EXCHANGE-LST, got: %S")
-                  w-exchange-to-elt)))
+           (mon-format :w-fun  #'error 
+                       :w-spec '(":FUNCTION `mon-elt-<elt' "
+                                 "-- arg W-EXCHANGE-TO-ELT not member "
+                                 "of W-EXCHANGE-LST, got: %S")
+                       :w-args w-exchange-to-elt)))
   (mon-elt->elt w-exchange-lst w-exchange-from-elt w-exchange-to-elt)
   (mon-elt->elt w-exchange-lst w-exchange-to-elt w-exchange-from-elt))
 
@@ -411,9 +421,12 @@ If not, cons em up.\n
       (cdr w-list)
     (let ((mdc-p w-list))
       (while (not (eq (cdr mdc-p) w-cons))
-	(if (null mdc-p) 
-            (error (concat ":FUNCTION `mon-delq-cons' "
-                         " -- cell of W-LIST not an element: %S") mdc-p))
+	(and (null mdc-p) 
+             (mon-format :w-fun  #'error 
+                         :w-spec '(":FUNCTION `mon-delq-cons' "
+                                   "-- cell of W-LIST not an element, "
+                                   "got: %S")
+                         :w-args mdc-p))
 	(setq mdc-p (cdr mdc-p)))
       ;; Now (cdr p) is the cons to delete
       (setcdr mdc-p (cdr w-cons))
@@ -526,10 +539,12 @@ When optional arg W-NO-ERRORS is non-nil do not signal an error instead return n
                     (append (mon-nshuffle-vector (vconcat mlss-lst)) nil)))
         (if w-no-errors
             nil
-          (error 
-           (concat ":FUNCTION `mon-list-shuffle-safe' "
-                   "-- arg LIST-TO-SHUFFLE null or not `mon-list-proper-p', got: %S") 
-           list-to-shuffle))))))
+          ;; :NOTE what about`mon-list-proper-p-ERROR'
+          (mon-format :w-fun  #'error  
+                      :w-spec '(":FUNCTION `mon-list-shuffle-safe' "
+                                "-- arg LIST-TO-SHUFFLE null or not "
+                                "`mon-list-proper-p', got: %S")
+                      :w-args list-to-shuffle))))))
 ;;
 ;;; :TEST-ME (let ((tst-mlss '(a (b . c) q)))
 ;;;          `(:w-shffl ,(mon-list-shuffle-safe tst-mlss) :w/o-shffl ,tst-mlss))
@@ -617,8 +632,7 @@ is `eq'.
         (equal (equal (car in-list) list-elt))
         (eql   (eql (car in-list) list-elt))
         (t     (eq (car in-list) list-elt)))
-      ;; :WAS 
-      ;; (cdr in-list)
+      ;; :WAS (cdr in-list)
       (setq in-list (cdr in-list))
     (let ((mdf-total in-list))
       (while (and (cdr in-list)
@@ -825,15 +839,19 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.\n
 `mon-elt-<elt'.\n►►►"
   (let ((mlann-atl 
          (and (not (unless (consp add-elts-to)
-                     (error 
-                      (concat ":FUNCTION `mon-list-add-non-nil' " 
-                              "-- arg ADD-ELTS-TO does not satisfy `consp'"))))
+                     (mon-format :w-fun  #'error 
+                                 :w-spec '(":FUNCTION `mon-list-add-non-nil' " 
+                                           "-- arg ADD-ELTS-TO does not satisfy `consp', "
+                                           "got: %S type-of: %S")
+                                 :w-args `(,add-elts-to ,(type-of add-elts-to)))))
               (reverse add-elts-to)))
         (mlann-afl 
-         (and (not (unless (consp add-elts-to)
-                     (error (concat 
-                             ":FUNCTION `mon-list-add-non-nil' " 
-                             "-- arg ADD-ELTS-FRM does not satisfy `consp'"))))
+         (and (not (unless (consp add-elts-frm)
+                     (mon-format :w-fun  #'error 
+                                 :w-spec '(":FUNCTION `mon-list-add-non-nil' " 
+                                           "-- arg ADD-ELTS-FRM does not satisfy `consp', "
+                                           "got: %S type-of: %S")
+                                 :w-args `(,add-elts-frm ,(type-of add-elts-frm)))))
               add-elts-frm)))
     (dolist (mlann-i  mlann-afl (nreverse mlann-atl))
       (unless (car (push mlann-i mlann-atl))
@@ -959,10 +977,11 @@ SEQ-ORDER takes precedence else default to elt at index in SEQ-ITEMS, e.g.:\n
         ;; If its not, we've got a proper list, store that for later.
         (setq mlr-vec-flag (and (mon-list-proper-p seq-items) seq-items))
         ;; Its either a consed pair or something else. So, bail.
-        (error (concat ":FUNCTION `mon-list-reorder' "
-                       "-- arg SEQ-ITEMS not `mon-list-proper-p', "
-                       "got: %S type-of: %S")
-               seq-items (cdr (mon-sequence-mappable-p seq-items t t))))
+        (mon-format :w-fun #'error 
+                    :w-spec '(":FUNCTION `mon-list-reorder' "
+                              "-- arg SEQ-ITEMS not `mon-list-proper-p', "
+                              "got: %S type-of: %S")
+                    :w-args `(,seq-items ,(cdr (mon-sequence-mappable-p seq-items t t)))))
        (or ;; When SEQ-ORDER is null return will always be SEQ-ITEMS so return.
         ;; (and (null seq-order)  seq-items) 
         ;; But, make sure to remove dups when REMV-DUPS is non-nil.
@@ -982,10 +1001,11 @@ SEQ-ORDER takes precedence else default to elt at index in SEQ-ITEMS, e.g.:\n
            ;; Make sure its not a consed pair. 
            (mon-list-proper-p seq-order) 
            ;; Anything else signals an error.
-           (error (concat ":FUNCTION `mon-list-reorder' "
-                          "-- arg SEQ-ORDER not `mon-list-proper-p', "
-                          "got: %S type-of: %S")
-                  seq-order (cdr (mon-sequence-mappable-p seq-order t t)))))
+           (mon-format :w-fun #'error 
+                       :w-spec '(":FUNCTION `mon-list-reorder' "
+                                 "-- arg SEQ-ORDER not `mon-list-proper-p', "
+                                 "got: %S type-of: %S")
+                       :w-args `(,seq-order ,(cdr (mon-sequence-mappable-p seq-order t t))))))
          ;; Unless we signaled above don't stop inside the `and'.
          nil)
         ;; We now know we have sequences, no consed pairs or null values.
@@ -1051,8 +1071,11 @@ Return the sublist of IN-LIST whose car matches.\n
 `mon-union', `mon-intersection'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'
   (unless (functionp predicate)
-    (error (concat ":FUNCTION `mon-member-if' "
-                   "-- arg PREDICATE does not satisfy `functionp'")))
+    (mon-format :w-fun #'error 
+                :w-spec '(":FUNCTION `mon-member-if' "
+                          "-- arg PREDICATE does not satisfy `functionp', "
+                          "got: %S type-of: %S")
+                :w-args  `(,predicate ,(mon-function-object-p predicate))))
   (let ((mmi-ptr in-list))
     (catch 'mmi-found
       (while mmi-ptr
@@ -1076,8 +1099,11 @@ whenever possible.\n
 `mon-char-code', `mon-subseq', `car-less-than-car'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'
   (unless (functionp predicate)
-    (error (concat ":FUNCTION `mon-delete-if' "
-                   "-- arg PREDICATE does not satisfy `functionp'")))
+    (mon-format :w-fun #'error 
+                :w-spec '(":FUNCTION `mon-delete-if' "
+                          "-- arg PREDICATE does not satisfy `functionp', "
+                          "got: %S type-of: %S")
+                :w-args  `(,predicate ,(mon-function-object-p predicate))))
   ;; remove from car
   (while (when (funcall predicate (car in-seq))
 	   (setq in-seq (cdr in-seq))))
@@ -1110,8 +1136,11 @@ avoid corrupting IN-SEQ.\n
 `mon-subseq', `mon-intersection', `mon-char-code', `car-less-than-car'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'/`mon-equality-or-predicate'
   (unless (functionp predicate)
-    (error (concat ":FUNCTION `mon-remove-if-not' "
-                   "-- arg PREDICATE does not satisfy `functionp'")))
+    (mon-format :w-fun #'error 
+                :w-spec '(":FUNCTION `mon-remove-if-not' "
+                          "-- arg PREDICATE does not satisfy `functionp', "
+                          "got: %S type-of: %S")
+                :w-args  `(,predicate ,(mon-function-object-p predicate))))
   (let (mrin-seq)
     (dolist (mrin-el in-seq)
       (when (funcall predicate mrin-el)
@@ -1142,8 +1171,11 @@ RMV-IF-PREDICATE is unary function.\n
 `mon-delq-cons', `car-less-than-car'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'/`mon-equality-or-predicate'
   (unless (functionp rmv-if-predicate)
-    (error (concat ":FUNCTION `mon-remove-if' "
-                   "-- arg RMV-IF-PREDICATE does not satisfy `functionp'")))
+    (mon-format :w-fun #'error 
+                :w-spec '(":FUNCTION `mon-remove-if' "
+                          "-- arg RMV-IF-PREDICATE does not satisfy `functionp', "
+                          "got: %S type-of: %S")
+                :w-args  `(,rmv-if-predicate ,(mon-function-object-p rmv-if-predicate))))
   (let (mri-new-list)
     (dolist (mri-item rmv-list (setq mri-new-list (nreverse mri-new-list)))
       (when (not (funcall rmv-if-predicate mri-item))
@@ -1157,10 +1189,10 @@ RMV-IF-PREDICATE is unary function.\n
 ;;; :PREFIX "mintr-"
 ;;; :CREATED <Timestamp: #{2010-01-22T15:12:02-05:00Z}#{10035} - by MON>
 (defun mon-intersection (list1 list2 &optional do-eql do-eq)
-  "Combine list1 and list2 using a set-intersection operation.\n
-The result list contains all items that appear in both list1 and list2.
+  "Combine LIST1 and LIST2 using a set-intersection operation.\n
+The result list contains all items that appear in both LIST1 and LIST2.
 This is a non-destructive function; it makes a copy of the data if necessary
-to avoid corrupting the original list1 and list2.\n
+to avoid corrupting the original LIST1 and LIST2.\n
 By default comparsion made as with `member'.\n
 When optional arg DO-EQl uses `memql'.\n
 When optional arg DO-EQ uses `memq'.\n
@@ -1176,7 +1208,10 @@ When optional arg DO-EQ uses `memq'.\n
 \(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\) nil t\) ;`memq'\n
 \(mon-intersection '\(\"str1\" \"str2\"\) '\(\"str2\"\) nil t\)           ;`memq'\n
 \(mon-intersection '\(sym1 sym2\) '\(sym1\)\)                       ;`memq'\n
-\(mon-intersection \(number-sequence 8 20 2\) 8)                 ;Signal Error\n
+;; :Following fail successfully
+\(mon-intersection '\(a . b\)   '\(q e d a\)\)\n
+\(mon-intersection '\(q e d a\) '\(a . b\)\)\n
+\(mon-intersection \(number-sequence 8 20 2\) 8)\n
 :NOTE Like `intersection' from :FILE cl-seq.el adapted for use without keywords
 and does not provide intelligent type checking.\n
 :ALIASED-BY `mon-list-intersect'\n
@@ -1190,11 +1225,22 @@ and does not provide intelligent type checking.\n
 `mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
 `mon-list-proper-p', `hfy-interq', `smtpmail-intersection', `car-less-than-car'.\n►►►"
   ;; :TODO Use `mon-list-proper-p'/`mon-sequence-mappable-p' here instead.
-  (unless (and (or (consp list1) (null list1))
-               (or (consp list2) (null list2)))
-    (error (concat ":FUNCTION `mon-intersection' "
-                   "-- args LIST1 and LIST2 must be either a list or nil, " 
-                   " LIST1 got: %S LIST2 got: %S") list1 list2))
+  ;; :WAS (unless (and (or (consp list1) (null list1))
+  ;;              (or (consp list2) (null list2)))
+  ;;   (error (concat ":FUNCTION `mon-intersection' "
+  ;;                  "-- args LIST1 and LIST2 must be either a list or nil, " 
+  ;;                  " LIST1 got: %S LIST2 got: %S")
+  ;;          list1 list2))
+  (and (or (mon-list-proper-p list1)
+           (mon-list-proper-p-ERROR :w-error t
+                                    :fun-name "mon-intersection"
+                                    :locus "list1"
+                                    :got-val list1))
+       (or (mon-list-proper-p list2)
+           (mon-list-proper-p-ERROR :w-error t
+                                    :fun-name "mon-intersection"
+                                    :locus "list2"
+                                    :got-val list2)))
   (and list1 list2
        (if (equal list1 list2)
            list1
@@ -1202,10 +1248,10 @@ and does not provide intelligent type checking.\n
                (mintr-l1 list1)
                (mintr-l2 list2)
                (mintr-cmpare-w #'(lambda (mintr-L-1 mintr-L-2) 
-                              (if (or do-eql do-eq)
-                                  (cond (do-eql (memql mintr-L-1 mintr-L-2))
-                                        (do-eq  (memq mintr-L-1 mintr-L-2)))
-                                (member mintr-L-1 mintr-L-2)))))
+                                   (if (or do-eql do-eq)
+                                       (cond (do-eql (memql mintr-L-1 mintr-L-2))
+                                             (do-eq  (memq mintr-L-1 mintr-L-2)))
+                                     (member mintr-L-1 mintr-L-2)))))
            (or (>= (length mintr-l1) (length mintr-l2))
                (setq mintr-l1 (prog1 mintr-l2 (setq mintr-l2 mintr-l1))))
            (while mintr-l2
@@ -1295,26 +1341,30 @@ Eliminates duplicates between SET1-LST and SET2-LST using COMPARISON-FUNC.\n
 ;; "fuck anything (ostensible alist) that moves".
 (defun mon-pairlis (keys-lst vals-lst &optional w-alist)
   "Like `pairlis' but with better type checking.\n
-Args KEYS-LST and VALS-LST must each satisfy `mon-list-proper-p' and arg W-ALIST
-must satisfy `mon-list-proper-and-dotted-p'. Signal an error if any one does not.\n
+Args KEYS-LST and VALS-LST must each satisfy `mon-list-proper-p' 
+Signal a `mon-list-proper-p-ERROR' if any one does not.\n
+When supplied optional arg W-ALIST must satisfy `mon-list-proper-and-dotted-p'.
 :EXAMPLE\n\n\(mon-pairlis \(number-sequence 1 26\) \(mon-alphabet-as-list-symbolD\)\)\n
 \(let \(\(append-to '\(\(\"bubba\" . \"BUBBA\"\) \(\"BUBBA\" . \"bubba\"\)\)\)\)
   \(mon-pairlis \(number-sequence 1 26\)
                \(number-sequence 5 \(* 5  26\) 5\)
                append-to\)\)\n
+;; :Following fail succesfully
+\(mon-pairlis '\(\"a\" \"b\" . \"c\"\) '\(a b c\)\)\n
+\(mon-pairlis '\(\"a\" \"b\" \"c\"\) '\(a b . c\)\)\n
 :SEE-ALSO `mon-mapcar', `car-less-than-car'.\n►►►"
   (nconc 
    (mon-mapcar #'cons 
                (or (and (mon-list-proper-p keys-lst) keys-lst)
-                   (error 
-                    (concat ":FUNCTION `mon-pairlis' "
-                            "-- arg KEYS-LST not `mon-list-proper-p', got %S")
-                    keys-lst))
+                   (mon-list-proper-p-ERROR :w-error t
+                                            :fun-name "mon-pairlis" 
+                                            :locus "KEYS-LST"
+                                            :got-val keys-lst))
                (or (and (mon-list-proper-p vals-lst) vals-lst)
-                   (error 
-                    (concat ":FUNCTION `mon-pairlis' "
-                            "-- elt of VALS-LST not `mon-list-proper-p', got %S")
-                    vals-lst)))
+                   (mon-list-proper-p-ERROR :w-error t
+                                            :fun-name "mon-pairlis" 
+                                            :locus "VALS-LST"
+                                            :got-val vals-lst)))
    (and w-alist (mon-list-proper-and-dotted-p w-alist))))
 
 ;;; ==============================
@@ -1459,8 +1509,9 @@ the resulting sequence.\n
     ;;                "-- arg FUN-DESIGNATOR does not satisfy `functionp'"))
     (mon-format :w-fun #'error
                 :w-spec '(":FUNCTION `mon-map1' " 
-                          "-- arg FUN-DESIGNATOR does not satisfy `functionp', got: %S")
-                :w-args  fun-designator))
+                          "-- arg FUN-DESIGNATOR does not satisfy `functionp', "
+                          " got: %S type-of: %S")
+                :w-args  `(,fun-designator ,(mon-function-object-p fun-designator))))
   ;;
   ;; :NOTE CL ANSI spec says:
   ;; "If FUNCTION is a symbol, it is `coerce'd to a function as if by
@@ -1750,8 +1801,10 @@ If SEQ-END is omitted, it defaults to the length of SEQ.\n
 `mon-combine', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `mon-moveq', `mon-nshuffle-vector', `mon-list-nshuffle',
 `mon-list-shuffle-safe', `mon-list-reorder', `car-less-than-car'.\n►►►"
-  (cond ((null in-seq) (error (concat ":FUNCTON `mon-subseq'"
-                                      "-- arg IN-SEQ can not be null")))
+  (cond ((null in-seq) 
+         (mon-format :w-fun #'error 
+                     :w-spec '(":FUNCTON `mon-subseq'"
+                               "-- arg IN-SEQ can not be null")))
         ((listp in-seq)
          (and (or seq-end (setq seq-end (length in-seq)))
               (or (and (>= (length in-seq) seq-start) (>= (length in-seq) seq-end)
@@ -2584,9 +2637,10 @@ representation for `bit-vector's e.g.:\n
 `mon-booleanp-to-binary', `mon-zero-or-onep', `mon-help-char-raw-bytes',
 `mon-help-binary-representation', `logb', `fillarray'.\n►►►"
  (if (= (length bool-vec) 0)
-     (error (concat 
-             ":FUNCTION `mon-bool-vector-pp' "
-             "-- arg BOOL-VEC has length 0 Emacs won't fetch that index, IHMO an Emacs bug"))
+     (mon-format :w-fun #'error 
+               :w-spec '(":FUNCTION `mon-bool-vector-pp' "
+                         "-- arg BOOL-VEC has length 0 "
+                         "Emacs won't fetch that index, IHMO an Emacs bug"))
    (let* ((bv-len (length bool-vec))
           (w-props (<= bv-len 29))
           ;; vector of numberic 0's

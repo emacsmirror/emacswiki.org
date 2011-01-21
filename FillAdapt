@@ -37,39 +37,20 @@ The default setups suit most comment styles and bullet point styles.  They don't
 It's worth noting filladapt still goes through <code>fill-paragraph-function</code>, so if it doesn't seem to be working (even when the debug above shows a correct line/paragraph analysis), then perhaps a major mode function in that variable is to blame.  (An example of that is <code>makefile-mode</code> on indented comments in Emacs 21 and 22; see the MakefileMode page for a fix.)
 
 == C/C++/Java and javadoc/doxygen comments ==
+
 Filladapt is very cool, but to if you want it to be useful while editing C/C++/Java comments and javadoc/doxygen documentation, you need fix the token table.  Here is what I use:
 
-<pre>
-(custom-set-variables
-  ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
-  ;; Your init file should contain only one such instance.
- '(filladapt-token-table
-   (quote (("^" beginning-of-line)
-           (">+" citation->)
-           ("\\(\\w\\|[0-9]\\)[^'`\"< \t\n]*>[ \t]*" supercite-citation)
-           (";+" lisp-comment)
-           ("#+" sh-comment)
-           ("%+" postscript-comment)
-           ("^[ \t]*\\(//\\|\\*\\)[^ \t]*" c++-comment)
-           ("@c[ \\t]" texinfo-comment)
-           ("@comment[ \t]" texinfo-comment)
-           ("\\\\item[ \t]" bullet)
-           ("[0-9]+\\.[ \t]" bullet)
-           ("[0-9]+\\(\\.[0-9]+\\)+[ \t]" bullet)
-           ("[A-Za-z]\\.[ \t]" bullet)
-           ("(?[0-9]+)[ \t]" bullet)
-           ("(?[A-Za-z])[ \t]" bullet)
-           ("[0-9]+[A-Za-z]\\.[ \t]" bullet)
-           ("(?[0-9]+[A-Za-z])[ \t]" bullet)
-           ("[-~*+]+[ \t]" bullet)
-           ("o[ \t]" bullet)
-           ("[\\@]\\(param\\|throw\\|exception\\|addtogroup\\|defgroup\\)[ \t]*[A-Za-z_][A-Za-z_0-9]*[ \t]+" bullet)
-           ("[\\@][A-Za-z_]+[ \t]*" bullet)
-           ("[ \t]+" space)
-           ("$" end-of-line)))))
-</pre>
+JonathanBaccash's hack was here.
 
-This is the same as the default token table, but I have modified the c++-comment regular expression and I added the last two bullet regular expressions.  It would be nice if I could just modify the token table for C/C++/Java source files (since my change affects the interpretation of the "*" bullet, overriding it by interpreting it as a c++-comment if this is the beginning of the line) instead of globally, but the customize feature boggles my mind. -- JonathanBaccash
+[LeWang]
+All you have to do is tell cc-mode to prepare for filladapt:
+
+<pre>
+(add-hook 'c-mode-common-hook
+	  (lambda ()
+	    (when (featurep 'filladapt)
+	      (c-setup-filladapt))))
+</pre>
 
 ----
 CategoryFilling

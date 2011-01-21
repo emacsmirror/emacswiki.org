@@ -4,7 +4,9 @@ Disclaimer: This is a Work-in-Progress page.
 Sorry for the terrible markup -- I am unable to enter <br/>linebreaks
 
 Apl comes under Debian under the Aplus packages.  These supposedly work 
-under xemacs. 
+under xemacs or the shell.
+== Apl under the shell ==
+See this thread http://groups.google.com/group/comp.lang.apl/browse_thread/thread/00dda3821da693bb#
 == Apl under Xemacs ==
 I could get it to work some 5 years ago. I could not recently. So...
 Someone else can fill this :-)
@@ -25,7 +27,7 @@ You should get a banner and a strange indent.
 should give you 5.  Char encoding issues will prevent much more here, so get out with a Ctrl-d
 # You have Markus Triska's apl.el from http://stud4.tuwien.ac.at/~e0225855/unicapl/apl.el
 Load it into emacs.
-set-input-method to apl-ascii (in a fresh buffer if you like)
+M-x set-input-method to apl-ascii (in a fresh buffer if you like)
 The left corner of the mode line should show 'apl' to indicate that emacs can deal with apl chars [toggle with C-\]
 Typing {rho} {iota} {is} should give you rho iota and left arrow: (is ⍴ ⍳ ← )
 === Inferior Apl ===
@@ -46,5 +48,6 @@ Look at the top of the apl.el file
 Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} (ie 'less-than' 'hyphen')
 
 === TODOs ===
+# I'm sure this will run just as easily on ubuntu and other linuxes. But someone who has tried that needs to say that :-)
 # Better integration between apl.el and inferior-apl.el
 # Better font-locking

@@ -85,7 +85,7 @@ is sufficient to use either `foo' or `/some/path/to/my/foo'.
 
 
 [:completing-read]
-[::absolute file-name completion]
+[:absolute file-name completion]
 === Function `completing-read' ===
 
 Function '''`completing-read'''' is a general function for reading input
@@ -217,8 +217,7 @@ candidates, where that matching is ordinary (apropos or prefix)
 string matching.
 
 To ''create'' such a saved set of names, you can visit the directory
-(perhaps remote) that contains the files and then use `C-u C-x
-C-f' and `C-}' to save the candidates.  You can later retrieve
+(perhaps remote) that contains the files and then use `C-u C-x C-f' and `##C-}##' to save the candidates.  You can later retrieve
 this saved set for completion, no matter what the current
 directory is.  As another example, you can use
 `icicle-locate-file' in a remote directory to create a saved set
@@ -285,6 +284,8 @@ original `default-directory' is restored.
 * [[Icicles - Multi-Completions]] for information about using multi-completions.
 
 * [[Icicles - Support for Projects#TagsFileProject|Icicles - Tags File Projects]] for more about `icicle-find-file-in-tags-table'
+
+* [[Icicles - Completion On Demand]] for information about on-demand insertion of file names, using completion, from any minibuffer
 
 ----
 

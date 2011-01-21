@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 18 15:31:30 2011 (-0800)
+;; Last-Updated: Thu Jan 20 16:00:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6869
+;;     Update #: 6875
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,20 +17,21 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cl',
-;;   `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
-;;   `dired', `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `advice', `advice-preload', `apropos', `apropos+',
+;;   `apropos-fn+var', `avoid', `cl', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `custom', `dired', `dired+',
+;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
+;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
+;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2193,6 +2194,10 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (icicle-bind-completion-keys minibuffer-local-must-match-map)
        (define-key minibuffer-local-must-match-map [(control ?g)]
          'icicle-abort-recursive-edit)  ; `C-g' - need it anyway, even if inherit completion map.
+       (dolist (key  icicle-completing-read+insert-keys)
+         (define-key minibuffer-local-must-match-map key 'icicle-completing-read+insert)) ; `C-M-S-c'
+       (dolist (key  icicle-read+insert-file-name-keys)
+         (define-key minibuffer-local-must-match-map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
        ;; Override the binding of `C-j' to `minibuffer-complete-and-exit'.
        (define-key minibuffer-local-must-match-map "\n"
          'icicle-insert-newline-in-minibuffer)) ; `C-j' (newline)
@@ -2393,6 +2398,10 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
                   delete-selection-mode)
              'minibuffer-keyboard-quit
            'abort-recursive-edit))  ; `C-g' - need it anyway, even if inherit completion map.
+       (dolist (key  icicle-completing-read+insert-keys)
+         (define-key minibuffer-local-must-match-map key nil))
+       (dolist (key  icicle-read+insert-file-name-keys)
+         (define-key minibuffer-local-must-match-map key nil))
        (define-key minibuffer-local-must-match-map "\n" 'minibuffer-complete-and-exit)) ; `C-j'
      (define-key minibuffer-local-must-match-map [S-return] nil)
 
@@ -2729,6 +2738,10 @@ complete)"))
       (define-key map "\C-\M-y"              'icicle-yank-secondary)) ; `C-M-y'
     (define-key map [M-S-backspace]          'icicle-erase-minibuffer) ; `M-S-backspace'
     (define-key map [M-S-delete]             'icicle-erase-minibuffer) ; `M-S-delete'
+    (dolist (key  icicle-completing-read+insert-keys)
+      (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
+    (dolist (key  icicle-read+insert-file-name-keys)
+      (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
     )
 
   ;; Need `C-g', even if `minibuffer-local-completion-map' inherits from `minibuffer-local-map'.
@@ -2958,6 +2971,10 @@ MAP is `minibuffer-local-completion-map',
     (define-key map "\C-\M-y"                nil)
     (define-key map [M-S-backspace]          nil)
     (define-key map [M-S-delete]             nil)
+    (dolist (key  icicle-completing-read+insert-keys)
+      (define-key minibuffer-local-must-match-map key nil))
+    (dolist (key  icicle-read+insert-file-name-keys)
+      (define-key minibuffer-local-must-match-map key nil))
     )
 
   (define-key map [(meta ?q)]                nil)

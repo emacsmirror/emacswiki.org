@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 17 09:28:38 2011 (-0800)
+;; Last-Updated: Thu Jan 20 15:53:30 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16463
+;;     Update #: 16508
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2330,6 +2330,9 @@ inserted into the minibuffer.  One of two things happens, depending on
 the value of option `icicle-default-thing-insertion' and whether or
 not you use `C-u'.
 
+See the doc for option `icicle-thing-at-point-functions' for a
+complete description of its behavior.  What follows is an overview.
+
 `icicle-thing-at-point-functions' is a cons of two parts - call them
 ALTERNATIVES and FORWARD-THING.
 
@@ -2351,12 +2354,23 @@ If FORWARD-THING is not nil and one of the following is true:
 then function FORWARD-THING is used to retrieve the text to be
 inserted.
 
-If you use a numeric prefix argument (not just plain `C-u'), then
-function FORWARD-THING is used to retrieve the text to be inserted,
-and the argument determines the number of things to grab.  It also
-determines the direction of thing-grabbing: A negative argument grabs
-text to the left of the cursor; a positive argument grabs text to the
-right.
+If you use a numeric prefix arg (not just plain `C-u'), the behavior
+is as follows.
+
+* If a function in ALTERNATIVES is used (see above), then the text
+  that is grabbed at or near point is read as a Lisp sexp and
+  evaluated, and the value is inserted instead of the grabbed text.
+
+  Yes, this means you need to know when the particular ALTERNATIVES
+  function that you want is coming up next, and use, say, `C-9' just
+  before hitting `M-.' for that alternative.  So if, e.g., you want to
+  evaluate the active region and insert the value, then you use
+  `M-. C-9 M-.', since it is the second `M-.' that grabs the region.
+
+* If the FORWARD-THING is being used, then the prefix arg determines
+  the number of things to grab, and the direction of grabbing.: A
+  negative argument grabs text to the left of the cursor; a positive
+  argument grabs text to the right.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-insert-string-at-point]')."
@@ -2367,10 +2381,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
     (let ((alt-fns       (car icicle-thing-at-point-functions))
           (fwd-thing-fn  (cdr icicle-thing-at-point-functions))
           (flipped       (or icicle-default-thing-insertion-flipped-p ; Already flipped.
-                             (setq icicle-default-thing-insertion-flipped-p
-                                   (if (eq 'alternatives icicle-default-thing-insertion)
-                                       arg ; Either `C-u' or `C-u 3' flips it for `alternatives'.
-                                     (consp arg)))))) ; Only `C-u' flips it for `more-of-the-same'.
+                             (setq icicle-default-thing-insertion-flipped-p  (consp arg)))))
       (cond
         ;; Use alternative text-grabbing functions successively.
         ((and alt-fns (or (if (eq 'alternatives icicle-default-thing-insertion)
@@ -2387,6 +2398,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
            (save-excursion (with-current-buffer icicle-pre-minibuffer-buffer
                              (setq thing  (funcall alt-fn))))
            (setq thing  (or thing "nil"))
+           (when (and arg (atom arg))   ; Numeric prefix arg.
+             (setq thing  (condition-case err
+                              (format "%s" (eval (car (read-from-string thing))))
+                            (error thing))))
            (icicle-insert-thing thing)
            (icicle-msg-maybe-in-minibuffer (format "`%s'" alt-fn))))
 
@@ -5300,9 +5315,9 @@ Option `icicle-read+insert-file-name-keys' controls which keys are
  bound to this command.
 Return the string that was inserted."
   (interactive "P")
-  (let ((completion-ignore-case        (memq system-type '(ms-dos windows-nt cygwin)))
-        (enable-recursive-minibuffers  t)
-        (use-dialog-box                nil)
+  (let ((completion-ignore-case                  (memq system-type '(ms-dos windows-nt cygwin)))
+        (enable-recursive-minibuffers            t)
+        (use-dialog-box                          nil)
         (minibuffer-local-completion-map
          (let ((map  (make-sparse-keymap)))
            (set-keymap-parent map minibuffer-local-completion-map)
@@ -5315,6 +5330,7 @@ Return the string that was inserted."
            (define-key map [(control backspace)] 'icicle-up-directory)
            (define-key map "\C-c+"               'icicle-make-directory)
            map))
+        (icicle-must-pass-after-match-predicate  nil)
         result)
     (setq result  (icicle-read-file-name "Choose file: "))
     (unless dir-too-p                   ; Remove parent dir.

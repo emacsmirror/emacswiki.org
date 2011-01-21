@@ -116,5 +116,19 @@ Add the following to your .emacs (not your .gnus): it takes care of starting gnu
     (compose-mail to)))
 </pre>
 
+ErikArneson suggests this alternate function, based on rgr/mailto but using development Gnus:
+
+<pre>
+(defun ela/mailto (to)
+  "Send an email to 'to' but prompting for a posting style if not configured. Starts Gnus if not already running."
+  (require 'gnus)
+  (unless gnus-active-hashtb (gnus)) ;; Better way??
+  (let ((gnus-newsgroup-name (or gnus-default-mailto-group 
+                                 (completing-read "Use posting style of group: "
+                                                  gnus-active-hashtb nil
+                                                  (gnus-read-active-file-p)))))
+    (gnus-setup-message 'message (message-mail to))))
+</pre>
+
 ----
 CategoryMail

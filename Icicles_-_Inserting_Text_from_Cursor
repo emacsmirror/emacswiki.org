@@ -127,22 +127,52 @@ instead of to the right. In the example above, if you used `##M-- M-. M-. M-.##'
 
 If you used `##M--3 M-.##', then you would immediately insert `##differently if you##'.
 
-In the case of `alternatives', there are four possibilities,
-by default.  The first function in the list is `ffap-guesser'.  The
-second function grabs text that has
-the syntax of an EmacsLisp ''[[symbol]]'' name, which in practice can
-also be a ''file'' name or a ''URL'' -- it can include characters such as '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''. The third function grabs a
-''word'', which includes letters, '''##'##''' and '''##-##'''.  The fourth function grabs a
-''URL'', adding prefix "##http://##" if needed.  These are the functions
-used by default, but you can add to them or replace them.  
+In the case of `alternatives', the default possibilities depend on
+whether or not you also use my library <tt>[[thingatpt+.el]]</tt>.  If not, there are four alternatives:
 
-If you
-use my library '''<tt>[[thingatpt+.el]]</tt>''', then the [[cursor]] need not be
-exactly on the text for the second and third alternatives -- the [[symbol]]  or word ''nearest'' the cursor is grabbed.
+* The first alternative inserts text that has the syntax of an
+EmacsLisp ''[[symbol]]'' name.  In practice, this can also be a ''file''
+name or a ''URL'' -- it can include characters such as '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''.
+
+* The second alternative inserts a ''word'', which includes letters,
+'''##'##''', and '''##-##'''.
+
+* The third alternative inserts whatever `ffap-guesser' returns: a
+''file'' name or ''URL''.
+
+* The fourth alternative inserts a ''URL'', adding prefix `##http://##' if needed.
+
+  
+
+If you also use my library '''<tt>[[thingatpt+.el]]</tt>''', then:
+
+* The first and second alternatives are like those for the case
+where you do not use ##thingatpt+.el##, except that the [[cursor]]
+need not be exactly on the text -- the [[symbol]] or word ''nearest'' the cursor is
+grabbed.
+
+* If the [[region]] is [[active region|active]], then the second alternative inserts the
+''region text'' instead of just the nearest word.
+
+* The third alternative inserts the (non-`nil') ''list'' nearest point.
+IOW, this grabs a ''[[sexp]]'' that is more than just an [[atom]].
+
+* The fourth and fifth alternatives are like the third, but they
+grab ''wider sexps''.  They first go up one and two list levels,
+respectively.
+
+* The sixth and seventh alternatives insert a ''file'' name and ''URL'', respectively.  They
+are the same as the third and fourth alternatives that are
+provided if you do not use ##thingatpt+.el##.
+
+You can of course add to or replace any of the alternatives
+provided by default.
+
+
 
 '''See Also:'''
 
-* [[Icicles - Inserting a Regexp from a Variable or Register]] for information on inserting text saved in a [[variable]] or register.
+* [[Icicles - Inserting a Regexp from a Variable or Register]] for information on inserting text saved in a [[variable]] or [[register]].
 
 * [[Icicles - Moving Between the Minibuffer and Other Buffers]] for
 another way to insert [[buffer]] text in the [[minibuffer]].

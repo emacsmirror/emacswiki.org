@@ -1,0 +1,12 @@
+Procomm-mode is a basic major mode for writing scripts in the ASPECT scripting language.
+
+ASPECT is the scripting language integrated into the Procomm Plus terminal emulation product and can be used to automate complex procedures and build simple GUIs.
+
+This mode was written to conform to ASPECT as it appeared in Procomm Plus version 4.8.
+
+It provides basic syntax highlighting, indentation & formatting.
+
+See Lisp:procomm-mode.el
+
+----
+ProgrammingModes

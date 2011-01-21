@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:37:19 2011 (-0800)
+;; Last-Updated: Thu Jan 20 10:03:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 991
+;;     Update #: 1012
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/01/20 dadams
+;;     *list-*-point: Improved doc strings.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps and non-interactive fns.
 ;;     Added autoload cookies for defcustom.
@@ -543,12 +545,14 @@ Note: If point is inside a string that is inside a list:
 (defun unquoted-list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.
 Same as `list-at-point', but removes the car if it is `quote' or
-`backquote-backquote-symbol' (\`)."
+ `backquote-backquote-symbol' (\`).
+UP (default: 0) is the number of list levels to go up to start with."
   (list-at/nearest-point 'sexp-at-point up 'UNQUOTED))
 
 (defun list-nearest-point (&optional up)
   "Return the non-nil list nearest point, or nil if none.
-Same as `list-at-point', but returns the nearest list."
+Same as `list-at-point', but returns the nearest list.
+UP (default: 0) is the number of list levels to go up to start with."
   (list-at/nearest-point 'sexp-nearest-point up))
 
 (defun unquoted-list-nearest-point (&optional up)
@@ -559,10 +563,11 @@ Same as `list-nearest-point', but removes the car if it is `quote' or
   (list-at/nearest-point 'sexp-nearest-point up 'UNQUOTED))
 
 (defun list-at/nearest-point (at/near &optional up unquotedp)
-  "Helper for `list-at-point' and `list-nearest-point'.
-UP (default: 1) is the number of list levels to go up.
+  "Helper for `list-at-point', `list-nearest-point' and similar functions.
+AT/NEAR is a function that is called to grab the initial sexp.
+UP (default: 0) is the number of list levels to go up to start with..
 Non-nil UNQUOTEDP means remove the car if it is `quote' or
-`backquote-backquote-symbol'."
+ `backquote-backquote-symbol'."
   (save-excursion
     (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
           ((looking-at "\\s)\\s-*") (skip-syntax-backward "-")))
@@ -585,13 +590,15 @@ Non-nil UNQUOTEDP means remove the car if it is `quote' or
 (defun list-nearest-point-as-string (&optional up)
   "Return a string of the non-nil list nearest point, or \"\" if none.
 If not \"\", the list in the string is what is returned by
-`list-nearest-point'."
+ `list-nearest-point'.
+UP (default: 0) is the number of list levels to go up to start with."
   (format "%s" (list-at/nearest-point 'sexp-nearest-point up)))
 
 (defun unquoted-list-nearest-point-as-string (&optional up)
   "Return a string of the non-nil list nearest point, or \"\" if none.
 If not \"\", the list in the string is what is returned by
-`unquoted-list-nearest-point'."
+ `unquoted-list-nearest-point'.
+UP (default: 0) is the number of list levels to go up to start with."
   (format "%s" (list-at/nearest-point 'sexp-nearest-point up 'UNQUOTED)))
  
 ;;; MISC: SYMBOL NAMES, WORDS, SENTENCES, etc. -----------------------

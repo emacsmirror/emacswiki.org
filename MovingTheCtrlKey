@@ -151,6 +151,18 @@ To make the change effective:
 
 === On Ubuntu GNU/Linux virtual terminal ===
 
+Ubuntu Maverick
+
+Click on System > Preferences > Keyboard 
+
+This will open the Keyboard preferences. In "Layout" tab find "options..." then locate "Ctrl key position"
+
+select "Swap Ctrl and CapsLock"
+
+or also you can select "Make CapsLock an additional Ctrl"
+
+this also work for virtual terminals
+
 1. Edit /etc/default/console-setup and add an X11 style caps lock modification:
 
  $ diff -U0 /etc/default/{console-setup.orig,console-setup}

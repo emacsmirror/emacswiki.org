@@ -1,0 +1,23 @@
+Pure mode is a major mode for editing and running programs written in the Pure programming language [http://pure-lang.googlecode.com/]. It supports indentation, syntax highlighting (using font-lock), completion of Pure symbols, integrated help (using emacs-w3m), and running Pure scripts and evaluating Pure code in a comint buffer.
+
+Pure mode is included in the Pure sources and is installed along with the interpreter if Emacs is detected at configure time. To enable it, put the following in your .emacs:
+
+<pre>
+(require 'pure-mode)
+(setq auto-mode-alist
+      (cons '("\\.pure\\(rc\\)?$" . pure-mode) auto-mode-alist))
+(add-hook 'pure-mode-hook 'turn-on-font-lock)
+(add-hook 'pure-eval-mode-hook 'turn-on-font-lock)
+</pre>
+
+This loads Pure mode, associates the .pure and .purerc filename extensions with it, and enables syntax highlighting.
+
+Pure has online documentation in html format. To make the online help work inside emacs, install a recent cvs snapshot of [[emacs-w3m]] (1.4 or later will do) and enable it as follows in your .emacs:
+
+<pre>
+(require 'w3m-load)
+</pre>
+
+pure-mode will then detect the presence of emacs-w3m and you can look up the symbol at point or just browse the Pure documentation by popping up an emacs-w3m window in Emacs with the <code>pure-help</code> command.
+
+In addition, documentation in info format for use with InfoMode is available in the pure-lang-docs repo [http://code.google.com/p/pure-lang/source/browse/?repo=docs#hg%2Ftexinfo]. (This is generated using Sphinx [http://sphinx.pocoo.org/] from the same sources as the html documentation and thus the formatting is a bit rough. In particular, the cross references look best if you set <code>Info-hide-note-references</code> to <code>'hide</code> and <code>Info-refill-paragraphs</code> to <code>t</code>.)

@@ -9,7 +9,7 @@
 [[regexp | Regexps]] are powerful, but they can sometimes be complex to compose
 and hard to remember, once composed.  A shortcut is to compose a
 regexp that you want to use and assign it to an Emacs
-[[variable]] or register.
+[[variable]] or [[register]].
 
 If you assign it to a register (using `C-x r s'), then you can use
 `C-x r i' (`insert-register') in the [[minibuffer]] to insert it.  If

@@ -2,6 +2,7 @@ Emacs jargon predates most user intefaces used today. See EmacsJargon for an int
 
 Click the page heading to find all pages acting as glossary entries. See also the "Glossary" node in the EmacsManual (`C-h i').
 
+* '''[::atom]''' -- a Lisp entity that is not a [[cons]].  This includes [[symbol]]s and strings.
 * '''[::alist]''' -- a [[list]] whose elements are [[cons]]es.
 * [[bookmark]] -- just what it sounds like: a saved location in a file or buffer
 * '''[::bound variable]''' -- a [[variable]] that has a [[symbol value]]
@@ -12,7 +13,7 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * [[chord]] -- a [[key sequence]] with keys pressed simultaneously
 * [[command]] -- an InteractiveFunction
 * [[completion]] -- completing input in the [[minibuffer]] or text in another buffer
-* '''[::cons]''' (aka '''[::cons cell]''') -- A Lisp object that is composed of a pair of Lisp objects of any kind. The first is called the '''[::car]'''; the second is called the '''[::cdr]'''.
+* '''[::cons]''' (aka '''[::cons cell]''') -- A Lisp object that is composed of a pair of Lisp objects of any kind. The first is called the '''[::car]'''; the second is called the '''[::cdr]'''.  See also [[atom]].
 * [[cursor]] (text cursor) -- how it differs from the [[pointer]] (mouse pointer); its relation with [[point]]
 * '''[::custom file]''' -- file, other than your [[init file]] (##~/.emacs##), where customizations from Customize are saved. It is the value of [[variable]] `custom-file'.
 * [[Customize]] -- Emacs user interface for changing and saving preferences (settings)

@@ -59,7 +59,7 @@
 ;;  You could always turn on the minor mode with the command
 ;;  `auto-indent-minor-mode'
 ;;
-7;;  If you would like TextMate behavior of Meta-RETURN going to the
+;;  If you would like TextMate behavior of Meta-RETURN going to the
 ;;  end of the line and then inserting a newline, as well as
 ;;  Meta-shift return going to the end of the line, inserting a
 ;;  semi-colon then inserting a newline, use the following:
@@ -509,17 +509,19 @@ http://www.emacswiki.org/emacs/AutoIndentation
         (when (and (eolp) (looking-back "[ \t]+" nil t))
           (replace-match "")))))
 
-(defadvice kill-line (before auto-indent-mode activate)
+(defadvice kill-line (around auto-indent-mode activate)
   "If at end of line, join with following; otherwise kill line.
      Deletes whitespace at join."
   (if (and auto-indent-minor-mode (not (minibufferp))
-           auto-indent-kill-line-removes-extra-spaces)
-      (if (and (eolp) (not (bolp)))
-          (progn (delete-indentation 't)
-                 (when auto-indent-kill-next-line-when-at-end-of-current-line
-                   (while (looking-at " $")
-                     (delete-char 1)
-                     (delete-indentation t)))))))
+           auto-indent-kill-line-removes-extra-spaces
+	   (eolp) (not (bolp)))
+      (progn (delete-indentation 't)
+	     (when auto-indent-kill-next-line-when-at-end-of-current-line
+	       (while (looking-at " $")
+		 (delete-char 1)
+		 (delete-indentation t))))
+    (ad-do-it)))
+
 (defvar auto-indent-mode-pre-command-hook-line nil)
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
 (defvar auto-indent-last-pre-command-hook-point nil)
