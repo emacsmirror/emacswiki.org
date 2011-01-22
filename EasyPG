@@ -128,6 +128,14 @@ Downgrading to gpg 1.4.11 from 2.0.16 allowed me to open gpg files again.
 
 ----
 
+One reason for 'File exists, but cannot be read' can be that it cannot find gpg.  It is a shame that the error message is so bad.
+
+To fix, you can either set epg-gpg-program to the full path (e.g. /sw/bin/gpg2) or set it to a relative path (e.g. gpg2) and make sure that exec-path contains the right directory.  Setting $PATH from inside Emacs is NOT adequate, it has to be in exec-path.  (Setting $PATH outside Emacs would probably do but with Emacs.app invoked from Finder that might not be convenient.)
+
+ -rjk
+
+----
+
 == Documentation ==
 
 Being difficult to find it online I decided to extract and publish the EasyPG Assistant User's Manual found within the package of Emacs 23.1.

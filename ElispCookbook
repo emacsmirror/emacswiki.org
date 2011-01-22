@@ -299,7 +299,7 @@ Alternatively, replacing the `let' with `save-excursion'.
 === String a number? ===
 
  (defun string-integer-p (string)
-   (if (string-match "\\`-?[0-9]+\\'" string)
+   (if (string-match "\\`[-+]?[0-9]+\\'" string)
        t
      nil))
 
@@ -308,6 +308,26 @@ Alternatively, replacing the `let' with `save-excursion'.
 
  (string-integer-p "x1234")
    ==> nil
+
+ (string-integer-p "3.141592653589793")
+   ==> nil
+
+ (defun string-float-p (string)
+   (if (string-match "\\`[-+]?[0-9]+\\.[0-9]*\\'" string)
+       t
+     nil))
+
+ (string-float-p "1234")
+   ==> nil
+
+ (string-float-p "3.141592653589793")
+   ==> t
+
+ (string-float-p ".1")
+   ==> nil
+
+ (string-float-p "1.")
+   ==> t
 
 === String to number ===
 
@@ -531,6 +551,33 @@ so that usually the list has to be reversed after the loop.
 destructively by swiveling pointers around. See
 DestructiveOperations for more about this.
 
+Copying:
+
+Use `copy-sequence' to make a copy of a list that won't change the
+elements of the original.
+
+    (let* ((orig '((1 2) (3 4)))
+           (copy (copy-sequence orig)))
+      (setcdr copy '((5 6)))
+      (list orig copy))
+    ==> (((1 2) (3 4)) ((1 2) (5 6)))
+
+However, the elements in the copy are still from the original.
+
+    (let* ((orig '((1 2) (3 4)))
+           (copy (copy-sequence orig)))
+      (setcdr (cadr copy) '(0))
+      (list orig copy))
+    ==> (((1 2) (3 0)) ((1 2) (3 0)))
+
+The function `copy-tree' is the recursive version of `copy-sequence'.
+
+    (let* ((orig '((1 2) (3 4)))
+           (copy (copy-tree orig)))
+      (setcdr (cadr copy) '(0))
+      (list orig copy))
+    ==> (((1 2) (3 4)) ((1 2) (3 0)))
+
 Filtering:
 
 Emacs Lisp doesn't come with a `filter' function to keep elements that satisfy a conditional and excise the elements that do not satisfy it.  One can use `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
@@ -740,18 +787,18 @@ This is a nice and simple way to edit a file with Emacs Lisp,
 especially when there's a chance the file might be already be visited
 in Emacs and its ok to edit the existing buffer.
 
-    (with-current-buffer (find-file-noselect "~/logfile")
-        (goto-char (point-max))
-        (insert (format "Hash of last line: %s"
-                 (md5
-                  (save-excursion
-                    (forward-line -1)
-                    (buffer-substring-no-properties (point)
-                                                    (line-end-position))))))
-        (newline)
-        (with-temp-message "Writing file..."
-          (save-buffer))
-        (message "Writing file...done"))
+  (with-current-buffer (find-file-noselect "~/logfile")
+    (goto-char (point-max))
+    (insert (format "Hash of last line: %s"
+             (md5
+              (save-excursion
+                (forward-line -1)
+                (buffer-substring-no-properties (point)
+                                                (line-end-position))))))
+    (newline)
+    (with-temp-message "Writing file..."
+      (save-buffer))
+    (message "Writing file...done"))
 
 === Filter ===
 

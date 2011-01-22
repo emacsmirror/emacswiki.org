@@ -520,7 +520,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 	       (while (looking-at " $")
 		 (delete-char 1)
 		 (delete-indentation t))))
-    (ad-do-it)))
+    ad-do-it))
 
 (defvar auto-indent-mode-pre-command-hook-line nil)
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
