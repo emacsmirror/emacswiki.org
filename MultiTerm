@@ -204,5 +204,8 @@ Of course I can copy a ^R charactor from somewhere else and paste it into termin
 : Because C-r is default keystroke for isearch-backward, for avoid conflict with C-r, i binding M-r to send "C-r" character to shell.
 : You can use option term-bind-key-alist/term-unbind-key-list to binding/unbinding special keystroke in multi-term.el, and don't use term-mode-hook. :)  -- AndyStewart
 
+[new]
+Hi.  I'm wondering how I can get the ESC key to forward on an actual terminal escape (C-[) to the shell process.  Currently it's being interpreted as meta.  Since I am able to actually successfully press the meta key on my own, I don't need ESC to duplicate that functionality.  I've tried removing "<ESC>" from term-unbind-key-list, but still when I hit the ESC key, it's being used by Emacs.
+
 ----
 CategoryShell

@@ -1,5 +1,5 @@
 ;;; anything-gtags.el --- GNU GLOBAL anything.el interface
-;; $Id: anything-gtags.el,v 1.27 2010/02/06 12:33:13 rubikitch Exp $
+;; $Id: anything-gtags.el,v 1.27 2010-02-06 12:33:13 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -51,7 +51,7 @@
 ;;; History:
 
 ;; $Log: anything-gtags.el,v $
-;; Revision 1.27  2010/02/06 12:33:13  rubikitch
+;; Revision 1.27  2010-02-06 12:33:13  rubikitch
 ;; Added more actions to `anything-c-source-gtags-select'.
 ;; http://d.hatena.ne.jp/shinking/20100130/1264869641
 ;;
@@ -142,7 +142,7 @@
 
 (require 'anything)
 (require 'anything-config nil t)        ; highlight line if available
-(require 'gtags)
+(require 'gtags nil t)
 
 (defgroup anything-gtags nil
   "Gtags Anything interface"
@@ -199,8 +199,16 @@ If it is other symbol, display file name in candidates even if classification is
 (defvar aggs-buffer "*anything gtags select*")
 
 (defun aggs-candidate-display (s e)
-  ;; 16 = length of symbol
-  (buffer-substring-no-properties (+ s 16) e))
+  (buffer-substring-no-properties (aggs-search-not-space-point s e) e))
+
+(defun aggs-search-not-space-point (s e)
+  (save-excursion
+    (goto-char s)
+    (let ((space-point (search-forward " " e t)))
+      (if (and space-point (> (- space-point s) 16))
+          (- space-point 1) ; for buffer-substring
+        (+ s 16)))))
+
 (defun aggs-set-anything-current-position ()
   (declare (special c-source-file))
   ;; It's needed because `anything' saves
@@ -310,5 +318,5 @@ If it is other symbol, display file name in candidates even if classification is
 (provide 'anything-gtags)
 
 ;; How to save (DO NOT REMOVE!!)
-;; (emacswiki-post "anything-gtags.el")
+;; (progn (magit-push) (emacswiki-post "anything-gtags.el"))
 ;;; anything-gtags.el ends here
