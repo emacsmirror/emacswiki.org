@@ -69,7 +69,7 @@ In my .emacs file I have the following:
         (retcode (shell-command (concat "~/bin/my-latex " action " " buffer-file-name))))
     (if (= retcode 0) (set-frame-configuration f1))))
 
-(add-hook 'LaTeX-mode-hook (lambda ()
+(add-hook 'latex-mode-hook (lambda ()
       (define-key LaTeX-mode-map (kbd "<f12>") '(lambda () (interactive) (my-latex "preview")))
       (define-key LaTeX-mode-map (kbd "<S-f12>") '(lambda () (interactive) (my-latex "create")))))
 }}}

@@ -1,12 +1,12 @@
 ;;; sunrise-x-mirror.el --- Full read/write access to compressed archives for the Sunrise Commander File Manager.
 
-;; Copyright (C) 2008-2010 José Alfredo Romero Latouche.
+;; Copyright (C) 2008-2011 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 315 $
+;; RCS Version: $Rev: 350 $
 ;; Keywords: Sunrise Commander Emacs File Manager Extension Archives Read/Write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
@@ -17,7 +17,7 @@
 ;; the terms of the GNU General Public License as published by the Free Software
 ;; Foundation,  either  version  3 of the License, or (at your option) any later
 ;; version.
-;; 
+;;
 ;; This  program  is distributed in the hope that it will be useful, but WITHOUT
 ;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ;; FOR  A  PARTICULAR  PURPOSE.  See the GNU General Public License for more de-
@@ -79,7 +79,7 @@
 ;; work  on  Windows.  It was written on GNU Emacs 23 on Linux and tested on GNU
 ;; Emacs 22 and 23 for Linux.
 
-;; This is version 2 $Rev: 315 $ of the Sunrise Commander Mirror Extension.
+;; This is version 2 $Rev: 350 $ of the Sunrise Commander Mirror Extension.
 
 ;;; Installation and Usage:
 
@@ -145,7 +145,7 @@
   "Implementation of unionfs to use for creating mirror areas."
   :group 'sunrise
   :type '(choice (const :tag "funionfs" funionfs)
-		 (const :tag "unionfs-fuse" unionfs-fuse)))
+         (const :tag "unionfs-fuse" unionfs-fuse)))
 
 (defface sr-mirror-path-face
   '((t (:background "blue" :foreground "yellow" :bold t :height 120)))
@@ -221,20 +221,20 @@
       (sr-goto-dir (sr-mirror-mount path)))
     (add-hook 'kill-buffer-hook 'sr-mirror-on-kill-buffer)
     t ))
- 
+
 (defun sr-mirror-mount (path)
   "Creates  and  mounts  (if necessary) all the directories needed to mirror the
   compressed archive identified by the given file path and returns the file path
   to its corresponding mirror area."
   (let* ((base (sr-mirror-mangle path))
-         (virtual (sr-avfs-dir path))
+         (virtual (sr-mirror-full-demangle path))
          (mirror (concat sr-mirror-home base))
          (overlay (concat sr-mirror-home "." base))
          (command
           (cond ((eq 'funionfs sr-mirror-unionfs-impl)
                  (concat "cd ~; funionfs " overlay " " mirror
                          " -o dirs=" virtual "=ro"))
-                
+
                 ((eq 'unionfs-fuse sr-mirror-unionfs-impl)
                  (concat "cd ~; unionfs-fuse -o cow,kernel_cache -o allow_other "
                          overlay "=RW:" virtual "=RO " mirror)))))
@@ -245,7 +245,7 @@
       (make-directory overlay)
       (shell-command-to-string command))
     mirror))
- 
+
 (defun sr-mirror-close (&optional do-commit local-commit moving)
   "Destroys  the  current mirror area by unmounting and deleting the directories
   it was built upon. Tries to automatically repack the mirror and substitute the
@@ -254,11 +254,11 @@
   (interactive)
   (unless sr-mirror-home
     (error (concat "Sunrise: sorry, can't mirror " (dired-get-filename))))
-    
+
   (let ((here (dired-current-directory))
         (sr-mirror-divert-goto-dir nil)
         (pos) (mirror) (overlay) (vroot) (vpath) (committed))
-    
+
     (unless (sr-overlapping-paths-p sr-mirror-home here)
       (error (concat "Sunrise: sorry, that's not a mirror area: " here)))
 
@@ -316,7 +316,7 @@
 (defun sr-mirror-unmount (mirror overlay)
   "Unmounts  and  deletes  all directories used for mirroring a given compressed
   archive."
-  (let* ((command (concat "fusermount -u " sr-mirror-home mirror))
+  (let* ((command (concat "cd ~; fusermount -u " sr-mirror-home mirror))
          (err (shell-command-to-string command)))
     (if (or (null err) (string= err ""))
         (progn
@@ -345,12 +345,14 @@
 (defun sr-mirror-repack (mirror)
   "Tries  to repack the given mirror. On success returns a string containing the
   full path to the newly packed archive, on failure throws an error."
+  (message "Sunrise: repacking mirror, please wait...")
   (let* ((target-home (concat sr-mirror-home ".repacked/"))
+         (archive (replace-regexp-in-string "#[a-z0-9]*$" "" mirror))
          (target (replace-regexp-in-string
                   "/?$" ""
-                  (car (last (split-string mirror "+")))))
+                  (car (last (split-string archive "+")))))
          (files (directory-files (concat sr-mirror-home mirror)))
-         (command (assoc-default mirror sr-mirror-pack-commands-alist 'string-match)))
+         (command (assoc-default archive sr-mirror-pack-commands-alist 'string-match)))
 
     (if (null command)
         (error (concat "Sunrise: sorry, don't know how to repack " mirror)))
@@ -366,11 +368,12 @@
 (defun sr-mirror-mangle (path)
   "Transforms  the  given  filesystem  path  into  a  string  that  can  be used
   internally as the name of a new mirror area."
-  (if (equal ?/ (string-to-char path))
-      (setq path (substring path 1)))
-  (replace-regexp-in-string
-   "/" "+"
-   (replace-regexp-in-string "\\+" "{+}" path)))
+  (let ((handler (assoc-default path sr-avfs-handlers-alist 'string-match)))
+    (if (equal ?/ (string-to-char path))
+        (setq path (substring path 1)))
+    (concat (replace-regexp-in-string
+             "/" "+"
+             (replace-regexp-in-string "\\+" "{+}" path)) handler)))
 
 (defun sr-mirror-demangle (path)
   "Does  the  opposite of sr-mirror-mangle, ie. transforms the given mirror area
@@ -378,7 +381,24 @@
   (concat "/"
           (replace-regexp-in-string
            "{\\+}" "+" (replace-regexp-in-string
-                        "\\+\\([^}]\\)" "/\\1" path))))
+                        "\\+\\([^}]\\)" "/\\1" (replace-regexp-in-string
+                                                "#[a-z0-9]*$" "" path)))))
+
+(defun sr-mirror-full-demangle (path)
+  "Demangles recursively the given path, so as to obtain the current path of the
+   originally reflected archive. This is necessary because reflecting an archive
+   that is itself a reflection causes deadlocks in FUSE."
+  (let ((reflected path)
+        (home-len (length sr-mirror-home))
+        (handler (assoc-default path sr-avfs-handlers-alist 'string-match))
+        (prev-path))
+    (while (and (not (string= reflected prev-path))
+                (sr-overlapping-paths-p sr-mirror-home reflected))
+      (setq prev-path reflected)
+      (setq reflected (substring reflected home-len)
+            reflected (sr-mirror-demangle reflected)))
+    (setq reflected (concat sr-avfs-root reflected handler))
+    reflected))
 
 (defun sr-mirror-files (directory)
   "Returns a list with the names of files and directories that can be considered
@@ -408,7 +428,7 @@
                   (setq mirror (substring mirror 0 pos))))
             (if (and target
                      (or (> (length target) 0) force-root)
-                     (not (equal ?. (string-to-char mirror)))) 
+                     (not (equal ?. (string-to-char mirror))))
                 (concat sr-mirror-home "." mirror "/" target)
               dirname))
         dirname))))
