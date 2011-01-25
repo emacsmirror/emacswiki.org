@@ -105,7 +105,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * VhdlMode
 * WhitespaceMode -- for those of you sick enough :)
 * WmlMode -- Wesnoth Markup Language
-* GWTMuMaMo -- Multi major modes for Google Web Toolkit code
+* GwtMuMaMo -- Multi major modes for Google Web Toolkit code
 
 For discussion of programming modes that can be used for Guile, please see GuileIde and contribute your solutions and wishes.
 

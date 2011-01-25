@@ -212,7 +212,7 @@
 ;;; ==============================
 ;;; :CHANGESET 2405
 ;;; :CREATED <Timestamp: #{2011-01-20T16:18:34-05:00Z}#{11034} - by MON KEY>
-(defcustom *mon-url-utils-xrefs* nil
+(defcustom *mon-url-utils-xrefs*
   '(mon-its-all-text-purge-on-quit mon-html-fontify-generate-file-name
     mon-htmlfontify-dir-purge-on-quit mon-htmlfontify-buffer-to-firefox
     mon-htmlfontify-region-to-firefox mon-hexcolor-add-to-font-lock

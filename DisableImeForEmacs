@@ -2,13 +2,13 @@ It's convenient for people who speak in Korean or Japanese or another language t
 
 For MS Windows, use DisableImeForEmacs programs described at http://kldp.org/node/104347
 
-'''for [http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl EmacsW32]'''
-* [http://kldp.org/files/DIFE-DisableIMEforEmacsW32-src.zip DIFE-DisableIMEforEmacsW32-src.zip]
-* [http://kldp.org/files/DIFE-DisableIMEforEmacsW32-bin.zip DIFE-DisableIMEforEmacsW32-bin.zip]
+'''for [http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl EmacsW32] and [http://ftp.gnu.org/gnu/emacs/windows/ GNU Emacs 23]'''
+* [http://kldp.org/files/DIFE-DisableIMEforEmacs-src.zip DIFE-DisableIMEforEmacs-src.zip]
+* [http://kldp.org/files/DIFE-DisableIMEforEmacs-bin.zip DIFE-DisableIMEforEmacs-bin.zip]
 
-'''for [ftp://ftp.gnu.org/gnu/emacs/windows/ Original GNU Emacs 22]'''
-* [http://kldp.org/files/DIFE-DisableIMEforEmacs(TheOriginal)-src.zip DIFE-DisableIMEforEmacs(TheOriginal)-src.zip]
-* [http://kldp.org/files/DIFE-DisableIMEforEmacs(TheOriginal)-bin.zip DIFE-DisableIMEforEmacs(TheOriginal)-bin.zip]
+'''for [http://ftp.gnu.org/gnu/emacs/windows/ GNU Emacs 22]'''
+* [http://kldp.org/files/DIFE-DisableIMEforEmacs22-src.zip DIFE-DisableIMEforEmacs22-src.zip]
+* [http://kldp.org/files/DIFE-DisableIMEforEmacs22-bin.zip DIFE-DisableIMEforEmacs22-bin.zip]
 
 ------
 CategoryInternationalization

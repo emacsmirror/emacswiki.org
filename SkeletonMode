@@ -6,7 +6,22 @@ TomBreton wrote a nice recipe for skeletons: RecipeForSkeletonMode.
 
 == Simple example ==
 
-Here is an example that sets up a general LaTeX letter, creating a skeleton with ##define-skeleton##. The first string is the DocString, a short textual description of the skeleton. Then follows the skeleton itself, which is mostly plain strings inserted as-is. However, the string right after the !DocString, ##"Empfänger: "##, is the ''prompt string'', which the minibuffer uses for prompting for a user-entered value whenever the ##str## symbol occurs in the skeleton. The value entered is substituted in place of ##str##. The construct ##str | " *** Empfänger *** "## in the skeleton means that "##*** Empfänger ***##" will be used as the default value if nothing was entered. (If the skeleton doesn't contain any ##str## symbols, the empty symbol ##nil## may be used in place of the prompt string.) Finally, the ##_## symbol specifies the "wrap position", i.e., where the point will end up when the skeleton has been inserted. If any text is selected beforehand, the skeleton will wrap around it.
+=== Bare bones ===
+
+    (define-skeleton hello-world-skeleton
+      "Write a greeting"
+      "Type name of user: "
+      "hello, " str "!")
+
+=== Full example ===
+
+Here is an example that sets up a general LaTeX letter, creating a skeleton with ##define-skeleton##. 
+
+The first string is the DocString, a short textual description of the skeleton. Then follows the skeleton itself, which is mostly plain strings inserted as-is. However, the string right after the !DocString, ##"Empfänger: "##, is the ''prompt string'', which the minibuffer uses for prompting for a user-entered value whenever the ##str## symbol occurs in the skeleton. The value entered is substituted in place of ##str##.
+
+The construct ##str | " *** Empfänger *** "## in the skeleton means that "##*** Empfänger ***##" will be used as the default value if nothing was entered. (If the skeleton doesn't contain any ##str## symbols, the empty symbol ##nil## may be used in place of the prompt string.)
+
+Finally, the ##_## symbol specifies the "wrap position", i.e., where the point will end up when the skeleton has been inserted. If any text is selected beforehand, the skeleton will wrap around it.
 
     (define-skeleton latex-skeleton
       "Inserts a Latex letter skeleton into current buffer.
