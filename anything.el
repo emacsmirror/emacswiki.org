@@ -1732,6 +1732,7 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
     (set (make-local-variable 'anything-last-sources-local) anything-sources)
     (set (make-local-variable 'anything-follow-mode) nil)
     (set (make-local-variable 'anything-display-function) anything-display-function)
+    (anything-initialize-persistent-action)
     (anything-log-eval anything-display-function anything-let-variables)
     (loop for (var . val) in anything-let-variables
           do (set (make-local-variable var) val))
@@ -3105,15 +3106,16 @@ Otherwise goto the end of minibuffer."
      ,@body))
 (put 'with-anything-display-same-window 'lisp-indent-function 0)
 
+(defvar anything-persistent-action-display-window nil)
+(defun anything-initialize-persistent-action ()
+  (set (make-local-variable 'anything-persistent-action-display-window) nil))
+
 (defun* anything-execute-persistent-action (&optional (attr 'persistent-action))
   "If a candidate is selected then perform the associated action without quitting anything."
   (interactive)
   (anything-log "executing persistent-action")
   (save-selected-window
-    (select-window (get-buffer-window (anything-buffer-get)))
-    (select-window (setq minibuffer-scroll-window
-                         (if (one-window-p t) (split-window)
-                           (next-window (selected-window) 1))))
+    (anything-select-persistent-action-window)
     (anything-log-eval (current-buffer))
     (let ((anything-in-persistent-action t))
       (with-anything-display-same-window
@@ -3123,6 +3125,16 @@ Otherwise goto the end of minibuffer."
              (anything-get-action))
          t)
         (anything-log-run-hook 'anything-after-persistent-action-hook)))))
+
+(defun anything-select-persistent-action-window ()
+  (select-window (get-buffer-window (anything-buffer-get)))
+  (select-window (setq minibuffer-scroll-window
+                       (setq anything-persistent-action-display-window
+                             (or anything-persistent-action-display-window
+                                 (if anything-samewindow
+                                     (if (one-window-p t) (split-window)
+                                       (next-window (selected-window) 1))
+                                   (get-buffer-window anything-current-buffer)))))))
 
 (defun anything-persistent-action-display-buffer (buf &optional not-this-window)
   "Make `pop-to-buffer' and `display-buffer' display in the same window in persistent action.

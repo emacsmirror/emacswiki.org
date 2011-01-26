@@ -55,7 +55,11 @@ This is the January, 2011 version
 
 <pre>
 ;; Paul Johnson <pauljohn@ku.edu>
-;; 2011-01-09
+;; 2011-01-25
+
+;; framepop is not installed on some systems, so I commented
+;; that out below. It is neat, if you have framepop.
+
 ;; This updates my previous startup option file that was called
 ;; 50emacs-ess-ku.el. Either you should put this file in your
 ;; Emacs site-start.d folder or put it in your home directory 
@@ -134,10 +138,10 @@ This is the January, 2011 version
 ;; the following causes useful changes in the way special frames are
 ;; delivered. It doesn't get all special frames, such as "grep".
 ;; But it does grab tab completions. That's a big plus.
-(require 'advice)
-(when window-system
-  (require 'framepop)
-  (framepop-enable))
+;(require 'advice)
+;(when window-system
+;  (require 'framepop)
+;  (framepop-enable))
 
 (setq framepop-frame-parameters
       '((name . nil)                     ; use buffer name

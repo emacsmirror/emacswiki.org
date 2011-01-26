@@ -597,14 +597,12 @@ Force to dehighlight \\[erefactor-dehighlight-all-symbol]"
     (unless symbol
       (error "No symbol at point"))
     (erefactor-highlight-update-region 
-     (point-min) (point-max) (erefactor-create-regexp symbol))
-    (erefactor-lazy-highlight-suspend)))
+     (point-min) (point-max) (erefactor-create-regexp symbol))))
 
 (defun erefactor-dehighlight-all-symbol ()
   "Dehighlight the all highlighted symbols in this buffer."
   (interactive)
-  (erefactor-dehighlight-all)
-  (erefactor-lazy-highlight-resume))
+  (erefactor-dehighlight-all))
 
 ;;
 ;; experimental
@@ -623,19 +621,7 @@ In highlight mode, the highlight the current symbol if recognize as a local vari
 (defun erefactor-lazy-highlight-turn-on ()
   (erefactor-highlight-mode 1))
 
-(defun erefactor-lazy-highlight-suspend ()
-  (setq erefactor-lazy-highlight--previous t))
-
-(defun erefactor-lazy-highlight-resume ()
-  (setq erefactor-lazy-highlight--previous nil))
-
 (defvar erefactor-lazy-highlight--timer nil)
-
-;;FIXME if highlight current symbol 
-;; -> change symbol name
-;; -> quickly back to highlighted point
-(defvar erefactor-lazy-highlight--previous nil)
-(make-variable-buffer-local 'erefactor-lazy-highlight--previous)
 
 (defun erefactor-lazy-highlight--stop ()
   (when erefactor-lazy-highlight--timer
@@ -659,8 +645,11 @@ In highlight mode, the highlight the current symbol if recognize as a local vari
                               'erefactor-lazy-highlight--highlight))))
 
 (defun erefactor-lazy-highlight--dehihglight ()
-  (erefactor-dehighlight-all)
-  (setq erefactor-lazy-highlight--previous nil))
+  (erefactor-dehighlight-all))
+
+(defun erefactor-lazy-highlight--post-command ()
+  (erefactor-lazy-highlight--dehihglight)
+  (remove-hook 'post-command-hook 'erefactor-lazy-highlight--post-command))
 
 (defun erefactor-lazy-highlight--highlight ()
   (condition-case nil
@@ -669,13 +658,8 @@ In highlight mode, the highlight the current symbol if recognize as a local vari
        ;; ex: erefactor-rename-symbol-*
        (this-command)
        ((not erefactor-highlight-mode))
-       ;; t means suppress lazy highlight
-       ((eq erefactor-lazy-highlight--previous t))
-       ((and erefactor-lazy-highlight--previous 
-             (= erefactor-lazy-highlight--previous (point))))
        (t
         (erefactor-lazy-highlight--dehihglight)
-        (setq erefactor-lazy-highlight--previous (point)) ;; save point
         (let ((symbol (thing-at-point 'symbol)))
           (when symbol
             (let ((region (erefactor--find-local-binding symbol)))
@@ -683,7 +667,8 @@ In highlight mode, the highlight the current symbol if recognize as a local vari
                 (erefactor-highlight-update-region 
                  (car region) (cdr region)
                  (erefactor-create-regexp symbol)
-                 nil 'erefactor-context-code-p)))))))
+                 nil 'erefactor-context-code-p)
+                (add-hook 'post-command-hook 'erefactor-lazy-highlight--post-command)))))))
     ;; completely ignore all errors
     (error nil)))
 
@@ -822,6 +807,27 @@ See variable `erefactor-lint-emacsen'."
       (if major-only
           (string-to-number (match-string 1 output))
         (match-string 0 output)))))
+
+;;
+;; other elisp compatibility
+;;
+
+;; adhoc solution..
+(require 'advice)
+(defadvice ahs-dropdown-list-p 
+  (around erefactor-hack-ahs-dropdown-list-p () activate)
+  (or
+   (setq ad-return-value
+         (remove-if-not
+          (lambda (ov) (overlay-get ov 'erefactor-overlay-p))
+          (overlays-in 
+           (max (1- (point)) (point-min))
+           (min (1+ (point)) (point-max)))))
+   ad-do-it))
+
+;;
+;; map
+;;
 
 (defvar erefactor-map nil)
 

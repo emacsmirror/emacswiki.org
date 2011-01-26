@@ -2,7 +2,7 @@ These dictionary tree data structures are a hybrid between [[Tries]] and hash ta
 
 The data is stored in a trie, but results of queries that take particularly long to retrieve are cached in hash tables, which are automatically kept synchronised with the tree. The package also provides persistent storage of the data structures in files, automatic saving, using multiple dictionary trees together as a combined meta-dictionary, and various other convenience features.
 
-Requires the [[Heaps]], [[Tries]], TaggedNFA and [[Queues]] packages. The latest version (0.12.3, released October 2010) can be obtained from:
+Requires the [[Heaps]], [[Tries]], TaggedNFA and [[Queues]] packages. The latest version (0.12.4, released January 2011) can be obtained from:
 
 * Dictionary Tree package download: http://www.dr-qubit.org/download.php?file=predictive/dict-tree.el
 * Dictionary Tree git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>

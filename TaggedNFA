@@ -1,6 +1,6 @@
 A tagged, [http://en.wikipedia.org/wiki/Nondeterministic_finite_state_machine non-deterministic finite state automata] (NFA) is an abstract computing machine that recognises [http://en.wikipedia.org/wiki/Regular_language regular languages]. In layman's terms, they are used to decide whether a string matches a regular expression. The "tagged" part means that the NFA can do group-capture: it returns information about which parts of a string matched which subgroup of the regular expression.
 
-The latest version  (0.1, released February 2009) can be obtained from:
+The latest version  (0.1.1, released January 2011) can be obtained from:
 
 * tNFA package download: http://www.dr-qubit.org/download.php?file=predictive/tNFA.el
 * tNFA git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>

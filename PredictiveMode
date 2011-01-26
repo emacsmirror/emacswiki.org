@@ -1,6 +1,6 @@
 Given the beginning of a word, Predictive Mode is a minor mode that tries to predict the rest of the word, and offers you an appropriate completion.
 
-It's at version 0.23.8 (released October 2010), but it's still undergoing steady development at the moment, so don't forget to check for updates every so often.
+It's at version 0.23.9 (released January 2011), but it's still undergoing steady development at the moment, so don't forget to check for updates every so often.
 
 * Predictive package download: http://www.dr-qubit.org/download.php?file=predictive/predictive.tar.gz
 * Predictive git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>

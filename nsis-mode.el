@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Nov 16 15:48:02 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Mon Dec  6 09:20:37 2010 (-0600)
+;; Last-Updated: Tue Jan 25 17:11:27 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1407
+;;     Update #: 1411
 ;; URL: http://www.emacswiki.org/emacs/download/nsis-mode.el
 ;; Keywords: NSIS
 ;; Compatibility: Emacs 23.2
@@ -26,11 +26,23 @@
 ;;
 ;;  (autoload 'nsis-mode "nsis-mode" "NSIS mode" t)
 ;;
+;; (setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Ii]\\)$" .
+;;                                  nsis-mode)) auto-mode-alist))
+;;
+;; (setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Hh]\\)$" .
+;;                                  nsis-mode)) auto-mode-alist))
+;;
 ;; Thats it.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 25-Jan-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Jan 18 14:31:23 2011 (-0600) #1410 (us041375)
+;;    Added more explicit setup instructions
+;; 06-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Dec  6 19:11:01 2010 (-0600) #1408 (Matthew L. Fidler)
+;;    Changed comment start and comment stop to single line semi-colons
 ;; 06-Dec-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Dec  6 09:05:34 2010 (-0600) #1404 (Matthew L. Fidler)
 ;;    Made nsis-yas-description not depend on finding MUI_FUNCTION_DESCRIPTION_BEGIN.  If MUI_DESCRIPTION_TEXT is found, insert there.
@@ -676,7 +688,6 @@
 ;; Font Lock Keywords
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defalias 'e 'nsis-font-lock-extend-region-continue)
 (defun nsis-font-lock-extend-region-continue ()
   "Extends region for multi-line matches, and multi-line comments"
   (interactive)
@@ -2117,8 +2128,8 @@ Returns first position.
         paragraph-separate      "^[ \t]*$"
         paragraph-start         "^[ \t]*$"
         require-final-newline   t
-        comment-start           "/*"
-        comment-end             "*/"
+        comment-start           ";"
+        comment-end             ""
         comment-start-skip      "\\([;#]+\\|/\\*+\\)\\s *"
         comment-column          40)
   (nsis-construct-faces)

@@ -1,18 +1,16 @@
-= FindFileInProject
-
 This library provides a method for quickly finding any file in a given
 project. Projects are defined in two ways. If the
 `locate-dominating-file' function is bound, it assumes you are
 using Emacs 23, in which case you it will look for a
 `.dir-settings.el' file in an ancestor directory of the current
-file. Otherwise it uses the `project-local-variables' library,
+file. Otherwise it uses the ProjectLocalVariables library,
 which looks for a `.emacs-project' file.
 
 By default, it looks only for files whose names match
 `ffip-regexp', but it's understood that that variable will be
 overridden locally. This can be done either with a mode hook:
 
-(add-hook 'emacs-lisp-mode-hook (lambda (setl ffip-regexp ".*\\.el")))
+    (add-hook 'emacs-lisp-mode-hook (lambda (setl ffip-regexp ".*\\.el")))
 
 or by setting it in your .emacs-project.el file, in which case it will
 get set locally by the project-local-variables library. On Emacs 23
@@ -31,6 +29,7 @@ instead of `completing-read'.
 
 It's available via ELPA or at [Lisp:find-file-in-project.el Download]
 
+== Alternatives ==
 
 There is also rinari-find-file-in-project. 
 Link: http://github.com/technomancy/rinari/tree/master
