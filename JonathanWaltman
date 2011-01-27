@@ -16,6 +16,9 @@ Welcome to the wiki. -- DrewAdams
 Wow this info file is over 9MB uncompressed.  makeinfo defaults to splitting info files in 300k byte chunks by default.  I think it is time to bump up this value to some higher value, but 9MB is by far the largest info file I've ever seen.  However it may be ok these days with most computers having several gigabytes of memory.  -- RichardKim
 
 [new]
+Yes, it is quite large;  it includes all of the Python docs in a single file.  You can download the Texinfo source file from <https://bitbucket.org/jonwaltman/pydoc-info/downloads/python.texi.gz> and build it yourself if you want a split-up info file.  -- JonathanWaltman
+
+[new]
 Thanks for the latest python.info!  I am very glad that you added texinfo support to Sphinx.  I've been using python info files for version 2.4, because of lack of texinfo support in Sphinx.  Now I can upgrade the python info files to version 2.7.  I would be interested in knowing what you changed to info-lookup-symbol, because I've been using the following elisp for years to setup info-lookup. -- RichardKim
 
 
@@ -54,6 +57,31 @@ Thanks for the latest python.info!  I am very glad that you added texinfo suppor
       )
 
      ))
+
+[new]
+This code and the code in "python.el" was broken by some changes introduced with the new info docs.
+
+* The info files "python-ref" and "python-lib" have been merged into a single file, "python".
+* There is now only a single Index section, "Index"
+
+The following code (modified copy from "python.el") provides the basic support needed to make `info-lookup-symbol' work with the new docs:
+
+<pre>
+(require 'info-look)
+
+(info-lookup-add-help
+ :mode 'python-mode
+ :regexp "[[:alnum:]_]+"
+ :doc-spec
+ '(("(python)Index" nil "")))
+</pre>
+
+
+[https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info] is more complex and expects index entries to match the format produced by Sphinx.  It tries to convert index entries to more precise symbol names in order to avoid  duplicate and ambiguous names.  For example, performing `info-lookup-symbol' on the phrase "os.write" using the above code, it will lookup the symbol "write" and direct you to the documentation for array's write method.  pydoc-info should work as expected and direct you to the documentation for the os.write function.
+
+
+Feedback or suggestions on [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info] are welcome.  -- JonathanWaltman
+
 
 ----
 CategoryHomepage

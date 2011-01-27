@@ -105,7 +105,7 @@ Emacs の機能を追加するには？（Elisp プログラムと Emacs ソー�
 * CategoryBuilding -- how to build Emacs from sources
 * CategoryPatches -- patches to Emacs, mostly for extensions on the C level
 * CategoryExtensionLanguage -- alternatives to EmacsLisp: Guile, Erlang, Python, ...
-* CategoryBiDi -- introduction to adding bidirectional input and output to Emacs
+* SupportBiDi -- introduction to adding bidirectional input and output to Emacs
 
 Emacs のダウンロードとインストール
 * CategoryPorts -- NT, Mac, GNU/Linux including Debian, BSD

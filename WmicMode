@@ -1,5 +1,0 @@
-WMIC.exe is Microsoft's "WMI Console" shipped with XP/Vista operating systems.
-
-WMIC.exe needs to live inside of Emacs so we can more fully dominate it.
-
-wmic-mode.el will expose the command `wmic' to run wmic.exe as an inferior process.

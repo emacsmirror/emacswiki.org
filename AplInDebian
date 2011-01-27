@@ -1,22 +1,28 @@
 == Intro ==
-Disclaimer: This is a Work-in-Progress page.
 
-Sorry for the terrible markup -- I am unable to enter <br/>linebreaks
+Disclaimer: This is a Work-in-Progress page.
 
 Apl comes under Debian under the Aplus packages.  These supposedly work 
 under xemacs or the shell.
+
 == Apl under the shell ==
+
 See this thread http://groups.google.com/group/comp.lang.apl/browse_thread/thread/00dda3821da693bb#
+
 == Apl under Xemacs ==
+
 I could get it to work some 5 years ago. I could not recently. So...
 Someone else can fill this :-)
 
-I am going to stick to 
+I am going to stick to
+
 == Apl under Gnu Emacs ==
+
 Cleaned up from 
 http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/1c6284278d3713d6/05e2dc099ce4a7db?lnk=raot&fwc=1
 
 === Assumptions ===
+
 # You are running a recent gnuemacs under a recent debian.
 In my case this is emacs 23 and 24 with debian unstable.
 # You have the aplus-fsf packages installed. This is the list
@@ -30,7 +36,9 @@ Load it into emacs.
 M-x set-input-method to apl-ascii (in a fresh buffer if you like)
 The left corner of the mode line should show 'apl' to indicate that emacs can deal with apl chars [toggle with C-\]
 Typing {rho} {iota} {is} should give you rho iota and left arrow: (is ⍴ ⍳ ← )
+
 === Inferior Apl ===
+
 # You should have inferior-apl.el  Lisp:inferior-apl.el.
 Note: apl.el is needed for writing apl symbols but it has not interpreter functionality. inferior-apl.el has the interpreter functionality. It needs apl.el
 # Set the load path (top of inferior-apl.el) to the path of apl.el
@@ -43,11 +51,13 @@ The {is} {rho} and {iota} should immediately convert to ← ⍴ ⍳
 Type A and a 2x3 matrix should be there
 
 === Apl Chars are where? ===
+
 Look at the top of the apl.el file
 
 Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} (ie 'less-than' 'hyphen')
 
 === TODOs ===
+
 # I'm sure this will run just as easily on ubuntu and other linuxes. But someone who has tried that needs to say that :-)
 # Better integration between apl.el and inferior-apl.el
 # Better font-locking

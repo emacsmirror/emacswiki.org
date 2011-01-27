@@ -12,12 +12,17 @@ Pure mode is included in the Pure sources and is installed along with the interp
 
 This loads Pure mode, associates the .pure and .purerc filename extensions with it, and enables syntax highlighting.
 
+Pure mode also has special support for code folding using HideShow mode. If it detects the presence of HideShow, it will teach it how to fold comments and code blocks (<code>case ... end</code>, <code>with ... end</code> etc.) in Pure, by modifying <code>hs-special-modes-alist</code> accordingly. To enable this, simply load HideShow mode before Pure mode in your .emacs (the second line also enables HideShow in all your Pure buffers):
+
+<pre>
+(require 'hideshow)
+(add-hook 'pure-mode-hook 'hs-minor-mode)
+</pre>
+
 Pure has online documentation in html format. To make the online help work inside emacs, install a recent cvs snapshot of [[emacs-w3m]] (1.4 or later will do) and enable it as follows in your .emacs:
 
 <pre>
 (require 'w3m-load)
 </pre>
 
-pure-mode will then detect the presence of emacs-w3m and you can look up the symbol at point or just browse the Pure documentation by popping up an emacs-w3m window in Emacs with the <code>pure-help</code> command.
-
-In addition, documentation in info format for use with InfoMode is available in the pure-lang-docs repo [http://code.google.com/p/pure-lang/source/browse/?repo=docs#hg%2Ftexinfo]. (This is generated using Sphinx [http://sphinx.pocoo.org/] from the same sources as the html documentation and thus the formatting is a bit rough. In particular, the cross references look best if you set <code>Info-hide-note-references</code> to <code>'hide</code> and <code>Info-refill-paragraphs</code> to <code>t</code>.)
+Pure mode detects the presence of [[emacs-w3m]] and you can then look up the symbol at point or just browse the Pure documentation by popping up an emacs-w3m window in Emacs with the <code>pure-help</code> command. (In addition, documentation in info format for use with InfoMode is available in the pure-lang-docs repo [http://code.google.com/p/pure-lang/source/browse/?repo=docs#hg%2Ftexinfo]. This is generated using Sphinx [http://sphinx.pocoo.org/] from the same sources as the html documentation and thus the formatting is a bit rough. In particular, the cross references look best if you set <code>Info-hide-note-references</code> to <code>'hide</code> and <code>Info-refill-paragraphs</code> to <code>t</code>.)

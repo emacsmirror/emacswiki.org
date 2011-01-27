@@ -4,6 +4,7 @@
 ;; Maintainer: Aaron Brady <abrady0 at yahoo dot com> :
 ;; Version: 1.0 (January 30, 2002)
 ;; Version: 1.4 (January 10, 2007) : updated to handle latest cdb
+;; Version: 1.5 (January 26, 2011) : helper functions for debugging running processes
 ;; frames a little better. also added helper functions. see
 ;; 'cdbDebugChoice' at bottom for example.
 ;; Version: 1.5 (October 19, 2008) : parse fixes for latest debug tools.
@@ -104,9 +105,10 @@
    "Highlight current line."
    (let* ((ov gud-overlay)
           (bf (gud-find-file true-file)))
-     (save-excursion
-       (set-buffer bf)
-       (move-overlay ov (line-beginning-position) (line-end-position) (current-buffer)))))
+	 (if bf
+		 (save-excursion
+		   (set-buffer bf)
+		   (move-overlay ov (line-beginning-position) (line-end-position) (current-buffer))))))
 
  (defun gud-kill-buffer ()
    (if (eq major-mode 'gud-mode)
@@ -182,26 +184,29 @@ containing the executable being debugged."
 ;; a path to another, e.g. the visual studio std library
 ;; is apparently compiled in f:/RTM/..., but I have it 
 ;; installed under program files.
-(defvar gud-cdb-debugpaths-remap 
-  '(
-    ("f:/RTM/vctools/crt_bld/SELF_X86/crt/src/" . "c:/Program Files/Microsoft Visual Studio 8/VC/crt/src/")
-    ("f:/sp/vctools/crt_bld/self_x86/crt/src" . "c:/Program Files/Microsoft Visual Studio 8/VC/crt/src/")
-    ))
+(defvar gud-cdb-remap-fname-hooks nil
+  "Hook to be run by gud-cdb-remap-fname when a source file is looked up")
+
 (defun gud-cdb-remap-fname (fname)
   (cond
    ((not fname) nil)
-   ((file-exists-p fname) fname)
+   ;;   ((file-exists-p fname) fname)
    (t ;; try to look the file up
     (let (;;(file-name-directory fname)
           ;;(file-name-nondirectory fname)
           (full-filename (expand-file-name fname))
           )
-      (loop for i in gud-cdb-debugpaths-remap 
-                      if (string-match (concat (car i) "\\(.*\\)") full-filename)
-                         return (gud-cdb-remap-fname (concat (cdr i) (match-string 1 full-filename))))))
-    ))
+	  (or 
+	   (loop for i in gud-cdb-remap-fname-hooks
+			 if (and (setq full-filename (funcall i fname)) (file-exists-p full-filename)) return full-filename)
+	   fname) 
+	  )
+	)
+   )
+  )
 
-;; where output is handled
+;; ab: where output is handled, parsed, and turned into source file
+;; gud-display-line : the 'find-file' of gud, calls gud-display-line which calls display-buffer
 (defun gud-cdb-marker-filter (string)
   (setq gud-marker-acc (concat gud-marker-acc string))
   (let* ((output "")
@@ -237,6 +242,8 @@ containing the executable being debugged."
                                 (if fn
                                     (setq gud-last-frame (cons fn line)))))))
 
+;;    (message "in")
+
 	;; *********************************************************************************
 	;; output capture  
 	;; *********************************************************************************
@@ -244,7 +251,7 @@ containing the executable being debugged."
 	;; accum latest
 	(setq lines (split-string string "\n"))
 	(loop for line in lines
-		  until (setq input-cursor-found (string-match "^[0-9]:[0-9][0-9][0-9]>" line))
+		  until (setq input-cursor-found (string-match "^[0-9]:[0-9][0-9][0-9]\\(:.*\\)?>" line))
 		  do
 		  (setq gud-output-acc (concat gud-output-acc line "\n")))
 	;; ab: match frame markers.
@@ -292,6 +299,7 @@ containing the executable being debugged."
 		  
 ;;     (while (string-match "^\\([-A-Za-z_\.:\\]*\\)(\\([0-9]*\\))\n" gud-marker-acc)
 
+;;    (message "before-munch")
     ;; too munch, but that is the debugger's fault ...
     (while (string-match 
 			"^\\([-A-Za-z0-9_\.:\\]*\\)(\\([0-9]*\\))\n" 
@@ -329,20 +337,34 @@ containing the executable being debugged."
                 (substring gud-marker-acc (match-beginning 0))))
       (setq output (concat output gud-marker-acc)
             gud-marker-acc ""))
+;;     (message "last frame: %s" gud-last-frame)
+;;     (message "marker-acc: %s" gud-marker-acc)
+;;     (message "output: %i" (length output))
+;;     (message "%s" output)
+;;     (setq output "Breakpoint 0 hit
+;; GameClient!SwitchToGameplayState:
+;; 015a74e0 55              push    ebp
+;; 0:000> 
+;; ")
+;;     (setq gud-last-frame '("c:\\src\\crossroads\\gameclientlib\\gclloading.c" . 58))
+    ;;(sleep-for 5)
     output))
 
 (defun gud-cdb-find-file (f)
   (save-excursion
     (let ((realf (gud-cdb-file-name f)))
-      (if realf
-          (find-file-noselect realf t)
-        (find-file-noselect f 'nowarn)
+	  (if (file-exists-p (or realf f))
+		  (if realf
+			  (find-file-noselect realf t)
+			(find-file-noselect f 'nowarn)
+			)
         ))))
 
 (defun cdb-simple-send (proc string)
+  (comint-send-string proc (concat string "\n")) ;; this first: error writing to buf otherwise
   (if (string-match "^[ \t]*[Qq][ \t]*" string)
-      (kill-buffer gud-comint-buffer))
-  (comint-send-string proc (concat string "\n")))
+      (kill-buffer gud-comint-buffer)
+	))
 
 (defun cdb (command-line)
   "Run cdb on program FILE in buffer *gud-FILE*.
@@ -539,6 +561,8 @@ off the specialized speedbar mode."
 		  (gud-call (format ".attach 0n%i; " exe-pid)))))
 
 (defun cdbDebugChoice (&optional predicate)
+  "if you want to debug a program running on windows, call this function and it will give you the list of running processes and
+   allow you to attach to one of them."
   (interactive)
   (let* ((exepidpair)
 		 (pid))
@@ -547,5 +571,79 @@ off the specialized speedbar mode."
 	(cdb (format "cdb -p %i" pid))
 	(rename-buffer (format "*gud-%s*" (car (string-split "\\s-+" (car exepidpair) 1))) t)))
 
-(provide 'cdb-gud)
+(defun cdbSetIP ()
+  "set instruction pointer to current point. if you are in source code and want to change the current line to mark"
+  (interactive)
+  (gud-call (format "r eip = %s" (cdbLineNoKill))))
+(defalias 'eip 'cdbSetIP)
+
+(defun cdbLineNoKill ()
+  "get current line in cdb format"
+  (concat "`" (buffer-file-name) ":" (number-to-string (count-lines (point-min) (1+ (point)))) "`"))
+
+(defun cdbLine ()
+  "kill current line in cdb format"
+  (interactive)
+  (message (kill-new (cdbLineNoKill))))
+(defalias 'xl 'cdbLine)
+
+;; ----------------------------------------
+;; auto-complete support
+
+(defvar cdb-ac-match-limit t
+  "limit for the number of matches to be collected in the cdb buffer or the src buffer for the current frame")
+
+(defun cdb-ac-candidate-words-in-buffer (prefix)
+  "cdb wants the words from the buffer for the current frame. the `ac-candidate-words-in-buffer' doesn't support this, but this version takes explicit params to do this"
+  (let ((i 0)
+        candidate
+        candidates
+        (regexp (concat "\\_<" (regexp-quote prefix) "\\(\\sw\\|\\s_\\)+\\_>")))
+    (save-excursion
+	  (goto-char 0)
+      ;; Search forward
+      (while (and (or (eq cdb-ac-match-limit t)
+                      (< i limit))
+                  (re-search-forward regexp nil t))
+        (setq candidate (match-string-no-properties 0))
+        (unless (member candidate candidates)
+          (push candidate candidates)
+          (incf i)))
+      (nreverse candidates))))
+
+(defun cdb-ac-candidates ()
+  "list of potentially matching auto-complete words"
+;;  (debug)
+  (cond
+   ((looking-back "\\(0x\\)[0-9]+") nil)
+   (t
+	(append
+	 (setq foo (ac-candidate-words-in-buffer))
+	 (if (and gud-last-last-frame (car gud-last-last-frame) (find-buffer-visiting (car gud-last-last-frame)))
+		 (with-current-buffer (find-buffer-visiting (car gud-last-last-frame))
+		   (cdb-ac-candidate-words-in-buffer ac-prefix)
+		   )
+	   )
+	 ))
+   )
+  )
+
+(defvar cdb-ac-sources 
+  '((candidates . cdb-ac-candidates) 
+	(requires . 3)))
+
+(defun cdb-ac-mode-init ()
+  (interactive)
+  "set up the auto complete variables for cdb"
+  (auto-complete-mode t)
+;;  (ac-define-dictionary-source
+;;   ac-source-cdb-keywords
+;;   ("g" "k" "kn" "p")) ;; not really necessary with the 3 character requirement
+  (setq ac-sources '(cdb-ac-sources
+					 ;; ac-source-cdb-keywords
+					 )))
+
+(if (require 'auto-complete nil t)
+	(add-hook 'cdb-mode-hook 'cdb-ac-mode-init))
+
 ;;; cdb-gud.el ends here

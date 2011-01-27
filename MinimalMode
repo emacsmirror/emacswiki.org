@@ -1,4 +1,4 @@
-Strips Emacs of extraneous GUI elements (menu bar, tool bar, scroll bar), leaving a bare text-editing frame. Additionally, can switch to a full-screen mode, providing a minimal distraction free work environment (with all the power of Emacs hiding underneath!). I think it suits dark themes better (I use [Lisp:color-theme-empty-void.el this] [ColorTheme color theme])
+Strips Emacs of extraneous GUI elements (menu bar, tool bar, scroll bar), leaving a bare text-editing frame. Additionally, can switch to a full-screen mode, providing a minimal distraction free work environment (with all the power of Emacs hiding underneath!). I think it suits dark themes better (I use [Lisp:color-theme-empty-void.el this] [ColorTheme color theme])(screenshot?)
 
 By default, pressing F11 toggles this mode. With prefix argument ( C-u <f11> ) you'll get the full-screen minimal mode.
 
