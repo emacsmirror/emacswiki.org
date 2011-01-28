@@ -30,6 +30,22 @@ The add-to-list expression associates the .foo extension with foo-mode.
 The ##\\'## matches the end of the filename; a $ would match newlines within
 filenames (true, this should be rare...  ;)).
 
+== Recipes ==
+
+When building REGEXPs for auto-mode-alist, keep in mind that the
+string matched is the full pathname.  In the examples below,
+replace the modes with your preference.
+
+Match the git commit message filename:
+
+    (add-to-list 'auto-mode-alist '(".*_EDITMSG\\'" . log-entry-mode))
+
+Match the CVS commit message filename:
+
+    (add-to-list 'auto-mode-alist
+                 (cons (concat temporary-file-directory "cvs[[:alnum:]]*\\'")
+                       'log-entry-mode)))
+
 ----
 CategoryDotEmacs
 CategoryModes

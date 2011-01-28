@@ -23,6 +23,25 @@ You can incorporate some of the latexmk commands into the Auctex C-c C-c cycle /
 * PreviewLaTeX does not place images properly when LongLines Mode is enabled.
 * For Emacs 21, no image support is available in Emacs under Windows. Without images, preview-latex is useless.
 
+* Using ghostscript 8.71 an error occurs when emacs tries to display the math images and ghostscript complains with:
+ Error: /typecheck in --setfileposition--
+as reported in http://comments.gmane.org/gmane.emacs.auctex.bugs/1822 or 
+http://thread.gmane.org/gmane.emacs.auctex.bugs/1778/focus=1781
+
+: The error occurs only in PDF mode (go to Command -> TeXing Option and uncheck Generate PDF to be back to DVI mode and every thing should work: CTRL_C CTRL_P CTRL_D). The current (January 2001) error comes from a  change in pdf_main.ps not reported to the file pdf2pdsc.ps . See patch
+http://svn.ghostscript.com/viewvc?view=rev&revision=10778
+
+: The commands:
+
+ pdflatex  "\nonstopmode\nofiles\PassOptionsToPackage{active,tightpage,auctex}{preview}\AtBeginDocument{\ifx\ifPreview\undefined\RequirePackage[displaymath,floats,graphics,textmath,sections,footnotes]{preview}[2004/11/05]\fi}" "\input" toto.tex
+
+: and:
+
+ pdf2dsc toto.pdf toto.prv/tmp33492THG/preview.dsc
+
+: were working but the dsc file was output with 'copy_trailer_attrs' instead of 'process_trailer_attrs' 
+which made further ghostscript commands fail.
+
 == See also ==
 * TexMathPreview is a spot of code for previewing TeX maths. It meant to be minimal. It just shows an image or an error.
 * WhizzyTeX for on-the-fly updated preview window. It works quite well with dealing with errors from incomplete input. Provides a minor mode for Emacs.

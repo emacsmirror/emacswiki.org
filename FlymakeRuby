@@ -90,6 +90,8 @@ makes)."
 
 Can someone please test and see if this works?
 
+Above confirmed to work in Emacs 23.2.91.1 on a Windows box.
+
 ----
 
 Here's some code to check ERB templates with flymake. You can find a detailed explanation of what this code does in [http://mnemonikk.org/2010/11/05/using-flymake-to-check-erb-templates/ this post]. 

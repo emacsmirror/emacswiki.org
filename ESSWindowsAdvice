@@ -53,6 +53,10 @@ site-lisp/site.start.d. It won't work if you put it anywhere else.
 In case I change my web host, perhaps it is wise to just show you what I have. 
 This is the January, 2011 version
 
+[new]
+framepop.el is not part of Emacs but is availabe at http://bazaar.launchpad.net/~vcs-imports/emacs-goodies-el/trunk/files/head:/elisp/emacs-goodies-el/
+[new]
+
 <pre>
 ;; Paul Johnson <pauljohn@ku.edu>
 ;; 2011-01-25
