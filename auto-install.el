@@ -1278,7 +1278,7 @@ This command just run when have exist old version."
                ;; Replace file if have exist.
                (auto-install-get-path filename)
                ;; Otherwise, install in directory `auto-install-directory'.
-               (concat auto-install-directory filename)))
+               (expand-file-name filename auto-install-directory)))
         ;; Save file.
         (if (and (file-exists-p file-path)
                  (file-writable-p file-path)
@@ -1486,3 +1486,4 @@ How to send a bug report:
 
 ;;; LocalWords:  el eol dirs fontify gistid txt func bytecomp DDirectory ediff
 ;;; LocalWords:  noselect Unmark unmark AutoInstall keybindings defalias'es
+

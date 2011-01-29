@@ -309,6 +309,8 @@ Now can anybody tell me why I set my minibuffer prompt to be inviolable? :-)
 
 -- DenisHowe 2007-03-08
 
+=== Can I make Imenu index all files in a project, e.g. with rope? ===
+
 ----
 CategoryCode
 CategoryMenus

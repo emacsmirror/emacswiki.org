@@ -9,3 +9,7 @@ Read more:
 * http://en.wikipedia.org/wiki/Fossil_%28software%29 - Wikipedia article.
 
 Fossil currently not supported by [[VC]], but job in progress - http://www.mail-archive.com/fossil-users@lists.fossil-scm.org/msg00742.html
+
+A fossil repository for vc-fossil.el to use [[VC]] is here: http://chiselapp.com/user/venks/repository/emacs-fossil
+Login as anonymous to download.
+

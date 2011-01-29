@@ -1,0 +1,139 @@
+Ce document à destination des novices est une référence des combinaisons de touches communément utilisées dans Emacs. Vous pouvez également consulter:
+* EmacsNewbieHelpReference -- Les [[combinaison]]s qui vous aident à apprendre à utiliser Emacs.
+* CategoryReferenceSheet -- Une liste plus longue de combinaisons.
+
+
+
+== Général ==
+
+* Quitter Emacs: `C-x C-c'
+
+== Tampons et Fenêtres ==
+
+* Ouvrir un fichier, existant ou nouveau: `C-x C-f' -- puis taper le nom de fichier.
+* Enregistrer [[Buffer]]: `C-x C-s'
+* Enregistrer le tampon dans un fichier différent (Enregistrer Sous): `C-x C-w'
+* Enregistrer tous les tampons ouverts: `C-x s'
+* Insérer un fichier dans un tampon: `C-x i'
+* Fermer le tampon en cours et ouvrir un nouveau fichier: `C-x C-v'
+* Tuer (fermer) un tampon: `C-x k'
+* Diviser la [[Fenêtre]]: `C-x 2' or `C-x 3'
+* Fusionner les fenêtres (maximiser la fenêtre sélectionnée dans son [[Cadre]]): `C-x 1'
+* Sélectionner la prochaine fenêtre: `C-x o'
+* Changer de tampon: `C-x b'
+* Menu des tampons (liste des tampons): `C-x C-b' -- enregistrer, effacer, ouvrir, renommer les tampons
+
+== Déplacement du Curseur ==
+
+Ces commandes déplacent le Curseur et le [[Point]]:
+  
+* Avancer d'un caractèrer: `C-f'
+* Reculer d'un caractère: `C-b'
+* Avancer d'une ligne: `C-n'
+* Reculer d'une ligne: `C-p'
+* Aller au début d'une ligne: `C-a'
+* Aller à la fin d'une ligne: `C-e'
+* Avancer d'un mot: `M-f'
+* Reculer d'un mot: `M-b'
+* Avancer d'une phrase: `M-e'
+* Reculer d'une phrase: `M-a'
+* Aller au début du tampon: ##`M-<'##
+* Aller à la fin du tampon: ##`M->'##
+
+== Défaire ==
+  
+* Défaire: C-x u, C-_, C-/, ou depuis le menu: `Edit' -> `Défaire'. Défait tous les changements lorsque la ligne mode  indique `--' au lieu de `**'
+* Refaire: après défaire, C-g and then C-x u
+* Défaire tous les changements non enregistrées dans un tampon: M-x revert-buffer
+
+Voir aussi: [[Undo]].
+
+== Annuler ==
+
+* Annuler l'opération en cours: `C-g'
+* Si ça ne fonctionne pas (annuler ou sortir de l'édition récursive): ##`C-]'##,  ##`C-M-c'##
+* ou ‘M-x top-level’
+
+Voir aussi: CancelingInEmacs.
+
+
+== Edition des espaces ==
+  
+* Indenter la ligne courante : TAB
+* Déplacer un bloc de ligne à droit ou à gauche: C-x TAB
+* Remplir (justifier) un paragraphe: `M-q;
+* Ajouter une nouvelle ligne après celle en cours: `RET'
+* Ajouter une nouvelle ligne avant celle en cours: `C-o'
+* Supprimer tout sauf une ligne vide: `C-x C-o'
+* Supprimer tout sauf un espace: `M-SPC'
+
+Voir aussi: [[Indentation]] et [[Filling]].
+
+
+== Effacer ==
+
+* Effacer le caractère précédent: `Backspace'
+* Effacer le caractère en cours: `C-d'
+* Effacer le mot précédent: `M-Backspace'
+* Effacer le mot quit quit: `M-D'
+* Effacer jusqu'à la fin de la ligne: `C-k'
+* Effacer complètement la ligne: `C-S-DEL'
+* Effacer jusqu'à la fin de la phrase: `M-k'
+
+== Selection et modification de Régions ==
+
+Copier, couper, coller, sélectionner tout, ...
+
+* Poser une marque: `C-SPC', `##C-@##', `M-x set-mark-command'
+* Sélectionner le tampon complet: `C-x h'
+* Sélectionner la page: `C-x C-p'
+* Echanger la position entre le curseur ([[Point]]) et la [[Mark]]: `C-x C-x'
+* Copier le texte après la marque: `C-Insert', `M-w'
+* Couper le texte après la marque: `C-w', `S-DEL'
+* Coller ("yank") le texte: `C-y', `S-Insert'
+* Remplacer le texte collé avec le texte copié ou coupé avant: `M-y'
+
+Voir aussi: [[Region]].
+
+== Edition simple ==
+
+* Mettre un mot en majuscule: `M-u'
+* Mettre un mot en minuscule: `M-l'
+* Ajouter une lettre capitale au mot: `M-c'
+* Transposer (échanger) des caractères adjacents: `C-t'
+* Transposer des mots adjacents: `M-t'
+* Transposer des lignes: `C-x C-t'
+* Déplacer des lignes 2 lignes avant: `C-u 2 C-x C-t'
+* Fusionner la ligne précédente: `##M-^##'
+* Fusionner la ligne suivante: `##C-1 M-^##'
+
+[:RepeatingPreviousCommands]
+== Répétition de la commande précédente ==
+   
+* Répéter la commande la plus récente: `C-x z', puis encore `z'.
+* Consulter les commandes récentes (affichées en EmacsLisp):  `M-x list-command-history'. Rejouer une commande en tapant `x' sur la ligne présentant la comm\
+ande.
+* RepeatingComplexCommand vous permet de choisir quelle commande EmacsLisp antérieure rejouer et également de la modifier.
+
+== Défilement de l'écran ==
+
+* Recentrer l'écran au niveau du curseur: `C-l'
+* Centrer l'écran en haut:  `C-0 C-l' or `C-u 0 C-l'
+* Recentrer l'écran en bas: `C-- C-l' or `C-u - C-l'
+
+== Séquences de touche Common User Access (CUA) ==
+
+Les séquences de touches CUA sont disponible avec CuaMode. Cela inclus: `C-c', `C-x', `C-v' et `C-z' et la sélection des régions visibles. Ce mode mime le c\
+omportement courant trouvé sous Ms Windows, Mac et Motif. *Note*: Si la région n'est pas activée -- pas de sélection visible -- alors `C-x' fonctionne comme\
+ dans le mode normal d' Emacs (sans cua-mode).
+
+Si la région est active, vous pouvez utiliser C-S-x (ou deux rapides C-x C-x) à la place de C-x pour faire ce que C-x fait en temps normal sous Emacs.
+C'est la même chose pour les autres séquences CUA.
+Consultez cua-mode help pour plus d'information.
+
+== Séquences de touches VI ==
+
+Les séquences de touches Vi sont disponibles avec ViperMode.
+
+----
+CategoryReferenceSheet

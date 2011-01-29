@@ -30,7 +30,7 @@ from jdee to semantic.
 * EmacsXembed, a patch for embedding gtk widgets in emacs windows!
 
 * A patch for Emacs so ImageMagick can be used to load image files.
-I can already sucessfully load .djvu files.
+I use it load .djvu files. It is now in Emacs 24.
 
 * dired-sequence.el, dired functions to handle sequentialy named files.
 
@@ -40,8 +40,14 @@ I can already sucessfully load .djvu files.
 
 * emsane.el -- An Emacs SANE frontend, SANE is the scanner interface for free operating systems.
 
-I seem to lack a convenient way to publish these things. So far I've publisehed the Emacs patches on the emacs development list, and the other packages on gnu.emacs.sources.
-The xwidget patch is currently on github.
+* dna-debug.el -- debug your dna
+
+* inkmacs.el -- emacs and inkscape integration
+
+Most elisp projects are at https://github.com/jave
+
+
+The xwidget patch is a branch in the Emacs repos.
 
 I've used Emacs since '88, but I only realised the potential of emacs nirvana in '04 when I migrated nearly all
 my applications to emacs, except multimedia. Slow learner I suppose. Recently I've even been interested in moving 

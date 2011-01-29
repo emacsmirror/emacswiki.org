@@ -340,5 +340,31 @@ However, this little problem is easily fixed with a simple registry edit using [
  "Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,38,00,38,e0,00,00,00,00
 
 
+Or, download putty0.60 source, patch it and compile (http://www.cnblogs.com/thomasnet/archive/2008/03/25/1122012.html):
+
+<pre>
+$ diff -c putty-src/WINDOWS/WINDOW.c WINDOW-patched.C
+*** putty-src/WINDOWS/WINDOW.c  Wed Apr 29 17:35:45 2009
+--- WINDOW.C    Tue Mar 25 06:11:32 2008
+***************
+*** 3674,3680 ****
+        if (wParam == VK_MENU && (HIWORD(lParam) & KF_EXTENDED)) {
+            keystate[VK_RMENU] = keystate[VK_MENU];
+        }
+!
+
+        /* Nastyness with NUMLock - Shift-NUMLock is left alone though */
+        if ((cfg.funky_type == FUNKY_VT400 ||
+--- 3674,3681 ----
+        if (wParam == VK_MENU && (HIWORD(lParam) & KF_EXTENDED)) {
+            keystate[VK_RMENU] = keystate[VK_MENU];
+        }
+!       /*disable altgr*/
+!       keystate[VK_RMENU] = 0;
+
+        /* Nastyness with NUMLock - Shift-NUMLock is left alone though */
+        if ((cfg.funky_type == FUNKY_VT400 ||
+</pre>
+
 ----
 CategoryExternalUtilities CategoryWThirtyTwo
