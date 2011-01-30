@@ -1,0 +1,19 @@
+=Rebox2=
+
+==Overview==
+
+Le Wang's fork of rebox.el that does seemless box editing and filling.
+
+Comment blocks (consisting of whole line comments) are considered boxes, so you get all the filling and editing functionality in comments automatically.
+
+==Where is it?==
+
+[https://github.com/lewang/rebox2 github]
+
+
+==Video walkthru==
+
+[http://www.youtube.com/watch?v=53YeTdVtDkU youtube]
+
+==Discussion==
+[Lewang]  If you put your questions here, I'll try to address them.

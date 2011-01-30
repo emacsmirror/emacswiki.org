@@ -10,7 +10,7 @@ Some Emacs related posts from my blog:
 * [http://citizen428.net/archives/433 Emacs for Rubyists]
 * [http://citizen428.net/archives/432 Fullscreen Emacs on Mac OS X]
 
-So far I've contributed small patches to [https://github.com/alander/org-mac-link-grabber org-mac-link-grabber] (accepted) and [http://www.emacswiki.org/emacs/TwitteringMode twittering-mode] (not yet accepted).
+So far I've contributed small patches to [https://github.com/alander/org-mac-link-grabber org-mac-link-grabber] and [http://www.emacswiki.org/emacs/TwitteringMode twittering-mode].
 
 [new]
 Welcome! --JonasBernoulli

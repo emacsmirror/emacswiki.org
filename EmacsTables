@@ -1,5 +1,11 @@
 It would be nice if Emacs was better at rendering tables.
 
+* TableMode -- ASCII art tables with flowing text
+* OrgMode -- comes with a built-in table editing mode that can be used stan-alone
+* [[ESS]] -- if you're interested in tables as in spreadsheet stuff with formulas and all that
+
+== HTML Tables ==
+
 An example is w3m rendering html. There is no "rowspan" feature for emacs images, so 
 text flow gets broken when a large image comes along.
 

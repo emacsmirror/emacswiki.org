@@ -15,5 +15,18 @@ keystrokes and messages are logged to the same list.  In GnuEmacs,
 events, not messages, and buffer <code>*Messages*</code> shows only
 messages, not keystrokes.
 
+= Hiding *Messages* buffer =
+
+For me, this buffer is useless, and annoying for its getting in the way. Unfortunately I couldn't find a universal way to suppress its creation or hide it. But since I use [[ControlTABbufferCycling#toc2|pc-bufsw.el]] for buffer switching, I just patched it to ignore not only buffers with names starting with space (the default) but the <code>*Messages*</code> as well:
+
+<pre>
+;;Return nill if buffer is not sutable for switch
+(defun pc-bufsw::can-work-buffer (buffer)
+  (let ((name (buffer-name buffer)))
+    (and (not (char-equal ?\  (aref name 0))) (not (string= name "*Messages*"))) ))
+</pre>
+
+
+
 ----
 CategoryHelp

@@ -107,6 +107,7 @@ Other pages (could this please be split in major and minor modes?):
 * RspecMode -- mode for using <nowiki>RSpec</nowiki> (a testing framework for Ruby)
 * RubyTwoMode -- two modes for writers: screenplay.el and fiction.el
 * SendmailMode -- mode for editing Sendmail configuration files -- http://www.keelhaul.demon.co.uk/linux/sendmail-mode.el
+* SentenceHighlight -- highlight current sentence in the text, useful for writers and copyeditors
 * ShowParenMode
 * ShowWhitespaceMode -- highlight blanks and tabs
 * SlimeMode -- Superior Lisp Interaction Mode for Emacs

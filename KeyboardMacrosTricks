@@ -142,7 +142,7 @@ The prefix C-u instruct M-: to insert the result of the evaluation at the point.
 then finish typing *.lm.com^J*.  Now, I've got a macro that will insert a new unique hostname each time I invoke it.  With an argument of 50, I've got 50 unique hostnames in a snap.
 
 [new]
-I find it easier in cases like these to use [[registers]]:
+I find it easier in cases like these to use [[Registers]]:
 <pre>
 C-u 1 C-x r n a ;; put 1 in register a
 C-x (           ;; start macro

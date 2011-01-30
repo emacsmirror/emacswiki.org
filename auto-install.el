@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.51 2010/12/10 10:30:58 rubikitch Exp $
+;; $Id: auto-install.el,v 1.52 2011/01/29 11:11:47 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.51 $
+;; Version: $Revision: 1.52 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.51 2010/12/10 10:30:58 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.52 2011/01/29 11:11:47 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -296,6 +296,11 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.52  2011/01/29 11:11:47  rubikitch
+;; bugfix: auto-install-buffer-save cannot treat auto-install-directory properly if it doesn't end with `/'
+;;
+;; patched by MaskRay thanks!
+;;
 ;; Revision 1.51  2010/12/10 10:30:58  rubikitch
 ;; Bugfix when wget is not installed
 ;;

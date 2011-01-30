@@ -1,0 +1,44 @@
+= Sentence highlighting =
+
+Here's a simple hack I wrote for highlighting the current sentence in the text. When writing and especially copyediting, being able to see at once where the current sentence starts and ends - especially in a complex text with long periods and wall-of-text paragraphs - saves a few milliseconds each time, and these milliseconds add up. 
+
+I didn't bother to create a real mode out of it; just copy/paste the code below to your .emacs. You need to choose in which major mode it will be active; below it is enabled for Outline mode, which I prefer for writing and editing. If you use XEmacs instead of Emacs, make a few compatibility changes as indicated in the comments below.
+
+<pre>
+(setq sentence-end "[^.].[.?!]+\\([]\"')}]*\\|<[^>]+>\\)\\($\\| $\\|\t\\| \\)[ \t\n]*")
+
+(setq sentence-color "#d5cfd9") ; foreground  color  for the current sentence; adjust as needed
+(setq sentence-face (make-face 'sentence-face-background))
+(set-face-foreground sentence-face sentence-color)
+
+(defun sentence-begin-pos () (save-excursion (unless (= (point) (point-max)) (forward-char)) (backward-sentence) (point)))
+(defun sentence-end-pos () (save-excursion (unless (= (point) (point-max)) (forward-char)) (backward-sentence) (forward-sentence) (point)))
+
+(setq sentence-highlight-mode nil)
+
+(defun sentence-highlight-current (&rest ignore)
+  "Highlight current sentence."    
+    (and sentence-highlight-mode (> (buffer-size) 0)
+    (progn
+      (and  (boundp 'sentence-extent)
+        sentence-extent
+        (move-overlay sentence-extent (sentence-begin-pos) (sentence-end-pos) (current-buffer)) ;;; XEmacs: use set-extent-endpoints instead of move-overlay
+      )
+)))
+
+(setq sentence-extent (make-overlay 0 0)) ;;; XEmacs: use make-extent instead of make-overlay
+(overlay-put sentence-extent 'face sentence-face) ; ;;; XEmacs: use set-extent-property instead of overlay-put
+
+;;;;; Now, enable this for Outline mode only:
+
+(add-hook 'outline-mode-hook (function (lambda () 
+
+ ; .... any other outline mode tweaks or key definitions you may need
+
+ (make-local-variable 'sentence-highlight-mode)
+ (setq sentence-highlight-mode t)
+ (add-hook 'post-command-hook	'sentence-highlight-current)
+)))
+
+</pre>
+

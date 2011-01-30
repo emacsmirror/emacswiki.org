@@ -37,10 +37,7 @@ a comment "box".  For example,
   `---------------------------------------------*/
 </pre>
 
-The link to rebox.el above is broken. I found two versions of it, apparently from the same author:
-a [http://pymacs.progiciels-bpi.ca/showfile.html?name=Pymacs/Rebox/rebox.py pymacs version] and an [http://libit.progiciels-bpi.ca/showfile.html?name=dist/misc/rebox.el elisp one]  ( which apparently wasn't updated since 2000)
-
-Maybe [http://www.davep.org/emacs/boxquote.el boxquote.el] might also be used instead of rebox.
+See also [[rebox2]].
 
 ----
 CategoryFilling
