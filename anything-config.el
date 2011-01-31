@@ -1818,6 +1818,24 @@ buffer that is not the current buffer."
 
 ;; (anything 'anything-c-source-buffers+)
 
+(defadvice anything-quit-and-find-file (around use-anything-find-files activate)
+  "Let `anything-quit-and-find-file' take advantage of `anything-find-files'."
+  (interactive)
+  (anything-run-after-quit
+   (lambda (f)
+     (anything-find-files1 f))
+   (anything-aif (get-buffer (anything-get-selection))
+       (or (buffer-file-name it)
+           (car (rassoc it dired-buffers))
+           (and (with-current-buffer it
+                  (eq major-mode 'org-agenda-mode))
+                org-directory
+                (expand-file-name org-directory))
+           default-directory)
+     (let ((sel (anything-get-selection)))
+       (if (file-exists-p sel)
+           (expand-file-name sel)
+           default-directory)))))
 
 ;;;; <File>
 ;;; File name history
@@ -1875,8 +1893,6 @@ buffer that is not the current buffer."
     ;; It is needed for filenames with capital letters
     (disable-shortcuts)
     (init . (lambda ()
-              ;(require 'tramp)
-              ;(require 'dired-aux)
               (setq ffap-newfile-prompt t)
               ;; This is needed when connecting with emacsclient -t
               ;; on remote host that have an anything started on a window-system.
@@ -1885,6 +1901,8 @@ buffer that is not the current buffer."
                 (define-key anything-map (kbd "C-l") 'anything-find-files-down-one-level))))
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
+    (image-action1 . anything-ff-rotate-image-left)
+    (image-action2 . anything-ff-rotate-image-right)
     (persistent-action . anything-find-files-persistent-action)
     (persistent-help . "Hit1 Expand Candidate, Hit2 or (C-u) Find file")
     (volatile)
@@ -2296,16 +2314,19 @@ If prefix numeric arg is given go ARG level down."
     (gnus-dired-attach flist)))
 
 (defun anything-ff-rotate-current-image1 (file &optional num-arg)
-  "Rotate current image at NUM-ARG degrees."
-  (if (executable-find "mogrify")
-      (progn
-        (shell-command (format "mogrify -rotate %s %s" (or num-arg 90) file))
-        (when (buffer-live-p image-dired-display-image-buffer)
-          (kill-buffer image-dired-display-image-buffer))
-        (image-dired-display-image file)
-        (message nil)
-        (display-buffer (get-buffer image-dired-display-image-buffer)))
-      (error "mogrify not found")))
+  "Rotate current image at NUM-ARG degrees.
+This is a destructive operation on FILE made by external tool mogrify."
+  ;; When FILE is not an image-file, do nothing.
+  (when (string-match (image-file-name-regexp) file)
+    (if (executable-find "mogrify")
+        (progn
+          (shell-command (format "mogrify -rotate %s %s" (or num-arg 90) file))
+          (when (buffer-live-p image-dired-display-image-buffer)
+            (kill-buffer image-dired-display-image-buffer))
+          (image-dired-display-image file)
+          (message nil)
+          (display-buffer (get-buffer image-dired-display-image-buffer)))
+        (error "mogrify not found"))))
 
 (defun anything-ff-rotate-image-left (candidate)
   "Rotate image file CANDIDATE left.
@@ -2316,6 +2337,20 @@ This affect directly file CANDIDATE."
   "Rotate image file CANDIDATE right.
 This affect directly file CANDIDATE."
   (anything-ff-rotate-current-image1 candidate))
+
+(defun anything-ff-rotate-left-persistent ()
+  "Rotate image left without quitting anything."
+  (interactive)
+  (anything-execute-persistent-action 'image-action1))
+
+(defun anything-ff-rotate-right-persistent ()
+  "Rotate image right without quitting anything."
+  (interactive)
+  (anything-execute-persistent-action 'image-action2))
+
+;; Have no effect if candidate is not an image file.
+(define-key anything-map (kbd "M-l") 'anything-ff-rotate-left-persistent)
+(define-key anything-map (kbd "M-r") 'anything-ff-rotate-right-persistent)
 
 (defun anything-find-files-persistent-action (candidate)
   "Open subtree CANDIDATE without quitting anything.
@@ -2884,11 +2919,7 @@ The \"-r\" option must be the last option.")
 ;; NOTE: the -d option with skip avoid error on windows.
 ;;       It have no effect on GNU/Linux.
 (defvar anything-c-grep-default-command "grep -d skip -niH -e %s %s %s"
-  "Default format command for `anything-do-grep'.
-If you want to enable recursion just add the -r option like this:
-\"grep -nirH -e %s %s %s\".
-NOTE: This option is accessible with a prefix arg
-from all anything grep commands without setting it here.")
+  "Default format command for `anything-do-grep'.")
 
 (defvar anything-c-grep-default-function 'anything-c-grep-init)
 
@@ -2908,7 +2939,7 @@ from all anything grep commands without setting it here.")
   :group 'anything)
 
 (defun anything-c-grep-prepare-candidates (candidates)
-  "Prepare filenames and directories candidates for grep command line."
+  "Prepare filenames and directories CANDIDATES for grep command line."
   ;; If one or more candidate is a directory, search in all files
   ;; of this candidate (e.g /home/user/directory/*).
   ;; If r option is enabled search also in subdidrectories.
@@ -3004,8 +3035,10 @@ With a prefix arg record CANDIDATE in `mark-ring'."
 (defun anything-do-grep1 (only &optional recurse)
   "Launch grep with a list of ONLY files.
 When RECURSE is given use -r option of grep and prompt user
-to set the --include arg of grep.
-If it's not empty use it instead of `grep-find-ignored-files'."
+to set the --include args of grep.
+You can give more than one arg separated by space.
+e.g *.el *.py *.tex.
+If it's empty --exclude `grep-find-ignored-files' is used instead."
   (let* ((anything-compile-source-functions
           ;; rule out anything-match-plugin because the input is one regexp.
           (delq 'anything-compile-source--match-plugin
@@ -3018,13 +3051,13 @@ If it's not empty use it instead of `grep-find-ignored-files'."
     (when include-files
       (setq include-files
             (and (not (string= include-files ""))
-                 (format "--include=%s" (shell-quote-argument include-files)))))
+                 (mapconcat #'(lambda (x)
+                                (concat "--include=" (shell-quote-argument x)))
+                            (split-string include-files) " "))))
     ;; When called as action from an other source e.g *-find-files
     ;; we have to kill action buffer.
     (when (get-buffer anything-action-buffer)
       (kill-buffer anything-action-buffer))
-    (define-key anything-map (kbd "M-<down>") #'anything-c-grep-next-or-prec-file)
-    (define-key anything-map (kbd "M-<up>") #'anything-c-grep-precedent-file)
     (anything
      :sources
      `(((name . "Grep (M-up/down - next/prec file)")
@@ -3063,7 +3096,8 @@ That allow to grep different files not only in `default-directory' but anywhere
 by marking them (C-<SPACE>). If one or more directory is selected
 grep will search in all files of these directories.
 You can use also wildcard in the base name of candidate.
-If a prefix arg is given use the -r option of grep."
+If a prefix arg is given use the -r option of grep.
+See also `anything-do-grep1'."
   (interactive)
   (let ((only    (anything-c-read-file-name
                   "Search in file(s): " :marked-candidates t))
@@ -3105,7 +3139,7 @@ If a prefix arg is given use the -r option of grep."
              i)))
 
 (defun anything-c-grep-highlight-match (str)
-  "Highlight in STR all occurences matching `anything-pattern'."
+  "Highlight in string STR all occurences matching `anything-pattern'."
   (condition-case nil
       (with-temp-buffer
         (insert str)
@@ -3118,44 +3152,82 @@ If a prefix arg is given use the -r option of grep."
         (buffer-string))
     (error nil)))
 
-;;;###autoload
-(defun anything-c-grep-precedent-file ()
-  "Go to precedent file in `anything-do-grep'."
-  (interactive)
-  (anything-c-grep-next-or-prec-file -1))
-
-;;;###autoload
-(defun* anything-c-grep-next-or-prec-file (&optional (n 1))
-  "Go to next or precedent candidate file in anything grep buffer."
-  (interactive)
+;; Go to next or precedent file (common to etags and grep).
+(defun anything-c-goto-next-or-prec-file (n)
+  "Go to next or precedent candidate file in anything grep/etags buffers.
+If N is positive go forward otherwise go backward."
   (let ((cur-source (assoc-default 'name (anything-get-current-source))))
     (with-anything-window
-      (if (equal cur-source "Grep (M-up/down - next/prec file)")
+      (if (or (string= cur-source "Grep (M-up/down - next/prec file)")
+              (string-match "^Etags.*" cur-source))
           (let* ((current-line-list  (split-string
                                       (buffer-substring
                                        (point-at-bol)
                                        (point-at-eol)) ":"))  
                  (current-fname      (nth 0 current-line-list))
-                 (fn-b-o-f           (if (eq n 1) 'eobp 'bobp))) ; func back or forward
+                 (fn-b-o-f           (if (eq n 1) 'eobp 'bobp)))
             (catch 'break
               (while (not (funcall fn-b-o-f))
-                (forward-line n)
-                (beginning-of-line)
-                (when (not (search-forward current-fname (point-at-eol) t))
+                (forward-line n) ; Go forward or backward depending of n value.
+                (unless (search-forward current-fname (point-at-eol) t)
                   (anything-mark-current-line)
                   (throw 'break nil))))
-            (if (eq n 1)
-                (when (eobp)
-                  (re-search-backward ".")
-                  (beginning-of-line)
-                  (anything-mark-current-line))
-                (when (bobp)
-                  (forward-line)
-                  (beginning-of-line)
-                  (anything-mark-current-line))))
+            (cond ((and (eq n 1) (eobp))
+                   (re-search-backward ".")
+                   (forward-line 0)
+                   (anything-mark-current-line))
+                  ((and (< n 1) (bobp))
+                   (forward-line 1)
+                   (anything-mark-current-line))))
           (if (eq n 1)
               (anything-next-line)
               (anything-previous-line))))))
+
+;;;###autoload
+(defun anything-c-goto-precedent-file ()
+  "Go to precedent file in anything grep/etags buffers."
+  (interactive)
+  (anything-c-goto-next-or-prec-file -1))
+
+;;;###autoload
+(defun anything-c-goto-next-file ()
+  "Go to precedent file in anything grep/etags buffers."
+  (interactive)
+  (anything-c-goto-next-or-prec-file 1))
+
+;; This keys affect etags and grep only.
+;; in other sources they do nothing, just going next or precedent line.
+(define-key anything-map (kbd "M-<down>") #'anything-c-goto-next-file)
+(define-key anything-map (kbd "M-<up>") #'anything-c-goto-precedent-file)
+
+;; Yank text at point.
+(defvar anything-yank-point nil)
+;;;###autoload
+(defun anything-yank-text-at-point ()
+  "Yank text at point in minibuffer."
+  (interactive)
+  (let (input)
+    (flet ((insert-in-minibuffer (word)
+             (with-selected-window (minibuffer-window)
+               (let ((str anything-pattern))
+                 (delete-minibuffer-contents)
+                 (set-text-properties 0 (length word) nil word)
+                 (insert (concat str word))))))
+      (with-current-buffer anything-current-buffer
+        ;; Start to initial point if C-w have never been hit.
+        (unless anything-yank-point (setq anything-yank-point (point)))
+        (and anything-yank-point (goto-char anything-yank-point))
+        (forward-word 1)
+        (setq input (buffer-substring-no-properties anything-yank-point (point)))
+        (setq anything-yank-point (point))) ; End of last forward-word
+      (insert-in-minibuffer input))))
+
+(defun anything-reset-yank-point ()
+  (setq anything-yank-point nil))
+
+(add-hook 'anything-after-persistent-action-hook 'anything-reset-yank-point)
+(add-hook 'anything-cleanup-hook 'anything-reset-yank-point)
+(define-key anything-map (kbd "C-w") 'anything-yank-text-at-point)
 
 ;;; Etags
 (eval-when-compile
@@ -3164,8 +3236,6 @@ If a prefix arg is given use the -r option of grep."
      '(anything-config)
      "You are using obsolete library `anything-etags.el' and should remove it."
      :warning)))
-
-(require 'etags)
 
 (defcustom anything-c-etags-tag-file-name "TAGS"
   "Etags tag file name."
@@ -3234,7 +3304,7 @@ Try to find tag file in upper directory if haven't found in CURRENT-DIR."
                     (anything-aif (string-match "\177" i)
                         (substring i 0 it)
                       i))
-        do (cond ((and elm (string-match "\\(.+\\),[0-9]+" elm))
+        do (cond ((and elm (string-match "^\\(.+\\),[0-9]+" elm))
                   (setq fname (match-string 1 elm)))
                  (elm (setq cand (concat fname ": " elm)))
                  (t (setq cand nil)))
@@ -3283,9 +3353,10 @@ Called with two prefix arg reinitialize cache.
 If tag file have been modified reinitialize cache."
   (interactive "P")
   (let ((tag  (anything-c-etags-get-tag-file))
-        (init (and arg (equal current-prefix-arg '(4))
-                   (thing-at-point 'symbol))))
-    (when (or (equal current-prefix-arg '(16))
+        (init (and (equal arg '(4)) (thing-at-point 'symbol)))
+        (anything-quit-if-no-candidate t)
+        (anything-execute-action-at-once-if-one t))
+    (when (or (equal arg '(16))
               (and anything-c-etags-mtime-alist
                    (anything-c-etags-file-modified-p tag)))
       (remhash tag anything-c-etags-cache))
@@ -3799,6 +3870,19 @@ Same as `anything-describe-anything-attribute' but with anything completion."
 Will be calculated the first time you invoke anything with this
 source.")
 
+(defun anything-c-man-default-action (candidate)
+  "Default action for jumping to a woman or man page from anything."
+  (let ((wfiles (woman-file-name-all-completions candidate)))
+    (condition-case err
+        (if (> (length wfiles) 1)
+            (woman-find-file (anything-comp-read "ManFile: " wfiles
+                                                 :must-match t))
+            ;; If woman is unable to format correctly
+            ;; use man instead.
+            (woman candidate))
+      (error (kill-buffer) ; Kill woman buffer.
+             (man candidate)))))
+
 (defvar anything-c-source-man-pages
   `((name . "Manual Pages")
     (candidates . (lambda ()
@@ -3811,18 +3895,7 @@ source.")
                                 (woman-file-name "")
                                 (sort (mapcar 'car woman-topic-all-completions)
                                       'string-lessp))))))
-    (action  ("Show with Woman"
-              . (lambda (candidate)
-                  (let ((wfiles (woman-file-name-all-completions candidate)))
-                    (if (> (length wfiles) 1)
-                        (woman-find-file (anything-comp-read "ManFile: " wfiles
-                                                             :must-match t))
-                        ;; If woman is unable to format correctly
-                        ;; use man instead.
-                        (condition-case err
-                            (woman candidate)
-                          (error (kill-buffer) ; Kill woman buffer.
-                                 (man candidate))))))))
+    (action  ("Show with Woman" . anything-c-man-default-action))
     ;; Woman does not work OS X
     ;; http://xahlee.org/emacs/modernization_man_page.html
     (action-transformer . (lambda (actions candidate)

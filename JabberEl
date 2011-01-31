@@ -101,6 +101,45 @@ Here is the function ''my-jabber-chat-delete-or-bury'' used above:
             (bury-buffer))))))
 </pre>
 
+=== Some useful settings ===
+
+Control message history (which stored in <code>~/.emacs-jabber</code> dir):
+<pre>
+(setq
+  jabber-history-enabled t
+  jabber-use-global-history nil
+  jabber-backlog-number 40
+  jabber-backlog-days 30
+ )
+</pre>
+
+[new]
+Don't disturb me if someone chage presence status (usually remote clients make this automatically):
+<pre>
+(set  jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil)
+</pre>
+
+[new]
+Redefine standard binding for sending message form RET to C-RET:
+<pre>
+(define-key jabber-chat-mode-map (kbd "RET") 'newline)
+(define-key jabber-chat-mode-map [C-return] 'jabber-chat-buffer-send)
+</pre>
+
+[new]
+Change prompt format:
+<pre>
+(setq my-chat-prompt "[%t] %n>\n")
+(when (featurep 'jabber)
+  (setq
+   jabber-chat-foreign-prompt-format my-chat-prompt
+   jabber-chat-local-prompt-format my-chat-prompt
+   jabber-groupchat-prompt-format my-chat-prompt
+   jabber-muc-private-foreign-prompt-format "[%t] %g/%n>\n"
+   )
+  )
+</pre>
+
 === Automatically highlight URLs ===
 
 Here's a hook which will highlight URLs, and bind C-c RET to open the URL using browse-url:

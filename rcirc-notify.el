@@ -18,6 +18,8 @@
 ;; MA 02111-1307 USA
 ;;
 ;;;; Changelog:
+;; * 2011/01/31 - Fix two warnings -Stefan Kangas
+;;
 ;; * 2009/10/17 - Added support for osascript which is a Mac OS X
 ;;                what Mac OS 10.4 and Growl 1.1.6 require.
 ;;
@@ -51,6 +53,7 @@
 ;; * `my-rcirc-notify-timeout` controls the number of seconds
 ;;    in between notifications from the same nick.
 
+(require 'rcirc)
 
 (defvar my-rcirc-notify-message "%s is calling your name."
   "Format if message to display in libnotify popup.
@@ -106,7 +109,7 @@ If DELAY is specified, it will be the minimum time in seconds
 that can occur between two notifications.  The default is
 `my-rcirc-notify-timeout'."
   (unless delay (setq delay my-rcirc-notify-timeout))
-  (let ((cur-time (time-to-seconds (current-time)))
+  (let ((cur-time (float-time (current-time)))
         (cur-assoc (assoc nick my-rcirc-notify-nick-alist))
         (last-time))
     (if cur-assoc

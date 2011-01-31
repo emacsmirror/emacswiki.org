@@ -1,12 +1,11 @@
 ;;; portage.el --- search and install Gentoo packages
 
-;; Copyright (C) 2004  Mikael Brockman <phubuh@phubuh.org>
+;; Copyright (C) 2004  Mikael Brockman
 
 ;; Version: 1.0
 ;; Keywords: Gentoo, portage
-;; Author: Mikael Brockman <phubuh@phubuh.org>
-;; Maintainer: Mikael Brockman <phubuh@phubuh.org>
-;; URL: http://www.phubuh.org/
+;; Author: Mikael Brockman
+;; Maintainer: Mikael Brockman
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -131,7 +130,7 @@ the previous item."
   nil
   nil)
 
-
+ 
 
 (defun portage-pretend (package)
   "Run emerge -pv PACKAGE."
@@ -208,7 +207,7 @@ the previous item."
   nil
   nil)
 
-
+ 
 
 (defmacro in-buffer-called (name &rest body)
   (let ((buffer (gensym)))

@@ -6,6 +6,8 @@ You can pick up valuable usage patterns, just by looking over someones shoulder.
 
 == Screencasts about Emacs ==
 
+* [http://www.youtube.com/watch?v=53YeTdVtDkU rebox2] screencast by [LeWang]
+
 * [http://vimeo.com/2871241 Meet Magit] introduces [http://zagadka.vm.bytemark.co.uk/magit/ Magit], a git mode, by demonstrating a variety of features designed to keep you productive with git without ever leaving the comfort of Emacs.
 
 * [https://peepcode.com/products/meet-emacs PeepCode's Meet Emacs] is an hour-long professionally-recorded video (available in Ogg and other formats) that teaches Emacs. It is sold for $12. For a preview, see [http://peepcode.com/system/uploads/2008/peepcode-emacs-in-5-demo.mov 5 minutes of Emacs].

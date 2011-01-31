@@ -25,6 +25,8 @@
 ;; Please mail me (hugows@gmail.com) about any improvements or bug
 ;; reports you have regarding this file.
 
+;;; Changes (31/01/2011) Fix two warnings
+
 ;;; Changes (11/12/2007) (Tks tsdh for the suggestions)
 
 ;; [x] Exclude the nicknames from correction.
@@ -44,12 +46,15 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 (require 'rcirc)
 
 (add-hook 'rcirc-print-hooks 'rcirc-late-fix-hook)
 
 (defface rcirc-late-fix-face '((t (:underline t :foreground "Blue")))
-  "Face for showing fixed words on the channel buffer.")
+  "Face for showing fixed words on the channel buffer."
+  :group 'rcirc-faces)
 
 (defun rcirc-late-fix-apply (beg end string)
   (save-excursion
