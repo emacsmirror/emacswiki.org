@@ -1,0 +1,50 @@
+== Overview ==
+
+*buffer-timer* is a utility to keep track of the time spent in a series
+of emacs buffers.  You can then collectively group buffers into tasks
+and thus keep track of your overall time spent per project, for
+example.
+
+== Using it ==
+
+Define your categories in a hierarchical manner:
+
+<pre>
+(require 'buffer-timer)
+
+; Example list of titles and regexps to group by.  This
+(setq buffer-timer-regexp-master-list
+  '(
+    ("idle" . 
+     (("generic" .			  "^\\*idle\\*")
+      ("generic2" .			  "^\\*idle-2\\*")
+      ("minibuf" .                        "^ \\*Minibuf-.*")))
+    ("personal" .
+     (("reading" .                        "lib/ebooks/")
+      ("photography" .                    "images/capturedonearth")))
+    ("work" .
+      (("rocket engine project" .
+        (("docs" .                        "src/rocket.*org")
+         ("code" .                        "src/rocket.*\\(cpp\\|h\\)$")
+         ("generic" .                     "src/rocket")))
+       ("world peace" .
+        (("project planning" .            "src/worldpeas/TODO")
+         ("implementation" .              "src/worldpeas")))))
+     ))
+</pre>
+
+And then start editing like you normally would!  At the end of the day, type /C-c t m/ to get a summary of your time spent matched to the hierarchy.
+
+== Getting It ==
+
+Buffer-timer is available from a [http://github.com/hardaker/elisp-buffer-timer/ GitHub Repo].
+
+CategoryTimeTracking
+
+== History ==
+
+Originally written for XEmacs, with a pretty "top (gutter) bar" it has
+since migrated to Emacs where it still is missing some of the original
+functionality.  The button code and "top bar" functionality needs to
+be rewritten entirely.  The summary, in XEmacs, used to be a nicely navigable tree before
+the functionality was lost in the rewrite.

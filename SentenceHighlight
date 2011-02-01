@@ -1,10 +1,8 @@
-= Sentence highlighting =
+Here's a simple hack for highlighting the current sentence in the text. When writing and especially copyediting, being able to see at once where the current sentence starts and ends -- especially in a complex text with long periods and wall-of-text paragraphs -- saves a few milliseconds each time, and these milliseconds add up. 
 
-Here's a simple hack I wrote for highlighting the current sentence in the text. When writing and especially copyediting, being able to see at once where the current sentence starts and ends - especially in a complex text with long periods and wall-of-text paragraphs - saves a few milliseconds each time, and these milliseconds add up. 
+This isn't a real mode; just yank the code below to your .emacs. You need to choose in which major mode it will be active; below it is enabled for Outline mode, which I prefer for writing and editing. If you use XEmacs instead of Emacs, make a few compatibility changes as indicated in the comments below.
 
-I didn't bother to create a real mode out of it; just copy/paste the code below to your .emacs. You need to choose in which major mode it will be active; below it is enabled for Outline mode, which I prefer for writing and editing. If you use XEmacs instead of Emacs, make a few compatibility changes as indicated in the comments below.
-
-<pre>
+{{{
 (setq sentence-end "[^.].[.?!]+\\([]\"')}]*\\|<[^>]+>\\)\\($\\| $\\|\t\\| \\)[ \t\n]*")
 
 (setq sentence-color "#d5cfd9") ; foreground  color  for the current sentence; adjust as needed
@@ -39,6 +37,6 @@ I didn't bother to create a real mode out of it; just copy/paste the code below 
  (setq sentence-highlight-mode t)
  (add-hook 'post-command-hook	'sentence-highlight-current)
 )))
-
-</pre>
-
+}}}
+----
+CategoryWriting

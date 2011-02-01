@@ -8,9 +8,11 @@ Clicking the title heading to search for pages about writing in natural language
 * Hachette (hachette.el) -- looks up online French dictionaries.
 * NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
 * PersonalDiary -- Using Emacs to maintain a simple daily journal / personal diary.
+* PredictiveMode -- minor mode that tries to predict the rest of the word, and offers you an appropriate completion.
 * PrintingFromEmacs -- Publishing your written work.
 * !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
 * ScreenPlay -- Write a dramatic screenplay.
+* SentenceHighlight -- a simple mode for highlighting the current sentence, useful for writers and copyeditors
 * ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
 * TypographicalPunctuationMarks -- insert ‘smart’ quotes
 * UnDoc -- Convert Word files to plain text.

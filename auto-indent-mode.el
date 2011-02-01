@@ -5,17 +5,17 @@
 ;; Author: Matthew L. Fidler & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.1
-;; Last-Updated: Wed Jan 12 16:28:38 2011 (-0600)
+;; Version: 0.2
+;; Last-Updated: Mon Jan 31 22:16:53 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 422
+;;     Update #: 444
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `warnings'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -59,7 +59,7 @@
 ;;  You could always turn on the minor mode with the command
 ;;  `auto-indent-minor-mode'
 ;;
-;;  If you would like TextMate behavior of Meta-RETURN going to the
+7;;  If you would like TextMate behavior of Meta-RETURN going to the
 ;;  end of the line and then inserting a newline, as well as
 ;;  Meta-shift return going to the end of the line, inserting a
 ;;  semi-colon then inserting a newline, use the following:
@@ -91,6 +91,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 31-Jan-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Jan 31 22:05:59 2011 (-0600) #440 (Matthew L. Fidler)
+;;    Removed indirect reference to `shrink-whitespaces'.  Thanks Le Wang
+;; 31-Jan-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Jan 31 21:27:39 2011 (-0600) #435 (Matthew L. Fidler)
+;;    Added explicit requirement for functions
+;; 18-Jan-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Jan 18 10:23:43 2011 (-0600) #428 (Matthew L. Fidler)
+;;    Added support to turn on `org-indent-mode' when inside an org-file.
 ;; 12-Jan-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Jan 12 16:27:21 2011 (-0600) #420 (Matthew L. Fidler)
 ;;    Added fix for ortbl-minor-mode.  Now it will work when orgtbl-minor mode is enabled.
@@ -232,37 +241,31 @@
 (defcustom auto-indent-on-save-file nil
   "* Auto Indent on visit file."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 (defcustom auto-indent-untabify-on-visit-file nil
   "* Automatically convert tabs into spaces when visiting a file."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 
 (defcustom auto-indent-delete-trailing-whitespace-on-visit-file nil
   "* Automatically remove trailing whitespace when visiting  file"
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 
 (defcustom auto-indent-untabify-on-save-file 't
   "* Change tabs to spaces on file-save."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 
 (defcustom auto-indent-delete-trailing-whitespace-on-save-file nil
   "* When saving file delete trailing whitespace. "
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 
 (defcustom auto-indent-on-visit-pretend-nothing-changed 't
   "* When modifying the file on visit, pretend nothing changed."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 
 (defcustom auto-indent-delete-line-char-remove-extra-spaces t
   "* When deleting a return, delete any extra spaces between the newly joined lines"
@@ -282,8 +285,8 @@
 (defcustom auto-indent-minor-mode-symbol 't
   "* When true, Auto Indent puts AI on the mode line."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
+
 (defcustom auto-indent-disabled-modes-on-save '(ahk-mode)
   "* List of modes where indent-region of the whole file is ignored"
   :type '(repeat (sexp :tag "Major mode"))
@@ -311,8 +314,7 @@
           (const :tag "insert newline then indent current line" 'newline-and-indent)
           )
   :tag "Indentation type for AutoComplete mode.  While `reindent-then-newline-and-indent' is a likely candidate `newline-and-indent' also works.  "
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 
 (defcustom use-auto-indentation-ignore-definitions '(reindent-then-newline-and-indent
                                                      newline-and-indent
@@ -360,6 +362,11 @@ in conjunction with something that pairs delimiters like `autopair-mode'.
 "
   :type 'string
   :group 'auto-indent )
+
+(defcustom auto-indent-start-org-indent t
+  "Starts `org-indent-mode' when in org-mode"
+  :type 'boolean
+  :group 'auto-indent)
 (make-variable-buffer-local 'auto-indent-eol-char)
 
 (defvar auto-indent-eol-ret-save ""
@@ -445,8 +452,13 @@ http://www.emacswiki.org/emacs/AutoIndentation
   "* Turn on auto-indent minor mode."
   (unless (or (minibufferp)
               (memq major-mode auto-indent-disabled-modes-list))
-    (auto-indent-minor-mode 1)))
-
+    (auto-indent-minor-mode 1))
+  (when (and
+	 auto-indent-start-org-indent
+	 (not (minibufferp))
+	 (fboundp 'org-indent-mode)
+	 (eq major-mode 'org-mode))
+    (org-indent-mode 1)))
 (define-globalized-minor-mode auto-indent-global-mode auto-indent-minor-mode auto-indent-minor-mode-on
   :group 'auto-indent
   :require 'auto-indent-mode)
@@ -505,23 +517,24 @@ http://www.emacswiki.org/emacs/AutoIndentation
     (when (and del-eol
              auto-indent-minor-mode (not (minibufferp))
              auto-indent-delete-line-char-remove-extra-spaces)
-        (shrink-whitespaces)
+      (save-excursion
+	(skip-chars-backward " \t")
+        (when (looking-at "[ \t]+")
+	  (replace-match " ")))
         (when (and (eolp) (looking-back "[ \t]+" nil t))
           (replace-match "")))))
 
-(defadvice kill-line (around auto-indent-mode activate)
+(defadvice kill-line (before auto-indent-mode activate)
   "If at end of line, join with following; otherwise kill line.
      Deletes whitespace at join."
   (if (and auto-indent-minor-mode (not (minibufferp))
-           auto-indent-kill-line-removes-extra-spaces
-	   (eolp) (not (bolp)))
-      (progn (delete-indentation 't)
-	     (when auto-indent-kill-next-line-when-at-end-of-current-line
-	       (while (looking-at " $")
-		 (delete-char 1)
-		 (delete-indentation t))))
-    ad-do-it))
-
+           auto-indent-kill-line-removes-extra-spaces)
+      (if (and (eolp) (not (bolp)))
+          (progn (delete-indentation 't)
+                 (when auto-indent-kill-next-line-when-at-end-of-current-line
+                   (while (looking-at " $")
+                     (delete-char 1)
+                     (delete-indentation t)))))))
 (defvar auto-indent-mode-pre-command-hook-line nil)
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
 (defvar auto-indent-last-pre-command-hook-point nil)

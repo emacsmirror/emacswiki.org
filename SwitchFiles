@@ -1,0 +1,21 @@
+== Overview ==
+
+switch-files is a package that does a few things well:
+
+1. Find a matching "header" or other file and switch to it even if it is not located in the same directory as the base file.  For example, if you're editing "foo.c" then it can auto-switch-to (and open if necessary) the "foo.h" file even if it's not in the same directory.
+
+2. Follow file references when sitting on an "include" statement.  For example, if in C we had:
+
+<code>
+   #include "bar.h"
+</code>
+
+: and if the cursor was sitting on the line when switch-files was invoked, then switch-files would jump to the bar.h file.
+
+3. Keep track of your path.  If you switch from one file to another by following either of the usage patterns in #1 or #2 then it's a simple key-stroke to get back to where you came from.
+
+== Getting it ==
+
+It is available from a [http://github.com/hardaker/elisp-switch-files GitHub] repo.
+
+CategoryBufferSwitching

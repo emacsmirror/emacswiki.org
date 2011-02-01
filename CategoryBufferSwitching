@@ -34,3 +34,4 @@ The following are specific tricks and packages for buffer switching.
 * [[MTorus]] -- provides navigation on a discrete 2-torus of buffers
 * [[iflipb]] -- interactively flip between recently visited buffers
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
+* SwitchFiles -- Intelligently switch to a different file, keeping a path as you go.
