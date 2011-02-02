@@ -3,8 +3,9 @@
 ;; Copyright (C) 2010  Jeremy Rayman
 ;; Copyright (C) 2009  Mark Triggs
 
-;; Author: Mark Triggs <mst@dishevelled.net>, additions by
-;;       Jeremy Rayman, and help from Alex Osborne <ato@meshy.org>
+;; Author/Maintainer: Jeremy Rayman <jeremy.rayman.public@gmail.com>
+;; Original rainbow-parens.el Author: Mark Triggs <mst@dishevelled.net>, with
+;; help from Alex Osborne <ato@meshy.org>
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,8 +27,10 @@
 ;; (require 'rainbow-delimiters)
 ;; M-x rainbow-delimiters-mode
 
-;; To customize the colors, edit `*rainbow-delimiters-faces*'.
-;; A customize interface will be added soon.
+;; To customize the colors,
+;; M-x customize-group rainbow-delimiters-faces
+;; or add entries for the face names to your emacs color-theme.
+;; The customize interface is rough in this release.
 
 ;;; Commentary:
 
@@ -61,79 +64,347 @@
 ;; the maintainers of rainbow-parens.el unless the bug is present in
 ;; their original version. Thank you.
 
+;; 0.1.1 - Initial public release.
+
 ;;; TODO:
-;; - Add customize-interface for changing delimiter colors
-;; - Use a separate *rainbow-______-face* for each type
-;;   of delimiter to allow independent color choices for each one
+;; - Fix sort order for rainbow-delimiter-faces group (faces 11, 12, 13
+;;   appear at incorrect location).
+;; - Improve the Customize interface in a big-time way.
+;; - Add documentation for enabling rainbow-delimiters-mode from a mode-hook.
 ;; - Improve performance on very delimiter-heavy code (performance is
 ;;   already good for most files including most lisp files)
 ;; - Add <> support with a toggle to colorize nested tags (XML, HTML)
 ;;   vs colorizing nested angle brackets like we do with the other
 ;;   types of delimiter.
 
-;;; Code:
 
+;;; Code:
 (require 'paredit)
 (require 'cl)
 
-;;; TODO: Customize interface:
-;; (defgroup rainbow-delimiters nil
-;;   "Color each nested set of delimiters differently to visually communicate nesting level.") ; should rainbow-delimiters belong to a :group?
+;;; Customize interface:
+(defgroup rainbow-delimiters nil
+  "Color each nested set of delimiters differently to visually
+communicate nesting level."
+  :prefix "rainbow-delimiters-"
+  :group 'applications)
 
-(defun rainbow-delimiters-face-from-colour (colour)
+(defgroup rainbow-delimiters-faces nil
+  "Faces to use in coloring parentheses, brackets, and braces. Begins at depth 0 with the outermost color."
+  :group 'rainbow-delimiters
+  :link '(custom-group-link "rainbow-delimiters")
+  :prefix 'rainbow-delimiters-faces-)
+
+
+;;; Faces used to colorize delimiters at each depth:
+;; NOTE: The use of repetetive definitions for delimiter depth faces is temporary.
+;; Once the emacs 24 color theme support comes in, this will be reevaluated.
+;;
+;; emacs tricks to manipulate the verbose faces more easily:
+;; - elisp to increment number at point (obviously a hack) -
+;;   eval as part of a macro to increment the number at point:
+;;  (insert (number-to-string (1+ (string-to-number (string (char-after (point)))))))
+
+;; Parentheses
+(defface rainbow-delimiters-paren-depth-0-face
+  '((t (:foreground "grey55")))
+  "Face for rainbow-delimiters mode `paren' nested depth 0."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-1-face
+  '((t (:foreground "#7F9F7F")))
+  "Face for rainbow-delimiters mode `paren' nested depth 1."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-2-face
+  '((t (:foreground "#8CD0D3")))
+  "Face for rainbow-delimiters mode `paren' nested depth 2."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-3-face
+  '((t (:foreground "#DCA3A3")))
+  "Face for rainbow-delimiters mode `paren' nested depth 3."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-4-face
+  '((t (:foreground "#385F38")))
+  "Face for rainbow-delimiters mode `paren' nested depth 4."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-5-face
+  '((t (:foreground "#F0DFAF")))
+  "Face for rainbow-delimiters mode `paren' nested depth 5."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-6-face
+  '((t (:foreground "#BCA3A3")))
+  "Face for rainbow-delimiters mode `paren' nested depth 6."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-7-face
+  '((t (:foreground "#C0BED1")))
+  "Face for rainbow-delimiters mode `paren' nested depth 7."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-8-face
+  '((t (:foreground "#FFCFAF")))
+  "Face for rainbow-delimiters mode `paren' nested depth 8."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-9-face
+  '((t (:foreground "#F0EFD0")))
+  "Face for rainbow-delimiters mode `paren' nested depth 9."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-10-face
+  '((t (:foreground "#F0DFAF")))
+  "Face for rainbow-delimiters mode `paren' nested depth 10."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-11-face
+  '((t (:foreground "#DFCFAF")))
+  "Face for rainbow-delimiters mode `paren' nested depth 11."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+(defface rainbow-delimiters-paren-depth-12-face
+  '((t (:foreground "grey55")))
+  "Face for rainbow-delimiters mode `paren' nested depth 12."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-paren-faces)
+
+
+;; Brackets
+(defface rainbow-delimiters-bracket-depth-0-face
+  '((t (:foreground "grey55")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 0."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-1-face
+  '((t (:foreground "#7F9F7F")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 1."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-2-face
+  '((t (:foreground "#8CD0D3")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 2."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-3-face
+  '((t (:foreground "#DCA3A3")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 3."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-4-face
+  '((t (:foreground "#385F38")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 4."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-5-face
+  '((t (:foreground "#F0DFAF")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 5."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-6-face
+  '((t (:foreground "#BCA3A3")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 6."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-7-face
+  '((t (:foreground "#C0BED1")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 7."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-8-face
+  '((t (:foreground "#FFCFAF")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 8."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-9-face
+  '((t (:foreground "#F0EFD0")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 9."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-10-face
+  '((t (:foreground "#F0DFAF")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 10."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-11-face
+  '((t (:foreground "#DFCFAF")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 11."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+(defface rainbow-delimiters-bracket-depth-12-face
+  '((t (:foreground "grey55")))
+  "Face for rainbow-delimiters mode `bracket' nested depth 12."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-bracket-faces)
+
+;; Braces
+(defface rainbow-delimiters-brace-depth-0-face
+  '((t (:foreground "grey55")))
+  "Face for rainbow-delimiters mode `brace' nested depth 0."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-1-face
+  '((t (:foreground "#7F9F7F")))
+  "Face for rainbow-delimiters mode `brace' nested depth 1."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-2-face
+  '((t (:foreground "#8CD0D3")))
+  "Face for rainbow-delimiters mode `brace' nested depth 2."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-3-face
+  '((t (:foreground "#DCA3A3")))
+  "Face for rainbow-delimiters mode `brace' nested depth 3."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-4-face
+  '((t (:foreground "#385F38")))
+  "Face for rainbow-delimiters mode `brace' nested depth 4."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-5-face
+  '((t (:foreground "#F0DFAF")))
+  "Face for rainbow-delimiters mode `brace' nested depth 5."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-6-face
+  '((t (:foreground "#BCA3A3")))
+  "Face for rainbow-delimiters mode `brace' nested depth 6."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-7-face
+  '((t (:foreground "#C0BED1")))
+  "Face for rainbow-delimiters mode `brace' nested depth 7."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-8-face
+  '((t (:foreground "#FFCFAF")))
+  "Face for rainbow-delimiters mode `brace' nested depth 8."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-9-face
+  '((t (:foreground "#F0EFD0")))
+  "Face for rainbow-delimiters mode `brace' nested depth 9."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-10-face
+  '((t (:foreground "#F0DFAF")))
+  "Face for rainbow-delimiters mode `brace' nested depth 10."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-11-face
+  '((t (:foreground "#DFCFAF")))
+  "Face for rainbow-delimiters mode `brace' nested depth 11."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+(defface rainbow-delimiters-brace-depth-12-face
+  '((t (:foreground "grey55")))
+  "Face for rainbow-delimiters mode `brace' nested depth 12."
+  :group 'rainbow-delimiters
+  :group 'rainbow-delimiters-faces
+  :group 'rainbow-delimiters-brace-faces)
+
+
+
+(defun rainbow-delimiters-make-nested-face (colour)
   (let ((face (make-face (intern (concat "rainbow-delimiters-" colour "-face")))))
     (set-face-foreground face colour)
     face))
 
-(defvar *rainbow-delimiters-faces*
-  ;; First item is outermost parentheses color.
-  `[,(rainbow-delimiters-face-from-colour "grey55")
-    ,(rainbow-delimiters-face-from-colour "#7F9F7F")
-    ,(rainbow-delimiters-face-from-colour "#8CD0D3")
-    ,(rainbow-delimiters-face-from-colour "#DCA3A3")
-    ,(rainbow-delimiters-face-from-colour "#385F38")
-    ,(rainbow-delimiters-face-from-colour "#F0DFAF")
-    ,(rainbow-delimiters-face-from-colour "#BCA3A3")
-    ,(rainbow-delimiters-face-from-colour "#C0BED1")
-    ,(rainbow-delimiters-face-from-colour "#FFCFAF")
-    ,(rainbow-delimiters-face-from-colour "#F0EFD0")
-    ,(rainbow-delimiters-face-from-colour "#F0DFAF")
-    ,(rainbow-delimiters-face-from-colour "#DFCFAF")]
-  "Faces to use in coloring parentheses, brackets, and braces. Begins with the outermost color.
 
-The number of colors listed is variable and more colors may be added to support arbitrary nesting depth.")
-
-(defun rainbow-delimiters-this-paren-nesting ()
+(defun rainbow-delimiters-this-delimiter-nesting (delimiter-type)
   (let ((point (point))
-        (depth 0))
+        (depth 0)
+        (delimiter-char (cond ((string= delimiter-type "paren") 40)
+                              ((string= delimiter-type "bracket") 91)
+                              ((string= delimiter-type "brace") 123))))
     (while (ignore-errors
              (setq point (scan-lists point -1 1)))
-      (when (= (char-after point) 40)
-        (setq depth (1+ depth))))
-    depth))
-
-(defun rainbow-delimiters-this-bracket-nesting ()
-  (let ((point (point))
-        (depth 0))
-    (while (ignore-errors
-             (setq point (scan-lists point -1 1)))
-      (when (= (char-after point) 91)
-        (setq depth (1+ depth))))
-    depth))
-
-(defun rainbow-delimiters-this-brace-nesting ()
-  (let ((point (point))
-        (depth 0))
-    (while (ignore-errors
-             (setq point (scan-lists point -1 1)))
-      (when (= (char-after point) 123)
+      (when (= (char-after point) delimiter-char)
         (setq depth (1+ depth))))
     depth))
 
 
-(defun rainbow-delimiters-face-for-depth (n)
-  (aref *rainbow-delimiters-faces*
-        (mod n (length *rainbow-delimiters-faces*))))
+(defun rainbow-delimiters-face-for-depth (delimiter-type n)
+  (make-face (intern (format "rainbow-delimiters-%s-depth-%s-face" delimiter-type n))))
 
 
 (defun rainbow-delimiters-apply (point face)
@@ -164,39 +435,39 @@ The number of colors listed is variable and more colors may be added to support 
   (save-excursion
     (goto-char beg)
     (rainbow-delimiters-skip-boring end)
-    (let* ((paren-depth (rainbow-delimiters-this-paren-nesting))
-           (bracket-depth (rainbow-delimiters-this-bracket-nesting))
-           (brace-depth (rainbow-delimiters-this-brace-nesting)))
-      (while (< (point) end)
-        (rainbow-delimiters-skip-boring end)
-        (cond ((= (char-after (point)) 40) ; (
-               (rainbow-delimiters-apply (point)
-                                    (rainbow-delimiters-face-for-depth paren-depth))
-               (setq paren-depth (1+ paren-depth)))
-              ((= (char-after (point)) 41) ; )
-               (setq paren-depth (1- paren-depth))
-               (rainbow-delimiters-apply (point)
-                                    (rainbow-delimiters-face-for-depth paren-depth)))
-              ((= (char-after (point)) 91) ; [
-               (rainbow-delimiters-apply (point)
-                                    (rainbow-delimiters-face-for-depth bracket-depth))
-               (setq bracket-depth (1+ bracket-depth)))
-              ((= (char-after (point)) 93) ; ]
-               (setq bracket-depth (1- bracket-depth))
-               (rainbow-delimiters-apply (point)
-                                    (rainbow-delimiters-face-for-depth bracket-depth)))
-              ((= (char-after (point)) 123) ; {
-               (rainbow-delimiters-apply (point)
-                                    (rainbow-delimiters-face-for-depth brace-depth))
-               (setq brace-depth (1+ brace-depth)))
-              ((= (char-after (point)) 125) ; }
-               (setq brace-depth (1- brace-depth))
-               (rainbow-delimiters-apply (point)
-                                    (rainbow-delimiters-face-for-depth brace-depth)))
+    (let* ((paren-depth (rainbow-delimiters-this-delimiter-nesting "paren"))
+           (bracket-depth (rainbow-delimiters-this-delimiter-nesting "bracket"))
+           (brace-depth (rainbow-delimiters-this-delimiter-nesting "brace")))
+       (while (< (point) end)
+         (rainbow-delimiters-skip-boring end)
+         (cond ((= (char-after (point)) 40) ; (
+                (rainbow-delimiters-apply (point)
+                                          (rainbow-delimiters-face-for-depth "paren" paren-depth))
+                (setq paren-depth (1+ paren-depth)))
+               ((= (char-after (point)) 41) ; )
+                (setq paren-depth (1- paren-depth))
+                (rainbow-delimiters-apply (point)
+                                          (rainbow-delimiters-face-for-depth "paren" paren-depth)))
+               ((= (char-after (point)) 91) ; [
+                (rainbow-delimiters-apply (point)
+                                          (rainbow-delimiters-face-for-depth "bracket" bracket-depth))
+                (setq bracket-depth (1+ bracket-depth)))
+               ((= (char-after (point)) 93) ; ]
+                (setq bracket-depth (1- bracket-depth))
+                (rainbow-delimiters-apply (point)
+                                          (rainbow-delimiters-face-for-depth "bracket" bracket-depth)))
+               ((= (char-after (point)) 123) ; {
+                (rainbow-delimiters-apply (point)
+                                          (rainbow-delimiters-face-for-depth "brace" brace-depth))
+                (setq brace-depth (1+ brace-depth)))
+               ((= (char-after (point)) 125) ; }
+                (setq brace-depth (1- brace-depth))
+                (rainbow-delimiters-apply (point)
+                                          (rainbow-delimiters-face-for-depth "brace" brace-depth)))
                                         ; < 60
                                         ; > 62
-              )
-        (forward-char 1)))))
+               )
+         (forward-char 1)))))
 
 
 (defun rainbow-delimiters-unfontify (beg end)
@@ -239,16 +510,20 @@ The number of colors listed is variable and more colors may be added to support 
 ;; ,(rainbow-delimiters-face-from-colour "#6093be")
 ;; ,(rainbow-delimiters-face-from-colour "#588dba")
 
-;;; Excellent set of colors for wide gamut screens:
-   ;; [,(rainbow-delimiters-face-from-colour "grey55")
-   ;;  ,(rainbow-delimiters-face-from-colour "#7f967f")
-   ;;  ,(rainbow-delimiters-face-from-colour "#7199a1")
-   ;;  ,(rainbow-delimiters-face-from-colour "#917f7f")
-   ;;  ,(rainbow-delimiters-face-from-colour "#91937f")
-   ;;  ,(rainbow-delimiters-face-from-colour "#7f9691")
-   ;;  ,(rainbow-delimiters-face-from-colour "#949191")
-   ;;  ,(rainbow-delimiters-face-from-colour "#919991")
-   ;;  ,(rainbow-delimiters-face-from-colour "#949194")
-   ;;  ,(rainbow-delimiters-face-from-colour "#949494")]
+;;; Excellent, subtle set of colors for 92% wide gamut screens:
+;;; (e.g. HP LP3065)
+;; (defvar *rainbow-delimiters-faces*
+;;   `[,(rainbow-delimiters-face-from-colour "grey55")
+;;    ,(rainbow-delimiters-face-from-colour "#7f967f")
+;;    ,(rainbow-delimiters-face-from-colour "#7199a1")
+;;    ,(rainbow-delimiters-face-from-colour "#917f7f")
+;;    ,(rainbow-delimiters-face-from-colour "#91937f")
+;;    ,(rainbow-delimiters-face-from-colour "#7f9691")
+;;    ,(rainbow-delimiters-face-from-colour "#949191")
+;;    ,(rainbow-delimiters-face-from-colour "#919991")
+;;    ,(rainbow-delimiters-face-from-colour "#949194")
+;;    ,(rainbow-delimiters-face-from-colour "#949494")]
+;;   "Faces to use in coloring parentheses, brackets, and braces. Begins with the outermost color.
 
+;; The number of colors listed is variable and more colors may be added to support arbitrary nesting depth.")
 ;;; rainbow-delimiters.el ends here

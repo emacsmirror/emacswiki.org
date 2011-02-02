@@ -1,11 +1,10 @@
-= What it is =
+== What it is =
 Zen Coding refers to a neat way to write markup quickly.
 
 The following blogs provide summary and examples:
 
-http://www.456bereastreet.com/archive/200909/write_html_and_css_quicker_with_with_zen_coding/
-
-http://mondaybynoon.com/2009/08/17/the-art-of-zen-coding-bringing-snippets-to-a-new-level/ (skip the cruft about snippets)
+* http://www.456bereastreet.com/archive/200909/write_html_and_css_quicker_with_with_zen_coding/
+* http://mondaybynoon.com/2009/08/17/the-art-of-zen-coding-bringing-snippets-to-a-new-level/ (skip the cruft about snippets)
 
 I'll quote the blog:
 
@@ -294,3 +293,34 @@ Sorry guys, as you can tell by the lateness of my response, I really don't have 
 To the person above the previous, this zencoding-mode only supports what is documented above. Does support CSS classes/ids, but not aliases.
 
 -- [[ChrisDone]]
+
+[new]
+I am running under Windows, and I quite like the changes in emacs that are finally making it competitive with other editors.  The ErgoEmacs project seems to be making the software far more convenient.  I wanted to use ZenCoding on it, but I could not get the spell-checking working in that version.  The state of emacs compatible spell-checkers on Windows is pathetic.  The unmodified versions of emacs work fine, if you accept that the version of Aspell we have was made around nine years ago (Aspell 0.50.3 alpha).  Using the emacs at EgroEmacs is a rather old version; but fortunately, they have their modifications as add-ins for other OS'es as well.  They are in ergoemacs_1.9.1.1.zip.  I was able to get them working in GNU Emacs 23.2.1; but it broke this ZenCoding add-in.  Here are the changes I had to make:
+
+    ; Now, load ZenCoding
+    (require 'cl)    ; Installs Common Lisp, so emacs 23.x doesn't break Zencoding
+    (require 'zencoding-mode)
+    (add-hook 'sgml-mode-hook 'zencoding-mode)
+
+    ; The new Cua settings take over <C-enter>, much like ZenCoding itself, so you 
+    can't remap it.  This sets the expansion key to <Ctrl-E> instead.
+    (global-set-key "\C-e" 'zencoding-expand-line)
+
+Thus, one must add statements to install Common Lisp, and use a different key to expand the ZenCoding, since the CUA mode has recently taken over <C-enter>; and many users will want CUA mode for more intuitive, Windows-like use.  Now, I have a Windows version of emacs that behaves far more like a Windows editor, with e.g. a helpful context menu for selected regions with copy, etc; but it also has spell-checking (a little out of date), and this ZenCoding add-in.  I even found I can click the mouse wheel on a flyspell mispelling, and get suggestions!  (I am not spamming - I just like these modernizations of emacs quite a bit.)
+
+What I would most like to see in this ZenCoding add-in is support for the $ operator, so that:
+
+    ul>li#item$*3
+
+becomes
+
+    <ul>
+      <li id="item1">
+      </li>
+      <li id="item2">
+      </li>
+      <li id="item3">
+      </li>
+    </ul>
+
+and $$$ becomes 001, 002, 003, etc.  The guy who wrote a Haskell version had added this, but the Git repository is now missing.  This, together with the YASnippet add-in, standard in ErgoEmacs, will make for a formidable coding environment.

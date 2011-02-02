@@ -1,10 +1,10 @@
 <b>[[RainbowDelimiters]]</b> is a "rainbow parentheses" mode to colorize parentheses, brackets, and braces. It conveys nesting depth by using a new color for each for each nested level. It correctly colorizes statements of the same depth - if two statements are the same level, they will be the same color.
 
-Each set of delimiters "()[]{}" is colored independently from one another. This means that color is chosen based on the nesting depth _solely of that type of delimiter_. Parens, brackets, and braces are all colored based on their own depth independent of one another, so even a bracket nested within several levels of parentheses will start with the first (outermost) color, moving to the next color with each additional nested bracket.
+Each set of delimiters "()[]{}" is colored independently from one another. Parens, brackets, and braces are all colored based on their own depth independent of one another, so even a bracket nested within several levels of parentheses will start with the first (outermost) color, moving to the next color with each additional nested bracket.
 
 You can customize the colors [[RainbowDelimiters]] uses.
 
-<b>NOTE:</b> Colors were taken from the [[http://slinky.imukuppi.org/zenburnpage/ ZenBurn]] theme. If you wish to change them, please edit `*rainbow-delimiters-faces*' inside the file for now. A customize interface is coming soon.
+<b>NOTE:</b> Colors were taken from the [[http://slinky.imukuppi.org/zenburnpage/ ZenBurn]] theme. If you wish to change them, please M-x customize-group rainbow-delimiters-faces or add the appropriate faces to your color-theme. The customize interface is crude for now.
 
 == Download: ==
 * Lisp:rainbow-delimiters.el

@@ -42,6 +42,7 @@ allow you build TAGS file on root of project and move accross definition in proj
 
 Or may be you need <code>(add-to-list 'etags-table-alist ...)</code>.
 
+[new]
 Also note that instead of updating `etags-table-alist' you can include all tag-symblols in project TAGS file:
 
 {{{
