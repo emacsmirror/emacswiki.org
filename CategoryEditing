@@ -7,7 +7,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** DeletingSyntax -- an alternative to killing by words
 ** DeleteKillAndCopy -- take any motion command and prepend it with a suitable key to delete, kill or copy the text passed over
 ** DeletingWhitespace -- delete extra whitespace
-** LRU-yank -- manipulate the [[kill ring]] in Least Recently Used fashion. Lisp:LRU-yank.el
+** [[LRU-yank]] -- maintain [[kill ring]] as LRU (Least Recently Used) stack.  Similar to the application stack (M-tab) on MS Windows
 ** MousePlus -- highlight the [[yank]] position while you press `mouse-2', so you hit the right spot
 ** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
 ** ZapToChar -- Delete the characters from [[point]] to a character you specify.

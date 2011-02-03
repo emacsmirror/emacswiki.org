@@ -19,6 +19,11 @@ M-x rainbow-delimiters-mode
 </pre>
 
 
+[new]
+Nice idea, but here are some thoughts about the implementation:
+* Please require cl the way it should be done according to the Emacs manual.
+* A lot of overlays might slow down Emacs. Can't you use text properties instead?
+
 
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

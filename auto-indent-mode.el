@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Tue Feb  1 23:01:01 2011 (-0600)
+;; Last-Updated: Wed Feb  2 16:58:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 672
+;;     Update #: 760
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -36,6 +36,9 @@
 ;;  definitely indent the file (if enabled).
 ;;
 ;;  (6) TextMate behavior of keys if desired (see below)
+;;
+;;  (7) Deleting the end of a line will shrink the whitespace to just
+;;  one (if desired and enabled)
 ;;
 ;;  All of these options can be customized. (customize auto-indent)
 ;;
@@ -106,12 +109,29 @@
 ;;  (autoload 'auto-indent-kill-line "auto-indent-mode" "" t)
 ;;  (define-key global-map [remap kill-line] 'auto-indent-kill-line)
 ;;
+;;  Howeer, this does not honor the excluded modes in
+;;  `auto-indent-disabled-modes-list'
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 02-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Feb  2 13:22:13 2011 (-0600) #756 (Matthew L. Fidler)
+;;    Added kill-line bug-fix from Le Wang.
+;; 
+;;    Also there is a the bug of when called as a function, you need
+;;    to check for disabled modes every time.
+;;
+;; 02-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Feb  2 11:38:44 2011 (-0600) #736 (Matthew L. Fidler)
+
+;;    Added interactive requriment again.  This time tried to
+;;    back-guess if the key has been hijacked.  If so assume it was
+;;    called interactively.
+
 ;; 01-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Feb  1 22:58:45 2011 (-0600) #667 (Matthew L. Fidler)
-;;    Took out the interactive requirement agin.  Causes bugs like
+;;    Took out the interactive requirement again.  Causes bugs like
 ;;    org-delete-char below.
 ;; 01-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Feb  1 22:43:11 2011 (-0600) #641 (Matthew L. Fidler)
@@ -441,19 +461,17 @@ in conjunction with something that pairs delimiters like `autopair-mode'.
   "Starts `org-indent-mode' when in org-mode"
   :type 'boolean
   :group 'auto-indent)
-
-(defcustom auto-indent-force-interactive-advices nil
+(defcustom auto-indent-force-interactive-advices t
   "Forces interactive advices.  This makes sure that this is
 called when this is an interactive call directly to the function.
 However, if someone defines something such as `org-delete-char'
 to delete a character, when `org-delete-char' is called
 interactively and then calls `delete-char' the advice is never
-activated (when it should be).  This specific example has a
-work-around, but something like `org-kill-line' does not have a
-specific work-around.  Therefore, to be more inclusive, advices
-are not required to be interactive."
-  :type 'boolean
-  :group 'auto-indent)
+activated (when it should be).  If this is activated,
+auto-indent-mode tries to do the right thing by guessing what key
+should have been pressed to get this event.  If it is the key
+that was pressed enable the advice."
+  :type 'boolean :group 'auto-indent)
 
 (defcustom auto-indent-engine nil
   "Type of engine to use.  The possibilities are:
@@ -567,7 +585,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 		      (ad-activate ad))
 		  (error
 		   (message "Error enabling after-advices for `auto-indent-mode': %s" (error-message-string error))))))
-	    '(yank yank-pop cua-paste cua-paste-pop))
+	    '(yank yank-pop))
 	   (mapc
 	    (lambda(ad)
 	      (ad-enable-advice ad 'around 'auto-indent-minor-mode-advice)
@@ -588,7 +606,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 		    )
 		(error
 		 (message "[auto-indent-mode] Error disabling advices: %s" (error-message-string error)))))
-            '(yank yank-pop cua-paste cua-paste-pop))
+            '(yank yank-pop))
            (mapc
             (lambda(ad)
 	      (when (fboundp ad)
@@ -619,6 +637,24 @@ http://www.emacswiki.org/emacs/AutoIndentation
   :group 'auto-indent
   :require 'auto-indent-mode)
 
+(defun auto-indent-is-yank-p (&optional command)
+  "Tests if the function was a yank."
+  (or 
+   (and (boundp 'cua-mode) cua-mode
+	(memq (or command this-command)
+	      (list
+	       (key-binding (kbd "C-c"))
+	       (key-binding (kbd "C-v")))))
+   (and (boundp 'ergoemacs-mode) ergoemacs-mode
+      (memq (or command this-command)
+		      (list
+		       (key-binding (kbd "M-c"))
+		       (key-binding (kbd "M-v")))))
+   (memq (or command this-command)
+	 (list
+	  (key-binding (kbd "C-y"))
+	  (key-binding (kbd "M-y"))))))
+
 (defun auto-indent-yank-engine ()
   "Engine for the auto-indent yank functions/advices"
   (when (not (minibufferp))
@@ -628,7 +664,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 	    (save-excursion 
 	      (indent-region (progn (goto-char (region-beginning)) (point-at-bol))
 			     (progn (goto-char (region-end)) (point-at-eol)) nil)))
-	(if auto-indent-mode-untabify-on-yank-or-paste
+        (if auto-indent-mode-untabify-on-yank-or-paste
 	    (untabify (region-beginning) (region-end)))))))
 
 (defmacro auto-indent-advice-command (command)
@@ -636,7 +672,8 @@ http://www.emacswiki.org/emacs/AutoIndentation
   `(progn
      (defadvice ,command (after auto-indent-minor-mode-advice)
        (when (and (or (not auto-indent-force-interactive-advices)
-		      (called-interactively-p 'any))
+		      (called-interactively-p 'any)
+		      (auto-indent-is-yank-p))
 		  (not current-prefix-arg)
 		  auto-indent-minor-mode)
 	 (auto-indent-yank-engine)))
@@ -684,6 +721,25 @@ http://www.emacswiki.org/emacs/AutoIndentation
       (set-buffer-modified-p nil) ; Make the buffer appear "not modified"
       )))
 
+(defun auto-indent-is-del-key-p (&optional command)
+  "Determines if the delete key was pressed.  This is based on
+standards for Viper, ErgoEmacs and standard emacs"
+  (or
+   (and (boundp 'viper-mode) viper-mode (eq viper-current-state 'vi-state) ;; Viper VI state
+	(memq (or command this-command)
+                  (list
+                   (key-binding (kbd "d")))))
+   (and (boundp 'ergoemacs-mode) ergoemacs-mode ;; Ergoemacs
+	(memq (or command this-command)
+                  (list
+                   (key-binding (kbd "<delete>"))
+                   (key-binding (kbd "M-f"))
+                   (key-binding (kbd "<deletechar>")))))
+   (memq (or command this-command)
+                  (list
+                   (key-binding (kbd "<deletechar>"))
+                   (key-binding (kbd "C-d"))))))
+
 (defmacro auto-indent-def-del-char (&optional function)
   "Defines advices and commands for `delete-char'"
   `(,(if function 'defun 'defadvice)
@@ -693,7 +749,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
     ,(if function '(interactive "p") nil)
     (if ,(if function t '(or (not auto-indent-force-interactive-advices)
 			     (called-interactively-p 'any)
-			     (eq (key-binding (kbd "<delete>")) this-command)))
+			     (auto-indent-is-del-key-p)))
 	(let ((del-eol (eolp)))
 	  ,(if function
 	       '(if (called-interactively-p 'any)
@@ -718,6 +774,20 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (auto-indent-def-del-char)
 (auto-indent-def-del-char t)
 
+(defun auto-indent-is-kill-line-p (&optioal command)
+  "Determines if the delete key was pressed.  This is based on standards for Viper, ErgoEmacs and standard emacs"
+  (or 
+   (and (boundp 'viper-mode) viper-mode (eq viper-current-state 'vi-state) nil)
+   (and (boundp 'ergoemacs-mode) ergoemacs-mode
+            (memq (or command this-command)
+                  (list
+                   (key-binding (kbd "<deleteline>"))
+                   (key-binding (kbd "M-g")))))
+   (memq (or command this-command)
+	 (list
+	  (key-binding (kbd "C-k"))
+	  (key-binding (kbd "<deleteline>"))))))
+
 (defmacro auto-indent-def-kill-line (&optional function)
   "Defines advices and functions for `kill-line'"
   `(,(if function 'defun 'defadvice)
@@ -729,28 +799,23 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 "
     ,(if function '(interactive "P") nil)
     (if ,(if function t '(or (not auto-indent-force-interactive-advices)
-			     (called-interactively-p 'any)))
-	(progn
+			     (called-interactively-p 'any)
+			     (auto-indent-is-kill-line-p)))
+	(let ((can-do-it t))
 	  (if (and auto-indent-minor-mode
 		   (not (minibufferp)))
 	      (if (and auto-indent-kill-line-kill-region-when-active
 		       (use-region-p))
 		  (progn
-		    (kill-region (region-beginning) (region-end)))
-		(if (auto-indent-bolp)
-		    (progn
-		      (move-beginning-of-line 1)
-		      ,(if function
-			   '(kill-line arg)
-			 'ad-do-it))
-		  (if (auto-indent-eolp)
+		    (kill-region (region-beginning) (region-end))
+		    (setq can-do-it nil))
+		(when (auto-indent-bolp)
+		  (move-beginning-of-line 1))
+		(when (auto-indent-eolp)
 		      (cond ((eq auto-indent-kill-line-at-eol nil)
-			     (if (> (prefix-numeric-value current-prefix-arg) 0)
-				 (delete-indentation 't)
-			       ,(if function
-				    '(kill-line arg)
-				  'ad-do-it)))
-			    ((memq auto-indent-kill-line-at-eol '(whole-line blanks))
+			     (when (> (prefix-numeric-value current-prefix-arg) 0)
+			       (delete-indentation 't))
+			     ((memq auto-indent-kill-line-at-eol '(whole-line blanks))
 			     (if (> (prefix-numeric-value current-prefix-arg) 0)
 				 (save-excursion
 				   (delete-region (point) (point-at-eol))
@@ -767,15 +832,16 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 				    '(kill-line arg)
 				  'ad-do-it)))
 			    (t
-			     (error "invalid `auto-indent-kill-line-at-eol' setting %s"				   
-                                    auto-indent-kill-line-at-eol)))
-                    ,(if function
+			     (error "Invalid `auto-indent-kill-line-at-eol' setting %s"				   
+                                    auto-indent-kill-line-at-eol))))))))
+			    (when can-do-it
+			      ,(if function 
                          '(kill-line arg)
-                       'ad-do-it)))))
+			 'ad-do-it))
 	  (indent-according-to-mode))
       ,(if function
 	   nil
-	 'ad-do-it))))
+	 'ad-do-it)))
 
 (auto-indent-def-kill-line t)
 (auto-indent-def-kill-line)

@@ -2,13 +2,13 @@
 
 This page collects information for creating a usable Python programming environment in Emacs. 
 
-There are two implementations of a Python mode for Emacs: python.el and python-mode.el. Python.el comes with Emacs.
+There are two implementations of a Python mode for Emacs: python.el and python-mode.el. python.el comes with GNU Emacs. [https://launchpad.net/python-mode python-mode.el] comes from Python. (Unification is desired.)
 
 # ProgrammingWithPythonDotEl
 
 # ProgrammingWithPythonModeDotEl
 
-I also found these useful:
+You may also find these useful:
 
 * [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
 
@@ -18,7 +18,9 @@ I also found these useful:
 
 * [[RichardRiley]]s [http://richardriley.net/projects/emacs/dotprogramming#sec-1.5 python dotfiles]
 
-* [http://gabrielelanaro.github.com/emacs-for-python/ another setup] based around python dev.
+* [http://gabrielelanaro.github.com/emacs-for-python/ Gabriele Lanaro's python setup]
+
+* [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Pedro Kroger's python setup]
 
 == Emacs as a Python IDE ==
 
@@ -317,6 +319,59 @@ I made the following changes to python-mode.el to make debugging work again with
 [...]
 
 Now when I debug in the IPython console (using %run -d, or %pdb on, etc.) pdbtrack makes sure to show me the current source code and corresponding line. Note that these changes may break debugging in a standard python-shell, I have not tested this.
+
+== Pedro Kroger's python setup ==
+
+=== dependencies ===
+
+The following is based on [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Pedro Kroger's python setup], which this user found to provide much functionality. Note Kroger's instructions are especially well suited for users of Ubuntu or other Debian-based systems. While the instructions at that page are quite good, some gotcha's were found, Since I cannot edit that page, the following tips are offered here from my experience setting this up in Feb 2011 using the following dependencies:
+
+* From the Ubuntu/Debian package management system. All were up-to-date as of 1 Feb 2011.
+** Ubuntu Lucid 10.04.1 (kernel=2.6.32-28)
+** GNU Emacs 23.1.50.1 (package=emacs-snapshot-gtk)
+** Python=2.6.5
+** IPython=0.10
+** other python-related Ubuntu/Debian packages: python2.6-doc, pep8, pylint
+* Python packages installed with `easy_install' (as directed by [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Kroger's page])
+** ipdb
+** reimport
+* From other sources, (as directed by [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Kroger's page])
+** python-mode.el=5.2.0
+** ipython.el=2927
+** anything.el=1.287
+** anything-ipython.el=25 July 2009 18:48:31 (+0200)
+** anything-show-completion.el=1.19
+** pylookup=current (no versioning visible)
+** autopair.el=0.4
+** python-pep8.el=1.01
+** python-pylint.el=1.01
+** yasnippet=0.6.1c
+* Note I did not install
+** lambda-mode
+** flymake
+
+=== my procedure ===
+
+(Apologies for manual numbering, but I don't know how to make the wiki resume numbering after, e.g., including a preformatted section.)
+
+0. I previously had ubuntu, emacs, python, and ipython installed, with python configured for ##easy_install##.
+
+1. I first followed all procedures in Kroger's section=/Tools installation and configuration/ except for ##lambda-mode##. (I also did not install ##flymake##; Kroger's page does not either, though it is mentioned.)
+
+*  Note I also byte-compiled all the *.el after downloading.
+
+2. For my first test, I made the following file=<code>/tmp/Test.py</code> in a buffer, noting syntax coloration.
+<pre>class Test():
+    def foo1(self):
+        print "foo1"
+
+    def foo2(self):
+        print "foo2"
+</pre>
+
+3. from buffer=<code>Test.py</code>, I did
+
+3.1 ##C-c !## to start an ipython buffer.
 
 ----
 ProgrammingModes

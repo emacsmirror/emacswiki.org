@@ -1,4 +1,5 @@
 Emacsed is an ed(1)-like editing mode for Emacsen. It might also be the only ed implementation with syntax highlighting. It's available at http://aon.iki.fi/files/emacsed/emacsed.el
+(which appears to be down, but still available from http://web.archive.org/web/20070221113930/http://aon.iki.fi/files/emacsed/emacsed.el ).
 
 * [http://aon.iki.fi/files/emacsed/ChangeLog ChangeLog]
 * [http://aon.iki.fi/files/emacsed/TODO TODO]

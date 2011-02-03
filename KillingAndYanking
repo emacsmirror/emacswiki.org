@@ -58,7 +58,7 @@ See also:
 * [[Region]]
 * EmacsManual, chapter "Killing"
 * CopyAndPaste
-* Lisp:LRU-yank.el for a stacked based kill-ring manipulation package. Think alt-tab for the kill-ring.
+* [[LRU-yank]] for a stacked based kill-ring manipulation package. Think alt-tab for the kill-ring.
 
 ----
 

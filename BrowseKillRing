@@ -47,6 +47,9 @@ To get the "M-y immediately pulls up the kill ring" behavior, you need to run M-
  (require 'browse-kill-ring)
  (browse-kill-ring-default-keybindings)
 
+[new]
+Not that anyone here will believe me, but I am the NickHurley referenced above. I can safely say that I have abandoned browse-kill-ring.el (which is now hosted on GitHub: https://github.com/todesschaf/browse-kill-ring for those who are interested). Enjoy.
+
 
 ----
 

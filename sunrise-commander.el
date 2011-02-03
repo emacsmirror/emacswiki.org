@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 350 $
+;; RCS Version: $Rev: 353 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 350 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 353 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -200,6 +200,7 @@
 (require 'dired-x)
 (require 'find-dired)
 (require 'font-lock)
+(require 'sort)
 (eval-when-compile (require 'cl)
                    (require 'desktop)
                    (require 'esh-mode)
@@ -237,28 +238,16 @@
 
 (defcustom sr-listing-switches "-alp"
   "Listing  switches  to  use  (instead  of dired-listing-switches) for building
-  Sunrise buffers. Notice that buffers in  VIRTUAL  mode  (such  as  the  recent
-  directories and recent files listings) use sr-virtual-listing-switches instead
-  of this.
+  Sunrise buffers.
   Most portable value: -alp
   Recommended value on GNU systems: \
 --time-style=locale --group-directories-first -alDphgG"
   :group 'sunrise
   :type 'string)
 
-(defcustom sr-virtual-listing-switches "--time-style=long-iso --group-directories-first -aldp"
+(defcustom sr-virtual-listing-switches "-alp"
   "Listing switches for building buffers in Sunrise VIRTUAL mode based on find
-  and locate results. Sorting support in sr-virtual buffers depend on the
-  correct format of their entries.
-
-  NOTE:  the  default  value  for  these  switches may be incompatible with your
-  installation if you're using Sunrise in a  non-GNU  environment.  If  you  are
-  getting error reports of the form ``Listing directory failed but `access-file'
-  worked'', then you may try changing this value to -alp (be aware, though, that
-  this will cripple sorting in all your VIRTUAL buffers), or much better install
-  GNU coreutils in your system and use gls as your ls program.  For  details  on
-  how  to  do this please consult the GNU Emacs FAQ for MS Windows. (Thanks Vagn
-  Johansen for pointing out this issue)"
+  and locate results. Should not contain the -D option."
   :group 'sunrise
   :type 'string)
 
@@ -516,7 +505,7 @@ substitution may be about to happen."
         C-M-u ......... go to next directory in history on passive pane
 
         g, C-c C-c .... refresh pane
-        s ............. change sorting order or files (name/size/time/extension)
+        s ............. sort entries (by name, number, size, time or extension)
         C-o ........... show/hide hidden files (requires dired-omit-mode)
         C-Backspace ... hide/show file attributes in pane
         C-c Backspace . hide/show file attributes in pane (console compatible)
@@ -574,7 +563,7 @@ substitution may be about to happen."
         M-q ........... quit Sunrise Commander, don't restore previous windows
 
 Additionally, the following traditional commander-style keybindings are provided
- (these may be disabled by customizing the ``sr-use-commander-keys'' option):
+ (these may be disabled by customizing the `sr-use-commander-keys' option):
 
         F2 ............ go to directory
         F3 ............ quick visit selected file
@@ -588,6 +577,7 @@ Additionally, the following traditional commander-style keybindings are provided
         C-F4 .......... sort contents of current pane by extension
         C-F5 .......... sort contents of current pane by time
         C-F6 .......... sort contents of current pane by size
+        C-F7 .......... sort contents of current pane numerically
         S-F7 .......... soft-link selected file/directory to passive pane
         Insert ........ mark file
         C-PgUp ........ go to parent directory
@@ -687,6 +677,8 @@ automatically:
      (dired-omit-mode omit)
      (if path-face
          (set (make-local-variable 'sr-current-path-face) path-face))
+     (if (string= "NUMBER" (get sr-selected-window 'sorting-order))
+         (sr-sort-by-operation 'sr-numerical-sort-op))
      (sr-restore-point-if-same-buffer)))
 
 (defmacro sr-alternate-buffer (form)
@@ -715,7 +707,7 @@ automatically:
      (sr-change-window)
      (condition-case description
          ,form
-       (error (message (second description))))
+       (error (message (cadr description))))
      (sr-change-window)
      (sr-highlight)))
 
@@ -819,6 +811,11 @@ automatically:
     (setq sr-backup-buffer nil)))
 (add-hook 'kill-buffer-hook       'sr-kill-backup-buffer)
 (add-hook 'change-major-mode-hook 'sr-kill-backup-buffer)
+
+(defun sr-insert-directory (file switches &optional wildcard full-directory-p)
+  (let ((beg (point)))
+    (insert-directory file switches wildcard full-directory-p)
+    (dired-align-file beg (point))))
 
 ;; This is a hack to avoid some dired mode quirks:
 (defadvice dired-find-buffer-nocreate
@@ -1005,6 +1002,7 @@ automatically:
     ([(control f4)]    . sr-sort-by-extension)
     ([(control f5)]    . sr-sort-by-time)
     ([(control f6)]    . sr-sort-by-size)
+    ([(control f7)]    . sr-sort-by-number)
     ([(shift f7)]      . sr-do-symlink)
     ([(insert)]        . sr-mark-toggle)
     ([(control prior)] . sr-dired-prev-subdir))
@@ -1055,7 +1053,7 @@ automatically:
         (if filename
             (condition-case description
                 (sr-focus-filename (replace-regexp-in-string ".*/" "" filename))
-              (error (setq welcome (second description)))))
+              (error (setq welcome (cadr description)))))
         (setq sr-this-directory default-directory)
         (setq sr-current-frame (window-frame (selected-window)))
         (message "%s" welcome)
@@ -1257,7 +1255,7 @@ automatically:
       (set (make-local-variable 'sr-current-window-overlay)
            (make-overlay begin end))
 
-      ;;make path line clickable
+      ;;path line hover effect:
       (toggle-read-only -1)
       (add-text-properties
        begin
@@ -1478,7 +1476,7 @@ automatically:
     (and sr-avfs-root
          (or (eq 'archive-mode mode)
              (eq 'tar-mode mode)
-             (and (listp mode) (eq 'jka-compr (second mode)))
+             (and (listp mode) (eq 'jka-compr (cadr mode)))
              (not (equal "." (sr-assoc-key filename
                                            sr-avfs-handlers-alist
                                            'string-match)))))))
@@ -1508,7 +1506,7 @@ automatically:
         (sr-quit)
         (set-window-configuration sr-prior-window-configuration)
         (find-file filename wildcards))
-    (error (message "%s" (second description)))))
+    (error (message "%s" (cadr description)))))
 
 (defun sr-avfs-dir (filename)
   "Returns the virtual path for accessing the given file through AVFS, or nil if
@@ -1853,7 +1851,9 @@ automatically:
         (if (eq 'sr-mode major-mode) (sr-kill-backup-buffer)))
     (unless (or (equal major-mode 'sr-virtual-mode)
                 (local-variable-p 'sr-virtual-buffer))
-      (dired-revert)))
+      (dired-revert)
+      (if (string= "NUMBER" (get sr-selected-window 'sorting-order))
+          (sr-sort-by-number t))))
   (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes))
   (sr-highlight))
 
@@ -1902,7 +1902,7 @@ automatically:
           (progn
             (dired-find-file-other-window)
             (sr-scrollable-viewer (current-buffer)))
-        (error (message "%s" (second description)))))))
+        (error (message "%s" (cadr description)))))))
 
 ;; These clean up after a quick view:
 (add-hook 'sr-quit-hook (lambda () (setq other-window-scroll-buffer nil)))
@@ -1999,39 +1999,160 @@ automatically:
 (sr-defun-sort-by "time" "t")
 (sr-defun-sort-by "size" "S")
 
+(defun sr-sort-by-number (&optional inhibit-label)
+  "Sorts the contents of the current Sunrise pane numerically,  so as to display
+  entries containing unpadded numbers in a more logical order than the presented
+  when sorted alphabetically by name."
+  (interactive)
+  (sr-sort-by-operation 'sr-numerical-sort-op (or inhibit-label "NUMBER")))
+
 (defun sr-interactive-sort (order)
   "Prompts for a new sorting order for the active pane and applies it."
-  (interactive "cSort by (n)ame, (s)ize, (t)ime or e(x)tension? ")
+  (interactive "cSort by (n)ame, n(u)mber, (s)ize, (t)ime or e(x)tension? ")
   (if (>= order 97)
       (setq order (- order 32)))
-  (cond ((eq order ?T) (sr-sort-by-time))
+  (cond ((eq order ?U) (sr-sort-by-number))
+        ((eq order ?T) (sr-sort-by-time))
         ((eq order ?S) (sr-sort-by-size))
         ((eq order ?X) (sr-sort-by-extension))
         (t             (sr-sort-by-name))))
 
 (defun sr-sort-virtual (option)
-  "Manages  sorting of buffers in Sunrise VIRTUAL mode. Since we cannot rely any
-  more on all files in the buffer existing somewhere in the filesystem,  we  use
-  the contents of the buffer itself for sorting its records, which must not only
-  contain all the necessary data, but also must be  in  a  format  that  can  be
-  easily  sorted.  See  the  variable  sr-virtual-listing-switches for the exact
-  switches for ls that should be used."
-  (let ((opt (string-to-char option))
-        (beg) (end))
-    (goto-char (point-max))
-    (re-search-backward directory-listing-before-filename-regexp nil t)
-    (end-of-line)
-    (setq end (point))
-    (goto-char (point-min))
-    (re-search-forward directory-listing-before-filename-regexp nil t)
-    (beginning-of-line)
-    (setq beg (point))
-    (toggle-read-only -1)
-    (cond ((eq opt ?X) (sort-regexp-fields nil "^.*$" "[/.][^/.]+$" beg end))
-          ((eq opt ?t) (sort-regexp-fields t "^.*$" "[0-9]\\{4\\}\\(-[0-9]\\{2\\}\\)\\{2\\} [0-2][0-9]:[0-5][0-9]" beg end))
-          ((eq opt ?S) (sort-numeric-fields 5 beg end) (reverse-region beg end))
-          (t  (sort-fields 8 beg end)))
-    (toggle-read-only 1)))
+  "Manages  sorting of buffers in Sunrise VIRTUAL mode."
+  (let ((opt (string-to-char option)) (inhibit-read-only t) (beg) (end))
+    (cond ((eq opt ?X)
+           (sr-end-of-buffer)
+           (setq end (point-at-eol))
+           (sr-beginning-of-buffer)
+           (setq beg (point-at-bol))
+           (sort-regexp-fields nil "^.*$" "[/.][^/.]+$" beg end))
+          ((eq opt ?t)
+           (sr-sort-by-operation
+            (lambda (x) (sr-attribute-sort-op 5 t x)) "TIME")) 
+          ((eq opt ?S)
+           (sr-sort-by-operation
+            (lambda (x) (sr-attribute-sort-op 7 t x)) "SIZE"))
+          (t
+           (sr-sort-by-operation
+            (lambda (x) (sr-attribute-sort-op -1 nil x)) "NAME")))))
+
+(defun sr-sort-by-operation (operation &optional label)
+  "General  function for reordering the contents of a Sunrise pane. OPERATION is
+  a function that receives a list produced by `sr-build-sort-lists', reorders it
+  in some way, transforming it into a list that can be passed to `sort-reorder',
+  so the records in the current buffer are reordered accordingly. The LABEL is a
+  string that will be used to set the sorting order of the current pane and then
+  displayed in the minibuffer; if it's not provided or its value is nil then the
+  ordering enforced by this function is transient and can be undone by reverting
+  the pane, or by moving it to a different directory. See `sr-numerical-sort-op'
+  and `sr-attribute-sort-op' for examples of OPERATIONs."
+  (interactive)
+  (let ((messages (> (- (point-max) (point-min)) 50000))
+        (focus (dired-get-filename 'verbatim t))
+        (inhibit-read-only t))
+    (if messages (message "Finding sort keys..."))
+    (let* ((sort-lists (sr-build-sort-lists))
+           (old (reverse sort-lists))
+           (beg) (end))
+      (if messages (message "Sorting records..."))
+      (setq sort-lists (apply operation (list sort-lists)))
+      (if messages (message "Reordering buffer..."))
+      (save-excursion
+        (save-restriction
+          (sr-end-of-buffer)
+          (setq end (point-at-eol))
+          (sr-beginning-of-buffer)
+          (setq beg (point-at-bol))
+          (narrow-to-region beg end)
+          (sort-reorder-buffer sort-lists old)))
+      (if messages (message "Reordering buffer... Done")))
+    (sr-highlight)
+    (if focus (sr-focus-filename focus))
+    (when label
+      (put sr-selected-window 'sorting-order label)
+      (message "Sunrise: sorting entries by %s" label)))
+  nil)
+
+(defun sr-numerical-sort-op (sort-lists)
+  "Strategy used by `sr-sort-by-operation' to numerically sort the contents of a
+  Sunrise pane. See `sr-sort-by-number' for more on this kind of sorting."
+  (mapcar
+   'cddr
+   (sort
+    (sort
+     (mapcar
+      (lambda (x)
+        (let ((key (buffer-substring-no-properties (car x) (cddr x))))
+          (append
+           (list (replace-regexp-in-string "[0-9]" "" key)
+                 (string-to-number (replace-regexp-in-string "[^0-9]" "" key))
+                 (cdr x))
+           (cdr x))))
+      sort-lists)
+     (lambda (a b) (< (cadr a) (cadr b))))
+    (lambda (a b) (string< (car a) (car b))))))
+
+(defun sr-attribute-sort-op (nth-attr as-number sort-lists)
+  "Strategy used by `sr-sort-by-operation' to sort the records in a Sunrise pane
+  according to one of the file attributes obtained from `file-attributes' (which
+  see  for  a list of supported attributes and their positions). Directories are
+  forced to remain always on top. NTH-ATTR is the position of the  attribute  to
+  use  for sorting, or -1 for the name of the file. AS-NUMBER determines whether
+  comparisons will be numeric or alphabetical. SORT-LISTS is a list of positions
+  obtained from `sr-build-sort-lists'."
+  (let ((attributes (sr-files-attributes))
+        (zero (if as-number 0 "")))
+    (mapcar
+     'cddr
+     (sort
+      (sort
+       (mapcar
+        (lambda (x)
+          (let* ((key (buffer-substring-no-properties (car x) (cddr x)))
+                 (key (replace-regexp-in-string "/?$" "" key))
+                 (key (replace-regexp-in-string " -> .*$" "" key))
+                 (attrs (assoc-default key attributes))
+                 (index))
+            (when attrs
+              (setq attrs (apply 'cons attrs)
+                    index (or (nth (1+ nth-attr) attrs) zero))
+              (append (list (cadr attrs) index (cdr x)) (cdr x)))))
+        sort-lists)
+       (lambda (a b) (sr-compare nth-attr (cadr b) (cadr a))))
+      (lambda (a b)
+        (if (and (car a) (car b))
+            (sr-compare nth-attr (cadr b) (cadr a))
+          (and (car a) (not (stringp (car a))))))))))
+
+(defun sr-build-sort-lists ()
+  "Analyses the contents of the current Sunrise pane and builds from them a list
+  of dotted cons cells of the form (a b . c) -- where 'a' is the position at the
+  start of the  file name in an entry,  while 'b' and 'c' are the  start and end
+  positions of the  whole entry. These lists are  used by `sr-sort-by-operation'
+  to sort the contents of the pane in arbitrary ways."
+  (delq nil
+        (mapcar
+         (lambda (x) (and (atom (car x)) x))
+         (save-excursion
+           (sr-beginning-of-buffer)
+           (beginning-of-line)
+           (sort-build-lists 'forward-line 'end-of-line 'dired-move-to-filename
+                             nil)))))
+
+(defun sr-compare (mode a b)
+  "General comparison function, used to sort files by different criteria in
+  VIRTUAL buffers. MODE must be a number, if it's less than 0 the direction of
+  the comparison is inverted: (sr-compare -1 a b) === (sr-compare 1 b a).
+  Compares numbers using <, strings case-insensitively using string< and lists
+  recursively until the first two elements that are non-equal are found."
+  (if (< mode 0) (let (tmp) (setq tmp a a b b tmp mode (abs mode))))
+  (cond ((or (null a) (null b)) nil)
+        ((and (listp a) (listp b)) (if (= (car a) (car b))
+                                       (sr-compare mode (cdr a) (cdr b))
+                                     (sr-compare mode (car a) (car b))))
+        ((and (stringp a) (stringp b)) (string< (downcase a) (downcase b)))
+        ((and (numberp a) (numberp b)) (< a b))
+        (t nil)))
 
 (defun sr-scroll-up ()
   "Scrolls the current pane or (if active) the viewer pane 1 line up."
@@ -2498,10 +2619,7 @@ indir/d => to-dir/d using clone-op to clone all files."
       nil)))
 
 (defun sr-copy-virtual ()
-  "Manages  copying  of  files/directories  to  buffers  in  VIRTUAL  mode. Like
-  sorting, this operation depends on  the  variable  sr-virtual-listing-switches
-  set  to the right value. See the documentation of function sr-sort-virtual for
-  more details."
+  "Manages  copying  of  files/directories  to  buffers  in  VIRTUAL  mode."
   (let ((fileset (dired-get-marked-files nil))
         (inhibit-read-only t))
     (sr-change-window)
@@ -2510,7 +2628,7 @@ indir/d => to-dir/d using clone-op to clone all files."
             (insert-char 32 2)
             (setq file (dired-make-relative file default-directory))
             (setq file (replace-regexp-in-string "/$" "" file))
-            (insert-directory file sr-virtual-listing-switches))
+            (sr-insert-directory file sr-virtual-listing-switches))
           fileset)
     (unwind-protect
         (kill-line)
@@ -2691,7 +2809,7 @@ or (c)ontents? ")
   cache can be cleared later calling sr-md5 with nil as its first argument."
   (if (null file-alist)
       (setq sr-md5 '(nil))
-    (let* ((filename (second file-alist))
+    (let* ((filename (cadr file-alist))
            (md5-digest (cdr (assoc filename sr-md5)))
            (md5-command))
       (unless md5-digest
@@ -2752,7 +2870,7 @@ or (c)ontents? ")
         (dired-next-marked-file 1)
         (setq result (dired-get-filename t t))
         (dired-unmark 1))
-      (error (message (second description))))
+      (error (message (cadr description))))
     result))
 
 ;;; ============================================================================
@@ -2897,7 +3015,7 @@ or (c)ontents? ")
                  (when (and (string-match search-regexp x) (file-exists-p x))
                    (goto-char (point-max))
                    (insert-char 32 2)
-                   (insert-directory x sr-virtual-listing-switches nil nil)))
+                   (sr-insert-directory x sr-virtual-listing-switches nil nil)))
                (split-string output "[\r\n]" t))))))
 
 (defun sr-locate-sentinel (locate-buffer)
@@ -3001,7 +3119,7 @@ or (c)ontents? ")
      (insert "Recently Visited Files: \n")
      (dolist (file recentf-list)
        (condition-case nil
-           (insert-directory file sr-virtual-listing-switches nil nil)
+           (sr-insert-directory file sr-virtual-listing-switches nil nil)
          (error (ignore))))
      (sr-virtual-mode)
      (sr-keep-buffer))))
@@ -3021,7 +3139,7 @@ or (c)ontents? ")
            (when dir
              (setq dir (replace-regexp-in-string "\\(.\\)/?$" "\\1" dir))
              (setq beg (point))
-             (insert-directory dir sr-virtual-listing-switches nil nil)
+             (sr-insert-directory dir sr-virtual-listing-switches nil nil)
              (dired-align-file beg (point)))
          (error (ignore))))
      (sr-virtual-mode))))
@@ -3205,7 +3323,7 @@ or (c)ontents? ")
 (defmacro sr-term-excursion (newterm form)
   "Helper  macro.  Takes  care  of  the  common mechanics of launching a new (or
   switching to an existing) terminal from Sunrise."
-  `(let ((buffer (first sr-ti-openterms)) (new-name))
+  `(let ((buffer (car sr-ti-openterms)) (new-name))
      (sr-select-viewer-window t)
      (if (buffer-live-p buffer)
          (switch-to-buffer buffer)
@@ -3216,14 +3334,14 @@ or (c)ontents? ")
        ,form
        (message "Sunrise: previous terminal renamed to %s" new-name))
      (setq cd (or cd (null sr-ti-openterms)))
-     (unless (eq (current-buffer) (first sr-ti-openterms))
+     (unless (eq (current-buffer) (car sr-ti-openterms))
        (push (current-buffer) sr-ti-openterms))))
 
 (defun sr-term-extern (&optional cd newterm)
   "This is the implementation of sr-term for external terminal programs."
   (let* ((dir (expand-file-name
               (if sr-running sr-this-directory default-directory)))
-        (aterm (first sr-ti-openterms))
+        (aterm (car sr-ti-openterms))
         (line-mode (if (buffer-live-p aterm)
                        (with-current-buffer aterm (term-in-line-mode)))))
     (sr-term-excursion newterm (term sr-terminal-program))
@@ -3306,14 +3424,14 @@ or (c)ontents? ")
   (let ((found nil)
         (name (buffer-name)))
     (while (and sr-ti-openterms
-                (not (buffer-live-p (first sr-ti-openterms))))
+                (not (buffer-live-p (car sr-ti-openterms))))
       (pop sr-ti-openterms))
-      (when (and (string= (buffer-name (first sr-ti-openterms)) name)
-                 (first sr-ti-openterms)
+      (when (and (string= (buffer-name (car sr-ti-openterms)) name)
+                 (car sr-ti-openterms)
                  (pop sr-ti-openterms)
-                 (buffer-live-p (first sr-ti-openterms)))
+                 (buffer-live-p (car sr-ti-openterms)))
         (rename-uniquely)
-        (set-buffer (first sr-ti-openterms))
+        (set-buffer (car sr-ti-openterms))
         (rename-buffer name))))
 (add-hook 'kill-buffer-hook 'sr-ti-restore-previous-term)
 
