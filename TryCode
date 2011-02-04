@@ -1,0 +1,32 @@
+= Try Code =
+[https://github.com/lewang/le_emacs_try_code github]
+
+A simple package to easily try out a new piece of code and decide later if you want to keep it.
+
+Usage scenario:
+
+You have:
+
+<pre>
+(defun foo ()
+  
+  (message "some old logic")
+  
+  )
+</pre>
+
+Selecting the line you want to replace, press C-?
+
+<pre>
+(defun foo ()
+  
+;; <<<<<<< Le : *old code* >>>>>>>>>>>
+;;   (message "some old logic")
+;; =======  *test code* ==============
+
+;; >>>>>>> *end* <<<<<<<<<<<<<<<<<<<<<
+  
+  )
+</pre>
+
+Now when you're done writing the new logic, press C-? again and you're prompted for which section to keep.

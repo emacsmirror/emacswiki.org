@@ -129,3 +129,7 @@ Font Smoothing, also known as !ClearType:
 Forks: Other Windows32 Emacs applications
 
 * [[Meadow]] - [http://www.meadowy.org/meadow/ Meadow home page (in Japanese)] -- the '''m'''ultilingual '''e'''nhancement to GNU Emacs with '''ad'''vantages '''o'''ver '''w'''indows. A Japanese-language oriented GNU Emacs fork with Cygwin like installer.
+
+Special problems on w32:
+
+* [[http://lists.gnu.org/archive/html/help-emacs-windows/2011-02/msg00000.html Growl for windows uses Alt-X by default]] - but you can customize it.

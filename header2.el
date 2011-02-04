@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 09:54:59 2011 (-0800)
+;; Last-Updated: Thu Feb  3 08:02:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1784
+;;     Update #: 1800
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -61,7 +61,8 @@
 ;;
 ;; Other variables defined here:
 ;;
-;;   `file-header-update-alist', `header-prefix-string', `return-to'.
+;;   `header-auto-update-enabled', `file-header-update-alist',
+;;   `header-prefix-string', `return-to'.
 ;;
 ;;
 ;; To have Emacs update file headers automatically whenever you save a
@@ -162,6 +163,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/03 dadams
+;;     Added: header-auto-update-enabled.
+;;     auto-update-file-header: Respect header-auto-update-enabled.  Thx to Le Wang.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/08/03 dadams
@@ -328,10 +332,8 @@
 ;; Quiet byte-compiler.
 (defvar comment-end-p)
 (defvar comment-start-p)
-
-;;;;;;;;;;;;;;;;;;;;;;
-
-
+(defvar c-style)
+(defvar explicit-shell-file-name)
  
 ;; User Options (Variables) --------------------------------
 
@@ -456,11 +458,15 @@ Floor, Boston, MA 02110-1301, USA."
 
   "*Text saying that this is free software"
   :type 'string :group 'Automatic-File-Header)
-
-
-
  
 ;;; Internal variables -------------------------------------
+
+(defvar header-auto-update-enabled t
+  "Non-nil means file-header updating is enabled for current buffer.")
+
+(make-variable-buffer-local 'header-auto-update-enabled)
+(when (boundp 'safe-local-variable-values)
+  (add-to-list 'safe-local-variable-values '(header-auto-update-enabled)))
 
 (defvar return-to nil
   "Position to move point to after header fns are processed.
@@ -477,12 +483,6 @@ the function to call if the string is found near the start of the file.")
 
 (defvar header-prefix-string ""
   "Mode-specific comment prefix string for use in headers.")
-
-;; To quiet the byte compiler.
-(defvar explicit-shell-file-name) (defvar c-style)
-
-
-
  
 ;;; Functions ----------------------------------------------
 
@@ -953,13 +953,18 @@ the strings that cause them to be invoked."
 
 (defun auto-update-file-header ()
   "Update file header if file is modified.
-If file is modified, size is greater than 100 and buffer is not
-read only then call `update-file-header."
-  (and (> (buffer-size) 100)
+Call `update-file-header' if:
+ `header-auto-update-enabled' is non-nil, 
+ the file is modified,
+ it is longer than 100 chars,
+ and the buffer is not read-only.
+Return nil, for use on a hook."
+  (and header-auto-update-enabled
+       (> (buffer-size) 100)
        (buffer-modified-p)
        (not buffer-read-only)
        (update-file-header)
-       nil))                            ; Return nil for use as hook.
+       nil))
 
 
 

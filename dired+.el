@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jan 12 23:25:16 2011 (-0800)
+;; Last-Updated: Thu Feb  3 10:03:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2983
+;;     Update #: 3066
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `fit-frame', `info', `info+', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `strings', `thingatpt', `thingatpt+',
-;;   `w32-browser', `widget'.
+;;   `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -218,6 +218,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/03 dadams
+;;     All deffaces: Provided default values for dark-background screens too.
 ;; 2011/01/12 dadams
 ;;     dired-do-flagged-delete: Removed sit-for added on 1/02.
 ;; 2011/01/04 dadams
@@ -1464,81 +1466,96 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;; Miscellaneous faces.
 (defface diredp-display-msg 
-'((t (:foreground "Blue")))
+    '((((background dark)) (:foreground "Yellow"))
+      (t (:foreground "Blue")))
   "*Face used for message display."
   :group 'Dired-Plus)
 (defvar diredp-display-msg 'diredp-display-msg)
 
 ;;; Faces used to fontify buffer when using second level of fontifying.
 (defface diredp-dir-heading
-  '((t (:foreground "Blue" :background "Pink")))
+    '((((background dark))
+       (:foreground "Yellow" :background "#00003F3F3434")) ; ~ dark green
+      (t (:foreground "Blue" :background "Pink")))
   "*Face used for directory headings in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-dir-heading 'diredp-dir-heading)
 
 (defface diredp-deletion
-  '((t (:foreground "Yellow" :background "Red")))
+    '((((background dark)) (:foreground "Blue" :background "Cyan"))
+      (t (:foreground "Yellow" :background "Red")))
   "*Face used for deletion flags (D) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion 'diredp-deletion)
 
 (defface diredp-deletion-file-name
-  '((t (:foreground "Red")))
+    '((((background dark)) (:foreground "Cyan"))
+      (t (:foreground "Red")))
   "*Face used for names of deleted files in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion-file-name 'diredp-deletion-file-name)
 
 (defface diredp-flag-mark
-  '((t (:foreground "Yellow" :background "Blueviolet")))
+    '((((background dark))
+       (:foreground "Blue" :background "#7575D4D41D1D")) ; ~ olive green
+      (t (:foreground "Yellow" :background "Blueviolet")))
   "*Face used for flags and marks (except D) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-flag-mark 'diredp-flag-mark)
 
 (defface diredp-flag-mark-line
-  '((t (:background "Skyblue")))
+    '((((background dark)) (:background "#787831311414")) ; ~ dark red brown
+      (t (:background "Skyblue")))
   "*Face used for flagged and marked lines in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-flag-mark-line 'diredp-flag-mark-line)
 
 (defface diredp-file-suffix
-  '((t (:foreground "DarkMagenta")))
+    '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ light green
+      (t (:foreground "DarkMagenta")))
   "*Face used for file suffixes in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-suffix 'diredp-file-suffix)
 
 (defface diredp-number
-  '((t (:foreground "DarkBlue")))
+    '((((background dark)) (:foreground "#FFFFFFFF7474")) ; ~ light yellow
+      (t (:foreground "DarkBlue")))
   "*Face used for numerical fields in dired buffers.
 In particular, inode number, number of hard links, and file size."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-number 'diredp-number)
 
 (defface diredp-symlink
-  '((t (:foreground "DarkOrange")))
+    '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
+      (t (:foreground "DarkOrange")))
   "*Face used for symbolic links in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-symlink 'diredp-symlink)
 
 (defface diredp-date-time
-  '((t (:foreground "DarkGoldenrod4")))
+    '((((background dark)) (:foreground "#74749A9AF7F7")) ; ~ med blue
+      (t (:foreground "DarkGoldenrod4")))
   "*Face used for date and time in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-date-time 'diredp-date-time)
 
 (defface diredp-file-name
-  '((t (:foreground "Blue")))
+    '((((background dark)) (:foreground "Yellow"))
+      (t (:foreground "Blue")))
   "*Face used for file names (without suffixes) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-name 'diredp-file-name)
 
 (defface diredp-ignored-file-name
-  '((t (:foreground "#00006DE06DE0")))
+    '((((background dark)) (:foreground "#FFFF921F921F")) ; ~ salmon
+      (t (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
   "*Face used for ignored file names  in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
 (defface diredp-compressed-file-suffix
-  '((t (:foreground "Yellow")))
+    '((((background dark)) (:foreground "Blue"))
+      (t (:foreground "Yellow")))
   "*Face used for compressed file suffixes in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-compressed-file-suffix 'diredp-compressed-file-suffix)
@@ -1546,55 +1563,65 @@ In particular, inode number, number of hard links, and file size."
 ;; For this to show up, you need `F' among the options in `dired-listing-switches'.
 ;; For example, I use "-alF" for `dired-listing-switches'.
 (defface diredp-executable-tag
-  '((t (:foreground "Red")))
+    '((((background dark)) (:foreground "Cyan"))
+      (t (:foreground "Red")))
   "*Face used for executable tag (*) on file names in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-executable-tag 'diredp-executable-tag)
 
 (defface diredp-dir-priv
-  '((t (:foreground "DarkRed" :background "LightGray")))
+    '((((background dark))
+       (:foreground "#7474FFFFFFFF" :background "#2C2C2C2C2C2C")) ; ~ cyan, dark gray
+      (t (:foreground "DarkRed" :background "LightGray")))
   "*Face used for directory privilege indicator (d) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-dir-priv 'diredp-dir-priv)
 
 (defface diredp-exec-priv
-  '((t (:background "LightSteelBlue")))
+    '((((background dark)) (:background "#4F4F3B3B2121")) ; ~ dark brown
+      (t (:background "LightSteelBlue")))
   "*Face used for execute privilege indicator (x) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-exec-priv 'diredp-exec-priv)
 
 (defface diredp-other-priv
-  '((t (:background "PaleGoldenrod")))
+    '((((background dark)) (:background "#111117175555")) ; ~ dark blue
+      (t (:background "PaleGoldenrod")))
   "*Face used for l,s,S,t,T privilege indicators in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-other-priv 'diredp-other-priv)
 
 (defface diredp-write-priv
-  '((t (:background "Orchid")))
+    '((((background dark)) (:background "#25258F8F2929")) ; ~ dark green
+      (t (:background "Orchid")))
   "*Face used for write privilege indicator (w) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-write-priv 'diredp-write-priv)
 
 (defface diredp-read-priv
-  '((t (:background "MediumAquamarine")))
+    '((((background dark)) (:background "#999932325555")) ; ~ burgundy / dark magenta
+      (t (:background "MediumAquamarine")))
   "*Face used for read privilege indicator (w) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-read-priv 'diredp-read-priv)
 
 (defface diredp-no-priv
-  '((t (:background "LightGray")))
+    '((((background dark)) (:background "#2C2C2C2C2C2C")) ; ~ dark gray
+      (t (:background "LightGray")))
   "*Face used for no privilege indicator (-) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-no-priv 'diredp-no-priv)
 
 (defface diredp-rare-priv
-  '((t (:foreground "Magenta" :background "SpringGreen")))
+    '((((background dark)) (:foreground "Green" :background "#FFFF00008080")) ; ~ hot pink
+      (t (:foreground "Magenta" :background "SpringGreen")))
   "*Face used for rare privilege indicators (b,c,s,m,p,S) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-rare-priv 'diredp-rare-priv)
 
 (defface diredp-link-priv
-  '((t (:foreground "DarkOrange")))
+    '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
+      (t (:foreground "DarkOrange")))
   "*Face used for link privilege indicator (l) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-link-priv 'diredp-link-priv)

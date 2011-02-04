@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 15:40:52 2011 (-0800)
+;; Last-Updated: Thu Feb  3 13:13:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2514
+;;     Update #: 2572
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -142,6 +142,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/03 dadams
+;;     All deffaces: Provided default values for dark-background screens too.
 ;; 2011/01/03 dadams
 ;;     Removed autoload cookies from non def* sexps.
 ;; 2010/07/15 dadams
@@ -600,80 +602,92 @@ Click a column heading to sort by that field and update this option."
 ;;; Faces used to fontify buffer.
 
 (defface buffer-menu-headings
-  '((t (:foreground "Orange" :background "DarkGreen")))
+    '((((background dark))
+       (:foreground "#00005A5AFFFF" :background "#FFFF9B9BFFFF")) ; ~ blue, pink
+      (t (:foreground "Orange" :background "DarkGreen")))
   "*Face used for headings in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-headings 'buffer-menu-headings)
 
 (defface buffer-menu-current-buffer
-  '((t (:foreground "Red" :background "Aquamarine")))
+    '((((background dark)) (:foreground "Cyan" :background "#808000002B2B")) ; dark red brown
+      (t (:foreground "Red" :background "Aquamarine")))
   "*Face used for current buffer mark in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-current-buffer 'buffer-menu-current-buffer)
 
 (defface buffer-menu-view-mark
-  '((t (:foreground "Red" :background "Aquamarine")))
+    '((((background dark)) (:foreground "Cyan" :background "#808000002B2B")) ; dark red brown
+      (t (:foreground "Red" :background "Aquamarine")))
   "*Face used for buffers to view mark (>) in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-view-mark 'buffer-menu-view-mark)
 
 (defface buffer-menu-star-buffer
-  '((t (:foreground "DarkBlue")))
+    '((((background dark)) (:foreground "#FFFFFFFF7474")) ; ~ light yellow
+      (t (:foreground "DarkBlue")))
   "*Face used for buffers named \"*...*\"in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-star-buffer 'buffer-menu-star-buffer)
 
 (defface buffer-menu-directory-buffer
-  '((t (:foreground "Blue" :background "LightBlue")))
+    '((((background dark)) (:foreground "Yellow" :background "#525227271919")) ; ~ dark brown
+      (t (:foreground "Blue" :background "LightBlue")))
   "*Face used for directory buffers in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-directory-buffer 'buffer-menu-directory-buffer)
 
 (defface buffer-menu-marked-buffer
-  '((t (:underline t)))
+    '((t (:underline t)))
   "*Face used for buffers marked with `>' in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-marked-buffer 'buffer-menu-marked-buffer)
 
 (defface buffer-menu-flagged-buffer
-  '((t (:foreground "Red")))
+    '((((background dark)) (:foreground "Cyan"))
+      (t (:foreground "Red")))
   "*Face used for buffers marked with `D' in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-flagged-buffer 'buffer-menu-flagged-buffer)
 
 (defface buffer-menu-delete-mark
-  '((t (:foreground "Aquamarine" :background "Red")))
+    '((((background dark)) (:foreground "#808000002B2B" :background "Cyan"))
+      (t (:foreground "Aquamarine" :background "Red")))
   "*Face used for buffers to delete mark (D) in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-delete-mark 'buffer-menu-delete-mark)
 
 (defface buffer-menu-save-mark
-  '((t (:foreground "Orange" :background "Blue")))
+    '((((background dark)) (:foreground "#00005A5AFFFF" :background "Yellow")) ; ~blue
+      (t (:foreground "Orange" :background "Blue")))
   "*Face used for buffers to save mark (S) in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-save-mark 'buffer-menu-save-mark)
 
 (defface buffer-menu-modified-mark
-  '((t (:foreground "DarkOrange")))
+    '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
+      (t (:foreground "DarkOrange")))
   "*Face used for modified buffers mark (*) in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-modified-mark 'buffer-menu-modified-mark)
 
 (defface buffer-menu-read-only-mark
-  '((t (:foreground "Yellow")))
+    '((((background dark)) (:foreground "Blue"))
+      (t (:foreground "Yellow")))
   "*Face used for read-only buffers mark (%) in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-read-only-mark 'buffer-menu-read-only-mark)
 
 (defface buffer-menu-buffer-name
-  '((t (:foreground "Blue")))
+    '((((background dark)) (:foreground "Yellow"))
+      (t (:foreground "Blue")))
   "*Face used for buffer names in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
@@ -682,28 +696,32 @@ Click a column heading to sort by that field and update this option."
 (put 'Buffer-menu-buffer 'face-alias 'buffer-menu-buffer-name)
 
 (defface buffer-menu-mode
-  '((t (:foreground "DarkGreen")))
+    '((((background dark)) (:foreground "#FFFF9B9BFFFF")) ; ~ pink
+      (t (:foreground "DarkGreen")))
   "*Face used for buffer modes in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-mode 'buffer-menu-mode)
 
 (defface buffer-menu-size
-  '((t (:foreground "DarkRed")))
+    '((((background dark)) (:foreground "#7474FFFFFFFF")) ; ~ light cyan
+      (t (:foreground "DarkRed")))
   "*Face used for buffer sizes in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-size 'buffer-menu-size)
 
 (defface buffer-menu-time
-  '((t (:foreground "DarkGoldenrod4")))
+    '((((background dark)) (:foreground "#74749A9AF7F7")) ; ~ light blue
+      (t (:foreground "DarkGoldenrod4")))
   "*Face used for buffer time in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)
 (defvar buffer-menu-time 'buffer-menu-time)
 
 (defface buffer-menu-file-name
-  '((t (:foreground "DarkMagenta")))
+    '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ light green
+      (t (:foreground "DarkMagenta")))
   "*Face used for file names in *Buffer List* buffer."
   :group 'Buffer-Menu-Plus
   :group 'font-lock-highlighting-faces)

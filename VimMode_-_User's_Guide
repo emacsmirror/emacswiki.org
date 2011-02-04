@@ -1,0 +1,154 @@
+Main page: VimMode
+
+== Introduction ==
+
+This text gives an overview about vim-mode. It is *not* an extensive
+introduction to Vim-like editing itself. If you need information about
+standard key bindings and features of Vi and Vim, we refer to the
+[http://vimdoc.sourceforge.net/htmldoc/usr_toc.html documentation of
+Vim] itself. Because vim-mode tries the be as close to Vim as possible
+and practical, many parts of this documentation also apply to
+vim-mode.
+
+=== What vim-mode can do. ===
+
+Vim-mode is an emulation mode for VIM-like key-bindings and supports
+many of VIM's editing features. Among them are
+
+* most movements and basic editing commands in normal-mode,
+
+* insert-mode is essentially the usual Emacs editing mode,
+
+* visual-mode like VIM.
+
+Vim-mode is developed to be easily extendable and configurable by the
+user. For this it provides
+
+* definable key-bindings for all vim-mode modes (insertion mode,
+  normal mode, operator-pending mode, visual mode), were *all*
+  bindings can be redefined globally or major-mode specific,
+
+* easy definition of new commands and motions of all kinds via
+  Emacs-Lisp functions.
+
+If some specific motion or command is missing, it can usually be
+implemented easily by a few lines of code. On the one hand, if a
+motion is defined properly, it is automatically available as operator
+in operator-pending mode for commands like `c' or `d'. On the other
+hand, a command taking a motion as operator can also be used in visual
+mode were the motion is replaced by the active visual region.
+
+Vim-mode can be used with all major modes in Emacs. Because several
+major-modes are no real editing-modes (e.g., info-mode), parts of the
+(or all) vim-mode key-bindings can be disabled for a certain
+major-mode. For example, in info-mode only movement, scrolling and
+window commands are available, while all other keys behave normally.
+This behaviour can also be customized.
+
+=== What vim-mode cannot do. ===
+
+A fundamental design decision for vim-mode is that we do not want to
+achieve 100% compatibility with VIM. This means, some commands or
+motions do not behave exactly as in VIM, e.g., the cursor placement
+after some command may be different. Usually this is not a big problem
+because the differences are mostly very small. The reason is that
+sometimes it is not worth the effort to reach 100% VIM-behaviour or
+the Emacs behaviour seems to be preferable or the VIM-behaviour seems
+to be somehow unintuitive (yes, this happens from time to time, e.g.,
+the extension of the visual-region when using `iw' on a sequence of
+empty lines).
+
+A second point is if Emacs provides better alternatives for some
+problems or a specific task, we do not implement the VIM-specific one.
+For example, `Ctrl+P' in VIM does something roughly equivalent to
+Emacs's `dabbrev'-feature, but Emacs also knows many more packages for
+this job. In this case it's better to bind `Ctrl+P' to one of the
+Emacs functions instead of implementing a new (and less feature rich)
+one which resembles VIM's behaviour.
+
+Vim-mode is an emulation packages for the editing behaviour of VIM. It
+will never try to emulate VIM's programming language, so VIM-extension
+scripts will not work with vim-mode (if you want to extend vim-mode,
+use Emacs-Lisp). This also includes configuration variables accessible
+by VIM's `:set var=value' command (although for some special cases a
+mapping would be possible; theoretically a :set command for ex-mode
+can easily be defined, but usually using Emacs features is much
+better). If you want to configure Emacs and/or vim-mode, use Emacs's
+customization features.
+
+== Vim-mode modes ==
+
+The Vim-way of editing is the so called `modal editing'. This means
+the editor know different states and in each state different commands
+are available. In one state text can be inserted, in another state the
+text can be manipulated using actions like delete, copy, paste, ...
+During a session the users switches between those different states or
+//modes//.
+
+In contrast to model-editing, Emacs (and most other editors) know only
+one mode, i.e., there is no real difference between the phase when the
+text is inserted and when text is manipulated or the cursor is moved.
+In all situations the same commands are available.
+
+Vim-mode knows several of the modes Vim has:
+
+; normal-mode: In this mode the cursor can be moved and the text can
+  be manipulated. 
+  
+; operator-pending-mode: This is a very special mode. When a command
+  is executed normal-mode, sometimes an additional parameter is
+  required. Then vim-mode goes to operator-pending-mode waiting for
+  the parameter to be specified by the user. This additional parameter
+  is a motion, i.e., some operation that moves the cursor. When this
+  motion is executed, the operation is applied to the region given by
+  the old and the new position of the cursor.
+  
+; insert-mode: Text is inserted into the buffer. 
+
+; replace-mode: Like insert mode but the inserted text overwrites the
+  text in the buffer.
+  
+; visual-mode: A visual region is activated like Emacs's region.
+  Vim-mode knows three types of visual-regions: //character wise//,
+  //whole lines// and //rectangular blocks//. When a command is
+  executed in visual-mode that would require a motion parameter in
+  operator-pending-mode, the visual region is used to specify this
+  motion.
+  
+Vim-mode also knows a few other special modes. These modes cannot be
+activated from any other mode. In contrast they are activated as
+default mode when a buffer uses a certain Emacs major-mode. Each of
+these modes contains a certain subset of bindings to the commands and
+motions available in normal-mode. The purpose of those special modes
+is to make a few commands and motions available in non-editing Emacs
+modes, e.g., info-mode or gdb-mode.
+
+; motion-mode: Only motions, scroll commands and window-commands are
+  available.
+
+; window-mode: Only window commands are available.
+
+Note that *all* bindings of window-mode are available in motion-mode
+and all bindings of motion-mode are available in normal-mode (i.e.,
+*exactly* those bindings are available, so normal-mode can be seen as
+an extension of motion-mode).
+
+There is one further special mode:
+
+; emacs-mode: In this mode all key-bindings of vim-mode are disabled
+  and Emacs behaves like ... well ... Emacs. This mode can be used to
+  temporarily switch to usual Emacs editing in a certain buffer. By
+  default switching to and from emacs-mode is bound to Ctrl+Z.
+  
+All submodes of vim-mode are implemented as ordinary Emacs
+minor-modes. Vim-mode ensures that exactly one of this minor modes is 
+active at the same time.
+
+It is possible to define further vim submodes, each with its own set
+of key bindings, see [[VimMode - Extending]] for further information.
+
+== Key Bindings ==
+
+== Defining new commands and motions ==
+
+This is the topic of [[VimMode - Extending]].

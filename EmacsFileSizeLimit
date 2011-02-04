@@ -1,20 +1,12 @@
 [[es:TamañoMáximoFicheroEmacs]]
-If you compile GNU Emacs on a supported architecture with more than 32 bits, you might increase the maximum buffer size.  The reason this is needed are so-called "tag bits" which tag each pointer with the corresponding datatype.  This limits the size of buffers to the largest integer you can represent in Elisp. 
+If you compile GNU Emacs on a supported architecture with more than 32 bits, you might increase the maximum buffer size.  The reason this is needed are so-called "tag bits" which tag each pointer with the corresponding datatype.  This limits the size of buffers to the largest integer you can represent in Elisp, whose value is given by the variable most-positive-fixnum.
 
-Here's an example of figuring out the limit:
+For example:
 
-    (let ((i 1024))
-      (while (> i 0)
-        (setq i (* i 2)))
-      (1- i))
+    most-positive-fixnum
     => 268435455
 
-And indeed:
-
-    (1+ 268435455)
-    => -268435456
-
-Thus, the limit is 256MB on the system this particular code ran on:
+Thus, the limit is 256MB on this particular system:
 
     (/ 268435456.0 1024 1024)
     => 256.0
