@@ -113,7 +113,8 @@ External Programs and Remote Services:
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
 * [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
 * [[CategoryRelated|Related]] -- Emacs environments run in other programs (browsers, terminal emulators,...)
-* [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host* [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
+* [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host
+* [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
 
 [:ProgrammingEmacs]
 Programming Emacs in Lisp and C Source Code:

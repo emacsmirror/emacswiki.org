@@ -77,7 +77,7 @@ Of if you want a Mozilla or Firefox specific display:
     (define-key gnus-summary-mode-map [?K ?M]
       'my-gnus-summary-view-html-alternative-in-mozilla)
 
-The above EmacsLisp may produce a "Wrong type argument..." error with emacs 22 (and the Gnus that comes with it) but replacing "nth 3" with "cdr" should fix it. 
+The above EmacsLisp may produce a "Wrong type argument..." error with emacs 22 (and the Gnus that comes with it) but replacing "nth 3" with "cdr" should fix it. In even more recent versions, a "caddr" seems to be needed. Your mileage may vary.
 
 
 My lynx doesn't understand the -stdin option, so I want to use w3m

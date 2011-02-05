@@ -1,0 +1,28 @@
+Once you've set up GNU [[EmacsW32]] you will probably want to add spell checking ability.  &nbsp;[http://aspell.net/win32/ aspell] is a good choice as it integrates seamlessly with Emacs.  
+
+CategorySpelling
+CategoryWThirtyTwo
+
+== Setup for 64-bit Windows 7 ==
+
+First you need to download and install both the aspell executable and at least one dictionary from http://aspell.net/win32/.  &nbsp;These will be two separate downloads, be sure to get both.  &nbsp;Under the 64-bit version of Windows 7 the default install directory for both of them is "C:\Program Files (x86)\Aspell\dict\".  &nbsp;"C:\Program Files (x86)" is used for 32-bit executables, while "C:\Program Files" is for the 64-bit ones.
+
+Next we need to make a series of changes in your InitFile.  &nbsp;You need to add the path of the aspell exec to your emacs exec-path.  &nbsp;I tried the path string without the C: at the beginning but it did not work consistently.
+
+    (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
+
+We need tell emacs to use aspell, and where your custom dictionary is.
+
+    (setq
+       ispell-program-name "aspell"
+       ispell-personal-dictionary (C:/path/to/your/.ispell"))
+
+Then, we need to turn it on.
+
+    (require 'ispell)
+
+Lastly you need some way of invoking it.  &nbsp;"M-$" is the default method, which will check the word currently under the point.  &nbsp;If a region is active "M-$ will check all words within the region.  &nbsp;However, I like to customize all the keybindings.  &nbsp;So, here's an example to use it with FlySpell:
+
+    (global-set-key (kbd "<f8>") 'ispell-word)
+    (global-set-key (kbd "C-<f8>") 'flyspell-mode)
+

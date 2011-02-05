@@ -23,7 +23,12 @@ M-x rainbow-delimiters-mode
 Nice idea, but here are some thoughts about the implementation:
 * Please require cl the way it should be done according to the Emacs manual.
 * A lot of overlays might slow down Emacs. Can't you use text properties instead?
+[new]
+Thank you for your feedback. I'll use (eval-when-compile (require 'cl)) from now on; I hadn't been aware of that convention.
 
+This code was forked from rainbow-parens.el, which was the best rainbow-parens mode I could find to build on. You'll notice it's already in the TODO section that overlays can be slow on large chunks of text with many parens.
+I will look into text properties and see if it can be made to work that way. If so it would make sense to rewrite the mode from scratch using text properties instead of overlays.
+If you have any more tips to point me in the right direction please don't hesitate to add them here; I really appreciate it.
 
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

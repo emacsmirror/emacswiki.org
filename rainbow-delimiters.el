@@ -80,7 +80,7 @@
 
 ;;; Code:
 (require 'paredit)
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 ;;; Customize interface:
 (defgroup rainbow-delimiters nil
@@ -526,4 +526,4 @@ communicate nesting level."
 ;;   "Faces to use in coloring parentheses, brackets, and braces. Begins with the outermost color.
 
 ;; The number of colors listed is variable and more colors may be added to support arbitrary nesting depth.")
-;;; rainbow-delimiters.el ends here
+;;; rainbow-delimiters.el ends her

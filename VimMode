@@ -24,8 +24,7 @@ Download the package and put the following in your .emacs file:
 
 == Documentation ==
 
-* [[VimMode - User's Guide]] Information about the day-to-day usage of vim-mode.
-* [[VimMode - Extending]] Extending vim-mode with your own commands and motions.
+* [[VimMode - User's Guide]] Information about the day-to-day usage and of vim-mode and description how to write own commands and motions.
 * [[VimMode - Developer's Guide]] Description of the internal structure of vim-mode.
 
 == Downloads ==

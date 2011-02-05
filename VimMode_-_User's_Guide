@@ -76,6 +76,18 @@ can easily be defined, but usually using Emacs features is much
 better). If you want to configure Emacs and/or vim-mode, use Emacs's
 customization features.
 
+== Installation ==
+
+Download a release or the latest development version from the [http://bitbucket.org/lyro/vim-mode/downloads Bitbucket download page]. Extract the archive somewhere and add the following to your .emacs file.
+
+    (add-to-list 'load-path "/path/to/vim-mode")
+    (require 'vim)
+    (vim-mode 1)
+  
+This will enable vim-mode globally. In order to enable all features, vim-mode depends on the following packages. If those packages are not available, only the corresponding features will be disabled. All features that do not depend on those packages will work normally.
+
+* [RedoPlus redo+] or [RedoMode redo] for the redo-command Ctrl+r
+
 == Vim-mode modes ==
 
 The Vim-way of editing is the so called `modal editing'. This means
@@ -84,11 +96,6 @@ are available. In one state text can be inserted, in another state the
 text can be manipulated using actions like delete, copy, paste, ...
 During a session the users switches between those different states or
 //modes//.
-
-In contrast to model-editing, Emacs (and most other editors) know only
-one mode, i.e., there is no real difference between the phase when the
-text is inserted and when text is manipulated or the cursor is moved.
-In all situations the same commands are available.
 
 Vim-mode knows several of the modes Vim has:
 
@@ -140,15 +147,112 @@ There is one further special mode:
   temporarily switch to usual Emacs editing in a certain buffer. By
   default switching to and from emacs-mode is bound to Ctrl+Z.
   
-All submodes of vim-mode are implemented as ordinary Emacs
-minor-modes. Vim-mode ensures that exactly one of this minor modes is 
-active at the same time.
+All submodes of vim-mode are implemented as ordinary Emacs minor-modes. Vim-mode ensures that exactly one of this minor modes is active at the same time.
+
+An important property is, that each submode enables a specific sets of keymaps. Which keymaps are active in which mode is described in [[#KeymapModeTable]].
 
 It is possible to define further vim submodes, each with its own set
 of key bindings, see [[VimMode - Extending]] for further information.
 
+=== Selecting an appropriate start mode ===
+
+Vim-mode allows to specify the default mode that should be enabled when a new buffer is created depending on the major-mode that is enabled. The following customizable variables can be used to specify the start mode for certain major modes.
+
+; ##vim:default-initial-mode##: The start mode for all major modes, for which no special start mode is specified in ##vim:initial-modes##. It should by one of the symbol ##'normal##, ##'window##, ##'motion## or a symbol for a user defined mode. The mode to be started corresponds to the symbol of the form ##vim:MODENAME-mode##, where MODENAME is one of the symbols above. The default value is ##'normal## which starts vim-mode in ##vim:normal-mode## in each buffer.
+
+; ##vim:initial-mode##: An associated list where each element is a pair ##(major-mode . vim-mode)## and ##major-mode## is a symbol specifing a certain major-mode and ##vim-mode## is one of the symbols valid for ##vim:default-initial-mode##. When a certain major-mode is enabled in some buffer and this major-mode has an enty in ##vim:initial-modes## then vim-mode is started in the given mode. By default vim-mode starts in several major-modes in either motion or window mode enabling only motion and window or only window commands.
+
+*Note*: An element ##(major-mode . nil)## disables vim-mode an a certain major-mode.
+
 == Key Bindings ==
+
+As described above each submode enables a certain set of keymaps. Vim-mode keymaps are usual Emacs keymaps and can be used exactly as any other keymap. Much of the magic behind the scenes of vim-mode comes from switching between different submodes and therefore enabling and disabling certain keymaps.
+
+Note that *all* keybindings in vim-mode can be customized and changed. The default keybindings are all specified in the file ##vim-maps.el##.
+
+Usually each submode of vim-mode comes with two keymaps which are strongly related to this mode, a global keymap and a local keymap. The bindings in the global keymap are available in all buffers whenever this submode is active, the bindings in the local keymap a buffer specific (like buffer-local variables). Many modes do not only enable their own keymaps but also keymaps from other modes. For example, normal-mode enables the following keymaps:
+
+# normal-mode
+# operator-pending-mode
+# motion-mode
+# window-mode
+
+in this order, for each one the local keymap preceding the global keymap. 
+
+The following table gives an overview of all standard modes and the keymaps they activate.
+[:KeymapModeTable]
+||*Mode* ||*Enabled Keymaps* ||
+||normal-mode ||normal-mode, operator-pending-mode, motion-mode, window-mode ||
+||window-mode ||window-mode ||
+||motion-mode ||motion-mode, window-mode ||
+||operator-pending-mode ||operator-pending-mode, motion-mode ||
+||visual-mode ||visual-mode, operator-pending-mode, motion-mode ||
+
+The variable that contains a certain keymap has the name ##vim:MODE-keymap## and ##vim:MODE-local-keymap## for the global and the local keymap. There are several convenience functions to define bindings in each of those keymaps, e.g., a new binding in the global normal-mode keymap can be created by
+  
+  (vim:nmap keysequence 'function)
+
+which is equivalent to
+  
+  (define-key vim:normal-mode-keymap keysequence 'function)
+
+and in the local keymap by
+
+  (vim:local-nmap keysequence 'function)
+
+The following table gives an overview over all standard keymaps, the corresponding variable names and the function used to define bindings.
+
+||*Mode*                 ||*Keymap*                                   ||*Mapping*          ||
+||normal-mode            ||##vim:normal-mode-keymap##                 ||##vim:nmap##       ||
+||                       ||##vim:normal-mode-local-keymap##           ||##vim:local-nmap## ||
+||operator-pending-mode  ||##vim:operator-pending-mode-keymap##       ||##vim:omap##       ||
+||                       ||##vim:operator-pending-mode-local-keymap## ||##vim:local-omap## ||
+||window-mode            ||##vim:window-mode-keymap##                 ||##vim:wmap##       ||
+||                       ||##vim:window-mode-local-keymap##           ||##vim:local-wmap## ||
+||motion-mode            ||##vim:motion-mode-keymap##                 ||##vim:mmap##       ||
+||                       ||##vim:motion-mode-local-keymap##           ||##vim:local-mmap## ||
+||insert-mode            ||##vim:insert-mode-keymap##                 ||##vim:imap##       ||
+||                       ||##vim:insert-mode-local-keymap##           ||##vim:local-imap## ||
+||visual-mode            ||##vim:visual-mode-keymap##                 ||##vim:vmap##       ||
+||                       ||##vim:visual-mode-local-keymap##           ||##vim:local-vmap## ||
+||ex-mode                ||                                           ||##vim:emap##       ||
+||                       ||                                           ||##vim:local-emap## ||
+
+An exception are the ex-mode bindings. They are not real keybindings but commands that can be executed in ex-mode, but the functions ##vim:emap## and ##vim:local-emap## behave like the others.
 
 == Defining new commands and motions ==
 
-This is the topic of [[VimMode - Extending]].
+Vim-mode provides two macros to define commands and motions. Both are usual emacs lisp functions with special sets of parameters, therefore they can be used as any other interactive function. When executed interactively when vim-mode is activated all those function calles go through some special layers depending on the active submode. For example, when a motion is executed in normal or visual mode, the point is moved according to this motion. When executed in operator-pending mode the motion is used as parameter for the pending command.
+
+The next two sections describe the interface for writing new commands and motions. Both should then be bound to some keys in appropriate keymaps. 
+
+=== Write new commands ===
+
+Vim-mode commands are defined using the macro ##vim:defcmd##, which has the following form.
+
+  (vim:defcmd command-name ((count [count-name])
+                            (motion [motion-name])
+                            (argument[:{char,text,file,buffer,...}] [arg-name]) 
+                            [nonrepeatable]
+                            [keep-visual])
+    body ...)
+
+The first three arguments are keyword arguments similar to ##defun*##. The fourth and fifth argument are not real arguments, i.e., they do not bind a value. Instead they define special attributes of the command. 
+
+Each of the arguments is optional. An argument is either given as two element list ##(parameter parameter-name)## or without explicit name just ##parameter##. When no parameter name is specified the name is the same as the parameter itself, i.e., the parameter ##count## defines the variable ##count## whereas the parameter ##(count cnt)## defines the variable ##cnt##.
+
+The parameters have the following meanings.
+
+; ##count##: A numeric argument usually defining how many times a certain command should be repeated. If no explicit count has been given, the parameter has the value ##nil##.
+
+; ##motion##: If the command operates on a certain region, the region is usually defined by a motion and this argument should be specified. When the command is executed in normal-mode vim-mode will switch to operator-pending to wait for the motion to be specified. Afterwards the command is executed with this motion. Note that usually ##count## is ##nil## if the command takes a motion because the repeat count will be used by the motion. If this parameter is not present the command will not take a motion but will be executed without switching to operator-pending mode.
+
+; ##argument##: Some commands take another argument besides the motion and the count. There are several types of arguments, the type is specified by appending a colon and the type-name after ##argument##, i.e., ##argument:char## defines an argument which is a single character, ##argument:text## a general string, ##argument:file## a file-path and ##argument:buffer## a buffer-name. If no explicit type is given the argument type will be ##char##. Note that the only allowed argument type for commands bound in another mode than ex-mode (using ##vim:emap## or ##vim:local-emap##) is ##char##, i.e., when calling the command an additional character is read an passed to the function. An example for a command like this are the ##f F t T## commands of Vim. All other argument types make only sense for ex-mode commands.
+
+; ##nonrepeatable##: If specified the command cannot be repeated by the repeat command bound to '.' by default. This is usually the case for scrolling or window commands.
+
+; ##keep-visual##: If specified the command does not end visual-mode when executed in visual-mode. This is usually the case for scrolling or window commands. Note that most editing commands do disable visual-mode.
+
+As described above ##vim:defcmd## can be used to define commands for both normal-mode and ex-mode. Each command should place ##(point)## at the correct position after the operation.
+
+=== Writing new motions ===
