@@ -8,11 +8,11 @@ extensibility in mind. There are several other packages emulating Vim
 features, see CategoryEmulation for an overview. 
 
 Before you start using vim-mode you should definitely have look at
-[[Vimpulse]] which is another great packages for emulating Vim. In
+[[Vimpulse]] which is another great package for emulating Vim. In
 contrast to vim-mode, [[Vimpulse]] is based on the famous ViperMode
 which has brought Vi bindings to Emacs for a long time. Therefore
 [[Vimpulse]] has to be considered more stable, portable and
-feature-rich that vim-mode.
+feature-rich than vim-mode.
 
 == Quick Start ==
 
@@ -27,6 +27,10 @@ Download the package and put the following in your .emacs file:
 * [[VimMode - User's Guide]] Information about the day-to-day usage and of vim-mode and description how to write own commands and motions.
 * [[VimMode - Developer's Guide]] Description of the internal structure of vim-mode.
 
+== Examples ==
+
+[[VimMode - Examples]] Example commands and motions.
+
 == Downloads ==
 
 vim-mode is available from the bitbucket repository.
@@ -37,11 +41,9 @@ Archives can be downloaded from
 
 [http://bitbucket.org/lyro/vim-mode/downloads http://bitbucket.org/lyro/vim-mode/downloads]
 
-[new]
+== Discussion ==
 
-I add a elisp package to make vim-mode use elscreen as tabpage, please look
-
-[http://www.emacswiki.org/emacs/elscreen-vim-mode.el http://www.emacswiki.org/emacs/elscreen-vim-mode.el]  -- [[coldnew]]
+Your comments should go here.
 
 
 ----

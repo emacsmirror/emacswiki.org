@@ -232,6 +232,7 @@ Vim-mode commands are defined using the macro ##vim:defcmd##, which has the foll
 
   (vim:defcmd command-name ((count [count-name])
                             (motion [motion-name])
+                            (register [register-name])
                             (argument[:{char,text,file,buffer,...}] [arg-name]) 
                             [nonrepeatable]
                             [keep-visual])
@@ -247,7 +248,9 @@ The parameters have the following meanings.
 
 ; ##motion##: If the command operates on a certain region, the region is usually defined by a motion and this argument should be specified. When the command is executed in normal-mode vim-mode will switch to operator-pending to wait for the motion to be specified. Afterwards the command is executed with this motion. Note that usually ##count## is ##nil## if the command takes a motion because the repeat count will be used by the motion. If this parameter is not present the command will not take a motion but will be executed without switching to operator-pending mode.
 
-; ##argument##: Some commands take another argument besides the motion and the count. There are several types of arguments, the type is specified by appending a colon and the type-name after ##argument##, i.e., ##argument:char## defines an argument which is a single character, ##argument:text## a general string, ##argument:file## a file-path and ##argument:buffer## a buffer-name. If no explicit type is given the argument type will be ##char##. Note that the only allowed argument type for commands bound in another mode than ex-mode (using ##vim:emap## or ##vim:local-emap##) is ##char##, i.e., when calling the command an additional character is read an passed to the function. An example for a command like this are the ##f F t T## commands of Vim. All other argument types make only sense for ex-mode commands.
+; ##argument##: Some commands take another argument besides the motion and the count. There are several types of arguments, the type is specified by appending a colon and the type-name after ##argument##, i.e., ##argument:char## defines an argument which is a single character, ##argument:text## a general string, ##argument:file## a file-path and ##argument:buffer## a buffer-name. If no explicit type is given the argument type will be ##char##. Note that the only allowed argument type for commands bound in another mode than ex-mode (using ##vim:emap## or ##vim:local-emap##) is ##char##, i.e., when calling the command an additional character is read an passed to the function. An example for a command like this is the ##r## command of Vim. All other argument types make only sense for ex-mode commands.
+
+; ##register##: If specified the command can operator on a register. The name of the register, which is a character, is passed in this argument.
 
 ; ##nonrepeatable##: If specified the command cannot be repeated by the repeat command bound to '.' by default. This is usually the case for scrolling or window commands.
 
@@ -255,4 +258,64 @@ The parameters have the following meanings.
 
 As described above ##vim:defcmd## can be used to define commands for both normal-mode and ex-mode. Each command should place ##(point)## at the correct position after the operation.
 
+In order to call a command from lisp-code, one has to use keyword arguments, e.g.,
+
+  (vim:cmd-delete-line :count 5)
+
+deletes five lines. Note that the keyword used to call a commands are always :count, :motion, :register or :argument no matter which parameter names are used to define the command.
+
 === Writing new motions ===
+
+Vim-mode motions can be defined with the macro ##vim:defmotion##. Similar to commands motions have several keyword-like optional parameters and a view attributes. The general form is as follows.
+
+  (vim:defmotion motion-name ((count [count-name])
+                              (argument [argument-name])
+                              {inclusive,exclusive,linewise,block})
+    body ...)
+
+The ##count## and ##argument## parameters are optional and can have a special variable-name. Exactly one of the attributes ##inclusive, exclusive, linewise, block## must be specified.
+
+; ##count##: The number of times the motion should be repeated.
+
+; ##argument##: An extra character argument to be given after the motion command has been initiated. Examples are the motions ##f F t T## of Vim.
+
+; ##inclusive, exclusive, linewise, block##: This is the default motion type of this motion command (see below).
+
+Each motion command should return an object of type ##vim:motion## (see below). If the function does not return such an object explicitly, it is automatically created implicitly based on the position of ##(point)## before and after execution of the motion and the specified motion-type. This means when a motion is called from lisp code it returns *always* a ##vim:motion## object.
+
+==== Motion types and vim:motion objects ====
+
+In Vim there several types of motions. The four basic types are
+
+# characterwise, inclusive
+# characterwise, exclusive
+# linewise
+# blockwise
+
+The motion type has no influence when the motion is just used to move
+##(point)## but influences on which region of the buffer a certain
+command that requires a motion parameter works. If the motions starts
+at point ##beg## and ends at point ##end##, characterwise inclusive
+motions work on all characters from ##beg## to ##end## including
+##end## while characterwise exclusive motions work on all characters
+from ##beg## up to ##end - 1## excluding ##end##. Examples for the
+first type are ##e %## for the second type ##w l##. Linewise motions
+always operate on whole lines from the line containing ##beg## up to the line containing ##end##. Blockwise motions operate on the rectangular region defined by row and column of ##beg## and ##end##.
+
+A motion returns an object of type ##vim:motion## either implicitly or explicitly and a command gets an object of type ##vim:motion## passed in its motion parameter when called. The command should the work on the region specified by the begin and end position of the motion w.r.t. the motion type, e.g., linewise motions should work on whole lines.
+
+The ##vim:motion## object is a structure with four fields:
+
+; ##type##: The motion type, ##inclusive, exclusive, linewise, block##.
+
+; ##has-begin##: If non nil the motion defines both an explicit end position and an explicit start position of the region. If it is nil the motion only defines an explicit end position and the start position is implicitly set to ##(point)##. All usual motions should set this field to nil and specify the new position of ##(point)## as end position whereas text-objects, e.g., ##iw aw ib ab## should set it to ##t## and specify both positions.
+
+; ##begin##: The beginning of the motion, if not given it is set to ##(point)##.
+
+; ##end##: The end position of the motion.
+
+Most usual motions do not need to create the ##vim:motion## object explicitly. Just move ##(point)## to the desired position and the ##vim:motion## object will be created automatically.
+
+Note that an explicitly returned ##vim:motion## object may have a different type than the default motion type. The default motion type is only important for simple motions that do not return an explicit ##vim:motion##.
+
+When writing commands operating on motions, you can use the helper functions defined in /vim-core.el/ to retrieve information about the region covered by the motion w.r.t. the motion type. Among them there the following functions: ##vim:motion-line-count, vim:motion-first-line, vim:motion-last-line, vim:motion-first-col, vim:motion-last-col, vim:motion-begin-pos, vim:motion-end-pos##.

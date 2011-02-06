@@ -2645,6 +2645,88 @@ Find inside `require' and `declare-function' sexp."
              (anything-dired-action candidate :action 'hardlink)))))))
 
 
+;; Emacs bugfix for version > 23.2.91 waiting the fix upstream.
+;; This fix copying directory recursively from dired.
+;; (corrupted structure when overwriting).
+(unless (and (fboundp 'version<) (version< emacs-version "23.2.92"))
+  (defun copy-directory (directory newname &optional keep-time parents create-struct)
+    "Copy DIRECTORY to NEWNAME.  Both args must be strings.
+If NEWNAME names an existing directory, copy DIRECTORY as subdirectory there.
+
+This function always sets the file modes of the output files to match
+the corresponding input file.
+
+The third arg KEEP-TIME non-nil means give the output files the same
+last-modified time as the old ones.  (This works on only some systems.)
+
+A prefix arg makes KEEP-TIME non-nil.
+
+Noninteractively, the argument PARENTS says whether to
+create parent directories if they don't exist.  Interactively,
+this happens by default.
+
+Non--interactively, the argument CREATE-STRUCT says whether to
+create the directory structure of NEWNAME. Interactively,
+this happens by default. When called from dired code this argument
+should not be used as dired already create directory structure."
+    (interactive
+     (let ((dir (read-directory-name
+                 "Copy directory: " default-directory default-directory t nil)))
+       (list dir
+             (read-file-name
+              (format "Copy directory %s to: " dir)
+              default-directory default-directory nil nil)
+             current-prefix-arg t t)))
+
+    ;; If default-directory is a remote directory, make sure we find its
+    ;; copy-directory handler.
+    (let ((handler (or (find-file-name-handler directory 'copy-directory)
+                       (find-file-name-handler newname 'copy-directory))))
+      (if handler
+          (funcall handler 'copy-directory directory newname keep-time parents)
+
+          ;; Compute target name.
+          (setq directory (directory-file-name (expand-file-name directory))
+                newname   (directory-file-name (expand-file-name newname)))
+
+          (if (not (file-directory-p newname))
+              ;; If NEWNAME is not an existing directory, create it; that
+              ;; is where we will copy the files of DIRECTORY.
+              (make-directory newname parents)
+              ;; If NEWNAME is an existing directory, we will copy into
+              ;; NEWNAME/[DIRECTORY-BASENAME].
+              (when create-struct
+                (setq newname (expand-file-name
+                               (file-name-nondirectory
+                                (directory-file-name directory))
+                               newname))
+                (and (file-exists-p newname)
+                     (not (file-directory-p newname))
+                     (error "Cannot overwrite non-directory %s with a directory"
+                            newname))
+                (make-directory newname t)))
+
+          ;; Copy recursively.
+          (dolist (file
+                    ;; We do not want to copy "." and "..".
+                    (directory-files directory 'full
+                                     directory-files-no-dot-files-regexp))
+            (let ((target (expand-file-name (file-name-nondirectory file) newname))
+                  (attrs (file-attributes file)))
+              (cond ((and (file-directory-p file) create-struct)
+                     (copy-directory file newname keep-time parents create-struct))
+                    ((file-directory-p file)
+                     (copy-directory file target keep-time parents create-struct))
+                    ((stringp (car attrs)) ; Symbolic link
+                     (make-symbolic-link (car attrs) target t))
+                    (t (copy-file file target t keep-time)))))
+
+          ;; Set directory attributes.
+          (set-file-modes newname (file-modes directory))
+          (when keep-time
+            (set-file-times newname (nth 5 (file-attributes directory))))))))
+
+  
 (defun* anything-dired-action (candidate &key action follow (files (dired-get-marked-files)))
   "Copy, rename or symlink file at point or marked files in dired to CANDIDATE.
 ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
@@ -2681,17 +2763,17 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
 ;; Internal
 (defvar anything-ff-cand-to-mark nil)
 
+(defun anything-c-basename (fname)
+  "Resolve basename of file or directory named FNAME."
+  (file-name-nondirectory (directory-file-name fname)))
+
 (defun anything-get-dest-fnames-from-list (flist dest-cand)
   "Transform filenames of FLIST to abs of DEST-CAND."
   ;; At this point files have been renamed/copied at destination.
   (loop
      with dest = (expand-file-name dest-cand)
      for src in flist
-     for basename-src = (if (file-directory-p src)
-                            (file-relative-name
-                             (directory-file-name src)
-                             (file-name-directory src))
-                            (file-name-nondirectory src))
+     for basename-src = (anything-c-basename src)
      for fname = (if (file-directory-p dest)
                      (concat (file-name-as-directory dest)
                              basename-src)
@@ -4942,12 +5024,9 @@ STRING is string to match."
   "The default action for `anything-c-source-imenu'."
   (let ((path (split-string elm anything-c-imenu-delimiter))
         (alist anything-c-cached-imenu-alist))
-    (if (> (length path) 1)
-        (progn
-          (setq alist (assoc (car path) alist))
-          (setq elm (cadr path))
-          (imenu (assoc elm alist)))
-        (imenu (assoc elm alist)))))
+    (dolist (elm path)
+      (setq alist (assoc elm alist)))
+    (imenu alist)))
 
 ;;; Ctags
 (defvar anything-c-ctags-modes

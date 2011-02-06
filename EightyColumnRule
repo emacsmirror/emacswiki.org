@@ -32,6 +32,22 @@ Keeping lines short is important.
 Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition and FindLongLines.
 
 ----
+whitespace mode has two interesting options you can set in variable whitespace-style:
+
+`lines', will highlight lines that go beyond thw columnus limit defined in `whitespace-line-column'
+
+`lines-tail', same as above but only the part that goes beyond the limit of 
+`whitespace-line-column' gets highlighted.
+
+`whitespace-line-column' default value is 80.
+
+Example config:
+
+ (require 'whitespace)
+ (setq whitespace-style '(empty tabs lines-tail trailing))
+ (global-whitespace-mode t)
+
+----
 I've started working in a company with lots of legacy C code, and it has made me work to the 80 rule, and of course TabsAreEvil.
 To help me out i've set up my own warning font lock that works everywhere. Actually it is based on the BlankMode idea -- TimOCallaghan
 

@@ -667,6 +667,39 @@ Hello again, Sven. Thanks a lot for noticing the error (the eval-after-load was 
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
+[new]
+
+For interactively hiding/showing the attributes, I had some success with [http://www.emacswiki.org/emacs/DiredDetails dired-details.el] and Sunrise Commander. I had to modify 
+
+ (defun dired-details-hide()
+   "Make an invisible, evaporable overlay for each file-line's details in this dired buffer."
+   (interactive)
+   (unless (memq major-mode '(dired-mode vc-dired-mode))
+     (error "dired-details-hide can only be called in dired mode"))
+
+to add sr-mode to the list of permitted modes, to stop it complaining
+
+ (defun dired-details-hide()
+   "Make an invisible, evaporable overlay for each file-line's details in this dired buffer."
+   (interactive)
+   (unless (memq major-mode '(dired-mode vc-dired-mode sr-mode))
+     (error "dired-details-hide can only be called in dired mode"))
+
+It doesn't seem to have interacted badly with anything, though I've only just started using it.
+
+Tom
+
+[new:José Alfredo Romero L.:2011-02-05 12:58 UTC]
+
+Hello Tom. Sunrise allows out of the box to hide the details: all you have to do
+is press C-Backspace (or C-c Backspace, if you are running inside a text-only
+console.) Sven's question was a bit different, though -- what he was asking for
+was a way to reorder the columns that compose those details. I haven't had much
+time to think about it (sorry, Sven), but I'm afraid that task wouldn't be an
+easy one, as it would require a layer of indirection between SC and Dired, and
+the gain doesn't look to me like being worth such a big effort.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 ----
 CategoryDirectories

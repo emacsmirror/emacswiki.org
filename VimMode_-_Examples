@@ -1,0 +1,81 @@
+Main page: VimMode
+
+This page is a collection of user defined motions and commands. Note that all motions and text objects are implemented in the file ##vim-motions.el##, normal-mode commands in ##vim-commands.el## and ex-mode commands in ##vim-ex-commands.el##. If you want to implement own commands and motions, these files provide a good starting point. As you can see most commands and motions have very simple implementations.
+
+== Commands ==
+
+=== Make and compile-log ===
+Execute ##make## via ex-mode command.
+
+  (vim:defcmd vim:cmd-make (nonrepeatable argument)
+   "Executes compile or recompile."
+   (if argument
+       (compile (concat "make " argument))
+     (recompile)))
+     
+  (vim:emap "make" 'vim:cmd-make)
+  (vim:emap "m" "make")
+  
+Goto next and previous errors with ##cnext## and ##cprev## ex-mode commands.
+  
+  (vim:defcmd vim:cmd-next-error (nonrepeatable count)
+   "Moves to the `count'th next error."
+   (next-error count))
+  
+  (vim:defcmd vim:cmd-prev-error (nonrepeatable count)
+   "Moves to the `count'th previous error."
+   (next-error (- (or count 1))))
+   
+  (vim:emap "cnext" 'vim:cmd-next-error)
+  (vim:emap "cn" "cnext")
+  (vim:emap "cprevious" 'vim:cmd-prev-error)
+  (vim:emap "cp" "cprevious"))
+  
+=== Comment/Uncomment region ===
+  The following command toggles the comments on a certain visual region.
+  
+  (vim:defcmd vim:visual-toggle-comment (motion)
+    "Toggles comments in the region."
+    (comment-or-uncomment-region (vim:motion-begin-pos motion)
+  			       (vim:motion-end-pos motion)))
+                               
+We bind the commands only in visual mode.
+
+  (vim:vmap (kbd "C-c :") 'vim:visual-toggle-comment)
+  (vim:vmap (kbd "C-c ;") 'vim:visual-toggle-comment)
+
+== Motions ==
+
+=== LaTeX tag text objects ===
+
+Select text between two ##\begin{...}## and ##\end{...}## LaTeX tags with or without the tags itself. The code is very similar to the code used for XML-tags from ##vim-motions.el##. The motions are bound to ##il## and ##al## keys in operator-pending mode.
+
+  (defun vim:generic-motion-latex-blocks (block-function count)
+    "Calls a block selection function with regular expressions
+  matching LaTeX tags. `block-function' should be either
+  #'vim:inner-block or #'vim:outer-block."
+    (funcall block-function
+  	   "\\\\begin{\\([a-zA-Z]+?\\)}"
+  	   "\\\\end{\\([a-zA-Z]+?\\)}"
+  	   #'vim:compare-blocks-match1
+  	   (or count 1)))
+  
+  
+  (vim:defmotion vim:motion-inner-latex-tags (inclusive count)
+    "Select `count' enclosing pairs of \begin{tag} \end{tag}
+  exclusive."
+    (vim:generic-motion-latex-blocks #'vim:inner-block count))
+  
+  
+  (vim:defmotion vim:motion-outer-latex-tags (inclusive count)
+    "Select `count' enclosing pairs of \begin{tag} \end{tag}
+  inclusive."
+    (vim:generic-motion-latex-blocks #'vim:outer-block count))
+  
+  (vim:omap "il" #'vim:motion-inner-latex-tags)
+  (vim:omap "al" #'vim:motion-outer-latex-tags)
+  
+  
+== Other examples ==
+
+# [[coldnew]] added elscreen as tabpages for vim-mode ([http://www.emacswiki.org/emacs/elscreen-vim-mode.el elscreen-vim-mode.el]).

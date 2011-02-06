@@ -44,7 +44,7 @@ Match the CVS commit message filename:
 
     (add-to-list 'auto-mode-alist
                  (cons (concat temporary-file-directory "cvs[[:alnum:]]*\\'")
-                       'log-entry-mode)))
+                       'log-entry-mode))
 
 ----
 CategoryDotEmacs

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 353 $
+;; RCS Version: $Rev: 354 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 353 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 354 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2957,6 +2957,24 @@ or (c)ontents? ")
     (sr-backup-buffer)))
 (ad-activate 'find-dired-sentinel)
 
+;; This disables the "non-foolproof" padding mechanism in find-dired-filter that
+;; breaks Dired when using ls options that omit some columns (like g or G), and
+;; uses an alternative one, based on dired-align-file:
+(defadvice find-dired-filter
+  (around sr-advice-find-dired-filter (proc string))
+  (if (and (eq 'sr-virtual-mode major-mode)
+           (or (string-match "g" sr-virtual-listing-switches)
+               (string-match "G" sr-virtual-listing-switches)))
+      (let ((find-ls-option nil) (beg (point-max)) (inhibit-read-only t))
+        ad-do-it
+        (save-excursion
+          (goto-char beg)
+          (dired-next-line -1)
+          (while (dired-next-line 1)
+              (dired-align-file (point-at-bol) (point-at-eol)))))
+    ad-do-it))
+(ad-activate 'find-dired-filter)
+
 (defun sr-multifind-handler (operation &rest args)
   "Magic file name handler for manipulating the command executed by find-dired
   when the user requests to perform the find operation on all currently marked
@@ -3243,12 +3261,15 @@ or (c)ontents? ")
   (message "Calculating total size of selection... (C-g to abort)")
   (let* ((selection (dired-get-marked-files))
          (size (sr-size-format (sr-files-size selection)))
-         (items (length selection)))
+         (items (length selection)) (label))
     (if (>= 1 items)
         (progn
-          (setq selection (file-name-nondirectory (car selection)))
+          (setq selection (car selection)
+                label (concat (file-name-nondirectory selection) ":"))
           (dired-show-file-type selection deref-symlinks)
-          (message "%s (%s bytes)" (current-message) size))
+          (message
+           "%s (%s bytes)"
+           (replace-regexp-in-string "^.*:" label (current-message)) size))
       (message "%s bytes in %d selected items" size items))
     (sit-for 0.5)))
 

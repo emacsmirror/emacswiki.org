@@ -65,6 +65,63 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:ThomasK:2011-02-05 12:02 UTC]
+Hello there,
+whenever I use icicles for displaying completions using [TAB], the cursor jumps back into the position before first hitting [TAB]. Example (<code>key pressed - minibuffer input (with cursor being "|")</code>):
+{{{
+M-x - Execute command: |
+o   - Execute command: o|
+r   - Execute command: or|
+TAB - Execute command: or|     ;; buffer *Completions* shows up
+g   - Execute command: org|
+    - Execute command: or|g    ;; at this point I have *not* pressed any key. This change happens automagically after some hundred msec.
+->  - Execute command: org|    ;; -> := Right Arrow Key
+-   - Execute command: org-|   ;; this is the hyphen key
+    - Execute command: or|g-   ;; again, the cursor position jumps back after some hundred msec without any input from me happening
+}}}
+I've done this by starting emacs with: emacs -Q and evaluating "(require 'icicles)" and "(icy-mode)" from within my .emacs file.
+I use newest icicles (just re-installed them, not byte-compiled) and Emacs 24.0.50.1. Any thoughts on how to solve this? -- [[ThomasK]]
+
+
+[new:DrewAdams:2011-02-05 15:55 UTC]
+Your report is pretty clear, Thomas; thanks. But I cannot reproduce it.  I'm using Windows, and the latest Emacs 24 build I have is from 2011-01-31.  I assume you started from ##emacs -Q## -- if not, do so, to eliminate any interaction with other stuff in your [[init file]]. What platform are you on, and what is your Emacs build date?  Do you see any other cursor movement anomalies in the build, other than with '''Icicles'''?
+
+I vaguely recall seeing some mail in ##emacs-devel@gnu.org## about cursor jumping recently, but I did not read or save those messages.  It might have been this (inconclusive) thread:
+http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00107.html.  The description is not quite the same (it concerns [[Gnus]], but perhaps the problem is related.  It's important to find out whether this happens only with a recent Emacs build etc.
+
+Please use ##emacs -Q## and see if you can find out whether this is related to some recent change (e.g. bug) in Emacs.  If possible, test with Emacs 23.2 or an older Emacs 24 build, to compare.  That will help a lot to narrow things down.
+
+If you cannot find out anything, then we'll have to try debugging.  Better to do that by email.  Using the debugger itself will likely interfere with the behavior, but you can try that and try adding `message' statements to examine the state etc.  Contact me directly in this case.  Sorry for your trouble. -- DrewAdams
+
+[new:DrewAdams:2011-02-05 16:46 UTC]
+Or perhaps it was this ##emacs-devel## thread (which is very long and, again, inconclusive):
+http://lists.gnu.org/archive/html/emacs-devel/2011-01/msg00477.html.  But that seems to be for Emacs 23.2.92 (a recent pretest for Emacs 23.3). -- DrewAdams
+
+
+[new:ThomasK:2011-02-05 21:38 UTC]
+I've just now pulled the newest emacs updates from the repo (my emacs was like, 1 week old) - and that fixed it. No idea what the problem was, but I'm glad now its fixed. Sorry about the trouble. -- [[ThomasK]]
+
+
+[new:DrewAdams:2011-02-05 22:17 UTC]
+No problem. We all go through it. It's part of the price to pay for using the dev version. Glad there's no '''Icicles''' bug to fix for this. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
 
 
 <pre>
