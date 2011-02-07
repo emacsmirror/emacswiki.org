@@ -43,29 +43,32 @@ allow you build TAGS file on root of project and move accross definition in proj
 Or may be you need <code>(add-to-list 'etags-table-alist ...)</code>.
 
 [new]
-Also note that instead of updating `etags-table-alist' you can include all tag-symblols in project TAGS file:
+Also note that instead of updating `etags-table-alist' you can include all tag-symblols in single project TAGS file (NOTE: we use additional options for standard headers as function prototypes does not included in TAGS file by default):
 
 {{{
   $ cd $proj
-  $ ( \
-       find . '(' -type d -name .svn -o -name dist -o -name lib ')' -prune -o -type f \
-          '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
-       ls lib/xulrunner-sdk/include/plugin/np*.h; \
-       ls lib/xulrunner-sdk/include/xpcom/*.h; \
-       ls /usr/include/win32/win*.h; \
-    ) | etags -
+  $ { \
+      ls lib/xulrunner-sdk/include/plugin/np*.h; \
+      ls lib/xulrunner-sdk/include/xpcom/*.h; \
+      ls /usr/include/win32/win*.h; \
+    } | etags --declarations -
+  $ find . '(' -type d -name .svn -o -name dist -o -name lib ')' -prune -o -type f \
+      '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
+      | etags -a -
 }}}
 
 Or same with ctags:
 
 {{{
   $ cd $proj
-  $ ( \
-       find . '(' -type d -name .svn -o -name dist -o -name lib ')' -prune -o -type f \
-          '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
-       ls lib/xulrunner-sdk/include/plugin/np*.h; \
-       ls lib/xulrunner-sdk/include/xpcom/*.h; \
-    ) | ctags --tag-relative=yes -e -L -
+  $ { \
+      ls lib/xulrunner-sdk/include/plugin/np*.h; \
+      ls lib/xulrunner-sdk/include/xpcom/*.h; \
+      ls /usr/include/win32/win*.h; \
+    } | ctags --c-kinds=+p+x --c++-kinds=+p+x --tag-relative=yes -e -L -
+  $ find . '(' -type d -name .svn -o -name dist -o -name lib ')' -prune -o -type f \
+      '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
+      | ctags --tag-relative=yes -e --append -L -
 }}}
 
 --[[gavenkoa]]

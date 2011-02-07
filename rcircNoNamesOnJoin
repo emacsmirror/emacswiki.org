@@ -32,6 +32,8 @@ This has been succesfully tested on GNU Emacs CVS HEAD version.
 
 -- XavierMaillard
 
+[new]
+I paset this code to [http://www.emacswiki.org/emacs/rcirc-nonames-on-join.el rcirc-nonames-on-join.el] to make el-get or auto-install can easily grab it :P   -- [[coldnew]]
 
 ----
 CategoryChatClient [[rcirc]]

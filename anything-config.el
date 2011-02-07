@@ -2093,16 +2093,34 @@ If EXPAND is non--nil expand-file-name."
     (loop for i in ff-sources
        thereis (string= cur-source (concat i anything-c-find-files-doc-header)))))
 
+(defvar anything-ff-lastdir nil)
 (defun anything-find-files-down-one-level (arg)
   "Go down one level like unix command `cd ..'.
 If prefix numeric arg is given go ARG level down."
   (interactive "p")
+  ;; When going to precedent level we want to be at the line
+  ;; corresponding to actual directory, so store this info
+  ;; in `anything-ff-lastdir'.
+  (setq anything-ff-lastdir anything-ff-default-directory)
   (when (anything-file-completion-source-p)
     (let ((new-pattern (anything-reduce-file-name anything-pattern arg
                                                   :unix-close t :expand t)))
       (with-selected-window (minibuffer-window)
         (delete-minibuffer-contents)
         (insert new-pattern)))))
+
+(defun anything-ff-restore-pos ()
+  "Move overlay to last visited directory `anything-ff-lastdir'.
+This happen after using `anything-find-files-down-one-level'."
+  (when (and anything-ff-lastdir
+             (anything-file-completion-source-p))
+    (let ((dirname (directory-file-name anything-ff-lastdir)))
+      (with-anything-window
+        (when (search-forward dirname nil t)
+          (forward-line 0)
+          (anything-mark-current-line)))
+      (setq anything-ff-lastdir nil))))
+(add-hook 'anything-after-update-hook 'anything-ff-restore-pos)
 
 ;; `C-.' doesn't work in terms use `C-l' instead.
 (if window-system
@@ -2649,35 +2667,8 @@ Find inside `require' and `declare-function' sexp."
 ;; This fix copying directory recursively from dired.
 ;; (corrupted structure when overwriting).
 (unless (and (fboundp 'version<) (version< emacs-version "23.2.92"))
-  (defun copy-directory (directory newname &optional keep-time parents create-struct)
-    "Copy DIRECTORY to NEWNAME.  Both args must be strings.
-If NEWNAME names an existing directory, copy DIRECTORY as subdirectory there.
-
-This function always sets the file modes of the output files to match
-the corresponding input file.
-
-The third arg KEEP-TIME non-nil means give the output files the same
-last-modified time as the old ones.  (This works on only some systems.)
-
-A prefix arg makes KEEP-TIME non-nil.
-
-Noninteractively, the argument PARENTS says whether to
-create parent directories if they don't exist.  Interactively,
-this happens by default.
-
-Non--interactively, the argument CREATE-STRUCT says whether to
-create the directory structure of NEWNAME. Interactively,
-this happens by default. When called from dired code this argument
-should not be used as dired already create directory structure."
-    (interactive
-     (let ((dir (read-directory-name
-                 "Copy directory: " default-directory default-directory t nil)))
-       (list dir
-             (read-file-name
-              (format "Copy directory %s to: " dir)
-              default-directory default-directory nil nil)
-             current-prefix-arg t t)))
-
+  (defun copy-directory1 (directory newname &optional keep-time
+                          parents copy-as-subdir)
     ;; If default-directory is a remote directory, make sure we find its
     ;; copy-directory handler.
     (let ((handler (or (find-file-name-handler directory 'copy-directory)
@@ -2689,43 +2680,68 @@ should not be used as dired already create directory structure."
           (setq directory (directory-file-name (expand-file-name directory))
                 newname   (directory-file-name (expand-file-name newname)))
 
-          (if (not (file-directory-p newname))
-              ;; If NEWNAME is not an existing directory, create it; that
-              ;; is where we will copy the files of DIRECTORY.
-              (make-directory newname parents)
-              ;; If NEWNAME is an existing directory, we will copy into
-              ;; NEWNAME/[DIRECTORY-BASENAME].
-              (when create-struct
-                (setq newname (expand-file-name
-                               (file-name-nondirectory
-                                (directory-file-name directory))
-                               newname))
-                (and (file-exists-p newname)
-                     (not (file-directory-p newname))
-                     (error "Cannot overwrite non-directory %s with a directory"
+          (unless (file-directory-p directory)
+            (error "%s is not a directory" directory))
+
+          (cond
+            ((not (file-directory-p newname))
+             ;; If NEWNAME is not an existing directory, create it;
+             ;; that is where we will copy the files of DIRECTORY.
+             (make-directory newname parents))
+            (copy-as-subdir
+             ;; If NEWNAME is an existing directory, and we are copying as
+             ;; a subdirectory, the target is NEWNAME/[DIRECTORY-BASENAME].
+             (setq newname (expand-file-name
+                            (file-name-nondirectory
+                             (directory-file-name directory))
                             newname))
-                (make-directory newname t)))
+             (and (file-exists-p newname)
+                  (not (file-directory-p newname))
+                  (error "Cannot overwrite non-directory %s with a directory"
+                         newname))
+             (make-directory newname t)))
 
           ;; Copy recursively.
           (dolist (file
                     ;; We do not want to copy "." and "..".
                     (directory-files directory 'full
                                      directory-files-no-dot-files-regexp))
-            (let ((target (expand-file-name (file-name-nondirectory file) newname))
+            (let ((target (expand-file-name
+                           (file-name-nondirectory file) newname))
                   (attrs (file-attributes file)))
-              (cond ((and (file-directory-p file) create-struct)
-                     (copy-directory file newname keep-time parents create-struct))
-                    ((file-directory-p file)
-                     (copy-directory file target keep-time parents create-struct))
+              (cond ((file-directory-p file)
+                     (copy-directory1 file target keep-time parents nil))
                     ((stringp (car attrs)) ; Symbolic link
                      (make-symbolic-link (car attrs) target t))
-                    (t (copy-file file target t keep-time)))))
+                    (t
+                     (copy-file file target t keep-time)))))
 
           ;; Set directory attributes.
           (set-file-modes newname (file-modes directory))
           (when keep-time
-            (set-file-times newname (nth 5 (file-attributes directory))))))))
+            (set-file-times newname (nth 5 (file-attributes directory)))))))
 
+  (defun dired-copy-file-recursive (from to ok-flag &optional
+                                    preserve-time top recursive)
+    (let ((attrs (file-attributes from))
+          dirfailed)
+      (if (and recursive
+               (eq t (car attrs))
+               (or (eq recursive 'always)
+                   (yes-or-no-p (format "Recursive copies of %s? " from))))
+          ;; This is a directory.
+          (copy-directory1 from to dired-copy-preserve-time)
+          ;; Not a directory.
+          (or top (dired-handle-overwrite to))
+          (condition-case err
+              (if (stringp (car attrs))
+                  ;; It is a symlink
+                  (make-symbolic-link (car attrs) to ok-flag)
+                  (copy-file from to ok-flag dired-copy-preserve-time))
+            (file-date-error
+             (push (dired-make-relative from)
+                   dired-create-files-failures)
+             (dired-log "Can't set date on %s:\n%s\n" from err)))))))
   
 (defun* anything-dired-action (candidate &key action follow (files (dired-get-marked-files)))
   "Copy, rename or symlink file at point or marked files in dired to CANDIDATE.
@@ -3396,17 +3412,18 @@ Try to find tag file in upper directory if haven't found in CURRENT-DIR."
 
 (defun anything-c-etags-init ()
   (let ((tagfile (anything-c-etags-get-tag-file))) 
-    (with-current-buffer (anything-candidate-buffer 'global)
-      (anything-aif (gethash tagfile anything-c-etags-cache)
-          (insert it)
-        (anything-c-etags-create-buffer tagfile)
-        (puthash tagfile (buffer-string) anything-c-etags-cache)
-        (anything-aif (assoc tagfile anything-c-etags-mtime-alist)
-            ;; If an entry exists modify it.
-            (setcdr it (anything-c-etags-mtime tagfile))
-          ;; No entry create a new one.
-          (add-to-list 'anything-c-etags-mtime-alist
-                       (cons tagfile (anything-c-etags-mtime tagfile))))))))
+    (when tagfile
+      (with-current-buffer (anything-candidate-buffer 'global)
+       (anything-aif (gethash tagfile anything-c-etags-cache)
+           (insert it)
+         (anything-c-etags-create-buffer tagfile)
+         (puthash tagfile (buffer-string) anything-c-etags-cache)
+         (anything-aif (assoc tagfile anything-c-etags-mtime-alist)
+             ;; If an entry exists modify it.
+             (setcdr it (anything-c-etags-mtime tagfile))
+           ;; No entry create a new one.
+           (add-to-list 'anything-c-etags-mtime-alist
+                        (cons tagfile (anything-c-etags-mtime tagfile)))))))))
 
 (defvar anything-c-source-etags-select
   '((name . "Etags")

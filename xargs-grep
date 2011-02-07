@@ -1,0 +1,11 @@
+=xargs-grep=
+
+==Overview==
+
+Grep through a large list of files, which don't fit on the command line.  Or your files has spaces in their names.
+
+==Where is it?==
+
+https://github.com/lewang/le_emacs_xargs_grep
+
+==Discussion==

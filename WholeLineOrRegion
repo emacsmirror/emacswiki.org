@@ -3,28 +3,25 @@ In many programs, like !SlickEdit, !TextMate and !VisualStudio, '''"cut" and "co
 * '##M-w##' copies the current line when the [[region]] is not active, and
 * '##C-w##' deletes it.
 
+Such behaviour for '##C-w##' is available through the separate command ##kill-whole-line##, bound to '##C-S-backspace##'.
 '''Note:''' [TransientMarkMode Transient Mark Mode] must be enabled to distinguish selected text visually -- that is, ##(transient-mark-mode t)## -- which is the default in Emacs 23 and onwards.
 
-== Advice ==
+== interactive-form property ==
 
-A concise solution is to [AdvisingFunctions advise] ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands):
+A concise solution is to alter the interactive form of ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands):
 
-    (defadvice kill-ring-save (before slick-copy activate compile)
-      "When called interactively with no active region, copy a single line instead."
-      (interactive
-       (if (region-active-p) (list (region-beginning) (region-end))
-         (message "Copied line")
-         (list (line-beginning-position)
-               (line-beginning-position 2)))))
+    (put 'kill-ring-save 'interactive-form
+     '(interactive
+       (if (use-region-p)
+           (list (region-beginning) (region-end))
+         (list (line-beginning-position) (line-beginning-position 2)))))
+    (put 'kill-region 'interactive-form      
+     '(interactive
+       (if (use-region-p)
+           (list (region-beginning) (region-end))
+         (list (line-beginning-position) (line-beginning-position 2)))))
 
-    (defadvice kill-region (before slick-cut activate compile)
-      "When called interactively with no active region, kill a single line instead."
-      (interactive
-       (if (region-active-p) (list (region-beginning) (region-end))
-         (list (line-beginning-position)
-               (line-beginning-position 2)))))
-
-Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the advice only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
+Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the ##(interactive-form)## property only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
 
 === With yank-handler ==
 

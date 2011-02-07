@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.5.3
-;; Created: Sun Sep 19 13:44:20 2010
+;; Version: 0.5.4
+;; Created: Mon Feb  7 11:08:36 2011
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -17,7 +17,7 @@
 ;; for details of tex-math-preview.el.
 
 ;; Copyright 2006, 2007, 2008, 2009 Kevin Ryde
-;; Copyright 2009, 2010 Takayuki YAMAGUCHI
+;; Copyright 2009, 2010, 2011 Takayuki YAMAGUCHI
 ;;
 ;; This program is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
@@ -295,6 +295,8 @@
 ;;       "cache directory in your system")
 
 ;; ChangeLog:
+;; 2011/02/07 version 0.5.4 yamaguchi
+;;     Support gswin32c.exe for meadow.
 ;; 2010/09/19 version 0.5.3 yamaguchi
 ;;     Refactoring.
 ;; 2010/09/13 version 0.5.2 yamaguchi
@@ -812,6 +814,8 @@ This variable must not be set.")
   '((pdflatex-to-pdf "-output-format" "pdf") (pdflatex-to-dvi "-output-format" "dvi")
     (dvipng "-x" "1728") (dvips-to-ps "-Ppdf") (dvips-to-eps "-Ppdf")
     (gs-to-png
+     "-dSAFER" "-dNOPAUSE" "-sDEVICE=png16m" "-dTextAlphaBits=4" "-dBATCH" "-dGraphicsAlphaBits=4" "-dQUIET")
+    (gswin32c-to-png
      "-dSAFER" "-dNOPAUSE" "-sDEVICE=png16m" "-dTextAlphaBits=4" "-dBATCH" "-dGraphicsAlphaBits=4" "-dQUIET"))
   "Options of commands.")
 
@@ -943,7 +947,8 @@ This variable must not be set.")
     (dvipdf . latex-math-preview-argument-dvipdf)
     (dvipdfm . latex-math-preview-argument-convert-dvi)
     (dvipdfmx . latex-math-preview-argument-convert-dvi)
-    (gs-to-png . latex-math-preview-argument-gs-to-png))
+    (gs-to-png . latex-math-preview-argument-gs-to-png)
+    (gswin32c-to-png . latex-math-preview-argument-gs-to-png))
   "List of command and function name to create arguments.")
 
 (defun latex-math-preview-get-command-argument (command input)
@@ -955,6 +960,8 @@ This variable must not be set.")
     (if (latex-math-preview-call-command-process command-path (cdr tmp)) (car tmp) nil)))
 
 (defmacro latex-math-preview-define-convert-function (command)
+  "Define function to convert images. Use first element of
+a list created by splitting COMMAND by \"-\" as a command name."
   `(defun ,(intern (concat "latex-math-preview-execute-" (symbol-name command))) (input)
      (latex-math-preview-call-latex-command
       (latex-math-preview-get-command-path (quote ,(intern (car (split-string (symbol-name command) "-")))))
@@ -967,6 +974,7 @@ This variable must not be set.")
 (latex-math-preview-define-convert-function dvipdfm)
 (latex-math-preview-define-convert-function dvipdfmx)
 (latex-math-preview-define-convert-function gs-to-png)
+(latex-math-preview-define-convert-function gswin32c-to-png)
 
 (defun latex-math-preview-successive-convert (input &rest convert-list)
   (let ((product input))
@@ -1045,17 +1053,16 @@ This variable must not be set.")
 
 (defun latex-math-preview-get-header-usepackage ()
   "Return cache of usepackage and create cache data if needed"
-  (if (and (not latex-math-preview-usepackage-cache) (string-match-p "\\.tex$" (buffer-file-name)))
-      (let (cache)
-	(setq cache (latex-math-preview-search-header-usepackage))
-	(if (and (not cache)
-		 (let ((filename (buffer-file-name (current-buffer))))
-		   (and filename (string-match "\\.tex" (buffer-file-name (current-buffer))))))
-	    (setq cache (latex-math-preview-search-header-usepackage-other-file
-			 (read-file-name "Main TeX file: " nil default-directory))))
-	(setq latex-math-preview-usepackage-cache (or cache t))))
-  (if (listp latex-math-preview-usepackage-cache)
-      latex-math-preview-usepackage-cache nil))
+  (when (and (not latex-math-preview-usepackage-cache) (string-match "\\.tex$" (buffer-file-name)))
+    (let (cache)
+      (setq cache (latex-math-preview-search-header-usepackage))
+      (if (and (not cache)
+	       (let ((filename (buffer-file-name (current-buffer))))
+		 (and filename (string-match "\\.tex" (buffer-file-name (current-buffer))))))
+	  (setq cache (latex-math-preview-search-header-usepackage-other-file
+		       (read-file-name "Main TeX file: " nil default-directory))))
+      (setq latex-math-preview-usepackage-cache (or cache t))))
+  (if (listp latex-math-preview-usepackage-cache) latex-math-preview-usepackage-cache nil))
 
 (defun latex-math-preview-reload-usepackage (&optional other-file)
   "Reload usepackage cache from current buffer. If you want to get the cache
@@ -1190,7 +1197,8 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
       (setq buffer-read-only nil)
       (erase-buffer)
       (insert-file-contents image)
-      (goto-char (point-min)))
+      (goto-char (point-min))
+      (setq buffer-read-only t))
     (latex-math-preview-expression-mode)
     (buffer-disable-undo))
   (pop-to-buffer latex-math-preview-expression-buffer-name)

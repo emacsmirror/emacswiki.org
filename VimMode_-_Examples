@@ -29,10 +29,20 @@ Goto next and previous errors with ##cnext## and ##cprev## ex-mode commands.
   (vim:emap "cnext" 'vim:cmd-next-error)
   (vim:emap "cn" "cnext")
   (vim:emap "cprevious" 'vim:cmd-prev-error)
-  (vim:emap "cp" "cprevious"))
+  (vim:emap "cp" "cprevious")
+
+=== Grep ===
+Very simple version of :grep, similar to :make above.
+  
+  (vim:defcmd vim:cmd-grep (nonrepeatable argument:text)
+    "Run external grep."
+    (grep (concat "grep -nH -e" argument)))
+  
+  (vim:emap "grep" 'vim:cmd-grep)
+  (vim:emap "gr" "grep")
   
 === Comment/Uncomment region ===
-  The following command toggles the comments on a certain visual region.
+The following command toggles the comments on a certain visual region.
   
   (vim:defcmd vim:visual-toggle-comment (motion)
     "Toggles comments in the region."
@@ -43,6 +53,16 @@ We bind the commands only in visual mode.
 
   (vim:vmap (kbd "C-c :") 'vim:visual-toggle-comment)
   (vim:vmap (kbd "C-c ;") 'vim:visual-toggle-comment)
+  
+=== Create new frame with ex-command ===
+Adds a command to open a new frame via ##:nf## or ##:newframe##.
+
+  (vim:defcmd vim:cmd-new-frame (nonrepeatable)
+    "Creates a new frame."
+    (make-frame-command))
+  
+  (vim:emap "newframe" 'vim:cmd-new-frame)
+  (vim:emap "nf" "newframe")
 
 == Motions ==
 

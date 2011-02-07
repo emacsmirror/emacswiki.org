@@ -166,6 +166,11 @@ You can also get Grep-O-Matic with git:
 
     git clone git://github.com/ZungBang/emacs-grep-o-matic.git
 
+== xargs-grep ==
+grep through large file lists, which don't fit on the command line.  Or file-names have spaces.
+
+See [[xargs-grep]]
+
 == Find/Grep from shell-mode ==
 
 While not explicitly about emacs grep, I use the following recipe to intelligently pattern search a really large source tree like Chromium or the Linux kernel.  The three steps:

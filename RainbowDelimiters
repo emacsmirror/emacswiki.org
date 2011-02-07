@@ -8,7 +8,7 @@ You can customize the colors [[RainbowDelimiters]] uses.
 
 == Download: ==
 * Lisp:rainbow-delimiters.el
-* The latest version will soon also be available via [[ELPA]].  -- [[jlr]]
+The mode is currently unavailable for download but will be back within a week.
 
 == Setup instructions: ==
 Add Lisp:rainbow-delimiters.el to your load-path, then:
@@ -26,9 +26,8 @@ Nice idea, but here are some thoughts about the implementation:
 [new]
 Thank you for your feedback. I'll use (eval-when-compile (require 'cl)) from now on; I hadn't been aware of that convention.
 
-This code was forked from rainbow-parens.el, which was the best rainbow-parens mode I could find to build on. You'll notice it's already in the TODO section that overlays can be slow on large chunks of text with many parens.
-I will look into text properties and see if it can be made to work that way. If so it would make sense to rewrite the mode from scratch using text properties instead of overlays.
-If you have any more tips to point me in the right direction please don't hesitate to add them here; I really appreciate it.
+I will look into text properties and see if it can be made to work that way. If so it would make sense to write the mode from scratch using text properties instead of overlays.
+Thanks for your help.
 
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

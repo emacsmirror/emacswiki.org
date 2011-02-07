@@ -72,7 +72,13 @@ The following code (modified copy from "python.el") provides the basic support n
 (info-lookup-add-help
  :mode 'python-mode
  :regexp "[[:alnum:]_]+"
- :doc-spec
+ :doc-specctions fall into categories that perform object comparisons,
+logical operations, mathematical operations, sequence operations, and
+abstract type tests.
+
+  The object comparison functions are useful for all objects, and are
+named after the rich comparison operators they support:
+
  '(("(python)Index" nil "")))
 </pre>
 
@@ -82,6 +88,15 @@ The following code (modified copy from "python.el") provides the basic support n
 
 Feedback or suggestions on [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info] are welcome.  -- JonathanWaltman
 
+[new]
+I started using your python.info as well as the new info-lookup setup.  So far it is very very good.  
+- I see over 16 thousands index entries
+- almost 8 thousand @deffn* entries in the texinfo file
+- I get completion to all built-in libraries symbols with completion, e.g., "os path abspath", "sys path", etc.
+- all items I looked for, I was taken to the correct node *and* to the correct line on my info browser!
+- despite my initial surprise at finding a single 9MB info file, I like the fact that it is one file!  Now I can do a single regexp search and find everything.
+
+You have done a truly wonderful job Jonathan!  I think this is a vast improvement over the old info files that I've been hanging onto since python 2.4.  I have completely switched over to using the new info file.  Thanks again!  RichardKim
 
 ----
 CategoryHomepage

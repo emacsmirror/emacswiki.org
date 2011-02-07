@@ -34,7 +34,6 @@ It does not contain in emacs 23.2's ibuffer.el, use following instead -- coldnew
 
     (require 'ibuf-ext)
     (add-to-list 'ibuffer-never-show-predicates "^\\*")
-----coldnew
 
 == View subsets of buffers ==
 
@@ -192,6 +191,33 @@ I didn't really want a new filter; I just wanted the existing filename filter to
                             (buffer-local-value 'dired-directory buf))
            (string-match qualifier it))))
 
+== Use Human readable Size column ==
+
+I don't like default "Size" column, so I write a human readable column instead of original one.
+                                                                                 -- [[coldnew]]
+
+<pre>
+;; Use human readable Size column instead of original one
+(define-ibuffer-column size-h
+  (:name "Size" :inline t)
+  (cond
+   ((> (buffer-size) 1000) (format "%7.3fk" (/ (buffer-size) 1000.0)))
+   ((> (buffer-size) 1000000) (format "%7.3fM" (/ (buffer-size) 1000000.0)))
+   (t (format "%8d" (buffer-size)))))
+
+;; Modify the default ibuffer-formats
+  (setq ibuffer-formats
+	'((mark modified read-only " "
+		(name 18 18 :left :elide)
+		" "
+		(size-h 9 -1 :right)
+		" "
+		(mode 16 16 :left :elide)
+		" "
+		filename-and-process)))
+
+</pre>
+
 ----
 
 == Questions ==
@@ -284,6 +310,7 @@ How can I set the number of characters that the name will truncate to? Right now
 
 [new:stepnem:2010-04-20 11:23 UTC]
 Read the documentation for `ibuffer-formats' and you shall be enlightened.
+
 
 ----
 CategoryBufferSwitching

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Feb  3 14:36:51 2011 (-0800)
+;; Last-Updated: Sun Feb  6 05:33:15 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4445
+;;     Update #: 4450
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -178,6 +178,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/06 dadams
+;;     info-user-option-ref-item: Corrected background for light-bg case.
 ;; 2011/02/03 dadams
 ;;     All deffaces: Provided default values for dark-background screens too.
 ;; 2011/01/04 dadams
@@ -556,8 +558,9 @@ Don't forget to mention your Emacs and library versions."))
 
 ;; This is defined in `faces.el', Emacs 22+.  This definition is adapted to Emacs 20.
 (unless (facep 'minibuffer-prompt)
-  (defface minibuffer-prompt '((((background dark)) (:foreground "cyan"))
-                               (t (:foreground "dark blue")))
+  (defface minibuffer-prompt
+      '((((background dark)) (:foreground "cyan"))
+        (t (:foreground "dark blue")))
     "Face for minibuffer prompts."
     :group 'basic-faces))
 
@@ -568,8 +571,9 @@ Don't forget to mention your Emacs and library versions."))
   "Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
-(defface info-menu '((((background dark)) (:foreground "Yellow"))
-                     (t (:foreground "Blue")))
+(defface info-menu
+    '((((background dark)) (:foreground "Yellow"))
+      (t (:foreground "Blue")))
   "*Face used for menu items in `info'." :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
@@ -608,8 +612,8 @@ Don't forget to mention your Emacs and library versions."))
 ;; Standard faces from vanilla Emacs `info.el', but without `:weight', `:height' and `:inherit'.
 ;;;###autoload
 (defface info-title-1
-    '((((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold)
-      (((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold))
+    '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
+      (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
   "Face for info titles at level 1."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
@@ -674,7 +678,8 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-user-option-ref-item
-    '((t (:foreground "Red" :background "DimGray")))
+    '((((background dark)) (:foreground "Red" :background "DimGray"))
+      (t (:foreground "Red" :background "LightGray")))
   "Face used for \"User Option:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload

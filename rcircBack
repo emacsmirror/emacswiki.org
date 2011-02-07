@@ -34,7 +34,8 @@ You will also need this:
   "RPL_NOWAWAY: You have been marked as being away"                                                                                              
   (let ((target (car args)))                                                                                                                     
     (rcirc-do-notice "+++ You have been marked as being away!")                                                                                  
-    (setq rcirc-away-time (current-time))                                                                                                       ))                                
+    (setq rcirc-away-time (current-time))))                                                                                        
+                               
 </pre>
 
 These two handlers do not exist (yet) in rcirc.
