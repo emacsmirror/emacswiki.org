@@ -2116,7 +2116,8 @@ This happen after using `anything-find-files-down-one-level'."
              (anything-file-completion-source-p))
     (let ((dirname (directory-file-name anything-ff-lastdir)))
       (with-anything-window
-        (when (search-forward dirname nil t)
+        (when (or (re-search-forward (concat dirname "$") nil t)
+                  (re-search-forward (concat anything-ff-lastdir "$") nil t))
           (forward-line 0)
           (anything-mark-current-line)))
       (setq anything-ff-lastdir nil))))
@@ -7391,11 +7392,25 @@ and sets `anything-c-external-commands-list'."
         (when (and bfn (string= name bfn))
           (push (buffer-name buf) buf-list))))))
 
+
 (defun anything-c-delete-file (file)
   "Delete the given file after querying the user.
 Ask to kill buffers associated with that file, too."
   (let ((buffers (anything-c-file-buffers file)))
-    (dired-delete-file file 'dired-recursive-deletes)
+    (if (< emacs-major-version 24)
+        ;; `dired-delete-file' in Emacs versions < 24
+        ;; doesn't support delete-by-moving-to-trash
+        ;; so use `delete-directory' and `delete-file'
+        ;; that handle it.
+        (if (file-directory-p file)
+            (if (directory-files file t dired-re-no-dot)     
+                (when (y-or-n-p (format "Recursive delete of `%s'? " file))
+                  (delete-directory file 'recursive))
+                (delete-directory file))
+            (delete-file file))
+        (dired-delete-file file 'dired-recursive-deletes
+                           (and (boundp 'delete-by-moving-to-trash)
+                                delete-by-moving-to-trash)))
     (when buffers
       (dolist (buf buffers)
         (when (y-or-n-p (format "Kill buffer %s, too? " buf))

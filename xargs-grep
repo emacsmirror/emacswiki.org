@@ -9,3 +9,5 @@ Grep through a large list of files, which don't fit on the command line.  Or you
 https://github.com/lewang/le_emacs_xargs_grep
 
 ==Discussion==
+
+Don't rgrep and friends already offer something similar? Page should be renamed to XargsGrep -- JonasBernoulli

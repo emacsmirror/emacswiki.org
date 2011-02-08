@@ -557,3 +557,18 @@ To make sure the case is preserved in a completion, you probably have to [http:/
 (setq mac-tool-bar-display-mode 'icons)
 </pre>
 
+== Upgrading org-mode or other major-modes in Aquamacs ==
+
+Edit the Makefile to set variables as follows, before "make" and "make install":
+
+
+    # Name of your emacs binary
+    EMACS=/Applications/Aquamacs.app/Contents/MacOS/Aquamacs
+    
+    # Where local lisp files go.
+    lispdir   = /Applications/Aquamacs.app/Contents/Resources/lisp 
+    
+    # Where info files go.
+    infodir = /Applications/Aquamacs.app/Contents/Resources/info
+
+--D.H. Ardell

@@ -8,7 +8,8 @@ the information from a SLN file and its associated VCPROJ.
 
 == Installation ==
 
-To install it: just add the following lines to your init file:
+sln-mode is an add-on to ProjectBufferMode; therefore you must first install ProjectBufferMode and then
+add the following lines to your init file:
 {{{
   (autoload 'find-sln "sln-mode")
 }}}

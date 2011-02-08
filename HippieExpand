@@ -229,7 +229,14 @@ Happy hacking!
 
 -- MaDa
 
-
+== Don't add extra paren when expanding line with paredit ==
+If you use paredit or something to add closing parens then hippie expand line can be problematic because you will end up with an extra closing paren. This could should fix that
+<pre>
+(defadvice he-substitute-string (after he-paredit-fix)
+  "remove extra paren when expanding line in paredit"
+  (if (and paredit-mode (equal (substring str -1) ")"))
+      (progn (backward-delete-char 1) (forward-char))))
+</pre>
 
 == BUGS ==
 

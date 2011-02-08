@@ -216,6 +216,9 @@ WorkingDirectory: $(ItemDirectory)
 Then bind whatever keys you prefer to the external tools (Will be called something like ExternalToolsn, with n depending on your tool order) in your keyboard preferences (I use Ctl-Alt-E).
 == See Also ==
 
+Opening a visual studio solution in emacs:
+* SlnMode
+
 For Visual Studio-style bookmarking:
 
 * [[BookmarkPlus#HighlightingBookmarkLocations|Bookmark+]]

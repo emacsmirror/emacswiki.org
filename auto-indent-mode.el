@@ -1,4 +1,4 @@
-;;;; auto-indent-mode.el --- Auto indent Minor mode
+;;; auto-indent-mode.el --- Auto indent Minor mode
 ;;
 ;; Filename: auto-indent-mode.el
 ;; Description: Auto Indent text on Yank/Paste
@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Thu Feb  3 17:08:49 2011 (-0600)
+;; Last-Updated: Mon Feb  7 12:50:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 998
+;;     Update #: 1005
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -434,13 +434,17 @@ You should also set `kill-whole-line' to do what you want.
   :tag " Major modes where linum is disabled: "
   :group 'auto-indent)
 
-(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode diff-mode texinfo-mode conf-windows-mode)
+(defcustom auto-indent-disabled-modes-list
+  '(eshell-mode wl-summary-mode compilation-mode org-mode
+		text-mode dired-mode snippet-mode fundamental-mode
+		diff-mode texinfo-mode conf-windows-mode)
   "* List of modes disabled when global auto-indent-mode is on."
   :type '(repeat (sexp :tag "Major mode"))
-  :tag " Major modes where linum is disabled: "
+  :tag " Major modes where auto-indent is disabled: "
   :group 'auto-indent)
 
-(defcustom auto-indent-disabled-indent-functions '(indent-relative indent-relative-maybe)
+(defcustom auto-indent-disabled-indent-functions
+  '(indent-relative indent-relative-maybe)
   "* List of functions that auto-indent ignores the indent-region
   on paste and automated indent by pressing return.  The default is indent-relative and
   indent-relative-maybe.  If these are used the indentation is may not specified for the current mode."

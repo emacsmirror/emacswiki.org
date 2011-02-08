@@ -41,6 +41,22 @@ Very simple version of :grep, similar to :make above.
   (vim:emap "grep" 'vim:cmd-grep)
   (vim:emap "gr" "grep")
   
+=== LaTeX errors ===
+These local bindings provide :cnext and :cprevious commands for LaTeX.
+
+  (vim:defcmd vim:cmd-TeX-next-error (nonrepeatable count)
+   "Moves to the `count'th next TeX error."
+   (TeX-next-error count))
+  
+  (vim:defcmd vim:cmd-TeX-prev-error (nonrepeatable count)
+   "Moves to the `count'th previous TeX error."
+   (TeX-previous-error (- (or count 1))))
+   
+  (add-hook 'LaTeX-mode-hook
+            #'(lambda ()
+                 (vim:local-emap "cnext" 'vim:cmd-TeX-next-error)
+                 (vim:local-emap "cprevious" 'vim:cmd-TeX-previous-error)))
+
 === Comment/Uncomment region ===
 The following command toggles the comments on a certain visual region.
   
@@ -63,7 +79,39 @@ Adds a command to open a new frame via ##:nf## or ##:newframe##.
   
   (vim:emap "newframe" 'vim:cmd-new-frame)
   (vim:emap "nf" "newframe")
+  
+=== Rot13 encoding with motion or visual region === 
 
+This is an example for a command which operates on motion-defined region. A useful helper function is ##vim:apply-on-motion## which applies an operation which modifies a certain region on the region covered by the given motion. Note that we bind the command in both, normal-mode and visual-mode.
+
+  (vim:defcmd vim:cmd-rot13 (motion)
+    "Rot13 encode the given region."
+    (vim:apply-on-motion
+     motion 
+     #'(lambda (beg end)
+         (rot13 (current-buffer) beg end))))
+  
+  (vim:nmap "g?" 'vim:cmd-rot13)
+  (vim:vmap "g?" 'vim:cmd-rot13)
+  
+=== Simple :help command ===
+The following simple command can be used to lookup a symbol in the info files or open the emacs-lisp documentation.
+
+  (vim:defcmd vim:cmd-help (nonrepeatable argument)
+    "Search for the given pattern in the manual."
+    (if argument
+        (info-lookup-symbol argument)
+      (info-emacs-manual)))
+  
+  (vim:defcmd vim:cmd-help-elisp (nonrepeatable)
+    "Search for the given pattern in the emacs lisp manual."
+    (info "elisp"))
+  
+  (vim:emap "help" 'vim:cmd-help)
+  (vim:emap "h" "help")
+  (vim:emap "helpelisp" 'vim:cmd-help-elisp)
+  (vim:emap "helisp" "helpelisp")
+  
 == Motions ==
 
 === LaTeX tag text objects ===

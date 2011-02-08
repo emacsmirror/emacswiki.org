@@ -216,9 +216,32 @@ If it doesn't work as it was in my case, then change bind-my-icicle-keys functio
 
 
 [new:DrewAdams:2007-11-03 21:58 UTC]
-I have added some new options for customizing '''Icicles''' key bindings, which should make such code unnecessary. See, for example, '''`icicle-generic-S-tab-keys'''', '''`icicle-prefix-complete-keys'''', `icicle-apropos-complete-no-display-keys', and `icicle-prefix-complete-no-display-keys'. -- DrewAdams
+I have added some new [[option]]s for customizing '''Icicles''' key bindings, which should make such code unnecessary. See, for example, '''`icicle-generic-S-tab-keys'''', '''`icicle-prefix-complete-keys'''', `icicle-apropos-complete-no-display-keys', and `icicle-prefix-complete-no-display-keys'. -- DrewAdams
 
 ----
+
+[new]
+
+key binding to icicle-occur command conflict to org-mode org-babel. So I would like to add these hooks to my configue file
+
+    (add-hook 'org-mode-hook
+    	  (lambda ()
+    	    (define-key icicle-mode-map (kbd "C-c '") 'org-edit-special)))
+    
+    (add-hook 'lisp-mode-hook
+    	  (lambda ()
+    	    (define-key icicle-mode-map (kbd "C-c '") 'org-edit-src-exit))) 
+
+-- DavidYoung
+
+[new:DrewAdams:2011-02-07 22:23 UTC]
+No.  No need to do that.  That's what [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' is for.  By default it binds `##C-'##' to `icicle-occur' -- just remove that entry (it's the fifth one in the list). -- DrewAdams
+
+
+----
+----
+
 
 || '''[[Icicles]]''' ||
 

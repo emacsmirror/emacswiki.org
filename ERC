@@ -1,14 +1,14 @@
 ERC is a powerful, modular, and extensible Emacs InternetRelayChat client.
 
 == Obtaining ERC ==
-ERC is part of the GNU project.  The project is hosted at Savannah at
-http://savannah.gnu.org/projects/erc/.  For a brief history of the development
-of ERC and access to older versions, code repositories, and mailing list
-archives see ErcProjectHistory.
+ERC is part of the GNU project.  It is included with recent versions of GNU emacs.
+
+With an older version of emacs, you might need to install it separately, e.g. under Ubuntu you would do something like "sudo apt-get install erc".
+
+For a brief history of the development of ERC and access to older versions, code repositories, and mailing list archives see ErcProjectHistory.
 
 === File releases ===
-The latest version of ERC is **5.3**.  You can find it and all previously
-released versions at http://ftp.gnu.org/gnu/erc/.
+The latest version of ERC is **5.3**. 
 
 === Included with GNU Emacs ===
 ERC 5.3 is in the current release of GNU Emacs, v22.3.

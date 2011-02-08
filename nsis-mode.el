@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Nov 16 15:48:02 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Tue Jan 25 17:11:27 2011 (-0600)
+;; Last-Updated: Mon Feb  7 11:04:22 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1411
+;;     Update #: 1414
 ;; URL: http://www.emacswiki.org/emacs/download/nsis-mode.el
 ;; Keywords: NSIS
 ;; Compatibility: Emacs 23.2
@@ -37,6 +37,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 07-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Feb  7 11:03:14 2011 (-0600) #1413 (Matthew L. Fidler)
+;;    Added check to make sure compile went OK before launching executable.
 ;; 25-Jan-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Jan 18 14:31:23 2011 (-0600) #1410 (us041375)
 ;;    Added more explicit setup instructions
@@ -1693,15 +1696,19 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
   "Finished Nsi Compilation, run output"
   (save-excursion
     (set-buffer "*nsis*")
-    (insert "================================================================================\n")
-    (insert "Finished Compilation, will run.\n")
-    (insert "================================================================================\n")
-    (nsis-run-file nsis-run-file-name)))
+    (forward-line -1)
+    (unless (looking-at ".*abort.*")
+      (goto-char (point-max))
+      (insert "================================================================================\n")
+      (insert "Finished Compilation, will run.\n")
+      (insert "================================================================================\n")
+      (nsis-run-file nsis-run-file-name))))
 
 (defun nsis-finish-compile (&rest ignore)
   "Finished Nsi Compilation"
   (save-excursion
     (set-buffer "*nsis*")
+    (goto-char (point-max))
     (insert "================================================================================\n")
     (insert "Finished Compilation\n")
     (insert "================================================================================\n")
