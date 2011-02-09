@@ -33,6 +33,9 @@
 ;; Bind this two function to the keys of your choice.
 ;;
 ;; See doc of calc-inline-mode for comments of the structure of calc sheets.
+;;
+;; Changes:
+;; 2011-02-08: calc-inline-region also works for the whole buffer (see doc of calc-inline-region).
 
 ;;; Code:
 
@@ -192,9 +195,18 @@ See help of calc-inline-mode for more information.
 	      (insert "\nans:" var-ans)
 	      )))))
 
-(defun calc-inline-region (b e)
-  "Evaluate calc-lines introduced by the string \"calc:\" within current region."
-  (interactive "r")
+(defun calc-inline-region (&optional b e)
+  "Evaluate calc-lines introduced by the string \"calc:\" within current region.
+Works on buffer if region is not active.
+For non-interactive calls b defaults to point-min and e defaults to point-max."
+  (interactive)
+  (if (called-interactively-p 'any)
+      (progn
+	(if (use-region-p)
+	    (setq b (region-beginning) e (region-end))
+	  (setq b (point-min) e (point-max))))
+    (unless b (setq b (point-min)))
+    (unless e (setq e (point-max))))
   (save-restriction
     (narrow-to-region b e)
     (goto-char (point-min))

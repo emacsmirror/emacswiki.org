@@ -3,15 +3,16 @@
 ;; Filename: tabbar-setup.el
 ;; Description: Changes tabbar setup to be similar to Aquaemacs.
 ;; Author: Matthew Fidler, Nathaniel Cunningham
-;; Maintainer:
+;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version:
-;; Last-Updated: Wed Dec  1 15:40:00 2010 (-0600)
+;; Version: 0.2
+;; Last-Updated: Tue Feb  8 15:02:36 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 354
+;;     Update #: 640
 ;; URL:
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
+;; Package-Requires: ((tabbar "2.0.1"))
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -37,7 +38,16 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
+;; 08-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb  8 14:59:57 2011 (-0600) #638 (Matthew L. Fidler)
+;;    Added ELPA tags.
+;; 08-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb  8 12:47:09 2011 (-0600) #604 (Matthew L. Fidler)
+;;    Removed xpm dependencies.  Now no images are required, they are built by the library.
+;; 04-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec  4 16:27:07 2010 (-0600) #551 (Matthew L. Fidler)
+;;    Added context menu.
 ;; 01-Dec-2010    Matthew L. Fidler  
 ;;    Last-Updated: Wed Dec  1 15:26:37 2010 (-0600) #341 (Matthew L. Fidler)
 ;;    Added scratch buffers to list.
@@ -92,8 +102,134 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
+(eval-when-compile
+  (require 'cl))
 (require 'tabbar)
+(require 'easymenu)
+
+(defun tabbar-popup-menu ()
+  "Keymap for pop-up menu.  Emacs only."
+  `(,(format "%s" (nth 0 tabbar-last-tab))
+    ["Close" tabbar-popup-close]
+    ["Close all BUT this" tabbar-popup-close-but]
+    "--"
+    ["Save" tabbar-popup-save]
+    ["Save As" tabbar-popup-save-as]
+    "--"
+    ["Rename File" tabbar-popup-rename
+     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab)) (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
+    ["Delete File" tabbar-popup-delete
+     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab)) (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
+    "--"
+    ["Gzip File" tabbar-popup-gz
+     :active (and (executable-find "gzip") (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
+                  (not (string-match "\\.gz\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
+    ["Bzip File" tabbar-popup-bz2
+     :active (and (executable-find "bzip2") (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
+                  (not (string-match "\\.bz2\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
+    ["Decompress File" tabbar-popup-decompress
+     :active (and
+              (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
+              (string-match "\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'"
+                            (buffer-file-name (tabbar-tab-value tabbar-last-tab))))
+     ]
+;;    "--"
+    ;;    ["Print" tabbar-popup-print]
+    )
+  )
+
+(defun tabbar-popup-print ()
+  "Print Buffer"
+  (interactive))
+
+
+(defun tabbar-popup-close ()
+  "Tab-bar pop up close"
+  (interactive)
+  (funcall tabbar-close-tab-function tabbar-last-tab))
+
+(defun tabbar-popup-close-but ()
+  "Tab-bar close all BUT this buffer"
+  (interactive)
+  (let ((cur (symbol-value (funcall tabbar-current-tabset-function))))
+    (mapc (lambda(tab)
+            (unless (eq tab tabbar-last-tab)
+              (funcall tabbar-close-tab-function tab)))
+          cur)))
+
+(defun tabbar-popup-save-as ()
+  "Tab-bar save as"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab)))
+    (save-excursion
+      (set-buffer buf)
+      (call-interactively 'write-file))))
+
+(defun tabbar-popup-rename ()
+  "Tab-bar rename"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab))
+         (fn (buffer-file-name buf)))
+    (save-excursion
+      (set-buffer buf)
+      (when (call-interactively 'write-file)
+        (if (string= fn (buffer-file-name (current-buffer)))
+            (error "Buffer has same name.  Just saved instead.")
+          (delete-file fn))))))
+
+(defun tabbar-popup-delete ()
+  "Tab-bar delete file"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab))
+        (fn (buffer-file-name buf)))
+    (when (yes-or-no-p (format "Are you sure you want to delete %s?" buf))
+      (save-excursion
+        (set-buffer buf)
+        (set-buffer-modified-p nil)
+        (kill-buffer (current-buffer))
+        (delete-file fn)))))
+
+(defun tabbar-popup-remove-compression-ext (file-name &optional new-compression)
+  "Removes compression extension, and possibly adds a new extension"
+  (let ((ret file-name))
+    (when (string-match "\\(\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)?\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'" ret)
+      (setq ret (replace-match (concat (or new-compression "") (match-string 2 ret)) t t ret)))
+    (symbol-value 'ret)))
+
+(defun tabbar-popup-gz (&optional ext err)
+  "Gzips the file"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab))
+         (fn (buffer-file-name buf))
+         (nfn (tabbar-popup-remove-compression-ext fn (or ext ".gz"))))
+    (if (string= fn nfn)
+        (error "Already has that compression!")
+      (save-excursion
+        (set-buffer buf)
+        (write-file nfn)
+        (if (not (file-exists-p nfn))
+            (error "%s" (or err "Could not gzip file!"))
+          (when (file-exists-p fn)
+            (delete-file fn)))))))
+
+(defun tabbar-popup-bz2 ()
+  "Bzip file"
+  (interactive)
+  (tabbar-popup-gz ".bz2" "Could not bzip the file!"))
+
+(defun tabbar-popup-decompress ()
+  "Decompress file"
+  (interactive)
+  (tabbar-popup-gz "" "Could not decompress the file!"))
+
+(defun tabbar-context-menu ()
+  "Pop up a context menu."
+  (interactive)
+  (popup-menu (tabbar-popup-menu)))
+
+
 (set-face-attribute 'tabbar-default nil
                     :inherit nil
                     :weight 'normal
@@ -113,7 +249,7 @@
 (set-face-attribute 'tabbar-selected nil
                     :background "gray95"
                     :foreground "gray20"
-                    :inherit 'tabbar-default
+                    :inherit 'tabbar-default 
                     :box '(:line-width 3 :color "grey95" :style nil))
 ;;                  :box '(:line-width 2 :color "white" :style released-button))
 
@@ -144,11 +280,88 @@
                     :foreground "grey50"
                     :height 1.0)
 
+(defun* tabbar-ruler-image (&key type disabled color)
+  "Returns the scroll-images"
+  (let ((clr (or color (if disabled "#B4B4B4" "#979797"))))
+    (if (eq type 'close)
+        (format "/* XPM */
+        static char * close_tab_xpm[] = {
+        \"14 11 3 1\",
+        \"       c None\",
+        \".      c %s\",
+        \"+      c #D2D4D1\",
+        \"     .....    \",
+        \"    .......   \",
+        \"   .........  \",
+        \"  ... ... ... \",
+        \"  .... . .... \",
+        \"  ..... ..... \",
+        \"  .... . .... \",
+        \"  ... ... ... \",
+        \"   .........  \",
+        \"    .......   \",
+        \"     .....    \"};" clr)
+	
+    (format
+     "/* XPM */
+static char * scroll_%s_%s_xpm[] = {
+\"17 17 2 1\",
+\"       c None\",
+\".      c %s\",
+\"                 \",
+\"                 \",
+\"                 \",
+\"                 \",
+\"                 \",
+%s
+\"                 \",
+\"                 \",
+\"                 \",
+\"                 \",
+\"                 \",
+\"                 \"};
+" (symbol-name type)
+(if disabled "disabled" "enabled")
+clr
+(cond
+ ((eq 'right type)
+  "\"                 \",
+\"     ..          \",
+\"     ....        \",
+\"     ......      \",
+\"     .....       \",
+\"     ...         \",
+"
+  )
+ ((eq 'left type)
+  "\"                 \",
+\"          ..     \",
+\"        ....     \",
+\"      ......     \",
+\"       .....     \",
+\"         ...     \","
+  )
+ ((eq 'up type)
+  "\"        .        \",
+\"       ..        \",
+\"       ...       \",
+\"      ....       \",
+\"      .....      \",
+\"      .....      \",")
+ ((eq 'down type)
+  "\"      .....      \",
+\"      .....      \",
+\"      ....       \",
+\"       ...       \",
+\"       ..        \",
+\"        .        \","))))))
+
 (setq tabbar-home-button-enabled-image
-      '((:type xpm :file "down.xpm")))
+      `((:type xpm :data ,(tabbar-ruler-image :type 'down))))
 
 (setq tabbar-home-button-disabled-image
-      '((:type xpm :file "up.xpm")))
+      `((:type xpm :data ,(tabbar-ruler-image :type 'up))))
+
 
 (setq tabbar-home-button
       (cons (cons "[o]" tabbar-home-button-enabled-image)
@@ -159,27 +372,26 @@
             (cons "[-]" tabbar-home-button-disabled-image)))
 
 (setq tabbar-scroll-left-button-enabled-image
-      '((:type xpm :file "left.xpm")))
+      `((:type xpm :file ,(tabbar-ruler-image :type 'left))))
 
 (setq tabbar-scroll-left-button-disabled-image
-      '((:type xpm :file "left_disabled.xpm")))
+      `((:type xpm :file ,(tabbar-ruler-image :type 'left :disabled t))))
 
 (setq tabbar-scroll-left-button
       (cons (cons " <" tabbar-scroll-left-button-enabled-image)
             (cons " =" tabbar-scroll-left-button-disabled-image)))
 
+(setq tabbar-scroll-left-button-value nil)
+
 (setq tabbar-scroll-right-button-enabled-image
-      '((:type xpm :file "right.xpm")))
+      `((:type xpm :data ,(tabbar-ruler-image :type 'right))))
 
 (setq tabbar-scroll-right-button-disabled-image
-      '((:type xpm :file "right_disabled.xpm")))
+      `((:type xpm :data  ,(tabbar-ruler-image :type 'right :disabled t))))
 
 (setq tabbar-scroll-right-button
       (cons (cons " >" tabbar-scroll-right-button-enabled-image)
             (cons " =" tabbar-scroll-right-button-disabled-image)))
-
-(setq tabbar-close-tab-button
-      '((:type xpm :file "close-tab.xpm")))
 
 (defsubst tabbar-normalize-image (image &optional margin nomask)
   "Make IMAGE centered and transparent.
@@ -208,17 +420,12 @@ argument is the MODE for the new buffer.")
 
 ;; for buffer tabs, use the usual command to close/kill a buffer
 (defun tabbar-buffer-close-tab (tab)
-  (let (
-        (buffer (tabbar-tab-value tab))
-        )
+  (let ((buffer (tabbar-tab-value tab)))
     (with-current-buffer buffer
-      (kill-buffer buffer)
-      )
-    )
-  )
+      (kill-buffer buffer))))
 
 (setq tabbar-close-tab-function 'tabbar-buffer-close-tab)
-
+(defvar tabbar-last-tab nil)
 (defsubst tabbar-click-on-tab (tab &optional type action)
   "Handle a mouse click event on tab TAB.
 Call `tabbar-select-tab-function' with the received, or simulated
@@ -227,13 +434,17 @@ Optional argument TYPE is a mouse click event type (see the function
 `tabbar-make-mouse-event' for details)."
   (let* ((mouse-event (tabbar-make-mouse-event type))
          (mouse-button (event-basic-type mouse-event)))
+    (if  (eq mouse-button 'mouse-3)
+        (progn
+          (setq tabbar-last-tab tab)
+          (tabbar-context-menu))
     (if (eq action 'close-tab)
         (when (and (eq mouse-button 'mouse-1) tabbar-close-tab-function)
           (funcall tabbar-close-tab-function tab))
       (when tabbar-select-tab-function
         (funcall tabbar-select-tab-function
                  (tabbar-make-mouse-event type) tab)
-        (tabbar-display-update)))))
+        (tabbar-display-update))))))
 
 (defun tabbar-select-tab-callback (event)
   "Handle a mouse EVENT on a tab.
@@ -253,7 +464,8 @@ element.
 Call `tabbar-tab-label-function' to obtain a label for TAB."
   (let* ( (selected-p (tabbar-selected-p tab (tabbar-current-tabset)))
           (modified-p (buffer-modified-p (tabbar-tab-value tab)))
-          (close-button-image (tabbar-find-image tabbar-close-tab-button))
+          (close-button-image (tabbar-find-image 
+	   `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p))))))
           (face (if selected-p
                     (if modified-p
                         'tabbar-selected-modified
@@ -262,9 +474,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                   (if modified-p
                       'tabbar-unselected-modified
                     'tabbar-unselected
-                    )
-                  ))
-          )
+                    ))))
     (concat
      (propertize "[x]"
                  'display (tabbar-normalize-image close-button-image 0)
@@ -281,7 +491,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                  'face face
                  'pointer 'hand
                  )
-     (propertize
+     (propertize 
       (if tabbar-tab-label-function
           (funcall tabbar-tab-label-function tab)
         tab)
@@ -296,25 +506,20 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                  'local-map (tabbar-make-tab-keymap tab)
                  'help-echo 'tabbar-help-on-tab
                  'face face
-                 'pointer 'hand
-                 )
-     tabbar-separator-value)
-    )
-  )
+                 'pointer 'hand)
+     tabbar-separator-value)))
 
 (defface tabbar-selected-modified
   '((t
      :inherit tabbar-selected
-     :weight bold
-     ))
+     :weight bold))
   "Face used for unselected tabs."
   :group 'tabbar)
 
 (defface tabbar-unselected-modified
   '((t
      :inherit tabbar-unselected
-     :weight bold
-     ))
+     :weight bold))
   "Face used for unselected tabs."
   :group 'tabbar)
 
@@ -328,8 +533,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 (defface tabbar-selected-modified
   '((t
      :inherit tabbar-selected
-     :weight bold
-     ))
+     :weight bold))
   "Face used for unselected tabs."
   :group 'tabbar)
 
@@ -377,7 +581,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   :type 'boolean
   :group 'EmacsPortable
   )
-(defcustom EmacsPortable-popup-menu-min-y 5
+(defcustom EmacsPortable-popup-menu-min-y 5 ;
   "* Minimum number of pixels from the top before a menu/toolbar pops up."
   :type 'integer
   :group 'EmacsPortable
@@ -454,7 +658,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                   )
                 )
               )
-            ( (string-match "\(mouse\|ignore\|window\|frame\)" (format "%s" last-command))
+            ( (string-match "\\(mouse\\|ignore\\|window\\|frame\\)" (format "%s" last-command))
               (when nil ;; Took this out;  Afterward it works much better...
                 (unless ep-ruler-off
                   (ruler-mode -1)
@@ -492,12 +696,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
              (setq ep-tabbar-off nil)
              )
            )
-         )
-        )
-    (error
-     (message "Error in post-command-hook for Ruler/Tabbar: %s" (error-message-string error)))
-    )
-  )
+         ))
+	(error
+	(message "Error in post-command-hook for Ruler/Tabbar: %s" (error-message-string error)))))
+
 (add-hook 'post-command-hook 'ep-tabbar-ruler-fight)
 (defvar ep-movement-timer nil
   )
@@ -537,12 +739,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
         (setq ep-movement-y y-pos)
         (unless ep-ruler-off
           (ruler-mode -1)
-          (setq ep-ruler-off 't)
-          )
+          (setq ep-ruler-off 't))
         (when ep-tabbar-off
           (tabbar-mode 1)
-          (setq ep-tabbar-off nil)
-          )
+          (setq ep-tabbar-off nil))
         (if (>= (if (or ep-menu-off ep-toolbar-off)
                     EmacsPortable-popup-menu-min-y
                   EmacsPortable-popup-menu-min-y-leave) y-pos)
@@ -550,38 +750,23 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
               (when EmacsPortable-popup-menu
                 (when ep-menu-off
                   (menu-bar-mode 1)
-                  (setq ep-menu-off nil)
-                  )
-                )
+                  (setq ep-menu-off nil)))
               (when EmacsPortable-popup-toolbar
                 (when ep-toolbar-off
                   (tool-bar-mode 1)
-                  (setq ep-toolbar-off nil)
-                  )
-                )
-              )
+                  (setq ep-toolbar-off nil))))
           (when EmacsPortable-popup-menu
             (unless ep-menu-off
               (menu-bar-mode -1)
-              (setq ep-menu-off 't)
-              )
-            )
+              (setq ep-menu-off 't)))
           (when EmacsPortable-popup-toolbar
             (unless ep-toolbar-off
               (tool-bar-mode -1)
-              (setq ep-toolbar-off 't)
-              )
-            )
-          )
-        )
-      )
+              (setq ep-toolbar-off 't))))))
     (setq ep-movement-timer (run-with-timer
                              0.5
                              nil
-                             'ep-mouse-movement))
-    
-    )
-  )
+                             'ep-mouse-movement))))
 (ep-mouse-movement)
 
 
@@ -621,6 +806,7 @@ Return a list of one element based on major mode."
            ))))
   (symbol-value 'last-ep-tabbar-buffer-groups))
 (setq tabbar-buffer-groups-function 'ep-tabbar-buffer-groups)
+
 (defun ep-tabbar-buffer-list ()
   "Return the list of buffers to show in tabs.
 Exclude buffers whose name starts with a space or *, when they are not
@@ -632,7 +818,7 @@ visiting a file.  The current buffer is always included."
                      ((eq (current-buffer) b) b)
                      ((buffer-file-name b) b)
                      ((member (buffer-name b) EmacsPortable-excluded-buffers) nil)
-                     ;;                     ((string= "*Messages*" (format "%s" (buffer-name b))))
+                     ;; ((string= "*Messages*" (format "%s" (buffer-name b))))
                      ((char-equal ?\  (aref (buffer-name b) 0)) nil)
                      ;;((char-equal ?* (aref (buffer-name b) 0)) nil)
                      ((buffer-live-p b) b)))

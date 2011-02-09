@@ -1,0 +1,14 @@
+[http://en.wikipedia.org/wiki/OpenDocument OpenDocumentFormat (ODF)] is an XML-based standard for the exchange of office documents. 
+
+Documents stored in OpenDocument format carry the following extensions:
+* Text - .odt 
+* Presentation - .odt
+* Spreadsheet - .ods
+* Graphic - .odg
+* Database - .odb
+
+These documents are typically created with popular applications like [http://www.openoffice.org/ OpenOffice] and  [http://www.libreoffice.org/ LibreOffice].
+
+DocViewMode can be used for [http://lists.gnu.org/archive/html/emacs-devel/2010-12/msg00779.html viewing OpenDocument files]. 
+
+Refer [[OpenDocumentText]] for working with .odt files.

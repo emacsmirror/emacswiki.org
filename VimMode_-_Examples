@@ -2,6 +2,27 @@ Main page: VimMode
 
 This page is a collection of user defined motions and commands. Note that all motions and text objects are implemented in the file ##vim-motions.el##, normal-mode commands in ##vim-commands.el## and ex-mode commands in ##vim-ex-commands.el##. If you want to implement own commands and motions, these files provide a good starting point. As you can see most commands and motions have very simple implementations.
 
+== Bindings ==
+=== Shift+Cursor should enable Visual-Mode ===
+
+Many editors select a certain region of text by holding shift down and then using some cursor movement. Such a behaviour can easily be achieved with some clever key-bindings.
+
+  (vim:nmap (kbd "S-<left>") "vh")
+  (vim:nmap (kbd "S-<right>") "vl")
+  (vim:nmap (kbd "S-<up>") "Vk")
+  (vim:nmap (kbd "S-<down>") "Vj")
+  (vim:nmap (kbd "S-C-<left>") "vb")
+  (vim:nmap (kbd "S-C-<right>") "ve")
+  
+  (vim:vmap (kbd "S-<left>") "h")
+  (vim:vmap (kbd "S-<right>") "l")
+  (vim:vmap (kbd "S-<up>") "k")
+  (vim:vmap (kbd "S-<down>") "j")
+  (vim:vmap (kbd "S-C-<left>") "b")
+  (vim:vmap (kbd "S-C-<right>") "e")
+  
+Here for each movement we have a pair of keybindings, one binding for normal-mode which activates visual mode followed by an ordinary movement and one binding for visual-mode which is just mapped to a motion.
+
 == Commands ==
 
 === Make and compile-log ===
@@ -41,8 +62,8 @@ Very simple version of :grep, similar to :make above.
   (vim:emap "grep" 'vim:cmd-grep)
   (vim:emap "gr" "grep")
   
-=== LaTeX errors ===
-These local bindings provide :cnext and :cprevious commands for LaTeX.
+=== LaTeX make and errors ===
+These local bindings provide :cnext, :cprevious and :make commands for LaTeX.
 
   (vim:defcmd vim:cmd-TeX-next-error (nonrepeatable count)
    "Moves to the `count'th next TeX error."
@@ -52,10 +73,16 @@ These local bindings provide :cnext and :cprevious commands for LaTeX.
    "Moves to the `count'th previous TeX error."
    (TeX-previous-error (- (or count 1))))
    
+  (vim:defcmd vim:cmd-TeX-make (nonrepeatable)
+    "Execute the current master command."
+    (TeX-save-document (TeX-master-file))
+    (TeX-command "LaTeX" 'TeX-master-file))
+
   (add-hook 'LaTeX-mode-hook
             #'(lambda ()
                  (vim:local-emap "cnext" 'vim:cmd-TeX-next-error)
-                 (vim:local-emap "cprevious" 'vim:cmd-TeX-previous-error)))
+                 (vim:local-emap "cprevious" 'vim:cmd-TeX-previous-error)
+	         (vim:local-emap "make" 'vim:cmd-TeX-make)))
 
 === Comment/Uncomment region ===
 The following command toggles the comments on a certain visual region.
@@ -63,8 +90,8 @@ The following command toggles the comments on a certain visual region.
   (vim:defcmd vim:visual-toggle-comment (motion)
     "Toggles comments in the region."
     (comment-or-uncomment-region (vim:motion-begin-pos motion)
-  			       (vim:motion-end-pos motion)))
-                               
+    			         (vim:motion-end-pos motion)))
+
 We bind the commands only in visual mode.
 
   (vim:vmap (kbd "C-c :") 'vim:visual-toggle-comment)
@@ -146,4 +173,4 @@ Select text between two ##\begin{...}## and ##\end{...}## LaTeX tags with or wit
   
 == Other examples ==
 
-# [[coldnew]] added elscreen as tabpages for vim-mode ([http://www.emacswiki.org/emacs/elscreen-vim-mode.el elscreen-vim-mode.el]).
+# [[coldnew]] added elscreen as tabpages for vim-mode ([http://www.emacswiki.org/emacs/vim-elscreen.el vim-elscreen.el]).

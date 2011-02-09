@@ -56,6 +56,12 @@ Look at the top of the apl.el file
 
 Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} (ie 'less-than' 'hyphen')
 
+=== Emacs 22 ===
+Ive got reports that this does not work in emacs 22 (under ubuntu) but worked when all the font-lock stuff was commented out of
+inferior-apl.el and an unicode font was explicitly loaded at the command line.
+
+(Need to add the details here )
+
 === TODOs ===
 
 # I'm sure this will run just as easily on ubuntu and other linuxes. But someone who has tried that needs to say that :-)

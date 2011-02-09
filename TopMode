@@ -52,5 +52,9 @@ select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, Enter to kill.
 
 C-z kills selected process without quitting anything session.
 
+== Etop by Tom Wurgler ==
+
+Lisp:etop.el provides commadn M-x etop to display top(1) output.
+
 ----
 CategoryModes | CategoryExternalUtilities

@@ -5,20 +5,18 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Nov  4 00:06:18 2010 (-0500)
-;; Version:  0.1
-;; Last-Updated: Mon Nov 15 11:27:57 2010 (-0600)
+;; Version:  0.201
+;; Package-Requires: ((color-theme-vim-insert-mode "0.1") (color-theme-emacs-revert-theme "0.1"))
+;; Last-Updated: Tue Feb  8 11:16:06 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 9
+;;     Update #: 14
 ;; URL:
 ;; Keywords: Viper, Ergoemacs, CUA, Crisp, EDT, TPU
 ;; Compatibility: 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `backquote', `bytecomp', `easymenu',
-;;   `help-fns', `paren', `redo', `ring', `undo-tree', `vimpulse', `viper',
-;;   `viper-cmd', `viper-ex', `viper-init', `viper-keym', `viper-macs',
-;;   `viper-mous', `viper-util'.
+;;   `cl', `color-theme', `cus-face', `easymenu', `wid-edit'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -61,6 +59,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+(require 'color-theme)
 
 (require 'easymenu)
 ;;(require 'vimpulse) ;; Require first.  For some reason if you don't there is some error in R.  It has to do with advices.
@@ -138,7 +138,7 @@
   (if (fboundp 'tpu-edt-off)
       (tpu-edt-off)
     )
-  (setq gloabl-map key-choices-emacs-default)
+  (setq global-map key-choices-emacs-default)
   )
 (defun key-choices-emacs-keys ()
   (interactive)

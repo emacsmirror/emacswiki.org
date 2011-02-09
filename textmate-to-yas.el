@@ -6,21 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Sun Nov 28 15:14:31 2010 (-0600)
+;; Last-Updated: Tue Feb  8 08:58:14 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1464
+;;     Update #: 1472
 ;; URL: http://www.emacswiki.org/emacs/textmate-import.el
 ;; Keywords: Yasnippet Textmate
 ;; Compatibility: Tested with Windows Emacs 23.2
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `assoc', `backquote', `button', `bytecomp', `cl',
-;;   `dropdown-list', `easymenu', `help-fns', `help-mode',
-;;   `mail-prsvr', `mailcap', `mm-util', `timer', `timezone', `url',
-;;   `url-cookie', `url-expand', `url-history', `url-methods',
-;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars',
-;;   `view', `warnings', `yasnippet'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -39,6 +34,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 08-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb  8 08:58:04 2011 (-0600) #1471 (Matthew L. Fidler)
+;;    Added autoload cookies.
+;; 28-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Sun Nov 28 18:22:04 2010 (-0600) #1466 (Matthew L. Fidler)
+;;    Bug-fix for names.
 ;; 28-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Sun Nov 28 15:14:17 2010 (-0600) #1463 (Matthew L. Fidler)
 ;;    bug fix for yas/t/ when $1 doesn't exist.
@@ -181,6 +182,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+
+;; Add $TM_COMMENT_START
+;; Add $TM_YEAR
+;; Add $TM_ORGANIZATION_NAME
 
 
 ;;
@@ -677,6 +683,7 @@ Possible choices are:
 (defun textmate-import-current-buffer (new-dir &optional plist  buffer-name original-author mode-string-or-function   transform-function parent-modes ext)
   "* Changes Textmate (current buffer) plist to yas snippet."
   (let (
+        (case-fold-search t)
         (start nil)
         (stop nil)
         (val-start nil)
@@ -697,7 +704,7 @@ Possible choices are:
         (yas (or ext ".yasnippet")))
     (when (string-match "/?\\([^/]*\\)[.][^.]*$" bfn)
       (setq bfn (concat (match-string 1 bfn) yas)))
-    (while (string-match "[^A-Z0-9_.]" bfn)
+    (while (string-match "[^A-Za-z0-9_.]" bfn)
       (setq bfn (replace-match "_" nil nil bfn)))
     (save-excursion
       (goto-char (point-min))
@@ -892,6 +899,7 @@ Possible choices are:
     )
   )
 
+;;;###autoload
 (defun textmate-import-git-tar.gz (file parent-modes)
   "* Imports a TextMate git-hub bundle."
   (interactive "fTextmate GIThub .tar.gz file: \nsParent Modes: ")
@@ -923,6 +931,8 @@ Possible choices are:
           )))
     (cd temp-dir)
     (message "%s" (apply cmd (list (format "%s -rf %s" rm temp-dir))))))
+
+;;;###autoload
 (defun textmate-import-bundle (dir parent-modes &optional original-author yas-dir mode transform-function)
   "Imports textmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in..."
   (interactive "fTextmate Bundle Directory: \nsParent Modes: ")

@@ -3,15 +3,15 @@
 ;; Filename: linum-off.el
 ;; Description: 
 ;; Author: Matthew L. Fidler, Florian Adamsky (see wiki)
-;; Maintainer: 
+;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Sep 20 08:50:07 2010 (-0500)
-;; Version: 
-;; Last-Updated: Wed Sep 29 09:38:00 2010 (-0500)
+;; Version: 0.1
+;; Last-Updated: Tue Feb  8 10:41:27 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 40
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;;     Update #: 42
+;; URL:  http://www.emacswiki.org/emacs/auto-indent-mode.el 
+;; Keywords: Line Numbering
+;; Compatibility: Unknown.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 

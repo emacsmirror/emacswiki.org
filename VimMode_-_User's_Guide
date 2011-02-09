@@ -66,10 +66,10 @@ this job. In this case it's better to bind `Ctrl+P' to one of the
 Emacs functions instead of implementing a new (and less feature rich)
 one which resembles VIM's behaviour.
 
-Vim-mode is an emulation packages for the editing behaviour of VIM. It
+Vim-mode is an emulation package for the editing behaviour of VIM. It
 will never try to emulate VIM's programming language, so VIM-extension
 scripts will not work with vim-mode (if you want to extend vim-mode,
-use Emacs-Lisp). This also includes configuration variables accessible
+use EmacsLisp). This also includes configuration variables accessible
 by VIM's `:set var=value' command (although for some special cases a
 mapping would be possible; theoretically a :set command for ex-mode
 can easily be defined, but usually using Emacs features is much
