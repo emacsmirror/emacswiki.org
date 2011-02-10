@@ -3,7 +3,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-''see also [[Sunrise Commander For Noobs]] (*new*)''
+''see also [[Sunrise Commander For Noobs]]''
 
 [[image:SunriseCommanderLogoPage|The Sunrise Commander|]]
 
@@ -337,23 +337,17 @@ archives, etc.
 ==How do I compare *recursively* two directories in Sunrise?==
 
 To perform recursive comparisons with Sunrise you need first to "flatten the
-tree":
+branch":
 
-# press C-c C-n to bring up find by name,
+# press C-c b to invoke sr-flatten-branch,
 
-# type in "*" (a single asterisk) and press Return
+# select one of "n" (non-directories) or "f" (files only).
 
-this will display recursively all the contents of the current directory,
-including sub-directories. Alternatively:
+This will display all the contents of the current directory and (recursively)
+all its sub-directories.
 
-# press C-c C-f to bring up find with args,
-
-# type in "-not -type d" and press Return
-
-this will recursively display everything that is *not* a directory inside the
-current one. There are many ways to flatten the tree in order to make the pane
-contain exactly what you're interested in. Once that's done you can perform a
-recursive comparison in exactly the same way as you'd do a regular one.
+Once this is done you can perform a recursive comparison in exactly the same way
+as you'd do a regular one.
 
 At any moment you can press C-c C-c to return to normal mode.
 

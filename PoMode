@@ -42,4 +42,9 @@ If you want auto-fill feature in the sub edit window, try longlines-mode. Please
 This code is also used in [[po-mode+.el]].
 
 ----
+'''Is it possible make po-mode remember last keyboard layout?'''
+
+Keyboard layout always switched to english when msgstr editor is opened. This is inconvenient because translation typically uses non-english language. How to force po-mode to remember last used keyboard layout in msgstr editor window (or maybe to guess it from po header)?
+
+----
 [[Gettext]] CategoryModes

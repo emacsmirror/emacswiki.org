@@ -30,6 +30,10 @@ Any other/better suggestions? I've also been looking at the maltron keyboard fro
 Where's JamieZawinski when you need him?
 
 --ShaeErisson
+
+I had a bad experience with Maltron.  The keys have a junky, Matel feel, and very quickly the "6" key stopped working on me, so I couldn't even sell it to someone else.  Overall, a waste of money. 
+It has a huge number of keys, but as far as I can tell most of them are useless.  A Kinesis contoured model is much better for the emacs abuser.  -- Doom
+
 ----
 I bought Kinesis Profession QD when I switched to dvorak keyboard layout, this keyboard with heavy bee's poison usage help my fingers, now I can type 6 hours a day without any pain.  I made some remaps: L_Ctrl->Delete, L_Ctrl->Page_UP, Delete->Home, L_Alt->Enter, L_Alt->End, Enter->Page_down, Page_UP->L_Ctrl, Page_down->L_Alt, L_Shift->Caps, Caps->L_Shift, Right_Backslash->Minus, Minus->Right_Backslash, Left_Backslash->Insert.  My right Alt generates Super and right Ctrl generates Hyper.  So I lost Home and End keys, but I dont miss them much :) --ZajcevEvgeny
 ----
@@ -49,6 +53,16 @@ Don't forget that the Kinesis programmables have sticky modifiers - you can make
 
 --NelsonMinar
 
+Myself, I tried a few different things, and eventually settled on moving the Esc to the CapsLock, using the Kinesis features for remapping:
+  Program + F12
+  Esc
+  CapsLock
+  Program + F12
+
+That solves two problems: moves "Esc" away from the wimpy chicklet key, and finds a use for the otherwise useless and annoying CapsLock. 
+-- Doom 
+
+
 ----
 
 Here is an interesting link about customising the Kinesis keyboard by Bill Clementson: http://bc.tech.coop/blog/060623.html
@@ -60,3 +74,15 @@ Here is an interesting link about customising the Kinesis keyboard by Bill Cleme
 I put control where delete is (I can't reach the top keys of the thumb pads properly) and Meta on the End key. Control is much more important than meta to me as I use p, n, b and f to navigate.
 
 --PhilJackson
+
+With the Kinesis, I really like binding the insert key to insert-register:
+
+  ; Makes the "insert" key useful (much shorter than "C-x r i"):
+  (global-set-key [insert] 'insert-register)
+
+I'm still looking for a good place to bind copy-to-register.  This is one idea:
+
+  ;; Ctrl-Alt-Page Down (not mnemonic, but much quicker than "C-x r s")
+  (global-set-key [C-M-next] 'copy-to-register)
+
+--Doom

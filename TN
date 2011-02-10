@@ -98,6 +98,34 @@ is the index of element (nth i l1) in l2. Thereby, the elements of l1 and l2 are
       ret)))
 </pre>
 
+== Load files from bash into emacs ==
+Put the lines below into your <tt>.bashrc</tt>-file. After that you can load files from the bash command line with
+
+<pre>
+e FILENAME
+</pre>
+
+and pipe text into emacs via
+
+<pre>
+echo "Hello world" | e -
+</pre>
+
+Lines to be put into <tt>.bashrc</tt>:
+<pre>
+e() {
+    local TMP="`mktemp /tmp/emacsstdinXXX`";
+    if [[ "$1" == "-" ]]; then
+	cat >"$TMP";
+	emacsclient -a /usr/bin/emacs --eval "(let ((b (create-file-buffer \"*stdin*\"))) (set-buffer b) (insert-file-contents \"${TMP}\" 'visit))";
+	rm "$TMP";
+    else
+	emacsclient --no-wait -a /usr/bin/emacs "$@" &
+    fi;
+}
+</pre>
+
+
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams
 
