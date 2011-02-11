@@ -161,7 +161,7 @@ configuration:
               ad-do-it
             (error (progn
                      (recentf-add-file (car args))
-                     (error (second description))))))
+                     (error (cadr description))))))
         (ad-activate 'openwith-file-handler)
 </pre>
 
@@ -474,7 +474,7 @@ For me, this works pretty well in practice.
              (progn
                (dired-find-file-other-window)
                (sr-scrollable-viewer (current-buffer)))
-           (error (message "%s" (second description)))))))
+           (error (message "%s" (cadr description)))))))
      
     (defun sr-select-viewer-window (&optional force-setup)
      "Tries to select a window that is not a sr pane."

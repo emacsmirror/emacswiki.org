@@ -5,7 +5,7 @@
 ;; Author: coldnew coldnew.tw@gmail.com
 ;; Keywords:
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/download/vim-elscreen.el
-(defconst vim-elscreen-version "0.2")
+(defconst vim-elscreen-version "0.3")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,10 +25,6 @@
 ;;
 ;;
 
-;;; Change Log:
-;;
-;;
-
 ;;; Usage:
 ;; Put this file into your load-path and the following into your ~/.emacs:
 ;;   (require 'vim-elscreen)
@@ -45,19 +41,16 @@
 ;;;;##########################################################################
 
 
-;; vim-> help tabpage
+
 
 ;;;;;;;; Opening a new page
 
 (vim:defcmd vim:cmd-tab-new ((argument:file file) nonrepeatable)
   "Open a new tab page and edit {file}, like with :edit."
-  "If the {file} is nil, create a new tab page with empty window, after the current tab page."
+  "If the {file} is nil, create a new tab page with *scratch* buffer, after the current tab page."
   (if file
       (elscreen-find-file file)
-    (progn
-      (elscreen-create)
-      (switch-to-buffer  (get-buffer-create (generate-new-buffer-name "[No Name]"))))))
-
+    (elscreen-create)))
 
 (vim:defcmd vim:cmd-tab-find ((argument:file file) nonrepeatable)
   "Open a new tab page and edit {file} in 'path', like with :find. "
@@ -115,14 +108,14 @@
 
 (vim:defcmd vim:cmd-tab-next (count argument nonrepeatable)
   ""
-  ;;; BUG:
-  ;;      when elscreen-display-screen-number is t, can't use 0gt go to the first tab
-  ;;      vim:motion-beginning-of-line-or-digit-argument may cause this problem
   (if elscreen-display-screen-number
-      (cond
-       (argument (elscreen-goto (string-to-number argument)))
-       (count (elscreen-goto count))
-       (t (elscreen-next)))
+      (progn
+	(if (string= real-last-command "vim:motion-beginning-of-line-or-digit-argument")
+	    (setq count 0))
+	(cond
+	 (argument (elscreen-goto (string-to-number argument)))
+	 (count  (elscreen-goto count))
+	 (t (elscreen-next))))
     ;; If tab does not display number, do the same as vim's :tabnext
     (cond
      (argument (dotimes (dummy (string-to-number argument))
@@ -134,14 +127,14 @@
 
 (vim:defcmd vim:cmd-tab-previous (count argument nonrepeatable)
   ""
-  ;;; BUG:
-  ;;      when elscreen-display-screen-number is t, can't use 0gT go to the first tab
-  ;;      vim:motion-beginning-of-line-or-digit-argument may cause this problem
   (if elscreen-display-screen-number
-      (cond
-       (argument (elscreen-goto (string-to-number argument)))
-       (count (elscreen-goto count))
-       (t (elscreen-previous)))
+      (progn
+	(if (string= real-last-command "vim:motion-beginning-of-line-or-digit-argument")
+	    (setq count 0))
+	(cond
+	 (argument (elscreen-goto (string-to-number argument)))
+	 (count (elscreen-goto count))
+	 (t (elscreen-previous))))
     ;; If tab does not display number, do the same as vim's :tabprevious
     (cond
      (argument (dotimes (dummy (string-to-number argument))
@@ -158,6 +151,7 @@
 (vim:nmap (kbd "gT") 'vim:cmd-tab-previous)
 (vim:nmap (kbd "C-<prior>") 'vim:cmd-tab-previous)
 
+(vim:mmap (kbd "gt") 'vim:cmd-tab-next)
 ;; Insert map
 (vim:imap (kbd "C-<next>") 'vim:cmd-tab-next)
 (vim:imap (kbd "C-<prior>") 'vim:cmd-tab-previous)
@@ -189,3 +183,4 @@
 
 (provide 'vim-elscreen)
 ;; vim-elscreen.el ends here.
+

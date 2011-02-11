@@ -117,6 +117,7 @@ Then, calling (execvp "touch" "'a'" "b" "$x") will create files called 'a', b, a
 
 [new]
 Is it possible (desirable?) to automatically close the ##*Shell Command Output##* buffer for commands that report "Shell command succeeded with no output"?
+[new] How can you use shell-command with programs that require input such as passords? Kind of annoying having to open a new buffer just to scp a file.
 
 == See Also == 
 

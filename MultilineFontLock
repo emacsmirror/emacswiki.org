@@ -85,5 +85,14 @@ But it doesn't work all the time, esp. the refreshing. Any better idea?
 
 : At least it's a lot better with my-font-lock-extend-region. You still have to hit Ctrl-L or change something to refresh, but it does that quite reliably. -- StefanRing
 
+=Milti-line font lock in XEmacs=
+
+works in general much more reliably than in Emacs. Can Emacs hackers please look into how it's done in XEmacs and fix the Emacs implementation? This is a long-standing problem that needs to be addressed centrally, not with ad-hoc fixes. 
+
+Another thing that XEmacs does better is only applying font lock faces to the lines themselves, not to empty space. So if you have a different background color via font lock that spans two lines, that color only goes as far as the last character of the first line and not further. In Emacs, on the other hand, it spreads from the end of the line into infinity, which is noisy and annoying. The same applies to the plain shift-arrows selection of text. -- [[blk-222-216-226.eastlink.ca ]]
+
+[new:DrewAdams:2011-02-10 17:06 UTC]
+''Suggestion:'' Send your suggestion to ##emacs-devel@gnu.org##. GnuEmacs developers discuss Emacs development there. It is much less likely that they will see your post here. -- DrewAdams
+
 ----
 CategoryFaces

@@ -117,7 +117,7 @@ e() {
     local TMP="`mktemp /tmp/emacsstdinXXX`";
     if [[ "$1" == "-" ]]; then
 	cat >"$TMP";
-	emacsclient -a /usr/bin/emacs --eval "(let ((b (create-file-buffer \"*stdin*\"))) (set-buffer b) (insert-file-contents \"${TMP}\" 'visit))";
+	emacsclient -a /usr/bin/emacs --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\"))";
 	rm "$TMP";
     else
 	emacsclient --no-wait -a /usr/bin/emacs "$@" &

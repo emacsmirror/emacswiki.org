@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.3
+;; Version: 0.31
 ;; Last-Updated: Mon Feb  7 12:50:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1005
@@ -114,6 +114,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 10-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
+;;    Added check to make sure not trying to paste on indent for
+;;    `auto-indent-disabled-modes-list'
 ;; 03-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu Feb  3 17:06:22 2011 (-0600) #996 (Matthew L. Fidler)
 
@@ -172,7 +176,7 @@
 ;;    Last-Updated: Tue Feb  1 22:58:45 2011 (-0600) #667 (Matthew L. Fidler)
 ;;    Took out the interactive requirement again.  Causes bugs like
 ;;    org-delete-char below.
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 22:43:11 2011 (-0600) #641 (Matthew L. Fidler)
 ;;    Bug fix for org-delete-char (and possibly others).  Allow
 ;;    delete-char to have auto-indent changed behavior when the
@@ -702,8 +706,9 @@ http://www.emacswiki.org/emacs/AutoIndentation
   :require 'auto-indent-mode)
 
 (defun auto-indent-remove-advice-p (&optional command)
-  "Removes advice if the function called is actually an auto-indent function."
-  (string-match "^auto-indent" (symbol-name (or command this-command))))
+  "Removes advice if the function called is actually an auto-indent function OR it should be disabled in this mode"
+  (or (not (memq major-mode auto-indent-disabled-modes-list))
+      (string-match "^auto-indent" (symbol-name (or command this-command)))))
 
 (defun auto-indent-is-yank-p (&optional command)
   "Tests if the function was a yank."

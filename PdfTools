@@ -1,0 +1,41 @@
+== pdftools: "printing" to pdf ==
+
+Sometimes ps-spool-(buffer|region)-(with-faces)? (hereafter,
+"ps-spool-X") isn't enough.  Sometimes, the MS-DOS user doesn't know
+what to do with a text file and wants a pdf.  This is for those times.
+
+
+== requirements ==
+
+Makes a system call to "ps2pdf" so it probably won't work under MS-DOS and descendents.  I should make the system-called-command a customizable variable, but that will have to wait until the next time I'm on a long flight.
+
+For those in the thrall of Redmond, WA, there is MathiasDahl's
+PostScriptToPDF.
+
+== customization ==
+
+These functions call ps-spool-X, so use the "ps" customization group
+to tweak output.
+
+== usage ==
+One major difference from ps-spool-X is that pdf-save-X asks for a
+filename in which to save the output.  If you don't give one, it uses
+the buffer name in the current directory with ".pdf" appended.
+
+Use the C-u prefix if you don't want the output to open up over your
+present buffer.
+
+== Download ==
+Lisp:pdftools.el
+
+== Interactive functions ==
+* ##pdf-save-buffer##
+* ##pdf-save-buffer-with-faces##
+* ##pdf-save-region##
+* ##pdf-save-region-with-faces##
+
+== Author ==
+PeterMao
+
+----
+CategoryPrinting

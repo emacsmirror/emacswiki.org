@@ -28,3 +28,4 @@ This page is about printing from Emacs: files, buffers, regions... Click the pag
 * BbdbMulePrinting
 * CalendarMode -- print parts of calendars
 * EnscriptPrint -- print with True Type Fonts using enscript on GNU and Unix
+* PdfTools -- "print" buffer|region to pdf file

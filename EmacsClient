@@ -804,24 +804,33 @@ Is there some way to allow the servers started in different ttys to distinguish 
 
 I find that after starting emacs server (eg, /Applications/Emacs.app/Contents/MacOS/Emacs --daemon) I can start a client session locally, but emacsclient can't find the socket if I try to create a terminal-only client via ssh (OS X 10.6.2, GNU Emacs 23.1.90.1 compiled with ./configure --with-ns). I've seen this reported as a bug (bug#3992: 23.1.50) on bug-gnu-emacs-gnu. Here's a workaround. 
 
+First, you need to make sure that you're using the right emacsclient binary.  Apple distributes GNU Emacs 22 (installed in /usr/bin), but its emacsclient binary is not compatible with GNU Emacs 23.
+
 <pre>
-alias Emacsclient="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient \
--s \$(find /var/folders -name server -type s -uid $(id -u) 2>| /dev/null | grep emacs) \$*"
+alias emacsclient="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
 </pre>
 
-No doubt someone can suggest a more elegant (and less fragile) way to identify the socket name.
+Then, you need to set the server-socket-dir variable in your .emacs so that the standard path assumed by emacsclient is used instead of the path that Emacs 23 defaults to on MacOS X.
 
-Now you can attach to the server process using the above (zsh) alias in terminal mode via an ssh session:
+<pre>
+(setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
+</pre>
 
- Emacsclient -nw
+Obviously, this needs to be executed before (server-start) is called.
+
+Now you can attach to the server process using the above alias in terminal mode via an ssh session:
+
+ emacsclient -nw
 
 And it also works locally to launch the cocoa GUI:
 
- Emacsclient -c &
+ emacsclient -c &
 
 I expect that this will fail if you are running multiple servers.
 
 -- Noah Hoffman
+edited by:
+-- HansHuebner
 
 = Additional notes on OS X / Cocoa Emacs =
 
