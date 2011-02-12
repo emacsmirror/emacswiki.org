@@ -7,30 +7,30 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Tue Jan  4 14:25:21 2011 (-0800)
+;; Last-Updated: Fri Feb 11 14:53:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2454
+;;     Update #: 2466
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cl',
-;;   `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
-;;   `dired', `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
-;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `advice', `advice-preload', `apropos', `apropos+',
+;;   `apropos-fn+var', `avoid', `cl', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `custom', `dired', `dired+',
+;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
+;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
+;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel',
+;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -486,6 +486,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/02/11 dadams
+;;     Better defaults for faces, for dark backgrounds.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies (for defgroup, defface, defcustom, and commands).
 ;; 2010/08/20 dadams
@@ -626,7 +628,8 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "synonyms"))
 
 ;;;###autoload
-(defface synonyms-heading '((t (:foreground "Blue")))
+(defface synonyms-heading '((((background dark)) (:foreground "Yellow"))
+                            (t (:foreground "Blue")))
   "*Face for different synonym types."
   :group 'Synonyms :group 'faces)
 
@@ -636,12 +639,14 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Synonyms :group 'faces)
 
 ;;;###autoload
-(defface synonyms-link '((t (:foreground "Blue" :underline t)))
+(defface synonyms-link '((((background dark)) (:foreground "Yellow" :underline t))
+                         (t (:foreground "Blue" :underline t)))
   "*Face for history links."
   :group 'Synonyms :group 'faces)
 
 ;;;###autoload
-(defface synonyms-mouse-face '((t (:background "Cyan")))
+(defface synonyms-mouse-face '((((background dark)) (:background "DarkCyan"))
+                               (t (:background "Cyan")))
   "*Mouse face for the term whose synonyms were sought."
   :group 'Synonyms :group 'faces)
 

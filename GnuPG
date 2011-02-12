@@ -13,5 +13,9 @@ and I didn't want to depend on cygwin's sh.exe,
 so I wrote an independent gpg mode that only requires
 a working gpg setup: Lisp:dgpg.el    -- DavidElentok
 
+= See also =
+
+* EasyPG - an all-in-one GnuPG interface for Emacs
+
 ----
 CategoryCryptography

@@ -1,0 +1,17 @@
+Seems like a useful combination. After running this, you can use `M-,' to step through the matches.
+
+    (defun find-grep-dired-do-search (dir regexp)
+      "First perform `find-grep-dired', and wait for it to finish.
+    Then, using the same REGEXP as provided to `find-grep-dired',
+    perform `dired-do-search' on all files in the *Find* buffer."
+      (interactive "DFind-grep (directory): \nsFind-grep (grep regexp): ")
+      (find-grep-dired dir regexp)
+      (while (get-buffer-process (get-buffer "*Find*"))
+        (sit-for 1))
+      (with-current-buffer "*Find*"
+        (dired-toggle-marks)
+        (dired-do-search regexp)))
+        
+----
+CategoryDirectories
+CategorySearchAndReplace

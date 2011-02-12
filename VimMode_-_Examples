@@ -139,6 +139,16 @@ The following simple command can be used to lookup a symbol in the info files or
   (vim:emap "helpelisp" 'vim:cmd-help-elisp)
   (vim:emap "helisp" "helpelisp")
   
+=== Edit file with sudo ===
+Some times we want to edit file in root, use this command can make it easily.
+
+  (vim:defcmd vim:cmd-sudo ((argument:file file) nonrepeatable)
+    "Edit file with sudo"
+    (if file
+        (find-file (concat "/sudo:root@localhost:" file))))
+ 
+ (vim:emap "sudo" 'vim:cmd-sudo)
+
 == Motions ==
 
 === LaTeX tag text objects ===

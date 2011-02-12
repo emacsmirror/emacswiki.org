@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jan  3 10:30:09 2011 (-0800)
+;; Last-Updated: Fri Feb 11 13:56:34 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 370
+;;     Update #: 453
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -354,12 +354,14 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
-(defface bmkp->-mark '((t (:foreground "Blue")))
+(defface bmkp->-mark '((((background dark)) (:foreground "Yellow"))
+                       (t (:foreground "Blue")))
   ;; (:foreground "Magenta2" :box (:line-width 1 :style pressed-button))))
   "*Face used for a `>' mark in the bookmark list."
   :group 'bookmark-plus :group 'faces)
 
-(defface bmkp-a-mark '((t (:background "SkyBlue")))
+(defface bmkp-a-mark '((((background dark)) (:background "SaddleBrown"))
+                       (t (:background "SkyBlue")))
   "*Face used for an annotation mark (`a') in the bookmark list."
   :group 'bookmark-plus :group 'faces)
 
@@ -368,19 +370,20 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-bookmark-file
-    '((((background dark)) (:foreground "DarkGreen" :background "Orange"))
+    '((((background dark))
+       (:foreground "#00005A5AFFFF" :background "#FFFF9B9BFFFF")) ; ~ blue, ~ pink
       (t (:foreground "Orange" :background "DarkGreen")))
   "*Face used for a bookmark-file bookmark."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-bookmark-list
-    '((((background dark)) (:foreground "LightGray" :background "DarkRed"))
+    '((((background dark)) (:foreground "#7474FFFFFFFF" :background "DimGray")) ; ~ cyan
       (t (:foreground "DarkRed" :background "LightGray")))
   "*Face used for a bookmark-list bookmark."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-buffer
-    '((((background dark)) (:foreground "green"))
+    '((((background dark)) (:foreground "#FFFF9B9BFFFF")) ; ~ pink
       (t (:foreground "DarkGreen")))
   "*Face used for a bookmarked existing buffer not associated with a file."
   :group 'bookmark-plus :group 'faces)
@@ -390,67 +393,67 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-desktop
-    '((((background dark)) (:foreground "PaleGoldenrod" :background "DarkBlue"))
+    '((((background dark)) (:foreground "Orange" :background "DarkSlateBlue"))
       (t (:foreground "DarkBlue" :background "PaleGoldenrod")))
   "*Face used for a bookmarked desktop."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-function
-    '((((background dark)) (:foreground "DeepPink1"))
+    '((((background dark)) (:foreground "#0000EBEB6C6C")) ; ~ green
       (t (:foreground "DeepPink1")))
   "*Face used for a function bookmark: a bookmark that invokes a function."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-gnus
-    '((((background dark)) (:foreground "Magenta"))
+    '((((background dark)) (:foreground "Gold"))
       (t (:foreground "DarkBlue")))
   "*Face used for a gnus bookmark."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-info
-    '((((background dark)) (:foreground "Green"))
+    '((((background dark)) (:foreground "#7474FFFFFFFF")) ; ~ light cyan
       (t (:foreground "DarkRed")))
   "*Face used for a bookmarked Info node."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-local-directory
-    '((((background dark)) (:foreground "HoneyDew2" :background "DarkBlue"))
+    '((((background dark))
+       (:foreground "Pink" :background "DarkBlue"))
       (t (:foreground "DarkBlue" :background "HoneyDew2")))
   "*Face used for a bookmarked local directory."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-local-file-without-region
-    '((((background dark)) (:foreground "Blue"))
+    '((((background dark)) (:foreground "White"))
       (t (:foreground "Black")))
   "*Face used for a bookmarked local file (without a region)."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-local-file-with-region
-    '((((background dark)) (:foreground "Indianred2"))
+    '((((background dark)) (:foreground "Yellow"))
       (t (:foreground "Blue")))
   "*Face used for a region bookmark in a local file."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-man
-    '((((background dark)) (:foreground "Orange4"))
+    '((((background dark)) (:foreground "Orchid"))
       (t (:foreground "Orange4")))
   "*Face used for a `man' page bookmark."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-non-file
-    '((((background dark)) (:foreground "gray40"))
-      (t (:foreground "gray60")))
+    '((t (:foreground "gray60")))
   "*Face used for a bookmark not associated with an existing file or buffer."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-remote-file
-    '((((background dark)) (:foreground "pink"))
+    '((((background dark)) (:foreground "#6B6BFFFF2C2C")) ; ~ green
       (t (:foreground "DarkViolet")))
   "*Face used for a bookmarked tramp remote file (/ssh:)."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-sequence
-    '((((background dark)) (:foreground "DarkOrange2"))
+    '((((background dark)) (:foreground "DeepSkyBlue"))
       (t (:foreground "DarkOrange2")))
   "*Face used for a sequence bookmark: one composed of other bookmarks."
   :group 'bookmark-plus :group 'faces)
@@ -464,13 +467,13 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-url
-    '((((background dark)) (:foreground "yellow"))
+    '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ green
       (t (:foreground "DarkMagenta")))
   "*Face used for a bookmarked URL."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-variable-list
-    '((((background dark)) (:foreground "Salmon"))
+    '((((background dark)) (:foreground "#FFFF74747474")) ; ~ salmon
       (t (:foreground "DarkCyan")))
   "*Face used for a bookmarked list of variables."
   :group 'bookmark-plus :group 'faces)
@@ -483,7 +486,8 @@ Don't forget to mention your Emacs and library versions."))
 ;;   :group 'bookmark-plus :group 'faces)
 
 ;; Instead of vanilla `bookmark-menu-heading' (defined in Emacs 22+), to use a better default.
-(defface bmkp-heading '((t (:foreground "Blue")))
+(defface bmkp-heading '((((background dark)) (:foreground "Yellow"))
+                        (t (:foreground "Blue")))
   "*Face used to highlight the headings in various Bookmark+ buffers."
   :group 'bookmark-plus :version "22.1" :group 'faces)
  

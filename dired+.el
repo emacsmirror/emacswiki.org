@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Feb  3 10:03:41 2011 (-0800)
+;; Last-Updated: Fri Feb 11 08:15:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3066
+;;     Update #: 3078
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -218,6 +218,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/11 dadams
+;;     diredp-deletion, diredp-deletion-file-name, diredp-executable-tag:
+;;       Made default the same for dark background as for light.
+;;     diredp-ignored-file-name: Made default a bit darker for dark background.
 ;; 2011/02/03 dadams
 ;;     All deffaces: Provided default values for dark-background screens too.
 ;; 2011/01/12 dadams
@@ -1482,15 +1486,13 @@ Don't forget to mention your Emacs and library versions."))
 (defvar diredp-dir-heading 'diredp-dir-heading)
 
 (defface diredp-deletion
-    '((((background dark)) (:foreground "Blue" :background "Cyan"))
-      (t (:foreground "Yellow" :background "Red")))
+    '((t (:foreground "Yellow" :background "Red")))
   "*Face used for deletion flags (D) in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion 'diredp-deletion)
 
 (defface diredp-deletion-file-name
-    '((((background dark)) (:foreground "Cyan"))
-      (t (:foreground "Red")))
+    '((t (:foreground "Red")))
   "*Face used for names of deleted files in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion-file-name 'diredp-deletion-file-name)
@@ -1547,7 +1549,9 @@ In particular, inode number, number of hard links, and file size."
 (defvar diredp-file-name 'diredp-file-name)
 
 (defface diredp-ignored-file-name
-    '((((background dark)) (:foreground "#FFFF921F921F")) ; ~ salmon
+    '(;; (((background dark)) (:foreground "#FFFF921F921F")) ; ~ salmon
+      ;; (((background dark)) (:foreground "#A71F5F645F64")) ; ~ dark salmon
+      (((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
       (t (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
   "*Face used for ignored file names  in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
@@ -1563,8 +1567,7 @@ In particular, inode number, number of hard links, and file size."
 ;; For this to show up, you need `F' among the options in `dired-listing-switches'.
 ;; For example, I use "-alF" for `dired-listing-switches'.
 (defface diredp-executable-tag
-    '((((background dark)) (:foreground "Cyan"))
-      (t (:foreground "Red")))
+    '((t (:foreground "Red")))
   "*Face used for executable tag (*) on file names in dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-executable-tag 'diredp-executable-tag)

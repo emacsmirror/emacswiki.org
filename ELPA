@@ -11,6 +11,8 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
   (setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
                            ("gnu" . "http://elpa.gnu.org/packages/")))
 
+One such alternative repo is [http://marmalade-repo.org/ Marmalade] , a community package source that allows users to upload their own packages.
+
 See also 2010-11-15 discussion about ELPA in Emacs 24.x at http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
 
 ----

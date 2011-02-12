@@ -1,0 +1,50 @@
+Click on the title to list all pages related to [::インデント] questions.
+
+: "The power of Emacs comes at a cost." -- kensanata on #emacs
+
+デフォルトのインデントの振る舞いに困っている人のために, インデントのチュートリアルがあります。もしインデントがうまくいかないのなら, EricPement の Emacs and Tabsのページ( http://www.pement.org/emacs_tabs.htm)に行くと良いでしょう。
+
+Most people seem to be concerned about the following, though:
+
+*  [[インデント・テキスト]] / IndentingText  -- for plain text without automatic indentation
+*  [[インデント・ソースコード]] / IndentingSourceCode -- for program source or other inherently structured text
+** [[インデント・Lisp]]  / IndentingLisp  -- Lisp, Scheme, EmacsLisp source code
+** [[インデント・C]] / IndentingC  -- C, C++, and Java source code
+** [[インデント・Perl]] / IndentingPerl -- Perl source code
+** [[インデント・Python]] / IndentingPython  -- Python source code, where it's syntactically significant
+** [[インデント・Html]] / IndentingHtml -- plain HTML mode does not do indentation
+** [[インデント・Xml]] / IndentingXml -- using the new SgmlMode
+*  GuessStyle / GuessStyle -- guess variables like c-basic-offset, tab-width and indent-tabs-mode
+*  GuessOffset / GuessOffset -- guess the offset used in existing files and use it
+*  ReformatBuffer / ReformatBuffer -- marking the whole buffer and reindenting it
+** CodeBeautifying / CodeBeautifying -- how to wrap comments after reindenting the buffer
+*  TabCompletion / TabCompletion -- How to indent and get completion too
+
+関連:
+
+* IndentationBasics / IndentationBasics-- various variables
+* AutoIndentation / AutoIndentation -- how to indent new lines automatically
+* NoTabs / NoTabs -- how to void tabs altogether (see also TabsAreEvil)
+* SmartTabs / SmartTabs -- how to use tabs for indentation and spaces for alignment
+* UntabifyUponSave / UntabifyUponSave -- save all files with spaces instead of tabs
+* ShowWhiteSpace / ShowWhiteSpace --Visualize spaces and tabs with color highlighting.
+
+外部:
+
+* KaiGrossjohann's indentation tutorial: http://www.xemacs.org/Links/tutorials_toc.html or http://cvs.sourceforge.net/viewcvs.py/xemacs/xemacsweb/Links/Attic/tutorials_toc.html
+* EricPement has a document that explains TABs in Emacs: http://www.pement.org/emacs_tabs.htm
+
+Aligning columns of text:
+
+* CategoryAlignment -- several ways to align text, with respect to assignment, whitespace, or regexp-provided delimiters.
+
+* AlignColumn -- align text columns, where the columns are separated by whitespace
+* AlignLet -- align values in Lisp <code>let</code> forms
+
+Indentation implementation details:
+
+* TabStopList -- the fallback usually used when no other indentation seems to work
+
+Unrelated (but homonymous):
+
+* [[タブバーモード]] / TabBarMode -- add a tab-bar to emacs giving each buffer its own tab

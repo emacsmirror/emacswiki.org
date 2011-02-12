@@ -92,6 +92,19 @@ IMHO The best solution seem to use the 1.4.9 version.
 Uninstalling seahorse doesn't work for me (gentoo) - even though GPG_AGENT_INFO is unset I still get the graphical password prompt %%*scowl*%%
 
 ----
+[new]
+I use this to temporarily unset the GPG_AGENT_INFO environment variable if running in terminal:
+
+    ;; Do not use gpg agent when runing in terminal
+    (defadvice epg--start (around advice-epg-disable-agent activate)
+      (let ((agent (getenv "GPG_AGENT_INFO")))
+        (when (not (display-graphic-p))
+          (setenv "GPG_AGENT_INFO" nil))
+        ad-do-it
+        (when (not (display-graphic-p))
+          (setenv "GPG_AGENT_INFO" agent))))
+
+----
 
 == Problems Decrypting == 
 
