@@ -40,5 +40,9 @@ I found the following to be useful:
 
 Use it to find X in all your rcirc buffers. I discovered what had happened: ##*** X MODE +oooo kensanata## -- aaaah! :)
 
+== See also ==
+
+* Lisp:rcirc-notify-mode.el: maintain an *rcirc-notify* buffer in rcirc-notify-mode (RET to follow notification to buffer of origin, in the same window, for example)
+
 ----
 CategoryChatClient [[rcirc]]

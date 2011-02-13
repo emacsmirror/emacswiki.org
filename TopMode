@@ -54,7 +54,7 @@ C-z kills selected process without quitting anything session.
 
 == Etop by Tom Wurgler ==
 
-Lisp:etop.el provides commadn M-x etop to display top(1) output.
+Lisp:etop.el provides command M-x etop to display top(1) output.
 
 ----
 CategoryModes | CategoryExternalUtilities

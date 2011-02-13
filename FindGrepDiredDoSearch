@@ -11,6 +11,9 @@ Seems like a useful combination. After running this, you can use `M-,' to step t
       (with-current-buffer "*Find*"
         (dired-toggle-marks)
         (dired-do-search regexp)))
+
+[new]
+So this is roughly equivalent to the key sequence `M-x find-grep-dired REGEXP RET % m RET A M-p RET RET'?
         
 ----
 CategoryDirectories
