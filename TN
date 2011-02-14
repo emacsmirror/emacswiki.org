@@ -126,10 +126,11 @@ e() {
 </pre>
 
 == TeX-texify: Get everything done for a LaTeX-file ==
-In auctex-mode usually one uses TeX-command to invoke the next compilation step for the current LaTeX-document.
-(Note, that this command is bound to the key-sequence C-c C-c.
-If one has some citations and references in the document one needs to call TeX-command multiple times.
-Within the following code the command TeX-texify is defined which runs as often as it is suggested by TeX-command.
+In AUCTeX-mode one uses <tt>`!TeX-command´</tt> to invoke the next compilation step for the current LaTeX-document.
+Note, that this command is bound to the key-sequence <tt>C-c C-c</tt>.
+
+If one has some citations and references in the document one needs to call <tt>`!TeX-command´</tt> multiple times.
+Within the following code the command <tt>`!TeX-texify´</tt> is defined which runs as often as it is suggested by <tt>`!TeX-command´</tt>.
 
 <pre>
 (defun TeX-command-default (name)

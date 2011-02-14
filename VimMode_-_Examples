@@ -140,7 +140,7 @@ The following simple command can be used to lookup a symbol in the info files or
   (vim:emap "helisp" "helpelisp")
   
 === Edit file with sudo ===
-Some times we want to edit file in root, use this command can make it easily.
+Sometimes we want to edit a file as root which can be done easily with the follow command.
 
   (vim:defcmd vim:cmd-sudo ((argument:file file) nonrepeatable)
     "Edit file with sudo"
@@ -148,7 +148,90 @@ Some times we want to edit file in root, use this command can make it easily.
         (find-file (concat "/sudo:root@localhost:" file))))
  
  (vim:emap "sudo" 'vim:cmd-sudo)
+ 
+=== Open file at point ===
+Vim knows several commands to open the file which name is under the cursor currently. Emacs has commands for the same purpose, too, so here a some example bindings and commands to enhance vim-mode with apropriate key-bindings.
 
+==== Just use ffap ====
+The Emacs commands for opening the file at point come from the ##ffap## package which is part of Emacs. The easiest way is to just map key-bindings to those commands. The main difference is that ##ffap## does not open the file immediately but prompts for the file name instead (but see below).
+
+  (vim:nmap "gf" 'ffap)
+  (vim:wmap (kbd "C-w C-f") 'ffap-other-window)
+
+Note that the ##gf## binding may also be used in visual-mode. Unluckily, ##fap## does not use the region through prefix-arguments so vim-mode cannot detect that it uses the region and will not disable visual-mode after using this command. The simplest way is to define a small wrapper command. This command should set ##transient-mark-mode## to ##t## because ffap uses the region only in this case but visual-mode does *not* use it.
+
+  (vim:defcmd vim:cmd-ffap (nonrepeatable)
+    "Opens the file under point."
+    (let ((transient-mark-mode (vim:visual-mode-p)))
+      (ffap)))
+
+  (vim:defcmd vim:cmd-ffap-other-window (nonrepeatable)
+    "Opens the file under point in another window."
+    (let ((transient-mark-mode (vim:visual-mode-p)))
+      (ffap-other-window)))
+
+  (vim:vmap "gf" 'vim:cmd-ffap)
+  (vim:vmap (kbd "C-w C-f") 'vim:cmd-ffap-other-window)
+  
+==== Open file without prompting ====
+If you want a more Vim-like behaviour without prompting for the file-name, you have to write little commands and bind them appropriately. Note that those commands can be used in visual-mode, too.
+
+  (vim:defcmd vim:cmd-find-file-at-point (nonrepeatable)
+    "Opens the file at point."
+    (let* ((transient-mark-mode (vim:visual-mode-p))
+           (fname (ffap-file-at-point)))
+      (if fname (find-file-existing fname)
+        (error "File does not exist."))))
+
+  (vim:defcmd vim:cmd-find-file-at-point-other-window (nonrepeatable)
+    "Opens the file at point in another window."
+    (let* ((transient-mark-mode (vim:visual-mode-p))
+           (fname (ffap-file-at-point)))
+      (if fname (find-file-other-window fname)
+        (error "File does not exist."))))
+        
+  (vim:nmap "gf" 'vim:cmd-find-file-at-point)
+  (vim:nmap (kbd "C-w C-f") 'vim:cmd-find-file-at-point-other-window)
+  (vim:vmap "gf" 'vim:cmd-find-file-at-point)
+  (vim:vmap (kbd "C-w C-f") 'vim:cmd-find-file-at-point-other-window)
+  
+==== Force new window when opening file in other window ====
+Emacs reuses an existing window when opening a file in another window. Vim always opens a new window. The following function opens simulates Vim's behaviour, this time with prompting. Again this function can be used in visual-mode, too.
+
+  (vim:defcmd vim:cmd-find-file-at-point-new-window (nonrepeatable)
+    "Opens the file at point in a new window."
+    ;; without prompting use (ffap-file-at-point)
+    (let* ((transient-mark-mode (vim:visual-mode-p))
+           (fname (ffap-prompter)))
+      (if fname
+  	(progn
+  	  (split-window)     
+  	  (balance-windows)  ; balance windows like VIM
+  	  (find-file fname))
+        (error "File does not exist."))))
+        
+  (vim:nmap (kbd "C-w C-f") 'vim:cmd-find-file-at-point-new-window)
+  (vim:vmap (kbd "C-w C-f") 'vim:cmd-find-file-at-point-new-window)
+  
+==== Find at point with line-number ====
+Vim knows another command usually bound to ##gF##. This command opens the file under the cursor and places the cursor at the line-number just behind the file name. A simply variant of this command for vim-mode is the following which works in file-name of the kind //file-name:line-number//, i.e., if the line-number is separated by a colon from the file-name. Note that the original Vim command is slightly more flexible but ##ffap## is not on which this command depends. This command *does not* work in visual-mode because ##ffap## would use the line-number covered by the visual-region as part of the file-name.
+
+  (vim:defcmd vim:cmd-find-file-at-point-with-line (nonrepeatable)
+    "Opens the file at point and goes to line-number."
+    (let ((fname (ffap-file-at-point)))
+      (if fname
+  	(let ((line
+  	       (save-excursion
+  		 (goto-char (cadr ffap-string-at-point-region))
+  		 (and (re-search-backward ":\\([0-9]+\\)\\="
+  					  (line-beginning-position) t)
+  		      (string-to-int (match-string 1))))))
+  	  (find-file-existing fname)
+  	  (when line (goto-line line)))
+        (error "File does not exist."))))
+        
+  (vim:nmap "gF" 'vim:cmd-find-file-at-point-with-line)
+        
 == Motions ==
 
 === LaTeX tag text objects ===

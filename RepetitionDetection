@@ -66,6 +66,29 @@ Contributors: ZwaX, MarioLang, CharlesSebold.
 I have a need for something simpler than this. I would like to have Emacs record not each key but each command that I execute (save maybe stuff like `self-insert-command' and `newline'). Using this statistic I could decide which commands are worth putting on my function keys, or other "easy" keys like C-<some char> and M-<some char>. I assume this would be quite easy to do but I am not sure where to start looking. I will post back my own findings here if no one beats me to it. 
 -- MaDa
 
+[new:Anonymous:2011-02-13 22:46 UTC]
+: This is almost exactly [http://xahlee.org/emacs/command-frequency.el command-frequency]. To get it to display the current bindings, call it like this: 
+                
+    (command-frequency nil nil nil
+                   (lambda (num-calls percent-calls cmd)
+                     (format "%6d  %5.2f  %-40s  %s\n"
+                             num-calls percent-calls cmd
+                             (mapconcat
+                              'edmacro-format-keys
+                              (mapcar
+                               (lambda (key-seq)
+                                 (if (listp (aref key-seq 0))
+                                     (apply 'vector
+                                            (cons
+                                             (car (aref key-seq 0))
+                                             (cons (cdr (aref key-seq 0)) nil)))
+                                   key-seq))
+                               (where-is-internal
+                                cmd
+                                nil
+                                nil t))
+                              ", "))))
+
 [new:DrewAdams:2007-08-31 16:06 UTC]
 I'd say that if you can't tell what repetition is annoying you, then it isn't annoying you enough! -- DrewAdams
 
