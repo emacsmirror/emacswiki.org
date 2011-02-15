@@ -1,13 +1,13 @@
 ;;; dos.el --- major mode for editing Dos scripts (batch files)
 
-;; Copyright (C) 2003, 2008, 2009, 2010 Arni Magnusson
+;; Copyright (C) 2003, 2008, 2009, 2010, 2011 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.15
+;; Version:  2.16
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
-(defconst dos-mode-version "2.15" "Dos Mode version number.")
+(defconst dos-mode-version "2.16" "Dos Mode version number.")
 
 ;;; Commentary:
 ;;
@@ -48,6 +48,7 @@
 
 ;;; History:
 ;;
+;; 14 Feb 2011  2.16 Improved highlighting of variable names.
 ;; 20 Sep 2010  2.15 Changed :LABEL highlighting to new `dos-label-face'. Improved highlighting of variable names.
 ;;  8 Jul 2010  2.14 Added user function `dos-mode-version'.
 ;; 29 Jun 2010  2.13 Added keyword "erase".
@@ -116,12 +117,12 @@ that:\n
            '("cat"      "cp"       "ls"       "mkdir"    "mv"       "rm"       "rmdir")))
       (list
        '("\\<\\(call\\|goto\\)\\>[ \t]+%?\\([A-Za-z0-9-_\\:.]+\\)%?" (2 font-lock-constant-face t))
-       '("^[ \t]*\\(@?rem\\>\\|::\\).*"   (0 font-lock-comment-face t))
-       '("^:[^:].*" .                        'dos-label-face)
-       '("\\<set\\>[ \t]*\\(\\w+\\)"      (1 font-lock-variable-name-face))
-       '("%\\(\\w+\\)%?"                  (1 font-lock-variable-name-face))
-       '("!\\(\\w+\\)!?"                  (1 font-lock-variable-name-face)) ; delayed-expansion !variable!
-       '("[ =][-/]+\\(\\w+\\)"            (1 font-lock-type-face append))
+       '("^[ \t]*\\(@?rem\\>\\|::\\).*"              (0 font-lock-comment-face t))
+       '("^:[^:].*" .                                   'dos-label-face)
+       '("\\<\\(defined\\|set\\)\\>[ \t]*\\(\\w+\\)" (2 font-lock-variable-name-face))
+       '("%\\(\\w+\\)%?"                             (1 font-lock-variable-name-face))
+       '("!\\(\\w+\\)!?"                             (1 font-lock-variable-name-face)) ; delayed-expansion !variable!
+       '("[ =][-/]+\\(\\w+\\)"                       (1 font-lock-type-face append))
        (cons (regexp-opt COMMANDS    'words) font-lock-builtin-face)
        (cons (regexp-opt CONTROLFLOW 'words) font-lock-keyword-face)
        (cons (regexp-opt LINUX       'words) font-lock-warning-face)))))

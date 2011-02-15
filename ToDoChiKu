@@ -76,3 +76,35 @@ The todochiku-icons link was broken as well, and I had to download them from htt
 ----
 [new]
 I can't this to work OOTB. I get "File error: Searching for program, no such file or directory, notify-send". What is "notify-send" and where might I find it? Is it part of some other software, or supposed to be part of this, or what?
+
+
+== growlnotify on os x ==
+
+Didn't work for me out of the box. Setting todochiku-command to the full path (e.g. "/usr/local/bin/growlnotify") and applying the following patch resolved all issues:
+
+
+ --- todochiku.el.1	2010-09-25 20:52:53.000000000 +0200
+ +++ todochiku.el	2011-02-14 18:17:02.000000000 +0100
+ @@ -252,7 +252,9 @@
+  		  (tooltip-show message)))
+    (when (or (string= todochiku-command "")
+  			todochiku-message-too)
+ -		(message "%s" (propertize message 'face 'todochiku-message-face))))
+ +    (case system-type
+ +      ('darwin  (message "%s" message))
+ +      (t (message "%s" (propertize message 'face 'todochiku-message-face))))))
+ 
+  (defun growl (title message)
+    "Alias for `todochiku-message'."
+ @@ -264,7 +266,10 @@
+  This would be better done through a customization probably."
+    (case system-type
+      ('windows-nt (list "/M" title message icon))
+ -    ('darwin (list title (if sticky "-s" "") "-m" message "--image" icon ))
+ +    ('darwin 
+ +     (if sticky
+ +         (list "-t" title "-s" "-m" message "-I" icon)
+ +         (list "-t" title "-m" message "-I" icon)))
+      (t (list "-i" icon "-t"
+               (if sticky "0" (int-to-string (* 1000 todochiku-timeout)))
+               title message))))

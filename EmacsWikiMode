@@ -1,9 +1,8 @@
 This is JohnWiegley's implementation of a Wiki.  See WikiModeDiscussion
 for a comparison with other wiki modes and a clarification of the terms used.
 
-Note that EmacsWikiMode is more a wiki-like publishing tool and
-personal information manager than a real wiki, because users from the
-web cannot edit the pages. emacs-wiki.el allows you to create a wiki
+EmacsWikiMode is a [http://en.wikipedia.org/wiki/Personal_wiki personal wiki]: a wiki that's only available to you. You might also think of it as a wiki-like publishing tool and
+personal information manager. emacs-wiki.el allows you to create a wiki
 on your local system and export HTML pages, in its basic
 configuration.  It does not allow you to edit the pages of
 emacswiki.org -- see WikiModeDiscussion for more.  To obtain the

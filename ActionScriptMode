@@ -3,20 +3,21 @@
 * There are several entirely different modes all called actionscript-mode.
 * You may need to rename the below-files to actionscript-mode.el to make them work.
 
-== For AS2 ==
-
-Emacs customizations and actionscript-mode for AS2: http://blog.pettomato.com/?p=12
-
 == For AS3 ==
 
 !ActionScript 3 is used in Adobe's Flex 2 and above
 
 Austin Haas has created an actionscript-mode for AS3:
-* Originally from http://blog.pettomato.com/?p=22 and http://blog.pettomato.com/?p=24
-* Latest version from the above blog: Lisp:actionscript-mode-haas-7.0.el
+
+* [http://austin.pettomato.com/actionscript-mode.el Latest version here]
+* A recent version is archived here: Lisp:actionscript-mode-haas-7.0.el
 ** This does not work with newer Emacsen (CC-mode 5.30 and up)
+*** Is this comment referring to an older version? Because there was a time when my actionscript-mode didn't work with Emacs22, but it wasn't this version. As far as I know, this version works fine and it doesn't depend on cc-mode at all. - Austin Haas
 ** Also, there are a few indentation bugs.
+*** This is true. I borrowed the tabbing code from Aemon Cannon's as3-mode, which is [https://github.com/aemoncannon/as3-mode/blob/master/as3-mode.el here]. It's a smart but simple approach and doing a complete tabbing solution is beyond my limits. - Austin Haas
 * Somewhat older version which indents correctly and works with newer Emacsen: Lisp:actionscript-mode-haas-5.6.el
+** This is the version that SHOULD NOT work with newer Emacsen since it depends on an older cc-mode. I don't understand why someone is claiming the opposite. - Austin Haas
+** If I recall correctly, the reason that indenting appears to work in this version is because it was utilizing cc-mode, and although it appeared mostly correct, it was somewhat by chance because the internals of cc-mode were actually mis-classifying the tokens but indenting still put them in the right place. Unfortunately, I ran into problems elsewhere when I wanted that classification to be correct. Plus, a newer version of CC-mode made it's way into Emacs22 and it required an overhaul of actionscript-mode to conform to it, so at that point I thought it would be better to severe the dependency. - Austin Haas
 
 John Connors has also created an actionscript-mode for AS3: Lisp:actionscript-mode-connors.el
 
