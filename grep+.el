@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 09:52:06 2011 (-0800)
+;; Last-Updated: Tue Feb 15 10:50:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 430
+;;     Update #: 485
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -79,6 +79,9 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/02/15 dadams
+;;     For Emacs 24+, do not set grep-hit-face to font-lock-keyword-face.
+;;     grep-regexp-alist, grep-mode-font-lock-keywords, grep-mode: Updated for Emacs 24.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive functions.  Added them for defalias commands.
 ;; 2007/12/04 dadams
@@ -363,7 +366,7 @@ between /* and */."
 ;; New face values
 (set-face-foreground grep-match-face nil)
 (set-face-background grep-match-face "SkyBlue")
-(setq grep-hit-face font-lock-keyword-face)
+(unless (> emacs-major-version 23) (setq grep-hit-face font-lock-keyword-face))
 
 
 
@@ -372,14 +375,14 @@ between /* and */."
 ;;; Use mouseover on whole line.  Same as original, except for this.
 (unless (featurep 'grep+)
   (setq grep-regexp-alist
-        '(("^\\(.+?\\)\\(:[ \t]*\\)\\([0-9]+\\)\\2" 1 3)
+        '(("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2" 1 3)
           ;; Rule to match column numbers is commented out since no known grep produces them
           ;; ("^\\(.+?\\)\\(:[ \t]*\\)\\([0-9]+\\)\\2\\(?:\\([0-9]+\\)\\(?:-\\([0-9]+\\)\\)?\\2\\)?"
           ;;  1 3 (4 . 5))
 
           ;; DREW ADAMS: 1) appended `.*', 2) changed HIGHLIGHT to nil, to highlight whole match.
-          ("^\\(\\(.+?\\):\\([0-9]+\\):\\).*?\
-\\(\033\\[01;31m\\(?:\033\\[K\\)?\\)\\(.*?\\)\\(\033\\[[0-9]*m\\).*"
+          ("^\\(\\(.+?\\):\\([1-9][0-9]*\\):\\).*?\
+\\(\033\\[01;31m\\(?:\033\\[K\\)?\\)\\(.*?\\)\\(\033\\[[0-9]*m\\).*" ; DREW ADAMS appended `.*'.
            2 3
            ;; Calculate column positions (beg . end) of first grep match on a line
            ((lambda ()
@@ -387,8 +390,9 @@ between /* and */."
               (- (match-beginning 4) (match-end 1)))
             .
             (lambda () (- (match-end 5) (match-end 1)
-                          (- (match-end 4) (match-beginning 4)))))
-           nil nil)
+                     (- (match-end 4) (match-beginning 4)))))
+           nil
+           nil) ; DREW ADAMS changed HIGHLIGHT to nil, to highlight whole match.
           ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1))))
 
 
@@ -399,22 +403,24 @@ between /* and */."
 (unless (featurep 'grep+)
   (setq grep-mode-font-lock-keywords
         '( ;; Command output lines.
-
-          ;; DREW ADAMS - Added this line.
           ("^\\(.+?\\):\\([0-9]+\\):.*" (0 '(face nil mouse-face compilation-mouseover)))
-          ("^\\([A-Za-z_0-9/\.+-]+\\)[ \t]*:" 1 font-lock-function-name-face)
+          ;; ("^\\([A-Za-z_0-9/\.+-]+\\)[ \t]*:" 1 font-lock-function-name-face)) ; Removed by Stefan, Emacs 24.
           (": \\(.+\\): \\(?:Permission denied\\|No such \\(?:file or directory\\|device or \
 address\\)\\)$"
            1 grep-error-face)
           ;; remove match from grep-regexp-alist before fontifying
-          ("^Grep[/a-zA-z]* started.*" (0 '(face nil message nil help-echo nil mouse-face nil) t))
+          ;; Set both `compilation-message' and `message' to nil, since Emacs before version 24 uses `message'.
+          ("^Grep[/a-zA-z]* started.*"
+           (0 '(face nil compilation-message nil message nil help-echo nil mouse-face nil) t))
           ("^Grep[/a-zA-z]* finished \\(?:(\\(matches found\\))\\|with \\(no matches found\\)\\).*"
-           (0 '(face nil message nil help-echo nil mouse-face nil) t)
+           ;; Set both `compilation-message' and `message' to nil, since Emacs before version 24 uses `message'.
+           (0 '(face nil compilation-message nil message nil help-echo nil mouse-face nil) t)
            (1 compilation-info-face nil t)
            (2 compilation-warning-face nil t))
           ("^Grep[/a-zA-z]* \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with \
 code \\([0-9]+\\)\\)?.*"
-           (0 '(face nil message nil help-echo nil mouse-face nil) t)
+           ;; Set both `compilation-message' and `message' to nil, since Emacs before version 24 uses `message'.
+           (0 '(face nil compilation-message nil message nil help-echo nil mouse-face nil) t)
            (1 grep-error-face)
            (2 grep-error-face nil t))
           ("^.+?-[0-9]+-.*\n" (0 grep-context-face))
@@ -428,12 +434,14 @@ code \\([0-9]+\\)\\)?.*"
             (progn
               ;; Delete markers with `replace-match' because it updates
               ;; the match-data, whereas `delete-region' would render it obsolete.
+              (when (> emacs-major-version 23) (syntax-ppss-flush-cache (match-beginning 0)))
               (replace-match "" t t nil 3)
               (replace-match "" t t nil 1))))
-          ("\\(\033\\[[0-9;]*[mK]\\)"
+          ("\033\\[[0-9;]*[mK]"
            ;; Delete all remaining escape sequences
            ((lambda (bound))
-            (replace-match "" t t nil 1))))))
+            (when (> emacs-major-version 23) (syntax-ppss-flush-cache (match-beginning 0)))
+            (replace-match "" t t))))))
 
 
 ;;; REPLACE ORIGINAL `grep-mode' defined in `grep.el'.
@@ -443,6 +451,8 @@ code \\([0-9]+\\)\\)?.*"
 (define-compilation-mode grep-mode "Grep"
   "Sets `grep-last-buffer' and `compilation-window-height'."
   (setq grep-last-buffer (current-buffer))
+  (when (boundp 'grep-mode-tool-bar-map)
+    (set (make-local-variable 'tool-bar-map) grep-mode-tool-bar-map))
   (set (make-local-variable 'compilation-error-face) grep-hit-face)
   (set (make-local-variable 'compilation-error-regexp-alist) grep-regexp-alist)
   (set (make-local-variable 'compilation-process-setup-function) 'grep-process-setup)

@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.31
+;; Version: 0.32
 ;; Last-Updated: Mon Feb  7 12:50:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1005
@@ -114,11 +114,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 15-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
+;;    Removed the deactivation of advices when this mode is turned off.  I think it was causing some issues.
 ;; 10-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Added check to make sure not trying to paste on indent for
 ;;    `auto-indent-disabled-modes-list'
-;; 03-Feb-2011    Matthew L. Fidler  
+
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 17:06:22 2011 (-0600) #996 (Matthew L. Fidler)
 
 ;;    Swap `backward-delete-char' with
@@ -663,29 +667,33 @@ http://www.emacswiki.org/emacs/AutoIndentation
           ((eq auto-indent-engine 'keys) ;; Auto-indent engine
            )
           (t ;; Default auto-indent-engine setup.
-	   (mapc
-            (lambda(ad)
-              (condition-case error
-		  (progn
-		    (ad-disable-advice ad 'after 'auto-indent-minor-mode-advice)
-		    (ad-activate ad)
-		    )
-		(error
-		 (message "[auto-indent-mode] Error disabling advices: %s" (error-message-string error)))))
-            '(yank yank-pop))
-           (mapc
-            (lambda(ad)
-	      (when (fboundp ad)
-		(ad-disable-advice ad 'around 'auto-indent-minor-mode-advice)
-		(ad-activate ad)))
-            '(delete-char kill-line kill-region kill-ring-save cua-copy-region
-                          backward-delete-char-untabify backward-delete-char
-                          delete-backward-char))
 	   (remove-hook 'write-contents-hook 'auto-indent-file-when-save)
 	   (remove-hook 'find-file-hook 'auto-indent-file-when-visit 't)
 	   (remove-hook 'after-save-hook 'auto-indent-mode-post-command-hook 't)
 	   (remove-hook 'post-command-hook 'auto-indent-mode-post-command-hook 't)
 	   (remove-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook 't))))))
+
+(defun auto-indent-deactivate-advices ()
+  "Deactivate Advices for `auto-indent-mode'"
+  (interactive)
+  (mapc
+   (lambda(ad)
+     (condition-case error
+         (progn
+           (ad-disable-advice ad 'after 'auto-indent-minor-mode-advice)
+           (ad-activate ad)
+           )
+       (error
+        (message "[auto-indent-mode] Error disabling advices: %s" (error-message-string error)))))
+   '(yank yank-pop))
+  (mapc
+   (lambda(ad)
+     (when (fboundp ad)
+       (ad-disable-advice ad 'around 'auto-indent-minor-mode-advice)
+       (ad-activate ad)))
+   '(delete-char kill-line kill-region kill-ring-save cua-copy-region
+                 backward-delete-char-untabify backward-delete-char
+		 delete-backward-char)))
 
 ;;;###autoload
 (defun auto-indent-minor-mode-on ()
@@ -702,13 +710,15 @@ http://www.emacswiki.org/emacs/AutoIndentation
 
 ;;;###autoload
 (define-globalized-minor-mode auto-indent-global-mode auto-indent-minor-mode auto-indent-minor-mode-on
-  :group 'auto-indent
+                                          :group 'auto-indent
+					  
   :require 'auto-indent-mode)
 
 (defun auto-indent-remove-advice-p (&optional command)
   "Removes advice if the function called is actually an auto-indent function OR it should be disabled in this mode"
-  (or (not (memq major-mode auto-indent-disabled-modes-list))
-      (string-match "^auto-indent" (symbol-name (or command this-command)))))
+					;  (and (not (memq major-mode auto-indent-disabled-modes-list))
+  (string-match "^auto-indent" (symbol-name (or command this-command))))
+;)
 
 (defun auto-indent-is-yank-p (&optional command)
   "Tests if the function was a yank."
@@ -1130,6 +1140,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
   (condition-case err
       (when (and (not auto-indent-last-pre-command-hook-minibufferp) (not (minibufferp))
 		 (not (memq indent-line-function auto-indent-disabled-indent-functions)))
+	
 	(unless (memq 'auto-indent-mode-pre-command-hook pre-command-hook)
 	  (setq auto-indent-mode-pre-command-hook-line -1)
 	  (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
@@ -1137,6 +1148,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
 	  (cond
 	   ((and last-command-event (memq last-command-event '(10 13 return)))
 	    (when (or (not (fboundp 'yas/snippets-at-point))
+		      
 		      (and yas/minor-mode
 			   (let ((yap (yas/snippets-at-point 'all-snippets)))
 			     (or (not yap) (and yap (= 0 (length yap)))))))

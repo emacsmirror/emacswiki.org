@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Tue Jan  4 09:04:12 2011 (-0800)
+;; Last-Updated: Wed Feb 16 00:19:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1542
+;;     Update #: 1675
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,9 +88,10 @@
 ;;
 ;;  Similarly, standard command `list-colors-display' has been
 ;;  enhanced to open the color palette on a color when you click it.
-;;  Editing the color does not change the original color's definition.
-;;  The palette is useful in this context mainly to show you the given
-;;  color in context.
+;;  (Using the palette to edit the color does not change the original
+;;  color's definition.)  The palette is useful in this context mainly
+;;  to show you the color in context.  In addition, the tooltip is
+;;  improved, showing more precise HSV values and decimal RGB.
 ;;
 ;;  Standard command `facemenu-add-face' has also been enhanced here,
 ;;  so that it prevents the highlighting that you add from being
@@ -141,8 +142,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `facemenup-face-bg', `facemenup-face-fg',
-;;    `facemenup-set-face-attribute-at--1',
+;;    `facemenup-copy-tree' (Emacs 20-21), `facemenup-face-bg',
+;;    `facemenup-face-fg', `facemenup-set-face-attribute-at--1',
 ;;    `facemenup-set-face-from-list'.
 ;;
 ;;  Internal variables defined here:
@@ -189,6 +190,12 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/15 dadams
+;;     Added: facemenup-copy-tree (Emacs 20-21).  Use in facemenu-mouse-menu.
+;;                                                Removed require of cl.el for copy-tree.
+;;     list-colors-print: Updated for Emacs 24.  Enhanced tooltip.
+;; 2011/01/22 dadams
+;;     list-faces-display: Removed colon from read-regexp prompt (it supplies one).
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom, defconst, commands.  Removed from non-interactive fn.
 ;; 2009/11/16 dadams
@@ -299,16 +306,19 @@
 (require 'facemenu)
 (require 'doremi-frm nil t) ;; (no error if not found)
                             ;; doremi-face-fg+, doremi-face-bg+, doremi-undo-last-face-change
-(if (fboundp 'defvaralias) ;; Emacs 22
-    (require 'palette) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point
+(require 'hexrgb nil t) ;; (no error if not found, but hard-required anyway for Emacs 22+,
+                        ;; by `palette.el' and `eyedropper.el'.
+                        ;; hexrgb-read-color, hexrgb-hex-to-int, hexrgb-hex-to-(rgb|hsv)
+(if (fboundp 'defvaralias) ;; Emacs 22+
+    (require 'palette) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point, palette
   (require 'eyedropper)) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point
-(require 'hexrgb nil t) ;; (no error if not found) hexrgb-read-color, hexrgb-hex-to-int
+
 ;; (require 'icicles nil t) ;; (no error if not found):
                             ;; icicle-read-color, icicle-read-string-completing
+
 (require 'easymenu) ;; easy-menu-add-item, easy-menu-create-menu,
 (when (> emacs-major-version 21) (require 'help-mode)) ;; help-xref (button type)
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; read-face-name
-(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; copy-tree
 
 ;; Quiet the byte-compiler.
 (defvar palette-action) ;; Defined in `palette.el'.
@@ -371,8 +381,32 @@ palette using `x'."
             ["Go To Previous Highlight" hlt-previous-highlight t]))))
   "Highlight submenu of Text Properties menu.")
 
+(unless (fboundp 'copy-tree)            ; Emacs 20-21
+  (defun facemenup-copy-tree (tree &optional vecp)
+    "Make a copy of TREE.
+If TREE is a cons cell, this recursively copies both its car and its cdr.
+Contrast to `copy-sequence', which copies only along the cdrs.  With second
+argument VECP, this copies vectors as well as conses."
+    (if (consp tree)
+        (let (result)
+          (while (consp tree)
+            (let ((newcar (car tree)))
+              (if (or (consp (car tree)) (and vecp (vectorp (car tree))))
+                  (setq newcar (facemenup-copy-tree (car tree) vecp)))
+              (push newcar result))
+            (setq tree (cdr tree)))
+          (nconc (nreverse result) tree))
+      (if (and vecp (vectorp tree))
+          (let ((i (length (setq tree (copy-sequence tree)))))
+            (while (>= (setq i (1- i)) 0)
+              (aset tree i (facemenup-copy-tree (aref tree i) vecp)))
+            tree)
+        tree))))
+
 ;; Use a different menu for the mouse popup menu from the Edit > Text Properties menu.
-(defvar facemenu-mouse-menu (copy-tree facemenu-menu)
+(defvar facemenu-mouse-menu (if (fboundp 'copy-tree)
+                                (copy-tree facemenu-menu)
+                              (facemenup-copy-tree facemenu-menu))
   "Facemenu top-level popup mouse menu keymap.")
 (defalias 'facemenu-mouse-menu facemenu-mouse-menu)
 (define-key global-map [C-down-mouse-2] 'facemenu-mouse-menu)
@@ -1173,6 +1207,7 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
                                                      (mapcar 'list (x-defined-colors))))))))))
     (if (equal "" col) nil col)))
 
+
 (when (>= emacs-major-version 22)
 
   ;; REPLACES ORIGINAL in `facemenu.el':
@@ -1230,7 +1265,7 @@ faces with matching names are displayed."
                                  "List faces matching regexp: " nil
                                  (lambda (c) (string-match "regexp" (symbol-name c))))
                               (if (fboundp 'read-regexp) ; Emacs 23.
-                                  (read-regexp "List faces matching regexp: ")
+                                  (read-regexp "List faces matching regexp")
                                 (read-string "List faces matching regexp: "))))))
     (let ((all-faces        (zerop (length regexp)))
           (frame            (selected-frame))
@@ -1238,10 +1273,11 @@ faces with matching names are displayed."
           (deactivate-mark  nil)
           faces line-format disp-frame window face-name)
       ;; We filter and take the max length in one pass
-      (setq faces  (delq nil (mapcar (lambda (f) (let ((s  (symbol-name f)))
-                                              (when (or all-faces (string-match regexp s))
-                                                (setq max-length  (max (length s) max-length))
-                                                f)))
+      (setq faces  (delq nil (mapcar (lambda (f)
+                                       (let ((s  (symbol-name f)))
+                                         (when (or all-faces (string-match regexp s))
+                                           (setq max-length  (max (length s) max-length))
+                                           f)))
                                      (sort (face-list) #'string-lessp))))
       (unless faces (error "No faces matching \"%s\"" regexp))
       (setq max-length   (1+ max-length)
@@ -1319,42 +1355,116 @@ Also, close the *Faces* display."
                                          (and mark-active (region-end)))
                       (setq mark-active  nil)))
     (let ((win  (get-buffer-window "*Faces*"))) (when win (delete-window win))))
-  
+
 
   ;; REPLACES ORIGINAL in `facemenu.el':
-  ;; Add hyperlink to open palette on the color.
-  ;; Use RGB format that reflects the display's color support.
-  ;; 
-  (defun list-colors-print (list)
-    (let ((rgb-format  (facemenu-rgb-format-for-display))
-          (col         (car list))
-          rgb-width)
-      (when (consp col) (setq col  (car col)))
-      (setq rgb-width  (1+ (length (format rgb-format 1 1 1))))
-      (dolist (color list)
-        (if (consp color)
-            (when (cdr color)
-              (setq color  (sort color (lambda (a b) (string< (downcase a) (downcase b))))))
-          (setq color  (list color)))
-        (put-text-property (prog1 (point) (insert (car color)) (indent-to 22))
-                           (point) 'face (list ':background (car color)))
-        (put-text-property (prog1 (point)
-                             (insert " " (if (cdr color)
-                                             (mapconcat 'identity (cdr color) ", ")
-                                           (car color))))
-                           (point) 'face (list ':foreground (car color)))
-        (indent-to (max (- (window-width) rgb-width) 44))
-        (insert (apply 'format rgb-format (mapcar (lambda (c) (lsh c -8))
-                                                  (color-values (car color)))))
-        ;; Hyperlink to open palette on the color.
-        (save-excursion
-          (save-match-data
-            (forward-line 0)
-            (re-search-forward ".*")
-            (setq help-xref-stack-item  `(list-colors-display ,list))
-            (help-xref-button 0 'help-facemenu-edit-color (if (consp color) (car color) color))))
-        (insert "\n")))
-    (goto-char (point-min)))
+  ;; 1. Add hyperlink to open palette on the color.
+  ;; 2. Use RGB format that reflects the display's degree of color support.
+  ;; 3. Tooltip on RGB hex code shows decimal RGB and HSV values.
+  ;;
+  (if (> emacs-major-version 23)
+      ;; Emacs 24+
+      (defun list-colors-print (list &optional callback)
+        (let ((callback-fn  (and callback `(lambda (button)
+                                            (funcall ,callback (button-get button 'color-name)))))
+              (rgb-format   (facemenu-rgb-format-for-display))
+              rgb-width)
+          (setq rgb-width  (1+ (length (format rgb-format 1 1 1))))
+          (dolist (color list)
+            (if (consp color)
+                (when (cdr color)
+                  (setq color  (sort color (lambda (a b) (string< (downcase a) (downcase b))))))
+              (setq color  (list color)))
+            (let* ((opoint        (point))
+                   (color-values  (color-values (car color)))
+                   (light-p       (>= (apply 'max color-values)
+                                      (* (car (color-values "white")) .5)))
+                   (max-len       (max (- (window-width) 33) 20)))
+              (insert (car color))
+              (indent-to 22)
+              (put-text-property opoint (point) 'face (list ':background (car color)))
+              (put-text-property (prog1 (point)
+                                   (insert " ")
+                                   (if (cdr color)
+                                       ;; Insert as many color names as possible, fitting max-len.
+                                       (let ((names   (list (car color)))
+                                             (others  (cdr color))
+                                             (len     (length (car color)))
+                                             newlen)
+                                         (while (and others
+                                                     (< (setq newlen
+                                                              (+ len 2 (length (car others))))
+                                                        max-len))
+                                           (setq len newlen)
+                                           (push (pop others) names))
+                                         (insert (mapconcat 'identity (nreverse names) ", ")))
+                                     (insert (car color))))
+                                 (point) 'face (list ':foreground (car color)))
+              (indent-to (max (- (window-width) rgb-width) 44))
+              (insert (propertize
+                       (apply 'format rgb-format (mapcar (lambda (c) (lsh c -8))
+                                                         (color-values (car color))))
+                       'mouse-face 'highlight
+                       ;; This overrides the general tooltip that says
+                       ;; `mouse-2, RET: Open palette on color'.
+                       'help-echo
+                       (format "RGB: (%s); HSV: (%s)"
+                               (mapconcat (lambda (dd) (format "%1.6f" dd))
+                                          (hexrgb-hex-to-rgb (car color)) ", ")
+                               (mapconcat (lambda (dd) (format "%1.6f" dd))
+                                          (hexrgb-hex-to-hsv (car color)) ", "))))
+              ;; Original tooltip: less precise HSV and no RGB.
+              ;; (let ((hsv  (apply 'color-rgb-to-hsv (color-values (car color)))))
+              ;;   (format "Hue: %d, Saturation: %d, Value: %d"
+              ;;           (nth 0 hsv) (nth 1 hsv) (nth 2 hsv))))))
+
+              ;; Hyperlink to open palette on the color.
+              (save-excursion
+                (save-match-data
+                  (forward-line 0)
+                  (re-search-forward ".*")
+                  (setq help-xref-stack-item  `(list-colors-display ,list))
+                  (help-xref-button 0 'help-facemenu-edit-color
+                                    (if (consp color) (car color) color))))
+              (when callback
+                (make-text-button opoint (point)
+                                  'follow-link t
+                                  'mouse-face  (list :background (car color)
+                                                     :foreground (if light-p "black" "white"))
+                                  'color-name  (car color)
+                                  'action      callback-fn)))
+            (insert "\n")))
+        (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
+        (goto-char (point-min)))
+    ;; Emacs 23
+    (defun list-colors-print (list)
+      (let ((rgb-format  (facemenu-rgb-format-for-display))
+            rgb-width)
+        (setq rgb-width  (1+ (length (format rgb-format 1 1 1))))
+        (dolist (color list)
+          (if (consp color)
+              (when (cdr color)
+                (setq color  (sort color (lambda (a b) (string< (downcase a) (downcase b))))))
+            (setq color  (list color)))
+          (put-text-property (prog1 (point) (insert (car color)) (indent-to 22))
+                             (point) 'face (list ':background (car color)))
+          (put-text-property (prog1 (point)
+                               (insert " " (if (cdr color)
+                                               (mapconcat 'identity (cdr color) ", ")
+                                             (car color))))
+                             (point) 'face (list ':foreground (car color)))
+          (indent-to (max (- (window-width) rgb-width) 44))
+          (insert (apply 'format rgb-format (mapcar (lambda (c) (lsh c -8))
+                                                    (color-values (car color)))))
+          ;; Hyperlink to open palette on the color.
+          (save-excursion
+            (save-match-data
+              (forward-line 0)
+              (re-search-forward ".*")
+              (setq help-xref-stack-item  `(list-colors-display ,list))
+              (help-xref-button 0 'help-facemenu-edit-color (if (consp color) (car color) color))))
+          (insert "\n")))
+      (goto-char (point-min))))
   
   (defun facemenu-rgb-format-for-display ()
     (let ((ncolors  (display-color-cells (selected-frame)))

@@ -334,6 +334,7 @@ Indent by DEPTH, if required"
 (add-hook 'sql-interactive-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "C-z") 'bury-buffer)
+	    (abbrev-mode 1)
 	    (set-process-coding-system (get-buffer-process sql-buffer) 'latin-1 'latin-1)))
 
 (add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
@@ -626,9 +627,10 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#perl" "#perl6"))
+	 "#emacs" "#sql"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse"))
-	("ircnet.eversible.com" :channels ("#drsrm")))
+	("ircnet.eversible.com" :channels ("#drsrm"))
+        ("irc.euirc.net" :channels ("#tanelorn")))
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
 	;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
       ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"

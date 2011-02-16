@@ -6,7 +6,7 @@
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
 ;; Version: 0.8.8
-;; Last-Updated: <2010-05-13 00:40:24 Thursday by ahei>
+;; Last-Updated: <2011-02-15 22:16:39 Tuesday by taoshanwen>
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1
@@ -297,23 +297,23 @@ If this option is nil, don't switch other `multi-term' buffer."
   :group 'multi-term)
 
 (defcustom term-bind-key-alist
-  '(
-    ("C-c C-c" . term-interrupt-subjob)
-    ("C-p" . previous-line)
-    ("C-n" . next-line)
-    ("C-s" . isearch-forward)
-    ("C-r" . isearch-backward)
-    ("C-m" . term-send-raw)
-    ("M-f" . term-send-forward-word)
-    ("M-b" . term-send-backward-word)
-    ("M-o" . term-send-backspace)
-    ("M-p" . term-send-up)
-    ("M-n" . term-send-down)
-    ("M-M" . term-send-forward-kill-word)
-    ("M-N" . term-send-backward-kill-word)
-    ("M-r" . term-send-reverse-search-history)
-    ("M-," . term-send-input)
-    ("M-." . comint-dynamic-complete))
+  '(("C-c C-c"       . term-interrupt-subjob)
+    ("C-p"           . previous-line)
+    ("C-n"           . next-line)
+    ("C-s"           . isearch-forward)
+    ("C-r"           . isearch-backward)
+    ("C-m"           . term-send-raw)
+    ("M-f"           . term-send-forward-word)
+    ("M-b"           . term-send-backward-word)
+    ("M-o"           . term-send-backspace)
+    ("M-p"           . term-send-up)
+    ("M-n"           . term-send-down)
+    ("M-M"           . term-send-forward-kill-word)
+    ("M-N"           . term-send-backward-kill-word)
+    ("M-r"           . term-send-reverse-search-history)
+    ("M-,"           . term-send-input)
+    ("<M-backspace>" . term-send-raw-meta)
+    ("M-."           . comint-dynamic-complete))
   "The key alist that will need to be bind.
 If you do not like default setup, modify it, with (KEY . COMMAND) format."
   :type 'alist
