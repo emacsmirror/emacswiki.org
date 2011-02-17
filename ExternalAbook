@@ -38,3 +38,13 @@ I've found that this contacts command works better:
 
 By adding quotes, I avoid an SMTP issue when a contact's name has strange characters in it. The -S is to avoid extra whitespace at the end of the name.
 -- ZacharyPinter
+
+This turns out not to work if the external query command prints more than two fields on output, like goobook.  I ended up using a little wrapper script:
+
+  #!/bin/sh
+
+  # Run goobook with given args 
+  # then strip all but first two fields from output
+  goobook "$@" | cut -f 1,2
+
+-- DanPoirier

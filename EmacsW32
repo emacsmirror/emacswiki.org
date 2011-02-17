@@ -1272,6 +1272,31 @@ Can someone more familiar with the release procedure confirm whether this is in 
 It is not in the released 23.1.
 It will be in the next release.
 
+=== Bug in w32shell.el ===
+
+Hi, I think I found a bug in w32shell.el, in /EmacsW32/ version: "GNU Emacs 23.1.50.1 (i386-mingw-nt6.0.6002) of 2009-11-04 on LENNART-69DE564 (patched)".
+
+Symptoms: calling /w32shell-remove-emacs/ result in an error (list expected).
+
+Possible fix: this patch fixes the error for me, in the function "w32shell-remove-envpath", at line 95
+
+<pre>
+(defun w32shell-remove-envpath (path)
+  (let ((paths path))
+    (unless (listp paths) (setq paths (list paths)))
+-   (dolist (path path)
++   (dolist (path paths)
+      (let ((envpath (replace-regexp-in-string "\\\\" "/" (getenv "PATH")))
+            (pos (w32shell-in-envpath path)))
+        (while pos
+</pre>
+
+Cheers!
+-- SebastienRoccaSerra
+
+[new]
+Thanks Sebastien, applied to my sources.
+
 ----
 I think there are several important things that just do not make it into the w32 version.
 There are just too few hands there I think.
