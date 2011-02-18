@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 356 $
+;; RCS Version: $Rev: 357 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 356 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 357 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -236,16 +236,16 @@
   :group 'sunrise
   :type 'string)
 
-(defcustom sr-listing-switches "-alp"
+(defcustom sr-listing-switches "-al"
   "Listing  switches  to  use  (instead  of dired-listing-switches) for building
   Sunrise buffers.
-  Most portable value: -alp
+  Most portable value: -al
   Recommended value on GNU systems: \
---time-style=locale --group-directories-first -alDphgG"
+--time-style=locale --group-directories-first -alDhgG"
   :group 'sunrise
   :type 'string)
 
-(defcustom sr-virtual-listing-switches "-alp"
+(defcustom sr-virtual-listing-switches "-al"
   "Listing switches for building buffers in Sunrise VIRTUAL mode based on find
   and locate results. Should not contain the -D option."
   :group 'sunrise
@@ -300,6 +300,12 @@
   :type '(choice
           (const :tag "Fuzzy matching negation disabled" nil)
           (character :tag "Fuzzy matching negation character" ?!)))
+
+(defcustom sr-init-hook nil
+  "List of functions to be called before the Sunrise panes are displayed"
+  :group 'sunrise
+  :type 'hook
+  :options '(auto-insert))
 
 (defcustom sr-start-hook nil
   "List of functions to be called after the Sunrise panes are displayed"
@@ -1126,7 +1132,7 @@ automatically:
 
 (defun sr-setup-windows()
   "Setup the Sunrise window configuration (two windows in sr-mode.)"
-
+  (run-hooks 'sr-init-hook)
   ;;get rid of all windows except one (not any of the panes!)
   (sr-select-viewer-window)
   (delete-other-windows)
@@ -1916,7 +1922,9 @@ automatically:
   (save-excursion
     (sr-unhide-attributes)
     (goto-char (point-min))
-    (let ((next (re-search-forward directory-listing-before-filename-regexp nil t))
+    (re-search-forward directory-listing-before-filename-regexp nil t)
+    (beginning-of-line)
+    (let ((next (next-single-property-change (point) 'dired-filename))
           (attr-list nil)
           (overlay nil))
       (while next
@@ -1926,7 +1934,7 @@ automatically:
         (overlay-put overlay 'invisible t)
         (overlay-put overlay 'intangible t)
         (forward-line)
-        (setq next (re-search-forward directory-listing-before-filename-regexp nil t)))
+        (setq next (next-single-property-change (point) 'dired-filename)))
       (put sr-selected-window 'hidden-attrs attr-list))))
 
 (defun sr-unhide-attributes ()
@@ -3759,6 +3767,18 @@ or (c)ontents? ")
       (if (eq t (car marked)) (setq marked (cdr marked)))
       (format "\"%s\"" (mapconcat 'identity marked "\" \"")))))
 
+(defun sr-fix-listing-switches()
+  "Work-around for a bug in Dired that makes dired-move-to-filename misbehave
+  when any of the options -p or -F is used with ls."
+  (mapc (lambda (sym)
+          (let ((val (replace-regexp-in-string "\\(?:^\\| \\)-[pF]*\\(?: \\|$\\)" " " (symbol-value sym))))
+            (while (string-match "\\(?:^\\| \\)-[^- ]*[pF]" val)
+              (setq val (replace-regexp-in-string "\\(\\(?:^\\| \\)-[^- ]*\\)[pF]\\([^ ]*\\)" "\\1\\2" val)))
+            (set sym val)))
+        '(sr-listing-switches sr-virtual-listing-switches))
+    (remove-hook 'sr-init-hook 'sr-fix-listing-switches))
+(add-hook 'sr-init-hook 'sr-fix-listing-switches)
+
 ;;; ============================================================================
 ;;; Font-Lock colors & styles:
 
@@ -3775,7 +3795,7 @@ or (c)ontents? ")
 (sr-rainbow sr-packaged-face          (:foreground "DarkMagenta")           "\\(^..[^d].*\\.\\(deb\\|rpm\\)$\\)")
 (sr-rainbow sr-encrypted-face         (:foreground "DarkOrange1")           "\\(^..[^d].*\\.\\(gpg\\|pgp\\)$\\)")
 
-(sr-rainbow sr-directory-face         (:foreground "blue1" :bold t)         "\\(^..d.*/$\\)")
+(sr-rainbow sr-directory-face         (:foreground "blue1" :bold t)         "\\(^..d.*\\)")
 (sr-rainbow sr-symlink-face           (:foreground "DeepSkyBlue" :italic t) "\\(^..l.*[^/]$\\)")
 (sr-rainbow sr-symlink-directory-face (:foreground "blue1" :italic t)       "\\(^..l.*/$\\)")
 (sr-rainbow sr-alt-marked-dir-face    (:foreground "DeepPink" :bold t)      "\\(^[^ *D].d.*$\\)")

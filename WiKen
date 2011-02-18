@@ -41,5 +41,12 @@ So how deep into emacs would this need to go?  Is it possible and feasible to do
 
 : Welcome to the wiki!  I think it would be much easier on you if you wrote the text single-spaced (and then figure out all the variables you need to change, that should be possible), and leave the double-spaced printing to the printing module (eg. ps-print), or add the double-spaces just before sending the document.  I don't think you really want to work on a double-spaced document for days and weeks anyway. -- AlexSchroeder
 
+[new]  Hello!  Yes, as a writer, double spacing is important for when I hand a document to my friendly editor, on paper.  However, I wouldn't want it double spaced on screen as then I shouldn't even see a whole page worth of text at a time.  6_6  Anyway, I get my printouts to be double spaced by using:
+
+   (setq ps-line-spacing 10)
+
+-- SamGeorge
+
+
 ----
 CategoryHomepage

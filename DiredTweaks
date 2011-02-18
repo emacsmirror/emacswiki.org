@@ -15,6 +15,7 @@ This page provides supplementary information about DiredMode and some enhancemen
 * DiredOfFile -- Open Dired for current file only
 * FilesPlus -- Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
  '''##files 691##''' ##space used 49439 available 56233408##
+* DiredSortBySizeAndExtension -- Dired enhancement to sort by name, size, time, and extension, instead of only name and time. 
 
 
 See also: [[DiredMode#DiredEnhancements|Other Dired Enhancements]].

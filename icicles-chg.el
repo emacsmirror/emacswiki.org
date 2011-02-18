@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 20 16:02:52 2011 (-0800)
+;; Last-Updated: Thu Feb 17 13:08:26 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6019
+;;     Update #: 6032
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -354,6 +354,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/02/17 dadams
+;;     Added defalias old-read-color for read-color.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/12/18 dadams
@@ -664,6 +666,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/02/17 dadams
+;;     icicle-join-nth-parts: If only one part then don't append the join string.
+;; 2011/01/31 dadams
+;;     icicle-insert-candidates: Fixed test for remainder cands: (= n (* r c)), not (= 0 (mod n r)).
 ;; 2011/01/11 dadams
 ;;     icicle-choose-completion-string:
 ;;       Removed code that uses base-size, choose-completion-delete-max-match.  Just replace all input.
@@ -3322,6 +3328,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/02/17 dadams
+;;     icicle-(redefine|restore)-standard-commands: Use icicle-read-color for read-color.
 ;; 2011/01/20 dadams
 ;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
 ;;       Bind/restore keys C-M-S-[cf] (*-completing-read+insert-keys, *-read+insert-file-name-keys).

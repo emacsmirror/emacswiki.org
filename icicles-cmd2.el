@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:18:15 2010 (-0800)
+;; Last-Updated: Thu Feb 17 12:56:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2454
+;;     Update #: 2461
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -223,7 +223,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; loop
+(eval-when-compile (require 'cl)) ;; case, loop
                                   ;; plus, for Emacs < 21: dolist, push
 (eval-when-compile (when (>= emacs-major-version 22) (require 'edmacro))) ;; edmacro-subseq
 (eval-when-compile (require 'comint))
@@ -5228,6 +5228,10 @@ dynamically for the mode, use `icicle-ido-like-mode-hook'.  E.g.:
             (unless (and current-prefix-arg (not (eq 'toggle current-prefix-arg)))
               (setq icicle-max-candidates  nil))))))
 
+
+(when (and (fboundp 'read-color) (not (fboundp 'old-read-color))) ; Exists starting with Emacs 23.
+  (defalias 'old-read-color (symbol-function 'read-color)))
+
 ;; See also `hexrgb-read-color' in `hexrgb.el'.
 ;;;###autoload
 (defun icicle-read-color (&optional arg prompt)
@@ -5316,7 +5320,7 @@ used with `C-u', with Icicle mode turned off)."
             icicle-list-end-string             icicle-proxy-candidate-regexp
             named-colors                       icicle-proxy-candidates)
         ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
-        (setq prompt  (copy-sequence (or prompt "Color: ")))
+        (setq prompt  (copy-sequence (or prompt "Color (name or #RGB triplet): ")))
         (icicle-color-completion-setup)
         (setq icicle-proxy-candidates
               (append icicle-proxy-candidates

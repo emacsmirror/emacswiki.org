@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 11 21:02:19 2011 (-0800)
+;; Last-Updated: Thu Feb 17 12:49:52 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12062
+;;     Update #: 12093
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -260,7 +260,6 @@
 
 (eval-when-compile (require 'cl)) ;; case, lexical-let
                                   ;; plus, for Emacs < 21: dolist, push, pop
-                                  ;; plus, for Emacs < 20: when, unless
 
 (require 'hexrgb nil t) ;; (no error if not found): hexrgb-color-name-to-hex, hexrgb-defined-colors,
                         ;; hexrgb-hex-to-rgb, hexrgb-(red|green|blue|hue|saturation|value),
@@ -2417,8 +2416,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   (setq icicle-incremental-completion-p  icicle-incremental-completion-flag)
   (when (and (eq t icicle-incremental-completion-p) (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
-
-  (let ((nb-cands  (length icicle-completion-candidates)))
+  (let ((nb-cands      (length icicle-completion-candidates)))
     (cond ((eq no-display-p 'no-msg))   ; No-op.
           (no-display-p (icicle-msg-maybe-in-minibuffer
                          (format "Candidates updated (%s matching): %d"
@@ -2449,7 +2447,6 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                  (save-selected-window (display-buffer comp-buf t 0)
                                        (deactivate-mark))))) ; Remove any leftover mouse selection.
            (with-output-to-temp-buffer "*Completions*"
-
              ;; Each candidate in `icicle-completion-candidates' is a string, regardless of the
              ;; original type of candidate used (e.g. symbol, string, alist candidate,...).  Here,
              ;; provided `icicle-fancy-cands-internal-p' is non-nil, we transform these candidates,
@@ -2769,7 +2766,7 @@ The optional second arg is ignored."
            (rows          (/ nb-cands columns))
  	   (row           0)
            startpos endpos string)
-      (unless (zerop (mod nb-cands rows)) (setq rows (1+ rows)))
+      (unless (= nb-cands (* rows columns)) (setq rows (1+ rows)))
       (dolist (cand  candidates)
         (setq endpos  (point))
         (cond ((eq icicle-completions-format-internal 'vertical) ; Vertical layout.
@@ -3854,13 +3851,15 @@ Return the possibly transformed candidate."
          (cand     "")
          (firstp   t)
          partnum)
-    (while indexes
-      (setq partnum  (car indexes))
-      (unless firstp (setq cand  (concat cand icicle-list-nth-parts-join-string)))
-      (setq firstp  nil)
-      (unless (> partnum maxpart) (setq cand  (concat cand (nth (1- partnum) parts))))
-      (setq indexes  (cdr indexes)))
-    cand))
+    (if (< maxpart 2)
+        (car parts)                     ; Nothing to join.
+      (while indexes
+        (setq partnum  (car indexes))
+        (unless firstp (setq cand  (concat cand icicle-list-nth-parts-join-string)))
+        (setq firstp  nil)
+        (unless (> partnum maxpart) (setq cand  (concat cand (nth (1- partnum) parts))))
+        (setq indexes  (cdr indexes)))
+      cand)))
 
 (defun icicle-display-cand-from-full-cand (cand)
   "Return the display candidate corresponding to full candidate CAND."

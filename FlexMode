@@ -1,8 +1,8 @@
 flex and bison files are not supported by cc-mode.
 
-(DEAD LINK as of Feb 2011) There is a flex-mode.el to be found here: http://www.eecs.tulane.edu/www/Beuscher/emacs/elisp.html#flex-mode.el
+There is a flex-mode.el to be found here:
 
-(note: this file is available at archive.org, just type the address and press the wayback machine button)
+* http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/flex-mode.el
 
 I have a copy, but I'm not sure about uploading it.  There is no licence statement.
 

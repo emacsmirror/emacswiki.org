@@ -29,6 +29,26 @@ Folding mode is based on comments, and it uses the
 <code>folding-top-mark</code> and <code>folding-bottom-mark</code> to
 distinguish which region should be folded.
 
+== Example of How to Use it with Ruby ==
+
+After adding those two lines above, also add:
+
+  (folding-add-to-marks-list 'ruby-mode "#{{{" "#}}}" nil t)
+
+Now say you have some ruby code you want to make foldable. Wrap it in #{{{ #}}} thus:
+
+  # this code does blah
+  #{{{
+  def blah
+    do some blah
+    do some more blah
+  end
+  #}}}
+
+Remember to M-x folding-mode <RET> to enable FoldingMode.
+Now, anywhere within those boundaries you can do C-c @ C-q to toggle it open and closed.
+
+
 == Caveats ==
 
 Always make sure that you have a closing fold mark for every opening mark! Otherwise the opening of files might be difficult.  Using <code>M-x occur</code> to search for opening and closing marks is a good idea for this.

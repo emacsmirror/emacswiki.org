@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 20 16:00:31 2011 (-0800)
+;; Last-Updated: Thu Feb 17 13:06:30 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6875
+;;     Update #: 6878
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3326,6 +3326,8 @@ No such replacement is done if option
       (defun lisp-completion-at-point () #'icicle-lisp-complete-symbol))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'icicle-minibuffer-default-add-completions))
+    (when (fboundp 'old-read-color)
+      (defalias 'read-color                           'icicle-read-color))
     (defalias 'read-from-minibuffer                   'icicle-read-from-minibuffer)
     (defalias 'read-string                            'icicle-read-string)
     (defalias 'repeat-complex-command                 'icicle-repeat-complex-command)
@@ -3367,6 +3369,8 @@ See `icicle-redefine-standard-commands'."
       (defalias 'lisp-completion-at-point             'old-lisp-completion-at-point))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'old-minibuffer-default-add-completions))
+    (when (fboundp 'old-read-color)
+      (defalias 'read-color                           'old-read-color))
     (defalias 'read-from-minibuffer                   'old-read-from-minibuffer)
     (defalias 'read-string                            'old-read-string)
     (defalias 'repeat-complex-command                 'old-repeat-complex-command)

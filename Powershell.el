@@ -1,17 +1,19 @@
 ;;; powershell.el --- run powershell as an inferior shell in emacs
 ;;
-;; Author:     Dino Chiesa <dpchiesa@hotmail.com>
-;; Created:    10 Apr 2008
-;; Modified:   May 2010
-;; Version:    0.2.1
-;; Keywords:   powershell shell
-;; X-URL:      http://www.emacswiki.org/emacs/PowerShell#toc3
+;; Author     : Dino Chiesa <dpchiesa@hotmail.com>
+;; Created    : 10 Apr 2008
+;; Modified   : May 2010
+;; Version    : 0.2.4
+;; Keywords   : powershell shell ms-windows
+;; X-URL      : http://www.emacswiki.org/emacs/PowerShell#toc3
+;; Last-saved : <2011-February-17 12:10:59>
 ;;
+
 
 ;;; Commentary:
 ;;
-;; Run Windows PowerShell v1.0 ir v2.0 as an inferior shell within
-;; emacs. Tested with emacs v22.2.
+;; Run Windows PowerShell v1.0 or v2.0 as an inferior shell within
+;; emacs. Tested with emacs v22.2 and v23.2.
 ;;
 ;; To use it, M-x powershell .
 ;;
@@ -23,6 +25,22 @@
 ;;   etc.
 ;;
 ;;
+
+;;; Versions:
+;;
+;;    0.1.0 - Initial release.
+;;    0.2.4 - make powershell fn an autoload.
+;;          - fixed problem where running a single shell, caused all
+;;            future shells to be powershell.  This meant reverting to
+;;            the original value of explicit-shell-file-name after
+;;            invoking `shell'.
+;;          - make location of powershell specifiable, via defcustom
+;;            `powershell-location-of-exe'. Also turn a few other defvar
+;;            into defcustom.
+;;          - fix "Marker does not point anywhere" problem in
+;;            `ansi-color-apply-on-region'.
+;;
+
 
 ;;; License:
 ;;
@@ -66,14 +84,37 @@
 
 (require 'shell)
 
+;; TODO: set this programmatically, relying on %WINDIR%
+(defcustom powershell-location-of-exe
+  "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"
+  "A string, providing the location of the Powershell.exe"
+  :group 'powershell)
+
+(defcustom powershell-log-level 3
+  "The current log level for powershell internal operations.
+0 = NONE, 1 = Info, 2 = VERBOSE, 3 = DEBUG. "
+  :group 'powershell)
+
+(defcustom powershell-squish-results-of-silent-commands t
+"The function `powershell-invoke-command-silently' returns the results
+of a command in a string.  PowerShell by default, inserts newlines when
+the output exceeds the configured width of the powershell virtual
+window. In some cases callers might want to get the results with the
+newlines and formatting removed. Set this to true, to do that."
+
+:group 'powershell)
 
 
-(defvar powershell-prompt-regex  "PS [^#$%>]+>"
+
+(defvar powershell-prompt-regex  "PS [^#$%>]+> "
   "Regexp for powershell prompt.
 
 Powershell.el uses this regex to determine when a command has completed.
 
-Therefore, you need to set this appropriately if you explicitly change the prompt function in powershell.
+Therefore, you need to set this appropriately if you explicitly
+change the prompt function in powershell. Any value should
+include a trailing space, if the powershell prompt uses a
+trailing space, but should not include a trailing newline.
 
 The default value will match the default PowerShell prompt.
 ")
@@ -83,20 +124,19 @@ The default value will match the default PowerShell prompt.
 
 
 (defvar powershell--max-window-width  0
-  "The maximum width of a powershell window.  You shouldn't need to ever set this.  It gets set automatically when the powershell starts up. "
+  "The maximum width of a powershell window.  You shouldn't need to ever
+set this.  It gets set automatically, once, when the powershell starts up. "
   )
 
 (defvar powershell-command-timeout-seconds 12
-  "The timeout for a powershell command.")
-
-
-(defvar powershell-squish-results-of-silent-commands t
-"The function `powershell-invoke-command-silently' returns the results of a command in a string.  PowerShell by default, inserts newlines when the output exceeds the configured width of the powershell virtual window. In some cases callers might want to get the results with the newlines removed.   If this is true, then newlines are removed.")
+  "The timeout for a powershell command.  Powershell.el
+will wait this long before giving up.")
 
 
 (defvar powershell--need-rawui-resize t
-  "No need to fuss with this.  It's intended for internal use only.  It gets set when powershell needs to be informed that emacs has resized its window. ")
-
+  "No need to fuss with this.  It's intended for internal use
+only.  It gets set when powershell needs to be informed that
+emacs has resized its window. ")
 
 
 (defconst powershell--find-max-window-width-command
@@ -115,7 +155,6 @@ The default value will match the default PowerShell prompt.
 )
   "The powershell logic to determine the max physical window width."
   )
-
 
 
 (defconst powershell--set-window-width-fn-name  "_Emacs_SetWindowWidth"
@@ -156,9 +195,23 @@ The default value will match the default PowerShell prompt.
              "  Set-Variable -name cwidth -value $null\n"
              "}\n\n")
 
-    "The text of the powershell function that will define the function _Emacs_SetWindowWidth within powershell.")
+    "The text of the powershell function that will be used at runtime to
+set the width of the virtual Window in PowerShell, as the Emacs window
+gets resized.
+")
 
 
+
+(defun powershell-log (level text &rest args)
+  "Log a message at level LEVEL.
+If LEVEL is higher than `powershell-log-level', the message is
+ignored.  Otherwise, it is printed using `message'.
+TEXT is a format control string, and the remaining arguments ARGS
+are the string substitutions (see `format')."
+  (if (<= level powershell-log-level)
+      (let* ((msg (apply 'format text args)))
+        (message "%s" msg)
+        )))
 
 
 ;; (defun dino-powershell-complete (arg)
@@ -188,7 +241,10 @@ The default value will match the default PowerShell prompt.
 
 
 (defun powershell--define-set-window-width-function (proc)
-  "Sends a function definition to the PowerShell identified by PROC.  The function set the window width, and later, it will be called when the width of the emacs window changes.
+  "Sends a function definition to the PowerShell instance
+identified by PROC.  The function sets the window width of the
+PowerShell virtual window.  Later, the function will be called
+when the width of the emacs window changes.
 "
     (if proc
         (progn
@@ -201,7 +257,8 @@ The default value will match the default PowerShell prompt.
 
 
 (defun powershell--get-max-window-width  (buffer-name)
-  "Gets the max width of the virtual window for PowerShell running in the buffer with name BUFFER-NAME.
+  "Gets the maximum width of the virtual window for PowerShell running
+in the buffer with name BUFFER-NAME.
 
 In PowerShell 1.0, the maximum WindowSize.Width for
 PowerShell is 210, hardcoded, I believe. In PowerShell 2.0, the max
@@ -241,6 +298,8 @@ appropriately for a PowerShell shell.
 
 This is necessary to get powershell to do the right thing, as far
 as text formatting, when the emacs window gets resized.
+
+The function gets defined in powershell upon powershell startup.
 "
   (let ((ps-width
          (number-to-string (min powershell--max-window-width (window-width)))))
@@ -254,10 +313,10 @@ as text formatting, when the emacs window gets resized.
 
 
 
-;;;###autoload
 (defun powershell (&optional buffer prompt-string)
 
-  "Run an inferior PowerShell, with I/O through tne named BUFFER (which defaults to `*PowerShell*').
+  "Run an inferior PowerShell, with I/O through tne named
+BUFFER (which defaults to `*PowerShell*').
 
 Interactively, a prefix arg means to prompt for BUFFER.
 
@@ -277,28 +336,21 @@ See the help for `shell' for more details.  \(Type
          (read-buffer "Shell buffer: "
                       (generate-new-buffer-name "*PowerShell*")))))
 
-  ;; get a name for the buffer
   (setq buffer (get-buffer-create (or buffer "*PowerShell*")))
-
+  (powershell-log 1 "powershell starting up...in buffer %s" (buffer-name buffer))
   (let ((tmp-shellfile explicit-shell-file-name))
     ;; set arguments for the powershell exe.
-    ;; This needs to be tunable.
-    (setq explicit-shell-file-name "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe")
-    (setq explicit-powershell.exe-args '("-Command" "-" )) ; interactive, but no command prompt
+    ;; Does this need to be tunable?
 
-    ;; launch the shell
+    (setq explicit-shell-file-name powershell-location-of-exe)
+    (setq explicit-powershell.exe-args '("-Command" "-" ))
     (shell buffer)
-
-    ;; restore the original shell
-    (if tmp-shellfile
-        (setq explicit-shell-file-name tmp-shellfile)))
-
+    (setq explicit-shell-file-name tmp-shellfile))
 
   ;; (powershell--get-max-window-width "*PowerShell*")
   ;; (powershell-invoke-command-silently (get-buffer-process "*csdeshell*") "[Ionic.Csde.Utilities]::Version()" 2.9)
 
   ;;  (comint-simple-send (get-buffer-process "*csdeshell*") "prompt\n")
-
 
 
   (let ((proc (get-buffer-process buffer)))
@@ -353,7 +405,6 @@ See the help for `shell' for more details.  \(Type
 
           (setq powershell-prompt-regex prompt-string)))
 
-
     ;; hook the kill-buffer action so we can kill the inferior process?
     (add-hook 'kill-buffer-hook 'powershell-delete-process)
 
@@ -367,10 +418,7 @@ See the help for `shell' for more details.  \(Type
 
     ;; send a carriage-return  (get the prompt)
     (comint-send-input)
-    (accept-process-output proc)
-
-    )
-
+    (accept-process-output proc))
 
   ;; The launch hooks for powershell has not (yet?) been implemented
   ;;(run-hooks 'powershell-launch-hook)
@@ -379,21 +427,60 @@ See the help for `shell' for more details.  \(Type
   buffer)
 
 
+;; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+;; Using powershell on emacs23, I get an error:
+;;
+;;    ansi-color-process-output: Marker does not point anywhere
+;;
+;; Here's what's happening.
+;;
+;; In order to be able to read the output from powershell, this shell
+;; starts powershell.exe in "interactive mode", using the -i
+;; option. This which has the curious side-effect of turning off the
+;; prompt in powershell. Normally powershell will return its results,
+;; then emit a prompt to indicate that it is ready for more input.  In
+;; interactive mode it doesn't emit the prompt.  To work around this,
+;; this code (powershell.el) sends an explicit `prompt` command after
+;; sending any user-entered command to powershell. This tells powershell
+;; to explicitly return the prompt, after the results of the prior
+;; command. The prompt then shows up in the powershell buffer.  Lovely.
+;;
+;; But, `ansi-color-apply-on-region` gets called after every command
+;; gets sent to powershell. It gets called with args `(begin end)`,
+;; which are both markers. Turns out the very first time this fn is
+;; called, the position for the begin marker is nil.
+;;
+;; `ansi-color-apply-on-region` calls `(goto-char begin)` (effectively),
+;; and when the position on the marker is nil, the call errors with
+;; "Marker does not point anywhere."
+;;
+;; The following advice suppresses the call to
+;; `ansi-color-apply-on-region` when the begin marker points
+;; nowhere.
+(defadvice ansi-color-apply-on-region (around
+                                       powershell-throttle-ansi-colorizing
+                                       (begin end)
+                                       activate compile)
+  (progn
+    (let ((start-pos (marker-position begin)))
+    (cond
+     (start-pos
+      (progn
+        ad-do-it))))))
+
+
 
 
 (defun powershell--silent-cmd-filter (process result)
-  "A process filter that captures output from a shell and stores it to `powershell-command-reply', rather than allowing the output to be displayed in the shell buffer.
+"A process filter that captures output from a shell and stores it
+to `powershell-command-reply', rather than allowing the output to
+be displayed in the shell buffer.
 
+This function is intended for internal use only.
 "
-  ;;(csde-log 4 "csde-shell-exec-filter: got output: '%s'" result)
-
-  ;;(message "ps-reply: %s" powershell-command-reply)
-
   (let ((end-of-result
          (string-match (concat ".*\n\\(" powershell-prompt-regex "\\)[ \n]*\\'")
-                       ;;powershell-command-reply
-                       result
-                       )))
+                       result)))
     (if (and end-of-result (numberp end-of-result))
 
         (progn
@@ -407,7 +494,6 @@ See the help for `shell' for more details.  \(Type
 
           (setq powershell-command-reply
                 (concat powershell-command-reply result)))
-
 
       (progn
         (if powershell-squish-results-of-silent-commands
@@ -424,24 +510,36 @@ See the help for `shell' for more details.  \(Type
 
 
 (defun powershell-invoke-command-silently (proc command &optional timeout-seconds)
-  "Invoke COMMAND in the PowerShell instance PROC, silently, without echoing the results to the associated buffer.  Use TIMEOUT-SECONDS as the timeout, waiting for a response.  The COMMAND should be a string, and need not be terminated with a newline.
+  "Invoke COMMAND in the PowerShell instance PROC, silently, without
+echoing the command or the results to the associated buffer.  Use
+TIMEOUT-SECONDS as the timeout, waiting for a response.  The COMMAND
+should be a string, and need not be terminated with a newline.
 
-This is helpful when, for example, doing setup work.  Or other sneaky stuff.
+This is helpful when, for example, doing setup work. Or other sneaky
+stuff, such as resetting the size of the PowerShell virtual window.
 
-Returns the result of the command, a string, without the follow-on command prompt.  The result will probably end in a newline. This result is also stored in the buffer-local variable `powershell-command-reply'.
+Returns the result of the command, a string, without the follow-on
+command prompt.  The result will probably end in a newline. This result
+is also stored in the buffer-local variable `powershell-command-reply'.
 
-This function should be invoked within a call to `save-excursion' in order to insure that the buffer-local values of `powershell-command-reply', `powershell-prompt-regex', and `powershell-command-timeout-seconds' are used.
+In some cases the result can be prepended with the command prompt, as
+when, for example, several commands have been send in succession and the
+results of the prior command were not fully processed by the application.
+
+If a PowerShell buffer is not the current buffer, this function
+should be invoked within a call to `with-current-buffer' or
+similar in order to insure that the buffer-local values of
+`powershell-command-reply', `powershell-prompt-regex', and
+`powershell-command-timeout-seconds' are used.
 
 Example:
 
-    (save-excursion
-      (set-buffer buffer-name)
-
+    (with-current-buffer powershell-buffer-name
       (powershell-invoke-command-silently
        proc
        command-string
-       0.90)
-     )
+       1.90))
+
 "
 
   (let ((old-timeout powershell-command-timeout-seconds)
@@ -464,19 +562,16 @@ Example:
 
     ;; output of the command is now available in powershell-command-reply
 
-
-          ;; Trim prompt from the beginning of the output.
-          ;; this can happen for the first command through
-          ;; the shell.  I think there's a race condition.
-          (if (string-match (concat "^" powershell-prompt-regex "\\(.*\\)\\'")
-                            powershell-command-reply)
-              (setq powershell-command-reply
-                    (substring powershell-command-reply
-                               (match-beginning 1)
-                               (match-end 1))))
-
-
-
+    ;; Trim prompt from the beginning of the output.
+    ;; this can happen for the first command through
+    ;; the shell.  I think there's a race condition.
+    (if (and powershell-command-reply
+             (string-match (concat "^" powershell-prompt-regex "\\(.*\\)\\'")
+                           powershell-command-reply))
+        (setq powershell-command-reply
+              (substring powershell-command-reply
+                         (match-beginning 1)
+                         (match-end 1))))
 
     ;; restore the original filter
     (set-process-filter proc original-filter)
@@ -491,9 +586,6 @@ Example:
 
 
 
-
-
-
 (defun powershell-delete-process (&optional proc)
   (or proc
       (setq proc (get-buffer-process (current-buffer))))
@@ -501,18 +593,17 @@ Example:
        (delete-process proc)))
 
 
-
 (defun powershell-preoutput-filter-for-prompt (string)
-  "Trim the newline from STRING, the prompt that we get back from powershell.  This fn is set into the preoutput filters, so the newline is trimmed before being put into the output buffer.
+  "Trim the newline from STRING, the prompt that we get back from
+powershell.  This fn is set into the preoutput filters, so the
+newline is trimmed before being put into the output buffer.
 "
-   (if
-       (string-match powershell-prompt-regex  string)
+   (if (string-match (concat powershell-prompt-regex "\n\\'") string)
        (substring string 0 -1) ;; remove newline
      string))
 
 
 (defun powershell-simple-send (proc string)
-
   "Override of the comint-simple-send function, with logic
 specifically designed for powershell.  This just sends STRING,
 plus the prompt command.
@@ -551,7 +642,6 @@ This insures we get and display the prompt.
         (setq powershell--need-rawui-resize nil)))
   (comint-simple-send proc (concat string "\n"))
   (comint-simple-send proc "prompt\n"))
-
 
 
 
@@ -642,4 +732,3 @@ This insures we get and display the prompt.
 (provide 'powershell)
 
 ;; End of powershell.el
-

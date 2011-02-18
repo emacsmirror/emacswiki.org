@@ -1,6 +1,9 @@
 [[zh:KeyboardMacros_(中文)]]
 [[ja:キーボードマクロ]]
 [[es:Macros_del_teclado]]
+[new:AlexSchroeder:2011-02-17 16:40 UTC]
+This page is currently locked because of spam. If you want to contribute, please collect stuff on [[Keyboard Macros]].
+
 == Overview ==
 
 Keyboard macros are a powerful Emacs feature. A '''[::keyboard macro]''' is simply a ''recording'' of a sequence of key sequences. A '''[[key sequence]]''' is a series of keyboard keystrokes, mouse actions, or menu actions that is bound to an Emacs command. So, a keyboard macro records a ''sequence of user actions'' that carry out Emacs commands.
