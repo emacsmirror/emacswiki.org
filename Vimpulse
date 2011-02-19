@@ -32,6 +32,13 @@ Bug reports, patches or other feedback is welcome on the mailing list (see below
 
 You can also just edit this page.
 
+=== Proposal for Vim's "insert character above/below cursor" ===
+
+Hi, I just wrote a small function to emulate Vim's i_CTRL_E and i_CTRL_Y. Please feel free to use it, change the names, or not use it. The code is here: http://gist.github.com/834957
+
+Cheers!
+-- SebastienRoccaSerra
+
 == External links ==
 
 * [http://gitorious.org/vimpulse Gitorious project]

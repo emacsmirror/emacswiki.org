@@ -1,0 +1,6 @@
+[new:AlexSchroeder:]
+Recently we had a few pages that were spammed on a regular basis.
+I decided to lock them.
+The Administration link at the bottom of every page has a link to the [Self:action=listlocked list of all locked pages].
+
+I'm not quite sure why there's so much spam, recently. Have these guys discovered the "secret" cookie necessary to bypass the Captcha? Should I be rotating this secret every now and then? If I did that, it would inconvenience people that used non-browser interfaces to the wiki. Then again, maybe that's a trade-off we should be making. -- AlexSchroeder

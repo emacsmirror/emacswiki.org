@@ -7,12 +7,13 @@ Where to get it:
 *** ftp://ftp.gnu.org/gnu/emacs/windows/
 *** http://ftp.gnu.org/gnu/emacs/windows/
 *** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
-** pretest - Emacs 23, <b>There is currently no pretest so there is no pretest binaries</b>
+** pretest - Emacs 23.2 
 *** ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 * Unofficial/CVS Emacs (which means the Emacs currently in development, it is however normally very stable):
-** **2010-09-15** -- http://alpha.gnu.org/gnu/emacs/windows/ -- **emacs-XXXXXXXX-bin-i386.zip**
+** **Builds from trunk**  -- http://alpha.gnu.org/gnu/emacs/windows/ -- **emacs-XXXXXXXX-bin-i386.zip**
+*** SeanSieger usually builds Emacs from trunk
 ** **2011-01-12** -- http://ntemacs.sourceforge.net/ -- **CVS Emacs 24.0.50.1 Win32**
 *** Clean Win32 build of latest Emacs development trunk (Bazaar).
 *** Support for images enabled.

@@ -256,6 +256,38 @@ Of course, you also need to define this ##guess-TeX-master## function, for examp
 
 Feel free to improve this function to suit your needs (for example by adding support for other forms of the the "##include##" syntax), but it works quite well for me. Note that it will return ##nil## for files that do not get included in other files, which is the case for single file documents, or for the master files themselves. In this case, the ##TeX-master## variable gets set to ##nil##, which works.
 
+
+== Synctex and Evince ==
+
+Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl 
+and the left mouse button within a PDF document to be taken back to the corresponding line of the .tex source file that generated the PDF.  This requires synctex.  Thanks to Tassilo Horn for solving this problem!
+http://permalink.gmane.org/gmane.emacs.auctex.general/4074
+
+{{{
+(require 'dbus)
+(defun th-evince-sync (file linecol)
+   (let ((buf (get-buffer file))
+         (line (car linecol))
+         (col (cadr linecol)))
+     (if (null buf)
+         (message "Sorry, %s is not opened..." file)
+       (switch-to-buffer buf)
+       (goto-line (car linecol))
+       (unless (= col -1)
+         (move-to-column col)))))
+
+(when (and 
+       (eq window-system 'x)
+       (fboundp 'dbus-register-signal))
+  (dbus-register-signal
+   :session nil "/org/gnome/evince/Window/0"
+   "org.gnome.evince.Window" "SyncSource"
+   'th-evince-sync))
+}}}
+
+Finally, in your .tex buffer you need to do M-x TeX-source-correlate-mode so that the synctex information is written when you compile your documents.
+
+
 == Discussion ==
 
 Would it be possible to make a [SkeletonMode skeleton pair] that would automatically match a '##\(##' with a '##\)##'? The same should be true for '##\[##' and '##\]##'. Thanks!

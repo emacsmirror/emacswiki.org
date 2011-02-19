@@ -1,0 +1,13 @@
+== INKMACS ==
+
+Inkmacs integrates Inkscape and Emacs.
+
+It is experimental but if you are prepared for some tedious setup 
+the main attractive feature is actually quite usable now.
+
+It is possible to synchronize text nodes in inkscape with an org mode tree in emacs!
+
+
+Inkmacs code is here: https://github.com/jave/inkmacs
+
+[[image:linkedtext.png]]

@@ -45,6 +45,11 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 # Open OAuth authorization page with your browser, click "Allow", and enter the PIN code.
 # Your friends' timeline will appear. Enjoy!
 
+To avoid having to authorize twittering-mode everytime you run it, add this to your `.emacs`:
+{{{
+      (setq twittering-use-master-password t)
+}}}
+
 == Key-bindings on View mode ==
 `M-x twit', and you enter to this mode. You can see various timelines.
 
@@ -175,7 +180,9 @@ Add the hook below to enable spell checking before tweets
 (add-hook 'twittering-edit-mode-hook (lambda () (ispell-minor-mode) (flyspell-mode)))
 }}}
 
+== Numbering mode ==
 
+[https://github.com/pft/elisp-assorted/blob/master/twittering-numbering.el twittering-numbering.el] lets one navigate to links using numbers, the same way as is done in emacs-w3m.
 
 == Discussion ==
 [new:halloleo:2010-01-20 01:00 UTC]

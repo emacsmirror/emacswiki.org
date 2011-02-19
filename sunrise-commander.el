@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 357 $
+;; RCS Version: $Rev: 358 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 357 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 358 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -821,7 +821,11 @@ automatically:
 (defun sr-insert-directory (file switches &optional wildcard full-directory-p)
   (let ((beg (point)))
     (insert-directory file switches wildcard full-directory-p)
-    (dired-align-file beg (point))))
+    (dired-align-file beg (point))
+    (save-excursion
+      (forward-line -1)
+      (re-search-forward directory-listing-before-filename-regexp (point-at-eol) t)
+      (add-text-properties (point) (point-at-eol) '(dired-filename t)))))
 
 ;; This is a hack to avoid some dired mode quirks:
 (defadvice dired-find-buffer-nocreate
@@ -1929,7 +1933,7 @@ automatically:
           (overlay nil))
       (while next
         (beginning-of-line)
-        (setq overlay (make-overlay (+ 2 (point)) (- next 1)))
+        (setq overlay (make-overlay (1+ (point)) (- next 1)))
         (setq attr-list (cons overlay attr-list))
         (overlay-put overlay 'invisible t)
         (overlay-put overlay 'intangible t)
@@ -3150,6 +3154,7 @@ or (c)ontents? ")
    (let ((hist (cdr (assoc sr-selected-window sr-history-registry)))
          (dired-actual-switches dired-listing-switches)
          (pane-name (capitalize (symbol-name sr-selected-window)))
+         (switches (concat sr-virtual-listing-switches " -d"))
          (beg))
      (sr-switch-to-clean-buffer (format "*%s Pane History*" pane-name))
      (insert (concat "Recent Directories in " pane-name " Pane: \n"))
@@ -3158,8 +3163,7 @@ or (c)ontents? ")
            (when dir
              (setq dir (replace-regexp-in-string "\\(.\\)/?$" "\\1" dir))
              (setq beg (point))
-             (sr-insert-directory dir sr-virtual-listing-switches nil nil)
-             (dired-align-file beg (point)))
+             (sr-insert-directory dir switches nil nil))
          (error (ignore))))
      (sr-virtual-mode))))
 
