@@ -10,4 +10,8 @@ It is possible to synchronize text nodes in inkscape with an org mode tree in em
 
 Inkmacs code is here: https://github.com/jave/inkmacs
 
+Below is a very simple example image, which is included in the source repository.
+
+
+
 [[image:linkedtext.png]]

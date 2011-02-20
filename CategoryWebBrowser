@@ -9,7 +9,7 @@
 
 * [[emacs-w3m]] -- w3m.el, a mode for w3m, an external text browser
 * [http://www.ma.utexas.edu/~jcorneli/a/elisp/nero.el nero.el] -- lynx based
-* Its possible to embedd the webkit based uzbl browser in emacs, see EmacsXembed (very alpha)
+* [[ezbl]] (very alpha) -- interface to webkit based uzbl (see also [[EmacsXembed]] (very alpha) for embed widgets in general)
 
 == HTTP backends ==
 

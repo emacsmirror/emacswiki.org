@@ -2,6 +2,8 @@ This is a list of user-contributed ideas or wishes for AquamacsEmacs. These idea
 
 In case you find a bug, please file a bug report using the Help / Diagnose and Report Bug menu.  Restart Aquamacs without customizations (per menu), reproduce the bug, then report using the reporting function.  *It is unlikely that your requests submitted in this Wiki are attended to quickly.*
 
+[new]
+PFlynn: When editing LaTeX, there is no X toolbar icon to close the current buffer (kill-buffer). This appears to have been inherited from AucTeX, which shows the same behaviour. Is there an easy way to put it back (like some elisp in my .emacs)?
 
 [new]
 cjay: The behavior of cmd-` and cmd-shift-` doesn't seem quite right. With apps like Safari and Terminal, they switch between windows in last-used-order. For example, if they switch Safari windows in order 1 2 3 4, and I have related work to do in 2 and 4, I switch to 2 and then click on 4 (with expose if it's covered). Now I can go back and forward with cmd-(shift)-` between 2 and 4 without 3 in between. With Aquamacs the order of the frames seems to be fixed, which can get quite annoying if one is used to the behavior of Safari and Terminal (and probably most other apps).

@@ -25,3 +25,4 @@ Some things I found while looking for a W32 version:
 :: I tried it and it is true that it is faster than ImageMagick for certain operations. It also seems to create smaller file sizes. Thanks to you, I had to add possibilities to customize which tool to use in [[Tumme]], Grrrr! ... :) The [http://www.graphicsmagick.org/www/Copyright.html License] seems a bit complicated though... -- MaDa
 ----
 I'm working on a patch to be able to use imagemagick to load for instance .djvu files in emacs. See emacs-devel mailing list for the patch --JoakimVerona
+: For now, I find using djvups to create a postscript file and viewing that using doc-view very satisfactory (whereas working with tiffs or pdfs created using ddjvu was not). The quality is great and so is the speed at which you can flip through the pages. -- pipping

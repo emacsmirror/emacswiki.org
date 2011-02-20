@@ -320,6 +320,11 @@ I made the following changes to python-mode.el to make debugging work again with
 
 Now when I debug in the IPython console (using %run -d, or %pdb on, etc.) pdbtrack makes sure to show me the current source code and corresponding line. Note that these changes may break debugging in a standard python-shell, I have not tested this.
 
+== IronPython ==
+* Install [ProgrammingWithPythonModeDotEl python-mode]
+* ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
+* Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
+
 == Pedro Kroger's python setup ==
 
 === dependencies ===
