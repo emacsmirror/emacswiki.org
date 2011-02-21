@@ -115,5 +115,51 @@ In emacs 22, I found it is rather simple to use M-x replace-regexp to fulfill th
 Replace regexp  ^.*$ with \#<tab>\&
 where <tab> stand for tab key
 
+[new]
+Use rectangle and format string, like `rectangle-number-lines' in Emacs24. -- [[rubikitch]]
+
+
+  (eval-when-compile (require 'cl))
+  (defun number-rectangle (start end format-string from)
+    "Delete (don't save) text in the region-rectangle, then number it."
+    (interactive
+     (list (region-beginning) (region-end)
+           (read-string "Number rectangle: " (if (looking-back "^ *") "%d. " "%d"))
+           (read-number "From: " 1)))
+    (save-excursion
+      (goto-char start)
+      (setq start (point-marker))
+      (goto-char end)
+      (setq end (point-marker))
+      (delete-rectangle start end)
+      (goto-char start)
+      (loop with column = (current-column)
+            while (<= (point) end)
+            for i from from   do
+            (insert (format format-string i))
+            (forward-line 1)
+            (move-to-column column)))
+    (goto-char start))
+
+--
+[new]
+Print sequences with format string. -- [[rubikitch]]
+  (defun count-string-matches (regexp string)
+    (with-temp-buffer
+      (insert string)
+      (count-matches regexp (point-min) (point-max))))
+  (defun seq (format-string from to)
+    "Insert sequences with FORMAT-STRING.
+  FORMAT-STRING is like `format', but it can have multiple %-sequences."
+    (interactive
+     (list (read-string "Input sequence Format: ")
+           (read-number "From: " 1)
+           (read-number "To: ")))
+    (save-excursion
+      (loop for i from from to to do
+            (insert (apply 'format format-string
+                           (make-list (count-string-matches "%[^%]" format-string) i))
+                    "\n")))
+    (end-of-line))
 ----
 CategoryEditing

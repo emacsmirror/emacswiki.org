@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 17 13:08:26 2011 (-0800)
+;; Last-Updated: Sun Feb 20 14:44:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6032
+;;     Update #: 6040
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -666,6 +666,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/02/20 dadams
+;;     Added: icicle-color-(distance)-(hsv|rgb)-lessp.
+;;     icicle-color-completion-setup: Added sort orders for HSV and RGB: component order and distance.
 ;; 2011/02/17 dadams
 ;;     icicle-join-nth-parts: If only one part then don't append the join string.
 ;; 2011/01/31 dadams
@@ -2188,6 +2191,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/02/20 dadams
+;;     icicle-history: If history is command-history, convert its entries to strings for completion.
+;;     icicle-history, icicle-keep-only-past-inputs: Clarify doc: current completion mode is kept.
 ;; 2011/01/20 dadams
 ;;     icicle-read+insert-file-name: Bind icicle-must-pass-after-match-predicate to nil.
 ;;     icicle-insert-string-at-point:

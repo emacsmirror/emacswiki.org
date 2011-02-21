@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 20 16:22:57 2011 (-0800)
+;; Last-Updated: Sun Feb 20 20:25:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25773
+;;     Update #: 25781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3593,10 +3593,13 @@
 ;;      by hue (colors)
 ;;      by purity/saturation (colors)
 ;;      by brightness/value/luminance (colors)
+;;      by all HSV components, in order (colors)
+;;      by HSV distance from a base color (colors)
 ;;      by amount of red (colors)
 ;;      by amount of green (colors)
 ;;      by amount of blue (colors)
-;;      by RGB values (colors)
+;;      by all RGB components, in order (colors)
+;;      by RGB distance from a base color (colors)
 ;;   22 by key name, prefix keys first (keys)- see (@> "Completing Prefix Keys")
 ;;   22 by key name, local bindings first (keys)- see
 ;;      (@> "Local Bindings Are Highlighted")
@@ -6654,12 +6657,13 @@
 ;;(@* "Matching Only Historical Candidates: `M-h' and `M-pause'")
 ;;  ** Matching Only Historical Candidates: `M-h' and `M-pause' **
 ;;
-;;  Both `M-h' and `M-pause' can be used toward the same end.  They
-;;  both work for all input types.  They both use the appropriate
-;;  history list for the current command.  They both provide apropos
-;;  completion and cycling for the minibuffer history (as well as
-;;  prefix completion, of course).  Use them as another way to search
-;;  through a history list or complete to one of its elements.
+;;  Both `M-h' (`icicle-history') and `M-pause'
+;;  (`icicle-keep-only-past-inputs') can be used toward the same end.
+;;  They both work for all input types.  They both use the appropriate
+;;  history list for the current command.  They both provide
+;;  completion and cycling for the minibuffer history.  Use them as
+;;  another way to search through a history list or complete to one of
+;;  its elements.
 ;;
 ;;  For example, If you use `C-x C-f' to find a file, and then use
 ;;  `M-h' or `M-pause', the completion candidates will be the names of
@@ -6752,6 +6756,13 @@
 ;;  keeping those that are in the history list.  This means that, with
 ;;  `M-pause', the input `/foo/bar/lph' will match against the
 ;;  previously input file name `/foo/bar/alphabet-soup.el'.
+;;
+;;  Note that neither `M-h' nor `M-pause' uses a recursive minibuffer;
+;;  they each simply co-opt the current completion, changing it to
+;;  completion against the history.  This means that whatever
+;;  completion mode (prefix or apropos) was in effect before you use
+;;  `M-h' or `M-pause' remains in effect for the history completion as
+;;  well.
 ;;
 ;;  If this all sounds confusing, just give it a try; it is much
 ;;  harder to describe than it is to experience.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Feb  3 13:13:40 2011 (-0800)
+;; Last-Updated: Sun Feb 20 11:20:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2572
+;;     Update #: 2645
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -117,12 +117,11 @@
 ;;     1. Allow negative COLUMN. Allow COLUMN = 1 or -1.
 ;;     2. When COLUMN = `Buffer-menu-sort-column', then flip that.
 ;;     3. Added message at end indicating the kind of sort.
-;;  `list-buffers-noselect' - Change sort direction if same column.
-;;                          - Add sort button for CRM (visited order).
-;;                          - Bug fix: Temporarily set
-;;                            `window-dedicated-p' to nil to allow
-;;                            revert-buffer. (Emacs 21 only)
-;;
+;;  `list-buffers-noselect' - Use longest buffer name+size to indent.
+;;                          - Change sort direction if same column.
+;;                          - Add sort buttons for CRM and Time also.
+;;                          - Sort test is different: no sort for CRM.
+;;                          - Go to bob if `desired-point' undefined.
 ;;
 ;;  In your init file (`~/.emacs') file, do this:
 ;;
@@ -142,6 +141,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/20 dadams
+;;     list-buffers-noselect: Use only Emacs 22+ call to format-mode-line.
+;;                            Use property font-lock-face, not face.
+;;     Buffer-menu-sort: Typo: setq buffer-read-only was missing value.
 ;; 2011/02/03 dadams
 ;;     All deffaces: Provided default values for dark-background screens too.
 ;; 2011/01/03 dadams
@@ -424,20 +427,20 @@ Don't forget to mention your Emacs and library versions."))
     "Increase option `Buffer-menu-buffer+size-width' by one."
     (interactive)
     (when (> (1+ Buffer-menu-buffer+size-width) 150) (error "Cannot increase further"))
-    (setq Buffer-menu-buffer+size-width (1+ Buffer-menu-buffer+size-width))
+    (setq Buffer-menu-buffer+size-width  (1+ Buffer-menu-buffer+size-width))
     (buffer-menu)
     (message "New max width: %s" Buffer-menu-buffer+size-width))
 
   (defun buffer-menu-decrease-max-buffer+size ()
     "Decrease option `Buffer-menu-buffer+size-width' by one."
     (interactive)
-    (let ((orig Buffer-menu-buffer+size-width))
+    (let ((orig  Buffer-menu-buffer+size-width))
       (condition-case nil
           (progn
-            (setq Buffer-menu-buffer+size-width (1- Buffer-menu-buffer+size-width))
+            (setq Buffer-menu-buffer+size-width  (1- Buffer-menu-buffer+size-width))
             (buffer-menu)
             (message "New max width: %s" Buffer-menu-buffer+size-width))
-        (error (progn (setq Buffer-menu-buffer+size-width orig)
+        (error (progn (setq Buffer-menu-buffer+size-width  orig)
                       (buffer-menu)
                       (error "Cannot decrease further"))))))
 
@@ -474,7 +477,7 @@ Don't forget to mention your Emacs and library versions."))
     "Set default value of SYMB to VAL.
 Update `buffer-menu-font-lock-keywords' accordingly."
     (set-default symb val)
-    (setq buffer-menu-font-lock-keywords (buffer-menu-font-lock-keywords)))
+    (setq buffer-menu-font-lock-keywords  (buffer-menu-font-lock-keywords)))
 
   (defun buffer-menu-font-lock-keywords ()
     "Returns the list of font lock keywords for the buffer menu."
@@ -569,7 +572,7 @@ Click a column heading to sort by that field and update this option."
 
 
   ;; This is needed because `buff-menu.el' is preloaded and set to nil.
-  (setq Buffer-menu-sort-column (or Buffer-menu-sort-column 1))
+  (setq Buffer-menu-sort-column  (or Buffer-menu-sort-column 1))
 
 
   ;; REPLACES ORIGINAL in `buff-menu.el'.
@@ -577,19 +580,19 @@ Click a column heading to sort by that field and update this option."
   ;;
   (defun Buffer-menu-buffer+size (name size &optional name-props size-props)
     (if (> (+ (length name) (length size) 1) Buffer-menu-buffer+size-computed-width)
-        (setq name (if (string-match "<[0-9]+>$" name)
-                       (concat (substring name 0 (- Buffer-menu-buffer+size-computed-width
-                                                    (max (length size) 3)
-                                                    (match-end 0)
-                                                    (- (match-beginning 0))
-                                                    2))
-                               "["      ; Cut-off character.
-                               (match-string 0 name))
-                     (concat (substring name 0 (- Buffer-menu-buffer+size-computed-width
-                                                  (max (length size) 3)
-                                                  2))
-                             "[")))     ; Cut-off character.
-      (setq name (copy-sequence name))) ; Don't put properties on (buffer-name).
+        (setq name  (if (string-match "<[0-9]+>$" name)
+                        (concat (substring name 0 (- Buffer-menu-buffer+size-computed-width
+                                                     (max (length size) 3)
+                                                     (match-end 0)
+                                                     (- (match-beginning 0))
+                                                     2))
+                                "["     ; Cut-off character.
+                                (match-string 0 name))
+                      (concat (substring name 0 (- Buffer-menu-buffer+size-computed-width
+                                                   (max (length size) 3)
+                                                   2))
+                              "[")))    ; Cut-off character.
+      (setq name  (copy-sequence name))) ; Don't put properties on (buffer-name).
     (when name-props (add-text-properties 0 (length name) name-props name))
     (when size-props (add-text-properties 0 (length size) size-props size))
     (concat name (make-string (- Buffer-menu-buffer+size-computed-width
@@ -767,8 +770,7 @@ Click a column heading to sort by that field and update this option."
 ;; Protect `Buffer-menu-files-only' with boundp (for Emacs 20).
 ;;
 (defun Buffer-menu-revert-function (ignore1 ignore2)
-  (or (eq buffer-undo-list t)
-      (setq buffer-undo-list nil))
+  (unless (eq buffer-undo-list t) (setq buffer-undo-list  ()))
   ;; We can not use save-excursion here.  The buffer gets erased.
   (let ((opoint            (point))
         (eobp              (eobp))
@@ -785,7 +787,7 @@ Click a column heading to sort by that field and update this option."
     (with-current-buffer (window-buffer)
       (list-buffers-noselect (and (boundp 'Buffer-menu-files-only) Buffer-menu-files-only)))
     (if oline
-        (while (setq prop (next-single-property-change prop 'buffer))
+        (while (setq prop  (next-single-property-change prop 'buffer))
           (when (eq (get-text-property prop 'buffer) oline)
             (goto-char prop)
             (move-to-column ocol)))
@@ -797,7 +799,7 @@ Click a column heading to sort by that field and update this option."
     (save-excursion
       (pop-to-buffer "*Buffer List*")
       (when (< emacs-major-version 21) (make-local-variable 'font-lock-defaults))
-      (setq font-lock-defaults '(buffer-menu-font-lock-keywords t))
+      (setq font-lock-defaults  '(buffer-menu-font-lock-keywords t))
       (turn-on-font-lock)
       (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
       (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
@@ -837,12 +839,12 @@ last access (visit).  With a non-nil prefix ARG:
 Type `?' in buffer \"*Buffer List*\" for more information.
 Type `q' there to quit the buffer menu."
   (interactive "P")
-  (let ((num-arg (prefix-numeric-value arg)))
+  (let ((num-arg  (prefix-numeric-value arg)))
     (if (and arg (< num-arg 0)) (list-buffers) (list-buffers arg))
-    (let ((newpoint (save-excursion (set-buffer "*Buffer List*") (point))))
+    (let ((newpoint  (save-excursion (set-buffer "*Buffer List*") (point))))
       (pop-to-buffer "*Buffer List*")
       (when (and arg (not (> num-arg 0))) ; Sort lines after header.
-        (let ((buffer-read-only nil))
+        (let ((buffer-read-only  nil))
           (goto-char (point-min))
           (unless Buffer-menu-use-header-line (forward-line 2)) ; Header.
           (forward-char 4)
@@ -953,14 +955,14 @@ Bindings in Buffer Menu mode:
 \\{Buffer-menu-mode-map}"
     (kill-all-local-variables)
     (use-local-map Buffer-menu-mode-map)
-    (setq major-mode 'Buffer-menu-mode)
-    (setq mode-name "Buffer Menu")
+    (setq major-mode  'Buffer-menu-mode
+          mode-name   "Buffer Menu")
     (save-excursion
       (goto-char (point-min))
       (when (< emacs-major-version 20)  ; Hardcoded to 4, starting in Emacs 20
         (search-forward "Buffer")
         (backward-word 1)
-        (setq Buffer-menu-buffer-column (current-column)))
+        (setq Buffer-menu-buffer-column  (current-column)))
       (when (or (not (boundp 'Buffer-menu-use-header-line)) (not Buffer-menu-use-header-line))
         (forward-line 2))               ; First two lines are title, unless use header line.
       (while (not (eobp))
@@ -971,8 +973,8 @@ Bindings in Buffer Menu mode:
     (set (make-local-variable 'revert-buffer-function) 'Buffer-menu-revert-function)
     (when (> emacs-major-version 21)
       (set (make-local-variable 'buffer-stale-function) #'(lambda (&optional noconfirm) 'fast)))
-    (setq truncate-lines t)
-    (setq buffer-read-only t)
+    (setq truncate-lines    t
+          buffer-read-only  t)
     (if (> emacs-major-version 21)
         (run-mode-hooks 'buffer-menu-mode-hook)
       (run-hooks 'buffer-menu-mode-hook))))
@@ -1095,8 +1097,8 @@ Bindings in Buffer Menu mode:
           (forward-line 1))))
     (set (make-local-variable 'revert-buffer-function) 'Buffer-menu-revert-function)
     (set (make-local-variable 'buffer-stale-function) #'(lambda (&optional noconfirm) 'fast))
-    (setq truncate-lines t)
-    (setq buffer-read-only t)))
+    (setq truncate-lines    t
+          buffer-read-only  t)))
 
 ;;;###autoload
 (defun Buffer-menu-delete-flagged ()
@@ -1109,25 +1111,25 @@ You can mark a buffer for deletion (`D') using command `\\<Buffer-menu-mode-map>
   (interactive)
   (save-excursion
     (Buffer-menu-beginning)
-    (let ((buff-menu-buffer (current-buffer))
-          (buffer-read-only nil)
-          (bufs     ())
-          (mod-bufs ())
-          (kill-fn (if (fboundp 'kill-buffer-and-its-windows)
-                       #'kill-buffer-and-its-windows
-                     #'kill-buffer))
+    (let ((buff-menu-buffer  (current-buffer))
+          (buffer-read-only  nil)
+          (bufs              ())
+          (mod-bufs          ())
+          (kill-fn           (if (fboundp 'kill-buffer-and-its-windows)
+                                 #'kill-buffer-and-its-windows
+                               #'kill-buffer))
           buf)
       (while (re-search-forward "^D" nil t)
         (forward-char -1)
-        (setq buf (Buffer-menu-buffer nil))
+        (setq buf  (Buffer-menu-buffer nil))
         (unless (or (eq buf nil) (eq buf buff-menu-buffer))
           (push buf bufs)
           (when (and (buffer-file-name buf) (buffer-modified-p buf)) (push buf mod-bufs)))
         (forward-line 1))
       (unless bufs (error "No buffers flagged for deletion"))
-      (when (and mod-bufs (let ((visible-bell t)) (ding) t)
-                 (let ((last-nonmenu-event nil)
-                       (use-dialog-box t))
+      (when (and mod-bufs (let ((visible-bell  t)) (ding) t)
+                 (let ((last-nonmenu-event  nil)
+                       (use-dialog-box      t))
                    (not (yes-or-no-p
                          (concat "Modified buffers.  Delete all anyway? (`"
                                  (mapconcat (lambda (b) (buffer-name b)) mod-bufs "', `")
@@ -1157,21 +1159,21 @@ Buffers can be so marked using commands `\\<Buffer-menu-mode-map>\
     (while (if (> emacs-major-version 21)
                (re-search-forward "^..S" nil t)
              (re-search-forward "^.S" nil t))
-      (let ((modp nil))
+      (let ((modp  nil))
         (save-excursion
           (set-buffer (Buffer-menu-buffer t))
           (save-buffer)
-          (setq modp (buffer-modified-p)))
-        (let ((buffer-read-only nil))
+          (setq modp  (buffer-modified-p)))
+        (let ((buffer-read-only  nil))
           (delete-char -1)
           (insert (if modp ?* ? ))))))
   (save-excursion
     (Buffer-menu-beginning)
-    (let ((buff-menu-buffer (current-buffer))
-          (buffer-read-only nil))
+    (let ((buff-menu-buffer  (current-buffer))
+          (buffer-read-only  nil))
       (while (re-search-forward "^D" nil t)
         (forward-char -1)
-        (let ((buf (Buffer-menu-buffer nil)))
+        (let ((buf  (Buffer-menu-buffer nil)))
           (or (eq buf nil) (eq buf buff-menu-buffer)
               (save-excursion (if (fboundp 'kill-buffer-and-its-windows)
                                   (kill-buffer-and-its-windows buf)
@@ -1194,16 +1196,16 @@ You can mark buffers with command `\\<Buffer-menu-mode-map>\\[Buffer-menu-mark]'
 If the window is `window-dedicated-p', then another window is used;
 else, all windows previously in the frame are replaced by this one."
   (interactive)
-  (let ((buff (Buffer-menu-buffer t))
-        (menu (current-buffer))
-        (others ())
+  (let ((buff    (Buffer-menu-buffer t))
+        (menu    (current-buffer))
+        (others  ())
         tem)
     (Buffer-menu-beginning)
     (while (re-search-forward "^>" nil t)
-      (setq tem (Buffer-menu-buffer t))
-      (let ((buffer-read-only nil)) (delete-char -1) (insert ?\ ))
-      (or (eq tem buff) (memq tem others) (setq others (cons tem others))))
-    (setq others (nreverse others))
+      (setq tem  (Buffer-menu-buffer t))
+      (let ((buffer-read-only  nil)) (delete-char -1) (insert ?\ ))
+      (or (eq tem buff) (memq tem others) (setq others  (cons tem others))))
+    (setq others  (nreverse others))
     (cond ((window-dedicated-p (selected-window)) ; Can't split dedicated win.
            (pop-to-buffer buff)
            (unless (eq menu buff) (bury-buffer menu))
@@ -1211,7 +1213,7 @@ else, all windows previously in the frame are replaced by this one."
              (pop-to-buffer (car others))
              (pop others)))
           (t
-           (setq tem (/ (1- (frame-height)) (1+ (length others))))
+           (setq tem  (/ (1- (frame-height)) (1+ (length others))))
            (delete-other-windows)
            (switch-to-buffer buff)
            (unless (eq menu buff) (bury-buffer menu))
@@ -1222,13 +1224,13 @@ else, all windows previously in the frame are replaced by this one."
 ;;;              (if Buffer-menu-window-config
 ;;;                  (progn (set-window-configuration
 ;;;                            Buffer-menu-window-config)
-;;;                         (setq Buffer-menu-window-config nil)))
+;;;                         (setq Buffer-menu-window-config  nil)))
                  (switch-to-buffer buff))
              (while others
                (split-window nil tem)
                (other-window 1)
                (switch-to-buffer (car others))
-               (setq others (cdr others)))
+               (setq others  (cdr others)))
              (other-window 1))))))      ;back to the beginning!      ; Back to the beginning.
 
 
@@ -1244,33 +1246,33 @@ else, all windows previously in the frame are replaced by this one."
 Consecutive executions of the same COLUMN reverse the sort order."
     (interactive "P")
     (when column
-      (setq column (prefix-numeric-value column))
-      (when (= column 0) (setq column 1))
-      (when (> column 6) (setq column 6))
-      (when (< column -6) (setq column -6)))
+      (setq column  (prefix-numeric-value column))
+      (when (= column 0) (setq column  1))
+      (when (> column 6) (setq column  6))
+      (when (< column -6) (setq column  -6)))
     (if (equal Buffer-menu-sort-column column)
-        (setq Buffer-menu-sort-column (- column))
-      (setq Buffer-menu-sort-column column))
+        (setq Buffer-menu-sort-column  (- column))
+      (setq Buffer-menu-sort-column  column))
     (let (buffer-read-only l buf m1 m2)
       (save-excursion
         (Buffer-menu-beginning)
         (while (not (eobp))
-          (when (buffer-live-p (setq buf (get-text-property (+ (point) 4) 'buffer)))
-            (setq m1 (char-after)
-                  m1 (if (memq m1 '(?> ?D)) m1)
-                  m2 (char-after (+ (point) 2))
-                  m2 (if (eq m2 ?S) m2))
+          (when (buffer-live-p (setq buf  (get-text-property (+ (point) 4) 'buffer)))
+            (setq m1  (char-after)
+                  m1  (if (memq m1 '(?> ?D)) m1)
+                  m2  (char-after (+ (point) 2))
+                  m2  (if (eq m2 ?S) m2))
             (if (or m1 m2)
                 (push (list buf m1 m2) l)))
           (forward-line)))
       (Buffer-menu-revert-function nil nil)
-      (setq buffer-read-only)
+      (setq buffer-read-only  t)
       (save-excursion
         (Buffer-menu-beginning)
         (while (not (eobp))
-          (when (setq buf (assq (get-text-property (+ (point) 4) 'buffer) l))
-            (setq m1 (cadr buf)
-                  m2 (cadr (cdr buf)))
+          (when (setq buf  (assq (get-text-property (+ (point) 4) 'buffer) l))
+            (setq m1  (cadr buf)
+                  m2  (cadr (cdr buf)))
             (when m1
               (delete-char 1)
               (insert m1)
@@ -1298,10 +1300,10 @@ Consecutive executions of the same COLUMN reverse the sort order."
 ;;
 (when (> emacs-major-version 21)
   (defun Buffer-menu-make-sort-button (name button-column)
-    (let ((the-sort-column-p nil))
+    (let ((the-sort-column-p  nil))
       (when (equal button-column (abs Buffer-menu-sort-column))
-        (setq the-sort-column-p t)
-        (setq button-column (- button-column)))
+        (setq the-sort-column-p  t
+              button-column      (- button-column)))
       (propertize name 'column button-column
                   'help-echo (case (abs button-column)
                                (1 (if Buffer-menu-use-header-line
@@ -1328,10 +1330,8 @@ see `Buffer-menu-use-frame-buffer-list'"))
 ;;
 ;; Compute longest buffer name + size combination, and use when indenting file name.
 ;; Add sort buttons for CRM and Time also.
-;; The test for column 1 (CRM) is =1, not null.
+;; The test for column 1 (CRM) to determine whether to sort is =1, not null.
 ;; Sort direction depends on sign of `Buffer-menu-sort-column'.
-;; Temporarily sets `window-dedicated-p' to nil when it does the
-;;   `set-window-buffer'.  Otherwise, *Buffer List* cannot be dedicated.
 ;; Go to beginning of buffer if `desired-point' is not defined.
 ;;
 (when (> emacs-major-version 21)
@@ -1347,43 +1347,46 @@ it means list those buffers and no others.
 For more information, see the function `buffer-menu'."
     ;; Compute longest buffer name + size combination.
     ;; $$$$$$ Could be costly if lots of buffers - maybe have an option to be able to not do it?
-    (let ((len 0)
+    (let ((len  0)
           buf+size)
-      (setq Buffer-menu-buffer+size-computed-width Buffer-menu-buffer+size-width)
+      (setq Buffer-menu-buffer+size-computed-width  Buffer-menu-buffer+size-width)
       (dolist (buffer (buffer-list))
-        (setq buf+size (concat (buffer-name buffer) (number-to-string (buffer-size buffer))))
+        (setq buf+size  (concat (buffer-name buffer) (number-to-string (buffer-size buffer))))
         (when (and (not (string= (substring buf+size 0 1) " ")) ; Don't count internal buffers.
                    (> (length buf+size) len))
-          (setq len (length buf+size))))
+          (setq len  (length buf+size))))
       (when (< (+ len 1) Buffer-menu-buffer+size-width)
-        (setq Buffer-menu-buffer+size-computed-width (+ len 1))))
-    (let* ((old-buffer (current-buffer))
-           (standard-output standard-output)
-           (mode-end (if Buffer-menu-mode-flag (make-string (- Buffer-menu-mode-width 4) ?\ ) ""))
-           (header (concat (Buffer-menu-make-sort-button "CRM" 1) " "
-                           (Buffer-menu-buffer+size (Buffer-menu-make-sort-button "Buffer" 2)
-                                                    (Buffer-menu-make-sort-button "Size" 3))
-                           "  "
-                           (and Buffer-menu-time-flag
-                                (if (eq 'short Buffer-menu-time-format)
-                                    (Buffer-menu-make-sort-button "Time   " 4)
-                                  (Buffer-menu-make-sort-button "Time          " 4)))
-                           (and Buffer-menu-time-flag "   ")
-                           (and Buffer-menu-mode-flag
-                                (Buffer-menu-make-sort-button (concat "Mode" mode-end) 5))
-                           (if Buffer-menu-mode-flag
-                               (if Buffer-menu-time-flag " " "  ")
-                             (and (not Buffer-menu-time-flag) " "))
-                           (and Buffer-menu-file-flag (Buffer-menu-make-sort-button
-                                                       "File           " 6))
-                           "\n"))
+        (setq Buffer-menu-buffer+size-computed-width  (+ len 1))))
+    (let* ((old-buffer       (current-buffer))
+           (standard-output  standard-output)
+           (mode-end         (if Buffer-menu-mode-flag
+                                 (make-string (- Buffer-menu-mode-width 4) ?\ )
+                               ""))
+           (header
+            (concat (Buffer-menu-make-sort-button "CRM" 1) " "
+                    (Buffer-menu-buffer+size (Buffer-menu-make-sort-button "Buffer" 2)
+                                             (Buffer-menu-make-sort-button "Size" 3))
+                    "  "
+                    (and Buffer-menu-time-flag
+                         (if (eq 'short Buffer-menu-time-format)
+                             (Buffer-menu-make-sort-button "Time   " 4)
+                           (Buffer-menu-make-sort-button "Time          " 4)))
+                    (and Buffer-menu-time-flag "   ")
+                    (and Buffer-menu-mode-flag
+                         (Buffer-menu-make-sort-button (concat "Mode" mode-end) 5))
+                    (if Buffer-menu-mode-flag
+                        (if Buffer-menu-time-flag " " "  ")
+                      (and (not Buffer-menu-time-flag) " "))
+                    (and Buffer-menu-file-flag (Buffer-menu-make-sort-button
+                                                "File           " 6))
+                    "\n"))
            list desired-point name buffer-time mode file)
       (when (and (boundp 'Buffer-menu-use-header-line) Buffer-menu-use-header-line)
-        (let ((pos 0))
+        (let ((pos  0))
           ;; Turn whitespace chars in the header into stretch specs so
           ;; they work regardless of the header-line face.
           (while (string-match "[ \t\n]+" header pos)
-            (setq pos (match-end 0))
+            (setq pos  (match-end 0))
             (put-text-property (match-beginning 0) pos 'display
                                ;; Assume fixed-size chars in the buffer.
                                (list 'space :align-to pos)
@@ -1395,20 +1398,18 @@ For more information, see the function `buffer-menu'."
         ;; Add a "dummy" leading space to align the beginning of the header
         ;; line with the beginning of the text (rather than with the left
         ;; scrollbar or the left fringe). --Stef
-        (setq header (concat (propertize " " 'display '(space :align-to 0)) header)))
+        (setq header  (concat (propertize " " 'display '(space :align-to 0)) header)))
       (with-current-buffer (get-buffer-create "*Buffer List*")
-        (setq buffer-read-only nil)
+        (setq buffer-read-only  nil)
         (erase-buffer)
-        (setq standard-output (current-buffer))
+        (setq standard-output  (current-buffer))
         (unless (and (boundp 'Buffer-menu-use-header-line) Buffer-menu-use-header-line)
           ;; Use U+2014 (EM DASH) to underline if possible, else use U+002D (HYPHEN-MINUS).
           ;; Must eval this at compile time.
           ;; Tried a runtime check of (char-displayable-p ?\u2014), but if this is compiled in
           ;; an Emacs version before 22 then get an error that `char-displayable-p' is called
           ;; with two args (since ?\u is interpreted as ?u).
-          (let ((underline (eval-when-compile (if (> emacs-major-version 21)
-                                                  ?\u2014
-                                                ?-))))
+          (let ((underline  (eval-when-compile (if (> emacs-major-version 21) ?\u2014 ?-))))
             (insert header (apply 'string
                                   (mapcar (lambda (c) (if (memq c '(?\n ?\ )) c underline))
                                           header)))))
@@ -1417,13 +1418,13 @@ For more information, see the function `buffer-menu'."
 ;;;;           (insert "  ----" mode-end "----\n")
 ;;;;           (put-text-property 1 (point) 'intangible t))
         (if buffer-list
-            (setq list buffer-list)
+            (setq list  buffer-list)
           ;; Collect info for every buffer we're interested in.
           (dolist (buffer (or buffer-list (buffer-list (and Buffer-menu-use-frame-buffer-list
                                                             (selected-frame)))))
             (with-current-buffer buffer
-              (let ((name (buffer-name))
-                    (file buffer-file-name))
+              (let ((name  (buffer-name))
+                    (file  buffer-file-name))
                 (unless (and (not buffer-list)
                              (or
                               ;; Don't mention internal buffers.
@@ -1432,74 +1433,69 @@ For more information, see the function `buffer-menu'."
                               (and files-only (not file))
                               (string= name "*Buffer List*")))
                   ;; Otherwise output info.
-                  (let ( ;; Need to record two values for time: numerical time value, for
+                  (let (;; Need to record two values for time: numerical time value, for
                         ;; sorting, and string time value, for display.
-                        (buffer-time (and Buffer-menu-time-flag
-                                          (cons (or (float-time buffer-display-time) 0)
-                                                (if buffer-display-time
-                                                    (format-time-string
-                                                     (if (eq 'short Buffer-menu-time-format)
-                                                         "%02H:%02M:%02S"
-                                                       "%_3a %_2l:%02M:%02S %_2p")
-                                                     buffer-display-time)
-                                                  (if (eq 'short Buffer-menu-time-format)
-                                                      "        "
-                                                    "               ")))))
-                        (mode (concat
-                               ;; `format-mode-line' takes a 4th arg, `buffer', in 22.x.
-                               (if (string-match "22." emacs-version)
-                                   (format-mode-line mode-name nil nil buffer)
-                                 (format-mode-line mode-name))
-                               (and mode-line-process
-                                    (if (string-match "22." emacs-version)
-                                        (format-mode-line mode-line-process nil nil buffer)
-                                      (format-mode-line mode-line-process)))))
-                        (bits (string (if (eq buffer old-buffer) ?. ?\ )
-                                      ;; Handle readonly status.  The output buffer
-                                      ;; is special cased to appear readonly; it is
-                                      ;; actually made so at a later date.
-                                      (if (or (eq buffer standard-output) buffer-read-only)
-                                          ?%
-                                        ?\ )
-                                      ;; Identify modified buffers.
-                                      (if (buffer-modified-p) ?* ?\ )
-                                      ;; Space separator.
-                                      ?\ )))
+                        (buffer-time  (and Buffer-menu-time-flag
+                                           (cons (or (float-time buffer-display-time) 0)
+                                                 (if buffer-display-time
+                                                     (format-time-string
+                                                      (if (eq 'short Buffer-menu-time-format)
+                                                          "%02H:%02M:%02S"
+                                                        "%_3a %_2l:%02M:%02S %_2p")
+                                                      buffer-display-time)
+                                                   (if (eq 'short Buffer-menu-time-format)
+                                                       "        "
+                                                     "               ")))))
+                        (mode         (concat (format-mode-line mode-name nil nil buffer)
+                                              (and mode-line-process
+                                                   (format-mode-line
+                                                    mode-line-process nil nil buffer))))
+                        (bits         (string (if (eq buffer old-buffer) ?. ?\ )
+                                              ;; Handle readonly status.  The output buffer
+                                              ;; is special cased to appear readonly; it is
+                                              ;; actually made so at a later date.
+                                              (if (or (eq buffer standard-output) buffer-read-only)
+                                                  ?%
+                                                ?\ )
+                                              ;; Identify modified buffers.
+                                              (if (buffer-modified-p) ?* ?\ )
+                                              ;; Space separator.
+                                              ?\ )))
                     (unless file
                       ;; No visited file.  Check local value of
                       ;; list-buffers-directory and, for Info buffers,
                       ;; Info-current-file.
                       (cond ((and (boundp 'list-buffers-directory)
                                   list-buffers-directory)
-                             (setq file list-buffers-directory))
+                             (setq file  list-buffers-directory))
                             ((eq major-mode 'Info-mode)
-                             (setq file Info-current-file)
+                             (setq file  Info-current-file)
                              (cond
                                ((equal file "dir")
-                                (setq file "*Info Directory*"))
+                                (setq file  "*Info Directory*"))
                                ((eq file 'apropos)
-                                (setq file "*Info Apropos*"))
+                                (setq file  "*Info Apropos*"))
                                ((eq file 'history)
-                                (setq file "*Info History*"))
+                                (setq file  "*Info History*"))
                                ((eq file 'toc)
-                                (setq file "*Info TOC*"))
+                                (setq file  "*Info TOC*"))
                                ((not (stringp file)) ; avoid errors
-                                (setq file nil))
+                                (setq file  nil))
                                (t
-                                (setq file (concat "("
-                                                   (file-name-nondirectory file)
-                                                   ")"
-                                                   Info-current-node)))))))
+                                (setq file  (concat "("
+                                                    (file-name-nondirectory file)
+                                                    ")"
+                                                    Info-current-node)))))))
                     (push (list buffer bits name (buffer-size) buffer-time mode file)
                           list))))))
           ;; Preserve original list order (by reversing).
           ;; Flip it if Buffer-menu-sort-column = -1.
-          (unless (eq -1 Buffer-menu-sort-column) (setq list (nreverse list))))
+          (unless (eq -1 Buffer-menu-sort-column) (setq list  (nreverse list))))
         ;; Place the buffers's info in the output buffer, sorted if necessary.
         (dolist (buffer (if (eq 1 (abs Buffer-menu-sort-column))
                             list
-                          (let* ((descending-p (natnump Buffer-menu-sort-column))
-                                 (Buffer-menu-sort-column (abs Buffer-menu-sort-column)))
+                          (let* ((descending-p             (natnump Buffer-menu-sort-column))
+                                 (Buffer-menu-sort-column  (abs Buffer-menu-sort-column)))
                             (sort list
                                   (cond ((eq Buffer-menu-sort-column 3) ; Size
                                          (if descending-p
@@ -1517,7 +1513,7 @@ For more information, see the function `buffer-menu'."
                                            (lambda (a b)
                                              (string< (nth Buffer-menu-sort-column b)
                                                       (nth Buffer-menu-sort-column a))))))))))
-          (when (eq (car buffer) old-buffer) (setq desired-point (point)))
+          (when (eq (car buffer) old-buffer) (setq desired-point  (point)))
           (insert (cadr buffer)
                   ;; Put the buffer name into a text property
                   ;; so we don't have to extract it from the text.
@@ -1525,14 +1521,12 @@ For more information, see the function `buffer-menu'."
                   (Buffer-menu-buffer+size (nth 2 buffer)
                                            (int-to-string (nth 3 buffer))
                                            `(buffer-name ,(nth 2 buffer) buffer ,(car buffer)
-                                                         ,(if (> emacs-major-version 21)
-                                                              'font-lock-face
-                                                              'face)
-                                                         ,(if (facep 'Buffer-menu-buffer-face)
-                                                              'Buffer-menu-buffer-face ; < Emacs 22
-                                                              'Buffer-menu-buffer) ; Emacs 22
-                                                         mouse-face highlight
-                                                         help-echo "mouse-2: select this buffer")))
+                                             font-lock-face
+                                             ,(if (facep 'Buffer-menu-buffer-face)
+                                                  'Buffer-menu-buffer-face ; < Emacs 22
+                                                  'Buffer-menu-buffer) ; Emacs 22
+                                             mouse-face highlight
+                                             help-echo "mouse-2: select this buffer")))
           (when Buffer-menu-time-flag (insert "  " (cdr (nth 4 buffer)))) ; Time
           (when Buffer-menu-mode-flag
             (insert "  "
@@ -1551,11 +1545,11 @@ For more information, see the function `buffer-menu'."
           (princ "\n"))
         (Buffer-menu-mode)
         (when (and (boundp 'Buffer-menu-use-header-line) Buffer-menu-use-header-line)
-          (setq header-line-format header))
+          (setq header-line-format  header))
         ;; DESIRED-POINT doesn't have to be set; it is not set when the
         ;; current buffer is not displayed for some reason.
         (goto-char (or desired-point (point-min)))
-        (setq Buffer-menu-files-only files-only)
+        (setq Buffer-menu-files-only  files-only)
         (set-buffer-modified-p nil)
         (current-buffer)))))
 
@@ -1585,23 +1579,21 @@ For more information, see the function `buffer-menu'."
 (defun Buffer-menu-mouse-3-menu (event)
   "Pop up menu for Mouse-3 for buffer listed in buffer menu."
   (interactive "e")
-  (let* ((mouse-pos (event-start event))
+  (let* ((mouse-pos    (event-start event))
          bol eol temp
-         (buffer-name
-          (save-excursion
-            (set-buffer (window-buffer (posn-window mouse-pos)))
-            (save-excursion
-              (goto-char (posn-point mouse-pos))
-              (save-excursion
-                (setq bol (progn (beginning-of-line) (point)))
-                (setq eol (progn (end-of-line) (point))))
-              (if Buffer-menu-overlay   ; Don't recreate if exists.
-                  (move-overlay Buffer-menu-overlay bol eol (current-buffer))
-                (setq Buffer-menu-overlay (make-overlay bol eol))
-                (overlay-put Buffer-menu-overlay 'face 'region))
-              (setq temp (and (not (eobp)) (Buffer-menu-buffer nil)))
-              ;; Nil if mouse is not on a buffer name.
-              (and temp (buffer-name temp)))))) ; temp no longer used.
+         (buffer-name  (save-excursion
+                         (set-buffer (window-buffer (posn-window mouse-pos)))
+                         (save-excursion
+                           (goto-char (posn-point mouse-pos))
+                           (save-excursion (setq bol  (progn (beginning-of-line) (point))
+                                                 eol  (progn (end-of-line) (point))))
+                           (if Buffer-menu-overlay ; Don't recreate if exists.
+                               (move-overlay Buffer-menu-overlay bol eol (current-buffer))
+                             (setq Buffer-menu-overlay  (make-overlay bol eol))
+                             (overlay-put Buffer-menu-overlay 'face 'region))
+                           (setq temp  (and (not (eobp)) (Buffer-menu-buffer nil)))
+                           ;; Nil if mouse is not on a buffer name.
+                           (and temp (buffer-name temp)))))) ; temp no longer used.
     (sit-for 0)
     (let ((selection
            (x-popup-menu
@@ -1635,7 +1627,7 @@ For more information, see the function `buffer-menu'."
       (set-buffer (window-buffer (posn-window (event-end event))))
       (save-excursion
         (goto-char (posn-point (event-end event)))
-        (setq buffer (Buffer-menu-buffer t))))
+        (setq buffer  (Buffer-menu-buffer t))))
     (select-window (posn-window (event-end event)))
     (switch-to-buffer-other-window buffer)))
 
@@ -1648,15 +1640,15 @@ For more information, see the function `buffer-menu'."
       (set-buffer (window-buffer (posn-window (event-end event))))
       (save-excursion
         (goto-char (posn-point (event-end event)))
-        (setq buffer (Buffer-menu-buffer t))))
+        (setq buffer  (Buffer-menu-buffer t))))
     (select-window (posn-window (event-end event)))
     (goto-char (posn-point (event-end event)))
     (beginning-of-line)
     (if (looking-at " [-M]")            ;header lines
         (ding)
-      (let* ((mod (buffer-modified-p buffer))
-             (readonly (save-excursion (set-buffer buffer) buffer-read-only))
-             (buffer-read-only nil))
+      (let* ((mod               (buffer-modified-p buffer))
+             (readonly          (save-excursion (set-buffer buffer) buffer-read-only))
+             (buffer-read-only  nil))
         (delete-char 3)
         (insert (if readonly (if mod " *%" "  %") (if mod " * " "   ")))))
     (beginning-of-line)))
@@ -1673,9 +1665,9 @@ or `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-execute]'."
   (forward-char 1)
   (if (looking-at " [-M]")              ;header lines
       (ding)
-    (let ((buffer-read-only nil))
+    (let ((buffer-read-only  nil))
       (delete-char 1)
-        (insert ?S)))
+      (insert ?S)))
   (beginning-of-line))
 
 ;;;###autoload
@@ -1689,7 +1681,7 @@ or `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-execute]'."
   (beginning-of-line)
   (if (looking-at " [-M]")              ;header lines
       (ding)
-    (let ((buffer-read-only nil))
+    (let ((buffer-read-only  nil))
       (delete-char 1)
       (insert ?D)))
   (beginning-of-line))
@@ -1702,7 +1694,7 @@ or `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-execute]'."
   (goto-char (posn-point (event-end event)))
   (beginning-of-line)
   (forward-char 1)
-  (let ((buffer-read-only nil)
+  (let ((buffer-read-only  nil)
         modified-p)
     (save-excursion
       (set-buffer (Buffer-menu-buffer t))
@@ -1714,7 +1706,6 @@ or `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-execute]'."
            (delete-char 1)
            (insert ?\*))))
   (beginning-of-line))
-
 
 ;;;###autoload
 (defun Buffer-menu-mouse-execute (event)
@@ -1730,21 +1721,21 @@ Buffers can be marked via commands `\\<Buffer-menu-mode-map>\
     (while (if (> emacs-major-version 21)
                (re-search-forward "^..S" nil t)
              (re-search-forward "^.S" nil t))
-      (let ((modp nil))
+      (let ((modp  nil))
         (save-excursion
           (set-buffer (Buffer-menu-buffer t))
           (save-buffer)
-          (setq modp (buffer-modified-p)))
-        (let ((buffer-read-only nil))
+          (setq modp  (buffer-modified-p)))
+        (let ((buffer-read-only  nil))
           (delete-char -1)
           (insert (if modp ?* ? ))))))
   (save-excursion
     (Buffer-menu-beginning)
-    (let ((buff-menu-buffer (current-buffer))
-          (buffer-read-only nil))
+    (let ((buff-menu-buffer  (current-buffer))
+          (buffer-read-only  nil))
       (while (re-search-forward "^D" nil t)
         (forward-char -1)
-        (let ((buf (Buffer-menu-buffer nil)))
+        (let ((buf  (Buffer-menu-buffer nil)))
           (or (eq buf nil) (eq buf buff-menu-buffer)
               (save-excursion (if (fboundp 'kill-buffer-and-its-windows)
                                   (kill-buffer-and-its-windows buf)

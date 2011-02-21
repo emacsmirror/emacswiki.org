@@ -5,7 +5,7 @@
 ;; Author: Teemu Likonen <tlikonen@iki.fi>
 ;; Maintainer: Teemu Likonen <tlikonen@iki.fi>
 ;; Created: 2009-07-04
-;; Version: 2011.01.09
+;; Version: 2011.02.20
 ;; Keywords: text spell check languages ispell
 
 
@@ -94,6 +94,14 @@
                                (stringp value)))
                   (string :format "%v")))
 
+    (cons :tag "Output parser function" :format "%v"
+          (const :tag "Output parser" :format "%t: " parser)
+          (choice :format "%[Parser%] %v" :value nil
+                  (const :tag "Lines" wcheck-parser-lines)
+                  (const :tag "Whitespace" wcheck-parser-whitespace)
+                  (function :tag "Custom function"
+                            :format "%t:\n\t\t%v")))
+
     (cons :tag "Connection type" :format "%v"
           (const :tag "Connection: " :format "%t" connection)
           (choice :format "%[Type%] %v" :value nil
@@ -148,9 +156,9 @@
           (const :tag "Suggestion parser" :format "%t: "
                  suggestion-parser)
           (choice :format "%[Parser%] %v" :value nil
-                  (const :tag "Ispell" wcheck-parse-suggestions-ispell)
-                  (const :tag "Lines" wcheck-parse-suggestions-lines)
-                  (const :tag "Whitespace" wcheck-parse-suggestions-ws)
+                  (const :tag "Ispell" wcheck-parser-ispell-suggestions)
+                  (const :tag "Lines" wcheck-parser-lines)
+                  (const :tag "Whitespace" wcheck-parser-whitespace)
                   (function :tag "Custom function"
                             :format "%t:\n\t\t%v")))
 
@@ -212,11 +220,10 @@ program
 
     `wcheck-mode' collects text strings from the buffer and sends
     them (each on a separate line) to the external program for
-    analyzing. The program must output (on separate lines) only
-    the strings which it thinks should be marked in the Emacs
-    buffer. Usually the reason is that the word is misspelled.
-    The program should output nothing if it doesn't think that
-    the string should be marked in Emacs buffer.
+    analyzing. The program must output (one way or another) the
+    strings which it thinks should be marked in the Emacs buffer.
+    The output of the program is then parsed with `parser'
+    function (see below).
 
     VALUE can also be an Emacs Lisp function (a symbol or a
     lambda). Then that function is used as the text checker. The
@@ -233,6 +240,33 @@ args
     a list of strings. Each string is a single argument for the
     program. (This option is ignored when the program is a
     function.)
+
+parser
+    VALUE of this option is an Emacs Lisp function which is
+    responsible for parsing the output of `program'. This parser
+    function is only used when `program' is an external
+    executable program (not a function).
+
+    The parser function is run without arguments and within the
+    context of a buffer that contains all the output from the
+    external program. The point is located at the beginning of
+    the buffer. From that buffer the `parser' function should
+    collect all the strings that are meant to be marked in the
+    buffer that is being checked. The function must return them
+    as a list of strings or nil if there are none.
+
+    For the most common cases there are two parser functions
+    already implemented:
+
+        `wcheck-parser-lines' turns each line in program's output
+        to a separate string. You should use this function as the
+        output parser if you spell-check with Ispell-like program
+        with its \"-l\" command-line option. They output each
+        misspelled word on a separate line. This is the default
+        output parser.
+
+        `wcheck-parser-whitespace' turns each whitespace-
+        separated token in the output to a separate string.
 
 connection
     The VALUE is used to set variable `process-connection-type'
@@ -326,10 +360,9 @@ suggestion-args
     When user clicks the right mouse button on marked text, or
     executes command `wcheck-spelling-suggestions', the marked
     text will be sent to the `suggestion-program' as standard
-    input stream. The program should send suggested
-    substitutes (in one way or another) to the standard output
-    stream. The output is parsed with `suggestion-parser'
-    function (see below).
+    input stream. The program should send suggested substitutes
+    to the standard output stream. The output is parsed with
+    `suggestion-parser' function (see below).
 
     When `suggestion-program' is an Emacs Lisp function the
     function is called with one argument: the marked text (a
@@ -344,27 +377,25 @@ suggestion-parser
     is an external executable program (not a function).
 
     The parser function is run without arguments and within the
-    context of a temporary buffer. The buffer contains all the
-    output from the external program and the point is located at
-    the beginning of the buffer. `suggestion-parser' function
-    should collect all the substitute suggestions from the buffer
-    and return them as a list of strings or nil if there are no
-    suggestions.
+    context of a buffer that contains all the output from the
+    external program. The point is located at the beginning of
+    the buffer. `suggestion-parser' function should collect all
+    the substitute suggestions from the buffer and return them as
+    a list of strings or nil if there are no suggestions.
 
     For the most common cases there are three parser functions
     already implemented:
 
-        `wcheck-parse-suggestions-ispell' parses substitute
+        `wcheck-parser-ispell-suggestions' parses substitute
         suggestions from the output of Ispell or compatible
         program, such as Enchant or Aspell. Use this function as
         the `suggestion-parser' if you get suggestions from an
         Ispell-like program with its \"-a\" command-line option.
 
-        `wcheck-parse-suggestions-lines' function turns each line
-        in the output of `suggestion-program' to individual
-        substitute suggestions.
+        `wcheck-parser-lines' function turns each line in the
+        output to individual substitute suggestions.
 
-        `wcheck-parse-suggestions-ws'. Each whitespace-separated
+        `wcheck-parser-whitespace'. Each whitespace-separated
         token in the program's output is a separate suggestion.
 
 read-or-skip-faces
@@ -434,13 +465,13 @@ Here's an example value for the `wcheck-language-data' variable:
       (syntax . my-finnish-syntax-table)
       (suggestion-program . \"/usr/bin/enchant\")
       (suggestion-args \"-a\" \"-d\" \"fi\")
-      (suggestion-parser . wcheck-parse-suggestions-ispell))
+      (suggestion-parser . wcheck-parser-ispell-suggestions))
      (\"British English\"
       (program . \"/usr/bin/ispell\")
       (args \"-l\" \"-d\" \"british\")
       (suggestion-program . \"/usr/bin/ispell\")
       (suggestion-args \"-a\" \"-d\" \"british\")
-      (suggestion-parser . wcheck-parse-suggestions-ispell))
+      (suggestion-parser . wcheck-parser-ispell-suggestions))
      (\"Trailing whitespace\"
       (program . identity)
       (suggestion-program . (lambda (string) (list \"\")))
@@ -476,7 +507,8 @@ language-specific option does not exist or is not valid."
 
 ;;;###autoload
 (defconst wcheck-language-data-defaults-hard-coded
-  '((connection . nil)
+  '((parser . wcheck-parser-lines)
+    (connection . nil)
     (face . wcheck-default-face)
     (syntax . text-mode-syntax-table)
     (regexp-start . "\\<'*")
@@ -503,7 +535,9 @@ settings.
 
 Here's an example value for the variable:
 
-    ((connection . nil)
+    ((parser . wcheck-parser-lines)
+     (suggestion-parser . wcheck-parser-ispell-suggestions)
+     (connection . nil)
      (face . wcheck-default-face)
      (syntax . text-mode-syntax-table)
      (regexp-start . \"\\\\=\\<'*\")
@@ -582,9 +616,6 @@ slower. A suitable compromise may be 3 or 4.")
   "Language history for command `wcheck-change-language'.")
 
 (defvar wcheck-buffer-data nil)
-
-(defconst wcheck-process-name "wcheck"
-  "Process name for `wcheck-mode'.")
 
 (defvar wcheck-jump-step 5000)
 
@@ -923,7 +954,14 @@ separate line."
                   (stringp program))
               (process-send-string
                (wcheck-start-get-process buffer)
-               (concat (mapconcat #'identity strings "\n") "\n")))
+               (concat (mapconcat #'identity strings "\n") "\n"))
+              (condition-case nil
+                  (with-current-buffer
+                      (process-buffer (wcheck-buffer-data-get
+                                       :buffer buffer :process))
+                    (erase-buffer))
+                (error nil)))
+
              ((functionp program)
               (when (buffer-live-p buffer)
                 (with-current-buffer buffer
@@ -949,24 +987,43 @@ separate line."
 
 (defun wcheck-receive-strings (process string)
   "`wcheck-mode' process output handler function."
-  (let ((buffer (wcheck-buffer-data-get :process process :buffer)))
+  (let ((buffer (wcheck-buffer-data-get :process process :buffer))
+        (parser (wcheck-query-language-data
+                 (wcheck-buffer-data-get :process process :language)
+                 'parser)))
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
 
         ;; If process is running proceed to collect and paint the
         ;; strings.
-        (if (eq 'run (process-status process))
-            (progn
-              (wcheck-buffer-data-set
-               buffer :strings (append (split-string string "\n+" t)
-                                       (wcheck-buffer-data-get :buffer buffer
-                                                               :strings)))
-              (wcheck-buffer-data-set buffer :paint-req t))
+        (condition-case error-data
+            (if (wcheck-process-running-p process)
+                (with-current-buffer (process-buffer process)
+                  (save-excursion
+                    (goto-char (point-max))
+                    (insert string)
+                    (let ((parsed-strings
+                           (save-match-data
+                             (save-excursion
+                               (goto-char (point-min))
+                               (condition-case nil (funcall parser)
+                                 (error (signal 'wcheck-funcall-error
+                                                nil)))))))
+                      (when (and parsed-strings
+                                 (wcheck-list-of-strings-p parsed-strings))
+                        (wcheck-buffer-data-set buffer :strings parsed-strings)
+                        (wcheck-buffer-data-set buffer :paint-req t)))))
 
-          ;; It's not running. Turn off the mode.
-          (wcheck-mode -1)
-          (message "Process is not running for buffer \"%s\""
-                   (buffer-name buffer)))))))
+              ;; It's not running. Turn off the mode.
+              (wcheck-mode -1)
+              (signal 'wcheck-error "Process is not running for buffer \"%s\""
+                      (buffer-name buffer)))
+
+          (wcheck-funcall-error
+           (message "Checker output parser function signaled an error"))
+
+          (wcheck-error
+           (message "%s" (cdr error-data))))))))
 
 
 (defun wcheck-timer-paint-event ()
@@ -1174,12 +1231,14 @@ operation was unsuccessful."
 
        (when (wcheck-program-executable-p program)
          ;; Start the process.
-         (let ((proc (apply #'start-process wcheck-process-name nil
-                            program args)))
+         (let ((proc (apply #'start-process "wcheck" nil program args)))
            ;; Add the process Lisp object to database.
            (wcheck-buffer-data-set buffer :process proc)
-           ;; Set the output handler function.
+           ;; Set the output handler function and the associated buffer.
            (set-process-filter proc #'wcheck-receive-strings)
+           (set-process-buffer proc (generate-new-buffer
+                                     (concat " *wcheck-process <"
+                                             (buffer-name buffer) ">*")))
            ;; Prevent Emacs from querying user about running processes
            ;; when killing Emacs.
            (set-process-query-on-exit-flag proc nil)
@@ -1226,6 +1285,7 @@ BUFFER from the list."
         ;; Stop those processes which are no longer needed.
         (dolist (proc old-processes)
           (unless (memq proc new-processes)
+            (kill-buffer (process-buffer proc))
             (delete-process proc))))))
 
   (wcheck-buffer-data-get :buffer buffer))
@@ -1264,31 +1324,25 @@ areas, including invisible ones. Otherwise skip invisible text."
            (with-syntax-table (eval syntax)
              (goto-char beg)
              (save-match-data
-               (catch 'infinite
-                 (while (re-search-forward regexp end t)
-                   (cond ((= (point) old-point)
-                          ;; Make sure we don't end up in an infinite
-                          ;; loop when the regexp always matches with
-                          ;; zero width in the current point position.
-                          (throw 'infinite t))
+               (while (and (re-search-forward regexp end t)
+                           (> (point) old-point))
+                 (cond ((and (not invisible)
+                             (invisible-p (match-beginning 1)))
+                        ;; This point is invisible. Let's jump forward
+                        ;; to next change of "invisible" property.
+                        (goto-char (next-single-char-property-change
+                                    (match-beginning 1) 'invisible buffer
+                                    end)))
 
-                         ((and (not invisible)
-                               (invisible-p (match-beginning 1)))
-                          ;; This point is invisible. Let's jump forward
-                          ;; to next change of "invisible" property.
-                          (goto-char (next-single-char-property-change
-                                      (match-beginning 1) 'invisible buffer
-                                      end)))
-
-                         ((and (eval face-p)
-                               (or (equal regexp-discard "")
-                                   (not (string-match
-                                         regexp-discard
-                                         (match-string-no-properties 1)))))
-                          ;; Add the match to the string list.
-                          (add-to-list
-                           'strings (match-string-no-properties 1))))
-                   (setq old-point (point))))))
+                       ((and (eval face-p)
+                             (or (equal regexp-discard "")
+                                 (not (string-match
+                                       regexp-discard
+                                       (match-string-no-properties 1)))))
+                        ;; Add the match to the string list.
+                        (add-to-list
+                         'strings (match-string-no-properties 1))))
+                 (setq old-point (point)))))
            strings))))))
 
 
@@ -1331,26 +1385,22 @@ text."
                        old-point 0)
                  (goto-char beg)
 
-                 (catch 'infinite
-                   (while (re-search-forward regexp end t)
-                     (cond ((= (point) old-point)
-                            ;; We didn't move forward so break the loop.
-                            ;; Otherwise we would loop endlessly.
-                            (throw 'infinite t))
-                           ((and (not invisible)
-                                 (invisible-p (match-beginning 1)))
-                            ;; The point is invisible so jump forward to
-                            ;; the next change of "invisible" text
-                            ;; property.
-                            (goto-char (next-single-char-property-change
-                                        (match-beginning 1) 'invisible buffer
-                                        end)))
-                           ((eval face-p)
-                            ;; Make an overlay.
-                            (wcheck-make-overlay
-                             buffer ol-face ol-mouse-face ol-help-echo ol-keymap
-                             (match-beginning 1) (match-end 1))))
-                     (setq old-point (point)))))))))))))
+                 (while (and (re-search-forward regexp end t)
+                             (> (point) old-point))
+                   (cond ((and (not invisible)
+                               (invisible-p (match-beginning 1)))
+                          ;; The point is invisible so jump forward to
+                          ;; the next change of "invisible" text
+                          ;; property.
+                          (goto-char (next-single-char-property-change
+                                      (match-beginning 1) 'invisible buffer
+                                      end)))
+                         ((eval face-p)
+                          ;; Make an overlay.
+                          (wcheck-make-overlay
+                           buffer ol-face ol-mouse-face ol-help-echo ol-keymap
+                           (match-beginning 1) (match-end 1))))
+                   (setq old-point (point))))))))))))
 
 
 ;;; Jump forward or backward
@@ -1705,27 +1755,38 @@ or nil."
     nil))
 
 
-(defun wcheck-parse-suggestions-lines ()
-  "Parser for newline-separated suggestions."
-  (delete-dups (split-string (buffer-substring-no-properties (point-min)
-                                                             (point-max))
+(defun wcheck-parser-lines ()
+  "Parser for newline-separated output.
+Return current buffer's lines as a list of strings."
+  (delete-dups (split-string (buffer-substring-no-properties
+                              (point-min) (point-max))
                              "\n+" t)))
 
 
-(defun wcheck-parse-suggestions-ws ()
-  "Parser for whitespace-separated suggestions."
-  (delete-dups (split-string (buffer-substring-no-properties (point-min)
-                                                             (point-max))
+(defun wcheck-parser-whitespace ()
+  "Parser for whitespace-separated output.
+Split current buffer's content to whitespace-separated tokens and
+return them as a list of strings."
+  (delete-dups (split-string (buffer-substring-no-properties
+                              (point-min) (point-max))
                              "[ \f\t\n\r\v]+" t)))
 
 
-(defun wcheck-parse-suggestions-ispell ()
-  "Parser for Ispell-compatible programs' output."
+(defun wcheck-parser-ispell-suggestions ()
+  "Parser for Ispell-compatible programs' spelling suggestions."
   (let ((search-spaces-regexp nil))
     (when (re-search-forward "^& [^ ]+ \\([0-9]+\\) [0-9]+: \\(.+\\)$" nil t)
       (let ((count (string-to-number (match-string-no-properties 1)))
             (words (split-string (match-string-no-properties 2) ", " t)))
         (delete-dups (nbutlast words (- (length words) count)))))))
+
+
+(define-obsolete-function-alias 'wcheck-parse-suggestions-lines
+  'wcheck-parser-lines "2011.02.20")
+(define-obsolete-function-alias 'wcheck-parse-suggestions-ws
+  'wcheck-parser-whitespace "2011.02.20")
+(define-obsolete-function-alias 'wcheck-parse-suggestions-ispell
+  'wcheck-parser-ispell-suggestions "2011.02.20")
 
 
 ;;; Face information functions
@@ -1798,11 +1859,11 @@ expression will return a boolean."
               (syntax-table-p (and (boundp value) (eval value)))))
         ((and (eq key 'face)
               (facep value)))
-        ((and (stringp value)
-              (or (eq key 'regexp-start)
+        ((and (or (eq key 'regexp-start)
                   (eq key 'regexp-body)
                   (eq key 'regexp-end)
-                  (eq key 'regexp-discard))))
+                  (eq key 'regexp-discard))
+              (stringp value)))
         ((and (or (eq key 'program)
                   (eq key 'suggestion-program))
               (or (stringp value)
@@ -1813,7 +1874,8 @@ expression will return a boolean."
                   (stringp value))))
         ((and (eq key 'suggestion-args)
               (wcheck-list-of-strings-p value)))
-        ((and (eq key 'suggestion-parser)
+        ((and (or (eq key 'parser)
+                  (eq key 'suggestion-parser))
               (functionp value)))
         ((or (eq key 'connection)
              (eq key 'case-fold)))
@@ -1836,7 +1898,9 @@ or `wcheck-language-data-defaults-hard-coded'."
              (and (wcheck-list-of-lists-p wcheck-language-data-defaults)
                   (assq key wcheck-language-data-defaults)))
            (hard-coded
-            (assq key wcheck-language-data-defaults-hard-coded))
+            (and (wcheck-list-of-lists-p
+                  wcheck-language-data-defaults-hard-coded)
+                 (assq key wcheck-language-data-defaults-hard-coded)))
            (conf
             (list (when (wcheck-language-data-valid-p key (cdr data))
                     data)
@@ -1887,6 +1951,10 @@ or `wcheck-language-data-defaults-hard-coded'."
 (defun wcheck-list-of-lists-p (object)
   (and (listp object)
        (not (memq nil (mapcar #'listp object)))))
+
+
+(defun wcheck-process-running-p (process)
+  (eq 'run (process-status process)))
 
 
 (defun wcheck-current-idle-time-seconds ()

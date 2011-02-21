@@ -65,6 +65,9 @@ that you enter, not with completion inputs that are not entered.
 
 
 
+
+
+
 [:Overview]
 === Overview of Minibuffer History Enhancements ===
 
@@ -153,6 +156,11 @@ practice.  Among other things, it means that you can work with
 
 
 
+
+
+
+
+
 [:icicle-insert-history-element]
 [:InsertPreviousInputs]
 === Using Completion to Insert Previous Inputs: `M-o' ===
@@ -177,6 +185,11 @@ is not automatically chosen for the main completion -- you can edit
 the minibuffer contents before entering it with `RET'.  You can
 also use `C-g' during the `M-o' completion to cancel it and return
 to the main completion.
+
+
+
+
+
 
 
 
@@ -211,13 +224,17 @@ a sort-order choice available through'''`##C-,##'''', this gives you quite a lot
 
 
 
+
+
+
+
+
 [:MatchHistoricalCandidates]
 === Matching Only Historical Candidates: `M-h' and `M-pause' ===
 
-Both `M-h' and `M-pause' can be used toward the same end.  They
+Both `M-h' (`icicle-history') and `M-pause' (`icicle-keep-only-past-inputs') can be used toward the same end.  They
 both work for all input types.  They both use the appropriate
-history list for the current command.  They both provide [[apropos completion]] and cycling for the minibuffer history (as well as
-[[prefix completion]], of course).  Use them as another way to search
+history list for the current command.  They both provide [[completion]] and cycling for the minibuffer history.  Use them as another way to search
 through a history list or complete to one of its elements.
 
 For example, If you use `C-x C-f' to find a file, and then use
@@ -291,6 +308,13 @@ action of `M-pause' is simply to filter the list of candidates,
 keeping those that are in the history list.  This means that, with
 `M-pause', the input `/foo/bar/lph' will match against the
 previously input file name `##/foo/bar/alphabet-soup.el##'.
+
+Note that neither `M-h' nor `M-pause' uses a recursive minibuffer;
+they each simply co-opt the current completion, changing it to
+completion against the history.  This means that whatever
+completion mode (prefix or apropos) was in effect before you use
+`M-h' or `M-pause' remains in effect for the history completion as
+well.
 
 If this all sounds confusing, just give it a try; it is much
 harder to describe than it is to experience.

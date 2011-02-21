@@ -5,6 +5,9 @@
 ----
 
 
+
+
+
 == Candidates with Text Properties ==
 
 This section is for EmacsLisp programmers.
@@ -49,6 +52,12 @@ The following sections explain methods '''1--4''' individually.
 
 
 
+
+
+
+
+
+
 [:icicle-special-candidate-regexp]
 == Using Regexp icicle-special-candidate-regexp ==
 
@@ -73,6 +82,12 @@ highlighted, but not their color swatches.
 
 
 
+
+
+
+
+
+
 [:icicle-special-candidate]
 == Using Property `icicle-special-candidate' ==
 
@@ -82,6 +97,12 @@ that are used during completion, as well as the completion return value.
 If the candidate is a string, not a symbol, then `intern' it and put the property on the resulting symbol. If you want the effect to be temporary, then set property `icicle-special-candidate' for the candidate to `nil' when completion is finished.
 
 As a shortcut, if you use the value `t' instead of a property list for property `icicle-special-candidate', then face `icicle-special-candidate' will be used as the `face' property of the candidate.  Using a value of `t' is thus equivalent to using a value of ##(face icicle-special-candidate)##. This approach is used, for instance, in the definition of [[command]] `icicle-complete-keys' (`S-TAB').
+
+
+
+
+
+
 
 
 
@@ -109,6 +130,13 @@ obarray.  Using property `icicle-special-candidate' or
 `icicle-display-string' you can propertize candidates and parts of
 candidates, but you cannot manipulate multi-completion parts and
 there are no join or end strings.
+
+
+
+
+
+
+
 
 
 
@@ -173,7 +201,12 @@ You'll notice that the face property is added only when [[option]]
 this option at any time during completion to change the behavior.
 (The new value takes effect for the next act of completion.)
 
-You can match any part of the multi-completion: color name or RGB value. Command `icicle-read-color' defines a set of sort orders that are pertinent to the color candidates. You can use `##C-,##' to sort by color name, RGB value, hue, saturation, value, or amount of red, blue, or green. 
+You can match any part of the multi-completion: color name or RGB value. Command `icicle-read-color' defines a set of sort orders that are pertinent to the color candidates.
+
+You can use `##C-,##' to sort by color name, amount of red, blue,
+green, all RGB components (in order), RGB distance from a base
+color, hue, saturation, value, all HSV components (in order), or
+HSV distance from a base color. 
 
 Here is a screenshot showing candidates sorted by color saturation (purity):
 

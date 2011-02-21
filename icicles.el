@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 09:32:31 2011 (-0800)
+;; Last-Updated: Sun Feb 20 14:52:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22791
+;;     Update #: 22799
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,21 +17,21 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cl',
-;;   `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
-;;   `dired', `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `advice', `advice-preload', `apropos', `apropos+',
+;;   `apropos-fn+var', `avoid', `cl', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `custom', `dired', `dired+',
+;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
+;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
+;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel',
+;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -717,8 +717,11 @@
 ;;    `icicle-choose-completion-string', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry', `icicle-clear-lighter',
 ;;    `icicle-clear-minibuffer', `icicle-color-blue-lessp',
-;;    `icicle-color-completion-setup', `icicle-color-green-lessp',
-;;    `icicle-color-help', `icicle-color-hue-lessp',
+;;    `icicle-color-completion-setup',
+;;    `icicle-color-distance-hsv-lessp',
+;;    `icicle-color-distance-rgb-lessp', `icicle-color-green-lessp',
+;;    `icicle-color-help', `icicle-color-hsv-lessp',
+;;    `icicle-color-hue-lessp', `icicle-color-name-w-bg',
 ;;    `icicle-color-red-lessp', `icicle-color-saturation-lessp',
 ;;    `icicle-color-value-lessp', `icicle-column-wise-cand-nb',
 ;;    `icicle-comint-dynamic-complete-as-filename',

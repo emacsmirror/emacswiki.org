@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  9 10:22:42 2011 (-0800)
+;; Last-Updated: Sun Feb 20 15:07:43 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27483
+;;     Update #: 27485
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7099,9 +7099,12 @@
 ;;
 ;;  You can match any part of the multi-completion: color name or RGB
 ;;  value.  Command `icicle-read-color' defines a set of sort orders
-;;  that are pertinent to the color candidates.  You can use `C-,' to
-;;  sort by color name, RGB value, hue, saturation, value, or amount
-;;  of red, blue, or green.
+;;  that are pertinent to the color candidates.
+;;
+;;  You can use `C-,' to sort by color name, amount of red, blue,
+;;  green, all RGB components (in order), RGB distance from a base
+;;  color, hue, saturation, value, all HSV components (in order), or
+;;  HSV distance from a base color.
 ;;
 ;;  If option `icicle-add-proxy-candidates-flag' is non-nil, then
 ;;  command `icicle-read-color' includes proxy completion candidates

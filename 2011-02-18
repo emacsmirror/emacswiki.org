@@ -4,3 +4,15 @@ I decided to lock them.
 The Administration link at the bottom of every page has a link to the [Self:action=listlocked list of all locked pages].
 
 I'm not quite sure why there's so much spam, recently. Have these guys discovered the "secret" cookie necessary to bypass the Captcha? Should I be rotating this secret every now and then? If I did that, it would inconvenience people that used non-browser interfaces to the wiki. Then again, maybe that's a trade-off we should be making. -- AlexSchroeder
+
+[new]
+I doubt they figured out the cookie.  Either some spam bots can now circumvent captcha, the introduction of captcha caused spammers to hire people and lay off their spam bots, or spam bots can ask a human operator to answer the captcha and then proceed (if I was a spammer, that's how I'd refactor my spam bot).
+
+Seems like the anti-spam techniques are still captcha, but IP blacklisting is back as well.
+
+* [http://www.mediawiki.org/wiki/Manual:Combating_spam MediaWiki:Manual%3ACombating_Spam]
+
+I recently changed the settings to a Media Wiki site to limit which namespaces could be posted to.  This helped stop spam for a little bit, but I can only imagine that it was circumvented by people since it required reading the directions I had left for users about the new rules.  Though maybe the spam bot got through by brute force.  It's hard to tell since spam bots are one of the few technologies that have passed the Turing test. -- AaronHawley
+
+[new]
+Isn't there any simple way to use Akismet (WordPress) for wikis like this?

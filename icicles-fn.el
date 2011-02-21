@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 17 12:49:52 2011 (-0800)
+;; Last-Updated: Sun Feb 20 14:48:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12093
+;;     Update #: 12123
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -54,9 +54,12 @@
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
 ;;    `icicle-choose-completion-string', `icicle-clear-lighter',
 ;;    `icicle-clear-minibuffer', `icicle-color-blue-lessp',
-;;    `icicle-color-completion-setup', `icicle-color-green-lessp',
-;;    `icicle-color-help', `icicle-color-hue-lessp',
-;;    `icicle-color-name-w-bg', `icicle-color-red-lessp',
+;;    `icicle-color-completion-setup',
+;;    `icicle-color-distance-hsv-lessp',
+;;    `icicle-color-distance-rgb-lessp', `icicle-color-green-lessp',
+;;    `icicle-color-help', `icicle-color-hsv-lessp',
+;;    `icicle-color-hue-lessp', `icicle-color-name-w-bg',
+;;    `icicle-color-red-lessp', `icicle-color-rgb-lessp',
 ;;    `icicle-color-saturation-lessp', `icicle-color-value-lessp',
 ;;    `icicle-command-abbrev-save',
 ;;    `icicle-command-abbrev-used-more-p',
@@ -322,6 +325,7 @@
   (defvar icicle-Completions-text-scale-decrease)) ; Defined in `icicles-opt.el' (for Emacs 23)
 
 (defvar filesets-data)                  ; Defined in `filesets.el'
+(defvar list-colors-sort)               ; Defined in `facemenu.el'
 (defvar shell-completion-execonly)      ; Defined in `shell.el'
 (defvar recentf-list)                   ; Defined in `recentf.el'
 (defvar recentf-menu-filter-commands)
@@ -5357,10 +5361,13 @@ Puts property `icicle-fancy-candidates' on string `prompt'."
            . (lambda (s1 s2) (not (icicle-color-saturation-lessp s1 s2))))
           ("by color brightness (value)"
            . (lambda (s1 s2) (not (icicle-color-value-lessp s1 s2))))
+          ("by color hsv"       . (lambda (s1 s2) (not (icicle-color-hsv-lessp s1 s2))))
+          ("by hsv distance"    . (lambda (s1 s2) (icicle-color-distance-hsv-lessp s1 s2)))
           ("by amount of red"   . (lambda (s1 s2) (not (icicle-color-red-lessp s1 s2))))
           ("by amount of green" . (lambda (s1 s2) (not (icicle-color-green-lessp s1 s2))))
           ("by amount of blue"  . (lambda (s1 s2) (not (icicle-color-blue-lessp s1 s2))))
-          ("by color rgb"       . (lambda (s1 s2) (not (icicle-part-2-lessp s1 s2))))
+          ("by color rgb"       . (lambda (s1 s2) (not (icicle-color-rgb-lessp s1 s2))))
+          ("by rgb distance"    . (lambda (s1 s2) (icicle-color-distance-rgb-lessp s1 s2)))
           ("turned OFF"))
         ;; Make the two `*-join-string' variables the same, so past inputs are recognized.
         ;; Do not use " " as the value, because color names such as "white smoke" would be
@@ -5900,6 +5907,49 @@ be the second parts of the strings, and they are assumed to start with
          (< (hexrgb-blue rgb1) (hexrgb-blue rgb2)))))
 
 ;; This predicate is used for color completion.
+(defun icicle-color-rgb-lessp (s1 s2)
+  "Non-nil means the RGB components of S1 are less than those of S2.
+Specifically, the red components are compared first, then if they are
+equal the blue components are compared, then if those are also equal
+the green components are compared.
+
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The second parts of the strings
+are RGB triplets that start with `#'."
+  (icicle-part-2-lessp s1 s2))          ; Just compare lexicographically.
+
+;; This predicate is used for color completion.
+(defun icicle-color-distance-rgb-lessp (s1 s2)
+  "Return non-nil if color S1 is RGB-closer than S2 to the base color.
+S1 and S2 are color names (strings).
+
+The base color name is the cdr of option `list-colors-sort', whose car
+must be `rgb-dist'.  If the option value is not already a cons with
+car `rgb-dist' then it is made so: you are prompted for the base color
+name to use."
+  (unless (featurep 'hexrgb) (error "`icicle-color-distance-rgb-lessp' requires library `hexrgb.el'"))
+  (let* ((base-color  (if (and (boundp 'list-colors-sort) ; Emacs 23+
+                               (consp list-colors-sort) (eq 'rgb-dist (car list-colors-sort)))
+                          (cdr list-colors-sort) ; `list-colors-sort' is free here.
+                        (cdr (setq list-colors-sort
+                                   (cons 'rgb-dist
+                                         (let ((enable-recursive-minibuffers  t)
+                                               (icicle-sort-comparer          nil))
+                                           (icicle-read-color 0 "With RGB close to color: ")))))))
+         (base-rgb    (hexrgb-hex-to-rgb (hexrgb-color-name-to-hex base-color)))
+         (base-red    (nth 0 base-rgb))
+         (base-green  (nth 1 base-rgb))
+         (base-blue   (nth 2 base-rgb))
+         (s1-rgb      (hexrgb-hex-to-rgb (elt (split-string s1 icicle-list-join-string) 1)))
+         (s2-rgb      (hexrgb-hex-to-rgb (elt (split-string s2 icicle-list-join-string) 1))))
+    (< (+ (expt (- (nth 0 s1-rgb) base-red) 2)
+          (expt (- (nth 1 s1-rgb) base-green) 2)
+          (expt (- (nth 2 s1-rgb) base-blue) 2))
+       (+ (expt (- (nth 0 s2-rgb) base-red) 2)
+          (expt (- (nth 1 s2-rgb) base-green) 2)
+          (expt (- (nth 2 s2-rgb) base-blue) 2)))))
+
+;; This predicate is used for color completion.
 (defun icicle-color-hue-lessp (s1 s2)
   "Non-nil means the RGB hue in S1 is less than that in S2.
 The strings are assumed to have at least two parts, with the parts
@@ -5937,6 +5987,61 @@ be the second parts of the strings, and they are assumed to start with
         (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
     (and rgb1 rgb2 ; Just in case strings were not multipart.
          (< (hexrgb-value rgb1) (hexrgb-value rgb2)))))
+
+;; This predicate is used for color completion.
+(defun icicle-color-hsv-lessp (s1 s2)
+  "Non-nil means the HSV components of S1 are less than those of S2.
+Specifically, the hues are compared first, then if hues are equal then
+saturations are compared, then if those are also equal values are
+compared.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The second parts of the strings
+are RGB triplets that start with `#'."
+  (unless (featurep 'hexrgb) (error "`icicle-color-value-lessp' requires library `hexrgb.el'"))
+  (let* ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+         (hsv1  (and rgb1 (hexrgb-hex-to-hsv rgb1)))
+         (rgb2  (elt (split-string s2 icicle-list-join-string) 1))
+         (hsv2  (and rgb2 (hexrgb-hex-to-hsv rgb2))))
+    (and hsv1 hsv2 ; Just in case strings were not multipart.
+         (or (< (nth 0 hsv1) (nth 0 hsv2))
+             (and (= (nth 0 hsv1) (nth 0 hsv2))
+                  (< (nth 1 hsv1) (nth 1 hsv2)))
+             (and (= (nth 0 hsv1) (nth 0 hsv2))
+                  (= (nth 1 hsv1) (nth 1 hsv2))
+                  (< (nth 2 hsv1) (nth 2 hsv2)))))))
+
+;; This predicate is used for color completion.
+(defun icicle-color-distance-hsv-lessp (s1 s2)
+  "Return non-nil if color S1 is HSV-closer than S2 to the base color.
+S1 and S2 are color names (strings).
+
+The base color name is the cdr of option `list-colors-sort', whose car
+must be `hsv-dist'.  If the option value is not already a cons with
+car `hsv-dist' then it is made so: you are prompted for the base color
+name to use."
+  (unless (featurep 'hexrgb) (error "`icicle-color-distance-hsv-lessp' requires library `hexrgb.el'"))
+  (let* ((base-color  (if (and (boundp 'list-colors-sort) ; Emacs 23+
+                               (consp list-colors-sort) (eq 'hsv-dist (car list-colors-sort)))
+                          (cdr list-colors-sort) ; `list-colors-sort' is free here.
+                        (cdr (setq list-colors-sort
+                                   (cons 'hsv-dist
+                                         (let ((enable-recursive-minibuffers  t)
+                                               (icicle-sort-comparer          nil))
+                                           (icicle-read-color 0 "With HSV close to color: ")))))))
+         (base-hsv    (hexrgb-hex-to-hsv (hexrgb-color-name-to-hex base-color)))
+         (base-hue    (nth 0 base-hsv))
+         (base-sat    (nth 1 base-hsv))
+         (base-val    (nth 2 base-hsv))
+         (s1-hsv      (apply #'hexrgb-rgb-to-hsv
+                             (hexrgb-hex-to-rgb (elt (split-string s1 icicle-list-join-string) 1))))
+         (s2-hsv      (apply #'hexrgb-rgb-to-hsv
+                             (hexrgb-hex-to-rgb (elt (split-string s2 icicle-list-join-string) 1)))))
+    (< (+ (expt (- (nth 0 s1-hsv) base-hue) 2)
+          (expt (- (nth 1 s1-hsv) base-sat) 2)
+          (expt (- (nth 2 s1-hsv) base-val) 2))
+       (+ (expt (- (nth 0 s2-hsv) base-hue) 2)
+          (expt (- (nth 1 s2-hsv) base-sat) 2)
+          (expt (- (nth 2 s2-hsv) base-val) 2)))))
 
 ;; This predicate is used for key completion.
 (defun icicle-prefix-keys-first-p (s1 s2)

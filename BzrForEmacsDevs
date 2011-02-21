@@ -98,11 +98,11 @@ First, initialize a shared repository in which to store all your branches:
 Now, create a branch called ##trunk## whose main role is to be a mirror of the mainline, though you may also use it for making quick, one-off changes:
 
       cd emacs/
-      bzr branch bzr+ssh://USERNAME@bzr.savannah.gnu.org/emacs/trunk trunk
+      bzr branch nosmart+bzr+ssh://USERNAME@bzr.savannah.gnu.org/emacs/trunk trunk
 
-(Here USERNAME stands for your Savannah user name.  Use ##bzr://bzr.savannah.gnu.org/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
+(Here USERNAME stands for your Savannah user name.  Use ##nosmart+bzr://bzr.savannah.gnu.org/emacs/trunk## instead if you are not a committer and just expect read-only access.  You could also use ##bzr branch lp:emacs trunk## -- note: no "##nosmart+##" part -- which might be faster, depending on your network connection.)
 
-This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
+This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 15 to 60 minutes.  (The "##nosmart+##" option to the protocol makes it faster, for this one-time command.)  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
 
 Next, we'll further safeguard that mirror by making it a "two-way" mirror.  We do this by "binding" the local trunk to the upstream master:
 
@@ -111,7 +111,7 @@ Next, we'll further safeguard that mirror by making it a "two-way" mirror.  We d
       bzr bind bzr+ssh://USERNAME@bzr.savannah.gnu.org/emacs/trunk
       cd ..
 
-(Again, use ##bzr://bzr.savannah.gnu.org/emacs/trunk## as the URL, in both instances above, if you are not a committer and just expect read-only access.  Also, note that on MS-Windows you need either to remove the quotes around the arguments to the ##echo## command or use a ported GNU ##echo##.)
+(Again, use ##bzr://bzr.savannah.gnu.org/emacs/trunk## as the URL, in both instances above, if you are not a committer and just expect read-only access.  Also, note that on MS-Windows you need either to remove the quotes around the arguments to the ##echo## command or use a ported GNU ##echo##.  Finally, do //not// use "##nosmart+##" in any bzr command but the initial ##bzr branch##, because the "smart" operation is much faster for routine work.)
 
 If there are other upstream branches you'd like to mirror, you can set them up in the same way.  In your local repository, you can efficiently branch them from the upstream branch, because very little history copying will be needed (as long as they themselves were branched from the upstream master).
 

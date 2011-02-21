@@ -163,10 +163,13 @@ Here are some of the '''Icicles''' sort orders that exist by default:
 * by hue (colors)
 * by purity/saturation (colors)
 * by brightness/value/luminance (colors)
+* by all HSV components, in order (colors)
+* by HSV distance from a base color (colors)
 * by amount of red (colors)
 * by amount of green (colors)
 * by amount of blue (colors)
-* by RGB values (colors)
+* by all RGB components, in order (colors)
+* by RGB distance from a base color (colors)
 * ''by key name, prefix keys first'' (keys) -- see [[Icicles - Key Completion#CompletingPrefixKeys|Completing Prefix Keys]]
 * ''by key name, local bindings first'' (keys) -- see [[Icicles - Key Completion#HighlightLocalBindings|Local Bindings are Highlighted]]
 * ''by command name'' (commands)

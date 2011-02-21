@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 20 15:53:30 2011 (-0800)
+;; Last-Updated: Sun Feb 20 20:20:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16508
+;;     Update #: 16534
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6117,8 +6117,17 @@ those that have been used before.  (You must first use `TAB' or
 With a prefix arg, the previous inputs are sorted chronologically,
 most recent first.
 
-You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
-\\[icicle-keep-only-past-inputs]')."
+Note that whatever completion mode (prefix or apropos) was in effect
+before you use `\\<minibuffer-local-completion-map>\
+\\[icicle-keep-only-past-inputs]' remains in \ effect for
+`icicle-keep-only-past-inputs'.  This command does not use a recursive
+minibuffer; it simply co-opts the current completion, changing it to
+completion against the history.
+
+You can use this command only from the minibuffer \
+\(`\\[icicle-keep-only-past-inputs]').
+
+See also `\\[icicle-history]' (`icicle-history')."
   (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (if (and recent-first (interactive-p) icicle-inhibit-sort-p)
@@ -6265,12 +6274,12 @@ Non-interactively, arg HIST-VAR is the (string) name of a history var."
 ;;;###autoload
 (defun icicle-history ()                ; Bound to `M-h' in minibuffer.
   "Access the appropriate history list using completion or cycling.
-The current minibuffer input is interpreted as a regexp and matched
-against items in the history list in use for the current command.
+Complete the current minibuffer input against items in the history
+list that is in use for the current command.
 
-Note:
+NOTE:
 
-If the required input is a file or directory name, then the entire
+1. If the required input is a file or directory name, then the entire
 minibuffer input is what is matched against the history list.  The
 reason for this is that file names in the history list are usually
 absolute.  This is unlike the case for normal file-name completion,
@@ -6285,15 +6294,24 @@ For example, `/foo/bar/lph' will not apropos-match the previously
 input file name `/foo/bar/alphabet-soup.el'; you should use either
 `/foo/bar/.*lph' or `lph' (no directory).
 
-This also represents a difference in behavior compared to the similar
-command `icicle-keep-only-past-inputs' (\\<minibuffer-local-completion-map>\
-\\[icicle-keep-only-past-inputs] in the minibuffer).
-That command simply filters the current set of completion candidates,
-which in the case of file-name completion is a set of relative file
-names.
+2. This also represents a difference in behavior compared to the
+similar command `icicle-keep-only-past-inputs' \
+\(`\\<minibuffer-local-completion-map>\
+\\[icicle-keep-only-past-inputs]' in the
+minibuffer).  That command simply filters the current set of
+completion candidates, which in the case of file-name completion is a
+set of relative file names.
 
-You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
-\\[icicle-history]')."
+3. Whatever completion mode (prefix or apropos) was in effect before
+you use `\\<minibuffer-local-completion-map>\ \\[icicle-history]' remains in \
+effect for `icicle-history'.  This command
+does not use a recursive minibuffer; it simply co-opts the current
+completion, changing it to completion against the history.
+
+You can use this command only from the minibuffer \
+\(`\\[icicle-history]').
+
+See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (when (icicle-file-name-input-p)
@@ -6305,7 +6323,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                           (intern (if (consp elt) (car elt) elt))))))
   (when (and (boundp minibuffer-history-variable) (consp (symbol-value minibuffer-history-variable)))
     (setq minibuffer-completion-table
-          (mapcar #'list (icicle-remove-duplicates (symbol-value minibuffer-history-variable)))))
+          (mapcar #'list (icicle-remove-duplicates
+                          ;; `command-history' is an exception: its entries are not strings.
+                          (if (eq 'command-history minibuffer-history-variable)
+                              (mapcar #'prin1-to-string (symbol-value minibuffer-history-variable))
+                            (symbol-value minibuffer-history-variable))))))
   (save-selected-window (unless icicle-last-completion-command (icicle-apropos-complete)))
   (cond (icicle-cycling-p ;; $$$ (and (symbolp last-command) (get last-command 'icicle-cycling-command))
          (setq icicle-current-input  icicle-last-input)

@@ -1,25 +1,8 @@
-[http://www.loveshack.ukfsn.org/emacs/python.el python.el] ( or loveshack python.el ) from [http://www.loveshack.ukfsn.org/emacs/ Emacs bits], is a major mode for editing Python. 
+Consider [http://www.loveshack.ukfsn.org/emacs/python.el 'loveshack' python.el] from [http://www.loveshack.ukfsn.org/emacs/ Emacs bits];
 
-A version of this is included in Emacs 22, but has assorted problems this one doesn't.
-:This pages assumes you're using this version. Maybe another page could be started for the *other* python.el that comes with emacs?
+And [https://github.com/fgallina/python.el 'gallina' python.el] which is being contributed in parts to the official python.el.
 
-Emacs 21 and earlier had their own python mode, enabled by default, with properly-integrated support for things like completion, symbol help, eldoc, and inferior interpreter features.
- See ProgrammingWithPythonModeDotEl
-
-
-This mode assumes [http://www.loveshack.ukfsn.org/emacs/sym-comp.el sym-comp.el] is loaded and requires [http://www.loveshack.ukfsn.org/emacs/#emacs.py emacs.py] in Emacs' etc directory, i.e. data-directory, or somewhere else Python can find it.
-
-[http://www.loveshack.ukfsn.org/emacs/#python-21.el python-21.el] is a version of python.el that works (with some deficiencies) in Emacs 21, but additionally requires the library [http://cvs.savannah.gnu.org/viewcvs/*checkout*/emacs/emacs/lisp/emacs-lisp/syntax.el?rev=1.16 syntax.el] from Emacs 22.
-
-Also [http://www.loveshack.ukfsn.org/emacs/eldoc.el eldoc.el] is Emacs 22's eldoc.el hacked to work in Emacs 21.
-
-Recent changes to python.el are listed in [http://www.loveshack.ukfsn.org/emacs/NEWS.python NEWS.python].
-
-== unofficial status ===
-
-Patches were submitted to the Emacs maintainers, but were not used.
-see [http://www.loveshack.ukfsn.org/emacs/#python.el homepage].
-: need more info? --CH
+Also see ProgrammingWithPythonModeDotEl for the python-mode distributed with python.
 
 == comparison to python-mode.el ===
 

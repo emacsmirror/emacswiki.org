@@ -4,6 +4,8 @@ Yes, you can use Emacs as the editor for Microsoft Outlook email. I haven't trie
 
 * http://mini.net/tcl/EmacsOutlook -- Requires Tcl to be installed to communicate with Outlook.
 
+* https://github.com/dholm/outlookedit -- A git repository of outlookedit.el from http://wiki.tcl.tk/9198
+
 :: <em>I just set this up under XP w/ Office XP and it worked beautifully.</em>&mdash;EphremChristopherWalborn[http://www.tuirgin.com]
 
 -- can I do the same with Mozilla Mail ?
@@ -24,7 +26,8 @@ tcl to Windows script. The outlookedit.el from the first link mentioned above is
 needed. Simply save the following code with extension .wsf somewhere on your path and
 adjust the variables mno-get-outlook-body and mno-put-outlook-body -- MartinStemplinger
 
-outlookedit.el can also be downloaded from http://wiki.tcl.tk/9198.
+outlookedit.el can also be downloaded from http://wiki.tcl.tk/9198 or
+https://github.com/dholm/outlookedit if you prefer to use Git.
 
 
 <pre>
