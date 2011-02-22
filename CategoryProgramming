@@ -46,7 +46,7 @@ File management:
 * [[Bookmark+]] -- Tag files and code fragments a la [[http://delicious.com|del.icio.us]], to organize into sets and facilitate/control access. Bookmark [[Dired]] states. Open Dired on predefined sets of files located anywhere.
 * ChangeLog -- Log the changes to your source files.
 * EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
-* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] -- Quickly switch between projects and perform operations on a per-project basis
+* [https://github.com/mattkeller/mk-project/ mk-project] -- Quickly switch between projects and perform operations on a per-project basis
 * ProjectSettings -- Configuration settings for an entire project (directory).
 * ProjectWizard -- simple, customizable project wizard
 * ProjmanMode -- move between different projects (directories) maintaining options and open buffers for each

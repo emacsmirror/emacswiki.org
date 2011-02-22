@@ -90,6 +90,7 @@ Other pages (could this please be split in major and minor modes?):
 * PageMode -- handling ^L pages, select, cut, copy, head renumber
 * [[Pcf2Bdf]] -- viewing <code>pcf</code> font files as <code>bdf</code> source
 * PgpMode -- a PGP minor mode
+* PianobarMode -- A way to listen to Pandora from emacs
 * PlannerMode -- A fine personal information manager using WikiMode
 * PmxMode -- a mode for editing pmx files (Music Typesetting)
 * PodMode -- edit Perl <code>.pod</code> files or embedded POD documentation

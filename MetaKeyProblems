@@ -163,7 +163,45 @@ If one is running the native EmacsForMacOS, the variable
 <code>mac-command-key-is-meta</code> might be of interest, but it
 ought to be true by default.
 
-In AquamacsEmacs, Option (Alt) is mapped to Meta - however, because Option is used to input a lot of non-ASCII characters such as ü or £ on a variety of keyboards, the special character input methods take precedence by default. You can deselect "Option key produces only special characters" in the Options menu to use Option as Meta, or you set the variable mac-command-modifier to 'meta - you will lose functionality, of course.
+For some reason under leopard (Mac OS-X 10.0 and higher), internationalization may be turned on. This will result in insertion of a non-ASCII character in the native EmacsForMacOS when you use the Meta key. For example, you may see a "phi" when you type M-X, instead of the behavior you want (this is discussed in  [http://www.gnu.org/software/emacs/manual/html_node/emacs/Terminal-Coding.html 26.13 Coding Systems for Terminal I/O] in version 23). To disable this emacs-unfriendly behavior, enter the line 
+{{{
+    (set-keyboard-coding-system nil)
+}}} in the initialization (~/.emacs) file. (Does this also fix the related problem in Aquamacs Emacs,  discussed below?)
+
+You can then run emacs from X11 windows (Applications/Utilities/X11.app) with the option/alt key as the meta key. Furthermore, you may use the xmodmap command to remap the command key to Control <i>only</i> under X11. This has the advantage of allowing the command key to behave expectedly with other Mac applications. xmodmap can also ensure that the Alt/Option key is set to be the Meta key in emacs. You can do this with the following ~/.xmodmap file (the lines starting with exclamation points are comments and can be omitted):
+{{{
+ ! undo any meta keys already set
+ clear Mod1
+ ! keycodes 63 and 71 are the left and right COMMAND buttons adjacent to the spacebar; set them to be control keys
+ keycode 63=Control_L
+ keycode 71=Control_R
+ ! keycodes 66 and 69 are the option/alt keys; assign them as Meta keys
+ keycode 66=Meta_L
+ keycode 69=Meta_R
+ ! now tell X11 that the Meta keys act as the Mod1 (meta) modier key; that is, when they are pressed with KEY, it is the same as hitting M-KEY
+ add Mod1 = Meta_L Meta_R
+ ! tell X11 that the Control keys are Control modifiers, so when pressed with u (for example) it is the same as hitting C-u
+ add Control = Control_L Control_R
+}}}
+Use the above file with the command
+{{{
+    xmodmap ~/.xmodmap
+}}}
+before starting emacs (for instance, from /etc/bashrc if you use the login shell option to xterm, i.e. <code>xterm -ls</code> in X11/Application/Customize for terminal). 
+
+You can fix c-h so it brings up help (instead of acting as another delete key) by adding these lines to ~/.xmodmap
+{{{
+  ! Tell X11 that the delete key (above the spacebar) should send a C-? (control questionmark) instead of c-h.
+   keycode 59=127
+}}}
+However, you must then also execute the command <code>stty erase ^?</code>.This tells the terminal session that C-? should be used as a backspace/erase key, instead of C-h. Note that "^?" is NOT the caret followed by a questionmark; it is C-?. Generate ^? by either shift-control-questionmark, or if keycode 59 is already set to 127, by hitting the delete key. In emacs, you may generate it by typing C-q prior to either of those sequences. The two steps of reassigning the delete key (keycode 59) and using stty to make it the backspace should be performed together, i.e. from the /etc/bashrc file. Performing these two steps "frees" C-h to be available for emacs to use as the help key.  [NOTE: If you use both emacs <i>and</i> vim, this may break vim's backspace! One "fix" is to put
+{{{
+ :imap ^? <left><del> 
+}}} into your .vimrc file.]
+
+Alternatively, you can run emacs from Terminal, by changing Terminal's preferences/settings/keyboard and check "Use option as meta key", and the option/alt key should properly behave as the Meta key. You can also remap the Command key to be a control key under System Preferences/Keyboard/Keyboard/Modifier Keys to use emacs in Terminal. The downside to this approach is that it does not retain the Command key's functionality for use in other Mac applications, 
+
+In AquamacsEmacs, Option (Alt) is mapped to Meta - however, because Option is used to input a lot of non-ASCII characters such as ü or £ on a variety of keyboards, the special character input methods take precedence by default. You can deselect "Option key produces only special characters" in the Options menu to use Option as Meta, or you set the variable mac-command-modifier to 'meta - you will lose functionality, of course. 
 If you use a non-English keybboard layout, the emulation modes might be just what you want. While they leave the Option key mapped to Meta, they will allow you to input many common characters ([,],{,},\, etc.) directly with the Option key, just as you would otherwise. You can find them in the Options -> Option Key menu - or use, e.g., M-x emulate-mac-german-keyboard-mode.
 
 

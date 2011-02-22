@@ -1,8 +1,9 @@
-''This is about indenting with tabs and aligning with spaces. For Sebastien Rocca Serra's ##smart-tab## command, see [[TabCompletion#SmartTab|TabCompletion]].''
+''This is about indenting with tabs and aligning with spaces. For Sébastien Rocca-Serra's ##smart-tab## command, see [[TabCompletion#SmartTab|TabCompletion]].''
 
-: [[image:TabsSpacesBoth]] (after [http://www.duelinganalogs.com/comic/2007/04/02/hello-im-linux/ Steve Napierski])
+: [[image:TabsSpacesBoth]]
+: ''Tabs and spaces are often [TabsAreEvil misunderstood]. (Original comic by [http://www.duelinganalogs.com/comic/2007/04/02/hello-im-linux/ Steve Napierski].)''
 
-There is a "safe" way of using tabs in source code: '''tabs for indentation, spaces for alignment'''. This ensures the code is displayed correctly everywhere, regardless of the viewer's tab size.
+There is a ''fail-safe'' way of using tab characters in source code: '''tabs for indentation, spaces for alignment'''. This ensures the code is displayed correctly everywhere, regardless of the viewer's tab size.
 
     // Tab size: 4                // Tab size: 2
     if(foo) {                     if(foo) {
@@ -12,18 +13,22 @@ There is a "safe" way of using tabs in source code: '''tabs for indentation, spa
 
 The approach can be summed up in two points:
 
-# Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art or tables, should be formatted with spaces.
+# Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art and tables, should be formatted with spaces.
 # Tabs are only used for '''expressing the indentation level'''. One tab per "block" -- any remaining whitespace is spaces only.
 
-But isn't this difficult and tedious to carry out in practice? Well, not if the editor handles it for you.
+But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page contains code which improves the way Emacs inserts tabs (see the [[#SimpleAlgorithm|explanation]] for tips on duplicating it in other software).
+
+So should you use smart tabs or all spaces? That, of course, depends on the project and its established guidelines. The following code merely ensures that tabs are inserted in as fail-safe a manner as possible ''if'' you use tabs.
 
 [:Implementations]
 == Code ==
 
 : ''This should probably be packaged to make things easier. <tt>[http://gist.github.com/188961 smart-tabs.el]</tt>, anyone?''
 
+Add the code below to <tt>[InitFile .emacs]</tt> to make Emacs insert the proper amount of tabs and spaces automatically, provided ##indent-tabs-mode## is not disabled (see [[#Toggling|toggling]]). Then, to indent ''and'' align, just press '##<tab>##' as usual.
+
 [:Retab]
-Add the following code (explained [[#SimpleAlgorithm|below]]) to <tt>[InitFile .emacs]</tt> to make Emacs insert the "right" amount of tabs and spaces automatically. Then, to indent ''and'' align, just press '##<tab>##' for the current line, '<tt>[AutoIndentation C-j]</tt>' for a new line, etc. To retab the entire file, press '##C-x h C-M-\##' (tip: see [[TabCompletion#SmartTab|TabCompletion]] to do this, too, with the ##<tab>## key).
+You can retab the whole file by pressing '##C-x h C-M-\##'. (See [[TabCompletion#SmartTab|TabCompletion]] to do this with fewer keystrokes.)
 
 [:CImplementations]
 === C-like languages ===
@@ -51,20 +56,24 @@ For [CcMode CC Mode] (C, C++, Java et al.), add
         ad-do-it))
 
     (defmacro smart-tabs-advice (function offset)
-      (defvaralias offset 'tab-width)
-      `(defadvice ,function (around smart-tabs activate)
-         (cond
-          (indent-tabs-mode
-           (save-excursion
-             (beginning-of-line)
-             (while (looking-at "\t*\\( +\\)\t+")
-               (replace-match "" nil nil nil 1)))
-           (setq tab-width tab-width)
-           (let ((tab-width fill-column)
-                 (,offset fill-column))
-             ad-do-it))
-          (t
-           ad-do-it))))
+      `(progn
+         (defvaralias ',offset 'tab-width)
+         (defadvice ,function (around smart-tabs activate)
+           (cond
+            (indent-tabs-mode
+             (save-excursion
+               (beginning-of-line)
+               (while (looking-at "\t*\\( +\\)\t+")
+                 (replace-match "" nil nil nil 1)))
+             (setq tab-width tab-width)
+             (let ((tab-width fill-column)
+                   (,offset fill-column)
+                   (wstart (window-start)))
+               (unwind-protect
+                   (progn ad-do-it)
+                 (set-window-start (selected-window) wstart))))
+            (t
+             ad-do-it)))))
 
     (smart-tabs-advice c-indent-line c-basic-offset)
     (smart-tabs-advice c-indent-region c-basic-offset)

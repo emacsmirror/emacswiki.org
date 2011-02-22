@@ -1,0 +1,36 @@
+Pianobar mode uses the excellent Pandora commandline client "pianobar" to play Pandora in the background while you are in emacs.
+== Pianobar == 
+Lisp:pianobar.el (PianobarMode)
+
+== Installation ==
+You will first have to download and install pianobar, which can be found here: 
+http://6xq.net/html/00/17.html
+
+I had some trouble with the port version on my Mac so I had to download the source and compile it though it was a while ago so the issue may be fixed. 
+
+Once you set up pianobar you will have to download the elisp file and place it in your load directory with something like the following command:
+{{{
+    (add-to-list 'load-path "/path/to/pianobar.el")
+    (autoload 'pianobar "pianobar" nil t)
+}}}
+The second line will lazy load the file when you run the command M-x pianobar 
+
+You can set the username and password variables to login automatically when you run pianobar with the following:
+{{{
+(setq pianobar-username "MYEMAIL")
+(setq pianobar-password "MYPASSWORD")
+}}}
+Also if the executable "pianobar" is not on your path you will need to set the variable pianobar-program-command.
+
+== Running == 
+
+Pianobar mode tries to be as unobtrusive as possible so as to not interrupt you while working. It works a lot in the same way that itunes for emacs does in that there is a prefix key (by default f7) that starts any pianobar command. These are globally set so you have them in any mode in any buffer. If you already have f7 bound to something else you can just change the value of the variable "pianobar-key". 
+When the song changes you should get a notification in the message area and if the function "growl" is defined it will notify via growl of the new song. 
+The following are commonly used commands for running pianobar:
+
+* Pausing  [f7] p (or [f7] SPC)
+* Next Song [f7] n  
+* Love Song [f7] + 
+* Hate Song [f7] - 
+
+This mode is still a work in progress so a lot of the commands will have to have some interaction with the *pianobar* process buffer. 
