@@ -106,9 +106,8 @@ editing it).  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Co
 
 * If for some reason you do not want to use the enhancements
 described here, just customize option 
-'''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' to `nil'.  If you do
-that, then ''Icicle'' mode will not substitute any '''Icicles''' commands for
-standard commands.
+'''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' to remove shell-related functions.  If you do
+that, then ''Icicle'' mode will not substitute '''Icicles''' functions for them.
 
 
 

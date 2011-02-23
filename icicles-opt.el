@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 17 09:10:13 2011 (-0800)
+;; Last-Updated: Tue Feb 22 08:32:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4003
+;;     Update #: 4014
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -90,7 +90,7 @@
 ;;    `icicle-file-require-match-flag', `icicle-file-sort',
 ;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
-;;    `icicle-guess-commands-in-path',
+;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-flag',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
@@ -100,6 +100,7 @@
 ;;    `icicle-highlight-input-initial-whitespace-flag',
 ;;    `icicle-highlight-lighter-flag', `icicle-ignored-directories',
 ;;    `icicle-ignore-space-prefix-flag',
+;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
 ;;    `icicle-incremental-completion-threshold',
@@ -139,7 +140,6 @@
 ;;    `icicle-previous-candidate-keys',
 ;;    `icicle-quote-shell-file-name-flag',
 ;;    `icicle-read+insert-file-name-keys',
-;;    `icicle-redefine-standard-commands-flag',
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
 ;;    `icicle-region-background', `icicle-require-match-flag',
 ;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
@@ -232,8 +232,7 @@
 (eval-and-compile (when (< emacs-major-version 21) (require 'cl)))
 
 (require 'hexrgb nil t)     ;; (no error if not found): hexrgb-color-values-to-hex,
-                            ;; hexrgb-increment-(red|green|blue), hexrgb-rgb-to-hsv,
-                            ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb
+                            ;; hexrgb-rgb-to-hsv, hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): list-nearest-point-as-string,
                             ;; region-or-word-nearest-point, symbol-name-nearest-point
@@ -1115,6 +1114,52 @@ and you must load library `filesets.el'."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
+(defcustom icicle-functions-to-redefine
+  '(bbdb-complete-name                   comint-dynamic-complete
+    comint-dynamic-complete-filename     comint-replace-by-expanded-filename
+    customize-apropos                    customize-apropos-faces
+    customize-apropos-groups             customize-apropos-options
+    customize-apropos-options-of-type    customize-face
+    customize-face-other-window          dabbrev-completion
+    dired-read-shell-command             ess-complete-object-name
+    gud-gdb-complete-command             lisp-complete-symbol
+    lisp-completion-at-point             minibuffer-default-add-completions
+    read-color                           read-from-minibuffer
+    read-shell-command                   read-string
+    recentf-make-menu-items              repeat-complex-command)
+  "*List of symbols representing functions to be redefined in Icicle mode.
+In Icicle mode, each such FUNCTION is aliased to Icicles function
+`icicle-FUNCTION'.  The original functions are restored when you exit
+Icicle mode, by aliasing each FUNCTION to `old-FUNCTION'.
+
+Aliasing takes place only if `old-FUNCTION' is defined.  Icicles
+predefines each `old-FUNCTION' found in the default value, as well as
+each corresponding `icicle-FUNCTION' .  If you add additional
+functions of your own choosing, then you will also need to define
+`old-FUNCTION' and `icicle-FUNCTION' accordingly - see the Icicles
+code for examples.
+
+If you customize this option, then you must exit and re-enter Icicle
+mode to ensure that the change takes effect.
+
+For this option to have an effect upon startup, it must be set before
+you enter Icicle mode.  This means that you must ensure that the code
+that sets it is invoked before you enter Icicle mode.  If you use
+Customize to change this option, then ensure that the code inserted by
+Customize into your `user-init-file' or your `custom-file' is invoked
+before you enter Icicle mode."
+  :type '(repeat (restricted-sexp :tag "Command"
+                  ;; Use `symbolp' instead of `functionp' or `fboundp', in case the library
+                  ;; defining the function is not loaded.
+                  :match-alternatives (symbolp) :value ignore))
+  :set #'(lambda (sym defs)
+           (custom-set-default sym defs)
+           (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
+             (icicle-redefine-standard-functions)))
+  :initialize #'custom-initialize-default
+  :group 'Icicles-Miscellaneous)
+
+;;;###autoload
 (defcustom icicle-guess-commands-in-path nil
   "*Non-nil means all shell commands are available for completion.
 This is used in Icicle mode whenever a shell-command is read.
@@ -1300,6 +1345,26 @@ the input also starts with a space.  You can toggle this option from
 the minibuffer using `M-_'.
 Note: Some Icicles functionalities ignore the value of this option."
   :type 'boolean :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-image-files-in-Completions (and (fboundp 'image-file-name-regexp)
+                                                  (if (fboundp 'display-graphic-p)
+                                                      (display-graphic-p)
+                                                    window-system)
+                                                  t)
+  "*Non-nil means show thumbnail images for image files in `*Completions*'.
+This has no effect if your Emacs version does not have image support.
+
+ `nil'   means show only file names.
+ `image' means show only thumbnail images.
+ `t'     means show both file names and thumbnail images.
+
+You can cycle the value during completion using `C-x t'."
+  :type '(choice
+          (const :tag "Both name and thumbnail"  t)
+          (const :tag "Thumbnail image only"     'image-only)
+          (const :tag "File name only"           nil))
+  :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-incremental-completion-delay 0.7
@@ -1912,11 +1977,6 @@ A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
-
-;;;###autoload
-(defcustom icicle-redefine-standard-commands-flag t
-  "*Non-nil means Icicle mode redefines some standard Emacs commands."
-  :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-regexp-quote-flag nil ; Toggle with `C-`'.

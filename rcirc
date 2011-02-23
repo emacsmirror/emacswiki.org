@@ -101,6 +101,7 @@ Please also consider visiting these pages in order to getting started:
 ; [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
 ; [[rcircDbusNotification]]: use the dbus bindings for notifications
 ; [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
+; [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
 
 /For developers:/
 

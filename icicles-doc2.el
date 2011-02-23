@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 20 15:07:43 2011 (-0800)
+;; Last-Updated: Tue Feb 22 07:08:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27485
+;;     Update #: 27509
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1947,10 +1947,10 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Using Completion to Insert Previous Inputs: `M-o'")
 ;;
 ;;  * If for some reason you do not want to use the enhancements
-;;    described here, just customize option
-;;    `icicle-redefine-standard-commands-flag' to nil.  If you do
-;;    that, then Icicle mode will not substitute any Icicles commands
-;;    for standard commands.
+;;    described here, you can customize option
+;;    `icicle-functions-to-redefine' to remove shell-related
+;;    functions.  If you do that, then Icicle mode will not substitute
+;;    Icicles functions for them.
  
 ;;(@* "Icicles Dired Enhancements")
 ;;
@@ -4080,13 +4080,14 @@
 ;;  common prefix, thus narrowing the set of candidates, but then you
 ;;  lose the ability to cycle among them.
 ;;
-;;  If user option `icicle-redefine-standard-commands-flag' is non-nil
-;;  (which is the case by default), then Icicles redefines command
-;;  `dabbrev-completion' (it does not change `dabbrev-expand') so that
-;;  it uses Icicles completion when there are multiple completions.
-;;  You can use any Icicles features, such as apropos completion and
-;;  candidate cycling.  In addition, you can even complete an empty
-;;  prefix, starting from scratch with apropos completion.
+;;  If user option `icicle-functions-to-redefine' contains an entry
+;;  for `dabbrev-completion' (which it does by default) then Icicles
+;;  redefines command `dabbrev-completion' (it does not change
+;;  `dabbrev-expand') so that it uses Icicles completion when there
+;;  are multiple completions.  You can use any Icicles features, such
+;;  as apropos completion and candidate cycling.  In addition, you can
+;;  even complete an empty prefix, starting from scratch with apropos
+;;  completion.
 ;;
 ;;(@* "BBDB Completion")
 ;;  ** BBDB Completion **
@@ -4094,12 +4095,13 @@
 ;;  Library `bbdb.el', available at http://bbdb.sourceforge.net/, is a
 ;;  rolodex-like database program for GNU Emacs.
 ;;
-;;  If user option `icicle-redefine-standard-commands-flag' is non-nil
-;;  (which is the case by default), then Icicles redefines command
-;;  `bbdb-complete-name' so that it uses Icicles completion when there
-;;  are multiple completions.  You can use any Icicles features, such
-;;  as apropos completion and candidate cycling.  For this feature to
-;;  take effect, you must load BBDB before you load Icicles.
+;;  If user option `icicle-functions-to-redefine' contains an entry
+;;  for `bbdb-complete-name' (which it does by default) then Icicles
+;;  redefines command `bbdb-complete-name' so that it uses Icicles
+;;  completion when there are multiple completions.  You can use any
+;;  Icicles features, such as apropos completion and candidate
+;;  cycling.  For this feature to take effect, you must load BBDB
+;;  before you load Icicles.
 ;;
 ;;(@* "Thesaurus Completion")
 ;;  ** Thesaurus Completion **
@@ -4378,9 +4380,11 @@
 ;;    effect after Icicles has been loaded.  However, you can change
 ;;    it and save the new value, so it will be used next time.
 ;;
-;;  * User option `icicle-redefine-standard-commands-flag' controls
-;;    whether Icicles redefines some standard functions, enhancing them
-;;    to use Icicles completion.  A non-nil value causes redefinition.
+;;  * User option `icicle-functions-to-redefine' controls whether
+;;    Icicles redefines some standard functions, enhancing them to use
+;;    Icicles completion.  You can specify which functions to
+;;    redefine.  The original function definitions are restored when
+;;    you exit Icicle mode.
 ;;
 ;;  * Option `icicle-inhibit-advice-functions' is a list of functions
 ;;    that Icicles redefines, and for which Icicle mode deactivates
@@ -6577,11 +6581,12 @@
 ;;  Icicles Redefines Some Standard Functions
 ;;  -----------------------------------------
 ;;
-;;  If user option `icicle-redefine-standard-commands-flag' is
-;;  non-nil, then Icicles automatically redefines a few functions from
-;;  standard Emacs and some other packages, enhancing them for Icicles
-;;  completion.  These redefinitions hold only when you are in Icicle
-;;  mode.
+;;  User option `icicle-functions-to-redefine' is a list of functions
+;;  (typically commands) that are automatically redefined in Icicle
+;;  mode to enhance them for Icicles completion.  The original
+;;  definitions are restored when you exit Icicle mode.  The default
+;;  value of `icicle-functions-to-redefine' contains the following
+;;  functions:
 ;;
 ;;    `bbdb-complete-name' (from BBDB), `comint-dynamic-complete',
 ;;    `comint-dynamic-complete-filename',
@@ -6590,12 +6595,12 @@
 ;;    `customize-apropos-options', `customize-apropos-options-of-type'
 ;;    (from `cus-edit+.el'), `customize-face',
 ;;    `customize-face-other-window', `dabbrev-completion',
-;;    `ess-complete-object-name' (from ESS),
-;;    `gud-gdb-complete-command', `dired-read-shell-command',
-;;    `lisp-complete-symbol', `lisp-completion-at-point',
-;;    `minibuffer-default-add-completions', `read-from-minibuffer',
-;;    `read-shell-command', `read-string', `recentf-make-menu-items',
-;;    `repeat-complex-command'.
+;;    `dired-read-shell-command', `ess-complete-object-name' (from
+;;    ESS), `gud-gdb-complete-command', `lisp-complete-symbol',
+;;    `lisp-completion-at-point',
+;;    `minibuffer-default-add-completions', `read-color',
+;;    `read-from-minibuffer', `read-shell-command', `read-string',
+;;    `recentf-make-menu-items', `repeat-complex-command'.
 ;;
 ;;  Icicles unconditionally redefines these standard Emacs functions
 ;;  while in Icicle mode:

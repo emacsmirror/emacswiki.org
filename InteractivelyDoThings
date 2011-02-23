@@ -257,6 +257,13 @@ Using the defadvice as described does not work for me? Is it just me or is this 
 
 Fixed.  It seems in version >=23, ido-cur-list is always bound and you need to check it as well. -- LeWang
 
+I found ido-completing-read to interfere when using dired mode buffers (e.g., renaming files). To turn it off:
+
+    (add-hook 'dired-mode-hook
+              '(lambda () (setq ido-enable-replace-completing-read nil)))
+
+-- ChrisPoole
+
 == Ido Hacks (modifying Ido's behavior) ==
 
 === Display Completions Vertically ===

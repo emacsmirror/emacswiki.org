@@ -44,7 +44,9 @@ All other settings for VM variables should go in the ~/.vm.preferences file.
 ----
 == Local folders or Server folders? ==
 
-An early decision you need to make is whether you will store your email on the local file system or keep it on mail servers (POP or IMAP).  POP allows a single folder called `INBOX' to be kept on the server but IMAP allows any number of folders in addition to `INBOX'.  The advantage of keeping email on the servers is that you can read it and update it from multiple locations.  VM allows you to keep your email on the mail servers (but cached locally for speed and convenience) or to download it to local folders.
+An early decision you need to make is whether you will store your email on the local file system or keep it on mail servers (POP or IMAP).  POP allows a single folder called `INBOX' to be kept on the server but IMAP allows any number of folders in addition to `INBOX'.  The advantage of keeping email on the servers is that you can read it and update it from multiple locations.  VM allows you to keep your email on the mail servers (but cached locally for speed and convenience) or to download it to local folders.  
+
+The most common use of POP servers is to download mail to local folders.  The best use of IMAP servers to use server folders.
 
 ----
 == Most Important Variables - Local folders ==

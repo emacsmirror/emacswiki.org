@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 20 14:48:05 2011 (-0800)
+;; Last-Updated: Tue Feb 22 19:53:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12123
+;;     Update #: 12153
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -261,7 +261,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case, lexical-let
+(eval-when-compile (require 'cl)) ;; case, lexical-let, loop
                                   ;; plus, for Emacs < 21: dolist, push, pop
 
 (require 'hexrgb nil t) ;; (no error if not found): hexrgb-color-name-to-hex, hexrgb-defined-colors,
@@ -2420,7 +2420,11 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   (setq icicle-incremental-completion-p  icicle-incremental-completion-flag)
   (when (and (eq t icicle-incremental-completion-p) (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
-  (let ((nb-cands      (length icicle-completion-candidates)))
+  (let ((nb-cands             (length icicle-completion-candidates)))
+        ;; $$$$$$ Could use this binding to prevent frame fitting, to allow room for images.
+        ;; But that is not really the solution.  Really should fit the frame or window in such a way
+        ;; that it takes image sizes into account.  Might need to wait for a fix to Emacs bug #7822.
+        ;; (autofit-frames-flag  (not icicle-image-files-in-Completions)))
     (cond ((eq no-display-p 'no-msg))   ; No-op.
           (no-display-p (icicle-msg-maybe-in-minibuffer
                          (format "Candidates updated (%s matching): %d"
@@ -2675,7 +2679,41 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                         properties)))
                                    (setq partnum  (1+ partnum)
                                          start    (match-end 0))))))))
-                       (goto-char next))))
+
+                       ;; Show thumbnail for an image file.
+                       (when (and (icicle-file-name-input-p)
+                                  (fboundp 'image-file-name-regexp)
+                                  icicle-image-files-in-Completions
+                                  (if (fboundp 'display-graphic-p) (display-graphic-p) window-system))
+                         (let ((image-file  (icicle-current-completion-in-Completions)))
+                           (when (and (require 'image-dired nil t)
+                                      (if (fboundp 'string-match-p)
+                                          (string-match-p (image-file-name-regexp) image-file)
+                                        (save-match-data
+                                          (string-match (image-file-name-regexp) image-file))))
+                             (let ((thumb-img  (image-dired-get-thumbnail-image image-file))
+                                   (img-ov     (overlays-in (point) (1+ (point)))))
+                               (if img-ov
+                                   (delete-overlay (car img-ov))
+                                 (put-image thumb-img beg)
+                                 (setq img-ov (loop for ov in (overlays-in (point) (1+ (point)))
+                                                    when (overlay-get ov 'put-image) collect ov into ovs
+                                                    finally return (car ovs)))
+                                 (overlay-put img-ov 'image-file image-file)
+                                 (overlay-put img-ov 'thumb-img thumb-img)
+                                 (overlay-put img-ov 'image-size (image-size thumb-img))))
+                             ;; Replace file name with a space.
+                             (when (eq 'image-only icicle-image-files-in-Completions)
+                               (let ((name-ov  (overlays-in end end)))
+                                 (if name-ov
+                                     (delete-overlay (car name-ov))
+                                   (setq name-ov  (make-overlay beg end))  
+                                   (overlay-put name-ov 'display " ")))))))
+                       (goto-char next)))
+                   ;; Remove all newlines for images-only display.
+                   (when (eq icicle-image-files-in-Completions 'image-only)
+                     (save-excursion (goto-char (icicle-start-of-candidates-in-Completions))
+                                     (while (and (re-search-forward "$") (not (eobp))) (delete-char 1)))))
                  (set-buffer-modified-p nil)
                  (setq buffer-read-only  t))))
            (with-current-buffer (get-buffer "*Completions*")
@@ -2690,7 +2728,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                 'face 'icicle-mode-line-help
                                 mode-line-frame-identification)
              (goto-char (icicle-start-of-candidates-in-Completions))
-             (set-window-point (get-buffer-window "*Completions*" 0) (point)))
+             (set-window-point (get-buffer-window "*Completions*" 0) (point))
+             (icicle-fit-completions-window))
            (message nil)))))            ; Clear out any "Looking for..."
 
 
@@ -2833,25 +2872,33 @@ The optional second arg is ignored."
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
           (setq row  (1+ row)))))))
 
-(defun icicle-fit-completions-window ()
-  "Fit the window showing completions to its contents.
-Scale text size initially, using
-`icicle-Completions-text-scale-decrease' (Emacs 23+).
-\(Do not scale if using `oneonone.el' with a `*Completions*' frame.)
-Useful in `temp-buffer-show-hook'."
-  (let ((window-min-height  1))		; Prevent deletion of other windows.
-    (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
-      (let ((win  (selected-window)))
-	(unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
-	  (fit-window-to-buffer
-	   win
-	   (or (and (symbolp icicle-last-top-level-command)
-		    (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
-	       icicle-Completions-window-max-height))))))
-  (when (and (eq major-mode 'completion-list-mode) ; Emacs 23+
-             (or (not (boundp '1on1-*Completions*-frame-flag)) (not 1on1-*Completions*-frame-flag))
-             (boundp 'icicle-Completions-text-scale-decrease))
-    (text-scale-decrease icicle-Completions-text-scale-decrease)))
+;; ARG is not used yet/currently.
+(defun icicle-fit-completions-window (&optional arg)
+  "Fit the window that is showing completions to its contents.
+Optional ARG determines what the effect is, as follows:
+
+ nil        - scale text size and fit window to contents
+ fit-only   - fit window to contents, but do not scale text size
+ scale-only - scale text size but do not fit window to contents
+
+Text size scaling uses `icicle-Completions-text-scale-decrease' and is
+only available for Emacs 23+.  (Do not scale in any case if using
+`oneonone.el' with a `*Completions*' frame.)."
+  (unless (eq arg 'scale-only)
+    (let ((window-min-height  1)) ; Prevent deletion of other windows.
+      (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
+        (let ((win  (get-buffer-window "*Completions*" 0)))
+          (unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
+            (fit-window-to-buffer
+             win
+             (or (and (symbolp icicle-last-top-level-command)
+                      (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
+                 icicle-Completions-window-max-height)))))))
+  (unless (eq arg 'fit-only)
+    (when (and (boundp 'icicle-Completions-text-scale-decrease) ; Emacs 23+
+               (eq major-mode 'completion-list-mode)
+               (or (not (boundp '1on1-*Completions*-frame-flag)) (not 1on1-*Completions*-frame-flag)))
+      (text-scale-decrease icicle-Completions-text-scale-decrease))))
 
 (defun icicle-highlight-initial-whitespace (input)
   "Highlight any initial whitespace in your input.

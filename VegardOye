@@ -2,7 +2,7 @@ I use Emacs.
 
 I maintain [[Vimpulse]] and [[Lisp:viper-in-more-modes.el|viper-in-more-modes.el]].
 
-'''E-mail:''' ##vegard underline oye at hotmail dot com##
+'''E-mail:''' ##(concat "vegard_oye" "@" "hotmail.com")##
 
 '''Gitorious profile:''' http://gitorious.org/~epsilon47
 

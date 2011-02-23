@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 20 14:52:32 2011 (-0800)
+;; Last-Updated: Tue Feb 22 08:31:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22799
+;;     Update #: 22806
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -106,7 +106,8 @@
 ;;
 ;;   Commands to be used mainly at top level:
 ;;
-;;    `a', `any', `buffer', `clear-option', `file',
+;;    `a', `any', `buffer', `clear-option',
+;;    `cycle-icicle-image-file-thumbnail', `file',
 ;;    `icicle-add-buffer-candidate', `icicle-add-buffer-config',
 ;;    `icicle-add-entry-to-saved-completion-set',
 ;;    `icicle-add-file-to-fileset',
@@ -164,6 +165,7 @@
 ;;    `icicle-customize-apropos-options',
 ;;    `icicle-customize-apropos-options-of-type',
 ;;    `icicle-customize-face', `icicle-customize-icicles-group',
+;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-dabbrev-completion', `icicle-delete-file',
 ;;    `icicle-delete-window', `icicle-delete-windows',
 ;;    `icicle-delete-windows-on', `icicle-describe-file',
@@ -301,6 +303,7 @@
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-vardoc',
 ;;    `icicle-where-is', `icicle-yank-maybe-completing',
 ;;    `old-bbdb-complete-name', `old-comint-dynamic-complete',
+;;    `old-comint-dynamic-complete-filename',
 ;;    `old-comint-replace-by-expanded-filename',
 ;;    `old-dired-read-shell-command', `old-ess-complete-object-name',
 ;;    `old-gud-gdb-complete-command', `old-read-shell-command',
@@ -326,6 +329,7 @@
 ;;
 ;;   Commands to be used mainly in the minibuffer or `*Completions*':
 ;;
+;;    `cycle-icicle-image-file-thumbnail',
 ;;    `icicle-abort-recursive-edit', `icicle-all-candidates-action',
 ;;    `icicle-all-candidates-alt-action',
 ;;    `icicle-all-candidates-list-action',
@@ -374,6 +378,7 @@
 ;;    `icicle-choose-completion', `icicle-clear-current-history',
 ;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
+;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-search-define-replacement',
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
 ;;    `icicle-delete-char', `icicle-digit-argument',
@@ -587,7 +592,7 @@
 ;;    `icicle-file-require-match-flag', `icicle-file-sort',
 ;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
-;;    `icicle-guess-commands-in-path',
+;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-flag',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
@@ -597,6 +602,7 @@
 ;;    `icicle-highlight-input-initial-whitespace-flag',
 ;;    `icicle-highlight-lighter-flag', `icicle-ignored-directories',
 ;;    `icicle-ignore-space-prefix-flag',
+;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
 ;;    `icicle-incremental-completion-threshold',
@@ -636,12 +642,10 @@
 ;;    `icicle-prefix-cycle-previous-help-keys',
 ;;    `icicle-previous-candidate-keys',
 ;;    `icicle-quote-shell-file-name-flag',
-;;    `icicle-read+insert-file-name-keys',
-;;    `icicle-redefine-standard-commands-flag',
-;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
-;;    `icicle-region-background', `icicle-require-match-flag',
-;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
-;;    `icicle-search-from-isearch-keys',
+;;    `icicle-read+insert-file-name-keys', `icicle-regexp-quote-flag',
+;;    `icicle-regexp-search-ring-max', `icicle-region-background',
+;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
+;;    `icicle-search-cleanup-flag', `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
 ;;    `icicle-search-highlight-context-levels-flag',
 ;;    `icicle-search-highlight-threshold', `icicle-search-hook',
@@ -843,6 +847,7 @@
 ;;    `icicle-levenshtein-match', `icicle-levenshtein-one-match',
 ;;    `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
+;;    `icicle-lisp-completion-at-point',
 ;;    `icicle-lisp-vanilla-completing-read',
 ;;    `icicle-local-keys-first-p', `icicle-locate-file-1',
 ;;    `icicle-locate-file-action',
@@ -894,7 +899,7 @@
 ;;    `icicle-read-string-completing',
 ;;    `icicle-read-var-value-satisfying', `icicle-rebind-global',
 ;;    `icicle-recentf-make-menu-items', `icicle-recompute-candidates',
-;;    `icicle-redefine-standard-commands',
+;;    `icicle-redefine-standard-functions',
 ;;    `icicle-redefine-standard-options',
 ;;    `icicle-redefine-std-completion-fns',
 ;;    `icicle-region-or-buffer-limits', `icicle-remap',

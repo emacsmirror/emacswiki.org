@@ -7,9 +7,11 @@
 
 = Icicles Redefines Some Standard Functions =
 
-If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is
-non-`nil', then '''Icicles''' automatically redefines a few functions from standard Emacs and some other packages, enhancing them for '''Icicles''' [[completion]].  These redefinitions hold only
-when you are in ''Icicle'' mode.
+User [[user option|option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' is a list of functions (typically [[command]]s) that are automatically redefined in ''Icicle''
+mode to enhance them for '''Icicles''' [[completion]].  The original
+definitions are restored when you exit ''Icicle'' mode.  The default
+value of `icicle-functions-to-redefine' contains the following
+functions:
 
 * `bbdb-complete-name' (from [[BBDB]])
 * `comint-dynamic-complete'
@@ -23,12 +25,13 @@ when you are in ''Icicle'' mode.
 * `customize-face'
 * `customize-face-other-window'
 * `dabbrev-completion'
-* `ess-complete-object-name' (from ESS)
-* `gud-gdb-complete-command'
 * `dired-read-shell-command'
+* `ess-complete-object-name' (from [[ESS]])
+* `gud-gdb-complete-command'
 * `lisp-complete-symbol'
 * `lisp-completion-at-point'
 * `minibuffer-default-add-completions'
+* `read-color'
 * `read-from-minibuffer'
 * `read-shell-command'
 * `read-string'

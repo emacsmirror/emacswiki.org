@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 17 08:46:37 2011 (-0800)
+;; Last-Updated: Mon Feb 21 09:43:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1357
+;;     Update #: 1358
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -573,7 +573,6 @@ noted in parentheses.
 * `icicle-previous-candidate-keys'       - Back keys for *Completions*
 * `icicle-quote-shell-file-name-flag'    - Quote file name in shell?
 * `icicle-read+insert-file-name-keys'    - Keys for on-demand file
-* `icicle-redefine-standard-commands-flag'- Redefine std commands?
 * `icicle-regexp-quote-flag'             - Escape chars? (`C-`')
 * `icicle-regexp-search-ring-max'        - `regexp-search-ring-max'
 * `icicle-region-background'             - Background for region

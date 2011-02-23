@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 20 14:44:08 2011 (-0800)
+;; Last-Updated: Tue Feb 22 20:46:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6040
+;;     Update #: 6075
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/02/22 dadams
+;;     Added: icicle-lisp-completion-at-point.
 ;; 2011/01/06 dadams
 ;;     Added: icicle-filter-buffer-cands-for-mode.
 ;;     icicle-(kill|insert)-buffer, icicle-buffer(-other-window), icicle-add-buffer-candidate:
@@ -666,6 +668,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/02/22 dadams
+;;     icicle-display-candidates-in-Completions: Show thumbnail for an image file.
+;;                                               Call icicle-fit-completions-window explicitly here.
+;;     icicle-fit-completions-window: Added optional arg (not used yet).  Ensure window is Completions.
 ;; 2011/02/20 dadams
 ;;     Added: icicle-color-(distance)-(hsv|rgb)-lessp.
 ;;     icicle-color-completion-setup: Added sort orders for HSV and RGB: component order and distance.
@@ -2191,6 +2197,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/02/22 dadams
+;;     Added: icicle-cycle-image-file-thumbnail.
+;;     icicle-describe-file: Show also EXIF data for an image file.
+;;     icicle-remove-Completions-window:
+;;       No-op if Completions is selected or minibuf is selected and Completions was last selected.
 ;; 2011/02/20 dadams
 ;;     icicle-history: If history is command-history, convert its entries to strings for completion.
 ;;     icicle-history, icicle-keep-only-past-inputs: Clarify doc: current completion mode is kept.
@@ -3334,6 +3345,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/02/22 dadams
+;;     icicle-(bind|restore)-completion-keys: Bind C-x t to icicle-cycle-image-file-thumbnail.
+;;     icicle-mode: Do not add icicle-fit-completions-window to temp-buffer-show-hook.
+;;                  Do it explicitly in icicle-display-candidates-in-Completions now.
+;;     Renamed: icicle-*-standard-commands to icicle-(redefine|restore)-standard-functions.
+;;              And rewrote them to just use new option icicle-functions-to-redefine.
+;;     Replaced: icicle-redefine-standard-commands-flag with icicle-functions-to-redefine everywhere.
+;;     Added: old-comint-dynamic-complete-filename.
 ;; 2011/02/17 dadams
 ;;     icicle-(redefine|restore)-standard-commands: Use icicle-read-color for read-color.
 ;; 2011/01/20 dadams
@@ -4295,6 +4314,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/02/22 dadams
+;;     Added: icicle-image-files-in-Completions, icicle-functions-to-redefine.
+;;     Removed: icicle-redefine-standard-commands-flag.
 ;; 2011/01/17 dadams
 ;;     Added runtime require of cl.el for Emacs 20.  (Emacs 20 does not handle defcustom well.)
 ;; 2011/01/12 dadams

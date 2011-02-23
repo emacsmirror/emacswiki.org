@@ -267,12 +267,14 @@ so that it will be used next time. See [[Icicles - Nutshell View]] for more abou
 
 
 ----
-[:icicle-redefine-standard-commands-flag]
-==== Option icicle-redefine-standard-commands-flag ====
+[:icicle-functions-to-redefine]
+==== Option icicle-functions-to-redefine ====
 
-User option '''`icicle-redefine-standard-commands-flag'''' controls
+User option '''`icicle-functions-to-redefine'''' controls
 whether '''Icicles''' redefines some standard functions, enhancing them
-to use '''Icicles''' completion.  A non-`nil' value causes redefinition.
+to use '''Icicles''' completion.  You can specify which functions to
+redefine.  The original function definitions are restored when
+you exit ''Icicle'' mode.
 
 
 ----

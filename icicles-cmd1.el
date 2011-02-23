@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  9 10:12:11 2011 (-0800)
+;; Last-Updated: Tue Feb 22 07:41:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 21586
+;;     Update #: 21597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -208,8 +208,8 @@
 ;;    `icicle-find-tag-final-act', `icicle-find-tag-help',
 ;;    `icicle-find-tag-quit-or-error', `icicle-insert-for-yank',
 ;;    `icicle-kill-a-buffer-and-update-completions',
-;;    `icicle-kmacro-action', (+)`icicle-locate-file-1',
-;;    `icicle-locate-file-action',
+;;    `icicle-kmacro-action', `icicle-lisp-completion-at-point',
+;;    (+)`icicle-locate-file-1', `icicle-locate-file-action',
 ;;    `icicle-locate-file-other-window-action',
 ;;    `icicle-make-file+date-candidate', `icicle-make-frame-alist',
 ;;    `icicle-make-window-alist',
@@ -1392,16 +1392,12 @@ control completion behaviour using `bbdb-completion-type'."
 
 
 ;; REPLACE ORIGINAL `lisp-complete-symbol' (< Emacs 23.2),
-;; REPLACE ORIGINAL `lisp-completion-at-point' (>= Emacs 23.2),
-;; defined in `lisp.el', saving them for restoration when you toggle `icicle-mode'.
+;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
 ;; Select *Completions* window even if on another frame.
 ;;
 (unless (fboundp 'old-lisp-complete-symbol)
   (defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
-(when (fboundp 'completion-at-point)    ; Emacs 23.2.
-  (unless (fboundp 'old-lisp-completion-at-point)
-    (defalias 'old-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))))
 
 ;;;###autoload
 (defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.
@@ -1467,6 +1463,18 @@ considered."
                                                     obarray predicate t new)))))
     (delete-region beg end)
     (insert new)))
+
+
+;; REPLACE ORIGINAL `lisp-completion-at-point' (>= Emacs 23.2),
+;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
+;;
+;; Select *Completions* window even if on another frame.
+;;
+(when (fboundp 'completion-at-point)    ; Emacs 23.2+.
+  (unless (fboundp 'old-lisp-completion-at-point)
+    (defalias 'old-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))
+    ;; Return a function that does all of the completion.
+    (defun icicle-lisp-completion-at-point () #'icicle-lisp-complete-symbol)))
 
 ;;;###autoload
 (defun icicle-customize-icicles-group ()

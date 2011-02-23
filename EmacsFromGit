@@ -1,5 +1,17 @@
-A [[Git]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available.
-It seems to be [http://article.gmane.org/gmane.emacs.devel/119614 semi-official].
+A [[Git]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available. <b>Note:</b> Only Bazaar repo is official!
+
+<b>Note:</b> Seems that all Git mirrors are near one day old! Read [http://thread.gmane.org/gmane.emacs.help/79267 discussion].
+
+<b>Note:</b> <code>clone/pull</code> operations on Bazaar repo seems have same time, network efficient as Git when used <code>bzr://</code> or <code>nosmart+bzr://</code> protocols. <code>http://</code> protocols for Bazaar and for Git both are not efficient!
+
+<b>Note:</b> Git repository includes the entire history of GNU Emacs development and therefore weighs about 300MB.
+
+Official [http://savannah.gnu.org/projects/emacs Savnnah Emacs page] reffer to git Emacs mirror intended for those who prefer to use git as their VCS:
+<pre>
+  $ git clone git://git.savannah.gnu.org/emacs.git
+</pre>
+
+There are exist another [http://article.gmane.org/gmane.emacs.devel/119614 semi-official] mirrors:
 
 <pre>
  git clone git://repo.or.cz/emacs.git
@@ -15,6 +27,3 @@ Mirrors of the above git repository exist on
 [http://github.com/emacsmirror/emacs github] and
 [http://gitorious.org/emacsmirror/emacs gitorious].
 But be aware that these currently lag behind a bit.
-
-Beware that this (by design) includes the entire history and therefore
-weighs about 300MB.

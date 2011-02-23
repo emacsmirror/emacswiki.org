@@ -19,8 +19,7 @@ The following new commands are provided:
 
 * '''`describe-keymap'''' ('''`C-h M-k'''') -- Describe the bindings in a keymap. Enter the keymap variable using completion.
 
-* '''`describe-file'''' ('''`C-h M-f'''') -- Display information about a file or directory: its type, permissions, size, time of last access/modification/status change, number of links, UID, GID, inode, and device number.
-
+* '''`describe-file'''' ('''`C-h M-f'''') -- Display information about a file or directory: its type, permissions, size, time of last access/modification/status change, number of links, UID, GID, inode, and device number.  Starting with Emacs 22, if the file is an image file and you have command-line tool `exiftool' installed and in your `##$PATH##' or `exec-path', then some EXIF data (metadata) about the image is included.  See standard Emacs library ##image-dired.el## for more information about `exiftool'.
 * `'''<code>help-on-click/key</code>'''' ('''`C-h RET'''') -- ''Super'' help: it gives help on ''any key/menu'' sequence or ''any object'' clicked with the mouse. Bind it to, for instance, `C-h RET'. The object can be ''any part of an Emacs window'' or ''any name'' appearing in a
 buffer.  You can do any of the following:
 ** type a KeySequence (e.g. `C-M-s')

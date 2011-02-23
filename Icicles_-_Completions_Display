@@ -187,6 +187,22 @@ portion that is common to all candidates.
 
 
 
+
+[:ThumbnailImages]
+=== Show Thumbnails for Image Files ===
+
+Starting with Emacs 22, thumbnail images are shown in
+`*Completions*' for candidates that are file names of image
+files, if option '''`<tt>[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]</tt>'''' is non-`nil'
+(it is `t' by default).  If the option value is `image-only', then
+only the thumbnail images are shown.  If it is otherwise non-`nil'
+then the file names are also shown.  You can cycle the option
+value using '''`C-x t'''' in the minibuffer at any time during
+completion.
+
+
+
+
 [:ScrollCompletions]
 === Scroll *Completions* ===
 You can scroll `*Completions*' down using `C-v', and up using

@@ -22,27 +22,31 @@ The precise meanings of these terms may vary, though there is some commonality a
 
 The following unit test frameworks exist for Emacs Lisp.
 
-=== xUnit-like ===
+=== Included with Emacs ===
 
-'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##. See also ##ert2.el##, a set of extensions written by LennartBorgman and distributed with [[NxhtmlMode|nXhtml-mode]].
+'''[ErtTestLibrary ert.el]''' (Elisp Regression Testing) by Christian M. Ohler is included in Emacs trunk. It can also be retrieved from its [http://github.com/ohler/ert old repository]. The framework provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively.
+
+=== xUnit-like ===
 
 '''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides visual feedback with [[FringeHelper|fringe-helper.el]] and a number of specialized assertion macros like ##assert-equal##, ##assert-nil##, etc.
 
-'''ElUnit''' is an experimental framework by PhilHagelberg. It is inspired by [http://panix.com/~tehom/my-code/regress.el regress.el], Ruby's ##Test::Unit## framework and xUnit, and provides test suites and fixtures. Currently, it is deprecated in favor of ##ert.el##,[http://article.gmane.org/gmane.emacs.devel/122304] but the author is planning a rewrite.
+'''ElUnit''' is an experimental framework by PhilHagelberg. It is inspired by [http://panix.com/~tehom/my-code/regress.el regress.el], Ruby's ##Test::Unit## framework and xUnit, and provides test suites and fixtures. It is deprecated in favor of ##ert.el##.[http://article.gmane.org/gmane.emacs.devel/122304]
 
-=== expectations-like ===
+=== Behavior Driven Development ===
 
 '''[[EmacsLispExpectations|el-expectations.el]]''' by [[rubikitch]] is a small framework focusing on simplicity and readability. It is modeled after [http://expectations.rubyforge.org Ruby expectations] (for example, ##(expect 4 (+ 2 2))## verifies "2 + 2 = 4") and works with '''[[EmacsLispMock|el-mock.el]]''', a DSL-based mock/stub framework.
 
-'''[http://github.com/technomancy/dotfiles/tree/master/.emacs.old/behave/ behave.el]''' by PhilHagelberg is a behavior-driven development framework with expectations-like syntax. [http://technomancy.us/73 Description].
-
 '''[[ETest]]''' (Emacs Testing Framework) by Phil Jackson allows arbitrary nesting of tests. It also works with [[EmacsLispMock|el-mock.el]]. [http://www.shellarchive.co.uk/content/etest.html Manual].
+
+'''[http://github.com/technomancy/dotfiles/tree/master/.emacs.old/behave/ behave.el]''' by PhilHagelberg is a BDD framework with expectations-like syntax. [http://technomancy.us/73 Description].
+
+'''[http://gitorious.org/vimpulse/vimpulse/blobs/development/test-framework.el test-framework.el]''' by VegardOye is a prototype framework providing assertions, annotations, suites, fixtures, mocks, stubs, and a choice between xUnit-like and BDD-like syntax.
 
 === Others ===
 
 '''[[EmacsLispForRuby|El4r]]''' (Emacs Lisp for Ruby) leverages Ruby's ##Test::Unit## framework by using the EmacsRuby extension language. You write unit tests in EmacsRuby, while the code is in EmacsLisp. In other words, you can treat the EmacsLisp code as a black box and feed it inputs and check the outputs using EmacsRuby.
 
-'''[[Emtest]]''' is a modular, extensible testing framework.  It supersedes [http://panix.com/~tehom/my-code/regress.el regress.el], also by [TomBreton Tom Breton].  It lives in [http://savannah.nongnu.org/git/?group=emtest a git repo] on Savannah.
+'''[[Emtest]]''' is a modular, extensible testing framework. It supersedes [http://panix.com/~tehom/my-code/regress.el regress.el], also by [TomBreton Tom Breton]. It lives in [http://savannah.nongnu.org/git/?group=emtest a git repo] on Savannah.
 
 '''[http://www.wanglianghome.org/svn/test/test.el test.el]''' is developed for testing operations on a buffer (but can also be used to test operations unrelated to buffers). [http://www.wanglianghome.org/images/test.png Screenshot].
 
@@ -126,7 +130,7 @@ Instead of using a variable, you can wrap all tests in a macro, of course. The s
 
 == Discussion ==
 
-That there is so much interest in this looks great, but could please someone start making a comparision of the different approaches? What does they support? How easy are they to use? Could more simple packages be built upon more general packages? Etc.
+That there is so much interest in this looks great, but could please someone start making a comparison of the different approaches? What does they support? How easy are they to use? Could more simple packages be built upon more general packages? Etc.
 
 [new]
 One question: do any of these packages support TAP (the [http://testanything.org/wiki/index.php/Main_Page Test Anything Protocol])? I don't see a single reference to it.

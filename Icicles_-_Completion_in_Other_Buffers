@@ -59,10 +59,15 @@ with `M-/' can be tedious.  You can use `M-C-/' to complete to a
 common prefix, thus narrowing the set of candidates, but then you
 lose the ability to cycle among them.
 
-If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is non-`nil'
-(which is the case by default), then '''Icicles''' redefines command `dabbrev-completion' (it does not change
+If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `dabbrev-completion' (which it does by default) then '''Icicles''' redefines command `dabbrev-completion' (it does not change
 `dabbrev-expand') so that it uses '''Icicles''' completion when there are multiple completions.  You can use any '''Icicles''' features, such
 as apropos completion and candidate cycling.   In addition, you can even complete an ''empty'' prefix, starting from scratch with apropos completion.
+
+
+
+
+
+
 
 
 [:BbdbCompletion]
@@ -71,8 +76,7 @@ as apropos completion and candidate cycling.   In addition, you can even complet
 Library ##bbdb.el##, available at http://bbdb.sourceforge.net/, is a
 rolodex-like database program for GNU Emacs -- see BbdbMode.
 
-If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is non-`nil'
-(which is the case by default), then '''Icicles''' redefines command
+If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-name' (which it does by default) then '''Icicles''' redefines command
 `bbdb-complete-name' so that it uses '''Icicles''' completion when there
 are multiple completions.  You can use any '''Icicles''' features, such
 as apropos completion and candidate cycling.  For this feature to

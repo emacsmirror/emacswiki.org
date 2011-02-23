@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 20 20:25:53 2011 (-0800)
+;; Last-Updated: Tue Feb 22 20:55:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25781
+;;     Update #: 25795
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3054,6 +3054,15 @@
 ;;    common directory, it can be convenient to hide the directory
 ;;    portion that is common to all candidates.
 ;;
+;;  * Starting with Emacs 22, thumbnail images are shown in
+;;    `*Completions*' for candidates that are file names of image
+;;    files, if option `icicle-image-files-in-Completions' is non-nil
+;;    (it is t by default).  If the option value is `image-only', then
+;;    only the thumbnail images are shown.  If it is otherwise non-nil
+;;    then the file names are also shown.  You can cycle the option
+;;    value using `C-x t' in the minibuffer at any time during
+;;    completion.
+;;
 ;;  * You can scroll `*Completions*' down using `C-v', and up using
 ;;    `M-v'.  You can use `C-u' at any time to reverse the scroll
 ;;    directions.  In Emacs 22 or later, you can also use the mouse
@@ -3737,8 +3746,9 @@
 ;;  If you also use library `help-fns+.el' (Emacs 22 or later) or
 ;;  library `help+.el' (or `help+20.el' for Emacs 20), then you can
 ;;  use these Icicles features with additional help commands such as
-;;  `describe-keymap' (`C-h M-k'), `describe-command' (`C-h C-c'),
-;;  `describe-option' (`C-h o'), and `describe-option-of-type'.
+;;  `describe-file' (`C-h M-f'), `describe-keymap' (`C-h M-k'),
+;;  `describe-command' (`C-h C-c'), `describe-option' (`C-h o'), and
+;;  `describe-option-of-type'.
 ;;
 ;;  `C-h C-o', which is bound by those libraries to command
 ;;  `describe-option-of-type', is bound in Icicle mode to
@@ -3792,6 +3802,12 @@
 ;;  * property lists
 ;;  * buffers
 ;;  * files
+;;
+;;  Starting with Emacs 22, if the candidate names an image file and
+;;  you have command-line tool `exiftool' installed and in your
+;;  `$PATH' or `exec-path', then some EXIF information (metadata)
+;;  about the image is included.  See standard Emacs library
+;;  `image-dired.el' for more information about `exiftool'.
 ;;
 ;;  If the same candidate names a function, a variable, and a face, or
 ;;  any two of these, then all such documentation is shown (Emacs 22

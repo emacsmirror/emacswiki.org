@@ -72,14 +72,7 @@ The following code (modified copy from "python.el") provides the basic support n
 (info-lookup-add-help
  :mode 'python-mode
  :regexp "[[:alnum:]_]+"
- :doc-specctions fall into categories that perform object comparisons,
-logical operations, mathematical operations, sequence operations, and
-abstract type tests.
-
-  The object comparison functions are useful for all objects, and are
-named after the rich comparison operators they support:
-
- '(("(python)Index" nil "")))
+ :doc-spec '(("(python)Index" nil "")))
 </pre>
 
 

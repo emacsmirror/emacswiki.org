@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 20 20:20:19 2011 (-0800)
+;; Last-Updated: Tue Feb 22 19:42:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16534
+;;     Update #: 16575
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -37,6 +37,7 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `cycle-icicle-image-file-thumbnail',
 ;;    `icicle-abort-recursive-edit', `icicle-add-file-to-fileset',
 ;;    `icicle-add/update-saved-completion-set',
 ;;    `icicle-all-candidates-action',
@@ -73,6 +74,7 @@
 ;;    `icicle-change-history-variable', `icicle-change-sort-order',
 ;;    `icicle-choose-completion', `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
+;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
 ;;    `icicle-delete-char', `icicle-delete-windows-on',
 ;;    `icicle-describe-file', `icicle-digit-argument',
@@ -1357,6 +1359,28 @@ Optional arg PLAINP means convert to plain `.'.
               (setq allp  t))
             (when (or allp (not (get-text-property (match-beginning 0) 'icicle-user-plain-dot)))
               (replace-match (icicle-anychar-regexp) nil t))))))))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+(when (require 'image-dired nil t)
+  (defalias 'cycle-icicle-image-file-thumbnail 'icicle-toggle-show-image-file-thumbnail)
+  (defun icicle-cycle-image-file-thumbnail () ; Bound to `C-x t' in minibuffer.
+    "Toggle `icicle-image-files-in-Completions'.
+This has no effect if you do not have library `image-dired.el' (Emacs 23+).
+Bound to `C-x t' in the minibuffer."
+    (interactive)
+    (if (not (require 'image-dired nil t))
+        (message "No-op: this command requires library `image-dired.el'")
+      (setq icicle-image-files-in-Completions
+            (case icicle-image-files-in-Completions
+              ((nil)       'image-only)
+              (image-only  t)
+              (t           nil)))
+      (icicle-complete-again-update)
+      (icicle-msg-maybe-in-minibuffer
+       (case icicle-image-files-in-Completions
+         ((nil)       "Image files in `*Completions*': showing only NAMES")
+         (image-only  "Image files in `*Completions*': showing only IMAGES")
+         (t           "Image files in `*Completions*': showing IMAGES and NAMES"))))))
 
 ;;;###autoload
 (defun icicle-doremi-increment-max-candidates+ (&optional increment) ; `C-x #' in minibuffer
@@ -4727,49 +4751,97 @@ You can use this command only from the minibuffer or *Completions*
                ((file-exists-p symb) (icicle-describe-file symb))
                (t (icicle-msg-maybe-in-minibuffer "No help"))))))
 
-;; This is the same as `describe-file' in `misc-cmds.el', but we avoid requiring that library.
+;; This is the same as `describe-file' in `help-fns+.el', but we avoid requiring that library.
 ;; This is a top-level command, but we put it here to avoid library require cycles.
 (if (and (not (fboundp 'icicle-describe-file)) (fboundp 'describe-file))
     (defalias 'icicle-describe-file (symbol-function 'describe-file))
   (defun icicle-describe-file (filename) ; Suggestion: bind to `C-h M-f'.
     "Describe the file named FILENAME.
-If FILENAME is nil, describe the current directory."
+If FILENAME is nil, describe the current directory.
+
+Starting with Emacs 22, if the file is an image file and you have
+command-line tool `exiftool' installed and in your `$PATH' or
+`exec-path', then some EXIF data (metadata) about the image is
+included.  See library `image-dired.el' for more information about
+`exiftool'."
     (interactive "FDescribe file: ")
-  (unless filename (setq filename  default-directory))
+    (unless filename (setq filename default-directory))
     (help-setup-xref (list #'icicle-describe-file filename) (interactive-p))
-    (let ((attrs  (file-attributes filename)))
+    (let ((attrs (file-attributes filename)))
       (unless attrs (error(format "Cannot open file `%s'" filename)))
-      (let* ((type             (nth 0 attrs))
-             (numlinks         (nth 1 attrs))
-             (uid              (nth 2 attrs))
-             (gid              (nth 3 attrs))
-             (last-access      (nth 4 attrs))
-             (last-mod         (nth 5 attrs))
-             (last-status-chg  (nth 6 attrs))
-             (size             (nth 7 attrs))
-             (permissions      (nth 8 attrs))
+      (let* ((type            (nth 0 attrs))
+             (numlinks        (nth 1 attrs))
+             (uid             (nth 2 attrs))
+             (gid             (nth 3 attrs))
+             (last-access     (nth 4 attrs))
+             (last-mod        (nth 5 attrs))
+             (last-status-chg (nth 6 attrs))
+             (size            (nth 7 attrs))
+             (permissions     (nth 8 attrs))
              ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
-             (inode            (nth 10 attrs))
-             (device           (nth 11 attrs))
+             (inode           (nth 10 attrs))
+             (device          (nth 11 attrs))
+             (image-info      (and (require 'image-dired nil t)
+                                   (fboundp 'image-file-name-regexp)
+                                   (if (fboundp 'string-match-p)
+                                       (string-match-p (image-file-name-regexp) filename)
+                                     (save-match-data
+                                       (string-match (image-file-name-regexp) filename)))
+                                   (progn (message "Gathering image data...") t)
+                                   (condition-case nil
+                                       (let* ((time     (image-dired-get-exif-data
+                                                         (expand-file-name filename)
+                                                         "DateTimeOriginal"))
+                                              (width    (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "ImageWidth")))
+                                              (height   (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "ImageHeight")))
+                                              (desc     (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "ImageDescription")))
+                                              (comment  (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "UserComment"))))
+                                         (concat
+                                          (format "Image file -\n Type: %s" (image-type filename))
+                                          (and time (not (zerop (length time)))
+                                               (format "\n Time: %s"  time))
+                                          (and width (not (zerop (length width)))
+                                               (format "\n Width: %s" width))
+                                          (and height (not (zerop (length height)))
+                                               (format "\n Height: %s" height))
+                                          (and desc (not (zerop (length desc)))
+                                               (format "\n Description:\n %s" desc))
+                                          (and comment (not (zerop (length comment)))
+                                               (format "\n Comment:\n %s" comment))))
+                                     (error nil))))
              (help-text
-              (concat (format "Properties of `%s':\n\n" filename)
-                      (format "Type:                       %s\n"
-                              (cond ((eq t type) "Directory")
-                                    ((stringp type) (format "Symbolic link to `%s'" type))
-                                    (t "Normal file")))
-                      (format "Permissions:                %s\n" permissions)
-                      (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
-                      (format-time-string
-                       "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
-                      (format-time-string
-                       "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
-                      (format-time-string
-                       "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
-                      (format "Number of links:            %d\n" numlinks)
-                      (format "User ID (UID):              %s\n" uid)
-                      (format "Group ID (GID):             %s\n" gid)
-                      (format "Inode:                      %S\n" inode)
-                      (format "Device number:              %s\n" device))))
+              (concat
+               (format "Properties of `%s':\n\n" filename)
+               (format "Type:                       %s\n"
+                       (cond ((eq t type) "Directory")
+                             ((stringp type) (format "Symbolic link to `%s'" type))
+                             (t "Normal file")))
+               (format "Permissions:                %s\n" permissions)
+               (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
+               (format-time-string
+                "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
+               (format-time-string
+                "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
+               (format-time-string
+                "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
+               (format "Number of links:            %d\n" numlinks)
+               (format "User ID (UID):              %s\n" uid)
+               (format "Group ID (GID):             %s\n" gid)
+               (format "Inode:                      %S\n" inode)
+               (format "Device number:              %s\n" device)
+               image-info)))
         (with-output-to-temp-buffer "*Help*" (princ help-text))
         help-text))))                   ; Return displayed text.
 
@@ -6903,21 +6975,38 @@ Bound to `C-A' in the minibuffer, that is, `C-S-a'."
          (t "Case-sensitive comparison is now ON, everywhere"))))
 
 ;; `icicle-delete-window' (`C-x 0') does this in minibuffer.
-;; `icicle-abort-recursive-edit' does this with FORCE.
+;; `icicle-abort-recursive-edit' call this with non-nil FORCE.
 ;;;###autoload
 (defun icicle-remove-Completions-window (&optional force)
   "Remove the `*Completions*' window.
 If not called interactively and `*Completions*' is the selected
-window, then do not remove it unless optional argument FORCE is
-non-nil."
+window, then do not remove it unless optional arg FORCE is non-nil."
   (interactive)
-  (when (and (get-buffer-window "*Completions*" 'visible) ; Only if visible and not the selected window.
-             (or force                  ; Let user use `C-g' to get rid of it even if selected.
-                 (not (eq (window-buffer (selected-window)) (get-buffer "*Completions*")))
-                 (interactive-p)))
-    ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
-    (condition-case nil (icicle-delete-windows-on "*Completions*")  (error nil))
-    (when (get-buffer "*Completions*") (bury-buffer (get-buffer "*Completions*")))))
+  ;; We do nothing if `*Completions*' is the selected window
+  ;; or the minibuffer window is selected and `*Completions*' window was selected just before.
+  (let ((swin  (selected-window)))
+    ;; Emacs 20-21 has no `minibuffer-selected-window' function, but we just ignore that.
+    (when (and (window-minibuffer-p swin) (fboundp 'minibuffer-selected-window))
+      (setq swin  (minibuffer-selected-window)))
+    (cond (;; `*Completions*' is shown in the selected frame.
+           (and (get-buffer-window "*Completions*")
+                (or force               ; Let user use `C-g' to get rid of it even if selected.
+                    (and (window-live-p swin) ; Not sure needed.
+                         (not (eq (window-buffer swin) (get-buffer "*Completions*"))))
+                    (interactive-p)))
+           ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
+           (condition-case nil (delete-window (get-buffer-window "*Completions*")) (error nil))
+           (bury-buffer (get-buffer "*Completions*")))
+          (;; `*Completions*' is shown in a different frame.
+           (and (get-buffer-window "*Completions*" 'visible)
+                (or force               ; Let user use `C-g' to get rid of it even if selected.
+                    (and (window-live-p swin)
+                         (not (eq (window-buffer swin) (get-buffer "*Completions*"))))
+                    (interactive-p)))
+           ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
+           (when (window-dedicated-p (get-buffer-window "*Completions*" 'visible))
+             (condition-case nil (icicle-delete-windows-on "*Completions*")  (error nil)))
+           (bury-buffer (get-buffer "*Completions*"))))))
 
 ;; This is actually a top-level command, but it is in this file because it is used by
 ;; `icicle-remove-Completions-window'.

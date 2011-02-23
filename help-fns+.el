@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Tue Jan  4 10:06:09 2011 (-0800)
+;; Last-Updated: Tue Feb 22 20:21:27 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 413
+;;     Update #: 448
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -72,6 +72,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/02/22 dadams
+;;     describe-file: Show also EXIF data for an image file.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps and define-key.
 ;; 2010/02/12 dadams
@@ -609,10 +611,8 @@ it is displayed along with the global value."
                         (re-search-backward (concat "\\(" customize-label "\\)") nil t)
                         (help-xref-button 1 'help-customize-variable variable)))))
               (print-help-return-message)
-              (save-excursion
-                (set-buffer standard-output)
-                ;; Return the text we displayed.
-                (buffer-string)))))))))
+              ;; Return the text we displayed.
+              (with-current-buffer standard-output (buffer-string)))))))))
 
 ;;; These two macros are no different from what is in vanilla Emacs 23.
 ;;; Add them here so this file can be byte-compiled with Emacs 22 and used with Emacs 23.
@@ -867,11 +867,8 @@ it is displayed along with the global value."
                     (terpri)
                     (terpri)
                     (princ output))))
-
-              (save-excursion
-                (set-buffer standard-output)
-                ;; Return the text we displayed.
-                (buffer-string)))))))))
+              ;; Return the text we displayed.
+              (with-current-buffer standard-output (buffer-string)))))))))
 
 ;;;###autoload
 (defun describe-option (variable &optional buffer)
@@ -1064,46 +1061,93 @@ before you call this function."
 ;;;###autoload
 (defun describe-file (filename)
   "Describe the file named FILENAME.
-If FILENAME is nil, describe the current directory."
-  (interactive "FDescribe file: ")
-  (unless filename (setq filename default-directory))
-  (help-setup-xref (list #'icicle-describe-file filename) (interactive-p))
-  (let ((attrs (file-attributes filename)))
-    (unless attrs (error(format "Cannot open file `%s'" filename)))
-    (let* ((type            (nth 0 attrs))
-           (numlinks        (nth 1 attrs))
-           (uid             (nth 2 attrs))
-           (gid             (nth 3 attrs))
-           (last-access     (nth 4 attrs))
-           (last-mod        (nth 5 attrs))
-           (last-status-chg (nth 6 attrs))
-           (size            (nth 7 attrs))
-           (permissions     (nth 8 attrs))
-           ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
-           (inode           (nth 10 attrs))
-           (device          (nth 11 attrs))
-           (help-text
-            (concat
-             (format "Properties of `%s':\n\n" filename)
-             (format "Type:                       %s\n"
-                     (cond ((eq t type) "Directory")
-                           ((stringp type) (format "Symbolic link to `%s'" type))
-                           (t "Normal file")))
-             (format "Permissions:                %s\n" permissions)
-             (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
-             (format-time-string
-              "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
-             (format-time-string
-              "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
-             (format-time-string
-              "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
-             (format "Number of links:            %d\n" numlinks)
-             (format "User ID (UID):              %s\n" uid)
-             (format "Group ID (GID):             %s\n" gid)
-             (format "Inode:                      %S\n" inode)
-             (format "Device number:              %s\n" device))))
-      (with-output-to-temp-buffer "*Help*" (princ help-text))
-      help-text)))                      ; Return displayed text.
+If FILENAME is nil, describe the current directory.
+
+Starting with Emacs 22, if the file is an image file and you have
+command-line tool `exiftool' installed and in your `$PATH' or
+`exec-path', then some EXIF data (metadata) about the image is
+included.  See library `image-dired.el' for more information about
+`exiftool'."
+    (interactive "FDescribe file: ")
+    (unless filename (setq filename default-directory))
+    (help-setup-xref (list #'icicle-describe-file filename) (interactive-p))
+    (let ((attrs (file-attributes filename)))
+      (unless attrs (error(format "Cannot open file `%s'" filename)))
+      (let* ((type            (nth 0 attrs))
+             (numlinks        (nth 1 attrs))
+             (uid             (nth 2 attrs))
+             (gid             (nth 3 attrs))
+             (last-access     (nth 4 attrs))
+             (last-mod        (nth 5 attrs))
+             (last-status-chg (nth 6 attrs))
+             (size            (nth 7 attrs))
+             (permissions     (nth 8 attrs))
+             ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
+             (inode           (nth 10 attrs))
+             (device          (nth 11 attrs))
+             (image-info      (and (require 'image-dired nil t)
+                                   (fboundp 'image-file-name-regexp)
+                                   (if (fboundp 'string-match-p)
+                                       (string-match-p (image-file-name-regexp) filename)
+                                     (save-match-data
+                                       (string-match (image-file-name-regexp) filename)))
+                                   (progn (message "Gathering image data...") t)
+                                   (condition-case nil
+                                       (let* ((time     (image-dired-get-exif-data
+                                                         (expand-file-name filename)
+                                                         "DateTimeOriginal"))
+                                              (width    (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "ImageWidth")))
+                                              (height   (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "ImageHeight")))
+                                              (desc     (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "ImageDescription")))
+                                              (comment  (and time
+                                                             (image-dired-get-exif-data
+                                                              (expand-file-name filename)
+                                                              "UserComment"))))
+                                         (concat
+                                          (format "Image file -\n Type: %s" (image-type filename))
+                                          (and time (not (zerop (length time)))
+                                               (format "\n Time: %s"  time))
+                                          (and width (not (zerop (length width)))
+                                               (format "\n Width: %s" width))
+                                          (and height (not (zerop (length height)))
+                                               (format "\n Height: %s" height))
+                                          (and desc (not (zerop (length desc)))
+                                               (format "\n Description:\n %s" desc))
+                                          (and comment (not (zerop (length comment)))
+                                               (format "\n Comment:\n %s" comment))))
+                                     (error nil))))
+             (help-text
+              (concat
+               (format "Properties of `%s':\n\n" filename)
+               (format "Type:                       %s\n"
+                       (cond ((eq t type) "Directory")
+                             ((stringp type) (format "Symbolic link to `%s'" type))
+                             (t "Normal file")))
+               (format "Permissions:                %s\n" permissions)
+               (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
+               (format-time-string
+                "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
+               (format-time-string
+                "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
+               (format-time-string
+                "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
+               (format "Number of links:            %d\n" numlinks)
+               (format "User ID (UID):              %s\n" uid)
+               (format "Group ID (GID):             %s\n" gid)
+               (format "Inode:                      %S\n" inode)
+               (format "Device number:              %s\n" device)
+               image-info)))
+        (with-output-to-temp-buffer "*Help*" (princ help-text))
+        help-text)))                      ; Return displayed text.
 
 ;;;###autoload
 (defun describe-keymap (keymap)

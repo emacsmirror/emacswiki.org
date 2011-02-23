@@ -1108,7 +1108,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
 
 (defvar auto-indent-last-pre-command-hook-point nil)
-(make-variable-buffer-local 'auto-indent-mode-pre-command-hook-point)
+(make-variable-buffer-local 'auto-indent-last-pre-command-hook-point)
 
 (defvar auto-indent-last-pre-command-hook-minibufferp nil)
 

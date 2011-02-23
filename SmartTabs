@@ -16,9 +16,9 @@ The approach can be summed up in two points:
 # Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art and tables, should be formatted with spaces.
 # Tabs are only used for '''expressing the indentation level'''. One tab per "block" -- any remaining whitespace is spaces only.
 
-But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page contains code which improves the way Emacs inserts tabs (see the [[#SimpleAlgorithm|explanation]] for tips on duplicating it in other software).
+But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page provides code which fixes how Emacs auto-indents with tabs (see the [[#SimpleAlgorithm|explanation]] for tips on duplicating it in other software).
 
-So should you use smart tabs or all spaces? That, of course, depends on the project and its established guidelines. The following code merely ensures that tabs are inserted in as fail-safe a manner as possible ''if'' you use tabs.
+Should you use smart tabs or all spaces? That, of course, depends on the project and its established guidelines. The following code merely ensures that ''if'' you use tabs, they are inserted in as fail-safe a manner as possible.
 
 [:Implementations]
 == Code ==

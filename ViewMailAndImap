@@ -1,32 +1,106 @@
-Explained in detail here: http://www.wonderworks.com/vm/user-manual/vm_2.html#SEC5
+No matter whether you use local folders or server folders, VM wants
+you to specify the IMAP server info in this format
+
+      imap:HOST:PORT:MAILBOX:AUTH:USER:PASSWORD
+
+So what are all those code words out there?
+
+<code>imap</code> is server type you are using.  If your server
+administrator wants to you to use "imap over SSL" then you write
+<code>imap-ssl</code> instead.  ("SSL" is the secure sockets layer of
+Internet communication, which sends data in an encrypted form so that
+third parties can't snoop around.)
+
+<code>HOST</code> is the server address such as
+<code>pop.yahoo.com</code> or <code>pop.gmail.com</code>.
+
+<code>PORT</code> is the port number on which you talk to the server.
+For <code>imap</code>, it is normally 143.  
+For <code>imap-ssl</code>, it is normally 993.  If your server
+administrator wants you to some othe port number, they should tell
+you.
+
+<code>MAILBOX</code> is the mailbox or folder that this long-winded
+phrase is referring to.  For the main folder, you use
+<code>inbox</code>.  When you need to talk about the entire IMAP
+account without referring to any folder in particular, you use
+<code>*</code>. 
+
+<code>AUTH</code> is the "authentication" method, normally
+<code>login</code>.  If your server administrator wants you to use
+something else, they should tell you.  Look up in the VM manual how to
+implement the other methods.  (They are not as straightforward as the
+<code>login</code> method.)
+
+<code>USER</code> is your user name.
+
+<code>PASSWORD</code> is your password.  Normally, you put
+<code>*</code> here and VM understands that you don't want to throw
+around your passwords.  It will prompt you to enter it in the
+minibuffer.
+
+Phew!  
+
+== Examples ===
+
+     (setq vm-imap-account-alist
+           '(
+             ("imap-ssl:mail.foocorp.com:993:*:login:becky:*" "becky")
+             ("imap:crickle.lex.ky.us:143:*:login:becky:*" "crickle")
+            )
+     )
+
+Becky is trying to use two IMAP accounts, one at
+<code>mail.foocorp.com</code> which is using a secure protocol
+(<code>imap-ssl</code>).  She wants to call this account
+"<code>becky</code>".  The second account at
+<code>crickle.lex.ky.us</code> is using an insecure communication
+protocol.  She is calling it "<code>crickle</code>".  Note that the
+<code>MAILBOX</code> part in both the cases is <code>*</code>.  (Becky
+is naming the entire IMAP accounts, not any particular folders.)
+She can look at her inbox at her work account by typing:
+
+     M-x vm-visit-imap-folder RET becky:inbox RET
+
+and she can look at her "finances" folder at cricke by typiong:
+
+     M-x vm-visit-imap-folder RET becky:finances RET
+
+If she wants to use her inbox at work account as the main inbox, she
+can put in her .vm file:
+
+    (setq vm-primary-inbox "imap-ssl:mail.foocorp.com:993:inbox:login:becky:*")
+
+This refers to the <code>inbox</code> folder on foocorp,
+specifically.  We can't use <code>*</code> as the <code>MAILBOX</code>
+here.  Once this is done, she can just use <code>M-x vm</code> to read
+her inbox at work.
 
 
+== IMAP as mail spool ==
 
-To read mail with VM from an IMAP spool, an entry specifying the
-maildrop is needed in <code>vm-spool-files</code>. This can be
-configured using, for example:
-
-    (add-to-list 'vm-spool-files
-                 '("~/mail/IMAP-INBOX"
-                   "imap:HOST:PORT:MAILBOX:AUTH:USER:PASSWORD"
-                   "~/mail/IMAP-INBOX.CRASH"))
-
-where PORT is normally 143. To use IMAP over SSL, use, instead:
+If you want to download your mail to a local folder and delete it from
+the server, you can do so by specifying
+<code>vm-spool-files</code>. This can be configured using, for
+example:
 
     (add-to-list 'vm-spool-files
                  '("~/mail/IMAP-INBOX"
                    "imap-ssl:HOST:PORT:MAILBOX:AUTH:USER:PASSWORD"
                    "~/mail/IMAP-INBOX.CRASH"))
 
-where PORT is normally 993. In both cases, if PASSWORD is given as *,
-it will be prompted for the first time that mail is retrieved.
+If <code>PASSWORDM</code> is given as *, it will be prompted for the
+first time that mail is retrieved.
 
-By default, messages are removed from the IMAP server after retrieving
-them. This is controlled by the variable
-<code>vm-imap-expunge-after-retrieving</code>, but per-maildrop
-settings can be made in <code>vm-imap-auto-expunge-alist</code>.
+To delete the messages from the server after downloading, put this in
+your .vm file:
 
-Other variables controlling IMAP behaviour include:
+    (setq vm-imap-expunge-after-retrieving t)
+
+If you want to control this on per-mailbox basis, you can configure
+<code>vm-imap-auto-expunge-alist</code>.
+
+Other variables controlling IMAP spool files include:
 
     vm-imap-bytes-per-session
     vm-imap-max-message-size

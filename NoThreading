@@ -103,3 +103,7 @@ Perl addresses the dynamic binding/multithreading problem by essentially running
 Intel are talking up a future where CPU frequency progressively drops, while the number of cores increases to compensate. In this scenario, single-threaded emacs is going to get slower and slower. However, I don't seriously think it will ever drop to the speed it was 15 years ago, which was already perfectly acceptable. --goaty
 
 While I think threading along with transition to a more modern language substrate are important, the idea of running multiple instances might be worth developing a bit. If each instance kept in contact with the others, they could synchronize their kill rings among other things. Commands could be provided to list the union of all buffers open on all instances, and to either jump to the instance (using some Xwindows fu or other) or to migrate that buffer and as much of its environment as feasible to the currently used instance. Mechanisms by which this could be achieved include AsyncEval, DistributedEmacsLisp, or even using ILisp/SLIME to connect to an inferior Emacs REPL. -- SpaceBat
+
+----
+
+Why not going down the route of node.js instead and use a single-threaded approach with consequent support for non-blocking io? Most blocking situations I encounter in emacs come from io (think tramp), not from computation.  This could be introduced gradually by providing callback-based variants of io calls and leave it up to packages when they will migrate -- StefanPlantikow

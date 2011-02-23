@@ -133,6 +133,7 @@ If one has some citations and references in the document one needs to call <tt>`
 Within the following code the command <tt>`!TeX-texify´</tt> is defined which runs as often as it is suggested by <tt>`!TeX-command´</tt>.
 
 <pre>
+(require 'tex-buf)
 (defun TeX-command-default (name)
   "Next TeX command to use. Most of the code is stolen from `TeX-command-query'."
   (cond ((if (string-equal name TeX-region)
@@ -154,9 +155,8 @@ Within the following code the command <tt>`!TeX-texify´</tt> is defined which r
 			(TeX-command-Show)))
 
 
-(defvar TeX-texify-sentinel)
-(make-variable-buffer-local 'TeX-texify-sentinel)
 (defcustom TeX-texify-Show t "Start view-command at end of TeX-texify?" :type 'boolean :group 'TeX-command)
+(defcustom TeX-texify-max-runs-same-command 5 "Maximal run number of the same command" :type 'integer :group 'TeX-command)
 
 (defun TeX-texify-sentinel (&optional proc sentinel)
   "Non-interactive! Call the standard-sentinel of the current LaTeX-process.
@@ -179,10 +179,20 @@ If there is still something left do do start the next latex-command."
 	(when  (called-interactively-p 'any)
 	  (message "TeX-texify: Nothing to be done."))
       (TeX-command nextCmd 'TeX-master-file)
-      (and (null (equal nextCmd TeX-command-Show))
-	   (setq proc (get-buffer-process (current-buffer)))
-	   (setq TeX-texify-sentinel (process-sentinel proc))
-	   (set-process-sentinel proc 'TeX-texify-sentinel)))))
+      (when (or (called-interactively-p 'any)
+		(null (boundp 'TeX-texify-count-same-command))
+		(null (boundp 'TeX-texify-last-command))
+		(null (equal nextCmd TeX-texify-last-command)))
+	(mapc 'make-local-variable '(TeX-texify-sentinel TeX-texify-count-same-command TeX-texify-last-command))
+	(setq TeX-texify-count-same-command 1))
+      (if (>= TeX-texify-count-same-command TeX-texify-max-runs-same-command)
+	  (message "TeX-texify: Did %S already %d times. Don't want to do it anymore." TeX-texify-last-command TeX-texify-count-same-command)
+	(setq TeX-texify-count-same-command (1+ TeX-texify-count-same-command))
+	(setq TeX-texify-last-command nextCmd)
+	(and (null (equal nextCmd TeX-command-Show))
+	     (setq proc (get-buffer-process (current-buffer)))
+	     (setq TeX-texify-sentinel (process-sentinel proc))
+	     (set-process-sentinel proc 'TeX-texify-sentinel))))))
 
 (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd "C-c C-a") 'TeX-texify)))
 </pre>

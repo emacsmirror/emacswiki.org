@@ -1,0 +1,22 @@
+Display all open [[rcirc]]-channel buffers (or query buffers) at once.
+
+[[image:arrange3channels]] [[image:arrange5channels]]
+(btw... cannot scale inlined images)
+
+__Installation__
+* Download Lisp:arrange-buffers.el and put it in your load path
+* Run <code>(require 'arrange-buffers)</code>
+
+
+__Usage__
+* To display all channels run: <code>(arrange-buffers "^#" "rcirc-mode")</code>
+* To display all queries run: <code>(arrange-buffers "^[^#&\\*]" "rcirc-mode")</code>
+
+
+Or use key bindings:
+{{{
+; Show all channels
+(global-set-key (kbd "<f7>") '(lambda () (interactive) (arrange-buffers "^#" "rcirc-mode"))) 
+; Show all queries 
+(global-set-key (kbd "<f8>") '(lambda () (interactive) (arrange-buffers "^[^#&\\*]" "rcirc-mode"))) 
+}}}
