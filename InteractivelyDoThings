@@ -264,6 +264,32 @@ I found ido-completing-read to interfere when using dired mode buffers (e.g., re
 
 -- ChrisPoole
 
+=== Use ido in ibuffer ===
+
+ibuffer mode doesn't come with an option to use ido-find-file, so here's a simple adaptation of ibuffer-find-file that uses ido instead of read-file:
+
+{{{
+(defun ibuffer-ido-find-file ()
+  "Like `ido-find-file', but default to the directory of the buffer at point."
+  (interactive
+   (let ((default-directory (let ((buf (ibuffer-current-buffer)))
+			      (if (buffer-live-p buf)
+				  (with-current-buffer buf
+				    default-directory)
+				default-directory))))
+     (ido-find-file-in-dir default-directory))))
+}}}
+
+To use this, if you've already ##(require 'ibuffer)##'d, ##(define-key ibuffer-mode-map "\C-x\C-f" 'ibuffer-ido-find-file)## should work, if you haven't required it do 
+{{{
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (define-key ibuffer-mode-map "\C-x\C-f"
+              'ibuffer-ido-find-file)))
+}}}
+
+-- BrandonWMaister
+
 == Ido Hacks (modifying Ido's behavior) ==
 
 === Display Completions Vertically ===

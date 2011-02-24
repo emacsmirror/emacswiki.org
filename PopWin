@@ -1,0 +1,17 @@
+== Overview ==
+
+popwin is a popup window manager for Emacs which makes you free from the hell of annoying buffers such like <code>*Help*</code>, <code>*Completions*</code>, <code>*compilation*</code>, and etc.
+
+Take an example. When you complete file names during <code>find-file</code>, the (annoying) <code>*Completions*</code> buffer will appear in a newly splitted window. You might understand the necessity of the window, but you may wonder why the window still remains after completion...
+
+popwin resolves there problems. Windows of such temporary buffers will be shown as a popup window, and you can close them smoothly by typing <code>C-g</code> in anytime.
+
+== Screenshots ==
+
+[[image:PopwinScreenshot]]
+
+== Download ==
+
+Please visit a project page for downloading and full documentation.
+
+https://github.com/m2ym/popwin-el

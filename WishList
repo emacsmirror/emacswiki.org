@@ -292,6 +292,7 @@ These are wishes about Emacs lisp or generally extending Emacs.
 
 These are wishes for new modes or for changes to modes existing in Emacs.
 
+* Is it time for an epub mode yet? :) I mean, since emacs is an editor and all, a mode that allows you to traverse an unzipped epub "project" in much the same way TeX mode allows you to traverse the chapters of a large LaTeX project, maybe even flipping from editing mode to view/navigate mode using W3M, should be right up emacs' alley! IMHO, being able to ZIP/UNZIP an epub is somewhere between a minor to irrelevant issue as there are other tools that already do this. There was a project started a few years ago, but it seems it kind of petered out, and was still focused on the reading, not the editing/production. And I see nothing else out there that's focused on an epub as a working project, either. Everthing wants to read the darned thing as a finished project.
 * That GNU Emacs had TabBarMode
 * Could dired-listing-switches be made to work with long options, like
 --time-sty.le=iso?  (xemacs.) --gambarimasu

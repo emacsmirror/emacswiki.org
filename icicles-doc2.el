@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 07:08:04 2011 (-0800)
+;; Last-Updated: Wed Feb 23 06:08:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27509
+;;     Update #: 27519
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4708,6 +4708,15 @@
 ;;    the same time use the `left' and `right' keys to adjust the
 ;;    value of `icicle-candidate-width-factor'.  WYSIWYG.
 ;;
+;;  * Non-nil option `icicle-image-files-in-Completions' means that
+;;    thumbnail images are shown in `*Completions*' for candidates
+;;    that are names of image files.  The default value is t.  If the
+;;    value is `image-only', then only the thumbnail images are shown.
+;;    If it is otherwise non-nil then the file names are also shown.
+;;    You can cycle the option value using `C-x t' in the minibuffer
+;;    at any time during completion.  This feature is available
+;;    starting with Emacs 22.
+;;
 ;;  * Option `icicle-completions-format' controls whether candidates
 ;;    displayed in `*Completions*' are laid out horizontally (the
 ;;    default) or vertically.  Set the value to `vertical' for the
@@ -6114,6 +6123,14 @@
 ;;
 ;;  `M-k' has an alternative behavior when you are cycling minibuffer
 ;;  history items: it deletes the current item from the history.
+;;
+;;  The following key is bound during completion to control the
+;;  display of thumbnail images in `*Completions*' for candidates that
+;;  name image files.  It cycles the value of option
+;;  `icicle-image-files-in-Completions' to show images and names (the
+;;  default), show only names, or show only images.
+;;
+;;    `C-x t'         - `icicle-cycle-image-file-thumbnail'
 ;;
 ;;  During (absolute or relative) file-name completion, the following
 ;;  minibuffer bindings are also in effect:

@@ -229,6 +229,10 @@ Happy hacking!
 
 -- MaDa
 
+In order for the above to work with lisp code (which include hyphens) change string-at-point 'word to 'symbol and change "\\w*" to "\\w*-*"
+
+-- ScottJaderholm
+
 == Don't add extra paren when expanding line with paredit ==
 If you use paredit or something to add closing parens then hippie expand line can be problematic because you will end up with an extra closing paren. This could should fix that
 <pre>
@@ -237,6 +241,8 @@ If you use paredit or something to add closing parens then hippie expand line ca
   (if (and paredit-mode (equal (substring str -1) ")"))
       (progn (backward-delete-char 1) (forward-char))))
 </pre>
+
+-- ScottJaderholm
 
 == BUGS ==
 

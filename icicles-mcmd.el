@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 19:42:31 2011 (-0800)
+;; Last-Updated: Wed Feb 23 09:42:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16575
+;;     Update #: 16639
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,9 +20,9 @@
 ;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
 ;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `mouse3', `mwheel', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
+;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1768,9 +1768,9 @@ These are the main Icicles actions and their minibuffer key bindings:
  * Toggle/cycle Icicles options on the fly.  Key:   \tCurrently:
      Highlighting of past inputs             \\[icicle-toggle-highlight-historical-candidates]\t%S
      Removal of duplicate candidates         \\[icicle-toggle-transforming]\t%S
-     Change sort order                       \\[icicle-change-sort-order]\t%s
-     Change alternative sort order           \\[icicle-dispatch-M-comma]\t%s
-     Swap alternative sort                   \\[icicle-toggle-alternative-sorting]\t- (swaps) -
+     Sort order                              \\[icicle-change-sort-order]\t%s
+     Alternative sort order                  \\[icicle-dispatch-M-comma]\t%s
+     Swap alternative/normal sort            \\[icicle-toggle-alternative-sorting]\t- (swaps) -
      Case sensitivity                        \\[icicle-toggle-case-sensitivity]\t%S
      `.' matching newlines too (any char)    \\[icicle-toggle-dot]\t%S
      Escaping of special regexp chars        \\[icicle-toggle-regexp-quote]\t%S
@@ -1779,6 +1779,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Hiding common match in *Completions*    \\[icicle-toggle-hiding-common-match]\t%S
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
+     Showing image-file thumbnails           \\[icicle-cycle-image-file-thumbnail]\t%S
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S
@@ -1934,7 +1935,7 @@ with empty region
      `icicle-swank-timeout'                 C-x 1
      `icicle-swank-prefix-length'           C-x 2
      `icicle-inter-candidates-min-spaces'   \\[icicle-doremi-inter-candidates-min-spaces+]
-     Zoom `*Completions*' (not an option)   C-x -   (Emacs 23)
+     Zoom `*Completions*' (not an option)   C-x -   (Emacs 23+)
 
 Remember: You can always input any character (e.g. \\[icicle-prefix-complete]) that is bound
           to a command by preceding it with \\<global-map>\\[quoted-insert].
@@ -1961,6 +1962,7 @@ editing."
              (icicle-current-TAB-method)
              icicle-add-proxy-candidates-flag
              (and completion-ignored-extensions t)
+             icicle-image-files-in-Completions
              icicle-test-for-remote-files-flag
              icicle-ignore-space-prefix-flag
              icicle-use-C-for-actions-flag
@@ -2200,7 +2202,7 @@ the present.
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-retrieve-next-input]')."
   (interactive "P")
-  (icicle-retrieve-previous-input arg 'interactive-p))
+  (icicle-retrieve-previous-input arg 'interactive-p)) ; Must be `interactive-p'.
 
 ;;;###autoload
 (defun icicle-retrieve-previous-input (&optional arg reversep allow-empty-p) ; `C-l' in minibuffer.
@@ -4967,7 +4969,7 @@ which can position mouse pointer on a standalone minibuffer frame."
             (set-mouse-position (selected-frame) mouse-col mouse-row)))))))
 
 ;;;###autoload
-(defun icicle-Completions-mouse-3-menu (event) ; Bound to `C-mouse-3' in *Completions.
+(defun icicle-Completions-mouse-3-menu (event) ; Bound to `C-mouse-3' in `*Completions*'.
   "Pop-up menu on `C-mouse-3' for the current candidate in *Completions*."
   (interactive "e")
   (run-hooks 'mouse-leave-buffer-hook)  ; Give temp modes such as isearch a chance to turn off.
@@ -5011,9 +5013,17 @@ which can position mouse pointer on a standalone minibuffer frame."
                  (insert icicle-last-completion-candidate)))
              '("--")
              '("--")
-             '("Change Sort Order  (`C-,')" . icicle-change-sort-order)
-             '("Change Alternative Sort Order  (`M-,')" . icicle-change-alternative-sort-order)
-             '("Swap Alternative Sort  (`C-M-,')" . icicle-toggle-alternative-sorting)
+             `(,(if (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
+                        (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))
+                    "Change Sort Order  (`C-,')"
+                    "Next Sort Order (`C-,'")
+               . icicle-change-sort-order)
+             `(,(if (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
+                        (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))
+                    "Change Alternative Sort Order  (`M-,')"
+                    "Next Alternative Sort Order  (`M-,')")
+               . icicle-change-alternative-sort-order)
+             '("Swap Alternative/Normal Sort  (`C-M-,')" . icicle-toggle-alternative-sorting)
              '("--")
              '("Save All  (`C-M->')" . icicle-candidate-set-save)
              '("             to Variable...  (`C-M-})' " . icicle-candidate-set-save-to-variable)
@@ -5028,17 +5038,23 @@ which can position mouse pointer on a standalone minibuffer frame."
              '("Or Match Alternative... (`M-+')" . icicle-widen-candidates)
              '("Match Also Regexp...  (`M-*')" . icicle-narrow-candidates)
              '("Satisfy Also Predicate...  (`M-&')" . icicle-narrow-candidates-with-predicate)
-             '("Save Predicate to Variable...  (`C-M-&')" . icicle-save-predicate-to-variable)
+             `(,(if current-prefix-arg
+                    "Save Predicate to Variable...  (`C-u C-M-&')"
+                    "Save Predicate to `icicle-input-string'  (`C-M-&')")
+               . icicle-save-predicate-to-variable)
              '("Intersect Saved  (`C-*')" . icicle-candidate-set-intersection)
              '("Subtract Saved  (`C--')" . icicle-candidate-set-difference)
              '("Add (Union) Saved  (`C-+')" . icicle-candidate-set-union)
-             '("Only Previously Entered  (`M-pause')" . icicle-keep-only-past-inputs)
+             `(,(if current-prefix-arg
+                    "Only Previously Entered, By Time  (`C-u M-pause')"
+                    "Only Previously Entered  (`M-pause')")
+               . icicle-keep-only-past-inputs)
              '("--")
              '("Act on Each Individually (`C-!')" . icicle-all-candidates-action)
              '("Act on All as a List  (`M-!')" . icicle-all-candidates-list-action)
              '("--")
-             '("Toggle Highlighting Past Inputs  (`C-pause')" .
-               icicle-toggle-highlight-historical-candidates)
+             '("Toggle Highlighting Past Inputs  (`C-pause')"
+               . icicle-toggle-highlight-historical-candidates)
              '("Toggle Duplicate Removal  (`C-$')" . icicle-toggle-transforming)
              '("Toggle Case Sensitivity  (`C-A')" . icicle-toggle-case-sensitivity)
              '("Regexp-Quote Input  (`C-M-;')" . icicle-regexp-quote-input)
@@ -5047,8 +5063,15 @@ which can position mouse pointer on a standalone minibuffer frame."
              '("Toggle Incremental Completion  (`C-#')" . icicle-toggle-incremental-completion)
              '("Toggle Common Match Expansion  (`C-;')" . icicle-toggle-expand-to-common-match)
              '("Toggle Hiding Common Match (`C-x .')" . icicle-toggle-hiding-common-match)
-             '("Next S-TAB Completion Method  (`M-(')" . icicle-next-S-TAB-completion-method)
-             '("Next TAB Completion Method  (`C-(')" . icicle-next-TAB-completion-method)
+             `(,(if current-prefix-arg
+                    "Next S-TAB Completion Method - ONE-OFF (`C-u M-(')"
+                    "Next S-TAB Completion Method  (`M-(')")
+               . icicle-next-S-TAB-completion-method)
+             `(,(if current-prefix-arg
+                    "Next TAB Completion Method - ONE-OFF (`C-u C-(')"
+                    "Next TAB Completion Method  (`C-(')")
+               . icicle-next-TAB-completion-method)
+             '("Next Image-File Thumbnail Setting (`C-x t')" . icicle-cycle-image-file-thumbnail)
              '("Toggle Including Proxy Candidates  (`C-M-_')" . icicle-toggle-proxy-candidates)
              '("Toggle WYSIWYG for *Completions*" . icicle-toggle-WYSIWYG-Completions)
              '("Toggle Angle Brackets" . icicle-toggle-angle-brackets)
@@ -5058,22 +5081,40 @@ which can position mouse pointer on a standalone minibuffer frame."
              '("Toggle Using `C-' for Actions  (`M-g')" . icicle-toggle-C-for-actions)
              '("Toggle Using `~' for $HOME  (`M-~')" . icicle-toggle-~-for-home-dir)
              '("--")
-             '("Toggle All-Current Search Highlighting  (`C-^')" .
-               icicle-toggle-highlight-all-current)
+             '("Toggle All-Current Search Highlighting  (`C-^')"
+               . icicle-toggle-highlight-all-current)
              '("Toggle Whole-Word Searching  (`M-q')" . icicle-toggle-search-whole-word)
              '("Toggle Removal of Search Highlighting  (`C-.')" . icicle-toggle-search-cleanup)
              '("Toggle Replacing Whole Search Hit  (`M-_')" . icicle-toggle-search-replace-whole)
-             '("Toggle Replacing Expanded Common Match  (`M-;')" .
-               icicle-toggle-search-replace-common-match)
+             '("Toggle Replacing Expanded Common Match  (`M-;')"
+               . icicle-toggle-search-replace-common-match)
              '("--")
-             '("+ Toggle Any Option..." . icicle-toggle-option)
-             '("+ Turn Off Option..." . icicle-reset-option-to-nil)
-             '("+ Turn On Option..." . icicle-set-option-to-t)
+             `(,(cond ((and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg)))
+                       "+ Toggle Option...")
+                      (current-prefix-arg "+ Toggle Any Variable...")
+                      (t "+ Toggle Boolean Option..."))
+               . icicle-toggle-option)
+             `(,(if current-prefix-arg
+                    "+ Set Any Variable to `nil'..."
+                    "+ Set Option to `nil'...")
+               . icicle-reset-option-to-nil)
+             `(,(cond ((and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg)))
+                       "+ Set Option to `t'...")
+                      (current-prefix-arg "+ Set Any Variable to `t'...")
+                      (t "+ `Set Boolean Option to `t'..."))
+               . icicle-set-option-to-t)
              '("--")
-             '("Restore Previous Completion Input  (`C-l')" . icicle-retrieve-previous-input)
-             '("Restore Next Completion Input  (`C-L')" . icicle-retrieve-next-input)
+             `(,(if (or (and icicle-C-l-uses-completion-flag (not current-prefix-arg))
+                        (and (not icicle-C-l-uses-completion-flag) current-prefix-arg))
+                    "Complete for Past Completion Input  (`C-l')"
+                    "Previous Completion Input  (`C-l')")
+               . icicle-retrieve-previous-input)
+             '("Next Completion Input  (`C-l')" . icicle-retrieve-next-input)
              '("One-Off Eval...  (`M-:')" . icicle-pp-eval-expression-in-minibuffer)
-             '("Insert `icicle-input-string'  (`C-=')" . icicle-insert-string-from-variable)
+             `(,(if current-prefix-arg
+                    "Insert String from Variable...  (`C-u C-=')"
+                    "Insert `icicle-input-string'  (`C-=')")
+               . icicle-insert-string-from-variable)
              '("--")
              '("Icicles Help  (`C-?')" . icicle-minibuffer-help)))))
     (and menu-choice (call-interactively menu-choice))))

@@ -16,7 +16,7 @@ Alignment is done with respect to a set of rules (e.g. line up the = signs). Whi
 Some custom settings are available through the use of the customize buffer.
 Just type <code>M-x customize-group RET align RET</code>.
 
-<b>Sidenote:</b> there is no rule given by default in text mode. Hence, <code>M-x align</code> has no effect in that mode. See below the section dealing with the <code>align-rules-list</code> variable for an example showing how to define a rule in text-mode. However, a few rules are provided by default if the command <code>M-x align</code> is given an argument; see next section.
+<b>Sidenote:</b> The default text-mode rules in `align-rules-list' are "too aggressive" to be enabled by default, therefore you need to specify the universal arg (C-u) to enable them.  See below.
 
 
 === The align command ===

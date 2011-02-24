@@ -762,6 +762,21 @@ minibuffer, then use the `up' and `down' arrow keys or the
 mouse wheel to increment and decrement the value.  You can at the same time use the `left' and `right' keys to adjust the value of `<tt>[[#icicle-candidate-width-factor]]</tt>'.  WYSIWYG.
 
 
+
+----
+[:icicle-image-files-in-Completions]
+==== Option icicle-image-files-in-Completions ====
+
+Non-`nil' option '''`icicle-image-files-in-Completions'''' means that
+thumbnail images are shown in `*Completions*' for candidates
+that are names of image files.  The default value is `t'.  If
+the value is `image-only', then only the thumbnail images are    shown.  If it is otherwise non-`nil' then the file names are also
+shown.  You can cycle the option value using '''`C-x t'''' in the
+minibuffer at any time during completion.  This feature is
+available starting with Emacs 22.
+
+
+
 ----
 [:icicle-completions-format]
 ==== Option icicle-completions-format ====

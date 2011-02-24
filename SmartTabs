@@ -3,12 +3,12 @@
 : [[image:TabsSpacesBoth]]
 : ''Tabs and spaces are often [TabsAreEvil misunderstood]. (Original comic by [http://www.duelinganalogs.com/comic/2007/04/02/hello-im-linux/ Steve Napierski].)''
 
-There is a ''fail-safe'' way of using tab characters in source code: '''tabs for indentation, spaces for alignment'''. This ensures the code is displayed correctly everywhere, regardless of the viewer's tab size.
+There is an interoperable way of using tab characters in source code: '''tabs for indentation, spaces for alignment'''. This ensures the code is displayed correctly everywhere, regardless of the viewer's tab size.
 
     // Tab size: 4                // Tab size: 2
     if(foo) {                     if(foo) {
-    --->char quux[4] = {0, 1,     ->char quux[4] = {0, 1,
-    --->................2, 3};    ->................2, 3};
+    --->char quux[4] = {0, 1,     ->char quux[4] = {0, 1,     // "0" and "2"
+    --->................2, 3};    ->................2, 3};    // remain aligned
     }                             }
 
 The approach can be summed up in two points:
@@ -16,9 +16,9 @@ The approach can be summed up in two points:
 # Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art and tables, should be formatted with spaces.
 # Tabs are only used for '''expressing the indentation level'''. One tab per "block" -- any remaining whitespace is spaces only.
 
-But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page provides code which fixes how Emacs auto-indents with tabs (see the [[#SimpleAlgorithm|explanation]] for tips on duplicating it in other software).
+But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page provides code which improves on Emacs' auto-indenting: whenever you press the ##<tab>## key, the appropriate amount of tabs and spaces is inserted.
 
-Should you use smart tabs or all spaces? That, of course, depends on the project and its established guidelines. The following code merely ensures that ''if'' you use tabs, they are inserted in as fail-safe a manner as possible.
+Should you use smart tabs or all spaces? That depends on the project and its established guidelines, of course. The following code merely ensures that ''if'' you use tabs, they are inserted in an interoperable way.
 
 [:Implementations]
 == Code ==
@@ -28,7 +28,9 @@ Should you use smart tabs or all spaces? That, of course, depends on the project
 Add the code below to <tt>[InitFile .emacs]</tt> to make Emacs insert the proper amount of tabs and spaces automatically, provided ##indent-tabs-mode## is not disabled (see [[#Toggling|toggling]]). Then, to indent ''and'' align, just press '##<tab>##' as usual.
 
 [:Retab]
-You can retab the whole file by pressing '##C-x h C-M-\##'. (See [[TabCompletion#SmartTab|TabCompletion]] to do this with fewer keystrokes.)
+You can retab the whole file by pressing '##C-x h C-M-\##'. ([[TabCompletion#SmartTab|TabCompletion]] provides a way to do this with fewer keystrokes.)
+
+See the [[#SimpleAlgorithm|code explanation]] for tips on duplicating this behavior in other software.
 
 [:CImplementations]
 === C-like languages ===

@@ -10,6 +10,35 @@ Try the following if european-calendar is not recognized:
  (setq european-calendar-style 't)
 
 == Localized Day and Month Names ==
+
+=== Chinese ===
+
+Here is how to display the 'celestial-stem' (天干)
+and the 'terrestrial-branch' (地支) in Chinese:
+
+    (setq chinese-calendar-celestial-stem
+          ["甲" "乙" "丙" "丁" "戊" "己" "庚" "辛" "壬" "癸"]
+          chinese-calendar-terrestrial-branch
+          ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
+
+=== Finnish ===
+   (setq calendar-week-start-day 1
+         calendar-day-name-array
+           ["sunnuntai" "maanantai" "tiistai" "keskiviikko"
+            "torstai" "perjantai" "lauantai"]
+         calendar-month-name-array
+           ["tammikuu" "helmikuu" "maaliskuu" "huhtikuu" "toukokuu" 
+            "kesäkuu" "heinäkuu" "elokuu" "syyskuu"
+            "lokakuu" "marraskuu" "joulukuu"])
+
+=== French ===
+   (setq calendar-week-start-day 1
+          calendar-day-name-array ["Dimanche" "Lundi" "Mardi" "Mercredi"
+                                   "Jeudi" "Vendredi" "Samedi"]
+          calendar-month-name-array ["Janvier" "Février" "Mars" "Avril" "Mai"
+                                     "Juin" "Juillet" "Août" "Septembre"
+                                        "Octobre" "Novembre" "Décembre"])
+
 === German ===
 First, we know that the week starts with Monday, and we need German weekday and month
 names.
@@ -20,6 +49,24 @@ names.
           calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
                                      "Juni" "Juli" "August" "September"
                                      "Oktober" "November" "Dezember"])
+
+=== Hungarian ===
+   (setq calendar-week-start-day 1
+      calendar-day-name-array
+       ["vasárnap" "hétfő" "kedd" "szerda"
+        "csütörtök" "péntek" "szombat"]
+      calendar-month-name-array
+        ["Január" "Február" "Március" "Április" "Május" "Június"
+         "Július" "Augusztus" "Szeptember" "Október" "November" "December"])
+
+=== Italian ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Domenica" "Lunedì" "Martedì" "Mercoledì" 
+                                   "Giovedì" "Venerdì" "Sabato"]
+          calendar-month-name-array ["Gennaio" "Febbraio" "Marzo" "Aprile" "Maggio"
+                                     "Giugno" "Luglio" "Agosto" "Settembre" 
+                                     "Ottobre" "Novembre" "Dicembre"])
 
 === Russian ===
 
@@ -43,59 +90,39 @@ Week starts with Monday, use also spanish weekday and month names. Editor specia
 === Swedish ===
 See http://bigwalter.net/daniel/elisp/sv-kalender.el
 
+
+== Localized and National Holidays ==
+
+=== Chinese ===
+
+Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
+
+http://xwl.appspot.com/ref/cal-china-x.el
+
+Modified version of the above using traditional Chinese characters (plus some nit picks):
+
+http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el
+
 === Danish ===
 
 See http://soren.github.com/elisp/index.html
 
-=== Chinese ===
-
-Here is how to display the 'celestial-stem' (天干)
-and the 'terrestrial-branch' (地支) in Chinese:
-
-    (setq chinese-calendar-celestial-stem
-          ["甲" "乙" "丙" "丁" "戊" "己" "庚" "辛" "壬" "癸"]
-          chinese-calendar-terrestrial-branch
-          ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
-
-=== Italian ===
-
-    (setq calendar-week-start-day 1
-          calendar-day-name-array ["Domenica" "Lunedì" "Martedì" "Mercoledì" 
-                                   "Giovedì" "Venerdì" "Sabato"]
-          calendar-month-name-array ["Gennaio" "Febbraio" "Marzo" "Aprile" "Maggio"
-                                     "Giugno" "Luglio" "Agosto" "Settembre" 
-                                     "Ottobre" "Novembre" "Dicembre"])
-=== French ===
-   (setq calendar-week-start-day 1
-          calendar-day-name-array ["Dimanche" "Lundi" "Mardi" "Mercredi"
-                                   "Jeudi" "Vendredi" "Samedi"]
-          calendar-month-name-array ["Janvier" "Février" "Mars" "Avril" "Mai"
-                                     "Juin" "Juillet" "Août" "Septembre"
-                                        "Octobre" "Novembre" "Décembre"])
-
-=== Finnish ===
-   (setq calendar-week-start-day 1
-         calendar-day-name-array
-           ["sunnuntai" "maanantai" "tiistai" "keskiviikko"
-            "torstai" "perjantai" "lauantai"]
-         calendar-month-name-array
-           ["tammikuu" "helmikuu" "maaliskuu" "huhtikuu" "toukokuu" 
-            "kesäkuu" "heinäkuu" "elokuu" "syyskuu"
-            "lokakuu" "marraskuu" "joulukuu"])
-
-=== Hungarian ===
-   (setq calendar-week-start-day 1
-      calendar-day-name-array
-       ["vasárnap" "hétfő" "kedd" "szerda"
-        "csütörtök" "péntek" "szombat"]
-      calendar-month-name-array
-        ["Január" "Február" "Március" "Április" "Május" "Június"
-         "Július" "Augusztus" "Szeptember" "Október" "November" "December"])
-
-
-== Localized and National Holidays ==
 === Finnish ===
 Lisp:suomalainen-kalenteri.el
+
+=== French ===
+Lisp:french-holidays.el
+
+=== Irish ===
+To add a few key Irish public holidays:
+<pre>
+(setq  holiday-irish-holidays 
+       '((holiday-float 5 1 1 "May Day")
+         (holiday-float 6 1 1 "June Bank Holiday")
+         (holiday-float 8 1 1 "August Bank Holiday")
+         (holiday-float 10 1 -1 "October Bank Holiday")
+         (holiday-fixed 12 26 "St. Stephen's Day")))
+</pre>
 
 === Japanese ===
 http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el
@@ -118,26 +145,3 @@ Here is my calendar configuration. -- [[rubikitch]]
 (add-hook 'today-invisible-calendar-hook 'calendar-mark-weekend)
 </pre>
 
-=== Chinese ===
-
-Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
-
-http://xwl.appspot.com/ref/cal-china-x.el
-
-Modified version of the above using traditional Chinese characters (plus some nit picks):
-
-http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el
-
-=== Irish ===
-To add a few key Irish public holidays:
-<pre>
-(setq  holiday-irish-holidays 
-       '((holiday-float 5 1 1 "May Day")
-         (holiday-float 6 1 1 "June Bank Holiday")
-         (holiday-float 8 1 1 "August Bank Holiday")
-         (holiday-float 10 1 -1 "October Bank Holiday")
-         (holiday-fixed 12 26 "St. Stephen's Day")))
-</pre>
-
-=== French ===
-Lisp:french-holidays.el
