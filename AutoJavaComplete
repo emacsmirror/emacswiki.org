@@ -6,18 +6,10 @@ First you should have installed
  AutoComplete and  [http://yasnippet.googlecode.com/svn/trunk/doc/index.html Yasnippet]
    Then install this one for java completion.
 
-Add this lines  in your .emacs file:
-
-    (add-to-list 'load-path   "~/.emacs.d/ajc-java-complete" )
-    (require 'ajc-java-complete-config)
-[new:Joseph:2011-1-2 12:16 UTC]
- For some reason ,please delete the byte-compiled auto-complete.elc 
-in your auto-complete directory
-[new]
+Please Do not forget to read  [https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/ajc-java-complete.el ajc-java-complete.el] 
 
 
-Read ajc-java-complete-config  for more info.
-Run the following to generate the tag file ##~/.java_base.tag##
+Run the following to generate the tag file  [https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/java_base.tag.bz2 ~/.java_base.tag]
 and restart your Emacs:
 
       javac Tags.java 
@@ -31,13 +23,18 @@ Enjoy!
 
 ==Source==
 
-* Lisp:ajc-java-complete.el
-* Lisp:ajc-java-complete-config.el
-* https://github.com/jixiuf/ajc-java-complete/raw/master/Tags.java
+* https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/ajc-java-complete.el
+* https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/ajc-java-complete-config.el
+* https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/popup.el
+* https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/popup-patch.diff
 
-  if Tags.java can not work on your PC. you can use the generated tag file 
-  just bunzip and rename it to ~/.java_base.tag
-* https://github.com/jixiuf/ajc-java-complete/raw/master/java_base.tag.bz2
+* https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/Tags.java
+
+  if 
+[https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/Tags.java Tags.java]
+can not work on your PC. you can use tmy tag file: 
+  just bunzip and rename it to [https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/java_base.tag.bz2 ~/.java_base.tag]
+
 
 You can find source code on github:
 [https://github.com/jixiuf/ajc-java-complete  auto-java-complete].
@@ -46,13 +43,15 @@ You can find source code on github:
 You can clone it using
 
       git clone git://github.com/jixiuf/ajc-java-complete.git
+      git checkout 0.2.5 (tag0.2.5,last version)
 
 ==Video Demo==
 
 There is a 2.8M video demo in another repos .   
-[http://screencast-repos.googlecode.com/files/auto-java-complete-demo-2010-12-25.mp4.bz2 VideoDemo]
-     
+[http://screencast-repos.googlecode.com/files/auto-java-complete-demo-2010-12-25.mp4.bz2 EditingJavaFile]
 
+And this is another demo(5.7M) about editing Jsp File (version 0.2.5 support editing jsp file.)
+[http://screencast-repos.googlecode.com/files/auto-java-complete-demo-editing-jsp-2011-01-20.mp4 EditingJspFile] 
 ==Features==
 
 It can complete *imports*:
@@ -104,6 +103,8 @@ Here are two suggested keybindings(included in ajc-java-complete-config.el):
      (local-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class))
      (local-set-key (kbd "C-c m") (quote ajc-import-class-under-point))
 
+You even can edit a jsp file using AutoJavaComplete ,try it.(read  [https://github.com/jixiuf/ajc-java-complete/raw/0.2.5/ajc-java-complete.el ajc-java-complete.el] )
+
 
 == Screenshots  ==
 
@@ -119,10 +120,8 @@ Here are two suggested keybindings(included in ajc-java-complete-config.el):
 
 == To Do ==
 
-* when completing method, show return type more gentlely
-* shorten time of  opening first java source file .
-* implements source navigate ,find out Class Method definition position 
-    by searching source path (maybe need support of decompile.el (jad ))
+* when completing method, show return type more gentlely  (finished)
+
 
 ----
 CategoryCompletion

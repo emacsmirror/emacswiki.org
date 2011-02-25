@@ -8,9 +8,9 @@
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 20:50:15 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:55:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 326
+;;     Update #: 327
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -168,7 +168,7 @@
 (unless (facep 'minibuffer-prompt)
   (defface minibuffer-prompt '((((background dark)) (:foreground "cyan"))
                                (t (:foreground "dark blue")))
-    "Face for minibuffer prompts."
+    "*Face for minibuffer prompts."
     :group 'basic-faces))
 
 

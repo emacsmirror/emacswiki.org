@@ -3,7 +3,7 @@
 : [[image:TabsSpacesBoth]]
 : ''Tabs and spaces are often [TabsAreEvil misunderstood]. (Original comic by [http://www.duelinganalogs.com/comic/2007/04/02/hello-im-linux/ Steve Napierski].)''
 
-There is an interoperable way of using tab characters in source code: '''tabs for indentation, spaces for alignment'''. This ensures the code is displayed correctly everywhere, regardless of the viewer's tab size.
+There is a semantic way of using tab characters in source code: '''tabs for indentation, spaces for alignment'''. This ensures that the code is displayed correctly everywhere, regardless of the viewer's tab size.
 
     // Tab size: 4                // Tab size: 2
     if(foo) {                     if(foo) {
@@ -18,7 +18,7 @@ The approach can be summed up in two points:
 
 But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page provides code which improves on Emacs' auto-indenting: whenever you press the ##<tab>## key, the appropriate amount of tabs and spaces is inserted.
 
-Should you use smart tabs or all spaces? That depends on the project and its established guidelines, of course. The following code merely ensures that ''if'' you use tabs, they are inserted in an interoperable way.
+You can still use all spaces if you prefer, of course. The following code merely ensures that ''if'' you enable tabs (maybe when maintaining legacy code), they are inserted in a semantic way.
 
 [:Implementations]
 == Code ==
@@ -29,8 +29,6 @@ Add the code below to <tt>[InitFile .emacs]</tt> to make Emacs insert the proper
 
 [:Retab]
 You can retab the whole file by pressing '##C-x h C-M-\##'. ([[TabCompletion#SmartTab|TabCompletion]] provides a way to do this with fewer keystrokes.)
-
-See the [[#SimpleAlgorithm|code explanation]] for tips on duplicating this behavior in other software.
 
 [:CImplementations]
 === C-like languages ===
@@ -142,7 +140,7 @@ See GuessStyle for a package which attempts to determine the proper values for #
 
 For those looking to implement this functionality in other modes (or even other editors), this section explains how the [[#CImplementations|code above]] works. The method used is not specific to Emacs -- any scriptable editor with syntactic auto-indentation can be made to indent with tabs and align with spaces.
 
-The editor's auto-indentation depends on two variables: the ''tab size'' and the ''indentation offset''. The tab size is how many columns a tab occupies (more precisely, the distance between tab stops). The indentation offset is the default amount of columns an indented line is shifted to the right.
+The editor's auto-indentation depends on two variables: the ''tab size'' and the ''indentation offset''. The tab size is how many columns a tab occupies (more precisely, the distance between tab stops). The indentation offset is the standard amount of columns an indented line is shifted to the right (disregarding special cases like alignment of multi-line expressions).
 
 If we have access to these two variables, we can separate "indentation" from "alignment" without knowing very much about the language itself. The idea is simple: temporarily set the tab size and indentation offset to a very large value before indenting. This is similar to calling [http://www.gnu.org/software/indent/ GNU Indent] with ##-i99 -ts99 -l999## (along with necessary style parameters).
 

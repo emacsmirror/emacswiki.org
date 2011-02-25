@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 10:21:03 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:20:44 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2611
+;;     Update #: 2612
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -671,7 +671,7 @@
 (unless (facep 'minibuffer-prompt)
   (defface minibuffer-prompt '((((background dark)) (:foreground "cyan"))
                                (t (:foreground "dark blue")))
-    "Face for minibuffer prompts."
+    "*Face for minibuffer prompts."
     :group 'basic-faces))
 
 (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.

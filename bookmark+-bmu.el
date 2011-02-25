@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Feb 11 13:56:34 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:44:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 453
+;;     Update #: 454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -496,7 +496,7 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defcustom bmkp-bmenu-omitted-list ()
-  "List of names of omitted bookmarks.
+  "*List of names of omitted bookmarks.
 They are generally not available for display in the bookmark list.
 You can, however, use \\<bookmark-bmenu-mode-map>\
 `\\[bmkp-bmenu-show-only-omitted]' to see them.

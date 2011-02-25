@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Jan  4 12:52:35 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:45:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2546
+;;     Update #: 2561
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -878,7 +878,7 @@ This has no effect if `1on1-*Completions*-frame-flag' is nil."
 
 ;;;###autoload
 (defcustom 1on1-completions-frame-background "LavenderBlush2"
-  "Default background color for the *Completions* buffer's frame.
+  "*Default background color for the *Completions* buffer's frame.
 
 Note: This is not used if `1on1-*Completions*-frame-flag' is nil.
 
@@ -888,7 +888,7 @@ for the new value to take effect."
 
 ;;;###autoload
 (defcustom 1on1-completions-frame-mouse+cursor-color "VioletRed"
-  "Default color for cursor & pointer of *Completions* frame.
+  "*Default color for cursor & pointer of *Completions* frame.
 
 Note: This is not used if `1on1-*Completions*-frame-flag' is nil.
 
@@ -898,7 +898,7 @@ for the new value to take effect."
 
 ;;;###autoload
 (defcustom 1on1-completions-frame-width 100
-  "Width, in characters, for *Completions* frame.
+  "*Width, in characters, for *Completions* frame.
 If this is nil, then the pertinent default frame width is used.
 
 Note: This is not used if `1on1-*Completions*-frame-flag' is nil.
@@ -1099,7 +1099,7 @@ take effect.")
      (cons 'right-fringe 0))            ; Emacs 21+
    (or (assq 'fringe default-frame-alist)
        (cons 'fringe 0)))               ; Emacs 21, but not 21.3.50 - REMOVE after 22.x
-  "Properties to be used for One-on-One Emacs `default-frame-alist'.
+  "*Properties to be used for One-on-One Emacs `default-frame-alist'.
 If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   ;; If we didn't need Emacs 20 compatibility, this could be:

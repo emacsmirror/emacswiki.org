@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 10:25:05 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:22:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 432
+;;     Update #: 434
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -162,18 +162,18 @@
 ;; I include it here as a different face definition that you might want to try.
 ;;;###autoload
 (defface hl-line '((t (:background "SlateGray3"))) ; Try also (:underline "Yellow")
-  "Face to use for `hl-line-face'." :group 'hl-line)
+  "*Face to use for `hl-line-face'." :group 'hl-line)
 (setq hl-line-face 'hl-line)
 
 ;;;###autoload
 (defcustom hl-line-flash-show-period 1
-  "Number of seconds for `hl-line-flash' to highlight the line."
+  "*Number of seconds for `hl-line-flash' to highlight the line."
   :type 'integer :group 'cursor :group 'hl-line)
 
 ;; Possible value: `(Info-mode help-mode view-mode Man-mode)'
 ;;;###autoload
 (defcustom hl-line-inhibit-highlighting-for-modes ()
-  "Modes where highlighting is inhibited for `hl-line-highlight-now'.
+  "*Modes where highlighting is inhibited for `hl-line-highlight-now'.
 A list of `major-mode' values (symbols)."
   :type 'list :group 'hl-line)
 

@@ -11,7 +11,7 @@ See MacPrintMode.
 
 === Integrating the Mac Address Book ===
 
-You can download [http://www.opensource.apple.com/darwinsource/Current/emacs-70.1/emacs/lisp/net/eudcb-mab.el eudc-mab.el], by JohnWiegley, which implements
+You can download [http://opensource.apple.com/Current/emacs/emacs/lisp/net/eudcb-mab.el eudc-mab.el], by JohnWiegley, which implements
 a back-end to EUDC that can query <nowiki>AddressBook.app</nowiki>.
 
 === Open Terminal.app ===

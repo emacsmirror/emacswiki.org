@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 08:14:43 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:48:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 842
+;;     Update #: 844
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -185,7 +185,7 @@
 
 ;;;###autoload
 (defcustom grep-case-insensitive-option "-i"
-  "Option for grep command that indicates case-insensitivity.
+  "*Option for grep command that indicates case-insensitivity.
 This is taken into account for match highlighting.
 If your grep command has no such option, set this to \"\"."
   :type 'string :group 'compilation)
@@ -227,7 +227,7 @@ Otherwise, if the value is not a function, then function
 
 ;;;###autoload
 (defcustom grep-default-comment-line-regexp ":[0-9]+: *;"
-  "Default regexp for a comment line, for use in `remove-grep-comments'.
+  "*Default regexp for a comment line, for use in `remove-grep-comments'.
 The default value matches lines that begin with a Lisp comment."
   :type 'string :group 'grep)
 

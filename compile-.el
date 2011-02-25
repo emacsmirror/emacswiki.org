@@ -7,16 +7,16 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 20:15:16 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:52:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 98
+;;     Update #: 100
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile-.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `avoid', `fit-frame', `frame-fns'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -97,7 +97,7 @@
 ;; Use nil, not `underline', to turn off underlining.
 ;;;###autoload
 (defcustom compilation-message-face nil
-  "Face name to use for whole messages.
+  "*Face name to use for whole messages.
 Faces `compilation-error-face', `compilation-warning-face',
 `compilation-info-face', `compilation-line-face' and
 `compilation-column-face' get prepended to this, when applicable."
@@ -106,7 +106,7 @@ Faces `compilation-error-face', `compilation-warning-face',
 ;; Instead of `highlight', which is hard-coded in `compile.el'.
 ;;;###autoload
 (defface compilation-mouseover '((t (:underline t)))
-  "Face used to highlight text the mouse is over."
+  "*Face used to highlight text the mouse is over."
   :group 'compilation :group 'font-lock-highlighting-faces)
 
 (when (and (fboundp 'x-color-defined-p) (x-color-defined-p "SkyBlue"))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Fri Jan  7 15:18:08 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:06:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1334
+;;     Update #: 1336
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -396,7 +396,7 @@ effect on `mouse-3' behavior.")
 
 ;;;###autoload
 (defcustom mouse3-second-click-default-command 'mouse3-region-popup-menu
-  "Command used for a second `mouse-3' click at the same location.
+  "*Command used for a second `mouse-3' click at the same location.
 The command must accept 2 args: mouse click event and prefix arg.
 
 This is a default value, which can be programmatically overridden in
@@ -431,7 +431,7 @@ single-click event.  See `(elisp) Repeat Events'."
 
 ;;;###autoload
 (defcustom mouse3-double-click-command 'mouse3-kill/delete-region
-  "Command used for a `mouse-3' double-click.
+  "*Command used for a `mouse-3' double-click.
 The command must accept 2 args: mouse click event and prefix arg.
 
 Two particular values:
@@ -462,7 +462,7 @@ single-click event.  See `(elisp) Repeat Events'."
 
 ;;;###autoload
 (defcustom mouse3-region-popup-include-global-menus-flag t
-  "Non-nil means `mouse-3' menu includes major-mode or menu-bar menus.
+  "*Non-nil means `mouse-3' menu includes major-mode or menu-bar menus.
 When non-nil:
  If the menu bar is visible then include the major-mode menus.
  Otherwise, include the menu-bar menus.
@@ -474,7 +474,7 @@ before Emacs 23."
 
 ;;;###autoload
 (defcustom mouse3-region-popup-x-popup-panes-flag nil
-  "Non-nil means use `mouse3-region-popup-x-popup-panes'.
+  "*Non-nil means use `mouse3-region-popup-x-popup-panes'.
 If nil, or if `mouse3-region-popup-x-popup-panes' is nil, use
 `mouse3-region-popup-entries' instead."
   :type 'boolean :group 'mouse3)
@@ -662,7 +662,7 @@ restore it by yanking."
               '(("Highlight Bookmarks"          . bmkp-light-bookmarks-in-region)))
      ,@`,(and (fboundp 'browse-url-of-region) ; Defined in `browse-url.el'.
               '(("Open in Browser"              . browse-url-of-region)))))
-  "Submenus of `mouse-3' `Region' popup menu.
+  "*Submenus of `mouse-3' `Region' popup menu.
 Used only if `mouse3-region-popup-x-popup-panes-flag' is non-nil.
 
 A list of `x-popup-menu' pane menus, where each has the form
@@ -1000,7 +1000,7 @@ restore it by yanking."
                                          ,mouse3-region-popup-count-submenu
                                          ,mouse3-region-popup-misc-submenu
                                          )
-  "Entries for the `mouse-3' popup menu.
+  "*Entries for the `mouse-3' popup menu.
 The option value is a list.  Each element defines a submenu or a menu
 item.  A null element (`nil') is ignored.
 
@@ -1325,7 +1325,7 @@ Provides commands to act on the selected files and directories."
 ;; This needs to come after the definitions of `mouse3-dired-use-menu' and `mouse3-dired-add-region-menu'.
 ;;;###autoload
 (defcustom mouse3-dired-function 'mouse3-dired-use-menu
-  "Fuction to call to update `dired-after-readin-hook' for `mouse-3' behavior."
+  "*Fuction to call to update `dired-after-readin-hook' for `mouse-3' behavior."
   :type '(choice
           (function :tag "Use menu"     'mouse3-dired-use-menu)
           (function :tag "Toggle marks" 'mouse3-dired-use-toggle-marks)
@@ -1475,7 +1475,7 @@ You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
             (interactive)
             (exchange-point-and-mark)
             (call-interactively #'picture-yank-rectangle-from-register))))
-  "Picture mode submenu of popup menu for `mouse-3'."
+  "*Picture mode submenu of popup menu for `mouse-3'."
   :type '(repeat
           (choice
            (cons :tag "Item"

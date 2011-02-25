@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 10:57:19 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:36:17 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 548
+;;     Update #: 550
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -192,19 +192,19 @@
         (((class color) (min-colors 8)) (:background "red"))
         (((type tty) (class mono)) :inverse-video t)
         (t :background "gray"))
-    "Face for highlighting failed part in Isearch echo-area message."
+    "*Face for highlighting failed part in Isearch echo-area message."
     :group 'isearch))
 
 ;;;###autoload
 (defcustom isearchp-regexp-quote-yank-flag t
-  "Non-nil means escape special chars in text yanked for a regexp isearch.
+  "*Non-nil means escape special chars in text yanked for a regexp isearch.
 You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
 `C-`' during isearch."
   :type 'boolean :group 'isearch)
 
 ;;;###autoload
 (defcustom isearchp-set-region-flag nil
-  "Non-nil means set region around search target.
+  "*Non-nil means set region around search target.
 This is used only for Transient Mark mode.
 You can toggle this with `isearchp-toggle-set-region', bound to
 `C-SPC' during isearch."

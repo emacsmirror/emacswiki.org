@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Feb  6 05:33:15 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:34:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4450
+;;     Update #: 4459
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -561,14 +561,14 @@ Don't forget to mention your Emacs and library versions."))
   (defface minibuffer-prompt
       '((((background dark)) (:foreground "cyan"))
         (t (:foreground "dark blue")))
-    "Face for minibuffer prompts."
+    "*Face for minibuffer prompts."
     :group 'basic-faces))
 
 ;;;###autoload
 (defface info-file
     '((((background dark)) (:foreground "Yellow" :background "DimGray"))
       (t (:foreground "Blue" :background "LightGray")))
-  "Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
+  "*Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-menu
@@ -582,7 +582,7 @@ Don't forget to mention your Emacs and library versions."))
     '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ green
       (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
       (t (:foreground "yellow")))
-  "Face for quoted names (`...') in `info'."
+  "*Face for quoted names (`...') in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
@@ -590,14 +590,14 @@ Don't forget to mention your Emacs and library versions."))
 (defface info-string                    ; For "..."
     '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
       (t (:inherit font-lock-string-face :foreground "red3")))
-  "Face for strings (\"...\") in `info'."
+  "*Face for strings (\"...\") in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-single-quote              ; For '
     '((((background dark)) (:inherit font-lock-keyword-face :foreground "Green"))
       (t (:inherit font-lock-keyword-face :foreground "Magenta")))
-  "Face for isolated single-quote marks (') in `info'."
+  "*Face for isolated single-quote marks (') in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;; These are only for Emacs 20 and 21.
@@ -614,7 +614,7 @@ Don't forget to mention your Emacs and library versions."))
 (defface info-title-1
     '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
       (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
-  "Face for info titles at level 1."
+  "*Face for info titles at level 1."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
 (put 'Info-title-1-face 'face-alias 'info-title-1)
@@ -622,7 +622,7 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defface info-title-2
     '((((type tty pc) (class color)) :foreground "lightblue" :weight bold))
-  "Face for info titles at level 2."
+  "*Face for info titles at level 2."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
 (put 'Info-title-2-face 'face-alias 'info-title-2)
@@ -630,7 +630,7 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defface info-title-3
     '((((type tty pc) (class color)) :weight bold))
-  "Face for info titles at level 3."
+  "*Face for info titles at level 3."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
 (put 'Info-title-3-face 'face-alias 'info-title-3)
@@ -638,7 +638,7 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defface info-title-4
     '((((type tty pc) (class color)) :weight bold))
-  "Face for info titles at level 4."
+  "*Face for info titles at level 4."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
 (put 'Info-title-4-face 'face-alias 'info-title-4)
@@ -654,53 +654,53 @@ Don't forget to mention your Emacs and library versions."))
     '((((background dark))
        (:foreground "#4D4DDDDDDDDD" :background "DimGray")) ; ~ cyan
       (t (:foreground "DarkBlue" :background "LightGray")))
-  "Face used for \"Function:\" reference items in `info' manual."
+  "*Face used for \"Function:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-variable-ref-item
     '((((background dark))
        (:foreground "Orange" :background "DimGray"))
       (t (:foreground "FireBrick" :background "LightGray")))
-  "Face used for \"Variable:\" reference items in `info' manual."
+  "*Face used for \"Variable:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-special-form-ref-item
     '((((background dark))
        (:foreground "Yellow" :background "DimGray")) ; ~ light green
       (t (:foreground "DarkMagenta" :background "LightGray")))
-  "Face used for \"Special Form:\" reference items in `info' manual."
+  "*Face used for \"Special Form:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-command-ref-item
     '((((background dark)) (:foreground "#7474FFFF7474" :background "DimGray")) ; ~ light green
       (t (:foreground "Blue" :background "LightGray")))
-  "Face used for \"Command:\" reference items in `info' manual."
+  "*Face used for \"Command:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-user-option-ref-item
     '((((background dark)) (:foreground "Red" :background "DimGray"))
       (t (:foreground "Red" :background "LightGray")))
-  "Face used for \"User Option:\" reference items in `info' manual."
+  "*Face used for \"User Option:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-macro-ref-item
     '((((background dark))
        (:foreground "Yellow" :background "DimGray")) ; ~ light green
       (t (:foreground "DarkMagenta" :background "LightGray")))
-  "Face used for \"Macro:\" reference items in `info' manual."
+  "*Face used for \"Macro:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-syntax-class-item
     '((((background dark))
        (:foreground "#FFFF9B9BFFFF" :background "DimGray")) ; ~ pink
       (t (:foreground "DarkGreen" :background "LightGray")))
-  "Face used for \"Syntax Class:\" reference items in `info' manual."
+  "*Face used for \"Syntax Class:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-reference-item
     '((((background dark)) (:background "DimGray"))
       (t (:background "LightGray")))
-  "Face used for reference items in `info' manual."
+  "*Face used for reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 
 
@@ -4471,7 +4471,7 @@ These are all of the current Info Mode bindings:
 
 (when (> emacs-major-version 21)
   (defcustom Info-saved-nodes ()
-    "List of Info node names you can visit using `\\<Info-mode-map>\\[Info-virtual-book]'.
+    "*List of Info node names you can visit using `\\<Info-mode-map>\\[Info-virtual-book]'.
 Each node name is a string.  The node name can be absolute, including
 a filename, such as \"(emacs)Basic\", or it can be relative, such as
 \"Basic\".

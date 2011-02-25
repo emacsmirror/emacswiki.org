@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:08:53 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:57:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 404
+;;     Update #: 405
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -143,7 +143,7 @@
 ;;
 (when (> emacs-major-version 21)
   (defcustom next-error-highlight 0.5
-    "Highlighting of the current locus in selected source buffer.
+    "*Highlighting of the current locus in selected source buffer.
 Highlighting means use face `next-error' or show a fringe arrow.
 Value:
 * `fringe-arrow' means indicate the locus using a fringe arrow.
@@ -169,7 +169,7 @@ Value:
 ;;
 (when (> emacs-major-version 21)
   (defcustom next-error-highlight-no-select 0.5
-    "Highlighting of locations in `next-error-no-select'.
+    "*Highlighting of locations in `next-error-no-select'.
 Highlighting means use face `next-error' or show a fringe arrow.
 Value:
 * `fringe-arrow' means indicate the locus using a fringe arrow.

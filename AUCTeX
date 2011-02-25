@@ -111,7 +111,16 @@ Here is the version of latex-help-get-cmd-alist function which worked for me:
     )
 
 PS: quite surprised though, latex-help is not integrated in auctex. Did I miss something?
+[new]
+Yes, InfoLook.
 
+
+    (info-lookup-add-help
+     :mode 'latex-mode
+     :regexp ".*"
+     :parse-rule "\\\\?[a-zA-Z]+\\|\\\\[^a-zA-Z]"
+     :doc-spec '(("(latex2e)Concept Index" )
+                 ("(latex2e)Command Index")))
 
 
 == Abbrev mode and AUCTeX ==

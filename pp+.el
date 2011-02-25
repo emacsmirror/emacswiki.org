@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 13:11:14 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:48:30 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 200
+;;     Update #: 201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,13 +120,13 @@
 
 ;;;###autoload
 (defcustom pp-eval-expression-print-length nil
-  "Value for `print-length' while printing value in `pp-eval-expression'.
+  "*Value for `print-length' while printing value in `pp-eval-expression'.
 A value of nil means no limit."
   :group 'pp :group 'lisp :type '(choice (const :tag "No Limit" nil) integer))
 
 ;;;###autoload
 (defcustom pp-eval-expression-print-level nil
-  "Value for `print-level' while printing value in `pp-eval-expression'.
+  "*Value for `print-level' while printing value in `pp-eval-expression'.
 A value of nil means no limit."
   :group 'pp :group 'lisp :type '(choice (const :tag "No Limit" nil) integer))
 

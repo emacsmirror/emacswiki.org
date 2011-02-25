@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 
-;; Last-Updated: Tue Jan  4 08:21:08 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:59:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 190
+;;     Update #: 191
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-details+.el
 ;; Keywords: dired, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -137,7 +137,7 @@
 
 ;;;###autoload
 (defcustom dired-details-propagate-flag t
-  "Non-nil means next Dired buffer should be displayed the same.
+  "*Non-nil means next Dired buffer should be displayed the same.
 The last `dired-details-state' value set is used by the next Dired
 buffer created."
   :group 'dired-details :group 'dired :type 'boolean)

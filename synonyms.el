@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Fri Feb 11 14:53:54 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:59:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2466
+;;     Update #: 2467
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -25,12 +25,13 @@
 ;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
 ;;   `help+20', `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
 ;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel',
-;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -699,7 +700,7 @@ This can be overridden by using a positive prefix argument,
 
 ;;;###autoload
 (defcustom synonyms-mode-hook nil
-  "Normal hook run when entering Thesaurus mode."
+  "*Normal hook run when entering Thesaurus mode."
   :type 'hook :group 'Synonyms)
 
 ;;;###autoload

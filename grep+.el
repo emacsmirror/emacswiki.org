@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 15 10:50:51 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:16:55 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 485
+;;     Update #: 486
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -138,7 +138,7 @@
 
 ;;;###autoload
 (defcustom grepp-default-comment-line-regexp ":[0-9]+: *;"
-  "Default regexp for a comment line, for use in `grepp-remove-comments'.
+  "*Default regexp for a comment line, for use in `grepp-remove-comments'.
 The default value matches lines that begin with a Lisp comment."
   :type 'string :group 'grep)
 

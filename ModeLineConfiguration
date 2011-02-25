@@ -1,28 +1,35 @@
-Display of some standard information in the ModeLine is governed by these minor modes (toggles):
+The Emacs [[ModeLine|mode line]] is highly configurable, offering special modes and functions that change its functionality.
 
-* `display-time-mode' -- Show/hide the current time.
-* `line-number-mode' -- Show/hide the current line number.
-* `column-number-mode' -- Show/hide the current column number.
-* `size-indication-mode' (>= Emacs 22) -- Show/hide the current buffer size.
-* `display-battery-mode' (>= Emacs 22) -- Show/hide laptop battery information. Supported: GNU/Linux APM, ACPI, and Mac OS X 10.3.x (see JerameyCrawford),  FreeBSD and OpenBSD (see JoelHolveck).
+==Mode-line minor modes==
+Display of some standard information in the mode line is governed by these minor modes (toggles):
 
-Here are particular enhancements to the mode-line:
+* `display-time-mode' --- Enable the display of the current time with <tt>(display-time-mode 1)</tt>, see [[DisplayTime|display time]]
+* `line-number-mode' --- Enable or disable the display of the current line number, see [[ModeLinePosition|mode-line position]], [[LineNumbers|line numbers]]
+* `column-number-mode' --- Enable or disable the display of the current column number, see [[ModeLinePosition|mode-line position]]
+* `size-indication-mode' (for Emacs 22 and up) --- Enable or disable the current buffer size, see [[ModeLinePosition|mode-line position]]
+* `display-battery-mode' (for Emacs 22 and up) --- Enable or disable laptop battery information (%%supports GNU/Linux APM, ACPI, Mac OS X 10.3.x, FreeBSD and OpenBSD%%).
 
-* ModeLineMinorModeMenu -- Pop up minor-mode menus from the mode-line.
-* ModeLinePosition -- Show region size if region is active (in TransientMarkMode). Highlight column number, if greater than `modelinepos-column-limit' (user option).  
-* ModeLinePosAtBeginning -- Put line and column numbers at beginning of mode-line, so they are visible even when the TextCursor is inside a function with a long name.
-* HideModeLine -- Hide the mode-line, to save screen real estate.
-* LunarModeLine -- Display current lunar phase in the modeline.
-* ModeLineDirtrack -- show the buffer's current directory in the mode-line.
-* SmlModeLine -- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
-* ShowPointMode -- Show value of point in the mode-line.
+==Mode-line enhancements== 
+Here are particular enhancements to the mode line:
+
+* ModeLineMinorModeMenu --- Pop up minor-mode menus from the mode-line.
+* ModeLinePosition --- Display region size if region is active (in TransientMarkMode) and highlights the column number if greater than `modelinepos-column-limit'.  
+* ModeLinePosAtBeginning --- Display line and column numbers at the start of the mode line, so they are visible even when the TextCursor is inside a function with a long name.
+* HideModeLine --- Save screen real estate by hiding the mode line.
+* LunarModeLine --- Display current lunar phase in the modeline.
+* ModeLineDirtrack --- show the buffer's current directory in the mode-line.
+* SmlModeLine --- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
+* ShowPointMode --- Show value of point in the mode-line.
+
+==Mode-line customization==
 
 How to customize the mode-line further:
-
-* http://www.gnu.org/software/emacs/elisp/html_node/Mode-Line-Format.html
+* ModeLineCustomizationGuide
+* [http://www.gnu.org/software/emacs/elisp/html_node/Mode-Line-Format.html Mode-Line Format] at the Emacs Lisp Reference Manual
 
 ----
 CategoryDisplay
 CategoryEditing
 CategoryWindows
+CategoryModeLine
 

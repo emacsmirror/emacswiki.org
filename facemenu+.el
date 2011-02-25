@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Wed Feb 16 00:19:25 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:09:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1675
+;;     Update #: 1676
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -327,7 +327,7 @@
 
 ;;;###autoload
 (defcustom facemenup-palette-update-while-editing-flag t
-  "Non-nil means update the face whose color you're editing in the palette.
+  "*Non-nil means update the face whose color you're editing in the palette.
 The face is updated automatically each time you change the palette's
 current color, which is typically when you hit `RET' or click
 `mouse-2'.  If nil, then the face is updated only when you exit the

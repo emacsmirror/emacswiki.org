@@ -100,7 +100,7 @@
 
 ;;;###autoload
 (defcustom savehist-mode nil
-  "Mode for automatic saving of minibuffer history.
+  "*Mode for automatic saving of minibuffer history.
 Set this by calling the `savehist-mode' function or using the customize
 interface."
   :type 'boolean
@@ -187,13 +187,13 @@ If set to nil, disables timer-based autosaving."
 
 ;;;###autoload
 (defcustom savehist-mode-hook nil
-  "Hook called when `savehist-mode' is turned on."
+  "*Hook called when `savehist-mode' is turned on."
   :type 'hook
   :group 'savehist)
 
 ;;;###autoload
 (defcustom savehist-save-hook nil
-  "Hook called by `savehist-save' before saving the variables.
+  "*Hook called by `savehist-save' before saving the variables.
 You can use this hook to influence choice and content of variables to
 save."
   :type 'hook

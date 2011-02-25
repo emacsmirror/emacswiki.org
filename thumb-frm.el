@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:42:02 2011 (-0800)
+;; Last-Updated: Thu Feb 24 16:03:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1366
+;;     Update #: 1367
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -431,7 +431,7 @@ along the right edge from top to bottom."
   ;; Emacs 21+ does not shrink scroll bars when the font shrinks.
   ;; '((menu-bar-lines . 0) (tool-bar-lines . 0)
   ;;   (vertical-scroll-bars) (horizontal-scroll-bars))
-  "Frame parameters of thumbnail frames.
+  "*Frame parameters of thumbnail frames.
 Use this to show or hide things like the menu bar, tool bar, tab bar,
 and scroll bars for thumbnail frames.
 

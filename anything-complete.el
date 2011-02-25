@@ -1,7 +1,7 @@
 ;;; anything-complete.el --- completion with anything
 ;; $Id: anything-complete.el,v 1.86 2010-03-31 23:14:13 rubikitch Exp $
 
-;; Copyright (C) 2008, 2009, 2010 rubikitch
+;; Copyright (C) 2008, 2009, 2010, 2011 rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: matching, convenience, anything
@@ -268,7 +268,11 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
             (with-current-buffer anything-current-buffer
               (save-excursion
                 (backward-char (string-width anything-complete-target))
-                (alcs-current-physical-column)))))
+                (max 0
+                     (- (alcs-current-physical-column)
+                        (if (buffer-local-value 'anything-enable-shortcuts (get-buffer anything-buffer))
+                            4           ;length of shortcut overlay
+                          0)))))))
   (mapcar (lambda (cand) (cons (concat (make-string alcs-physical-column-at-startup ? ) cand) cand))
           candidates))
 

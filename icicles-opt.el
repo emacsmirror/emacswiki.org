@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 08:32:39 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:29:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4014
+;;     Update #: 4025
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -547,7 +547,7 @@ Examples of sort functions are `icicle-buffer-sort-*...*-last' and
 
 ;;;###autoload
 (defcustom icicle-buffers-ido-like-flag nil
-  "t means `icicle-buffer' and similar commands act more Ido-like.
+  "*t means `icicle-buffer' and similar commands act more Ido-like.
 Specifically, those commands then bind these options to t:
  `icicle-show-Completions-initially-flag'
  `icicle-top-level-when-sole-completion-flag'
@@ -1094,7 +1094,7 @@ sorted."
 
 ;;;###autoload
 (defcustom icicle-files-ido-like-flag nil
-  "t means `icicle-file' and similar commands act more Ido-like.
+  "*t means `icicle-file' and similar commands act more Ido-like.
 Specifically, those commands then bind these options to t:
  `icicle-show-Completions-initially-flag'
  `icicle-top-level-when-sole-completion-flag'
@@ -1334,7 +1334,7 @@ See the Icicles doc, section `Nutshell View of Icicles', subsection
 ;;;###autoload
 (defcustom icicle-ignored-directories (and (boundp 'vc-directory-exclusion-list)
                                            vc-directory-exclusion-list)
-  "Directories ignored by `icicle-locate-file'."
+  "*Directories ignored by `icicle-locate-file'."
   :type '(repeat string) :group 'Icicles-Files)
 
 ;;;###autoload
@@ -1413,7 +1413,7 @@ This threshold is also used to decide when to display the message
     next-history-element read-face-name read-file-name read-number
     shell-command shell-command-on-region switch-to-completions
     completing-read-multiple)
-  "Functions that Icicles redefines, and for which advice is deactivated.
+  "*Functions that Icicles redefines, and for which advice is deactivated.
 Icicle mode deactivates all advice for such functions.  The advice is
 reactivated when you leave Icicle mode."
   :type '(repeat (function :tag "Function for which Icicles deactivates advice"))
@@ -1622,7 +1622,7 @@ the current command uses `icicle-list-use-nth-parts'."
 
 ;;;###autoload
 (defcustom icicle-max-candidates nil
-  "Non-nil means truncate completion candidates to at most this many.
+  "*Non-nil means truncate completion candidates to at most this many.
 If you use library `doremi.el' then you can use `C-x #' during
 completion to increment or decrement the option value using the
 vertical arrow keys or the mouse wheel.  A numeric prefix argument for
@@ -1634,7 +1634,7 @@ resets `icicle-max-candidates' to nil, meaning no truncation."
 
 ;;;###autoload
 (defcustom icicle-menu-items-to-history-flag t
-  "Non-nil means to add menu-item commands to the command history.
+  "*Non-nil means to add menu-item commands to the command history.
 This history is `extended-command-history'.
 
 After you change the value of this option, toggle Icicle mode off,
@@ -1953,7 +1953,7 @@ different keyboards - for example, `S-tab' and `S-iso-lefttab'."
 
 ;;;###autoload
 (defcustom icicle-quote-shell-file-name-flag t
-  "Non-nil means to double-quote the file name that starts a shell command.
+  "*Non-nil means to double-quote the file name that starts a shell command.
 This is used by `icicle-read-shell-command-completing'.
 
 If this is nil, then Emacs commands such as `M-!' will not quote a
@@ -2219,7 +2219,7 @@ The candidates are the executable files in your search path or, if
 ;;;###autoload
 (defcustom icicle-shell-command-candidates-cache (and (eq icicle-guess-commands-in-path 'load)
                                                       (icicle-compute-shell-command-candidates))
-  "Cache for shell command candidates.
+  "*Cache for shell command candidates.
 You typically do not need to customize this option.
 It is an option mainly to persist its value.
 See `icicle-guess-commands-in-path'."
@@ -2493,7 +2493,7 @@ See also options `icicle-TAB-completion-methods' and
 
 ;;;###autoload
 (defcustom icicle-S-TAB-completion-methods-per-command ()
-  "Alist of commands and their available S-TAB completion methods.
+  "*Alist of commands and their available S-TAB completion methods.
 Each command is advised so that when invoked only the specified S-TAB
 completion methods are available for it when you use `M-('.  (This
 makes sense only for commands that read input from the minibuffer.)
@@ -2637,7 +2637,7 @@ See also options `icicle-TAB-completion-methods-per-command'
 
 ;;;###autoload
 (defcustom icicle-TAB-completion-methods-per-command ()
-  "Alist of commands and their available TAB completion methods.
+  "*Alist of commands and their available TAB completion methods.
 Each command is advised so that when invoked only the specified TAB
 completion methods are available for it when you use `C-('.  (This
 makes sense only for commands that read input from the minibuffer.)

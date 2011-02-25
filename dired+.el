@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Feb 11 08:15:07 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:57:23 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3078
+;;     Update #: 3079
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `fit-frame', `info', `info+', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `strings', `thingatpt', `thingatpt+',
-;;   `w32-browser'.
+;;   `w32-browser', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -511,7 +511,7 @@
 
 ;;;###autoload
 (defcustom diredp-w32-local-drives '(("C:" "Local disk"))
-  "Local MS Windows drives that you want to use for `diredp-w32-drives'.
+  "*Local MS Windows drives that you want to use for `diredp-w32-drives'.
 Each entry is a list (DRIVE DESCRIPTION), where DRIVE is the drive
 name and DESCRIPTION describes DRIVE."
   :type '(alist

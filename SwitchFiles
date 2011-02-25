@@ -14,6 +14,8 @@ switch-files is a package that does a few things well:
 
 3. Keep track of your path.  If you switch from one file to another by following either of the usage patterns in #1 or #2 then it's a simple key-stroke to get back to where you came from.
 
+Question: how is this different from the functionality of ff-find-other-file? [shjk]
+
 == Getting it ==
 
 It is available from a [http://github.com/hardaker/elisp-switch-files GitHub] repo.

@@ -39,7 +39,9 @@ Finally add following code into your <code>.emacs</code>.
                        (file-name-directory buffer-file-name))))
     (list "elisplint" (list local-file))))
 (push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
-(add-hook 'emacs-lisp-mode-hook 'flymake-mode)
+(add-hook 'emacs-lisp-mode-hook
+          ;; workaround for (eq buffer-file-name nil)
+          (function (lambda () (if buffer-file-name (flymake-mode)))))
 </pre>
 
 If you don't want to create external command, use it.
@@ -72,7 +74,9 @@ If you don't want to create external command, use it.
          )
         local-file)))))
 (push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
-(add-hook 'emacs-lisp-mode-hook 'flymake-mode)
+(add-hook 'emacs-lisp-mode-hook
+          ;; workaround for (eq buffer-file-name nil)
+          (function (lambda () (if buffer-file-name (flymake-mode)))))
 </pre>
 
 That's all.

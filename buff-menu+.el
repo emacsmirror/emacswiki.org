@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Feb 20 11:20:38 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:46:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2645
+;;     Update #: 2646
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -560,7 +560,7 @@ Update `buffer-menu-font-lock-keywords' accordingly."
   ;; A user option now.  It must be numeric.  Initial value is 1, not nil.
   ;;
   (defcustom Buffer-menu-sort-column 1
-    "Sorted by (1) visit, (2) buffer, (3) size, (4) time, (5) mode, (6) file.
+    "*Sorted by (1) visit, (2) buffer, (3) size, (4) time, (5) mode, (6) file.
 Click a column heading to sort by that field and update this option."
     :type '(choice
             (const :tag "Sort by time of last visit" 1)

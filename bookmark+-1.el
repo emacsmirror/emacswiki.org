@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jan  3 10:53:29 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:42:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 941
+;;     Update #: 943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -594,7 +594,7 @@ of the following, if available:
                            nil nil))))
                  assns))
          assns))
-  "File associations for bookmark handlers used for indirect bookmarks.
+  "*File associations for bookmark handlers used for indirect bookmarks.
 Each element of the alist is (REGEXP . COMMAND).
 REGEXP matches a file name.
 COMMAND is a sexp that evaluates to either a shell command (a string)
@@ -622,7 +622,7 @@ in mailcap entries (Emacs 23+), in that order."
 
 ;;;###autoload
 (defcustom bmkp-desktop-no-save-vars '(search-ring regexp-search-ring kill-ring)
-  "List of variables not to save when creating a desktop bookmark.
+  "*List of variables not to save when creating a desktop bookmark.
 They are removed from `desktop-globals-to-save' for the duration of
 the save (only)."
   :type '(repeat (variable :tag "Variable")) :group 'bookmark-plus)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Tue Jan  4 14:32:38 2011 (-0800)
+;; Last-Updated: Thu Feb 24 16:00:34 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 148
+;;     Update #: 149
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -154,7 +154,7 @@ successive things of the same type, but to do that you must first use
 ;;;###autoload
 (defcustom thing-types '("word" "symbol" "sexp" "list" "line" "sentence"
                          "paragraph" "page" "defun" "number" "form")
-  "List of thing types.  Used for completion and `cycle-thing-region'.
+  "*List of thing types.  Used for completion and `cycle-thing-region'.
 Each list element is a string that names a type of text entity for
 which there is a either a corresponding `forward-'thing operation, or
 corresponding `beginning-of-'thing and `end-of-'thing operations.

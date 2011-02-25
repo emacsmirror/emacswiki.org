@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 18 16:37:53 2006
 ;; Version: 
-;; Last-Updated: Tue Jan  4 11:19:10 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:42:48 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 68
+;;     Update #: 69
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mb-depth+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -92,7 +92,7 @@
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (defface minibuffer-depth-indicator '((t (:inherit default)))
-    "Face used to indicate minibuffer depth."
+    "*Face used to indicate minibuffer depth."
     :group 'convenience :group 'faces)
 
   (defcustom minibuffer-depth-indicator-format "%d) "

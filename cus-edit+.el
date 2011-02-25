@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Mon Jan  3 20:44:18 2011 (-0800)
+;; Last-Updated: Thu Feb 24 14:54:03 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1272
+;;     Update #: 1273
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -497,7 +497,7 @@ Don't forget to mention your Emacs and library versions."))
   (append (and (boundp 'savehist-minibuffer-history-variables)
                savehist-minibuffer-history-variables)
           '(case-fold-search debug-on-error))
-  "User preferences to ignore in `customize-customized'.
+  "*User preferences to ignore in `customize-customized'.
 Items in this list are symbols naming faces or variables."
   :type '(repeat symbol) :group 'Custom-Plus
   :link '(url-link :tag "Other Libraries by Drew"
@@ -512,12 +512,12 @@ Items in this list are symbols naming faces or variables."
 (unless (or (>= emacs-major-version 22)
             (and (= emacs-major-version 21) (= emacs-minor-version 4)))
   (defcustom custom-buffer-verbose-help t
-    "If non-nil, include explanatory text in the customization buffer."
+    "*If non-nil, include explanatory text in the customization buffer."
     :type 'boolean :group 'custom-buffer))
 
 (defcustom customp-buffer-create-hook (and (fboundp 'fit-frame-if-one-window)
                                            'fit-frame-if-one-window)
-  "Hook called when creating a Customize buffer."
+  "*Hook called when creating a Customize buffer."
   :type 'hook
   :group 'Custom-Plus)
 

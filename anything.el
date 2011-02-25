@@ -1272,11 +1272,13 @@ The action is to call FUNCTION with arguments ARGS."
   (apply 'run-with-idle-timer 0 nil function args)
   (anything-exit-minibuffer))
 
+
 (defun define-anything-type-attribute (type definition &optional doc)
   "Register type attribute of TYPE as DEFINITION with DOC.
 DOC is displayed in `anything-type-attributes' docstring.
 
 Use this function is better than setting `anything-type-attributes' directly."
+  (loop for i in definition do (setf i (delete nil i)))
   (anything-add-type-attribute type definition)
   (and doc (anything-document-type-attribute type doc))
   nil)

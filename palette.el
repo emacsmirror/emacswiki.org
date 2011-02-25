@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 13:08:38 2011 (-0800)
+;; Last-Updated: Thu Feb 24 15:46:59 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 551 4
+;;     Update #: 553 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -475,19 +475,19 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defcustom palette-update-cursor-color-flag nil
-  "Non-nil means dynamically update the cursor to make it stand out.
+  "*Non-nil means dynamically update the cursor to make it stand out.
 This can cause redisplay of the palette frame, which means a slowdown."
   :type 'boolean :group 'Color-Palette :group 'doremi)
 
 ;;;###autoload
 (defcustom palette-verbose-flag nil
-  "Non-nil: display color info often; nil: display it only on demand.
+  "*Non-nil: display color info often; nil: display it only on demand.
 Non-nil slows things down to recalculate color components often."
   :type 'boolean :group 'Color-Palette :group 'doremi)
 
 ;;;###autoload
 (defcustom palette-message-info 'all
-  "Type of information to print in a palette message.
+  "*Type of information to print in a palette message.
 Possible values are:
  all - RGB hex, RGB decimal, and HSV decimal information
  hex - RGB hex information
@@ -513,7 +513,7 @@ Possible values are:
            (car (x-list-fonts "-*-fixed-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1))
            (car (x-list-fonts "-*-Terminal-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1))
            (car (x-list-fonts "-*-*-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1))))
-  "Font to use for the color palette.
+  "*Font to use for the color palette.
 The only characters in the font that are used are the space character
 and `e'.  The only things that matter about the font are these:
 

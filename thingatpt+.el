@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Jan 20 10:03:56 2011 (-0800)
+;; Last-Updated: Thu Feb 24 16:01:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1012
+;;     Update #: 1013
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -182,14 +182,14 @@
 
 ;;;###autoload
 (defcustom near-point-x-distance 50
-  "Maximum number of characters from point to search, left and right.
+  "*Maximum number of characters from point to search, left and right.
 Used by functions that provide default text for minibuffer input.
 Some functions might ignore or override this setting temporarily."
   :type 'integer :group 'minibuffer)
 
 ;;;###autoload
 (defcustom near-point-y-distance 5
-  "Maximum number of lines from point to search, up and down.
+  "*Maximum number of lines from point to search, up and down.
 To constrain search to the same line as point, set this to zero.
 Used by functions that provide default text for minibuffer input.
 Some functions might ignore or override this setting temporarily."

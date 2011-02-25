@@ -1,4 +1,4 @@
-The '''[::mode line]''' is at the bottom of every Emacs [[Window]]. It has useful summary information about the buffer shown in the window, including its name and current modes.
+The '''[::mode line]''' is at the bottom of every Emacs [[Window]] aside from MiniBuffer windows.[http://www.gnu.org/s/emacs/manual/html_node/elisp/Mode-Line-Format.html] It has useful summary information about the buffer shown in the window, including its name and current modes.
 
 Here is a screenshot that shows three windows with their mode lines:
 
@@ -39,3 +39,4 @@ See also ModeLineConfiguration.
 CategoryDisplay
 CategoryGlossary
 CategoryWindows
+CategoryModeLine
