@@ -72,6 +72,7 @@ EevMode is my partner for years.
 * Lisp:save-load-path.el -- Save load-path of running Emacs to get ready for testing
 * GitDwim -- Context-aware command for [[Git]]
 * Lisp:sudo-ext.el -- Use sudo in M-!, M-x compile, and so on / M-x sudoedit
+* Lisp:savekill.el -- Save `kill-ring' to disk. Risk hedge of sudden death.
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 

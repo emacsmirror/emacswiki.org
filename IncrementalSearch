@@ -168,6 +168,7 @@ Here is some more info about Isearch:
 * KillISearchMatch -- Bind C-k in isearch to kill the match
 * SearchingTheMinibuffer -- How to use Isearch in the mini-buffer.
 * SearchAtPoint -- A feature from VI that is useful to programmers.  Also shows how to extend Isearch.
+* FlexIsearch -- A minor mode that, if there is no exact match to the search string, causes the search string to be transformed into a regexp that matches the original and also similar strings.  It is like flex matching in ido (InteractivelyDoThings).  E.g. "aeiou" would match "abstemious".
 
 
 I often search for a string which I want to grab and paste elsewhere:

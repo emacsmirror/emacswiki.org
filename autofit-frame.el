@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 14:53:03 2011 (-0800)
+;; Last-Updated: Fri Feb 25 17:31:26 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 597
+;;     Update #: 601
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/autofit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -122,6 +122,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/02/25 dadams
+;;     switch-to-buffer:
+;;       If BUFFER is nil, use other-buffer.  Thx to Martial Boniou.
 ;; 2011/01/03 dadams
 ;;     Removed autoload cookies: non def* sexps, non-interactive functions.
 ;; 2009/05/03 dadams
@@ -399,13 +402,14 @@ Resizes frame to fit sole window if `autofit-frames-flag'
                       (if (fboundp 'another-buffer) ; In `misc-fns.el'.
                           (another-buffer nil t)
                         (other-buffer (current-buffer))))))
-  (setq buffer (get-buffer-create buffer)) ; If string arg, convert to buffer.
+  ;; If string arg, convert to a buffer.  If nil, use `other-buffer'.
+  (setq buffer  (if buffer (get-buffer-create buffer) (other-buffer)))
   (let ((orig-buf (current-buffer)))
     (prog1 (if (window-dedicated-p (selected-window))
                (switch-to-buffer-other-window buffer)
              (old-switch-to-buffer buffer norecord))
       (and (one-window-p t)
-           (not (eq buffer orig-buf))     ; Don't resize if same buffer.
+           (not (eq buffer orig-buf))   ; Don't resize if same buffer.
            autofit-frames-flag
            (fit-frame)))))
 

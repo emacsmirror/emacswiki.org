@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Thu Feb 24 14:06:51 2011 (-0800)
+;; Last-Updated: Fri Feb 25 17:09:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1336
+;;     Update #: 1367
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -308,6 +308,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/02/25 dadams
+;;     mouse3-region-popup-x-popup-panes, mouse3-picture-mode-x-popup-panes:
+;;       Distinguish separator choice by making command choice be non-nil.
+;;       Removed tests that were ineffectual at compile/load time.
 ;; 2011/01/07 dadams
 ;;     Added: mouse3-double-click-command.
 ;;     mouse3-second-click-default-command: Removed the :set.
@@ -499,14 +503,14 @@ If nil, or if `mouse3-region-popup-x-popup-panes' is nil, use
          ("--")
          ("Kill Rectangle"                      . kill-rectangle)
          ("Delete Rectangle"                    . delete-rectangle)
-         ,@`,(and (boundp 'killed-rectangle) killed-rectangle
-                  '(("Yank Rectangle (Replace)"
-                     . (lambda (start end)
-                         "Replace the selected rectangle by the last rectangle killed."
-                         (interactive "r")
-                         (delete-rectangle start end)
-                         (exchange-point-and-mark)
-                         (yank-rectangle)))))
+         ;; This will raise an error if `killed-rectangle' is not defined.
+         ("Yank Rectangle (Replace)"
+          . (lambda (start end)
+              "Replace the selected rectangle by the last rectangle killed."
+              (interactive "r")
+              (delete-rectangle start end)
+              (exchange-point-and-mark)
+              (yank-rectangle)))
          ("Clear Rectangle (Replace)"           . clear-rectangle)
          ("String Rectangle (Replace)"          . string-rectangle)
          ("Replace Rectangle from Register"
@@ -545,14 +549,14 @@ restore it by yanking."
      ("Kill"                                    . kill-rectangle)
      ("Delete"                                  . delete-rectangle)
      ("Open"                                    . open-rectangle)
-     ,@`,(and (boundp 'killed-rectangle) killed-rectangle
-              '(("Yank (Replace)"
-                 . (lambda (start end)
-                     "Replace the selected rectangle by the last rectangle killed."
-                     (interactive "r")
-                     (delete-rectangle start end)
-                     (exchange-point-and-mark)
-                     (yank-rectangle)))))
+     ;; This will raise an error if `killed-rectangle' is not defined.
+     ("Yank (Replace)"
+      . (lambda (start end)
+          "Replace the selected rectangle by the last rectangle killed."
+          (interactive "r")
+          (delete-rectangle start end)
+          (exchange-point-and-mark)
+          (yank-rectangle)))
      ("Clear (Replace)"                         . clear-rectangle)
      ("String (Replace)"                        . string-rectangle)
      ,@`,(and (fboundp 'delimit-columns-rectangle) ; Emacs 21+.
@@ -576,10 +580,12 @@ restore it by yanking."
             (error (exchange-point-and-mark) (yank-rectangle)))))
      ("Copy to Register"                        . copy-rectangle-to-register))
     ("Change Text"
+     ;; These two will appear only if `boxquote.el' was already loaded.
      ,@`,(and (fboundp 'boxquote-region) ; Defined in `boxquote.el'.
               '(("Boxquote"                     . boxquote-region)))
      ,@`,(and (fboundp 'boxquote-unbox-region) ; Defined in `boxquote.el'.
               '(("Unboxquote"                   . boxquote-unbox-region)))
+
      ,@`,(and (fboundp 'delimit-columns-rectangle) ; Emacs 21+.
               '(("Delimit Columns"              . delimit-columns-region)))
      ,@`,(if (fboundp 'comment-or-uncomment-region)
@@ -595,7 +601,8 @@ restore it by yanking."
      ("Capitalize"                              . capitalize-region)
      ("Upcase"                                  . upcase-region)
      ("Downcase"                                . downcase-region)
-     ,@`,(and (fboundp 'unaccent-region)
+     ;; This will appear only if library `unaccent.el' was already loaded.
+     ,@`,(and (fboundp 'unaccent-region) ; Defined in `unaccent.el'.
               '(("Remove Accents"               . unaccent-region)))
      ("--")
      ("Center"                                  . center-region)
@@ -603,7 +610,7 @@ restore it by yanking."
     ("Check, Correct, Convert"
      ("Ispell"                                  . ispell-region)
      ("Flyspell"                                . flyspell-region)
-     ,@`,(and (fboundp 'whitespace-cleanup-region)
+     ,@`,(and (fboundp 'whitespace-cleanup-region) ; Defined in `whitespace.el'.  Emacs 22+.
               '(("Check Whitespace"             . whitespace-report-region)
                 ("Clean Up Whitespace"          . whitespace-cleanup-region)))
      ("Printify"                                . printify-region)
@@ -615,13 +622,14 @@ restore it by yanking."
      ("Decode using Coding System"              . decode-coding-region)
      ("Encode using Format"                     . format-encode-region)
      ("Decode using Format"                     . format-decode-region)
-     ,@`,(and (fboundp 'yenc-decode-region)
+     ,@`,(and (fboundp 'yenc-decode-region) ; Defined in `yenc.el'.  Emacs 22+.
               '(("Decode Yenc"                  . yenc-decode-region)))
      ("--")
      ("EPA Encrypt"                             . epa-encrypt-region)
      ("EPA Decrypt"                             . epa-decrypt-region)
      ("PGG Encrypt"                             . pgg-encrypt-region)
      ("PGG Decrypt"                             . pgg-decrypt-region))
+     ;; This will appear only if library `highlight.el' was already loaded.
     ,@(and (fboundp 'hlt-highlight-region) ; Defined in `highlight.el'.
            '(("Highlight"
               ("Highlight"                      . hlt-highlight-region)
@@ -637,6 +645,7 @@ restore it by yanking."
      ("Print to Text Printer"                   . pr-txt-region)
      ("Print to Text Printer (`lpr')"           . lpr-region)
      ("Print with Paging (`pr')"                . print-region)
+     ;; These will appear only if library `ebnf2ps.el' was already loaded.
      ,@`,(and (fboundp 'ebnf-print-region) ; Defined in `ebnf2ps.el'.
               '(("--")
                 ("BNF PostScript Analyze"       . ebnf-syntax-region)))
@@ -645,19 +654,21 @@ restore it by yanking."
      ,@`,(and (fboundp 'ebnf-print-region) ; Defined in `ebnf2ps.el'.
               '(("BNF PostScript Save"          . ebnf-eps-region))))
     ("Count"
-     ,@`,(and (fboundp 'region-length)
+     ;; This will appear only if library `misc-cmds.el' was already loaded.
+     ,@`,(and (fboundp 'region-length)  ; Defined in `misc-cmds.el'.
               '(("Characters"                   . region-length)))
      ("Words"                                   . count-words-region)
      ("Lines"                                   . count-lines-region))
     ("Misc"
      ("Narrow"                                  . narrow-to-region)
      ("Eval"                                    . eval-region)
-     ,@`,(and last-kbd-macro
-              '(("Key-Macro on Region Lines"    . apply-macro-to-region-lines)))
+     ("Key-Macro on Region Lines"               . apply-macro-to-region-lines)
      ("Shell Command"                           . shell-command-on-region)
      ("Write to File"                           . write-region)
+     ;; This will appear only if library `bookmark+-1.el' was already loaded.
      ,@`,(and (fboundp 'bmkp-set-autonamed-regexp-region) ; Defined in `bookmark+-1.el'.
               '(("Create Bookmarks Matching"    . bmkp-set-autonamed-regexp-region)))
+     ;; This will appear only if library `bookmark+-lit.el' was already loaded.
      ,@`,(and (fboundp 'bmkp-light-bookmarks-in-region) ; Defined in `bookmark+-lit.el'.
               '(("Highlight Bookmarks"          . bmkp-light-bookmarks-in-region)))
      ,@`,(and (fboundp 'browse-url-of-region) ; Defined in `browse-url.el'.
@@ -681,7 +692,8 @@ not use this option.  Instead, set option
                          (string :tag "Name")
                          ;; This is more correct but gives `mismatch' in Emacs < version 24:
                          ;; (restricted-sexp :tag "Command" :match-alternatives (commandp))
-                         (sexp :tag "Command"))
+                         (restricted-sexp :tag "Command"
+                          :match-alternatives ((lambda (x) (not (null x)))) :value ignore))
                         (list :tag "Separator" (const "--")))))
   :group 'mouse3)
 
@@ -1466,9 +1478,8 @@ You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
             (picture-clear-rectangle start end 'KILLP)))
        ("Clear Rectangle to Register" . picture-clear-rectangle-to-register)
        ("Draw Rectangle"              . picture-draw-rectangle)
-       ,@(and (boundp 'picture-killed-rectangle) (consp picture-killed-rectangle)
-              '(("Yank Picture Rectangle (Replace)"
-                 . picture-yank-rectangle)))
+       ;; This will raise an error if `picture-killed-rectangle' is not defined.
+       ("Yank Picture Rectangle (Replace)" . picture-yank-rectangle)
        ("Yank Rectangle from Register (Replace)"
         . (lambda ()
             "Replace the selected rectangle by the contents of a register you name."
@@ -1482,7 +1493,8 @@ You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
             (string :tag "Name")
             ;; This is more correct but gives `mismatch' in Emacs < version 24:
             ;; (restricted-sexp :tag "Command" :match-alternatives (commandp))
-            (sexp :tag "Command"))
+            (restricted-sexp :tag "Command"
+             :match-alternatives ((lambda (x) (not (null x)))) :value ignore))
            (list :tag "Separator" (const "--"))))
   :group 'mouse)
 

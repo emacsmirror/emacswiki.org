@@ -379,6 +379,26 @@ This space is for ongoing discussion.
 '''See also:''' OldDiscussionDrewsLibraries for older discussions.
 
 
+
+----
+
+[new:MartialBoniou:2011-02-25 22:49 UTC]
+Hi Drew.  I notice a bug in my emacs: Gnu Emacs 23.2.92.1. The 'switch-to-buffer in autofit-frame.el (used by dired-details+) is blocked when I switch from some buffers (for example, from Customize, if I quit I get a 'buffer is nil' message. I did this:
+
+<pre>
+(setq buffer (if buffer (get-buffer-create buffer)
+                 (other-buffer))) ; If string arg, convert to buffer.
+</pre>
+
+Thanks for your packages and everything you do for free software. -Martial
+
+
+[new:DrewAdams:2011-02-26 01:36 UTC]
+Thanks for your report and fix, Martial.  Looks like they allowed a `nil' ##BUFFER## arg starting with Emacs 22!  Better late than never.  Thx -- DrewAdams
+
+
+
+
 ----
 
 dired+.el (w32):
@@ -700,6 +720,7 @@ Sorry; I don't know. It also probably depends on what "works" means. Non-ASCII k
 
 [new]
 Thanks, Drew. I'll let you know how it goes.  -Tennis
+
 ----
 
 [:AllLibraries]

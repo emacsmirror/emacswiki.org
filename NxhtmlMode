@@ -79,6 +79,10 @@ You need **Emacs 22** or later to use nXhtml.
 
 ----
 
+=== Changing file associations ===
+
+These are defined in /nxhtml/nxhtml/nxhtml-autoload.el in the function nxhtml-setup-file-assoc, so just modify 'auto-mode-alist as normal.
+
 == Libraries included in the package nXhtml ==
 
 **nXhtml** comes with a lot of elisp libraries, some of which you can use separately.
