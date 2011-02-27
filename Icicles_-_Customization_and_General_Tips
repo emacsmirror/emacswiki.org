@@ -699,6 +699,24 @@ Face '''`icicle-mode-line-help'''' is used to highlight '''Icicles''' help
 shown in the [[mode line]].  This includes that controlled by option `<tt>[[#icicle-help-in-mode-line-flag]]</tt>' and the indication in
 `*Completions*' of the total number of matching candidates.
 
+
+
+----
+[:icicle-Completions-mouse-3-menu-entries]
+==== Option icicle-Completions-mouse-3-menu-entries ====
+
+User option '''`icicle-Completions-mouse-3-menu-entries'''' defines
+the contextual menu that is popped up when you click '''`C-mouse-3''''
+on a candidate in `*Completions*'.  As an aid to customizing it,
+refer to any of the constants '''`icicle-Completions-*'''' that define
+its submenus.  The submenu definitions are easier to understand
+in the source code (<tt>[[icicles-opt.el]]</tt>), because [[Customize]] does not pretty-print them.  You can see screenshots of the default menu and its submenus [[Icicles - Nutshell View#CompletionPopupMenu|here]].
+
+
+
+
+
+
 ----
 [:icicle-Completions-frame-at-right-flag]
 ==== Option icicle-Completions-frame-at-right-flag ====

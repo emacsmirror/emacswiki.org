@@ -18,5 +18,31 @@ Try using the following to integrate highlight-parentheses with autopair mode:
 </pre>
 This ensures that newly created parentheses are highlighted properly.  Adapt as needed for modes other than Elisp.
 
+[new]
+Better version to integrate highlight-parentheses with autopair mode:
+<pre>
+(add-hook 'highlight-parentheses-mode-hook
+          '(lambda ()
+             (setq autopair-handle-action-fns
+                   (append
+					(if autopair-handle-action-fns
+						autopair-handle-action-fns
+					  '(autopair-default-handle-action))
+					'((lambda (action pair pos-before)
+						(hl-paren-color-update)))))))
+</pre>
+This handles other autopair-handle-action-fns, plus works on every mode where highlight-parentheses-mode is used.
+
+[new]
+Enables highlight-parentheses-mode on all buffers:
+<pre>
+(define-globalized-minor-mode global-highlight-parentheses-mode
+  highlight-parentheses-mode
+  (lambda ()
+    (highlight-parentheses-mode t)))
+(global-highlight-parentheses-mode t)
+</pre>
+
+
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

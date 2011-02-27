@@ -1,3 +1,5 @@
+<b>NOTE: rainbow-delimiters is currently unavailable.</b> It was taken down due to problems using it with various modes. The author has found a better approach to implementing it; the mode is being rewritten from scratch and will be available again shortly.
+
 <b>[[RainbowDelimiters]]</b> is a "rainbow parentheses" mode to colorize parentheses, brackets, and braces. It conveys nesting depth by using a new color for each for each nested level. It correctly colorizes statements of the same depth - if two statements are the same level, they will be the same color.
 
 Each set of delimiters "()[]{}" is colored independently from one another. Parens, brackets, and braces are all colored based on their own depth independent of one another, so even a bracket nested within several levels of parentheses will start with the first (outermost) color, moving to the next color with each additional nested bracket.
@@ -17,17 +19,5 @@ Add Lisp:rainbow-delimiters.el to your load-path, then:
 (require 'rainbow-delimiters)
 M-x rainbow-delimiters-mode
 </pre>
-
-
-[new]
-Nice idea, but here are some thoughts about the implementation:
-* Please require cl the way it should be done according to the Emacs manual.
-* A lot of overlays might slow down Emacs. Can't you use text properties instead?
-[new]
-Thank you for your feedback. I'll use (eval-when-compile (require 'cl)) from now on; I hadn't been aware of that convention.
-
-I will look into text properties and see if it can be made to work that way. If so it would make sense to write the mode from scratch using text properties instead of overlays.
-Thanks for your help.
-
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

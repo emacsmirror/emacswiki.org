@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 20:55:19 2011 (-0800)
+;; Last-Updated: Sat Feb 26 13:39:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25795
+;;     Update #: 25831
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -451,13 +451,22 @@
 ;;  During minibuffer input completion, you can also press Control and
 ;;  right-click (`C-mouse-3') on a completion candidate in buffer
 ;;  `*Completions*', and choose from a contextual popup menu,
-;;  `Completion Candidate'.  Some of its menu items apply to the
-;;  clicked candidate; others apply to all candidates.  This is a long
-;;  menu!  Think of it as a learning device and a way to remind you of
-;;  operations on individual candidates and their key bindings .  In
-;;  this it is similar to the help you get when you use `C-?' in the
-;;  minibuffer, but with the menu you can also act, not just be
+;;  `Completion'.
+;;
+;;  You can customize this menu.  By default, submenu `This Candidate'
+;;  has menu items that apply to the candidate you clicked to pop up
+;;  the menu.  The other submenus have items that apply to all
+;;  candidates, candidates you have selected (the region in
+;;  `*Completions*'), or candidates you have saved (marked).
+;;
+;;  Altogether there are many menu items in the popup menu.  Think of
+;;  the menu as a learning device and a way to remind you of possible
+;;  operations on completion candidates and the keys they are bound
+;;  to.  In this it is similar to the help you get when you use `C-?'
+;;  in the minibuffer, but with the menu you can also act, not just be
 ;;  reminded.
+;;
+;;  See Also: (@> "*Completions* Display").
 ;;
 ;;(@* "README")
 ;;  ** README **
@@ -508,7 +517,7 @@
 ;;      down to the set of matching candidates, which is shown in
 ;;      buffer `*Completions*'.
 ;;
-;;  (See also (@> "Background on Vanilla Emacs Input Completion").)
+;;  See Also: (@> "Background on Vanilla Emacs Input Completion").
 ;;
 ;;  For Icicles it is the completion *process* that is important, and
 ;;  this process can serve several goals.  So instead of focusing on
@@ -1100,8 +1109,7 @@
 ;;  Note that function `copy-file' is effectively curried here, to
 ;;  create a function of a single argument on the fly.
 ;;
-;;  See Also: (@* "Alternative Actions").
-;;
+;;  See Also: (@> "Alternative Actions").
 ;;
 ;;(@* "Completion Status Indicators")
 ;;  ** Completion Status Indicators **
@@ -1305,7 +1313,7 @@
 ;;
 ;;  * (@> "Isearch Enhancements")
 ;;
-;;  * (@* "Using Completion to Insert Previous Inputs: `M-o'") for
+;;  * (@> "Using Completion to Insert Previous Inputs: `M-o'") for
 ;;    more about `M-o' - you can use it anywhere to complete against
 ;;    previous inputs.
 ;;
@@ -3155,7 +3163,38 @@
 ;;    completion then you will first need to use `M-k' to remove the
 ;;    directory, as it will not match any of the proxy candidates.
 ;;
-;;  There are lots of Icicles features that enhance the display and
+;;  * Clicking `C-mouse-3' on a candidate in `*Completions*' pops up a
+;;    contextual menu for acting on completion candidates.  You can
+;;    customize the menu using option
+;;    `icicle-Completions-mouse-3-menu-entries'.  By default, the menu
+;;    has the following submenus:
+;;
+;;     . `This Candidate' - Act on the candidate that you clicked to
+;;       pop up the menu.  Or act on all current candidates,
+;;       individually or collectively.
+;;
+;;     . `Sorting' - Change the current candidate sort order.
+;;
+;;     . `Save/Retrieve' - Save (mark) candidates or retrieve them,
+;;       including to/from a variable or a cache file.
+;;
+;;     . `Sets' - Perform operations on sets of candidates, in
+;;       particular, the set of current candidates and the set of
+;;       saved candidates.
+;;
+;;     . `Toggle/Cycle/Change' - Toggle, cycle, or otherwise change an
+;;       Icicles setting, altering the behavior on the fly.
+;;
+;;     . `Miscellaneous' - Other candidate operations and general
+;;       help.
+;;
+;;    The popup menu is contextual.  In particular, the available
+;;    items can change depending on whether you use a prefix argument
+;;    (`C-u C-mouse-3') and whether you have selected candidates using
+;;    the region (e.g. mouse drag).  The menu also provides a good
+;;    reminder of key bindings available during completion.
+;;
+;;  There are lots more Icicles features that enhance the display and
 ;;  behavior of `*Completions*' in some way.  Read on...
 ;;
 ;;  See Also: 

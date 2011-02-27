@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 23 09:42:02 2011 (-0800)
+;; Last-Updated: Sat Feb 26 10:46:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16639
+;;     Update #: 16712
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -228,7 +228,8 @@
 ;;    `icicle-candidate-action-1', `icicle-candidate-set-retrieve-1',
 ;;    `icicle-candidate-set-save-1',
 ;;    `icicle-candidate-set-save-selected-1',
-;;    `icicle-column-wise-cand-nb', `icicle-convert-dots',
+;;    `icicle-column-wise-cand-nb', `icicle-Completions-popup-choice',
+;;    `icicle-Completions-popup-choice-1', `icicle-convert-dots',
 ;;    `icicle-current-completion-in-Completions',
 ;;    `icicle-current-sort-functions', `icicle-current-sort-order',
 ;;    `icicle-delete-backward-char-dots',
@@ -251,7 +252,8 @@
 ;;    `icicle-replace-input-w-parent-dir',
 ;;    `icicle-retrieve-candidates-from-set',
 ;;    `icicle-row-wise-cand-nb', `icicle-signum',
-;;    `icicle-successive-action', `icicle-transform-sole-candidate',
+;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
+;;    `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-dots', `icicle-upcase-if-ignore-case',
 ;;    `icicle-update-and-next'.
 ;;
@@ -332,10 +334,10 @@
   ;; icicle-assoc-delete-all, icicle-define-sort-command
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-alternative-sort-comparer, icicle-Completions-frame-at-right-flag,
-  ;; icicle-default-cycling-mode, icicle-default-thing-insertion,
-  ;; icicle-expand-input-to-common-match-flag, icicle-ignore-space-prefix-flag,
-  ;; icicle-incremental-completion-flag, icicle-input-string, icicle-key-descriptions-use-<>-flag,
-  ;; icicle-regexp-quote-flag, icicle-saved-completion-sets,
+  ;; icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
+  ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match-flag,
+  ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-flag, icicle-input-string,
+  ;; icicle-key-descriptions-use-<>-flag, icicle-regexp-quote-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
   ;; icicle-sort-orders-alist, icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions,
   ;; icicle-transform-function
@@ -1361,7 +1363,7 @@ Optional arg PLAINP means convert to plain `.'.
               (replace-match (icicle-anychar-regexp) nil t))))))))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
-(when (require 'image-dired nil t)
+(when (require 'image-dired nil t)      ; Emacs 22+.
   (defalias 'cycle-icicle-image-file-thumbnail 'icicle-toggle-show-image-file-thumbnail)
   (defun icicle-cycle-image-file-thumbnail () ; Bound to `C-x t' in minibuffer.
     "Toggle `icicle-image-files-in-Completions'.
@@ -1779,7 +1781,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Hiding common match in *Completions*    \\[icicle-toggle-hiding-common-match]\t%S
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
-     Showing image-file thumbnails           \\[icicle-cycle-image-file-thumbnail]\t%S
+     Showing image-file thumbnails (E22+)    C-x t\t%S
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S
@@ -4977,7 +4979,7 @@ which can position mouse pointer on a standalone minibuffer frame."
         (posn-win  (posn-window (event-start event)))
         (posn-col  (car (posn-col-row (event-start event))))
         (posn-row  (cdr (posn-col-row (event-start event))))
-        candidate base-size menu-choice)
+        candidate base-size)
     ;; (read-event)                 ; Swallow mouse up event. $$ Not needed if bound to up event.
     (with-current-buffer (window-buffer posn-win)
       (save-excursion
@@ -4992,132 +4994,80 @@ which can position mouse pointer on a standalone minibuffer frame."
           (setq beg       (previous-single-property-change beg 'mouse-face)
                 end       (or (next-single-property-change end 'mouse-face)(point-max))
                 candidate (buffer-substring-no-properties beg end)))))
-    (setq icicle-candidate-nb  (icicle-nb-of-candidate-in-Completions (posn-point (event-start event)))
-          icicle-last-completion-candidate candidate
-          menu-choice
-          (x-popup-menu
-           event
-           (list
-            "Completion Candidate"
-            (list
-             "$$ NOT USED $$"
-             '("Help About  (`C-M-RET')" . icicle-help-on-candidate)
-             '("Act On  (`C-RET', `C-mouse-2')" . icicle-candidate-action)
-             '("Apply a Function To...  (`M-RET', `M-mouse-2')" . icicle-candidate-read-fn-invoke)
-             '("Insert in Minibuffer  (`insert')" .
-               (lambda ()
-                 (interactive)
-                 (select-window (active-minibuffer-window))
-                 (goto-char (icicle-minibuffer-prompt-end))
-                 (icicle-clear-minibuffer)
-                 (insert icicle-last-completion-candidate)))
-             '("--")
-             '("--")
-             `(,(if (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
-                        (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))
-                    "Change Sort Order  (`C-,')"
-                    "Next Sort Order (`C-,'")
-               . icicle-change-sort-order)
-             `(,(if (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
-                        (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))
-                    "Change Alternative Sort Order  (`M-,')"
-                    "Next Alternative Sort Order  (`M-,')")
-               . icicle-change-alternative-sort-order)
-             '("Swap Alternative/Normal Sort  (`C-M-,')" . icicle-toggle-alternative-sorting)
-             '("--")
-             '("Save All  (`C-M->')" . icicle-candidate-set-save)
-             '("             to Variable...  (`C-M-})' " . icicle-candidate-set-save-to-variable)
-             '("             to Cache File...  (`C-})" . icicle-candidate-set-save-persistently)
-             '("Add All to Saved  (`C->')" . icicle-candidate-set-save-more)
-             '("Save Selected (Region) Candidates  (`C-M-)')" . icicle-candidate-set-save-selected)
-             '("Add Selected (Region) Candidates  (`C-)')" . icicle-candidate-set-save-more-selected)
-             '("Retrieve Saved  (`C-M-<')" . icicle-candidate-set-retrieve)
-             '("Retrieve More Saved  (`C-<')" . icicle-candidate-set-retrieve-more)
-             '("--")
-             '("Complement All  (`C-~')" . icicle-candidate-set-complement)
-             '("Or Match Alternative... (`M-+')" . icicle-widen-candidates)
-             '("Match Also Regexp...  (`M-*')" . icicle-narrow-candidates)
-             '("Satisfy Also Predicate...  (`M-&')" . icicle-narrow-candidates-with-predicate)
-             `(,(if current-prefix-arg
-                    "Save Predicate to Variable...  (`C-u C-M-&')"
-                    "Save Predicate to `icicle-input-string'  (`C-M-&')")
-               . icicle-save-predicate-to-variable)
-             '("Intersect Saved  (`C-*')" . icicle-candidate-set-intersection)
-             '("Subtract Saved  (`C--')" . icicle-candidate-set-difference)
-             '("Add (Union) Saved  (`C-+')" . icicle-candidate-set-union)
-             `(,(if current-prefix-arg
-                    "Only Previously Entered, By Time  (`C-u M-pause')"
-                    "Only Previously Entered  (`M-pause')")
-               . icicle-keep-only-past-inputs)
-             '("--")
-             '("Act on Each Individually (`C-!')" . icicle-all-candidates-action)
-             '("Act on All as a List  (`M-!')" . icicle-all-candidates-list-action)
-             '("--")
-             '("Toggle Highlighting Past Inputs  (`C-pause')"
-               . icicle-toggle-highlight-historical-candidates)
-             '("Toggle Duplicate Removal  (`C-$')" . icicle-toggle-transforming)
-             '("Toggle Case Sensitivity  (`C-A')" . icicle-toggle-case-sensitivity)
-             '("Regexp-Quote Input  (`C-M-;')" . icicle-regexp-quote-input)
-             '("Toggle `.' Matching Newlines Too  (`C-M-.')" . icicle-toggle-dot)
-             '("Toggle Escaping Special Regexp Chars  (`C-`')" . icicle-toggle-regexp-quote)
-             '("Toggle Incremental Completion  (`C-#')" . icicle-toggle-incremental-completion)
-             '("Toggle Common Match Expansion  (`C-;')" . icicle-toggle-expand-to-common-match)
-             '("Toggle Hiding Common Match (`C-x .')" . icicle-toggle-hiding-common-match)
-             `(,(if current-prefix-arg
-                    "Next S-TAB Completion Method - ONE-OFF (`C-u M-(')"
-                    "Next S-TAB Completion Method  (`M-(')")
-               . icicle-next-S-TAB-completion-method)
-             `(,(if current-prefix-arg
-                    "Next TAB Completion Method - ONE-OFF (`C-u C-(')"
-                    "Next TAB Completion Method  (`C-(')")
-               . icicle-next-TAB-completion-method)
-             '("Next Image-File Thumbnail Setting (`C-x t')" . icicle-cycle-image-file-thumbnail)
-             '("Toggle Including Proxy Candidates  (`C-M-_')" . icicle-toggle-proxy-candidates)
-             '("Toggle WYSIWYG for *Completions*" . icicle-toggle-WYSIWYG-Completions)
-             '("Toggle Angle Brackets" . icicle-toggle-angle-brackets)
-             '("Toggle Ignored File Extensions  (`C-.')" . icicle-toggle-ignored-extensions)
-             '("Toggle Checking Remote Files  (`C-^')" . icicle-toggle-remote-file-testing)
-             '("Toggle Ignoring Space Prefix  (`M-_')" . icicle-toggle-ignored-space-prefix)
-             '("Toggle Using `C-' for Actions  (`M-g')" . icicle-toggle-C-for-actions)
-             '("Toggle Using `~' for $HOME  (`M-~')" . icicle-toggle-~-for-home-dir)
-             '("--")
-             '("Toggle All-Current Search Highlighting  (`C-^')"
-               . icicle-toggle-highlight-all-current)
-             '("Toggle Whole-Word Searching  (`M-q')" . icicle-toggle-search-whole-word)
-             '("Toggle Removal of Search Highlighting  (`C-.')" . icicle-toggle-search-cleanup)
-             '("Toggle Replacing Whole Search Hit  (`M-_')" . icicle-toggle-search-replace-whole)
-             '("Toggle Replacing Expanded Common Match  (`M-;')"
-               . icicle-toggle-search-replace-common-match)
-             '("--")
-             `(,(cond ((and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg)))
-                       "+ Toggle Option...")
-                      (current-prefix-arg "+ Toggle Any Variable...")
-                      (t "+ Toggle Boolean Option..."))
-               . icicle-toggle-option)
-             `(,(if current-prefix-arg
-                    "+ Set Any Variable to `nil'..."
-                    "+ Set Option to `nil'...")
-               . icicle-reset-option-to-nil)
-             `(,(cond ((and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg)))
-                       "+ Set Option to `t'...")
-                      (current-prefix-arg "+ Set Any Variable to `t'...")
-                      (t "+ `Set Boolean Option to `t'..."))
-               . icicle-set-option-to-t)
-             '("--")
-             `(,(if (or (and icicle-C-l-uses-completion-flag (not current-prefix-arg))
-                        (and (not icicle-C-l-uses-completion-flag) current-prefix-arg))
-                    "Complete for Past Completion Input  (`C-l')"
-                    "Previous Completion Input  (`C-l')")
-               . icicle-retrieve-previous-input)
-             '("Next Completion Input  (`C-l')" . icicle-retrieve-next-input)
-             '("One-Off Eval...  (`M-:')" . icicle-pp-eval-expression-in-minibuffer)
-             `(,(if current-prefix-arg
-                    "Insert String from Variable...  (`C-u C-=')"
-                    "Insert `icicle-input-string'  (`C-=')")
-               . icicle-insert-string-from-variable)
-             '("--")
-             '("Icicles Help  (`C-?')" . icicle-minibuffer-help)))))
-    (and menu-choice (call-interactively menu-choice))))
+    (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions
+                                             (posn-point (event-start event)))
+          icicle-last-completion-candidate  candidate)
+    (let* ((menus   `((keymap "Completion" ,@(icicle-substitute-keymap-vars
+                                              icicle-Completions-mouse-3-menu-entries))))
+           (choice  (x-popup-menu event menus)))
+      (icicle-Completions-popup-choice menus choice))))
+
+(defun icicle-substitute-keymap-vars (menu-entries)
+  "In MENU-ENTRIES, replace keymap vars by their values."
+  (let ((new  ()))
+    (dolist (jj  menu-entries)
+      (cond ((and (symbolp jj) (keymapp (symbol-value jj))) ; Just a keymap var.
+             (setq jj  (symbol-value jj))
+             (dolist (ii  jj) (push ii new)))
+            ;; (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS), with a keymap var.
+            ((and (consp jj) (symbolp (car jj)) (eq 'menu-item (cadr jj))
+                  (stringp (car (cddr jj))) (symbolp (car (cdr (cddr jj))))
+                  (not (commandp (car (cdr (cddr jj))))) (boundp (car (cdr (cddr jj))))
+                  (keymapp (symbol-value (car (cdr (cddr jj))))))
+             (setq jj  `(,(car jj) menu-item ,(car (cddr jj))
+                         ,(symbol-value (car (cdr (cddr jj)))) ; Replace keymap var by its value.
+                         ,@(cdr (cdr (cddr jj))))) ; Keywords.
+             (push jj new))
+            ((and (consp jj) (symbolp (car jj)) (stringp (cadr jj)) ; (SYMBOL NAME . MENU-KEYMAP)
+                  (symbolp (cddr jj)) (boundp (cddr jj)) (keymapp (symbol-value (cddr jj))))
+             (setq jj  `(,(car jj) ,(cadr jj) ,@(symbol-value (cddr jj)))) ; Replace keymap var by val.
+             (push jj new))
+            (t (push jj new))))
+    (nreverse new)))
+
+;; This is the same as `mouse3-region-popup-choice' in `mouse3.el'.
+(if (require 'mouse3 nil t)
+    (defalias 'icicle-Completions-popup-choice 'mouse3-region-popup-choice)
+  (defun icicle-Completions-popup-choice (menus choice)
+    "Invoke the command from MENUS that is represented by user's CHOICE.
+MENUS is a list that is acceptable as the second argument for
+`x-popup-menu'.  That is, it is one of the following, where MENU-TITLE
+is the menu title and PANE-TITLE is a submenu title.
+
+* a keymap - MENU-TITLE is its `keymap-prompt'
+* a list of keymaps - MENU-TITLE is the first keymap's `keymap-prompt'
+* a menu of multiple panes, which has this form: (MENU-TITLE PANE...),
+  where each PANE has this form: (PANE-TITLE ITEM...),
+  where each ITEM has one of these forms:
+  - STRING - an unselectable menu item
+  - (STRING . COMMAND) - a selectable item that invokes COMMAND"
+    (catch 'icicle-Completions-popup-choice (icicle-Completions-popup-choice-1 menus choice))))
+
+;; This is the same as `mouse3-region-popup-choice-1' in `mouse3.el'.
+(if (require 'mouse3 nil t)
+    (defalias 'icicle-Completions-popup-choice-1 'mouse3-region-popup-choice-1)
+  (defun icicle-Completions-popup-choice-1 (menus choice)
+    "Helper function for `icicle-Completions-popup-choice'."
+    (cond((keymapp menus)
+          ;; Look up each ITEM-LIST entry in keymap MENUS.
+          ;;   If what is found is a keymap, use that as MENUS for next iteration.
+          ;;   If what is found is a command, invoke it (done).
+          (let (binding)
+            (while choice
+              (setq binding  (lookup-key menus (vector (car choice))))
+              (cond ((keymapp binding)
+                     (setq menus   binding
+                           choice  (cdr choice)))
+                    ((commandp binding)
+                     ;; You get only one.
+                     (throw 'icicle-Completions-popup-choice (call-interactively binding)))
+                    (t (error "`icicle-Completions-popup-choice', binding: %s" binding))))))
+         ((consp menus)                 ; A list of keymaps or panes.
+          (dolist (menu  menus)
+            (if (keymapp menu)
+                (icicle-Completions-popup-choice-1 menu choice)
+              (when choice              ; MENU is a pane.
+                (throw 'icicle-Completions-popup-choice (call-interactively choice)))))))))
 
 ;;;###autoload
 (defun icicle-widen-candidates ()       ; Bound to `M-+' in minibuffer.
@@ -5456,7 +5406,6 @@ Return the string that was inserted."
 ;;;###autoload
 (defun icicle-candidate-set-swap ()     ; Bound to `C-%' in minibuffer.
   "Swap the saved set and current sets of completion candidates.
-
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-candidate-set-swap]')."
   (interactive)
@@ -5478,9 +5427,9 @@ You can use this command at top level or from the minibuffer (`\\<minibuffer-loc
   (let* ((enable-recursive-minibuffers  t)
          (evald-sexp                    (eval-minibuffer
                                          "Set the completion candidates to sexp (eval): ")))
-    (if (or (null evald-sexp) (and (consp evald-sexp) (stringp (car evald-sexp))))
-        (setq icicle-completion-candidates  evald-sexp)
-      (error "Sexp did not evaluate to a list of strings: %S" evald-sexp)))
+    (when (and evald-sexp (or (atom evald-sexp) (not (stringp (car evald-sexp)))))
+      (error "Sexp did not evaluate to a list of strings: %S" evald-sexp))
+    (setq icicle-completion-candidates  evald-sexp))
   (icicle-maybe-sort-and-strip-candidates)
   (message "List of completion candidates DEFINED: %S" icicle-completion-candidates)
   (when (> (minibuffer-depth) 0)
@@ -5499,6 +5448,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-candidate-set-difference]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (message "Computing set difference: current minus saved candidates...")
   (icicle-candidate-set-1 'icicle-set-difference "  [saved set of candidates SUBTRACTED]"))
 
 ;;;###autoload
@@ -5511,6 +5461,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-candidate-set-union]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (message "Computing set union: current plus saved candidates...")
   (icicle-candidate-set-1 'icicle-set-union "  [saved set of candidates ADDED]"))
 
 ;;;###autoload
@@ -5523,6 +5474,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-candidate-set-intersection]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (message "Computing set intersection: current and saved candidates...")
   (icicle-candidate-set-1 'icicle-set-intersection
                           "  [INTERSECTION of saved and current sets of candidates]"))
 
@@ -5538,6 +5490,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-candidate-set-complement]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (message "Complementing current set of candidates...")
   (setq icicle-completion-candidates
         (icicle-set-difference
          (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
@@ -6928,8 +6881,8 @@ Bound to `C-`' in the minibuffer."
 ;;;###autoload
 (defun icicle-regexp-quote-input (beg end) ; Bound to `C-M-;' in minibuffer.
   "Regexp quote current input or its active region, then apropos-complete.
-Use this if you want to literally match all what is currently in the
-minibuffer or selected text there, but you also want to use that
+Use this if you want to literally match all of what is currently in
+the minibuffer or selected text there, but you also want to use that
 literal text as part of a regexp for apropos completion.
 
 This turns off `icicle-expand-input-to-common-match-flag'.

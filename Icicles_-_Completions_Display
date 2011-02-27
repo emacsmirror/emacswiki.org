@@ -288,9 +288,53 @@ completion then you will first need to use `M-k' to remove the
 directory, as it will not match any of the proxy candidates.
 
 
+
+
+[:CompletionPopupMenu]
+=== Contextual Popup Menu (`C-mouse-3') ===
+
+
+Clicking '''`C-mouse-3'''' on a candidate in `*Completions*' pops up a
+contextual menu for acting on completion candidates.  You can
+customize the menu using option '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-mouse-3-menu-entries|icicle-Completions-mouse-3-menu-entries]]</tt>''''.  By default, the menu
+has the following submenus:
+
+
+* '''This Candidate''' -- Act on the candidate that you clicked to
+pop up the menu.  Or act on all current candidates,
+individually or collectively.
+
+* '''Sorting''' -- Change the current candidate sort order.
+
+* '''Save/Retrieve''' -- Save (mark) candidates or retrieve them,
+including to/from a variable or a cache file.
+
+* '''Sets''' -- Perform operations on sets of candidates, in
+particular, the set of current candidates and the set of
+saved candidates.
+
+* '''Toggle/Cycle/Change''' -- Toggle, cycle, or otherwise change an
+'''Icicles''' setting, altering the behavior on the fly.
+
+* '''Miscellaneous''' -- Other candidate operations and general help.
+
+The popup menu is contextual.  In particular, the available
+items can change depending on whether you use a prefix argument
+(`C-u C-mouse-3') and whether you have selected candidates using
+the [[region]] (e.g. mouse drag).  The menu also provides a good
+reminder of key bindings available during completion.
+
+Screenshots of the popup menu and its submenus are here:
+[[Icicles - Nutshell View#CompletionPopupMenu|Completion menu]].
+
+
+
+
+
+
 ----
 
-There are lots of '''Icicles''' features that enhance the display and behavior of `*Completions*' in some way. Read on...
+There are lots more '''Icicles''' features that enhance the display and behavior of `*Completions*' in some way. Read on...
 
 Here is a screenshot of buffer `*Completions*' (shown in its own frame): 
 

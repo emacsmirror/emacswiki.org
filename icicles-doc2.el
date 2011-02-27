@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 23 06:08:21 2011 (-0800)
+;; Last-Updated: Sat Feb 26 13:34:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27519
+;;     Update #: 27524
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4659,6 +4659,14 @@
 ;;    shown in the mode-line.  This includes that controlled by option
 ;;    `icicle-help-in-mode-line-flag' and the indication in
 ;;    `*Completions*' of the total number of matching candidates.
+;;
+;;  * User option `icicle-Completions-mouse-3-menu-entries' defines
+;;    the contextual menu that is popped up when you click `C-mouse-3'
+;;    on a candidate in `*Completions*'.  As an aid to customizing it,
+;;    refer to any of the constants `icicle-Completions-*' that define
+;;    its submenus.  The submenu definitions are easier to understand
+;;    in the source code (`icicles-opt.el'), because Customize does
+;;    not pretty-print them.
 ;;
 ;;  * User option `icicle-Completions-frame-at-right-flag' controls
 ;;    whether `icicle-candidate-action' moves the frame showing buffer

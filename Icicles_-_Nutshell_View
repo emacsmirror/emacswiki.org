@@ -238,15 +238,43 @@ One way to start with '''Icicles''' is to explore menus '''Icicles''' and '''Min
 During minibuffer input
 [[completion]], you can also press Control and right-click
 (`C-mouse-3') on a completion candidate in [[buffer]] `*Completions*',
-and choose from a contextual popup menu, '''Completion Candidate'''.  Some of its menu items apply to the clicked candidate; others apply to all candidates. 
+and choose from a contextual popup menu, '''Completion'''.
+
+You can [[Customize|customize]] this menu.  By default, submenu '''This Candidate'''
+has menu items that apply to the candidate you clicked to pop up
+the menu.  The other submenus have items that apply to all
+candidates, candidates you have selected (the region in
+`*Completions*'), or candidates you have saved (marked).
+
+Altogether there are many menu items in the popup menu.  Think of
+the menu as a learning device and a way to remind you of possible
+operations on completion candidates and the keys they are bound
+to.  In this it is similar to the help you get when you use '''`##C-?##''''
+in the minibuffer, but with the menu you can also act, not just be
+reminded.
+
+See Also: [[Icicles - Completions Display]].
 
 
-[:CompletionCandidateMenu]
-=== Completion Candidate Menu ===
 
-: [[image:drew-emacs-Candidate-menu]]
+[:CompletionPopupMenu]
+=== Completion Popup Menu (`C-mouse-3') ===
 
-Yes, this is a long menu! Think of it as a learning device and a way to remind you of operations on individual candidates and their key bindings ;-). In this it is similar to the help you get when you use `##C-?##' in the minibuffer, but with the menu you can also act, not just be reminded.
+: [[image:drew-emacs-icicle-mouse-3-menu]]
+: '''This Candidate''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-This-Candidate]]
+: '''Sorting''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Sorting]]
+: '''Save/Retrieve''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Save-Retrieve]]
+: '''Sets''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Sets]]
+: '''Toggle/Cycle/Change''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Toggle]]
+: '''Miscellaneous''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Misc]]
+
+
 
 
 

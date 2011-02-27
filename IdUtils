@@ -3,7 +3,7 @@ code, similar to EmacsTags but it works with binary files rather than text sourc
 
 * http://www.gnu.org/software/idutils/
 * ftp://ftp.gnu.org/gnu/id-utils
-* http://sv.gnu.org/projects/idtils/
+* http://sv.gnu.org/projects/idutils/
 
 ElScreen-GF (in conjunction with EmacsLispScreen) is an yet another
 interface to GNU ID utilities.

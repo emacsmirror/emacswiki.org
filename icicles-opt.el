@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 24 15:29:09 2011 (-0800)
+;; Last-Updated: Sat Feb 26 12:58:44 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4025
+;;     Update #: 4211
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -35,7 +35,12 @@
 ;;
 ;;  Constants defined here:
 ;;
-;;    `icicle-anychar-regexp'.
+;;    `icicle-anychar-regexp', `icicle-Completions-misc-submenu',
+;;    `icicle-Completions-save/retrieve-submenu',
+;;    `icicle-Completions-sets-submenu',
+;;    `icicle-Completions-sorting-submenu',
+;;    `icicle-Completions-this-candidate-submenu',
+;;    `icicle-Completions-toggle-submenu'.
 ;;
 ;;  User options defined here (in Custom group `Icicles'):
 ;;
@@ -76,6 +81,7 @@
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
 ;;    `icicle-Completions-frame-at-right-flag',
+;;    `icicle-Completions-mouse-3-menu-entries',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
@@ -139,11 +145,10 @@
 ;;    `icicle-prefix-cycle-previous-help-keys',
 ;;    `icicle-previous-candidate-keys',
 ;;    `icicle-quote-shell-file-name-flag',
-;;    `icicle-read+insert-file-name-keys',
-;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
-;;    `icicle-region-background', `icicle-require-match-flag',
-;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
-;;    `icicle-search-from-isearch-keys',
+;;    `icicle-read+insert-file-name-keys', `icicle-regexp-quote-flag',
+;;    `icicle-regexp-search-ring-max', `icicle-region-background',
+;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
+;;    `icicle-search-cleanup-flag', `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
 ;;    `icicle-search-highlight-context-levels-flag',
 ;;    `icicle-search-highlight-threshold', `icicle-search-hook',
@@ -203,6 +208,7 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
+;;  (@> "Constants used to define user options")
 ;;  (@> "User options, organized alphabetically, except for dependencies")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -245,6 +251,225 @@
 (defvar icicle-dot-string-internal)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+;;(@* "Constants used to define user options")
+
+;;; Constants used to define user options --
+
+(defconst icicle-Completions-misc-submenu
+    '(misc-menu
+      menu-item
+      "Miscellaneous"
+      (keymap
+       (complete-for-past-completion menu-item "Complete for Past Completion Input"
+        icicle-retrieve-previous-input
+        :visible (or (and icicle-C-l-uses-completion-flag (not current-prefix-arg))
+                  (and (not icicle-C-l-uses-completion-flag) current-prefix-arg)))
+       (previous-completion-input menu-item "Previous Completion Input"
+        icicle-retrieve-previous-input
+        :visible (not (or (and icicle-C-l-uses-completion-flag (not current-prefix-arg))
+                       (and (not icicle-C-l-uses-completion-flag) current-prefix-arg))))
+       (next-completion-input menu-item "Next Completion Input"
+        icicle-retrieve-next-input)
+       (one-off-eval menu-item "One-Off Eval..."
+        icicle-pp-eval-expression-in-minibuffer)
+       (sep-misc "--")
+       (icicles-help menu-item "Icicles Help" icicle-minibuffer-help)))
+  "Submenu for miscellaneous operations on completions.")
+
+(defconst icicle-Completions-save/retrieve-submenu
+    '(save-retrieve-menu
+      menu-item
+      "Save/Retrieve"
+      (keymap
+       (save-all menu-item "Save All" icicle-candidate-set-save)
+       (save-all-var menu-item "             to Variable..."
+        icicle-candidate-set-save-to-variable)
+       (save-all-cache menu-item "             to Cache File..."
+        icicle-candidate-set-save-persistently)
+       (add-all-to-saved menu-item "Add All to Saved" icicle-candidate-set-save-more)
+       (save-selected menu-item "Save Selected (Region) Candidates"
+        icicle-candidate-set-save-selected
+        :enable (and mark-active (> (region-end) (region-beginning))))
+       (clear-saved menu-item "Clear Saved Candidates"
+        icicle-candidate-set-save-selected
+        :enable (and (boundp 'icicle-saved-completion-candidates)
+                 icicle-saved-completion-candidates))
+       (add-selected-to-saved menu-item "Add Selected (Region) Candidates"
+        icicle-candidate-set-save-more-selected
+        :enable (and mark-active (> (region-end) (region-beginning))))
+       (sep-save/retrieve-2 "--")
+       (retrieve-saved menu-item "Retrieve Saved" icicle-candidate-set-retrieve
+        :enable (and (boundp 'icicle-saved-completion-candidates)
+                 icicle-saved-completion-candidates))
+       (retrieve-more-saved menu-item "Retrieve More Saved"
+        icicle-candidate-set-retrieve-more
+        :enable (and (boundp 'icicle-saved-completion-candidates)
+                 icicle-saved-completion-candidates))))
+  "Submenu for saving and retrieving completion candidates.")
+
+(defconst icicle-Completions-sets-submenu
+    '(sets-menu
+      menu-item
+      "Sets"
+      (keymap
+       (complement menu-item "Complement" icicle-candidate-set-complement)
+       (widen menu-item "Or Match Alternative..." icicle-widen-candidates)
+       (narrow menu-item "Match Also Regexp..." icicle-narrow-candidates)
+       (save-pred-read-var menu-item "Save Predicate to Variable...  (`C-u')"
+        icicle-save-predicate-to-variable
+        :visible current-prefix-arg)
+       (save-pred-std-var menu-item "Save Predicate to `icicle-input-string'"
+        icicle-save-predicate-to-variable
+        :visible (not current-prefix-arg))
+       (intersect menu-item "Intersect Saved" icicle-candidate-set-intersection
+        :enable icicle-saved-completion-candidates)
+       (difference menu-item "Subtract Saved" icicle-candidate-set-difference
+        :enable icicle-saved-completion-candidates)
+       (union menu-item "Add (Union) Saved" icicle-candidate-set-union
+        :enable icicle-saved-completion-candidates)
+       (keep-past-chrono menu-item "Only Previously Entered, By Time  (`C-u')"
+        icicle-keep-only-past-inputs
+        :visible current-prefix-arg)
+       (keep-past-alpha menu-item "Only Previously Entered"
+        icicle-keep-only-past-inputs
+        :visible (not current-prefix-arg))))
+  "Submenu for set operations on completion candidates.")
+
+(defconst icicle-Completions-sorting-submenu
+    '(sorting-menu
+      menu-item
+      "Sorting"
+      (keymap
+       (change-sort-order menu-item "Change Sort Order" icicle-change-sort-order
+        :visible (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
+                  (and (not icicle-change-sort-order-completion-flag) current-prefix-arg)))
+       (next-sort-order menu-item "Next Sort Order" icicle-change-sort-order
+        :visible (not (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
+                       (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))))
+       (change-alt-sort menu-item "Change Alternative Sort Order  (`M-,')"
+        icicle-change-alternative-sort-order
+        :visible (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
+                  (and (not icicle-change-sort-order-completion-flag) current-prefix-arg)))
+       (next-alt-sort menu-item "Next Alternative Sort Order  (`M-,')"
+        icicle-change-alternative-sort-order
+        :visible (not (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
+                       (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))))
+       (swap-sort menu-item "Swap Alternative/Normal Sort"
+        icicle-toggle-alternative-sorting)))
+  "Submenu for sorting completion candidates.")
+
+(defconst icicle-Completions-this-candidate-submenu
+    '(this-candidate-menu
+      menu-item
+      "This Candidate"
+      (keymap
+       (help-on-cand menu-item "Help About" icicle-help-on-candidate)
+       (sep-this-1 "--")
+       (action menu-item "Act On  (`C-mouse-2')" icicle-candidate-action)
+       (read-fn-invoke menu-item "Apply a Function To...  (`M-mouse-2')"
+        icicle-candidate-read-fn-invoke)
+       (insert-in-minibuffer menu-item "Insert in Minibuffer  (`C-insert')"
+        (lambda ()
+          (interactive)
+          (select-window (active-minibuffer-window))
+          (goto-char (icicle-minibuffer-prompt-end))
+          (icicle-clear-minibuffer)
+          (insert icicle-last-completion-candidate))
+        :help "Insert candidate in minibuffer")
+       (sep-this-2 "--")
+       (all-cands menu-item "Act on Each Individually" icicle-all-candidates-action)
+       (all-list menu-item "Act on All as a List" icicle-all-candidates-list-action)))
+  "Submenu for acting on candidate under the mouse.")
+
+(defconst icicle-Completions-toggle-submenu
+    '(toggle-menu
+      menu-item
+      "Toggle/Cycle/Change"
+      (keymap
+       (highlighting-past menu-item "Toggle Highlighting Past Inputs"
+        icicle-toggle-highlight-historical-candidates)
+       (removing-dups menu-item "Toggle Duplicate Removal" icicle-toggle-transforming)
+       (case-sensitivity menu-item "Toggle Case Sensitivity  (`C-A')"
+        icicle-toggle-case-sensitivity)
+       ;; This one is not a toggle or cycle.
+       (regexp-quote-input menu-item "Regexp-Quote Current Input"
+        icicle-regexp-quote-input
+        :visible (not (and mark-active (> (region-end) (region-beginning)))))
+       ;; This one is not a toggle or cycle.
+       (regexp-quote-region menu-item "Regexp-Quote Input Region"
+        icicle-regexp-quote-input
+        :visible (and mark-active (> (region-end) (region-beginning))))
+       (matching-of-newlines menu-item "Toggle `.' Matching of Newlines Too"
+        icicle-toggle-dot)
+       (literal-vs-regexp menu-item "Toggle Escaping Special Regexp Chars"
+        icicle-toggle-regexp-quote)
+       (incremental-completion menu-item "Toggle Incremental Completion"
+        icicle-toggle-incremental-completion)
+       (expanding-to-common menu-item "Toggle Common Match Expansion"
+        icicle-toggle-expand-to-common-match)
+       (hiding-common-match menu-item "Toggle Hiding Common Match"
+        icicle-toggle-hiding-common-match)
+       (oneoff-next-S-TAB menu-item "ONE-OFF Next S-TAB Completion Method (`C-u')"
+        icicle-next-S-TAB-completion-method
+        :visible current-prefix-arg)
+       (next-S-TAB menu-item "Next S-TAB Completion Method"
+        icicle-next-S-TAB-completion-method
+        :visible (not current-prefix-arg))
+       (oneoff-next-TAB menu-item "ONE-OFF Next TAB Completion Method (`C-u')"
+        icicle-next-TAB-completion-method
+        :visible current-prefix-arg)
+       (next-TAB menu-item "Next TAB Completion Method"
+        icicle-next-TAB-completion-method
+        :visible (not current-prefix-arg))
+       (next-thumbnail-setting menu-item "Next Image-File Thumbnail Setting"
+        icicle-cycle-image-file-thumbnail)
+       (proxy-candidates menu-item "Toggle Including Proxy Candidates"
+        icicle-toggle-proxy-candidates)
+       (WYSIWYG menu-item "Toggle WYSIWYG for *Completions*" icicle-toggle-WYSIWYG-Completions)
+       (angle-brackets menu-item "Toggle Using Angle Brackets" icicle-toggle-angle-brackets)
+       (ignored-files menu-item "Toggle Ignored File Extensions  (`C-.')"
+        icicle-toggle-ignored-extensions)
+       (using-C-for-actions menu-item "Toggle Using `C-' for Actions"
+        icicle-toggle-C-for-actions)
+       (using-~-for-home menu-item "Toggle Using `~' for $HOME"
+        icicle-toggle-~-for-home-dir)
+       (sep-toggle-1 "--")
+       (search-highlight-all menu-item "Toggle All-Current Search Highlighting  (`C-^')"
+        icicle-toggle-highlight-all-current)
+       (search-whole-word menu-item "Toggle Whole-Word Searching  (`M-q')"
+        icicle-toggle-search-whole-word)
+       (search-cleanup menu-item "Toggle Removal of Search Highlighting  (`C-.')"
+        icicle-toggle-search-cleanup)
+       (search-replace-whole menu-item "Toggle Replacing Whole Search Hit  (`M-_')"
+        icicle-toggle-search-replace-whole)
+       (search-replace-common menu-item "Toggle Replacing Expanded Common Match"
+        icicle-toggle-search-replace-common-match)
+       (sep-toggle-2 "--")
+       (option menu-item "+ Toggle Option..." icicle-toggle-option
+        :visible (and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg))))
+       (any-var menu-item "+ Toggle Any Variable..." icicle-toggle-option
+        :visible (and current-prefix-arg
+                  (not (wholenump (prefix-numeric-value current-prefix-arg)))))
+       (boolean menu-item "+ Toggle Boolean Option..."
+        :visible (not current-prefix-arg))
+       ;; This one is not a toggle or cycle.
+       (reset-var menu-item "+ Set Any Variable to `nil'..." icicle-reset-option-to-nil
+        :visible current-prefix-arg)
+       ;; This one is not a toggle or cycle.
+       (reset-option menu-item "+ Set Option to `nil'..."icicle-reset-option-to-nil
+        :visible (not current-prefix-arg))
+       ;; This one is not a toggle or cycle.
+       (set-option-to-t menu-item "+ Set Option to `t'..." icicle-set-option-to-t
+        :visible (and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg))))
+       ;; This one is not a toggle or cycle.
+       (set-var-to-t menu-item "+ Set Any Variable to `t'..." icicle-set-option-to-t
+        :visible (and current-prefix-arg
+                  (not (wholenump (prefix-numeric-value current-prefix-arg)))))
+       ;; This one is not a toggle or cycle.
+       (set-boolean-to-t menu-item "+ Set Boolean Option to `t'..." icicle-set-option-to-t
+        :visible (not current-prefix-arg))))
+  "Submenu for toggling, cycling or changing a variable or a behavior.")
  
 ;;(@* "User options, organized alphabetically, except for dependencies")
 
@@ -776,6 +1001,97 @@ This is done by `icicle-candidate-action'.
 It only happens if *Completions* is alone in its frame.
 This can be useful to make *Completions* more visible."
   :type 'boolean :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-Completions-mouse-3-menu-entries `(,icicle-Completions-this-candidate-submenu
+                                                     ,icicle-Completions-sorting-submenu
+                                                     ,icicle-Completions-save/retrieve-submenu
+                                                     ,icicle-Completions-sets-submenu
+                                                     ,icicle-Completions-toggle-submenu
+                                                     ,icicle-Completions-misc-submenu)
+  "*Entries for the `mouse-3' popup menu in `*Completions*'.
+The menu is created by `icicle-Completions-mouse-3-menu'.
+
+The option value is a list.  Each element defines a submenu or a menu
+item.  A null element (`nil') is ignored.
+
+Several alternative entry formats are available.  When customizing,
+choose an alternative in the Customize `Value Menu'.
+
+In this description:
+ SYMBOL      is a symbol identifying the menu entry.
+ `menu-item' is just that text, literally.
+ NAME        is a string naming the menu item or submenu.
+ COMMAND     is the command to be invoked by an item.
+ MENU-KEYMAP is a menu keymap or a var whose value is a menu keymap.
+ KEYWORDS    is a property list of menu keywords (`:enable',
+             `:visible', `:filter', `:keys', etc.).
+
+1. Single menu item.  For a selectable item, use
+   (SYMBOL menu-item NAME COMMAND . KEYWORDS).  For a non-selectable
+   item such as a separator, use (SYMBOL NAME) or
+   (SYMBOL menu-item NAME nil . KEYWORDS).
+
+2. Items taken from a menu-keymap variable, such as
+   `menu-bar-edit-menu'.  Just use the name of the variable (a
+   symbol).  The items appear at the top level of the popup menu, not
+   in a submenu.
+
+3. Submenu.  Use (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS) or
+   (SYMBOL NAME . MENU-KEYMAP).  Remember that MENU-KEYMAP can also be
+   a variable (symbol) whose value is a menu keymap.
+
+All of these are standard menu elements, with the exception of the use
+of a keymap variable to represent its value.
+
+See also:
+ * (elisp) Format of Keymaps
+ * (elisp) Classifying Events
+ * (elisp) Extended Menu Items
+
+Example submenu element:
+ (toto menu-item \"Toto\" menu-bar-toto-menu)
+
+Example selectable menu-item element:
+ (foo menu-item \"Foo\"   foo-command
+       :visible (not buffer-read-only))"
+  :type  '(repeat
+           (choice
+            ;; These could be combined, but it's better for users to see separate choices.
+            (restricted-sexp
+             :tag "Submenu (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS) or (SYMBOL NAME . MENU-KEYMAP)"
+             :match-alternatives
+             ((lambda (x)
+                (and (consp x) (symbolp (car x))
+                     (or (and (stringp (cadr x)) (cddr x)) ; (SYMBOL NAME . MENU-KEYMAP)
+                         ;; (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS)
+                         (and (eq 'menu-item (cadr x))
+                              (stringp (car (cddr x)))
+                              (or (keymapp (car (cdr (cddr x)))) ; Can be a keymap var.
+                                  (and (symbolp (car (cdr (cddr x))))
+                                       (boundp (car (cdr (cddr x))))
+                                       (keymapp (symbol-value (car (cdr (cddr x)))))))))))
+              'nil))
+            (restricted-sexp
+             :tag "Items from a keymap variable's value."
+             :match-alternatives ((lambda (x) (and (symbolp x) (keymapp (symbol-value x))))
+                                  'nil))
+            (restricted-sexp
+             :tag "Selectable item (SYMBOL menu-item NAME COMMAND . KEYWORDS)"
+             :match-alternatives ((lambda (x) (and (consp x) (symbolp (car x))
+                                                   (eq 'menu-item (cadr x))
+                                                   (stringp (car (cddr x)))
+                                                   (commandp (car (cdr (cddr x))))))
+                                  'nil))
+            (restricted-sexp
+             :tag "Non-selectable item (SYMBOL NAME) or (SYMBOL menu-item NAME nil . KEYWORDS)"
+             :match-alternatives ((lambda (x) (and (consp x) (symbolp (car x))
+                                                   (or (and (stringp (cadr x)) (null (caddr x)))
+                                                       (and (eq 'menu-item (cadr x))
+                                                            (stringp (car (cddr x)))
+                                                            (null (car (cdr (cddr x))))))))
+                                  'nil))))
+  :group 'Icicles-Completions-Display)
 
 (when (fboundp 'text-scale-decrease)    ; Emacs 23+
   (defcustom icicle-Completions-text-scale-decrease 0.75

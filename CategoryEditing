@@ -62,6 +62,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** EndOfLineTips -- How to convert between different system line ending characters.
 * Jumping around, and seeing where you've been
 ** MarkCommands -- Use of [[mark]] and [[point]] to jump around
+** [[quick-jump.el]] -- -Remember current position,and jump back
 ** BookMarks -- Jump to places you have recorded (persistently or not).
 *** [[Bookmark+]] -- Extensions to standard bookmark features, including VisualStudio-like bookmarks
 *** VisibleBookmarks -- VisualStudio-like bookmarks for quick in-buffer navigation

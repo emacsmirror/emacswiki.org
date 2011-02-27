@@ -102,5 +102,18 @@ ouch, in a modern 'normal' shell:
 Perhaps a DSL for (very) advanced globbing is in order?
 
 -- PhilJackson
+
+[new]
+
+Unless you care about the order the copies are made in, building the list in reverse with <tt>(setq lst (cons i lst))</tt> is simpler than using <tt>append</tt>.  Emacs 21 incorporated the <tt>cl</tt> library's <tt>push</tt> macro, and lets you write this (the 3rd parameter to <tt>dotimes</tt> gives the end result):
+
+ $ for i in (let (lst) (dotimes (i 1000 lst) (push i lst))) {cp original.txt $i.txt}
+
+However, the <em>best</em> way (Emacs 22 or later) has got to be:
+
+ $ for i in (number-sequence 1 1000) {cp original.txt $i.txt}
+
+-- <nowiki>PaulWhittaker</nowiki>
+
 ----
 CategoryEshell

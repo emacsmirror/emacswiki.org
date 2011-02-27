@@ -3,3 +3,55 @@ Offers of help will be gratefully accepted, I can be reached at timseal at gmail
 
 The code is at Lisp:vbnet-mode.el
  I will put comments in to make the changes more obvious soon.  
+
+-----
+
+2011-Feb-26
+DinoChiesa
+
+I've just updated vbnet-mode.el to v1.5.  
+
+Summary of changes: 
+
+* replaced many defvar to defcustom, to make it more user friendly.
+* fixed fontification for using statements, vars, namespaces, imports, and so on. It looks pretty good now. 
+* fixed indent of Namespaces, property getters and setters, and shared functions. 
+* integration with flymake.el 
+* Integration with ya-snippet.el
+* integration with compile.el 
+* a bunch of other stuff. 
+
+
+here's a screen shot.
+
+http://imgur.com/OlY0e.png
+
+----
+
+
+Installation instructions
+
+ Put vbnet-mode.el somewhere in your load path, optionally compile
+ it, and add the following to your .emacs file:
+
+   (autoload 'vbnet-mode "vbnet-mode" "Mode for editing VB.NET code." t)
+   (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|vb\\)$" .
+                                 vbnet-mode)) auto-mode-alist))
+
+ And optionally, add something like this to your .emacs file as well:
+
+   (defun my-vbnet-mode-fn ()
+     "My hook for VB.NET mode"
+     (interactive)
+     ;; This is an example only.
+     ;; These statements are not required to use VB.NET, but
+     ;; you might like them.
+     (turn-on-font-lock)
+     (turn-on-auto-revert-mode)
+     (setq indent-tabs-mode nil)
+     (require 'flymake)
+     (flymake-mode 1)
+     ...other mode-setup code here...
+   )
+   (add-hook 'vbnet-mode-hook 'my-vbnet-mode-fn)
+

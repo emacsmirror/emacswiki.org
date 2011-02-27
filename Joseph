@@ -1,22 +1,22 @@
 I am a  newbie. I use GNU Emacs 23 on Gentoo(Linux) and  Windows since 2010-10--.
 
- My E-mail is  : jixiuf@gmail.com .
+ My E-mail is: jixiuf@gmail.com
 
-And I come from Chinese ,My Chinese name is 纪秀峰.
-"Joseph" sounds like My Chinese Name ,so I use it as My English Name .And forgive my poor English.
+I come from China; my Chinese name is 纪秀峰.
+"Joseph" sounds like my Chinese name, that's why I use it as my English name. Please forgive my poor English.
  
-My Emacs config file are published on  
-[https://github.com/jixiuf/emacs_conf MyEmacsConfigFiles]
+My Emacs config file is published on github:
+[https://github.com/jixiuf/emacs_conf MyEmacsConfigFiles].
 
-All my code are published on [https://github.com/jixiuf MyPage].
-I have a blog at [http://blog.csdn.net/jixiuffff MyBlog] (write in Chinese).
+All my code also available: [https://github.com/jixiuf MyPage].
+I have a Chinese blog at [http://blog.csdn.net/jixiuffff MyBlog].
 
 
-I write:
+I wrote:
 
-* AutoJavaComplete  It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
-
-* [http://www.emacswiki.org/emacs/joseph-go-to-char joseph-goto-char]    like command f in vi.
+* AutoJavaComplete -- It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
+* [[quick-jump.el]] -- Remember current position,and jump back 
+* [http://www.emacswiki.org/emacs/joseph-go-to-char joseph-goto-char] -- like command f in vi.
 
 
 

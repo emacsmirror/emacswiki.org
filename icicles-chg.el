@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 23 10:19:01 2011 (-0800)
+;; Last-Updated: Sat Feb 26 11:09:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6081
+;;     Update #: 6093
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2197,6 +2197,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/02/26 dadams
+;;     Added: icicle-Completions-popup-choice(-1), icicle-substitute-keymap-vars.
+;;     icicle-Completions-mouse-3-menu:
+;;       Rewrote to use option icicle-Completions-mouse-3-menu-entries instead of hard-coding menus.
+;;     icicle-candidate-set-define (cosmetic): Use when, not if, to raise error.
+;;     icicle-candidate-set-(difference|union|intersection|complement), : Added start-progress message.
 ;; 2011/02/23 dadams
 ;;     icicle-help-string-completion, icicle-Completions-mouse-3-menu:
 ;;       Add icicle-cycle-image-file-thumbnail.
@@ -4318,6 +4324,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/02/26 dadams
+;;     Added: icicle-Completions-(misc|save/retrieve|sets|sorting|this-candidate|toggle)-submenu,
+;;            icicle-Completions-mouse-3-menu-entries.
 ;; 2011/02/22 dadams
 ;;     Added: icicle-image-files-in-Completions, icicle-functions-to-redefine.
 ;;     Removed: icicle-redefine-standard-commands-flag.

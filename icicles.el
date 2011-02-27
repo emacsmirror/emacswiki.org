@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 08:31:37 2011 (-0800)
+;; Last-Updated: Sat Feb 26 10:51:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22806
+;;     Update #: 22813
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -26,12 +26,13 @@
 ;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
 ;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
 ;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel',
-;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -578,6 +579,7 @@
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
 ;;    `icicle-Completions-frame-at-right-flag',
+;;    `icicle-Completions-mouse-3-menu-entries',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
@@ -728,6 +730,8 @@
 ;;    `icicle-color-hue-lessp', `icicle-color-name-w-bg',
 ;;    `icicle-color-red-lessp', `icicle-color-saturation-lessp',
 ;;    `icicle-color-value-lessp', `icicle-column-wise-cand-nb',
+;;    `icicle-Completions-popup-choice',
+;;    `icicle-Completions-popup-choice-1',
 ;;    `icicle-comint-dynamic-complete-as-filename',
 ;;    `icicle-comint-dynamic-simple-complete',
 ;;    `icicle-comint-hook-fn',
@@ -959,8 +963,8 @@
 ;;    `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
-;;    `icicle-successive-action', `icicle-take',
-;;    `icicle-this-command-keys-prefix',
+;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
+;;    `icicle-take', `icicle-this-command-keys-prefix',
 ;;    `icicle-toggle-icicle-mode-twice', `icicle-top-level-prep',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion',
@@ -1015,6 +1019,12 @@
 ;;    `icicle-completion-prompt-overlay',
 ;;    `icicle-completion-set-history',
 ;;    `icicle-completions-format-internal',
+;;    `icicle-Completions-misc-submenu',
+;;    `icicle-Completions-save/retrieve-submenu',
+;;    `icicle-Completions-sets-submenu',
+;;    `icicle-Completions-sorting-submenu',
+;;    `icicle-Completions-this-candidate-submenu',
+;;    `icicle-Completions-toggle-submenu'
 ;;    `icicle-confirm-exit-commands',
 ;;    `icicle-crm-local-completion-map',
 ;;    `icicle-crm-local-must-match-map',

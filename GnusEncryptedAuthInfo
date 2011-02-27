@@ -37,6 +37,8 @@ It seems that in addition, you need to stop passing <code>--use-agent</code> to 
 == What to do if you want the text prompt for your password instead of the window prompt ==
 This is described in [[EasyPG]].
 
+----
+For the popular !OfflineIMAP + Gnus setup [http://quotenil.com/OfflineIMAP-with-Encrypted-Authinfo.html this is how] to make offlineimap use .authinfo.gpg. -- GaborMelis
 
 ----
 CategoryGnus
