@@ -1,0 +1,27 @@
+ZNC.el is a customize group and a set of helpers to manage IRC connections through one or many ZNC servers.
+
+It is available at https://github.com/sshirokov/ZNC.el
+
+Make sure the contents of the repo, or just ./znc.el is on your load-path.
+
+<pre>
+;; Install
+(require 'znc)
+
+;; Configure
+M-x customize-group znc RET
+
+;; Engage!
+; It'll prompt you for a configured server, or tell you to configure one
+M-x znc-erc
+
+; Or you can make a giant sweep and connect to freaking everything
+M-x znc-all
+</pre>
+
+;; Usage
+
+/reconnect will recycle the hell out of the server buffer.
+
+By default, when you kill a channel buffer instead of /parting from the channel, you will detach from it
+This is customizable

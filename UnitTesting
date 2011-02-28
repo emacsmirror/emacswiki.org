@@ -10,7 +10,7 @@ Various '''testing frameworks''' simplify the task of writing and running tests.
 
 * '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it wasn't (the comparison returned ##nil##), ##assert## would signal an error.
 * '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
-* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object implementing the suite is often called the "test case".)
+* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object implementing the suite is often called the "test case" or "test harness".)
 * '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. In other words, "stubbing out" the external behavior is useful when testing a unit which depends on that function. (Roughly speaking, mocks and stubs do the same thing, but mocks are more sophisticated.)
 * '''Fixture:''' setting up (and tearing down) an environment for a test or a test suite.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
@@ -24,7 +24,7 @@ The following unit test frameworks exist for Emacs Lisp.
 
 === Included with Emacs ===
 
-'''[ErtTestLibrary ert.el]''' (Elisp Regression Testing) by Christian M. Ohler is included in Emacs trunk. It can also be retrieved from its [http://github.com/ohler/ert old repository]. The framework provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively.
+'''[ErtTestLibrary ert.el]''' (Elisp Regression Testing) by Christian M. Ohler is now included in Emacs trunk. It can also be retrieved from its [http://github.com/ohler/ert old repository]. The framework provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively.
 
 === xUnit-like ===
 
@@ -54,13 +54,13 @@ The following unit test frameworks exist for Emacs Lisp.
 
 == Without a framework ==
 
-Where do you put your unit tests? In EmacsLisp, you can sprinkle your code with tests. Here is an example:
+Where do you put your unit tests? In Emacs Lisp, you can sprinkle your code with tests. Here is an example:
 
-    (defvar my-unit-testing nil)
+    (defvar run-my-tests nil)
     (eval-when-compile
-     (setq my-unit-testing t))
+     (setq run-my-tests t))
 
-Thus, when your code is being compiled, the test variable is set to ##t##. When a user loads a compiled ##.elc## file, the ##my-unit-testing## variable will remain set to ##nil##.
+Thus, when your code is being compiled, ##run-my-tests## is set to ##t##. When a user loads a compiled ##.elc## file, the variable will remain ##nil##.
 
 Then define your functions, and add tests right after the definitions.
 
@@ -68,8 +68,8 @@ Then define your functions, and add tests right after the definitions.
 
 Assertions can be made with the ##assert## macro from <tt>[CommonLispForEmacs cl.el]</tt>:
 
-    (assert (eq my--category-l (my--get-category ?a)))
-    (assert (eq my--category-r (my--get-category ?A)))
+    (assert (= (+ 2 2) 4))
+    (assert (/= (* 2 3) 5))
 
 Remember to load ##cl.el## with ##(require 'cl)##.
 
@@ -77,32 +77,31 @@ Remember to load ##cl.el## with ##(require 'cl)##.
 
 Assertions can be grouped into tests with ##defun##:
 
-    (defun test-my--get-category ()
-      (assert (eq my--category-l (my--get-category ?a)))
-      (assert (eq my--category-r (my--get-category ?A))))
+    (defun my-test-arithmetic ()
+      (assert (assert (= (+ 2 2) 4)))
+      (assert (assert (/= (* 2 3) 5))))
 
 === Test suites ===
 
 Tests can be grouped into test suites with ##add-hook##:
 
-    (defvar test-suite)
-    (add-hook 'test-suite 'test-my--get-category)
+    (defvar my-test-suite)
+    (add-hook 'my-test-suite 'my-test-arithmetic)
 
 To run the suite:
 
-    (when my-unit-testing
-      (run-hooks 'test-suite))
+    (when run-my-tests
+      (run-hooks 'my-test-suite))
 
 === Mock functions ===
 
 Functions can be temporarily rebound with ##flet## from <tt>[CommonLispForEmacs cl.el]</tt>:
 
-    (defun test-my--get-category ()
-      (flet ((my--get-category-kernel (cat) my--category-l))
-        (assert (eq my--category-l (my--get-category ?a)))
-        (assert (eq my--category-r (my--get-category ?A)))))
+    (defun my-test-division ()
+      (flet ((/ (dd ds) 0))
+        (assert (= (/ 1 0) 0))))
 
-Assuming ##my--get-category## depends on ##my--get-category-kernel##, a mock is substituted for the latter.
+The above will suppress an ##arith-error## when dividing by ##0##.
 
 === Fixtures ===
 
@@ -111,17 +110,17 @@ While fixtures are a great syntactic simplification in other languages, they are
     (unwind-protect
         (progn
           ;; Set up ...
-          (test-my--get-category))
+          (my-test-arithmetic))
       ;; ... tear down
       )
 
-The comments in [http://github.com/masatake/ert/blob/master/ert.el ert.el] sketch out a more general solution.
+The [https://github.com/ohler/ert/blob/bc51e3e8121d51dc88618847f0958e7ec832c7d2/doc/misc/ert.texi documentation of ert.el] sketches out a more general solution.
 
 === More on compilation ===
 
-Thus, the tests will still be compiled into your ##.elc## files, and ##my-unit-testing## will be evaluated a lot while you load the file, but since no other code gets executed, loading the ##.elc## files is still much faster than the ##.el## files -- all the tests are skipped. Still, the ##.elc## will contain the unit test code.
+Thus, the tests will still be compiled into your ##.elc## files, and ##run-my-tests## will be evaluated a lot while you load the file, but since no other code gets executed, loading the ##.elc## files is still much faster than the ##.el## files -- all the tests are skipped. Still, the ##.elc## will contain the unit test code.
 
-Instead of using a variable, you can wrap all tests in a macro, of course. The simplest solution is to do away with the ##my-unit-testing## variable and wrap all tests in an ##eval-when-compile## macro. This will save a bit of time while loading the compiled files, because the ##.elc## will no longer contain the unit test code.
+Instead of using a variable, you can wrap all tests in a macro, of course. The simplest solution is to do away with the ##run-my-tests## variable and wrap all tests in an ##eval-when-compile## macro. This will save a bit of time while loading the compiled files, because the ##.elc## will no longer contain the unit test code.
 
 == External links ==
 

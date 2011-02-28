@@ -154,6 +154,7 @@ You should be able to find documentation on how to set them up on their pages.
 * ErcNicklist -- show channel nicks in a side buffer
 * ErcSpeak -- listen to what's being said in IRC channels via EmacSpeak
 * ErcSpeedbar -- integrate with SpeedBar
+* ErcZNC -- interface to the ZNC IRC bouncer
 * IgorThpeak -- avoid taking IRC comments the wrong way by reading them silly.
 
 == Other Goodies (not part of ERC) ==

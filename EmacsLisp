@@ -23,9 +23,7 @@ with Emacs, see CommonLisp and [[Scheme]].
 
 For Emacs Lisp documentation, see the EmacsLispReference node.  For Emacs Lisp SelfDocumentation, see CodingStyle.
 
-A quick-and-dirty introduction to Emacs Lisp, from DanBarlow: http://web.metacircles.com/scripting%20emacs, comment seems to be broken try http://web.archive.org/web/20060329183555/web.metacircles.com/scripting+emacs
-
-Another intro from the FreeSoftwareFoundation: EmacsLispIntro.
+An introduction from the FreeSoftwareFoundation: EmacsLispIntro.
 
 A work-in-progress (perhaps to be perpetually unfinished) tutorial:
 http://www.gnuvola.org/software/elisp-tutorial/index.html

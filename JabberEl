@@ -247,7 +247,7 @@ On Debian, the libnotify1 and libnotify-bin packages are required.
       (notify-send (format "%s" (jabber-jid-displayname from))
              text)))
 
-(add-hook 'jabber-alert-message-hooks 'libnotify-jabber-notify))
+(add-hook 'jabber-alert-message-hooks 'libnotify-jabber-notify)
 </pre>
 
 ==== Using growl ====

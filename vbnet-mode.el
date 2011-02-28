@@ -7,10 +7,10 @@
 ;;            : Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : April 1996
 ;; Modified   : February 2011
-;; Version    : 1.5
+;; Version    : 1.5a
 ;; Keywords   : languages, basic, VB, VBNET
 ;; X-URL      : http://code.google.com/p/vbnetmode/
-;; Last-saved : <2011-February-26 19:34:28>
+;; Last-saved : <2011-February-27 14:31:17>
 
 ;; Copyright (C) 1996 Fred White <fwhite@alum.mit.edu>
 ;; Copyright (C) 1998 Free Software Foundation, Inc.
@@ -71,6 +71,11 @@
 ;;      ...other mode-setup code here...
 ;;    )
 ;;    (add-hook 'vbnet-mode-hook 'my-vbnet-mode-fn)
+;;
+;;  Optionally, add a line like this to each .vb file that you use
+;;  flymake with:
+;;
+;;   '  flymake-command: c:\.net3.5\vbc.exe /t:module /nologo Filename.vb
 ;;
 
 
@@ -175,6 +180,15 @@
 ;;     `vbnet-split-line' Also, fixed the latter to work in an edge
 ;;     case.
 ;;
+;; 1.5a DPC changes February 2011
+;;
+;;      Added the feature where vbnet-mode scans the buffer for a line that
+;;      specifies the flymake command to use.  For example, specify
+;;      flymake-command: c:\.net3.5\vbc.exe /t:module /nologo Filename.vb
+;;      in the comment at the top of the file, to tell flymake to use
+;;      that command. See also, the var `vbnet-flymake-cmd-line-limit'.
+;;
+
 
 ;; Notes by Dave Love
 ;; BTW, here's a script for making tags tables that I (Dave Love) have
@@ -274,6 +288,23 @@ only if flymake is loaded."
 (defcustom vbnet-allow-single-line-if nil
   "*Whether to allow single line if"
   :type 'boolean :group 'vbnet)
+
+(defcustom vbnet-flymake-cmd-line-limit 18
+  "The number of lines at the top of the file, to look for, for
+a flymake cmd line. The format  should be:
+
+  flymake-command: vbc.exe /target:netmodule /r:foo.dll Filename.vb
+
+If the value is zero, then vbnet looks everywhere in the file.
+If the value is positive, then vbnet looks only in the first N
+lines. If negative, then only in the final N lines.
+
+If the string flymake-command: is present in the given set of lines,
+vbnet-mode will take anything after flymake-command: as the
+command to run for a flymake check.
+
+"
+  :type 'string  :group 'vbnet)
 
 
 ;; This is the kind of thing that is better done by a general-purpose
@@ -1531,23 +1562,114 @@ compiler, when using flymake with a
 direct vbc.exe build for syntax checking purposes.")
 
 
+(defun vbnet-flymake-foo ()
+  "foo"
+  (interactive)
+  (vbnet-flymake-get-cmdline "source" "base-dir"))
+
+
 (defun vbnet-flymake-get-cmdline (source base-dir)
   "Gets the cmd line for running a flymake session in a VB.NET buffer.
+This gets called by flymake itself.
 
-If this fn were smart it would parse the comment header at the top of the file
-to look for a string that specifies the flymake command line to use.
+The fn looks in the buffer for a line that looks like:
 
-It isn't (yet) that smart.
+  flymake-command: <command goes here>
+
+  (It should be embedded into a comment)
+
+Typically the command will be a line that runs nmake.exe,
+msbuild.exe, or vbc.exe, with various options. It should
+eventually run the VB.NET compiler, or something else that emits
+error messages in the same form as the VB.NET compiler.
+
+In general, you should use a target type of \"module\" (eg,
+/t:module) to allow vbnet-flymake to clean up the products of the
+build.
+
+See `vbnet-flymake-cmd-line-limit' for a way to restrict where vbnet-mode
+will search for the command.
+
+If this string is not found, then this fn will fallback to a vbc.exe
+command.
 
 "
-  ;; this should be a fallback
-  (list "vbc.exe"
-        (append (vbnet-flymake-get-final-vbc-arguments) (list source))))
+  (let ((explicitly-specified-command
+         (let ((line-limit vbnet-flymake-cmd-line-limit)
+               start search-limit found)
+           ;; determine what lines to look in
+           (save-excursion
+             (save-restriction
+               (widen)
+               (cond ((> line-limit 0)
+                      (goto-char (setq start (point-min)))
+                      (forward-line line-limit)
+                      (setq search-limit (point)))
+                     ((< line-limit 0)
+                      (goto-char (setq search-limit (point-max)))
+                      (forward-line line-limit)
+                      (setq start (point)))
+                     (t                        ;0 => no limit (use with care!)
+                      (setq start (point-min))
+                      (setq search-limit (point-max))))))
+
+           ;; look in those lines
+           (save-excursion
+             (save-restriction
+               (widen)
+               (if (and start
+                        (< (goto-char start) search-limit)
+                        (re-search-forward "\\bflymake-command[ \t]*:[ \t]*\\(.+\\)$" search-limit 'move))
+
+                   (buffer-substring-no-properties
+                    (match-beginning 1)
+                    (match-end 1))))))))
+
+    (cond
+     (explicitly-specified-command
+      (let ((tokens (split-string explicitly-specified-command "[ \t]" t)))
+        (list (car tokens) (cdr tokens))))
+
+     (t
+      ;; fallback
+      (list "vbc.exe"
+            (append (vbnet-flymake-get-final-vbc-arguments
+                     vbnet-flymake-vbc-arguments)
+                    (list source)))))))
 
 
-(defun vbnet-flymake-get-final-vbc-arguments ()
-  "Gets the arguments used by VBC.exe for flymake runs. "
-  vbnet-flymake-vbc-arguments )
+
+(defun vbnet-flymake-get-final-vbc-arguments (initial-arglist)
+  "Gets the arguments used by VBC.exe for flymake runs.
+This may inject a /t:module into an arglist, where it is not present.
+
+It burps if a different /t argument is found.
+"
+  (interactive)
+  (let ((args initial-arglist)
+        arg
+        (found nil))
+    (while args
+      (setq arg (car args))
+      (cond
+       ((string-equal arg "/t:module") (setq found t))
+       ((string-match "^/t:" arg)
+        (setq found t)
+        (message "vbnet-mode: WARNING /t: option present in arglist, and not /t:module; fix this.")))
+
+      (setq args (cdr args)))
+
+    (setq args
+          (if found
+              initial-arglist
+            (append (list "/t:module") initial-arglist)))
+
+    (if (called-interactively-p 'any)
+        (message "result: %s" (prin1-to-string args)))
+
+    args))
+
+
 
 (defvar vbnet-vbc-error-pattern
   "^[ \t]*\\([_A-Za-z0-9][^(]+\\.[Vv][Bb]\\)(\\([0-9]+\\)) : \\(\\(error\\|warning\\) BC[0-9]+:[ \t\n]*\\(.+\\)\\)"

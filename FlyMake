@@ -27,6 +27,7 @@ Flymake's author is PavelKobiakov
 ; CSS: FlymakeCSS for Cascading Style Sheets
 ; Java: FlymakeJava with Make or JDEE
 ; C#: FlymakeCsharp for C#
+; VB.NET: included in VbDotNetMode
 ; Python: See PythonMode
 ; D: FlyMakeD for the D programming language.
 ; FlymakeTex: TeX and LaTeX
