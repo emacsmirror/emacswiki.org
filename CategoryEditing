@@ -15,6 +15,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
 ** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
 ** [[Anything]] -- `M-x anything-show-kill-ring' narrows the kill-ring by multiple patterns.
+** Lisp:savekill.el -- Save kill-ring immediately and restore to protect from emacs crash.
 ** See also CategoryRegion
 * [[register|Registers]]:
 ** RegAdhoc -- automatically add [[register]]s and show their destinations

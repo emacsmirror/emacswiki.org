@@ -1,0 +1,4 @@
+Many modern editors and IDEs indicate the location of the fill column with a thin line (in design parlance, a `rule') running the length of the editing window.  The package <tt>[[fill-column-rule.el]]</tt> (by AlpAker) implements this facility in Emacs.
+
+----
+CategoryFilling

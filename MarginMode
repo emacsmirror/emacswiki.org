@@ -104,8 +104,9 @@ Lisp:column-marker.el does exactly what you're asking for.
 Can someone please demonstrate how?  As stated above, column-marker.el only marks the column if there is text there, and it highlights the whole column rather than displaying a single, one-pixel-wide line, so I'm pretty sure that column-marker's default configuration is not what JohnYates was asking for.
 
 What do you need to do to make it look more like the Visual Studio guidelines feature -- for instance, http://blogs.msdn.com/b/saraford/archive/2004/11/15/257953.aspx ?  I didn't get anywhere customizing the column-marker-1 face.
-[new]
 
+[new:AlpAker:2011-02-28 22:10 UTC]
+I've uploaded up a package FillColumnRule that can draw a line at the fill column in the way John Yates describes above. --- AlpAker
 ----
 See also: ColumnMarker, EightyColumnRule and HighlightLongLines.
 

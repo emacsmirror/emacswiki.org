@@ -9,6 +9,7 @@ I use Emacs.
 * [TransEJ trans-ej.el] -- English-Japanese translator using multiple Web translation services
 * [MenuTree menu-tree.el] -- Localize menu-bar items (Originally written by YAGI Tatsuya)
 * [GrabAndDrag grab-and-drag.el] -- Scroll a window by mouse dragging
+* [TransposeFrame transpose-frame.el] -- Transpose windows arrangement in a frame
 * etc.
 
 == Web sites I maintain ==

@@ -78,8 +78,8 @@ Remember to load ##cl.el## with ##(require 'cl)##.
 Assertions can be grouped into tests with ##defun##:
 
     (defun my-test-arithmetic ()
-      (assert (assert (= (+ 2 2) 4)))
-      (assert (assert (/= (* 2 3) 5))))
+      (assert (= (+ 2 2) 4))
+      (assert (/= (* 2 3) 5)))
 
 === Test suites ===
 

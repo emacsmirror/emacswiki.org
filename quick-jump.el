@@ -111,7 +111,7 @@
 (require 'ring)
 
 (defgroup quick-jump nil
-  "Another Etags anything.el interface."
+  "Remember current position,and jump back."
   :group 'convenience)
 
 (defcustom  qj-line-count 10

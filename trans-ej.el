@@ -2,13 +2,13 @@
 
 ;;; trans-ej.el --- English-Japanese translator using web translation service
 
-;; Copyright (c) 2009, 2010  S. Irie
+;; Copyright (c) 2009, 2010, 2011  S. Irie
 
 ;; Author: S. Irie
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.3.1")
+(defconst trans-ej-version "0.3.2")
 
 ;; This program is free software.
 
@@ -63,6 +63,9 @@
 
 ;;; ChangeLog:
 
+;; 2011-03-01  S. Irie
+;;        * Version 0.3.2
+;;        * Bug fix
 ;; 2010-10-11  S. Irie
 ;;        * Version 0.3.1
 ;;        * Bug fix
@@ -669,24 +672,24 @@ can be specified by `trans-ej-site-orders-alist'."
 	      (setq beg (point-marker))
 	      (insert msg "\n")
 	      (setq end (point-marker))
-	      (insert "\n"))
-	    (condition-case err
-		;; The following code must be placed on the outside of
-		;;`with-current-buffer' in order that the auto-uncomment
-		;; mechanism works correctly.
-		(trans-ej-string-1 string site from to
-				   'trans-ej-string-all-callback
-				   (list buf beg end msg
-					 trans-ej-string-all-update-function))
-	      (error (with-current-buffer buf
-		       (delete-region beg end)
-		       (goto-char beg)
-		       (insert (propertize (format "%s: %s\n\n" (car err) (cadr err))
-					   'face 'shadow)))
-		     (set-marker beg nil)
-		     (set-marker end nil)
-		     (setq trans-ej-wait-responses-list
-			   (cdr trans-ej-wait-responses-list)))))
+	      (insert "\n")
+	      (condition-case err
+		  ;; "(with-current-buffer curbuf ...)" is necessary in order
+		  ;; that the auto-uncomment mechanism works correctly.
+		  (with-current-buffer curbuf
+		    (trans-ej-string-1 string site from to
+				       'trans-ej-string-all-callback
+				       (list buf beg end msg
+					     trans-ej-string-all-update-function)))
+		(error
+		 (delete-region beg end)
+		 (goto-char beg)
+		 (insert (propertize (format "%s: %s\n\n" (car err) (cadr err))
+				     'face 'shadow))
+		 (set-marker beg nil)
+		 (set-marker end nil)
+		 (setq trans-ej-wait-responses-list
+		       (cdr trans-ej-wait-responses-list))))))
 	  sites)
     (if trans-ej-string-all-update-function
 	(funcall trans-ej-string-all-update-function buf))

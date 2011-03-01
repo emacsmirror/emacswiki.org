@@ -46,6 +46,10 @@ Highlighting or finding long lines without filling them:
 
 (Any recommendations? Too much choice!)
 
+Indicating the location of the fill column:
+
+* FillColumnRule -- a minor mode that draws a line down the editing window at the location of the fill column
+
 Unwrapping:
 
 * UnfillParagraph, UnwrapLine -- take a paragraph and turn it into one long line

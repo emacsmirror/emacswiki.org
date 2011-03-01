@@ -27,6 +27,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 * OneWindow -- Make Emacs always use only one window for whatever it does
 * TransposeWindows -- Rearrange windows within a [[Frame]]
 * ToggleWindowSplit -- Toggle between vertical and horizontal split
+* TransposeFrame -- Transpose windows arrangement in a [[Frame]]
 * WidenWindow -- Widen the active window
 * WindowResize -- Resize windows using simple keybindings
 * ThreeWindows -- Enjoy your work in three windows per [[Frame]]. One big and two small. 

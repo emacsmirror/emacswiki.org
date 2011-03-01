@@ -1,5 +1,5 @@
 ;;;; savekill.el --- Save kill ring to disk
-;; Time-stamp: <2011-02-26 20:22:11 rubikitch>
+;; Time-stamp: <2011-02-28 20:28:27 rubikitch>
 
 ;; Copyright (C) 2011  rubikitch
 
@@ -76,13 +76,15 @@
   "*Saved `kill-ring' filename."
   :type 'string  
   :group 'savekill)
+(defvar save-kill-coding-system 'utf-8)
 
 (defun save-kill-internal ()
-  (write-region
-   (concat "(setq kill-ring '"
-           (prin1-to-string (mapcar 'substring-no-properties kill-ring))
-           ")\n")
-   nil save-kill-file-name nil 'silent))
+  (let ((coding-system-for-write save-kill-coding-system))
+    (write-region
+    (concat "(setq kill-ring '"
+            (prin1-to-string (mapcar 'substring-no-properties kill-ring))
+            ")\n")
+    nil save-kill-file-name nil 'silent)))
 
 (defadvice kill-new (after savekill activate)
   "Save kill ring to `save-kill-file-name' everytime kill ring is updated."
