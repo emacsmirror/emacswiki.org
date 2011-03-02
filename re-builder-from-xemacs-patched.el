@@ -885,7 +885,7 @@ against.
                                   match-buffer)))
 		(with-current-buffer reb-target-buffer
 		  (setq reb-perl-match-vector
-			(read (with-current-buffer match-buffer (buffer-string ))))))
+			(read (with-current-buffer match-buffer (buffer-string))))))
 	    (kill-buffer program-buffer)
 	    (kill-buffer match-buffer))))
     (let* ((vector (reb-target-binding reb-perl-match-vector))
@@ -917,7 +917,7 @@ against.
 		    nil))
 	    ;; index to end of subexp 0 (end of whole match):
 	    1))))))
-   (t (re-search-forward regexp limit noerror count buffer))))
+   (t (re-search-forward regexp limit noerror count))))
 
 (defun reb-re-search-backward (regexp &optional limit noerror count buffer)
   (cond
@@ -950,7 +950,7 @@ against.
 		    nil))
 	    ;; index to end of subexp 0 (end of whole match):
 	    1))))))
-   (t (re-search-backward regexp limit noerror count buffer))))
+   (t (re-search-backward regexp limit noerror count))))
 
 (provide 're-builder)
 

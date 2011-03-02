@@ -2419,19 +2419,19 @@ in `anything-ff-history'."
            (eq major-mode 'message-mode))
          (append (subseq actions 0 4)
                  '(("Gnus attach file(s)" . anything-ff-gnus-attach-files))
-                 (subseq actions 5)))
+                 (subseq actions 4)))
         ((string-match (image-file-name-regexp) candidate)
          (append (subseq actions 0 4)
                  '(("Rotate image right" . anything-ff-rotate-image-right)
                    ("Rotate image left" . anything-ff-rotate-image-left))
-                 (subseq actions 5)))
+                 (subseq actions 4)))
         ((string-match "\.el$" (anything-aif (anything-marked-candidates)
                                    (car it) candidate))
          (append (subseq actions 0 4);(list (car actions))
                  '(("Byte compile lisp file(s) `C-u to load'"
                     . anything-find-files-byte-compile)
                    ("Load File(s)" . anything-find-files-load-files))
-                 (subseq actions 5)))
+                 (subseq actions 4)))
         ((and (string-match "\.html$" candidate)
               (file-exists-p candidate))
          (append (subseq actions 0 4)
@@ -2478,6 +2478,27 @@ This affect directly file CANDIDATE."
   "Rotate image right without quitting anything."
   (interactive)
   (anything-execute-persistent-action 'image-action2))
+
+(defcustom anything-ff-exif-data-program "exiftran"
+  "*Program used to extract exif data of an image file."
+  :group 'anything-config
+  :type 'string)
+
+(defcustom anything-ff-exif-data-program-args "-d"
+  "*Arguments used for `anything-ff-exif-data-program'."
+  :group 'anything-config
+  :type 'string)
+
+(defun anything-ff-exif-data (candidate)
+  "Extract exif data from file CANDIDATE using `anything-ff-exif-data-program'."
+  (if (and anything-ff-exif-data-program
+           (executable-find anything-ff-exif-data-program))
+      (shell-command-to-string (format "%s %s %s"
+                                       anything-ff-exif-data-program
+                                       anything-ff-exif-data-program-args
+                                       candidate))
+      (format "No program %s found to extract exif"
+              anything-ff-exif-data-program)))
 
 ;; Have no effect if candidate is not an image file.
 (define-key anything-map (kbd "M-l") 'anything-ff-rotate-left-persistent)
@@ -2526,7 +2547,10 @@ If a prefix arg is given or `anything-follow-mode' is on open file."
                (kill-buffer image-dired-display-image-buffer))
              (image-dired-display-image candidate)
              (message nil)
-             (display-buffer image-dired-display-image-buffer))
+             (display-buffer image-dired-display-image-buffer)
+             (with-current-buffer image-dired-display-image-buffer
+               (let ((exif-data (anything-ff-exif-data candidate)))
+                 (image-dired-update-property 'help-echo exif-data))))
             ;; Allow browsing archive on avfs fs.
             ;; Assume volume is already mounted with mountavfs.
             ((and anything-ff-avfs-directory
@@ -3184,9 +3208,9 @@ The \"-r\" option must be the last option.")
                                               (expand-file-name i))
                                              "*") t))
              ((string-match "\*" i) (file-expand-wildcards i t))
-             (t (list i))) into of
+             (t (list i))) into all-files
        finally return
-       (mapconcat #'(lambda (x) (shell-quote-argument x)) of " ")))
+       (mapconcat 'shell-quote-argument all-files " ")))
 
 (defun anything-c-grep-recurse-p ()
   "Check if `anything-do-grep1' have switched to recursive."
@@ -3198,13 +3222,16 @@ The \"-r\" option must be the last option.")
   "Start an asynchronous grep process in ONLY-FILES list."
   (let* ((fnargs        (anything-c-grep-prepare-candidates
                          (if (file-remote-p anything-ff-default-directory)
-                             (mapcar #'(lambda (x) (file-remote-p x 'localname)) only-files)
+                             (mapcar #'(lambda (x)
+                                         (file-remote-p x 'localname))
+                                     only-files)
                              only-files)))
          (ignored-files (mapconcat
                          #'(lambda (x)
                              (concat "--exclude=" (shell-quote-argument x)))
                          grep-find-ignored-files " "))
-         (ignored-dirs  (mapconcat ; Need grep version 2.5.4 of Gnuwin32 on windoze. 
+         (ignored-dirs  (mapconcat
+                         ;; Need grep version 2.5.4 of Gnuwin32 on windoze.
                          #'(lambda (x)
                              (concat "--exclude-dir=" (shell-quote-argument x)))
                          grep-find-ignored-directories " "))
@@ -3242,7 +3269,8 @@ WHERE can be one of other-window, elscreen, other-frame."
          (tramp-method (file-remote-p anything-ff-default-directory 'method))
          (tramp-host   (file-remote-p anything-ff-default-directory 'host))
          (tramp-prefix (concat "/" tramp-method ":" tramp-host ":"))
-         (fname        (if tramp-host (concat tramp-prefix loc-fname) loc-fname)))
+         (fname        (if tramp-host
+                           (concat tramp-prefix loc-fname) loc-fname)))
     (case where
       (other-window (find-file-other-window fname))
       (elscreen     (anything-elscreen-find-file fname))
@@ -3292,9 +3320,10 @@ If it's empty --exclude `grep-find-ignored-files' is used instead."
      :sources
      `(((name . "Grep (M-up/down - next/prec file)")
         (candidates
-         . (lambda () (if include-files
-                          (funcall anything-c-grep-default-function only include-files)
-                          (funcall anything-c-grep-default-function only))))
+         . (lambda ()
+             (if include-files
+                 (funcall anything-c-grep-default-function only include-files)
+                 (funcall anything-c-grep-default-function only))))
         (filtered-candidate-transformer anything-c-grep-cand-transformer)
         (candidate-number-limit . 9999)
         (action . ,(delq
@@ -3306,7 +3335,8 @@ If it's empty --exclude `grep-find-ignored-files' is used instead."
                       ,(and (locate-library "elscreen")
                             '("Find file in Elscreen"
                               . (lambda (candidate)
-                                  (anything-c-grep-action candidate 'elscreen))))
+                                  (anything-c-grep-action
+                                   candidate 'elscreen))))
                       ("Find file other frame"
                        . (lambda (candidate)
                            (anything-c-grep-action candidate 'other-frame))))))
@@ -7409,13 +7439,14 @@ If EXE is already running just jump to his window if `anything-raise-command'
 is non--nil.
 When FILE argument is provided run EXE with FILE.
 In this case EXE must be provided as \"EXE %s\"."
-  (lexical-let* ((real-com (car (split-string (replace-regexp-in-string "'%s'" "" exe))))
+  (lexical-let* ((real-com (car (split-string (replace-regexp-in-string
+                                               "'%s'" "" exe))))
                  (proc     (if file (concat real-com " " file) real-com)))
     (if (get-process proc)
         (if anything-raise-command
             (shell-command  (format anything-raise-command real-com))
             (error "Error: %s is already running" real-com))
-        (when (member real-com anything-c-external-commands-list)
+        (when (loop for i in anything-c-external-commands-list thereis real-com)
           (message "Starting %s..." real-com)
           (if file
               (start-process-shell-command proc nil (format exe file))
@@ -7429,7 +7460,8 @@ In this case EXE must be provided as \"EXE %s\"."
                  (shell-command  (format anything-raise-command "emacs")))
                (message "%s process...Finished." process))))
         (setq anything-c-external-commands-list
-              (cons real-com (delete real-com anything-c-external-commands-list))))))
+              (cons real-com
+                    (delete real-com anything-c-external-commands-list))))))
 
 
 (defvar anything-external-command-history nil)
@@ -7887,6 +7919,43 @@ evaluate it and put it onto the `command-history'."
   "Buffers matching `anything-c-boring-buffer-regexp' will be
 displayed with the `file-name-shadow' face if available."
   (anything-c-shadow-entries buffers anything-c-boring-buffer-regexp))
+
+(defvar anything-c-buffer-display-string-functions
+  '(anything-c-buffer-display-string--compilation
+    anything-c-buffer-display-string--shell
+    anything-c-buffer-display-string--eshell)
+  "Functions to setup display string for buffer.
+
+Function has one argument, buffer name.
+If it returns string, use it.
+If it returns nil, display buffer name.
+See `anything-c-buffer-display-string--compilation' for example.")
+
+(defun anything-c-transform-buffer-display-string (buffers)
+  "Setup display string for buffer candidates
+using `anything-c-buffer-display-string-functions'."
+  (loop for buf in buffers 
+        if (consp buf)
+        collect buf
+        else
+        for disp = (progn (set-buffer buf)
+                          (run-hook-with-args-until-success
+                           'anything-c-buffer-display-string-functions buf))
+        collect (if disp (cons disp buf) buf)))
+
+(defun anything-c-buffer-display-string--compilation (buf)
+  (anything-aif (car compilation-arguments)
+      (format "%s: %s [%s]" buf it default-directory)))
+(defun anything-c-buffer-display-string--eshell (buf)
+  (when (eq major-mode 'eshell-mode)
+    (format "%s: %s [%s]" buf
+            (ignore-errors (ring-ref eshell-history-ring 0))
+            default-directory)))
+(defun anything-c-buffer-display-string--shell (buf)
+  (when (eq major-mode 'shell-mode)
+    (format "%s: %s [%s]" buf
+            (ignore-errors (ring-ref comint-input-ring 0))
+            default-directory)))
 
 ;;; Files
 (defun anything-c-shadow-boring-files (files)
@@ -8576,7 +8645,9 @@ Return nil if bmk is not a valid bookmark."
      ("Ediff Merge marked buffers" . (lambda (candidate)
                                        (anything-ediff-marked-buffers candidate t))))
     (persistent-help . "Show this buffer")
-    (candidate-transformer anything-c-skip-current-buffer anything-c-skip-boring-buffers))
+    (candidate-transformer anything-c-skip-current-buffer
+                           anything-c-skip-boring-buffers
+                           anything-c-transform-buffer-display-string))
   "Buffer or buffer name.")
 
 (define-anything-type-attribute 'file

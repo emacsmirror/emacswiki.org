@@ -1,4 +1,4 @@
-This is an extension to [[rcirc]].
+This is an extension to [[rcirc]]. It will allow you to queue messages to send to particular people when they join. As soon as they join, the messages you queued up will get sent.
 
 # Use /POUNCE to list the queues.
 # Use /POUNCE NICK to list all messages queued for NICK

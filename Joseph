@@ -1,4 +1,4 @@
-I am a  newbie. I use GNU Emacs 23 on Gentoo(Linux) and  Windows since 2010-10--.
+I am a  newbie. I use Emacs 23 on Gentoo(Linux) and  Windows since 2010-10--.
 
  My E-mail is: jixiuf@gmail.com
 
@@ -15,7 +15,11 @@ I have a Chinese blog at [http://blog.csdn.net/jixiuffff MyBlog].
 I wrote:
 
 * AutoJavaComplete -- It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
+* [[anything-etags+.el]] -- Another Etags anything.el interface
 * [[quick-jump.el]] -- Remember current position,and jump back 
+* [[term-toggle.el]] -- toggle "*terminal*" window ,like shell-toggle.el
+* [[joseph-scroll-screen.el]] -- Scroll half screen down or up, and highlight current line temporarily.
+* [[joseph-autopair.el]] --  Do something like autopair or skeleton.
 * [http://www.emacswiki.org/emacs/joseph-go-to-char joseph-goto-char] -- like command f in vi.
 
 

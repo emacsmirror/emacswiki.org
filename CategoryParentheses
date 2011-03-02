@@ -6,6 +6,7 @@ Click on the header to find all parenthesis related pages. In Emacs-jargon, pare
 * ParenthesisMatching -- how to turn two characters into matching parentheses and bounce between matching parenthesis.
 * ParenthesesAppearance -- changing the appearance of parentheses (like color)
 * AutoPairs -- insert parentheses in pairs. See also BalancedEl.
+* [[joseph-autopair.el]] -- insert parentheses or other things you defined  in pairs.
 * ParEdit -- Structured editing of [[sexp]]s
 * ElectricDotAndDash -- experimental stuff, providing another way of entering parentheses.
 * UniversialCloseParen -- tries to insert the "correct" type of close paren.

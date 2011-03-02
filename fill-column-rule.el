@@ -105,18 +105,18 @@
 ;; directly.  Get a list of possible font choices (distinct from font
 ;; *families*) by evaluating the form:
 ;;
-;;   (insert (mapconcat 'identity (x-list-fonts "10646") "\n"))
+;;   (insert (mapconcat 'identity (x-list-fonts "-*-iso10646-1") "\n"))
 ;;
 ;; When there are multiple options for a font, choose the one that is
-;; "medium-normal-normal".
+;; "medium-normal-normal" or "medium-r-normal".
 
 ;; Now tell the fontset to use that font for a thin space:
 ;;
 ;;   (set-fontset-font "fontset-foo" #x200A
 ;;      "-apple-DejaVu_Sans-medium-normal-normal--0-0-0-0-m-0-iso10646-1")
 ;;
-;; (If you don't know which fontset to modify, use M-x list-fontsets to see
-;; the possibilities.)
+;; On v22, use 342378 instead of #x200A. (If you don't know which fontset to
+;; modify, use M-x list-fontsets to see the possibilities.)
 
 ;; Known Issues
 ;; ===== ======
@@ -193,9 +193,9 @@ function `fcr-mode' is run."
                 (character :tag "Specify a character")))
 
 (defcustom fcr-fallback-character ?|
- "The string fill-column-rule uses in extremis.
+ "The character fill-column-rule uses in extremis.
 If `fcr-rule-character' is nil and none of the default options
-are displayable, then this string is used instead.  It is always
+are displayable, then this character is used instead.  It is always
 used in unibyte buffers.
 
 Changes to this variable do not take effect until the mode
@@ -227,7 +227,8 @@ the :family atttribute of a face.")
 
 ;;; Internal Variables
 
-;; After initialization, holds the propertized char used to display the rule
+;; After initialization, holds the propertized string used to display the
+;; rule by the functions that deal with the horizontal scrolling bug.
 (defvar fcr-rule-glyph nil)
 (make-variable-buffer-local 'fcr-rule-glyph)
 
@@ -243,7 +244,7 @@ the :family atttribute of a face.")
 ;; See below, in the section Advised Mode-Specific Filling Functions.
 (defvar fcr-fill-column nil)
 
-;; The character we use to hide the rule on lines that extend past the
+;; The string we use to hide the rule on lines that extend past the
 ;; fill-column.  For v23-4, given in utf-8; for v22, in mule-unicode.
 (defconst fcr-fake-newline
   (if fcr->22
@@ -301,17 +302,15 @@ unexpected behavior, see the comments in fill-column-rule.el."
          (make-local-variable 'line-move-visual)
          (setq fcr-saved-line-move-visual line-move-visual
                line-move-visual nil))
-       (setq fcr-rule-glyph (fcr-make-rule-glyph))
-       (aset buffer-display-table
-             10
-             (vector 32 (make-glyph-code fcr-rule-glyph 'fcr-face)  10))
        (aset buffer-display-table (string-to-char fcr-fake-newline) [10])
-       (fcr-set-face-attributes)
-       ;; From here on out fcr-rule-glyph is only used by the hscroll hack,
-       ;; so convert it to the form needed there.
-       (setq fcr-rule-glyph (propertize (char-to-string fcr-rule-glyph)
-                                       'face
-                                       'fcr-face))
+       (let ((char (fcr-make-rule-char)))
+         (aset buffer-display-table
+               10
+               (vector 32 (make-glyph-code char 'fcr-face)  10))
+         (fcr-set-face-attributes char) 
+         (setq fcr-rule-glyph (propertize (char-to-string char) 
+                                          'face
+                                          'fcr-face)))
        (add-hook 'after-change-functions 'fcr-after-change-function nil t)
        (ad-enable-regexp "fill-column-rule")
        (ad-activate-regexp "fill-column-rule")
@@ -343,7 +342,7 @@ unexpected behavior, see the comments in fill-column-rule.el."
 ;;; Initialization
 
 ;; Called by the mode function to set fcr-glpyh.
-(defun fcr-make-rule-glyph ()
+(defun fcr-make-rule-char ()
  ;; Check for a user-specified char, and whether we're in a unibyte buffer.
  (or
   (cond
@@ -365,7 +364,7 @@ unexpected behavior, see the comments in fill-column-rule.el."
             (throw 'result c))))))
   fcr-fallback-character))
 
-(defun fcr-set-face-attributes ()
+(defun fcr-set-face-attributes (char)
  (let* ((color (if fcr-color
                    ;; User specified a color.  If it's not
                    ;; supported, object.
@@ -381,10 +380,10 @@ unexpected behavior, see the comments in fill-column-rule.el."
                                              'background-mode)
                                 'light)
                      "gray80" "gray50")))
-        ;; If the rule is a form of whitespace, color is a
+        ;; If the rule char is a form of whitespace, color is a
         ;; background color.  Otherwise, it's a foreground color.
         (color-prop (if color
-                        (if (= 32 (char-syntax fcr-rule-glyph))
+                        (if (= 32 (char-syntax char))
                             `(:background ,color :foreground unspecified)
                           `(:foreground ,color :background unspecified))))
         ;; If fcr-font is specified, try to use that.
@@ -526,8 +525,9 @@ unexpected behavior, see the comments in fill-column-rule.el."
 ;; Set by fcr-post-command-check to delete stray secondaries during idle
 ;; time.
 (defun fcr-idle-delete-secondaries (buf)
- (with-current-buffer buf
-   (fcr-delete-secondaries (point-min) (point-max)))
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (fcr-delete-secondaries (point-min) (point-max))))
  (setq fcr-idle-timer nil))
 
 (defsubst fcr-delete-secondaries (s e)
