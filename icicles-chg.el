@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 26 11:09:04 2011 (-0800)
+;; Last-Updated: Wed Mar  2 10:38:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6093
+;;     Update #: 6096
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2197,6 +2197,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/03/02 dadams
+;;     Added: icicle-all-exif-data.
+;;     icicle-describe-file: Show all EXIF data, using icicle-all-exif-data.
 ;; 2011/02/26 dadams
 ;;     Added: icicle-Completions-popup-choice(-1), icicle-substitute-keymap-vars.
 ;;     icicle-Completions-mouse-3-menu:

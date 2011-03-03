@@ -5,28 +5,24 @@ Git is available from http://git-scm.com/. Documentation can be found at http://
 
 == Emacs Standard Support ==
 
-Git is supported by
+Git is supported by ##vc-git## since 22.1, accessible via
 VersionControl and
 DistributedVersionControl.
 
-##git.el## is not part of GNU Emacs but resides in the emacs contrib's
-section of the Git distribution in
-<tt>[http://www.kernel.org/git/?p=git/git.git;a=tree;hb=HEAD;f=contrib/emacs
-contrib/emacs]</tt>
+##vc-git## is reported to work well.
+NB You should probably upgrade Emacs to obtain standard vc-git support as vc-git is not being back-ported.
+There are two front end wrapper packages that can be used with ##vc-git##:
 
-It consists of three files:
+# [http://github.com/tsgates/git-emacs/tree/master git-emacs], which provides status bar icons for git status
 
-* ##git.el## -- similar to PclCvs for ConcurrentVersionsSystem
-* ##git-blame.el## -- a frontend to the git-blame command line tool
-* ##vc-git.el## -- a VersionControl backend
-  (This is part of Emacs since version 22.2 (released in March 2008);
-  see also [http://www.gnuvola.org/wip/] for experimental hacks by ttn.)
-
-Clarification here [1]: Git, as in "Git support", IS included in emacs 22 and 23. Certainly loading the above caused issues with Emacs 23.0. The vc-git which comes with the emacs package works well for me and especially well with git-emacs http://github.com/tsgates/git-emacs/tree/master which provided status bar icons for git status. It appears VC has been rewritten and the common front end for multiple VC backends is a definite boon. While not seeming to support staging it does include a fairly full git feature set but is well documented in the version control info file.
+# ##git.el## and ##git-blame.el## (a frontend to the git-blame command line tool) which are distributed in the Git source distribution in the
+<tt>[http://www.kernel.org/git/?p=git/git.git;a=tree;hb=HEAD;f=contrib/emacs contrib/emacs]</tt>
+directory. The README file supplied in ##contrib/emacs## explains how to install them. Some introductory tutorial material located at [http://parijatmishra.wordpress.com/2008/09/06/up-and-running-with-emacs-and-git/ Up and Running with Emacs and Git]
 
 In emacs 23 the command showing the repository status C-x v d has been rewritten, it supports checking in multiple files/directories at a time, and has fancy display.  It can be extended with git specific functions.
 vc-git-grep can be used and a UI for git grep.
-vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g)
+vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g) *TODO* CONFIRM THIS
+
 
 == Other packages ==
 

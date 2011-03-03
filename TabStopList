@@ -32,11 +32,46 @@ Or even this:
                             (setq stops (cons (+ 8 (car stops)) stops)))
                           (nreverse stops)))
 
+Or just:
+
+    (setq tab-stop-list (mapcar (lambda (x) (* 4 x))
+                                (number-sequence 1 (/ 120 4))))
+
 Or perhaps:
 
     (setq tab-stop-list (loop for i from 4 to 120 by 4 collect i))
 
 The last only if you have used the CommonLisp package.
+
+Here's a command to set the tab stop width.
+
+    (defun set-tab-stop-width (width)
+      "Set all tab stops to WIDTH in current buffer.
+    
+    This updates `tab-stop-list', but not `tab-width'.
+    
+    By default, `indent-for-tab-command' uses tabs to indent, see
+    `indent-tabs-mode'."
+      (interactive "nTab width: ")
+      (let* ((max-col (car (last tab-stop-list)))
+             ;; If width is not a factor of max-col,
+             ;; then max-col could be reduced with each call.
+             (n-tab-stops (/ max-col width)))
+        (set (make-local-variable 'tab-stop-list)
+             (mapcar (lambda (x) (* width x))
+                     (number-sequence 1 n-tab-stops)))
+        ;; So preserve max-col, by adding to end.
+        (unless (zerop (% max-col width))
+          (setcdr (last tab-stop-list)
+                  (list max-col)))))
+
+In addition to interactive use, it could be added to a mode hook.
+
+    (defun local-text-mode-hook-fun ()
+      (set-tab-stop-width 2)
+      (setq indent-tabs-mode nil))
+    
+    (add-hook 'text-mode-hook 'local-text-mode-hook-fun)
 
 == Beware confusion with the variable `tab-width' ==
 

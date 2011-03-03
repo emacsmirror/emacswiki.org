@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Tue Feb 22 20:21:27 2011 (-0800)
+;; Last-Updated: Wed Mar  2 10:27:06 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 448
+;;     Update #: 464
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -43,10 +43,10 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `help-custom-type', `help-remove-duplicates',
-;;    `help-value-satisfies-type-p', `help-var-inherits-type-p',
-;;    `help-var-is-of-type-p', `help-var-matches-type-p',
-;;    `help-var-val-satisfies-type-p'.
+;;    `help-all-exif-data', `help-custom-type',
+;;    `help-remove-duplicates', `help-value-satisfies-type-p',
+;;    `help-var-inherits-type-p', `help-var-is-of-type-p',
+;;    `help-var-matches-type-p', `help-var-val-satisfies-type-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -72,6 +72,9 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/03/02 dadams
+;;     Added: help-all-exif-data
+;;     describe-file: Show all EXIF data, using help-all-exif-data.
 ;; 2011/02/22 dadams
 ;;     describe-file: Show also EXIF data for an image file.
 ;; 2011/01/04 dadams
@@ -1068,86 +1071,70 @@ command-line tool `exiftool' installed and in your `$PATH' or
 `exec-path', then some EXIF data (metadata) about the image is
 included.  See library `image-dired.el' for more information about
 `exiftool'."
-    (interactive "FDescribe file: ")
-    (unless filename (setq filename default-directory))
-    (help-setup-xref (list #'icicle-describe-file filename) (interactive-p))
-    (let ((attrs (file-attributes filename)))
-      (unless attrs (error(format "Cannot open file `%s'" filename)))
-      (let* ((type            (nth 0 attrs))
-             (numlinks        (nth 1 attrs))
-             (uid             (nth 2 attrs))
-             (gid             (nth 3 attrs))
-             (last-access     (nth 4 attrs))
-             (last-mod        (nth 5 attrs))
-             (last-status-chg (nth 6 attrs))
-             (size            (nth 7 attrs))
-             (permissions     (nth 8 attrs))
-             ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
-             (inode           (nth 10 attrs))
-             (device          (nth 11 attrs))
-             (image-info      (and (require 'image-dired nil t)
-                                   (fboundp 'image-file-name-regexp)
-                                   (if (fboundp 'string-match-p)
-                                       (string-match-p (image-file-name-regexp) filename)
-                                     (save-match-data
-                                       (string-match (image-file-name-regexp) filename)))
-                                   (progn (message "Gathering image data...") t)
-                                   (condition-case nil
-                                       (let* ((time     (image-dired-get-exif-data
-                                                         (expand-file-name filename)
-                                                         "DateTimeOriginal"))
-                                              (width    (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "ImageWidth")))
-                                              (height   (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "ImageHeight")))
-                                              (desc     (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "ImageDescription")))
-                                              (comment  (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "UserComment"))))
-                                         (concat
-                                          (format "Image file -\n Type: %s" (image-type filename))
-                                          (and time (not (zerop (length time)))
-                                               (format "\n Time: %s"  time))
-                                          (and width (not (zerop (length width)))
-                                               (format "\n Width: %s" width))
-                                          (and height (not (zerop (length height)))
-                                               (format "\n Height: %s" height))
-                                          (and desc (not (zerop (length desc)))
-                                               (format "\n Description:\n %s" desc))
-                                          (and comment (not (zerop (length comment)))
-                                               (format "\n Comment:\n %s" comment))))
-                                     (error nil))))
-             (help-text
-              (concat
-               (format "Properties of `%s':\n\n" filename)
-               (format "Type:                       %s\n"
-                       (cond ((eq t type) "Directory")
-                             ((stringp type) (format "Symbolic link to `%s'" type))
-                             (t "Normal file")))
-               (format "Permissions:                %s\n" permissions)
-               (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
-               (format-time-string
-                "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
-               (format-time-string
-                "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
-               (format-time-string
-                "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
-               (format "Number of links:            %d\n" numlinks)
-               (format "User ID (UID):              %s\n" uid)
-               (format "Group ID (GID):             %s\n" gid)
-               (format "Inode:                      %S\n" inode)
-               (format "Device number:              %s\n" device)
-               image-info)))
-        (with-output-to-temp-buffer "*Help*" (princ help-text))
-        help-text)))                      ; Return displayed text.
+  (interactive "FDescribe file: ")
+  (unless filename (setq filename default-directory))
+  (help-setup-xref (list #'describe-file filename) (interactive-p))
+  (let ((attrs (file-attributes filename)))
+    (unless attrs (error(format "Cannot open file `%s'" filename)))
+    (let* ((type            (nth 0 attrs))
+           (numlinks        (nth 1 attrs))
+           (uid             (nth 2 attrs))
+           (gid             (nth 3 attrs))
+           (last-access     (nth 4 attrs))
+           (last-mod        (nth 5 attrs))
+           (last-status-chg (nth 6 attrs))
+           (size            (nth 7 attrs))
+           (permissions     (nth 8 attrs))
+           ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
+           (inode           (nth 10 attrs))
+           (device          (nth 11 attrs))
+           (image-info      (and (require 'image-dired nil t)
+                                 (fboundp 'image-file-name-regexp)
+                                 (if (fboundp 'string-match-p)
+                                     (string-match-p (image-file-name-regexp) filename)
+                                   (save-match-data
+                                     (string-match (image-file-name-regexp) filename)))
+                                 (progn (message "Gathering image data...") t)
+                                 (condition-case nil
+                                     (let ((all  (help-all-exif-data (expand-file-name filename))))
+                                       (concat
+                                        (and all (not (zerop (length all)))
+                                             (format "\nImage Data (EXIF)\n-----------------\n%s"
+                                                     all))))
+                                   (error nil))))
+           (help-text
+            (concat
+             (format "Properties of `%s':\n\n" filename)
+             (format "File Type:                       %s\n"
+                     (cond ((eq t type) "Directory")
+                           ((stringp type) (format "Symbolic link to `%s'" type))
+                           (t "Normal file")))
+             (format "Permissions:                %s\n" permissions)
+             (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
+             (format-time-string
+              "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
+             (format-time-string
+              "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
+             (format-time-string
+              "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
+             (format "Number of links:            %d\n" numlinks)
+             (format "User ID (UID):              %s\n" uid)
+             (format "Group ID (GID):             %s\n" gid)
+             (format "Inode:                      %S\n" inode)
+             (format "Device number:              %s\n" device)
+             image-info)))
+      (with-output-to-temp-buffer "*Help*" (princ help-text))
+      help-text)))                      ; Return displayed text.
+
+(defun help-all-exif-data (file)
+  "Return all EXIF data from FILE, using command `exiftool'."
+  (let ((buf  (get-buffer-create "*help-all-exif-data*")))
+    (with-current-buffer buf
+      (delete-region (point-min) (point-max))
+      (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
+                                  (format "exiftool -All \"%s\"" file)))
+        (error "Could not get EXIF data"))
+      (buffer-substring (point-min) (point-max)))))
 
 ;;;###autoload
 (defun describe-keymap (keymap)

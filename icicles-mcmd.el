@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 26 10:46:01 2011 (-0800)
+;; Last-Updated: Wed Mar  2 10:38:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16712
+;;     Update #: 16727
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -222,8 +222,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `icicle-all-candidates-action-1', `icicle-anychar-regexp',
-;;    `icicle-apply-to-saved-candidate', `icicle-apropos-complete-1',
+;;    `icicle-all-candidates-action-1', `icicle-all-exif-data',
+;;    `icicle-anychar-regexp', `icicle-apply-to-saved-candidate',
+;;    `icicle-apropos-complete-1',
 ;;    `icicle-backward-delete-char-untabify-dots',
 ;;    `icicle-candidate-action-1', `icicle-candidate-set-retrieve-1',
 ;;    `icicle-candidate-set-save-1',
@@ -4793,42 +4794,16 @@ included.  See library `image-dired.el' for more information about
                                        (string-match (image-file-name-regexp) filename)))
                                    (progn (message "Gathering image data...") t)
                                    (condition-case nil
-                                       (let* ((time     (image-dired-get-exif-data
-                                                         (expand-file-name filename)
-                                                         "DateTimeOriginal"))
-                                              (width    (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "ImageWidth")))
-                                              (height   (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "ImageHeight")))
-                                              (desc     (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "ImageDescription")))
-                                              (comment  (and time
-                                                             (image-dired-get-exif-data
-                                                              (expand-file-name filename)
-                                                              "UserComment"))))
+                                       (let ((all  (icicle-all-exif-data (expand-file-name filename))))
                                          (concat
-                                          (format "Image file -\n Type: %s" (image-type filename))
-                                          (and time (not (zerop (length time)))
-                                               (format "\n Time: %s"  time))
-                                          (and width (not (zerop (length width)))
-                                               (format "\n Width: %s" width))
-                                          (and height (not (zerop (length height)))
-                                               (format "\n Height: %s" height))
-                                          (and desc (not (zerop (length desc)))
-                                               (format "\n Description:\n %s" desc))
-                                          (and comment (not (zerop (length comment)))
-                                               (format "\n Comment:\n %s" comment))))
+                                          (and all (not (zerop (length all)))
+                                               (format "\nImage Data (EXIF)\n-----------------\n%s"
+                                                       all))))
                                      (error nil))))
              (help-text
               (concat
                (format "Properties of `%s':\n\n" filename)
-               (format "Type:                       %s\n"
+               (format "File Type:                       %s\n"
                        (cond ((eq t type) "Directory")
                              ((stringp type) (format "Symbolic link to `%s'" type))
                              (t "Normal file")))
@@ -4848,6 +4823,17 @@ included.  See library `image-dired.el' for more information about
                image-info)))
         (with-output-to-temp-buffer "*Help*" (princ help-text))
         help-text))))                   ; Return displayed text.
+
+;; This is the same as `help-all-exif-data' in `help-fns+.el', but we avoid requiring that library.
+(defun icicle-all-exif-data (file)
+  "Return all EXIF data from FILE, using command `exiftool'."
+  (let ((buf  (get-buffer-create "*icicle-all-exif-data*")))
+    (with-current-buffer buf
+      (delete-region (point-min) (point-max))
+      (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
+                                  (format "exiftool -All \"%s\"" file)))
+        (error "Could not get EXIF data"))
+      (buffer-substring (point-min) (point-max)))))
 
 ;;;###autoload
 (defun icicle-candidate-read-fn-invoke () ; Bound to `M-RET' in minibuffer.

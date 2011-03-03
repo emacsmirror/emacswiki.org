@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 26 10:51:05 2011 (-0800)
+;; Last-Updated: Wed Mar  2 10:36:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22813
+;;     Update #: 22814
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -686,11 +686,11 @@
 ;;    `custom-variable-p', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name', `icicle-activate-mark',
 ;;    `icicle-add-key+cmd', `icicle-add-menu-item-to-cmd-history',
-;;    `icicle-all-candidates-action-1', `icicle-alpha-p',
-;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
-;;    `icicle-anychar-regexp', `icicle-anything-candidate-value',
-;;    `icicle-apply-action', `icicle-apply-list-action',
-;;    `icicle-apply-to-saved-candidate',
+;;    `icicle-all-candidates-action-1', `icicle-all-exif-data',
+;;    `icicle-alpha-p', `icicle-alt-act-fn-for-type',
+;;    `icicle-any-candidates-p', `icicle-anychar-regexp',
+;;    `icicle-anything-candidate-value', `icicle-apply-action',
+;;    `icicle-apply-list-action', `icicle-apply-to-saved-candidate',
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-apropos-complete-1',
