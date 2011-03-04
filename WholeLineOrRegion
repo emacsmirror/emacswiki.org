@@ -15,13 +15,29 @@ A concise solution is to alter the interactive form of ##kill-ring-save## and ##
        (if (use-region-p)
            (list (region-beginning) (region-end))
          (list (line-beginning-position) (line-beginning-position 2)))))
+
     (put 'kill-region 'interactive-form      
      '(interactive
        (if (use-region-p)
            (list (region-beginning) (region-end))
          (list (line-beginning-position) (line-beginning-position 2)))))
 
-Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the ##(interactive-form)## property only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
+If you use slime-repl, replace ##(line-beginning-position)## with ##(or slime-repl-input-start-mark (line-beginning-position))##.
+
+Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the ##interactive-form## property only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
+
+In fact, you could have this behaviour for all commands that operate on the region, if you wish:
+
+    (defconst use-line-iff-not-region
+      '(interactive
+        (if (use-region-p)
+            (list (region-beginning) (region-end))
+          (list (line-beginning-position) (line-beginning-position 2)))))
+    
+    (do-all-symbols (symbol)
+      (when (and (commandp symbol t)
+                 (string-match-p "-region$" (symbol-name symbol)))
+        (put symbol 'interactive-form use-line-iff-not-region)))
 
 === With yank-handler ==
 

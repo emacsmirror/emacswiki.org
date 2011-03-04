@@ -91,8 +91,7 @@ get to a particular candidate you want.  No matter how a candidate
 is made current, you can choose the current candidate (perform the
 action on it) using `C-RET' or `C-mouse-2'.
 
-For [[lax]] (permissive) completion, you can act on any input text with
-`C-RET' (but not with the other multi-command keys) -- you need
+For [[lax]] (permissive) completion, you can use `C-RET' to act on ''any'' input text -- you need
 not choose one of the available candidates.  This means, for example, that you can create any number of new file buffers with a single `C-x C-f' invocation, as well as open any number of existing files.
 
 As always, hitting `RET' (or `S-RET') ends the command.  For most

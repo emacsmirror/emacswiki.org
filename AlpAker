@@ -1,6 +1,8 @@
-I've been using Emacs since 2001, and recently decided to clean up and distribute some packages I've written in the years since.  
+I recently decided to clean up and distribute some packages I've written in the years since I started using Emacs.  
 
-* [[FillColumnRule]] -- a minor mode that indicates the location of the fill column with a thin line running down the editing window
+* [[PerWin]].  Per-win-mode changes how Emacs selects point when displaying a buffer in a window.  While it is enabled, each window keeps a record of the last value of point in every buffer that has been displayed in it.  When a window is switched back to a buffer it has displayed before, point and window-start are set to the values they had when that buffer was last displayed in the window.  
+
+* [[FillColumnRule]].  A minor mode that indicates the location of the fill column with a thin line running down the editing window.
 
 * more to come 
 

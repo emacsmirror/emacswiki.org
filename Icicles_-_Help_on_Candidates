@@ -139,7 +139,7 @@ Candidate help (prefix `C-M-') is available for these types of completion candid
 
 Starting with Emacs 22, if the candidate names an image file and
 you have command-line tool `exiftool' installed and in your
-`##$PATH##' or `exec-path', then some EXIF information (metadata)
+`##$PATH##' or `exec-path', then EXIF information (metadata)
 about the image is included.  See standard Emacs library ##image-dired.el## for
 more information about `exiftool'.
 

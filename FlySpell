@@ -83,7 +83,7 @@ I too cycle through different languages, but not all that is available in the sy
 
     (let ((langs '("american" "francais" "brasileiro")))
       (setq lang-ring (make-ring (length langs)))
-      (dolist (elem langs) (ring-insert lang-ring elem)))didi
+      (dolist (elem langs) (ring-insert lang-ring elem)))
 
     (defun cycle-ispell-languages ()
       (interactive)

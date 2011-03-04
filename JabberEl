@@ -415,6 +415,8 @@ just connect them manually with M-x jabber-connect-one.  (C-x C-j C-c
 will connect to all accounts in jabber-account-list, or if that is
 empty, ask you for an account to connect to) --MagnusHenoch
 
+Note that this was recently released as 0.8.0. See http://emacs-jabber.sourceforge.net/list-of-releases.html for more info. --JuneTateGans
+
 [new]
 I had a problem recently with the 0.8.0 version. The file
 jabber-muc-nick-completion.el defines a function modify-alist, which,

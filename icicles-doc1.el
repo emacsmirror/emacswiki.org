@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 26 13:39:14 2011 (-0800)
+;; Last-Updated: Thu Mar  3 11:33:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25831
+;;     Update #: 25835
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3844,9 +3844,9 @@
 ;;
 ;;  Starting with Emacs 22, if the candidate names an image file and
 ;;  you have command-line tool `exiftool' installed and in your
-;;  `$PATH' or `exec-path', then some EXIF information (metadata)
-;;  about the image is included.  See standard Emacs library
-;;  `image-dired.el' for more information about `exiftool'.
+;;  `$PATH' or `exec-path', then EXIF information (metadata) about the
+;;  image is included.  See standard Emacs library `image-dired.el'
+;;  for more information about `exiftool'.
 ;;
 ;;  If the same candidate names a function, a variable, and a face, or
 ;;  any two of these, then all such documentation is shown (Emacs 22
@@ -4029,12 +4029,11 @@
 ;;  is made current, you can choose the current candidate (perform the
 ;;  action on it) using `C-RET' or `C-mouse-2'.
 ;;
-;;  For lax (permissive) completion, you can act on any input text
-;;  with `C-RET' (but not with the other multi-command keys) - you
-;;  need not choose one of the available candidates.  This means, for
-;;  example, that you can create any number of new file buffers with a
-;;  single `C-x C-f' invocation, as well as open any number of
-;;  existing files.
+;;  For lax (permissive) completion, you can use `C-RET' to act on
+;;  *any* input text - you need not choose one of the available
+;;  candidates.  This means, for example, that you can create any
+;;  number of new file buffers with a single `C-x C-f' invocation, as
+;;  well as open any number of existing files.
 ;;
 ;;  As always, hitting `RET' (or `S-RET') ends the command.  For most
 ;;  multi-commands, hitting `RET' performs the same action as `C-RET',

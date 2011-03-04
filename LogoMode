@@ -3,5 +3,35 @@ LogoMode is included in the tarball for BerkeleyLogo under the subdirectory ##em
 Following the tutorial Logo file, ##tutorial.lg## is helpful for getting started with the mode's operations.
 
 ----
+
+=== Update ===
+
+It looks like the Emacs mode was removed from ucblogo 6, and previous versions aren't available on the project page.  I had to download it from the Debian Lenny archives:
+
+<pre>
+wget http://ftp.de.debian.org/debian/pool/main/u/ucblogo/ucblogo_5.5.orig.tar.gz
+tar xf ucblogo_5.5.orig.tar.gz
+cp -r ucblogo-5.5/emacs/ ~/.emacs.d/logo
+cp -r ucblogo-5.5/helpfiles/ ~/.emacs.d/logo/
+cp -r ucblogo-5.5/docs/ ~/.emacs.d/logo/
+</pre>
+
+Then load logo-mode by putting the following in your Emacs config:
+
+<pre>
+(add-to-list 'load-path "~/.emacs.d/logo")
+(autoload 'logo-mode "logo")
+(setq auto-mode-alist (append '(("\\.lgo?$" . logo-mode)) auto-mode-alist))
+(setq logo-binary-name "/usr/bin/logo")
+(setq logo-tutorial-path "~/.emacs.d/logo/")
+(setq logo-help-path "~/.emacs.d/logo/helpfiles/")
+(setq logo-info-file "~/.emacs.d/logo/docs/ucblogo.info")
+</pre>
+
+<b>Warning</b>: It takes over your global Emacs font face configurations, so run it in a separate Emacs process.
+
+Good Logo configuration example: http://www.cs.bath.ac.uk/~jjb/here/dot.emacs.txt
+
+----
 CategoryModes
 CategoryProgramming

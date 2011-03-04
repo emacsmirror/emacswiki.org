@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Feb 11 13:58:50 2011 (-0800)
+;; Last-Updated: Thu Mar  3 10:55:34 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13302
+;;     Update #: 13305
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/03/03 dadams
+;;     Added: bmkp-all-exif-data, bmkp-bookmark-image-bookmark-p.
+;;     bmkp-bookmark-description: Handle image EXIF data.
 ;; 2011/01/03 dadams
 ;;     Removed autoload cookies from non def* sexps and from define-key and define-prefix-command.
 ;;     Added some missing autoload cookies for commands, in particular redefined standard commands.

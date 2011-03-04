@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  2 10:38:18 2011 (-0800)
+;; Last-Updated: Thu Mar  3 11:42:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16727
+;;     Update #: 16733
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4766,8 +4766,8 @@ If FILENAME is nil, describe the current directory.
 
 Starting with Emacs 22, if the file is an image file and you have
 command-line tool `exiftool' installed and in your `$PATH' or
-`exec-path', then some EXIF data (metadata) about the image is
-included.  See library `image-dired.el' for more information about
+`exec-path', then EXIF data (metadata) about the image is included.
+See standard Emacs library `image-dired.el' for more information about
 `exiftool'."
     (interactive "FDescribe file: ")
     (unless filename (setq filename default-directory))
@@ -4826,14 +4826,13 @@ included.  See library `image-dired.el' for more information about
 
 ;; This is the same as `help-all-exif-data' in `help-fns+.el', but we avoid requiring that library.
 (defun icicle-all-exif-data (file)
-  "Return all EXIF data from FILE, using command `exiftool'."
-  (let ((buf  (get-buffer-create "*icicle-all-exif-data*")))
-    (with-current-buffer buf
-      (delete-region (point-min) (point-max))
-      (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
-                                  (format "exiftool -All \"%s\"" file)))
-        (error "Could not get EXIF data"))
-      (buffer-substring (point-min) (point-max)))))
+  "Return all EXIF data from FILE, using command-line tool `exiftool'."
+  (with-temp-buffer
+    (delete-region (point-min) (point-max))
+    (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
+                                (format "exiftool -All \"%s\"" file)))
+      (error "Could not get EXIF data"))
+    (buffer-substring (point-min) (point-max))))
 
 ;;;###autoload
 (defun icicle-candidate-read-fn-invoke () ; Bound to `M-RET' in minibuffer.

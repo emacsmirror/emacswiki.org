@@ -184,6 +184,10 @@ What I mean is this.  Load a file and split the main window (`C-x 2').  Move poi
 This comes up a lot for me when I'm working on two parts of a file at once.  I split the window and scroll each half until it's showing the part that I want.  Then I start working in one of the windows -- but sometimes I want to refer to another file temporarily.  If I just switch to a new file in the window I'm using, I have to move point back to where I just was, which is a bit annoying.  The only solution I've found is to split the window again, switch buffers in the active half, and then delete the split when I'm done.  It works, but it takes more keypresses and it means I don't have as large a viewing area.
 
 For exactly this use case there is pointback-mode: http://stud4.tuwien.ac.at/~e0225855/pointback/pointback.html
+
+[new:AlpAker:2011-03-04 03:39 UTC]
+
+This functionality is also provided by [[PerWin]].  It works somewhat differently:  Pointback requires the user to call explicitly for saving and restoring point.  PerWin does it automatically.
 ----
 
 [new]

@@ -6,7 +6,8 @@
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-03-02
-;; Version: 0.1.0
+;; Updated: 2010-03-03
+;; Version: 0.1.1
 ;; URL: http://www.emacswiki.org/joseph-autopair.el
 ;; Keywords: autopair parentheses skeleton
 ;; Compatibility: (Test on GNU Emacs 23.2.1).
@@ -65,7 +66,7 @@
 ;;  Actually: 
 ;;  a pair like this in `joseph-autopair-alist':
 ;;                    ("[" "]")
-;;  is equals to:
+;;   equals to:
 ;;                    ("[" (save-excursion (insert "]")))
 ;;
 ;;  but a litter difference exists :
@@ -160,6 +161,7 @@ new line and indent the region."
     (setq end (point))
     (forward-line -1)
     (indent-region begin end)
+    (indent-according-to-mode)
     )
   )
 
@@ -220,6 +222,7 @@ new line and indent the region."
 (defun joseph-autopair-after-change-function (first last len)
   (when (and (= len 0)
              (boundp 'major-mode)
+             (member this-command '(self-insert-command c-electric-brace c-electric-paren))
              (member major-mode (mapcar 'car joseph-autopair-alist)))
     (let* ( (mode-pair (cdr (assoc major-mode joseph-autopair-alist)))
             (heads (mapcar 'car mode-pair))

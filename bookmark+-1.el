@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Feb 24 14:42:00 2011 (-0800)
+;; Last-Updated: Thu Mar  3 11:40:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 943
+;;     Update #: 976
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -231,9 +231,9 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `bmkext-jump-gnus', `bmkext-jump-man', `bmkext-jump-w3m',
-;;    `bmkext-jump-woman', `bmkp-all-tags-alist-only',
-;;    `bmkp-all-tags-regexp-alist-only', `bmkp-alpha-cp',
-;;    `bmkp-alpha-p', `bmkp-annotated-alist-only',
+;;    `bmkext-jump-woman', `bmkp-all-exif-data',
+;;    `bmkp-all-tags-alist-only', `bmkp-all-tags-regexp-alist-only',
+;;    `bmkp-alpha-cp', `bmkp-alpha-p', `bmkp-annotated-alist-only',
 ;;    `bmkp-autoname-bookmark', `bmkp-autonamed-alist-only',
 ;;    `bmkp-autonamed-bookmark-for-buffer-p',
 ;;    `bmkp-autonamed-bookmark-p',
@@ -242,6 +242,7 @@
 ;;    `bmkp-bookmark-last-access-cp', `bmkp-bookmark-file-alist-only',
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
+;;    `bmkp-bookmark-image-bookmark-p',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-type',
 ;;    `bmkp-buffer-last-access-cp', `bmkp-buffer-names',
 ;;    `bmkp-compilation-file+line-at', `bmkp-completing-read-1',
@@ -3145,6 +3146,18 @@ Non-nil optional arg MSGP means display a message about the deletion."
 BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bmkp-jump-bookmark-file))
 
+(defun bmkp-bookmark-image-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an image-file bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (or (eq (bookmark-get-handler bookmark) 'image-bookmark-jump)
+      (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+           (bmkp-file-bookmark-p bookmark)
+           (not (bmkp-dired-bookmark-p bookmark))
+           (if (fboundp 'string-match-p)
+               (string-match-p (image-file-name-regexp) (bookmark-get-filename bookmark))
+             (save-match-data
+               (string-match (image-file-name-regexp) (bookmark-get-filename bookmark)))))))
+
 (defun bmkp-bookmark-list-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a bookmark-list bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -4619,11 +4632,18 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-bookmark-description (bookmark)
   "Help-text description of BOOKMARK.
-BOOKMARK is a bookmark name or a bookmark record."
+BOOKMARK is a bookmark name or a bookmark record.
+
+Starting with Emacs 22, if the file is an image file and you have
+command-line tool `exiftool' installed and in your `$PATH' or
+`exec-path', then EXIF data (metadata) about the image is included.
+See standard Emacs library `image-dired.el' for more information about
+`exiftool'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (let ((bname            (bookmark-name-from-full-record bookmark))
         (buf              (bmkp-get-buffer-name bookmark))
         (file             (bookmark-get-filename bookmark))
+        (image-p          (bmkp-bookmark-image-bookmark-p bookmark))
         (location         (bookmark-prop-get bookmark 'location))
         (start            (bookmark-get-position bookmark))
         (end              (bmkp-get-end-position bookmark))
@@ -4699,12 +4719,37 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                (if (bmkp-region-bookmark-p bookmark)
                    (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
                  (format "Position:\t\t%d\n" start)))
-             (if visits  (format "Visits:\t\t\t%d\n" visits) "")
-             (if time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)) "")
-             (if created (format "Creation:\t\t%s\n" (format-time-string "%c" created)) "")
-             (if tags    (format "Tags:\t\t\t%S\n" tags) "")
-             (if annot   (format "\nAnnotation:\n%s" annot)))))
+             (and visits  (format "Visits:\t\t\t%d\n" visits))
+             (and time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)))
+             (and created (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
+             (and tags    (format "Tags:\t\t\t%S\n" tags))
+             (and annot   (format "\nAnnotation:\n%s" annot))
+             (and (require 'image-dired nil t)
+                  (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+                  (if (fboundp 'string-match-p)
+                      (string-match-p (image-file-name-regexp) file)
+                    (save-match-data
+                      (string-match (image-file-name-regexp) file)))
+                  (progn (message "Gathering image data...") t)
+                  (condition-case nil
+                      (let ((all  (bmkp-all-exif-data (expand-file-name file))))
+                        (concat
+                         (and all (not (zerop (length all)))
+                              (format "\nImage Data (EXIF)\n-----------------\n%s"
+                                      all))))
+                    (error nil))))))
       help-text)))
+
+;; This is the same as `help-all-exif-data' in `help-fns+.el', but we avoid requiring that library.
+(defun bmkp-all-exif-data (file)
+  "Return all EXIF data from FILE, using command-line tool `exiftool'."
+  (with-temp-buffer
+    (delete-region (point-min) (point-max))
+    (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
+                                (format "exiftool -All \"%s\"" file)))
+      (error "Could not get EXIF data"))
+    (buffer-substring (point-min) (point-max))))
+
 
 ;;;###autoload
 (defun bmkp-describe-bookmark-internals (bookmark)

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  3 14:20:35 2011 (-0800)
+;; Last-Updated: Thu Mar  3 11:35:59 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13439
+;;     Update #: 13449
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -375,8 +375,16 @@
 ;;         defines it (internal form).
 ;;
 ;;       . In the bookmark list, `C-h RET' (or `C-h C-RET') describes
-;;         the bookmark under the cursor.  Again, a prefix arg means
-;;         show the full (internal) information.
+;;         the bookmark under the cursor.  The description is as
+;;         complete as possible - for example, for an image-file
+;;         bookmark the complete EXIF image metadata is shown.  (This
+;;         is only for Emacs 22 and later, and only if you have
+;;         command-line tool `exiftool' installed.  See standard Emacs
+;;         library `image-dired.el' for more information about
+;;         `exiftool'.)
+;;
+;;         And again, a prefix arg (`C-u C-h RET') means show the full
+;;         (internal) bookmark information.
 ;;
 ;;     - General Bookmark+ documentation.
 ;;

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 17 12:56:22 2011 (-0800)
+;; Last-Updated: Thu Mar  3 09:08:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2461
+;;     Update #: 2478
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -22,9 +22,10 @@
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
 ;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mouse3',
-;;   `mwheel', `pp', `pp+', `regexp-opt', `ring', `ring+', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
+;;   `misc-fns', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -781,7 +782,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
   icicle-insert-thesaurus-entry-cand-fn ; Action function
   "Thesaurus entry to match: " synonyms-obarray ; `completing-read' args
-  nil nil nil 'icicle-dictionary-history nil nil
+  nil t nil 'icicle-dictionary-history nil nil
   ((icicle-track-pt  (point)))          ; Bindings
   (progn                                ; First code
     (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
@@ -963,7 +964,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   icicle-describe-opt-action            ; Action function
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
-  ((prompt                             "OPTION `C-M-j' TYPE (`RET' when done): ") ; Bindings
+  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
@@ -1084,7 +1085,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
                                (if options-only-p
                                    icicle-vardoc-last-initial-option-cand-set
                                  icicle-vardoc-last-initial-cand-set))))
-    (unless result                      ; COLLECTION arg is an alist whose items are ((symb doc)).
+    (unless result                      ; COLLECTION arg is an alist whose items are ((SYMB DOC)).
       (mapatoms #'(lambda (symb)        ; Each completion candidate is a list of strings.
                     (when (and (boundp symb)
                                (or (wholenump (prefix-numeric-value pref-arg))
@@ -1097,7 +1098,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
         (setq icicle-vardoc-last-initial-cand-set  result)))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "VAR `C-M-j' DOC (`RET' when done): ") ; Bindings
+  ((prompt                             "VAR `C-M-j' DOC: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-candidate-help-fn           'icicle-funvardoc-action)
    (pref-arg                           current-prefix-arg))
@@ -1152,7 +1153,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
       (setq icicle-fundoc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "FUNC `C-M-j' DOC (`RET' when done): ") ; Bindings
+  ((prompt                             "FUNC `C-M-j' DOC: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-candidate-help-fn           'icicle-funvardoc-action)
    (pref-arg                           current-prefix-arg))
@@ -1215,7 +1216,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
       (setq icicle-plist-last-initial-cand-set  result))
     result)
   nil nil nil nil nil nil
-  ((prompt                             "SYMB `C-M-j' PLIST (`RET' when done): ") ; Bindings
+  ((prompt                             "SYMB `C-M-j' PLIST: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (pref-arg                           current-prefix-arg))
   (progn
@@ -5320,7 +5321,7 @@ used with `C-u', with Icicle mode turned off)."
             icicle-list-end-string             icicle-proxy-candidate-regexp
             named-colors                       icicle-proxy-candidates)
         ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
-        (setq prompt  (copy-sequence (or prompt "Color (name or #RGB triplet): ")))
+        (setq prompt  (copy-sequence (or prompt "Color: ")))
         (icicle-color-completion-setup)
         (setq icicle-proxy-candidates
               (append icicle-proxy-candidates

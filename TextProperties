@@ -11,6 +11,8 @@ In a buffer without font-lock, evaluate the following:
 
 This should insert a bold "Alex" into the buffer. If it doesn't seem to work, try it in fundamental-mode, as some major modes will override the face.
 
+To change the face of text in a buffer with font-lock enabled, set the property 'font-lock-face rather than 'face. Many major modes use font-lock; this can create confusion as some documentation and examples use the 'face property - as in the example setting 'face 'bold above - but setting the 'face text property in a fontified buffer may not appear to do anything. The reason is that font lock is looking for 'font-lock-face instead.
+
 Text-properties exist in GNU Emacs.  XEmacs provides a compatibility layer
 that translates TextProperties to XEmacsExtents.
 

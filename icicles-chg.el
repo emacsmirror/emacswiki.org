@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  2 10:38:56 2011 (-0800)
+;; Last-Updated: Thu Mar  3 09:08:06 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6096
+;;     Update #: 6104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -356,6 +356,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/03/03 dadams
+;;     icicle-insert-thesaurus-entry: Changed to strict completion from lax.
+;;     icicle-describe-option-of-type, icicle-(fun|var)doc, icicle-plist:
+;;       Removed mention of RET in prompt.
 ;; 2011/02/17 dadams
 ;;     Added defalias old-read-color for read-color.
 ;; 2010/12/26 dadams

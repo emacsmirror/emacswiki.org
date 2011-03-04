@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.20
+;; Version: 0.21
 ;; Keywords: convenience, tools
 
 ;; This program is free software; you can redistribute it and/or
@@ -223,14 +223,9 @@ value are 'hair space', 'thin space', and 'punctuation space'.")
 (defconst fcr-font nil
  "Font family used to display the fill-column rule.
 If non-nil, it should be a string that is a valid value for
-the :family atttribute of a face.")
+the :family attribute of a face.")
 
 ;;; Internal Variables
-
-;; After initialization, holds the propertized string used to display the
-;; rule by the functions that deal with the horizontal scrolling bug.
-(defvar fcr-rule-glyph nil)
-(make-variable-buffer-local 'fcr-rule-glyph)
 
 ;; If we nix line-move-visual in a buffer, we save its prior state here.
 (defvar fcr-saved-line-move-visual nil)
@@ -240,9 +235,6 @@ the :family atttribute of a face.")
 ;; display table.
 (defvar fcr-prior-buffer-display-table t)
 (make-variable-buffer-local 'fcr-prior-buffer-display-table)
-
-;; See below, in the section Advised Mode-Specific Filling Functions.
-(defvar fcr-fill-column nil)
 
 ;; The string we use to hide the rule on lines that extend past the
 ;; fill-column.  For v23-4, given in utf-8; for v22, in mule-unicode.
@@ -255,6 +247,14 @@ the :family atttribute of a face.")
  "Face used by fcr-mode to display the fill-column rule.
 Don't set the attributes of this face directly.  Use the
 variables `fcr-color' and `fcr-font' instead.")
+
+;; See below, in the section Advised Mode-Specific Filling Functions.
+(defvar fcr-fill-column nil)
+
+;; After initialization, holds the propertized string used to display the
+;; rule by the functions that deal with the horizontal scrolling bug.
+(defvar fcr-rule-glyph nil)
+(make-variable-buffer-local 'fcr-rule-glyph)
 
 ;;; Mode Definition
 
@@ -324,11 +324,11 @@ unexpected behavior, see the comments in fill-column-rule.el."
 
    ;; Disabling
    (if fcr-prior-display-table
-       (setq buffer-display-table nil)
-     ;; Note that we don't bother resetting the display table slot for the
-     ;; fake newline, since the assumption is that we have free use of that
-     ;; char.
-     (aset buffer-display-table 10 nil))
+       ;; Note that we don't bother resetting the display table slot for the
+       ;; fake newline, since the assumption is that we have free use of that
+       ;; char.
+       (aset buffer-display-table 10 nil)
+     (setq buffer-display-table nil))
    (when fcr-handle-line-move-visual
      (setq line-move-visual fcr-saved-line-move-visual
            fcr-saved-line-move-visual nil))
@@ -343,7 +343,6 @@ unexpected behavior, see the comments in fill-column-rule.el."
 
 ;; Called by the mode function to set fcr-glpyh.
 (defun fcr-make-rule-char ()
- ;; Check for a user-specified char, and whether we're in a unibyte buffer.
  (or
   (cond
    ;; User specified a char.
@@ -354,20 +353,20 @@ unexpected behavior, see the comments in fill-column-rule.el."
       (fcr-mode -1)
       (error "Value of `fcr-rule-character' is not a character")))
    ;; We're in a unibyte buffer.  Use the fallback character.
-   ((if (not enable-multibyte-characters)
-    fcr-fallback-character))
+   ((not enable-multibyte-characters)
+    fcr-fallback-character)
    ;; Otherwise, try to use one of defaults.
    (t
     (catch 'result
       (dolist (c fcr-defaults)
-        (if (char-displayable-p c)
-            (throw 'result c))))))
+        (when (char-displayable-p c)
+          (throw 'result c))))))
   fcr-fallback-character))
 
 (defun fcr-set-face-attributes (char)
  (let* ((color (if fcr-color
                    ;; User specified a color.  If it's not
-                   ;; supported, object.
+                   ;; recognized, object.
                    (if (color-defined-p fcr-color)
                        fcr-color
                      (fcr-mode -1)
@@ -380,12 +379,14 @@ unexpected behavior, see the comments in fill-column-rule.el."
                                              'background-mode)
                                 'light)
                      "gray80" "gray50")))
+
         ;; If the rule char is a form of whitespace, color is a
         ;; background color.  Otherwise, it's a foreground color.
         (color-prop (if color
                         (if (= 32 (char-syntax char))
                             `(:background ,color :foreground unspecified)
                           `(:foreground ,color :background unspecified))))
+
         ;; If fcr-font is specified, try to use that.
         (family (if fcr-font
                     (if (assoc fcr-font
@@ -393,15 +394,17 @@ unexpected behavior, see the comments in fill-column-rule.el."
                         `(:family ,fcr-font)
                       (fcr-mode -1)
                       (error "Value of `fcr-font' is not a valid font family"))))
+
         ;; Avoid inheriting these properties from font-lock.
         (weight-slant '(:weight normal :slant normal))
+
+        ;; All together now.
         (props (append color-prop family weight-slant)))
    ;; Under 23-4, locally set fcr-face to these props.  Under 22,
    ;; face-remapping is not supported, so simply set the face attributes.
    (if fcr->22
        (face-remap-set-base 'fcr-face props)
      (apply 'set-face-attribute 'fcr-face nil props))))
-
 
 ;;; Functions That Call Setting and Unsetting
 
@@ -413,13 +416,12 @@ unexpected behavior, see the comments in fill-column-rule.el."
    (goto-char start)
    ;; NB: We move start backwards one more line than would seem
    ;; required.  Motivation: at the beginning of a line,
-   ;; insert-before-markers will grab the end marker of the overlay
-   ;; on the previous line, and so we need to reset the previous
-   ;; line's overlay as well.  Of the various ways of dealing with
-   ;; this, unconditionally redoing the previous line is simplest and
-   ;; fastest.  (Using one of the insert-* hooks on the overlay is
-   ;; conceptually tidier but incurs the overhead of multiple extra
-   ;; lisp function calls.)
+   ;; insert-before-markers will grab the end marker of the overlay on the
+   ;; previous line, and so we need to reset the previous line's overlay as
+   ;; well.  Unconditionally redoing the previous line is simplest and
+   ;; fastest way to handle that case.  (Using a hook on the overlay is
+   ;; conceptually tidier but incurs the overhead of multiple extra lisp
+   ;; function calls.)
    (setq start (line-beginning-position 0))
    (goto-char end)
    (setq end (line-beginning-position 2))

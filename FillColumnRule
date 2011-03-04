@@ -1,4 +1,17 @@
 Many modern editors and IDEs indicate the location of the fill column with a thin line (in design parlance, a `rule') running the length of the editing window.  The package <tt>[[fill-column-rule.el]]</tt> (by AlpAker) implements this facility in Emacs.
 
+[new:::]
+Really neat stuff :)
+
+I've just spotted a small problem. In order to use with EmacsAsDaemon one needs to comment out these lines:
+
+    (unless window-system
+        (error "Fill-column-rule only works on window systems"))
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new:AlpAker:2011-03-04 04:37 UTC]
+Glad you like it.  I'll look into the interaction with EmacsAsDaemon.  (The package definitely doesn't work on a character terminal with v22, but I didn't test it on a terminal with v23.  It might be that character terminals aren't a problem with the newer version.)
+
 ----
 CategoryFilling

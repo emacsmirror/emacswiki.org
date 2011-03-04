@@ -276,8 +276,14 @@ any bookmark.  With a [[prefix argument]], it shows you the
 full information that defines it (internal form).
 
 ** In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
-the bookmark under the [[cursor]].  Again, a prefix arg means
-show the full (internal) information.
+the bookmark under the [[cursor]].  The description is as
+complete as possible -- for example, for an image-file
+bookmark the complete EXIF image metadata is shown.  (This
+is only for Emacs 22 and later, and only if you have
+command-line tool `exiftool' installed.  See standard Emacs library
+##image-dired.el## for more information about `exiftool'.)  And
+again, a prefix arg (`C-u C-h RET') means
+show the full (internal) bookmark information.
 
 
 * General '''Bookmark+''' documentation.

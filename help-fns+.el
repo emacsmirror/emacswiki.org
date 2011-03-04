@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Wed Mar  2 10:27:06 2011 (-0800)
+;; Last-Updated: Thu Mar  3 11:38:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 464
+;;     Update #: 468
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -1068,9 +1068,8 @@ If FILENAME is nil, describe the current directory.
 
 Starting with Emacs 22, if the file is an image file and you have
 command-line tool `exiftool' installed and in your `$PATH' or
-`exec-path', then some EXIF data (metadata) about the image is
-included.  See library `image-dired.el' for more information about
-`exiftool'."
+`exec-path', then EXIF data (metadata) about the image is included.
+See library `image-dired.el' for more information about `exiftool'."
   (interactive "FDescribe file: ")
   (unless filename (setq filename default-directory))
   (help-setup-xref (list #'describe-file filename) (interactive-p))
@@ -1127,14 +1126,13 @@ included.  See library `image-dired.el' for more information about
       help-text)))                      ; Return displayed text.
 
 (defun help-all-exif-data (file)
-  "Return all EXIF data from FILE, using command `exiftool'."
-  (let ((buf  (get-buffer-create "*help-all-exif-data*")))
-    (with-current-buffer buf
-      (delete-region (point-min) (point-max))
-      (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
-                                  (format "exiftool -All \"%s\"" file)))
-        (error "Could not get EXIF data"))
-      (buffer-substring (point-min) (point-max)))))
+  "Return all EXIF data from FILE, using command-line tool `exiftool'."
+  (with-temp-buffer
+    (delete-region (point-min) (point-max))
+    (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
+                                (format "exiftool -All \"%s\"" file)))
+      (error "Could not get EXIF data"))
+    (buffer-substring (point-min) (point-max))))
 
 ;;;###autoload
 (defun describe-keymap (keymap)
