@@ -1,6 +1,7 @@
 ;;; bibtex-utils.el --- utilities for BibTeX
 
-;; Copyright 2007 Bastien Guerry
+;; Copyright (C) 2007 Bastien Guerry
+;; Copyright (C) 2010-11 Matt Lundin
 ;;
 ;; Author: bzg AT altern DOT org
 ;; Version: 0.1a
@@ -43,18 +44,15 @@ Maybe restrict the values to those matching REGEXP."
   (interactive)
   (save-excursion
     (goto-char (point-min))
-    (let (keywords e f)
-      (while (re-search-forward "^@[a-zA-Z0-9]+{" nil t)
-	(goto-char (match-beginning 0))
-	(when (and (setq e (bibtex-parse-entry))
-		   (setq f (cdr (assoc "keywords" e))))
-	  (mapc
-	   (lambda (v) 
-	     (if regexp (if (string-match regexp v) 
-			    (add-to-list 'keywords v t))
-	       (add-to-list 'keywords v t)))
-	   (split-string f ",[ \n]*\\|{\\|}" t)))
-	(beginning-of-line 2))
+    (let (keywords kstring)
+      (while (re-search-forward "^\\s-*keywords.*{\\([^}]+\\)}" nil t)
+	(setq kstring (match-string 1))
+	(mapc
+	 (lambda (v) 
+	   (if regexp (if (string-match regexp v) 
+			  (add-to-list 'keywords v t))
+	     (add-to-list 'keywords v t)))
+	 (split-string kstring ",[ \n]*\\|{\\|}" t)))
       keywords)))
 
 (defun bibtex-select-entries (key regexp)
@@ -91,16 +89,26 @@ If ARG is nil, ask for each keyword and offer completion over
 keywords that are already available in the buffer.  Inserting 
 the empty string will quit the prompt."
   (interactive "P")
-  (bibtex-make-field "keywords" t nil)
-  (skip-chars-backward "}")
-  (unless arg
-    (let ((cnt 0)
-	  (keywords (bibtex-collect-keywords-values)))
-      (while (and (setq k (completing-read 
-			   "Keyword (RET to quit): " keywords nil))
-		  (not (equal k "")))
-	(setq cnt (1+ cnt))
-	(insert (format "%s%s" (if (> cnt 1) ", " "") k))))))
+  (let ((elist (save-excursion (bibtex-beginning-of-entry)
+			       (bibtex-parse-entry)))
+	append)
+    (if (assoc "keywords" elist)
+	(progn (setq append t)
+	       (bibtex-beginning-of-entry)
+	       (goto-char 
+		(car (last (bibtex-search-forward-field "keywords" t)))))
+      (bibtex-make-field "keywords" t nil))
+    (skip-chars-backward "}")
+    (unless arg
+      (let ((cnt 0)
+	    (keywords (bibtex-collect-keywords-values))
+            k)
+	(while (and (setq k (completing-read 
+			     "Keyword (RET to quit): " keywords nil))
+		    (not (equal k "")))
+	  (when append (insert ", "))
+	  (setq cnt (1+ cnt))
+	  (insert (format "%s%s" (if (> cnt 1) ", " "") k)))))))
 
 (global-set-key (kbd "C-c k") 'bibtex-make-field-keywords)
 

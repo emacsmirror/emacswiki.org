@@ -108,12 +108,6 @@ It's pretty configurable and runs on OSX 10.3 / 10.4. Most customizations are de
 
 == Misc Tips ==
 
-=== A fix for the CVS error: Operation timed out ===
-
-I'm using Mac OS X, and haven't got around to changing my shell, so I'm using tcsh (sigh).  Whenever I would try to run cvs update, it would fail to work with the error "Operation timed out".  I finally found that the solution is just to put in "setenv CVS_RSH ssh", which is the equivelent to the "export CVS_RSH=ssh" command that is suggested in a lot of places.  Sigh.  Tcsh is _so_ much "fun".
-
--- Panther has bash as the default shell.
-
 === Emacs environment variables when running from the Finder ===
 
 When running from the Finder, applications do not get the same enviroment that command line tools see. This may prevent Emacs from seeing stuff in ''/usr/local/bin'' or other places.

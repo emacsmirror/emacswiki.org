@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 19:53:09 2011 (-0800)
+;; Last-Updated: Fri Mar  4 06:45:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12153
+;;     Update #: 12155
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5559,7 +5559,9 @@ current before user input is read from the minibuffer."
                 (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function"))
                       icicle-saved-completion-candidate)
                   (icicle-with-selected-window
-                   (if (boundp 'orig-window) orig-window (selected-window)) ; Punt wo `orig-window'.
+                   (if (and (boundp 'orig-window) (window-live-p orig-window))
+                       orig-window
+                     (selected-window)) ; Punt wo `orig-window'.
                    (dolist (cand  cands)
                      (setq icicle-saved-completion-candidate  cand)
                      (icicle-apply-to-saved-candidate fn t ,type))))))
@@ -5596,7 +5598,9 @@ current before user input is read from the minibuffer."
                                                                   (completing-read "How (action): "
                                                                                    actions))))
                    (icicle-with-selected-window
-                    (if (boundp 'orig-window) orig-window (selected-window)) ; Punt: no `orig-window'.
+                    (if (and (boundp 'orig-window) (window-live-p orig-window))
+                        orig-window
+                      (selected-window)) ; Punt: no `orig-window'.
                     (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
                       (dolist (cand  cands)
                         (setq icicle-saved-completion-candidate  cand)

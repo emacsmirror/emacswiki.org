@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 09:34:53 2011 (-0800)
+;; Last-Updated: Fri Mar  4 23:46:34 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1305
+;;     Update #: 1310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -128,6 +128,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/03/04 dadams
+;;     fit-frame-to-image: Fixed for Emacs 23, which doesn't yet have image-display-size.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps.
 ;; 2010/12/24 dadams
@@ -550,7 +552,9 @@ This function assumes that FRAME has only one window."
                        (image-get-display-property)
                      (save-selected-window (select-frame frame)
                                            (image-get-display-property))))
-         (size     (image-display-size display nil frame)))
+         (size     (if (fboundp 'image-display-size) ; Emacs 24+.
+                       (image-display-size display nil frame)
+                     (image-size display nil frame))))
     (setq frame  (or frame (selected-frame)))
     (if (and interactivep saved
              (eq (caar saved) (frame-width frame))

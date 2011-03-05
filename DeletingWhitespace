@@ -91,14 +91,16 @@ To remove whitespace at the ''end of a document'', use any of the following:
 
     (defun delete-trailing-blank-lines ()
       "Deletes all blank lines at the end of the file.  These must be
-    truely blank and contain no whitespace."
+        truely blank and contain no whitespace."
       (interactive)
       (save-excursion
-        (while (last-line-blank)
-          (progn
-            (goto-start-of-last-line)
-            (delete-region (- (point) 1) (point-max))))))
-
+        (catch 'break
+          (while (last-line-blank)
+            (progn
+              (goto-start-of-last-line)
+              (if (< 1 (point-max))
+                  (delete-region (- (point) 1) (point-max))
+                (throw 'break nil)))))))
 
 == Delete extra blank lines between paragraphs ==
 

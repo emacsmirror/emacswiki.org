@@ -67,27 +67,51 @@ I have a need for something simpler than this. I would like to have Emacs record
 -- MaDa
 
 [new:Anonymous:2011-02-13 22:46 UTC]
-: This is almost exactly [http://xahlee.org/emacs/command-frequency.el command-frequency]. To get it to display the current bindings, call it like this: 
+: This is almost exactly [http://xahlee.org/emacs/command-frequency.el command-frequency]. To get it to display the current bindings, eval the following:
                 
-    (command-frequency nil nil nil
-                   (lambda (num-calls percent-calls cmd)
-                     (format "%6d  %5.2f  %-40s  %s\n"
-                             num-calls percent-calls cmd
-                             (mapconcat
-                              'edmacro-format-keys
-                              (mapcar
-                               (lambda (key-seq)
-                                 (if (listp (aref key-seq 0))
-                                     (apply 'vector
-                                            (cons
-                                             (car (aref key-seq 0))
-                                             (cons (cdr (aref key-seq 0)) nil)))
-                                   key-seq))
-                               (where-is-internal
-                                cmd
-                                nil
-                                nil t))
-                              ", "))))
+    (put 'command-frequency 'interactive-form
+         '(interactive
+           (list nil
+                 (cond
+                      ((not current-prefix-arg) nil)
+                      ((> (prefix-numeric-value current-prefix-arg) 0))
+                      (t 'no-sort))
+                 nil
+                 (lambda (num-calls percent-calls cmd)
+                   (format "%6d  %5.2f  %-35s  %s\n"
+                           num-calls percent-calls cmd
+                           (mapconcat
+                            'key-description
+                            (mapcar
+                             ;; key-description takes a vector, but where-is-internal
+                             ;; returns vectors of either one key if the bind is one key
+                             ;; long, or a cons cell of multiple keys if it's multiple keys
+                             ;; long
+                             ;; e.g. this lambda form must take
+                             ;; ([(32 . 126)] [128])
+                             ;; and return
+                             ;; ([32 126] [128])
+                             (lambda (key-seq)
+                               (let ((event (aref key-seq 0)))
+                                 (if (listp event)
+                                     (vector (car event) (cdr event))
+                                   key-seq)))
+                             (where-is-internal cmd overriding-local-map)
+                             ;; resulting list is too long, makes command-frequency dump in
+                             ;; minibuffer for some reason
+                             ;; (where-is-internal cmd (accessible-keymaps global-map))
+                             )
+                            ", "))))))
+
+: Also, in command-frequency.el, change the line
+
+      (message (prin1-to-string l))
+
+: to
+
+      (message "%s" (prin1-to-string l))
+
+: It's interesting to see if your frequency rankings follow Zipf's law (this commenter's do: [[zort-command-frequency-zipf-plot]]).
 
 [new:DrewAdams:2007-08-31 16:06 UTC]
 I'd say that if you can't tell what repetition is annoying you, then it isn't annoying you enough! -- DrewAdams

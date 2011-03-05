@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Mar  3 11:40:33 2011 (-0800)
+;; Last-Updated: Sat Mar  5 00:22:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 976
+;;     Update #: 1056
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4628,6 +4628,28 @@ BOOKMARK is a bookmark name or a bookmark record."
     (help-setup-xref (list #'bmkp-describe-bookmark bookmark) (interactive-p))
     (let ((help-text  (bmkp-bookmark-description bookmark)))
       (with-output-to-temp-buffer "*Help*" (princ help-text))
+      (with-current-buffer "*Help*"
+        (save-excursion
+          (goto-char (point-min))
+          (when (re-search-forward "@#%&()_IMAGE-HERE_()&%#@\\(.+\\)" nil t)
+            (let* ((image-file        (match-string 1))
+                   (image-string      (save-match-data
+                                        (apply #'propertize "X"
+                                               `(display ,(image-dired-get-thumbnail-image image-file)
+                                                 rear-nonsticky (display)
+                                                 mouse-face highlight
+                                                 follow-link t
+                                                 help-echo "`mouse-2' or `RET': Show full image"
+                                                 keymap
+                                                 (keymap
+                                                  (mouse-2
+                                                   . (lambda (e) (interactive "e")
+                                                             (find-file ,image-file)))
+                                                  (13
+                                                   . (lambda () (interactive)
+                                                             (find-file ,image-file))))))))
+                   (buffer-read-only  nil))
+              (replace-match image-string)))))
       help-text)))
 
 (defun bmkp-bookmark-description (bookmark)
@@ -4713,7 +4735,9 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                                                marked inserted hidden)))
                    ((equal file bmkp-non-file-filename)
                     (format "Buffer:\t\t\t%s\n" (bmkp-get-buffer-name bookmark)))
-                   (file        (format "File:\t\t\t%s\n" (expand-file-name file)))
+                   (file        (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
+                                        (let ((dir   (file-name-directory (expand-file-name file))))
+                                          (and dir (format "Directory:\t\t%s\n" dir)))))
                    (t           "Unknown\n"))
              (unless no-position-p
                (if (bmkp-region-bookmark-p bookmark)
@@ -4724,12 +4748,20 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
              (and created (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
              (and tags    (format "Tags:\t\t\t%S\n" tags))
              (and annot   (format "\nAnnotation:\n%s" annot))
-             (and (require 'image-dired nil t)
-                  (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+             (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
                   (if (fboundp 'string-match-p)
                       (string-match-p (image-file-name-regexp) file)
                     (save-match-data
                       (string-match (image-file-name-regexp) file)))
+                  (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+                  (require 'image-dired nil t)
+                  (image-dired-get-thumbnail-image file)
+                  (concat "\n@#%&()_IMAGE-HERE_()&%#@" file "\n"))
+             (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+                  (if (fboundp 'string-match-p)
+                      (string-match-p (image-file-name-regexp) file)
+                    (save-match-data
+                      (string-match (image-file-name-regexp) file)))                       
                   (progn (message "Gathering image data...") t)
                   (condition-case nil
                       (let ((all  (bmkp-all-exif-data (expand-file-name file))))

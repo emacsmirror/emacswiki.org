@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  3 09:08:06 2011 (-0800)
+;; Last-Updated: Fri Mar  4 06:48:20 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6104
+;;     Update #: 6105
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -672,6 +672,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/03/04 dadams
+;;     icicle-alt-act-fn-for-type: Ensure orig-window is live before use it.  Thx to Michael Heerdegen.
 ;; 2011/02/22 dadams
 ;;     icicle-display-candidates-in-Completions: Show thumbnail for an image file.
 ;;                                               Call icicle-fit-completions-window explicitly here.
