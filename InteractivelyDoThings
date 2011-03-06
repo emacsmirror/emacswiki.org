@@ -326,20 +326,19 @@ Why would anyone want an alphabetically sorted list? You can save keystrokes if 
     (setq ido-temp-list
           (sort ido-temp-list 
                 (lambda (a b)
-                  (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
-                        (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
-                    (if (= (nth 0 ta) (nth 0 tb))
-                        (> (nth 1 ta) (nth 1 tb))
-                      (> (nth 0 ta) (nth 0 tb)))))))
+                  (not
+                   (time-less-p
+                    (sixth (file-attributes (concat ido-current-directory a)))
+                    (sixth (file-attributes (concat ido-current-directory b))))))))
     (ido-to-end  ;; move . files to end (again)
      (delq nil (mapcar
-                (lambda (x) (if (string-equal (substring x 0 1) ".") x))
+                (lambda (x) (when (char-equal (aref x 0) ?.) x))
                 ido-temp-list))))
 
 If you want to ensure '.' is not buried by this, change the final lambda as follows (or equivalent:
-
-              (lambda (x) (if (and (not (string-equal x ".")) (string-equal (substring x 0 1) ".")) x))
-
+{{{
+    (lambda (x) (when (string-match-p "\\`\\.." x) x))
+}}}
 [new:DrewAdams:2008-08-17 20:24 UTC]
 Depending on the type of entities (e.g. file names) in the list and your current context, it can often be more convenient to sort alphabetically. It all depends. For files and directories, this is why we have different sort orders in DiredMode (see, e.g., DiredSortMenu).
 

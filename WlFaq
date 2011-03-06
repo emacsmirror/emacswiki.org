@@ -41,6 +41,14 @@ Now, from the ##Folder## buffer, use the command ##wl-folder-prefetch-current-en
 If you only use Wanderlust to access a mailbox, you can set
 ##wl-summary-auto-sync-marks## to ##nil## in your ##.wl## file.
 
+=== I want a configuration that only shows/downloads threads with new posts within the last N hours (e.g. the last 24).  ===
+
+Create a filter folder,
+
+{{{
+/since:yesterday/%INBOX
+}}}
+
 == Unicode ==
 
 Release 2.14 was created before emacs23 was released. As a consequence, there may occur some problems with unicode

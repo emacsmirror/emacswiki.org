@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Feb 24 14:44:14 2011 (-0800)
+;; Last-Updated: Sat Mar  5 09:19:50 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 454
+;;     Update #: 459
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3049,10 +3049,7 @@ internal, Lisp form)."
              (new-name  (car new-data)))
         (if (not new-data)
             (message "No changes made")
-          (bookmark-bmenu-surreptitiously-rebuild-list)
-          (goto-char (point-min))
-          (while (not (equal new-name (bookmark-bmenu-bookmark))) (forward-line 1))
-          (forward-line 0))))))
+          (bmkp-refresh-menu-list new-name))))))
 
 (defun bmkp-bmenu-propertize-item (bookmark-name start end)
   "Propertize BOOKMARK-NAME from START to END, indicating bookmark type."

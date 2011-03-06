@@ -1,6 +1,6 @@
 Many modern editors and IDEs indicate the location of the fill column with a thin line (in design parlance, a `rule') running the length of the editing window.  The package <tt>[[fill-column-rule.el]]</tt> (by AlpAker) implements this facility in Emacs.
 
-[new:::]
+[new]
 Really neat stuff :)
 
 I've just spotted a small problem. In order to use with EmacsAsDaemon one needs to comment out these lines:
@@ -13,7 +13,7 @@ I've just spotted a small problem. In order to use with EmacsAsDaemon one needs 
 [new:AlpAker:2011-03-04 04:37 UTC]
 Glad you like it.  I'll look into the interaction with EmacsAsDaemon.  (The package definitely doesn't work on a character terminal with v22, but I didn't test it on a terminal with v23.  It might be that character terminals aren't a problem with the newer version.)
 
-[new:::]
+[new]
 I should have been more explicit, sorry for that (I was in a hurry when I wrote my previous note). Try this:
 
 # byte-compile fill-column-rule.el
@@ -33,5 +33,14 @@ Ok.  So if I changed the package to test window-system at run time instead of lo
 
 (Just to make sure we're on the same page: The package depends on space-width display properties to position the rule.  But Emacs appears to ignore that type of display property when running on a character terminal, and so I want to warn the user away from trying to use the package when on a terminal.  Your point is that, since one and the same installation might be running on a window-system or on a terminal, depending on how it was invoked, throwing an error at load time is the wrong way to do that.  That is, you're not saying that the package actually works when running Emacs as a daemon, are you?)
 
+[new:José Alfredo Romero L.:2011-03-05 15:17 UTC]
+
+I'm afraid there's no easy way to achieve that noble goal, as running emacs as a daemon allows to have graphical and console displays *of the same emacs instance* at the same time, thanks to emacsclient. And that's exactly the way I use it: I launch a daemon in the background, then pull out as many frames as I need, all with the same buffers open and everything else. I can also close all the frames, and still have, say, emms playing music in the background. One particular advantage of such a setting is that it's /fast/ -- "opening" emacs this way is even faster than opening a regular terminal emulator window (e.g. rxvt), almost instantaneous.
+
+So, I *am* saying that your package does work when running emacs as a daemon, and quite nicely also :) -- but, of course, only after commenting out the <code>(unless window-system ...)</code> sexp on line 138.
+
+Though I don't use often pure console displays these days, I've noticed that enclosing the <code>(if fcr-mode ...)</code> sexp beginning from line 291 inside a <code>(when window-system ...)</code> seems to help a bit -- at least fcr-mode doesn't try to mess with the display when opening a new file in a text console, but those that were already opened in a graphical display look indeed ugly (with the rule split over every line at a different column).
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----
 CategoryFilling

@@ -1,14 +1,14 @@
-In many programs, like !SlickEdit, !TextMate and !VisualStudio, '''"cut" and "copy" act on the ''current line'' if no text is visually selected'''. This page lists ways to get the same behavior in Emacs, so that
+In many programs, like !SlickEdit, !TextMate and !VisualStudio, '''"cut" and "copy" act on the ''current line'' if no text is visually selected'''. This page says how to get the same behavior in Emacs, so that
 
 * '##M-w##' copies the current line when the [[region]] is not active, and
 * '##C-w##' deletes it.
 
-Such behaviour for '##C-w##' is available through the separate command ##kill-whole-line##, bound to '##C-S-backspace##'.
+Such behaviour for '##C-w##' is available through the command ##kill-whole-line##, bound to '##C-S-backspace##'.
 '''Note:''' [TransientMarkMode Transient Mark Mode] must be enabled to distinguish selected text visually -- that is, ##(transient-mark-mode t)## -- which is the default in Emacs 23 and onwards.
 
-== interactive-form property ==
+== The `interactive-form' symbol property ==
 
-A concise solution is to alter the interactive form of ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands):
+Use the function ##put## to alter the interactive form of ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands):
 
     (put 'kill-ring-save 'interactive-form
      '(interactive
@@ -22,22 +22,24 @@ A concise solution is to alter the interactive form of ##kill-ring-save## and ##
            (list (region-beginning) (region-end))
          (list (line-beginning-position) (line-beginning-position 2)))))
 
-If you use slime-repl, replace ##(line-beginning-position)## with ##(or slime-repl-input-start-mark (line-beginning-position))##.
-
 Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the ##interactive-form## property only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
 
-In fact, you could have this behaviour for all commands that operate on the region, if you wish:
+If you use slime-repl-mode (a mode for interacting with an external REPL), replace ##(line-beginning-position)## with 
 
-    (defconst use-line-iff-not-region
-      '(interactive
-        (if (use-region-p)
-            (list (region-beginning) (region-end))
-          (list (line-beginning-position) (line-beginning-position 2)))))
-    
+    (if (eq major-mode 'slime-repl-mode)
+        slime-repl-input-start-mark
+      (line-beginning-position))
+
+You could easily have this behaviour for /all/ commands that operate on the region, if you so wish:
+
     (do-all-symbols (symbol)
-      (when (and (commandp symbol t)
-                 (string-match-p "-region$" (symbol-name symbol)))
-        (put symbol 'interactive-form use-line-iff-not-region)))
+      (put symbol 'interactive-form
+           (and (commandp symbol t)
+                (string-match-p "-region$\\|kill-ring-save" (symbol-name symbol))
+                '(interactive
+                  (if (use-region-p)
+                      (list (region-beginning) (region-end))
+                    (list (line-beginning-position) (line-end-position)))))))
 
 === With yank-handler ==
 
@@ -45,7 +47,7 @@ A further keypress can be saved by using the ##yank-handler## text property. The
 
     (defadvice kill-ring-save (around slick-copy activate)
       "When called interactively with no active region, copy a single line instead."
-      (if (or (region-active-p) (not (called-interactively-p)))
+      (if (or (use-region-p) (not (called-interactively-p)))
           ad-do-it
         (kill-new (buffer-substring (line-beginning-position)
                                     (line-beginning-position 2))
@@ -54,7 +56,7 @@ A further keypress can be saved by using the ##yank-handler## text property. The
 
     (defadvice kill-region (around slick-copy activate)
       "When called interactively with no active region, kill a single line instead."
-      (if (or (region-active-p) (not (called-interactively-p)))
+      (if (or (use-region-p) (not (called-interactively-p)))
           ad-do-it
         (kill-new (filter-buffer-substring (line-beginning-position)
                                            (line-beginning-position 2) t)

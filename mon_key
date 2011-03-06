@@ -78,7 +78,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-css-complete.el -- This is a highly modified version of Niels Giesen's css-complete.el :SEE http://github.com/pft/elisp-assorted/blob/master/css-complete.el
 * Lisp:mon-drive-transfer-utils.el -- Template builder for transferring backing up large harddrives.
 * Lisp:mon-doc-help-utils.el -- (ReferenceSheetHelpUtils) (MonDocHelpUtilsDictionary)
-* Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars required to bootstrap mon-doc-help-utils
+* Lisp:mon-doc-help-char-encoding-lossage.el -- Show lossage across encoding points
 * Lisp:mon-doc-help-css.el -- Extends Lisp:mon-doc-help-utils.el with CSS related docs
 * Lisp:mon-doc-help-mail.el -- Extends mon-doc-help-utils package with mail xrefs
 * Lisp:mon-doc-help-pacman.el -- Some help functions for using the package manager with the GNU/Linux Arch distribution.
