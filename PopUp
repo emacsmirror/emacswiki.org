@@ -1,0 +1,17 @@
+== Overview ==
+
+popup.el is a visual popup user interface library for Emacs. This
+provides a basic API and common UI widgets such as popup tooltips and
+popup menus.
+
+== Screenshots ==
+
+[[image:PopupScreenshot1]]
+
+[[image:PopupScreenshot2]]
+
+== Download ==
+
+Please visit a project page for downloading and full documentation.
+
+https://github.com/m2ym/popup-el

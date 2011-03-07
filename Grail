@@ -16,13 +16,12 @@ Examples of the files grail looks for:
 * gui.el      : configuration that applies to emacs with a GUI
 * user.el     : general configuration of the builtin Emacs features and applications.
 
-Grail can also load "group modules", defined by grail as a elisp file in a special "groups" directory
+Grail can also load "profile modules", defined by grail as a elisp file in a special "profiles" directory
 that loads, configures, and installs if necessary one or more packages into a cohesive set of
 related features.
 
 This capability gives the Emacs configuration a "self-repair" capability when moving a configuration
-to a new machine. Much of the code for this has been completed, but has not yet been documented
-pending implementing integration with ELPA.
+to a new machine. The API has been completed, but not documented yet.
 
 For a closer look at grail the README.grail file is the best place to start, and if you are an
 Elisp programmer, a brief look through grail.el, a relatively short file, will introduce you to Grail.
@@ -31,10 +30,13 @@ Elisp programmer, a brief look through grail.el, a relatively short file, will i
 
 Enjoy Grail, and feel free to give feedback, with the contact information provided on [[codermattie]].
 
-== Status: 0.1.3 Released: 2009-4-10 ==
+== Status: 0.3.0 Released: 20011-03-06 ==
 
-This release compatible with 0.0.3 unless you use the groups feature. The grail-activate-with-recovery
-form and installer definition has changed.
+This release is largely compatible with 0.1.3 in terms of functionality. grail-groups.el has been
+removed. grail-profile.el replaces it.
+
+ELPA is now fully supported, grail now manages the load-path changes made by ELPA seamlessly integrating
+the two.
 
 [[Changelog.grail]] ([Download:Changelog.grail download])
 
@@ -55,12 +57,12 @@ only.
     emacs --batch, 
     GUI,
     and TTY modes
-* ELPA installer
+* ELPA installer & full ELPA support.
 
 == The Future ==
 
-I have developed version 0.3 to a beta stage, I will release it when I deem it stable. Previews of the
-code can be requested by e-mail.
+At this point the major work is done on this project. What remains is documenting the API's and
+how to use the grail-profile feature set.
 
 == Updates: ==
 
@@ -78,7 +80,7 @@ is supported in 0.1.3
 
 * Lisp:grail.el        ([Download:grail.el download])
 * Lisp:grail-fn.el     ([Download:grail-fn.el download])
-* Lisp:grail-groups.el ([Download:grail-groups.el download])
+* Lisp:grail-profile.el ([Download:grail-profile.el download])
 
 == Verifying the source files: ==
 
@@ -173,14 +175,14 @@ customizations are loaded.
 |   |-- elisp (++)            ;; the user's Elisp is searched for in local/elisp.
 |   |   `**your Elisp**
 |   |-- emacs                 ;; modified copies of files distributed with Emacs.
-|   `-- groups                ;; group configuration modules are found here.
+|   `-- profile               ;; profile configuration modules are found here.
 </pre>
 
 == Q&A ==
 
 Q: What should I set `custom-file' to, i.e., where should I store my customizations?
 
-A: the new release grail-0.1.3 now handles customizations.
+A: As of the grail-0.1.3 Grail handles customizations.
 
    It looks in the variable "grail-settings-file" which points to 
    USER_ELISP/customize-settings.el by default.

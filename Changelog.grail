@@ -1,5 +1,21 @@
 ;;; Grail Changelog
 
+0.3.0 Stable Release
+-------------------
+
+modified: grail.el
+
+  * make sure grail-state-path exists before loading ELPA
+
+rewrote: grail-groups.el -> grail-profiles.el
+
+  * grail-groups has been removed and replaced with grail-profile.
+    This is a complete rewrite of the API.
+
+modified: grail-fn.el
+
+   Full ELPA integration.
+
 0.1.3 Stable Release
 -------------------
 modified grail.el

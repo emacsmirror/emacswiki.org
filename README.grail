@@ -1,15 +1,15 @@
    ---> Getting started with grail <----
 
-To use Grail the Emacs configuration loader you first need to
-install it, and then migrate your .emacs into the files
-recognized by grail at your own speed to your taste.
+To use Grail the Emacs configuration loader you first need to install
+it, and second migrate your .emacs into the files recognized by
+grail. The migration can be done at your own speed and to your taste.
 
    ---> Installing Grail. <----
 
 1. Choose a directory where your Emacs configuration will live. From
    here on this directory will be referred to as USER_ELISP.
 
-2. copy grail.el, grail-fn.el, and grail-groups.el into USER_ELISP
+2. copy grail.el, grail-fn.el, and grail-profile.el into USER_ELISP
 
 3. Copy your Emacs configuration to a safe place. This includes
    .emacs, and the customization settings if you have changed
@@ -20,7 +20,7 @@ recognized by grail at your own speed to your taste.
 
    !Make sure you moved your .emacs configuration out of the way!
 
-   example: ln -s $HOME/system/emacs/grail.el .emacs
+   example: ln -s $HOME/system/emacs/grail.el $HOME/.emacs
 
 5. Set the environment variable USER_ELISP to the directory where
    Grail and your configuration now live. It must be a *full path*
@@ -32,6 +32,10 @@ recognized by grail at your own speed to your taste.
    do you do not need to set USER_ELISP.
 
 ***You can now start Emacs now with a bare Grail***
+
+   like this:
+
+   USER_ELISP=<where you put it> emacs
 
 6. move your Emacs configuration into USER_ELISP
 
@@ -59,14 +63,16 @@ Grail is now installed!
 
 ---> Portability <---
 
-I use this package on Gentoo, Debian, and Darwin (OSX 10.5 currently, 10.4 previously).
-It is possible to port it to Win32, but there are functions that will only execute
-properly on Linux/Darwin, or are idiosyncratic to them.
+I use this package on Gentoo, Debian, and Darwin (OSX 10.5 currently,
+10.4 previously).  It is possible to port it to Win32, but there are
+functions that will only execute properly on Linux/Darwin, or are
+idiosyncratic to them.
 
          ---> The USER_ELISP directory structure. <----
 
-Inside USER_ELISP Grail looks for directories and files that are treated specially.
-Any other files and directories are ignored by Grail.
+Inside USER_ELISP Grail looks for directories and files that are
+treated specially.  Any other files and directories are ignored by
+Grail.
 
 
 $HOME/.emacs.d/            | all of emacs scribbles here by default so I treat
@@ -82,10 +88,12 @@ All of the following paths are relative to user-elisp-root. Other files are
 ignored by grail, and must be called from one of the grail recognized files.
 
 grail.el                   | entry point for emacs startup and stage #1
-                           | of the configuration.
+                           | of grail.
 
-grail-fn.el                | library of functions essential to stage #1, and
-                           | more complex functions for stage #2 (groups & ELPA)
+grail-fn.el                | library of more complex functions essential for
+                           | basic loading ... stage #2 of the emacs startup
+
+grail-profile.el           | optional grail profile support.
 
 elisp.el                   | Elisp functions that are not interactive commands
                            | loaded when Emacs is called with --script or --batch.
@@ -236,8 +244,7 @@ Here is a peice of my configuration as an example:
   (font-lock-function-name-face (foreground "aquamarine4"))
   (font-lock-variable-name-face (foreground "aquamarine3")) )
 
----> Grail Groups <---
+---> Grail Profiles <---
 
-The groups feature is not documented yet. It is available, but not
-intended for general use until the integration with ELPA has been
-completed.
+Formerly known as Grail Groups grail profiles is not documented yet.
+

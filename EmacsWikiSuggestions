@@ -18,6 +18,9 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 Hi, I just realized I had to leave Emacs to edit the Emacs Wiki (so I could solve the Captcha).  It would be cool to supply a math problem captcha if you detect a User Agent like Emacs/w3m or Emacs/w3.  Either that or get a non-Javascript-based version of ReCaptcha (but also note this! http://www.allspammedup.com/2011/01/google-recaptcha-cracked/). --jcorneli
 
+[new]
+Using w3m with EmacsWiki is documented at the EmacsWikiProblems page.
+
 == Elisp files status ==
 
 I just saw that Elena had tested some libraries for capitalising and found that

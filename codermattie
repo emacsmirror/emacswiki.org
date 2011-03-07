@@ -1,6 +1,6 @@
 *Mike Mattie*
 
-I am a programmer currently residing in Seattle. I have been using Emacs since ~1999. I started coding
+I am a programmer currently residing in Spokane,Wa,USA. I have been using Emacs since ~1999. I started coding
 in elisp at the end of 2007. 
 
 In the course of maintaining my creeping Emacs configuration I am factoring
@@ -12,10 +12,6 @@ benefit from reading or using my forays in Emacs.
 My E-Mail is codermattie@gmail.com
 
 I check it frequently now, every couple of days or so.
-
-If you want to get ahold of me within a day or so use my .mac account which has the same username.
-Please do not publish that e-mail as it is still spam-free. Feel free to reference the gmail account
-though.
 
 == GNUPG ==
 I use GnuPG to sign the elisp files I post, and for e-mail if people are so inclined.

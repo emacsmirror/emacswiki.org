@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  4 06:48:20 2011 (-0800)
+;; Last-Updated: Sun Mar  6 18:40:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6105
+;;     Update #: 6144
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -673,6 +673,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2011/03/04 dadams
+;;     icicle-read-file-name: Bind read-file-name-predicate.  Thx to Michael Heerdegen.
 ;;     icicle-alt-act-fn-for-type: Ensure orig-window is live before use it.  Thx to Michael Heerdegen.
 ;; 2011/02/22 dadams
 ;;     icicle-display-candidates-in-Completions: Show thumbnail for an image file.
@@ -2203,6 +2204,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/03/04 dadams
+;;     icicle-remove-cand-from-lists, icicle-narrow-candidates-with-predicate:
+;;       Corrected code for updating the predicate.
+;;       Test using emacs version, not boundp of read-file-name-predicate (since Icicles binds it now).
 ;; 2011/03/02 dadams
 ;;     Added: icicle-all-exif-data.
 ;;     icicle-describe-file: Show all EXIF data, using icicle-all-exif-data.
@@ -3364,6 +3369,18 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/03/06 dadams
+;;     icicle-define-icicle-maps:
+;;       Added to Options (sub)menu: icicle-toggle-search-whole-word.
+;;       Removed from Options: icicle-toggle-highlight-all-current, icicle-regexp-quote-input.
+;;       Removed redundant :visible icicle-mode's for icicle-menu-map.
+;;       Added :help entries.
+;;       Corrected: icicle-bookmark-bookmark-list, icicle-bookmark-desktop: not other-window.
+;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
+;;       Added: icicle-toggle-highlight-all-current, icicle-regexp-quote-input,
+;;              icicle-erase-minibuffer-or-history-element (2), icicle-insert-list-join-string,
+;;              icicle-insert-key-description, icicle-insert-string-from-variable (2),
+;;              icicle-insert-string-at-point.
 ;; 2011/02/22 dadams
 ;;     icicle-(bind|restore)-completion-keys: Bind C-x t to icicle-cycle-image-file-thumbnail.
 ;;     icicle-mode: Do not add icicle-fit-completions-window to temp-buffer-show-hook.

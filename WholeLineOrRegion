@@ -33,13 +33,13 @@ If you use slime-repl-mode (a mode for interacting with an external REPL), repla
 You could easily have this behaviour for /all/ commands that operate on the region, if you so wish:
 
     (do-all-symbols (symbol)
-      (put symbol 'interactive-form
-           (and (commandp symbol t)
-                (string-match-p "-region$\\|kill-ring-save" (symbol-name symbol))
-                '(interactive
-                  (if (use-region-p)
-                      (list (region-beginning) (region-end))
-                    (list (line-beginning-position) (line-end-position)))))))
+      (when (and (commandp symbol t)
+                 (string-match-p "-region$\\|kill-ring-save" (symbol-name symbol)))
+        (put symbol 'interactive-form
+             '(interactive
+               (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list (line-beginning-position) (line-beginning-position 2)))))))
 
 === With yank-handler ==
 

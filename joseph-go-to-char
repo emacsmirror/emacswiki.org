@@ -1,41 +1,44 @@
 ;;; joseph-go-to-char
 ;;bind this func to `?\C-f' typing :`?\C-faaa' will goto the location of 3th a after point.
 ;;`?\C-fa?\C-h' will go back for char  'a'.
-(defun joseph-go-to-char (n)
+
+ (defun joseph-go-to-char (n)
   "Move forward to Nth occurence of CHAR.
 Typing `joseph-go-to-char-key' again will move forwad to the next Nth
-occurence of CHAR. Typing \C-h will move back ."
+occurence of CHAR. Typing `\C-h' will move back ."
   (interactive "p")
   (forward-char n)
-  (let((char (read-event "Go to Char:" )))
-    (if (characterp char) 
-        (if (string-match "[[:cntrl:]]" (string char))
-            (if (char-equal ?\C-f char)
-                (progn (forward-char n)
-                       (let ((readed-char (read-event " ")))
-                         (while (and  (characterp readed-char) (char-equal ?\C-f readed-char)) 
-                           (forward-char)
-                           (setq readed-char (read-event " "))))
-                       (setq unread-command-events (list last-input-event)))
-              (setq unread-command-events (list last-input-event)))
-          (progn 
-            (when (search-forward (string char) nil nil n) (backward-char))                 
-                 (let ((readed-char (read-event
+  (unless (equal last-command 'joseph-go-to-char)
+    (let((char (read-event "Go to Char:" )))
+      (if (characterp char) 
+          (if (string-match "[[:cntrl:]]" (string char))
+              (if (char-equal ?\C-f char)
+                  (progn (forward-char n)
+                         (let ((readed-char (read-event " ")))
+                           (while (and  (characterp readed-char) (char-equal ?\C-f readed-char)) 
+                             (forward-char)
+                             (setq readed-char (read-event " "))))
+                         (setq unread-command-events (list last-input-event)))
+                )
+            (progn 
+              (when (search-forward (string char) nil nil n) (backward-char))                 
+              (let ((readed-char (read-event
+                                  (concat "(?\C-h for backward search ,\""
+                                          (string char) "\" for forward search):"))))
+                (while (and (characterp readed-char)
+                            (or (char-equal readed-char char)  
+                                (char-equal ?\C-h readed-char)))
+                  (if    (char-equal ?\C-h readed-char)
+                      (search-backward (string char) nil nil n)
+                    (forward-char)
+                    (when (search-forward (string char) nil nil n) (backward-char))
+                    )
+                  (setq readed-char (read-event
                                      (concat "(?\C-h for backward search ,\""
-                                             (string char) "\" for forward search):"))))
-                   (while (and (characterp readed-char)
-                               (or (char-equal readed-char char)  
-                                   (char-equal ?\C-h readed-char)))
-                     (if    (char-equal ?\C-h readed-char)
-                         (search-backward (string char) nil nil n)
-                       (forward-char)
-                       (when (search-forward (string char) nil nil n) (backward-char))
-                       )
-                     (setq readed-char (read-event
-                                        (concat "(?\C-h for backward search ,\""
-                                                (string char)"\" for forward search):"))))
-                   (setq unread-command-events (list last-input-event)))))
-      (setq unread-command-events (list last-input-event))
+                                             (string char)"\" for forward search):"))))
+                (setq unread-command-events (list last-input-event)))))
+        (setq unread-command-events (list last-input-event))
+        )
       )
     )
   )

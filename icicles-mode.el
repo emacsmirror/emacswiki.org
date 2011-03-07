@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 20:42:13 2011 (-0800)
+;; Last-Updated: Sun Mar  6 19:11:58 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6899
+;;     Update #: 7349
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -26,12 +26,12 @@
 ;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
 ;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
 ;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -832,7 +832,7 @@ Used on `pre-command-hook'."
   "Define `icicle-mode-map' and `icicle-menu-map'."
   (setq icicle-mode-map  (make-sparse-keymap)) ; Recreate it each time, to capture latest bindings.
 
-  ;; Define Icicles menu-bar menu.  Create it only once.  Sacrifice latest bindings for speed.
+  ;; Define `Icicles' menu-bar menu.  Create it only once: sacrifice any new bindings for speed.
   (unless icicle-menu-map
     (setq icicle-menu-map  (make-sparse-keymap "Icicles"))
     (define-key icicle-menu-map [icicle-mode] '(menu-item "Turn Off Icicle Mode" icicle-mode))
@@ -849,9 +849,9 @@ Used on `pre-command-hook'."
         :keys "C-? in minibuf"))
     (define-key icicle-menu-map [icicle-separator-last] '("--"))
 
-    (unless icicle-touche-pas-aux-menus-flag ; Use Dired > Multiple or Operate menu.
+    (unless icicle-touche-pas-aux-menus-flag ; Use Dired's `Multiple' or `Operate' menu.
       (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
-        "Icicles submenu for `Dired' > `Multiple' (or `Operate') menu.")
+        "Icicles submenu for Dired's `Multiple' (or `Operate') menu.")
       (if (boundp 'diredp-menu-bar-operate-menu) ; Defined in `dired+.el'.
           (define-key diredp-menu-bar-operate-menu [icicles]
             (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode))
@@ -870,9 +870,9 @@ Used on `pre-command-hook'."
         '(menu-item "Save as Project" icicle-dired-save-marked-as-project
           :visible icicle-mode :enable (eq major-mode 'dired-mode))))
 
-    (unless icicle-touche-pas-aux-menus-flag ; Use Dired > Multiple or Operate menu.
+    (unless icicle-touche-pas-aux-menus-flag ; Use Dired's `Dir' or `Subdir' menu.
       (defvar icicle-dired-dir-menu-map (make-sparse-keymap)
-        "Icicles submenu for `Dired' > `Dir' (or `Subdir') menu.")
+        "Icicles submenu for Dired's `Dir' (or `Subdir') menu.")
       (if (boundp 'diredp-menu-bar-subdir-menu) ; Defined in `dired+.el'.
           (define-key diredp-menu-bar-subdir-menu [icicles]
             (list 'menu-item "Icicles" icicle-dired-dir-menu-map :visible 'icicle-mode))
@@ -889,7 +889,7 @@ Used on `pre-command-hook'."
           :enable (and icicle-saved-completion-sets (eq major-mode 'dired-mode)))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'Info-mode-menu)) ; Use Info menu, if available.
+                (boundp 'Info-mode-menu)) ; Use `Info' menu, if available.
            (defvar icicle-info-menu-map (make-sparse-keymap)
              "Icicles submenu for `Info' menu.")
            (define-key Info-mode-menu [icicles]
@@ -926,7 +926,7 @@ Used on `pre-command-hook'."
                :enable (eq major-mode 'Info-mode)))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-frames-menu)) ; Defined in `menu-bar+.el'.
+                (boundp 'menu-bar-frames-menu)) ; Use `Frames' menu, defined in `menu-bar+.el'.
            (defvar icicle-frames-menu-map (make-sparse-keymap)
              "Icicles submenu for `Frames' menu.")
            (define-key menu-bar-frames-menu [icicles]
@@ -955,7 +955,7 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-separator-frame] '("--"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-describe-menu)) ; Use Describe menu, if available.
+                (boundp 'menu-bar-describe-menu)) ; Use `Describe' menu, if available.
            (defvar icicle-describe-menu-map (make-sparse-keymap)
              "Icicles submenu for `Describe' menu.")
            (define-key menu-bar-describe-menu [icicles]
@@ -1029,7 +1029,7 @@ Used on `pre-command-hook'."
     (define-key icicle-menu-map [icicle-separator-region] '("--"))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-apropos-menu)) ; Use Apropos menu, if available.
+                (boundp 'menu-bar-apropos-menu)) ; Use `Apropos' menu, if available.
            (defvar icicle-apropos-menu-map (make-sparse-keymap)
              "Icicles submenu for `Apropos' menu.")
            (define-key menu-bar-apropos-menu [icicles]
@@ -1075,106 +1075,132 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-separator-apropos] '("--"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-options-menu)) ; Use Options menu, if available.
+                (boundp 'menu-bar-options-menu)) ; Use `Options' menu, if available.
            (defvar icicle-options-menu-map (make-sparse-keymap)
              "Icicles submenu for `Options' menu.")
            (define-key menu-bar-options-menu [icicles]
              (list 'menu-item "Icicles" icicle-options-menu-map :visible 'icicle-mode))
            (define-key icicle-options-menu-map [icicle-set-option-to-t]
-             '(menu-item "+ Turn On Any Option..." icicle-set-option-to-t
-               :visible icicle-mode))
+             '(menu-item "+ Turn On Any Option..." icicle-set-option-to-t :visible icicle-mode
+               :help "Set boolean option to `t' (C-u: any user option, C--: any var)"))
            (define-key icicle-options-menu-map [icicle-reset-option-to-nil]
-             '(menu-item "+ Turn Off Any Option..." icicle-reset-option-to-nil
-               :visible icicle-mode))
+             '(menu-item "+ Turn Off Any Option..." icicle-reset-option-to-nil :visible icicle-mode
+               :help "Reset an option to `nil' (C-u: reset any variable)"))
            (define-key icicle-options-menu-map [icicle-toggle-option]
-             '(menu-item "+ Toggle Any Option..." icicle-toggle-option :visible icicle-mode))
+             '(menu-item "+ Toggle Any Option..." icicle-toggle-option :visible icicle-mode
+               :help "Toggle boolean option (C-u: any user option, C--: any var)"))
            (define-key icicle-options-menu-map [icicle-separator-options-general] '("--"))
            (define-key icicle-options-menu-map [icicle-toggle-search-cleanup]
-             '(menu-item "Toggle Removal of Search Highlighting"
-               icicle-toggle-search-cleanup :visible icicle-mode :keys "C-."))
+             '(menu-item "Toggle Icicle-Search Highlighting Cleanup" icicle-toggle-search-cleanup
+               :visible icicle-mode :keys "C-." :help "Toggle option `icicle-search-cleanup-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-search-replace-common-match]
              '(menu-item "Toggle Replacing Longest Common Match"
                icicle-toggle-search-replace-common-match :visible icicle-mode
-               :enable icicle-searching-p :keys "M-;"))
+               :enable icicle-searching-p :keys "M-;"
+               :help "Toggle option `icicle-search-replace-common-match-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-search-replace-whole]
              '(menu-item "Toggle Replacing Whole Search Hit"
                icicle-toggle-search-replace-whole :visible icicle-mode
-               :enable icicle-searching-p :keys "M-_"))
+               :enable icicle-searching-p :keys "M-_"
+               :help "Toggle option `icicle-search-replace-whole-candidate-flag'"))
+           (define-key icicle-options-menu-map [icicle-toggle-search-whole-word]
+             '(menu-item "Toggle Whole-Word Searching (Icicles Search)"
+               icicle-toggle-search-whole-word :visible icicle-mode
+               :enable icicle-searching-p :keys "M-q"
+               :help "Toggle `icicle-search-whole-word-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-highlight-all-current]
-             '(menu-item "Toggle All-Current Search Highlighting"
+             '(menu-item "Toggle All-Current Icicle-Search Highlighting"
                icicle-toggle-highlight-all-current :visible icicle-mode
-               :enable icicle-searching-p :keys "C-^"))
+               :enable icicle-searching-p :keys "C-^"
+               :help "Toggle option `icicle-search-highlight-all-current-flag'"))
            (define-key icicle-options-menu-map [icicle-separator-options-search] '("--"))
-           (define-key icicle-options-menu-map [icicle-regexp-quote-input]
-             '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
-               :visible icicle-mode :keys "C-M-;"))
            (define-key icicle-options-menu-map [icicle-toggle-regexp-quote]
              '(menu-item "Toggle Escaping Special Chars" icicle-toggle-regexp-quote
-               :visible icicle-mode :keys "C-`"))
+               :visible icicle-mode :keys "C-`"
+               :help "Toggle option `icicle-regexp-quote-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-dot]
              '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot
-               :visible icicle-mode :keys "C-M-."))
+               :visible icicle-mode :keys "C-M-."
+               :help "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'"))
            (define-key icicle-options-menu-map [icicle-toggle-incremental-completion]
              '(menu-item "Toggle Incremental Completion"
-               icicle-toggle-incremental-completion :visible icicle-mode :keys "C-#"))
+               icicle-toggle-incremental-completion :visible icicle-mode :keys "C-#"
+               :help "Toggle option `icicle-incremental-completion-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions"
-               icicle-toggle-show-multi-completion :visible icicle-mode))
+               icicle-toggle-show-multi-completion :visible icicle-mode
+               :help "Toggle option `icicle-show-multi-completion-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-hiding-common-match]
              '(menu-item "Toggle Hiding Common Match"
-               icicle-toggle-hiding-common-match :visible icicle-mode :keys "C-x ."))
+               icicle-toggle-hiding-common-match :visible icicle-mode :keys "C-x ."
+               :help "Toggle option `icicle-hide-common-match-in-Completions-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-expand-to-common-match]
              '(menu-item "Toggle Longest Common Match"
-               icicle-toggle-expand-to-common-match :visible icicle-mode :keys "C-;"))
+               icicle-toggle-expand-to-common-match :visible icicle-mode :keys "C-;"
+               :help "Toggle option `icicle-expand-input-to-common-match-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-ignored-space-prefix]
              '(menu-item "Toggle Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
-               :visible icicle-mode :keys "M-_"))
+               :visible icicle-mode :keys "M-_"
+               :help "Toggle option `icicle-ignore-space-prefix-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-ignored-extensions]
              '(menu-item "Toggle Ignored File Extensions" icicle-toggle-ignored-extensions
-               :visible icicle-mode :keys "C-."))
+               :visible icicle-mode :keys "C-."
+               :help "Toggle respect of `completion-ignored-extensions'"))
            (define-key icicle-options-menu-map [icicle-toggle-remote-file-testing]
              '(menu-item "Toggle Remote File Handling" icicle-toggle-remote-file-testing
-               :visible icicle-mode :enable (not icicle-searching-p) :keys "C-^"))
+               :visible icicle-mode :enable (not icicle-searching-p) :keys "C-^"
+               :help "Toggle option `icicle-test-for-remote-files-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-angle-brackets]
              '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets
-               :visible icicle-mode))
+               :visible icicle-mode :help "Toggle option `icicle-key-descriptions-use-<>-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-highlight-historical-candidates]
              '(menu-item "Toggle Highlighting Past Inputs"
-               icicle-toggle-highlight-historical-candidates :visible icicle-mode :keys "C-pause"))
+               icicle-toggle-highlight-historical-candidates :visible icicle-mode :keys "C-pause"
+               :help "Toggle option `icicle-highlight-historical-candidates-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-case-sensitivity]
              '(menu-item "Toggle Case Sensitivity" icicle-toggle-case-sensitivity
-               :visible icicle-mode :keys "C-A"))
+               :visible icicle-mode :keys "C-A"
+               :help "Toggle `case-fold-search', `completion-ignore-case' (C-u: file & buffer too)"))
            (define-key icicle-options-menu-map [icicle-toggle-proxy-candidates]
              '(menu-item "Toggle Including Proxy Candidates" icicle-toggle-proxy-candidates
-               :visible icicle-mode :keys "C-M-_"))
+               :visible icicle-mode :keys "C-M-_"
+               :help "Toggle option `icicle-add-proxy-candidates-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-transforming]
              '(menu-item "Toggle Duplicate Removal" icicle-toggle-transforming
-               :visible icicle-mode :keys "C-$"))
+               :visible icicle-mode :keys "C-$"
+               :help "Toggle use of `icicle-transform-function' (default: remove dups)"))
            (define-key icicle-options-menu-map [icicle-toggle-C-for-actions]
              '(menu-item "Toggle Using `C-' for Actions" icicle-toggle-C-for-actions
-               :visible icicle-mode :keys "M-g"))
+               :visible icicle-mode :keys "M-g"
+               :help "Toggle option `icicle-use-C-for-actions-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-~-for-home-dir]
              '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir
-               :visible icicle-mode :keys "M-~"))
+               :visible icicle-mode :keys "M-~"
+               :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-WYSIWYG-Completions]
              '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions
-               :visible icicle-mode))
+               :visible icicle-mode :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
            (define-key icicle-options-menu-map [icicle-next-TAB-completion-method]
              '(menu-item "Next `TAB' Completion Method"
-               icicle-next-TAB-completion-method :visible icicle-mode :keys "C-("))
+               icicle-next-TAB-completion-method :visible icicle-mode :keys "C-("
+               :help "Cycle to the next `TAB' completion method (C-u: ONE-OFF)"))
            (define-key icicle-options-menu-map [icicle-next-S-TAB-completion-method]
              '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
-               :visible icicle-mode :keys "M-("))
+               :visible icicle-mode :keys "M-("
+               :help "Cycle to the next `S-TAB' completion method (C-u: ONE-OFF)"))
            (define-key icicle-options-menu-map [icicle-separator-options-sort] '("--"))
            (define-key icicle-options-menu-map [icicle-toggle-alternative-sorting]
              '(menu-item "Swap Alternative Sort" icicle-toggle-alternative-sorting
-               :visible icicle-mode :keys "C-M-,"))
+               :visible icicle-mode :keys "C-M-,"
+               :help "Swap current sort order for current alternative sort order"))
            (define-key icicle-options-menu-map [icicle-change-alternative-sort-order]
              '(menu-item "Change Alternative Sort Order"
-               icicle-change-alternative-sort-order :visible icicle-mode :keys "M-,"))
+               icicle-change-alternative-sort-order :visible icicle-mode :keys "M-,"
+               :help "Choose alt sort order (C-9: reverse, C-u: cyle/complete)"))
            (define-key icicle-options-menu-map [icicle-change-sort-order]
              '(menu-item "Change Sort Order" icicle-change-sort-order :visible icicle-mode
-               :enable (not icicle-inhibit-sort-p) :keys "C-,"))
+               :enable (not icicle-inhibit-sort-p) :keys "C-,"
+               :help "Choose sort order (C-9: reverse, C-u: cyle/complete)"))
            (when (fboundp 'doremi)
              (define-key icicle-options-menu-map [icicle-separator-options-doremi]
                '(menu-item "--" nil :visible (or (get-buffer-window "*Completions*" 'visible)
@@ -1185,172 +1211,201 @@ Used on `pre-command-hook'."
                  '(menu-item "*Completions* Zoom Factor - Do Re Mi"
                    icicle-doremi-zoom-Completions+
                    :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                   :keys "C-x -")))
+                   :keys "C-x -" :help "Zoom text in `*Completions*' incrementally")))
              (define-key icicle-options-menu-map [icicle-doremi-inter-candidates-min-spaces+]
                '(menu-item "Inter-Candidate Spacing - Do Re Mi"
                  icicle-doremi-inter-candidates-min-spaces+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                 :keys "C-x |"))
+                 :keys "C-x |" :help "Change `icicle-inter-candidates-min-spaces' incrementally"))
              (define-key icicle-options-menu-map [icicle-doremi-candidate-width-factor+]
                '(menu-item "Candidate Column Width - Do Re Mi"
                  icicle-doremi-candidate-width-factor+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                 :keys "C-x w"))
+                 :keys "C-x w" :help "Change `icicle-candidate-width-factor' incrementally"))
              (define-key icicle-options-menu-map [icicle-doremi-increment-swank-prefix-length+]
                '(menu-item "Swank Min Match Chars - Do Re Mi"
                  icicle-doremi-increment-swank-prefix-length+
-                 :visible (and icicle-mode (eq (icicle-current-TAB-method) 'swank)) :keys "C-x 2"))
+                 :visible (and icicle-mode (eq (icicle-current-TAB-method) 'swank)) :keys "C-x 2"
+                 :help "Change `icicle-swank-prefix-length' incrementally"))
              (define-key icicle-options-menu-map [icicle-doremi-increment-swank-timeout+]
                '(menu-item "Swank Timeout - Do Re Mi"
                  icicle-doremi-increment-swank-timeout+
-                 :visible (and icicle-mode (eq (icicle-current-TAB-method) 'swank)) :keys "C-x 1"))
+                 :visible (and icicle-mode (eq (icicle-current-TAB-method) 'swank)) :keys "C-x 1"
+                 :help "Change `icicle-swank-timeout' incrementally"))
              (define-key icicle-options-menu-map [icicle-doremi-increment-max-candidates+]
                '(menu-item "Max # of Completions - Do Re Mi"
                  icicle-doremi-increment-max-candidates+
-                 :visible (and icicle-mode (active-minibuffer-window)) :keys "C-x #"))))
+                 :visible (and icicle-mode (active-minibuffer-window)) :keys "C-x #"
+                 :help "Change `icicle-max-candidates' incrementally"))))
           (t
            (define-key icicle-menu-map [icicle-set-option-to-t]
-             '(menu-item "+ Turn On Any Option..." icicle-set-option-to-t))
+             '(menu-item "+ Turn On Any Option..." icicle-set-option-to-t
+               :help "Set boolean option to `t' (C-u: any user option, C--: any var)"))
            (define-key icicle-menu-map [icicle-reset-option-to-nil]
-             '(menu-item "+ Turn Off Any Option..." icicle-reset-option-to-nil))
+             '(menu-item "+ Turn Off Any Option..." icicle-reset-option-to-nil
+               :help "Reset an option to `nil' (C-u: reset any variable)"))
            (define-key icicle-menu-map [icicle-toggle-option]
-             '(menu-item "+ Toggle Any Option..." icicle-toggle-option))
+             '(menu-item "+ Toggle Any Option..." icicle-toggle-option
+               :help "Toggle boolean option (C-u: any user option, C--: any var)"))
            (define-key icicle-menu-map [icicle-toggle-C-for-actions]
-             '(menu-item "Toggle Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"))
+             '(menu-item "Toggle Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"
+               :help "Toggle option `icicle-use-C-for-actions-flag'"))
            (define-key icicle-menu-map [icicle-toggle-~-for-home-dir]
-             '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"))
+             '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"
+               :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
+           (define-key icicle-menu-map [icicle-toggle-WYSIWYG-Completions]
+             '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions
+               :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
            (define-key icicle-menu-map [icicle-next-TAB-completion-method]
              '(menu-item "Next `TAB' Completion Method" icicle-next-TAB-completion-method
-               :keys "C-("))
+               :keys "C-(" :help "Cycle to the next `TAB' completion method (C-u: ONE-OFF)"))
            (define-key icicle-menu-map [icicle-next-S-TAB-completion-method]
              '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
-               :keys "M-("))
-           (define-key icicle-menu-map [icicle-toggle-WYSIWYG-Completions]
-             '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions))
+               :keys "M-(" :help "Cycle to the next `S-TAB' completion method (C-u: ONE-OFF)"))
            (define-key icicle-menu-map [icicle-toggle-search-cleanup]
-             '(menu-item "Toggle Removal of Search Highlighting" icicle-toggle-search-cleanup
-               :keys "C-."))
+             '(menu-item "Toggle Icicle-Search Highlighting Cleanup" icicle-toggle-search-cleanup
+               :keys "C-." :help "Toggle option `icicle-search-cleanup-flag'"))
            (define-key icicle-menu-map [icicle-toggle-search-replace-common-match]
              '(menu-item "Toggle Replacing Longest Common Match"
-               icicle-toggle-search-replace-common-match :enable icicle-searching-p :keys "M-;"))
+               icicle-toggle-search-replace-common-match :enable icicle-searching-p :keys "M-;"
+               :help "Toggle option `icicle-search-replace-common-match-flag'"))
            (define-key icicle-menu-map [icicle-toggle-search-replace-whole]
              '(menu-item "Toggle Replacing Whole Search Hit" icicle-toggle-search-replace-whole
-               :enable icicle-searching-p :keys "M-_"))
-           (define-key icicle-menu-map [icicle-toggle-highlight-all-current]
-             '(menu-item "Toggle All-Current Search Highlighting"
-               icicle-toggle-highlight-all-current :enable icicle-searching-p :keys "C-^"))
-           (define-key icicle-menu-map [icicle-regexp-quote-input]
-             '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input :keys "C-M-;"))
+               :enable icicle-searching-p :keys "M-_"
+               :help "Toggle option `icicle-search-replace-whole-candidate-flag'"))
+           (define-key icicle-menu-map [icicle-toggle-search-whole-word]
+             '(menu-item "Toggle Whole-Word Searching (Icicles Search)"
+               icicle-toggle-search-whole-word
+               :enable icicle-searching-p :keys "M-q"
+               :help "Toggle `icicle-search-whole-word-flag'"))
            (define-key icicle-menu-map [icicle-toggle-regexp-quote]
-             '(menu-item "Toggle Escaping Special Chars" icicle-toggle-regexp-quote :keys "C-`"))
+             '(menu-item "Toggle Escaping Special Chars" icicle-toggle-regexp-quote :keys "C-`"
+               :help "Toggle option `icicle-regexp-quote-flag'"))
            (define-key icicle-menu-map [icicle-toggle-dot]
-             '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot :keys "C-M-."))
+             '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot :keys "C-M-."
+               :help "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'"))
            (define-key icicle-menu-map [icicle-toggle-incremental-completion]
              '(menu-item "Toggle Incremental Completion" icicle-toggle-incremental-completion
-               :keys "C-#"))
+               :keys "C-#" :help "Toggle option `icicle-incremental-completion-flag'"))
            (define-key icicle-menu-map [icicle-toggle-show-multi-completion]
-             '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion))
+             '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
+               :help "Toggle option `icicle-show-multi-completion-flag'"))
            (define-key icicle-menu-map [icicle-toggle-hiding-common-match]
              '(menu-item "Toggle Hiding Common Match" icicle-toggle-hiding-common-match
-               :keys "C-x ."))
+               :keys "C-x ." :help "Toggle option `icicle-hide-common-match-in-Completions-flag'"))
            (define-key icicle-menu-map [icicle-toggle-expand-to-common-match]
              '(menu-item "Toggle Longest Common Match" icicle-toggle-expand-to-common-match
-               :keys "C-;"))
+               :keys "C-;" :help "Toggle option `icicle-expand-input-to-common-match-flag'"))
            (define-key icicle-menu-map [icicle-toggle-ignored-space-prefix]
              '(menu-item "Toggle Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
-               :keys "M-_"))
+               :keys "M-_" :help "Toggle option `icicle-ignore-space-prefix-flag'"))
            (define-key icicle-menu-map [icicle-toggle-ignored-extensions]
              '(menu-item "Toggle Ignored File Extensions" icicle-toggle-ignored-extensions
-               :keys "C-."))
+               :keys "C-." :help "Toggle respect of `completion-ignored-extensions'"))
            (define-key icicle-menu-map [icicle-toggle-remote-file-testing]
              '(menu-item "Toggle Remote File Handling" icicle-toggle-remote-file-testing
-               :enable (not icicle-searching-p) :keys "C-^"))
+               :enable (not icicle-searching-p) :keys "C-^"
+               :help "Toggle option `icicle-test-for-remote-files-flag'"))
            (define-key icicle-menu-map [icicle-toggle-angle-brackets]
-             '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets))
+             '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets
+               :help "Toggle option `icicle-key-descriptions-use-<>-flag'"))
            (define-key icicle-menu-map [icicle-toggle-highlight-historical-candidates]
              '(menu-item "Toggle Highlighting Past Inputs"
-               icicle-toggle-highlight-historical-candidates :keys "C-pause"))
+               icicle-toggle-highlight-historical-candidates :keys "C-pause"
+               :help "Toggle option `icicle-highlight-historical-candidates-flag'"))
            (define-key icicle-menu-map [icicle-toggle-case-sensitivity]
-             '(menu-item "Toggle Case Sensitivity" icicle-toggle-case-sensitivity :keys "C-A"))
+             '(menu-item "Toggle Case Sensitivity" icicle-toggle-case-sensitivity :keys "C-A"
+               :help "Toggle `case-fold-search', `completion-ignore-case' (C-u: file & buffer too)"))
            (define-key icicle-menu-map [icicle-toggle-proxy-candidates]
              '(menu-item "Toggle Including Proxy Candidates" icicle-toggle-proxy-candidates
-               :keys "C-M-_"))
+               :keys "C-M-_" :help "Toggle option `icicle-add-proxy-candidates-flag'"))
            (define-key icicle-menu-map [icicle-toggle-transforming]
-             '(menu-item "Toggle Duplicate Removal" icicle-toggle-transforming :keys "C-$"))
+             '(menu-item "Toggle Duplicate Removal" icicle-toggle-transforming :keys "C-$"
+               :help "Toggle use of `icicle-transform-function' (default: remove dups)"))
            (define-key icicle-menu-map [icicle-toggle-alternative-sorting]
-             '(menu-item "Swap Alternative Sort" icicle-toggle-alternative-sorting :keys "C-M-,"))
+             '(menu-item "Swap Alternative Sort" icicle-toggle-alternative-sorting :keys "C-M-,"
+               :help "Swap current sort order for current alternative sort order"))
            (define-key icicle-menu-map [icicle-change-alternative-sort-order]
              '(menu-item "Change Alternative Sort Order" icicle-change-alternative-sort-order
-               :keys "M-,"))
+               :keys "M-," :help "Choose alt sort order (C-9: reverse, C-u: cyle/complete)"))
            (define-key icicle-menu-map [icicle-change-sort-order]
              '(menu-item "Change Sort Order" icicle-change-sort-order
-               :enable (not icicle-inhibit-sort-p) :keys "C-,"))
+               :enable (not icicle-inhibit-sort-p) :keys "C-,"
+               :help "Choose sort order (C-9: reverse, C-u: cyle/complete)"))
            (when (fboundp 'doremi)
              (when (fboundp 'text-scale-increase) ; Emacs 23+.
                (define-key icicle-menu-map [icicle-doremi-zoom-Completions+]
                  '(menu-item "*Completions* Zoom Factor - Do Re Mi"
                    icicle-doremi-zoom-Completions+
-                   :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                   :keys "C-x -")))
+                   :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x -"
+                   :help "Zoom text in `*Completions*' incrementally")))
              (define-key icicle-menu-map [icicle-doremi-inter-candidates-min-spaces+]
                '(menu-item "Inter-Candidate Spacing - Do Re Mi"
                  icicle-doremi-inter-candidates-min-spaces+
-                 :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                 :keys "C-x |"))
+                 :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x |"
+                  :help "Change `icicle-inter-candidates-min-spaces' incrementally"))
              (define-key icicle-menu-map [icicle-doremi-candidate-width-factor+]
                '(menu-item "Candidate Column Width - Do Re Mi"
                  icicle-doremi-candidate-width-factor+
-                 :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                 :keys "C-x w"))
+                 :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x w"
+                 :help "Change `icicle-candidate-width-factor' incrementally"))
              (define-key icicle-menu-map [icicle-doremi-increment-swank-prefix-length+]
                '(menu-item "Swank Min Match Chars - Do Re Mi"
                  icicle-doremi-increment-swank-prefix-length+
-                 :visible (and icicle-mode (eq (icicle-current-TAB-method) 'swank)) :keys "C-x 2"))
+                 :visible (eq (icicle-current-TAB-method) 'swank) :keys "C-x 2"
+                 :help "Change `icicle-swank-prefix-length' incrementally"))
              (define-key icicle-menu-map [icicle-doremi-increment-swank-timeout+]
                '(menu-item "Swank Timeout - Do Re Mi"
                  icicle-doremi-increment-swank-timeout+
-                 :visible (and icicle-mode (eq (icicle-current-TAB-method) 'swank)) :keys "C-x 1"))
+                 :visible  (eq (icicle-current-TAB-method) 'swank) :keys "C-x 1"
+                 :help "Change `icicle-swank-timeout' incrementally"))
              (define-key icicle-menu-map [icicle-doremi-increment-max-candidates+]
                '(menu-item "Max # of Completions - Do Re Mi"
                  icicle-doremi-increment-max-candidates+
-                 :visible (and icicle-mode (active-minibuffer-window)) :keys "C-x #")))
+                 :visible (active-minibuffer-window) :keys "C-x #"
+                 :help "Change `icicle-max-candidates' incrementally")))
            (define-key icicle-menu-map [icicle-separator-toggle] '("--"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-custom-menu)) ; Use Customize menu, if available.
+                (boundp 'menu-bar-custom-menu)) ; Use `Customize' menu, if available.
            (defvar icicle-custom-menu-map (make-sparse-keymap)
              "Icicles submenu for `Customize' menu.")
            (define-key menu-bar-custom-menu [icicles]
              (list 'menu-item "Icicles" icicle-custom-menu-map :visible 'icicle-mode))
            (define-key icicle-custom-menu-map [icicle-customize-apropos-groups]
              '(menu-item "Groups Matching Regexp..." icicle-customize-apropos-groups
-               :visible icicle-mode))
+               :visible icicle-mode :help "Customize all user groups matching a regexp"))
            (define-key icicle-custom-menu-map [icicle-customize-apropos-faces]
              '(menu-item "Faces Matching Regexp..." icicle-customize-apropos-faces
-               :visible icicle-mode))
+               :visible icicle-mode :help "Customize all user faces matching a regexp"))
            (define-key icicle-custom-menu-map [icicle-customize-face]
-             '(menu-item "+ Face..." icicle-customize-face :visible icicle-mode))
+             '(menu-item "+ Face..." icicle-customize-face :visible icicle-mode
+                :help "Customize a face"))
            (define-key icicle-custom-menu-map [icicle-customize-apropos-options]
              '(menu-item "Options Matching Regexp..." icicle-customize-apropos-options
-               :visible icicle-mode))
+               :visible icicle-mode :help "Customize all user options matching a regexp"))
            (define-key icicle-custom-menu-map [icicle-customize-apropos]
              '(menu-item "Settings Matching Regexp..." icicle-customize-apropos
-               :visible icicle-mode)))
+               :visible icicle-mode :help "Customize all user settings matching a regexp")))
           (t
            (define-key icicle-menu-map [icicle-separator-customize] '("--"))
            (define-key icicle-menu-map [icicle-customize-apropos-groups]
-             '(menu-item "Groups Matching Regexp..." icicle-customize-apropos-groups))
+             '(menu-item "Groups Matching Regexp..." icicle-customize-apropos-groups
+                :help "Customize all customization groups matching a regexp"))
            (define-key icicle-menu-map [icicle-customize-apropos-faces]
-             '(menu-item "Faces Matching Regexp..." icicle-customize-apropos-faces))
+             '(menu-item "Faces Matching Regexp..." icicle-customize-apropos-faces
+                :help "Customize all faces matching a regexp"))
            (define-key icicle-menu-map [icicle-customize-face]
-             '(menu-item "+ Face..." icicle-customize-face))
+             '(menu-item "+ Face..." icicle-customize-face :help "Customize a face"))
            (define-key icicle-menu-map [icicle-customize-apropos-options]
-             '(menu-item "Options Matching Regexp..." icicle-customize-apropos-options))
+             '(menu-item "Options Matching Regexp..." icicle-customize-apropos-options
+                :help "Customize all user options matching a regexp"))
            (define-key icicle-menu-map [icicle-customize-apropos]
-             '(menu-item "Settings Matching Regexp..." icicle-customize-apropos))))
+             '(menu-item "Settings Matching Regexp..." icicle-customize-apropos
+                :help "Customize all user settings matching a regexp"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-edit-menu)) ; Use Edit menu, if available.
+                (boundp 'menu-bar-edit-menu)) ; Use `Edit' menu, if available.
            (defvar icicle-edit-menu-map (make-sparse-keymap)
              "Icicles submenu for `Edit' menu.")
            (define-key menu-bar-edit-menu [icicles]
@@ -1370,277 +1425,335 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-separator-edit] '("--"))
            (define-key icicle-menu-map [icicle-complete-thesaurus-entry]
              '(menu-item "Complete with Thesaurus..." icicle-complete-thesaurus-entry
-               :enable (and (not buffer-read-only) (boundp 'synonyms-obarray))))
+               :enable (and (not buffer-read-only) (boundp 'synonyms-obarray))
+               :help "Complete a word to an entry from a thesaurus"))
            (define-key icicle-menu-map [icicle-insert-thesaurus-entry]
              '(menu-item "+ Insert Thesaurus Entry..." icicle-insert-thesaurus-entry
-               :enable (and (not buffer-read-only) (boundp 'synonyms-obarray))))
+               :enable (and (not buffer-read-only) (boundp 'synonyms-obarray))
+               :help "Insert an entry from a thesaurus"))
            (define-key icicle-menu-map [icicle-completing-yank]
              '(menu-item "+ Paste Copied Text..." icicle-completing-yank
-               :enable (not buffer-read-only) :keys "C-- C-y"))))
+               :enable (not buffer-read-only) :keys "C-- C-y"
+               :help "Yank an entry from the `kill-ring', choosing it using completion"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-file-menu)) ; Use File menu, if available.
+                (boundp 'menu-bar-file-menu)) ; Use `File' menu, if available.
            (defvar icicle-file-menu-map (make-sparse-keymap)
              "Icicles submenu for `File' menu.")
            (define-key menu-bar-file-menu [icicles]
              (list 'menu-item "Icicles" icicle-file-menu-map :visible 'icicle-mode))
            (define-key icicle-file-menu-map [icicle-kill-buffer]
-             '(menu-item "+ Kill Buffer..." icicle-kill-buffer :visible icicle-mode :keys "C-x k"))
+             '(menu-item "+ Kill Buffer..." icicle-kill-buffer :visible icicle-mode :keys "C-x k"
+               :help "Kill a buffer (C-0: same-mode, C-9: file, C-- this-frame"))
            (define-key icicle-file-menu-map [icicle-delete-file]
              '(menu-item "+ Delete File..." icicle-delete-file :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Delete a file or directory"))
            (when (featurep 'recentf)
              (define-key icicle-file-menu-map [icicle-remove-file-from-recentf-list]
                '(menu-item "+ Remove from Recent Files List..."
                  icicle-remove-file-from-recentf-list :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Remove file from `recentf-list' - the list of recently used files"))
              (define-key icicle-file-menu-map [icicle-recent-file-other-window]
                '(menu-item "+ Open Recent File (Other Window)..."
                  icicle-recent-file-other-window :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Open a recently used file in another window"))
              (define-key icicle-file-menu-map [icicle-recent-file]
                '(menu-item "+ Open Recent File..." icicle-recent-file :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Open a recently used file")))
            (define-key icicle-file-menu-map [icicle-dired-saved-file-candidates-other-window]
              '(menu-item "Open Dired for Chosen Files..."
                icicle-dired-saved-file-candidates-other-window :visible icicle-mode
                :enable (and icicle-saved-completion-candidates
-                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
+               :help "Open Dired on a set of files & directories of your choice"))
            (define-key icicle-file-menu-map [icicle-dired-project-other-window]
              '(menu-item "Open Dired for Project..." icicle-dired-project-other-window
                :visible icicle-mode
                :enable (and icicle-saved-completion-sets
-                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
+               :help "Open Dired on a saved project in another window"))
            (define-key icicle-file-menu-map [icicle-locate-file-other-window]
              '(menu-item "+ Open File Under Directory (Other Window)..."
-               icicle-locate-file-other-window :visible icicle-mode))
+               icicle-locate-file-other-window :visible icicle-mode
+               :help "Visit a file within a directory or its subdirectories, in another window"))
            (define-key icicle-file-menu-map [icicle-locate-file]
-             '(menu-item "+ Open File Under Directory..." icicle-locate-file
-               :visible icicle-mode))
+             '(menu-item "+ Open File Under Directory..." icicle-locate-file :visible icicle-mode
+               :help "Visit a file within a directory or its subdirectories"))
            (define-key icicle-file-menu-map [icicle-file-other-window]
-             '(menu-item "+ Open File or Directory (Other Window)..."
-               icicle-file-other-window :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+             '(menu-item "+ Open File or Directory (Other Window)..." icicle-file-other-window
+               :visible icicle-mode
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Visit a file or directory in another window"))
            (define-key icicle-file-menu-map [icicle-file]
              '(menu-item "+ Open File or Directory..." icicle-file :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Visit a file or directory (C-u absolute, C-- absolute by date)")))
           (t
            (define-key icicle-menu-map [icicle-kill-buffer]
-             '(menu-item "+ Kill Buffer..." icicle-kill-buffer))
+             '(menu-item "+ Kill Buffer..." icicle-kill-buffer
+               :help "Kill a buffer (C-0: same-mode, C-9: file, C-- this-frame"))
            (define-key icicle-menu-map [icicle-delete-file]
              '(menu-item "+ Delete File..." icicle-delete-file
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Delete a file or directory"))
            (when (featurep 'recentf)
              (define-key icicle-menu-map [icicle-remove-file-from-recentf-list]
                '(menu-item "+ Remove from Recent Files List..."
                  icicle-remove-file-from-recentf-list
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Remove file from `recentf-list' - the list of recently used files"))
              (define-key icicle-menu-map [icicle-recent-file-other-window]
                '(menu-item "+ Open Recent File (Other Window)..." icicle-recent-file-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Open a recently used file in another window"))
              (define-key icicle-menu-map [icicle-recent-file]
                '(menu-item "+ Open Recent File..." icicle-recent-file
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Open a recently used file")))
            (define-key icicle-menu-map [icicle-dired-saved-file-candidates-other-window]
              '(menu-item "Open Dired for Chosen Files..."
                icicle-dired-saved-file-candidates-other-window
                :enable (and icicle-saved-completion-candidates
-                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
+               :help "Open Dired on a set of files & directories of your choice"))
            (define-key icicle-menu-map [icicle-dired-project-other-window]
              '(menu-item "Open Dired for Project..." icicle-dired-project-other-window
-               :visible icicle-mode
                :enable (and icicle-saved-completion-sets
-                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
+               :help "Open Dired on a saved project in another window"))
            (define-key icicle-menu-map [icicle-locate-file-other-window]
              '(menu-item "+ Open File Under Directory (Other Window)..."
-               icicle-locate-file-other-window))
+               icicle-locate-file-other-window
+               :help "Visit a file within a directory or its subdirectories, in another window"))
            (define-key icicle-menu-map [icicle-locate-file]
-             '(menu-item "+ Open File Under Directory..." icicle-locate-file))
+             '(menu-item "+ Open File Under Directory..." icicle-locate-file
+               :help "Visit a file within a directory or its subdirectories"))
            (define-key icicle-menu-map [icicle-file-other-window]
              '(menu-item "+ Open File or Directory (Other Window)..."
                icicle-file-other-window
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Visit a file or directory in another window"))
            (define-key icicle-menu-map [icicle-file]
              '(menu-item "+ Open File or Directory ..." icicle-file
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Visit a file or directory (C-u absolute, C-- absolute by date)"))))
     (define-key icicle-menu-map [icicle-buffer-list]
-      '(menu-item "+ Buffer List..." icicle-buffer-list))
+      '(menu-item "+ Buffer List..." icicle-buffer-list :help "Choose a list of buffer names"))
     (define-key icicle-menu-map [icicle-remove-buffer-config]
       '(menu-item "+ Remove Buffer Configuration..." icicle-remove-buffer-config
-        :enable icicle-buffer-configs))
+        :enable icicle-buffer-configs
+        :help "Remove buffer configuration from `icicle-buffer-configs'"))
     (define-key icicle-menu-map [icicle-add-buffer-config]
-      '(menu-item "New Buffer Configuration..." icicle-add-buffer-config))
+      '(menu-item "New Buffer Configuration..." icicle-add-buffer-config
+        :help "Add buffer configuration to `icicle-buffer-configs'"))
     (define-key icicle-menu-map [icicle-buffer-config]
       '(menu-item "+ Choose Buffer Configuration..." icicle-buffer-config
-        :enable icicle-buffer-configs))
+        :enable icicle-buffer-configs
+        :help "Choose a configuration of user options for `icicle-buffer'"))
     (define-key icicle-menu-map [icicle-remove-buffer-candidate]
       '(menu-item "+ Don't Always Include Buffer..." icicle-remove-buffer-candidate
-        :enable icicle-buffer-extras))
+        :enable icicle-buffer-extras :help "Remove buffer as an always-show completion candidate"))
     (define-key icicle-menu-map [icicle-add-buffer-candidate]
-      '(menu-item "+ Always Include Buffer..." icicle-add-buffer-candidate))
+      '(menu-item "+ Always Include Buffer..." icicle-add-buffer-candidate
+        :help "Add buffer as an always-show completion candidate"))
     (define-key icicle-menu-map [icicle-kill-buffer]
-      '(menu-item "+ Kill Buffer..." icicle-kill-buffer))
+      '(menu-item "+ Kill Buffer..." icicle-kill-buffer
+        :help "Kill a buffer (C-0: same-mode, C-9: file, C-- this-frame"))
     (define-key icicle-menu-map [icicle-insert-buffer]
-      '(menu-item "+ Insert Buffer..." icicle-insert-buffer))
+      '(menu-item "+ Insert Buffer..." icicle-insert-buffer
+        :help "Multi-command version of `insert-buffer'"))
     (define-key icicle-menu-map [icicle-delete-windows]
-      '(menu-item "+ Delete Windows on Buffer..." icicle-delete-windows :keys "C-u C-x 0"))
+      '(menu-item "+ Delete Windows on Buffer..." icicle-delete-windows :keys "C-u C-x 0"
+        :help "Delete windows showing a buffer, anywhere"))
     (define-key icicle-menu-map [icicle-buffer-other-window]
       '(menu-item "+ Switch to Buffer (Other Window)..." icicle-buffer-other-window
         :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
     (define-key icicle-menu-map [icicle-buffer]
       '(menu-item "+ Switch to Buffer..." icicle-buffer
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+        :help "Switch to a buffer (C-0: same mode, C-9: file buffer, C--: same frame"))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-bookmark-map)) ; Use Bookmarks menu, if available.
+                (boundp 'menu-bar-bookmark-map)) ; Use `Bookmarks' menu, if available.
            (require 'bookmark)          ; `bookmark-buffer-name' is not autoloaded.
            (defvar icicle-bookmark-menu-map (make-sparse-keymap)
              "Icicles submenu for `Bookmarks' menu.")
            (define-key menu-bar-bookmark-map [icicles]
              (list 'menu-item "Icicles" icicle-bookmark-menu-map :visible 'icicle-mode))
            (define-key icicle-bookmark-menu-map [icicle-goto-global-marker]
-             '(menu-item "+ Go To Global Marker..." icicle-goto-global-marker
-               :visible icicle-mode
-               :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"))
+             '(menu-item "+ Go To Global Marker..." icicle-goto-global-marker :visible icicle-mode
+               :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"
+               :help "Go to a global marker, choosing it by its line"))
            (define-key icicle-bookmark-menu-map [icicle-goto-marker]
-             '(menu-item "+ Go To Marker..." icicle-goto-marker
-               :visible icicle-mode
-               :enable (consp (icicle-markers mark-ring)) :keys "C-- C-SPC"))
+             '(menu-item "+ Go To Marker..." icicle-goto-marker :visible icicle-mode
+               :enable (consp (icicle-markers mark-ring)) :keys "C-- C-SPC"
+               :help "Go to a marker in this buffer, choosing it by its line"))
            (define-key icicle-bookmark-menu-map [icicle-separator-goto] '("--"))
            (when (featurep 'bookmark+)
              (define-key icicle-bookmark-menu-map [icicle-bookmark-non-file-other-window]
                '(menu-item "+ Jump to Buffer (Non-File) Bookmark..."
-                 icicle-bookmark-non-file-other-window
-                 :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 icicle-bookmark-non-file-other-window :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a buffer (i.e., a non-file) bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-region-other-window]
                '(menu-item "+ Jump to Region Bookmark..." icicle-bookmark-region-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark and activate its recorded region"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-url-other-window]
                '(menu-item "+ Jump to URL Bookmark..." icicle-bookmark-url-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a URL bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-gnus-other-window]
                '(menu-item "+ Jump to Gnus Bookmark..." icicle-bookmark-gnus-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a Gnus bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-man-other-window]
                '(menu-item "+ Jump to `man' Bookmark..." icicle-bookmark-man-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a `man'-page bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-info-other-window]
                '(menu-item "+ Jump to Info Bookmark..." icicle-bookmark-info-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to an Info bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-remote-file-other-window]
                '(menu-item "+ Jump to Remote-File Bookmark..."
-                 icicle-bookmark-remote-file-other-window
-                 :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 icicle-bookmark-remote-file-other-window :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a remote-file bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-local-file-other-window]
                '(menu-item "+ Jump to Local-File Bookmark..."
-                 icicle-bookmark-local-file-other-window
-                 :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 icicle-bookmark-local-file-other-window :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a local-file bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-file-other-window]
                '(menu-item "+ Jump to File Bookmark..." icicle-bookmark-file-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a file bookmark"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-dired-other-window]
                '(menu-item "+ Jump to Dired Bookmark..." icicle-bookmark-dired-other-window
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-             (define-key icicle-bookmark-menu-map [icicle-bookmark-bookmark-list-other-window]
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a Dired bookmark"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-bookmark-list]
                '(menu-item "+ Jump to Bookmark-List Bookmark..."
-                 icicle-bookmark-bookmark-list-other-window
+                 icicle-bookmark-bookmark-list :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark-list bookmark"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-desktop]
+               '(menu-item "+ Jump to Desktop Bookmark..." icicle-bookmark-desktop
                  :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-             (define-key icicle-bookmark-menu-map [icicle-bookmark-desktop-other-window]
-               '(menu-item "+ Jump to Desktop Bookmark..." icicle-bookmark-desktop-other-window
-                 :visible icicle-mode
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to an Emacs desktop bookmark"))
              )
            (define-key icicle-bookmark-menu-map [icicle-bookmark-other-window]
-             '(menu-item "+ Jump to Bookmark..." icicle-bookmark-other-window
-               :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+             '(menu-item "+ Jump to Bookmark..." icicle-bookmark-other-window :visible icicle-mode
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
            (define-key icicle-bookmark-menu-map [icicle-bookmark]
              '(menu-item "+ Jump to Bookmark (Same Window)..." icicle-bookmark :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')")))
           (t
            (when (featurep 'bookmark+)
              (define-key icicle-menu-map [icicle-bookmark-non-file-other-window]
                '(menu-item "+ Jump to Buffer (Non-File) Bookmark..."
                  icicle-bookmark-non-file-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a buffer (i.e., a non-file) bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-region-other-window]
                '(menu-item "+ Jump to Region Bookmark..." icicle-bookmark-region-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark and activate its recorded region"))
              (define-key icicle-menu-map [icicle-bookmark-url-other-window]
                '(menu-item "+ Jump to URL Bookmark..." icicle-bookmark-url-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a URL bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-gnus-other-window]
                '(menu-item "+ Jump to Gnus Bookmark..." icicle-bookmark-gnus-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a Gnus bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-man-other-window]
                '(menu-item "+ Jump to `man' Bookmark..." icicle-bookmark-man-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a `man'-page bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-info-other-window]
                '(menu-item "+ Jump to Info Bookmark..." icicle-bookmark-info-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to an Info bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-remote-file-other-window]
                '(menu-item "+ Jump to Remote-File Bookmark..."
                  icicle-bookmark-remote-file-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a remote-file bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-local-file-other-window]
                '(menu-item "+ Jump to Local-File Bookmark..."
                  icicle-bookmark-local-file-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a local-file bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-file-other-window]
                '(menu-item "+ Jump to File Bookmark..." icicle-bookmark-file-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a file bookmark"))
              (define-key icicle-menu-map [icicle-bookmark-dired-other-window]
                '(menu-item "+ Jump to Dired Bookmark..." icicle-bookmark-dired-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-             (define-key icicle-menu-map [icicle-bookmark-bookmark-list-other-window]
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a Dired bookmark"))
+             (define-key icicle-menu-map [icicle-bookmark-bookmark-list]
                '(menu-item "+ Jump to Bookmark-List Bookmark..."
-                 icicle-bookmark-bookmark-list-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-             (define-key icicle-menu-map [icicle-bookmark-desktop-other-window]
-               '(menu-item "+ Jump to Desktop Bookmark..." icicle-bookmark-desktop-other-window
-                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+                 icicle-bookmark-bookmark-list
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark-list bookmark"))
+             (define-key icicle-menu-map [icicle-bookmark-desktop]
+               '(menu-item "+ Jump to Desktop Bookmark..." icicle-bookmark-desktop
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to an Emacs desktop bookmark"))
              )
            (define-key icicle-menu-map [icicle-bookmark-other-window]
              '(menu-item "+ Jump To Bookmark..." icicle-bookmark-other-window
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
            (define-key icicle-menu-map [icicle-bookmark]
              '(menu-item "+ Jump To Bookmark (Same Window)..." icicle-bookmark
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
            (define-key icicle-menu-map [icicle-separator-bookmark-buffer] '("--"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-search-tags-menu)) ; Use Tags menu, if available - `menu-bar+.el'
+                (boundp 'menu-bar-search-tags-menu)) ; Use `Tags' menu, defined in `menu-bar+.el'.
            (defvar icicle-search-tags-menu-map (make-sparse-keymap)
-             "Icicles submenu for `Tags' submenu of Search menu.")
+             "Icicles submenu for `Tags' submenu of `Search' menu.")
            (define-key menu-bar-search-tags-menu [icicles]
              (list 'menu-item "Icicles" icicle-search-tags-menu-map :visible 'icicle-mode))
            (define-key icicle-search-tags-menu-map [icicle-tags-search]
              '(menu-item "+ Search Tagged Files ..." icicle-tags-search :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Search all source files listed in tags tables for matches for a regexp"))
            (define-key icicle-search-tags-menu-map [icicle-pop-tag-mark]
              '(menu-item "+ Back (Pop Tag Mark)" icicle-pop-tag-mark :visible icicle-mode
                :enable (and (boundp 'find-tag-marker-ring)
                         (not (ring-empty-p find-tag-marker-ring))
-                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
+               :help "Pop back to where `M-.' was last invoked"))
            (define-key icicle-search-tags-menu-map [icicle-find-first-tag-other-window]
              '(menu-item "+ Find First Tag ..." icicle-find-first-tag-other-window
                :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Find first tag in current tags table whose name matches your input"))
            (define-key icicle-search-tags-menu-map [icicle-find-tag]
              '(menu-item "+ Find Tag ..." icicle-find-tag :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
-          ((and (not icicle-touche-pas-aux-menus-flag) ; Use Search, if available and no Tags menu.
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Navigate among all tags that match a regexp")))
+          ((and (not icicle-touche-pas-aux-menus-flag) ; Use `Search' menu, if no `Tags' menu.
                 (boundp 'menu-bar-search-menu))
            (defvar icicle-search-menu-map (make-sparse-keymap)
              "Icicles submenu for `Search' menu.")
@@ -1652,161 +1765,194 @@ Used on `pre-command-hook'."
              (list 'menu-item "Tags" icicle-search-tags-menu-map :visible 'icicle-mode))
            (define-key icicle-search-tags-menu-map [icicle-tags-search]
              '(menu-item "+ Search Tagged Files ..." icicle-tags-search :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Search all source files listed in tags tables for matches for a regexp"))
            (define-key icicle-search-tags-menu-map [icicle-pop-tag-mark]
              '(menu-item "+ Back (Pop Tag Mark)" icicle-pop-tag-mark :visible icicle-mode
                :enable (and (boundp 'find-tag-marker-ring)
                         (not (ring-empty-p find-tag-marker-ring))
-                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+                        (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
+               :help "Pop back to where `M-.' was last invoked"))
            (define-key icicle-search-tags-menu-map [icicle-find-first-tag-other-window]
              '(menu-item "+ Find First Tag ..." icicle-find-first-tag-other-window
                :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Find first tag in current tags table whose name matches your input"))
            (define-key icicle-search-tags-menu-map [icicle-find-tag]
              '(menu-item "+ Find Tag ..." icicle-find-tag :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Navigate among all tags that match a regexp")))
           (t
            (define-key icicle-menu-map [icicle-tags-search]
              '(menu-item "+ Search Tagged Files ..." icicle-tags-search
-               :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Search all source files listed in tags tables for matches for a regexp"))
            (define-key icicle-menu-map [icicle-pop-tag-mark]
-             '(menu-item "+ Back (Pop Tag Mark)" icicle-pop-tag-mark :visible icicle-mode
+             '(menu-item "+ Back (Pop Tag Mark)" icicle-pop-tag-mark
                :enable (and (boundp 'find-tag-marker-ring)
                         (not (ring-empty-p find-tag-marker-ring))
                         (not (window-minibuffer-p
-                              (frame-selected-window menu-updating-frame))))))
+                              (frame-selected-window menu-updating-frame))))
+               :help "Pop back to where `M-.' was last invoked"))
            (define-key icicle-menu-map [icicle-find-first-tag-other-window]
              '(menu-item "Find First Tag ..." icicle-find-first-tag-other-window
-               :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Find first tag in current tags table whose name matches your input"))
            (define-key icicle-menu-map [icicle-find-tag]
-             '(menu-item "Find Tag ..." icicle-find-tag :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))))
+             '(menu-item "Find Tag ..." icicle-find-tag
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Navigate among all tags that match a regexp"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-search-menu)) ; Use Search menu, if available.
+                (boundp 'menu-bar-search-menu)) ; Use `Search' menu, if available.
            (defvar icicle-search-menu-map (make-sparse-keymap)
              "Icicles submenu for `Search' menu.")
            (define-key menu-bar-search-menu [icicles]
              (list 'menu-item "Icicles" icicle-search-menu-map :visible 'icicle-mode))
            (define-key icicle-search-menu-map [icicle-goto-global-marker]
-             '(menu-item "+ Go To Global Marker..." icicle-goto-global-marker
-               :visible icicle-mode
-               :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"))
+             '(menu-item "+ Go To Global Marker..." icicle-goto-global-marker :visible icicle-mode
+               :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"
+               :help "Go to a global marker, choosing it by its line"))
            (define-key icicle-search-menu-map [icicle-goto-marker]
-             '(menu-item "+ Go To Marker..." icicle-goto-marker
-               :visible icicle-mode
-               :enable (consp (icicle-markers mark-ring)) :keys "C-- C-SPC"))
+             '(menu-item "+ Go To Marker..." icicle-goto-marker :visible icicle-mode
+               :enable (consp (icicle-markers mark-ring)) :keys "C-- C-SPC"
+               :help "Go to a marker in this buffer, choosing it by its line"))
            (define-key icicle-search-menu-map [icicle-separator-goto] '("--"))
            (define-key icicle-search-menu-map [icicle-search-highlight-cleanup]
-             '(menu-item "Remove Search Highlighting..." icicle-search-highlight-cleanup
+             '(menu-item "Remove Icicle-Search Highlighting..." icicle-search-highlight-cleanup
                :visible icicle-mode
                :enable (or icicle-search-overlays (overlayp icicle-search-current-overlay)
-                        (overlayp icicle-search-refined-overlays) icicle-search-refined-overlays)))
+                        (overlayp icicle-search-refined-overlays) icicle-search-refined-overlays)
+               :help "Remove all highlighting from the last use of `icicle-search'"))
            (define-key icicle-search-menu-map [icicle-compilation-search]
              '(menu-item "+ Search Compilation/Grep Hits (Regexp)..."
                icicle-compilation-search :visible icicle-mode
                :enable (and (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
                         (condition-case nil (eq (current-buffer) (compilation-find-buffer))
                           (error nil)))
-               :keys "C-`"))
+               :keys "C-`" :help "Icicles search, showing the matching compilation-buffer hit"))
            (define-key icicle-search-menu-map [icicle-grep-saved-file-candidates]
              '(menu-item "Grep Saved File-Name Candidates..."
-               icicle-grep-saved-file-candidates
-               :visible icicle-mode :enable icicle-saved-completion-candidates))
+               icicle-grep-saved-file-candidates :visible icicle-mode
+               :enable icicle-saved-completion-candidates
+               :help "Run `grep' on the set of completion candidates saved using `C-M->'"))
            (define-key icicle-search-menu-map [icicle-imenu-non-interactive-function]
              '(menu-item "+ Search Non-Command Fn Definition (Regexp)..."
-               icicle-imenu-non-interactive-function
-               :visible icicle-mode :enable (eq major-mode 'emacs-lisp-mode)))
+               icicle-imenu-non-interactive-function :visible icicle-mode
+               :enable (eq major-mode 'emacs-lisp-mode)
+               :help "Go to an Emacs non-interactive function definition with `icicle-search'"))
            (define-key icicle-search-menu-map [icicle-imenu-command]
              '(menu-item "+ Search Command Definition (Regexp)..." icicle-imenu-command
-               :visible icicle-mode :enable (eq major-mode 'emacs-lisp-mode)))
+               :visible icicle-mode
+               :enable (eq major-mode 'emacs-lisp-mode)
+               :help "Go to an Emacs command definition using `icicle-search'"))
            (define-key icicle-search-menu-map [icicle-imenu]
-             '(menu-item "+ Search Definition (Regexp)..." icicle-imenu
-               :visible icicle-mode :enable imenu-generic-expression))
+             '(menu-item "+ Search Definition (Regexp)..." icicle-imenu :visible icicle-mode
+               :enable imenu-generic-expression :help "Go to an Imenu entry using `icicle-search'"))
            (define-key icicle-search-menu-map [icicle-tags-search]
-             '(menu-item "+ Search Tagged Files ..." icicle-tags-search :visible icicle-mode))
+             '(menu-item "+ Search Tagged Files ..." icicle-tags-search :visible icicle-mode
+               :help "Search all source files listed in tags tables for matches for a regexp"))
            (define-key icicle-search-menu-map [icicle-search-bookmarks-together]
              '(menu-item "+ Search Bookmarks Together..." icicle-search-bookmarks-together
-               :visible (and icicle-mode (featurep 'bookmark+)) :keys "C-u C-`"))
+               :visible (and icicle-mode (featurep 'bookmark+)) :keys "C-u C-`"
+               :help "Search bookmarked regions (together)"))
            (define-key icicle-search-menu-map [icicle-search-bookmark]
              '(menu-item "+ Search Bookmarks Separately..." icicle-search-bookmark
-               :visible (and icicle-mode (featurep 'bookmark+))))
+               :visible (and icicle-mode (featurep 'bookmark+))
+               :help "Search bookmarked text"))
            (define-key icicle-search-menu-map [icicle-search-file]
-             '(menu-item "+ Search Files (Regexp)..." icicle-search-file
-               :visible icicle-mode))
+             '(menu-item "+ Search Files (Regexp)..." icicle-search-file :visible icicle-mode
+               :help "Search multiple files completely"))
            (define-key icicle-search-menu-map [icicle-search-buffer]
-             '(menu-item "+ Search Buffers (Regexp)..." icicle-search-buffer
-               :visible icicle-mode))
+             '(menu-item "+ Search Buffers (Regexp)..." icicle-search-buffer :visible icicle-mode
+               :help "Search multiple buffers completely"))
            (define-key icicle-search-menu-map [icicle-search-text-property]
              '(menu-item "+ Search Text Property..." icicle-search-text-property
-               :visible icicle-mode))
+               :visible icicle-mode
+               :help "Search for text that has a property with a certain value"))
            (define-key icicle-search-menu-map [icicle-search-word]
              '(menu-item "+ Search for Word..." icicle-search-word :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Whole-word Icicles search"))
            (define-key icicle-search-menu-map [icicle-search-keywords]
              '(menu-item "+ Search with Keywords (Regexps)..." icicle-search-keywords
                :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Search with one or more keywords, which can each be a regexp"))
            (define-key icicle-search-menu-map [icicle-search]
              '(menu-item "+ Search (Regexp)..." icicle-search :visible icicle-mode
                :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-               :keys "C-`"))
+               :keys "C-`"
+               :help "Search for matches, with completion, cycling, and hit replacement"))
            (define-key icicle-search-menu-map [icicle-occur]
              '(menu-item "+ Occur (Regexp)..." icicle-occur :visible icicle-mode
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "`icicle-search' with a regexp of \".*\".  An `occur' with icompletion")))
           (t
            (define-key icicle-menu-map [icicle-search-highlight-cleanup]
-             '(menu-item "Remove Search Highlighting..." icicle-search-highlight-cleanup
+             '(menu-item "Remove Icicle-Search Highlighting..." icicle-search-highlight-cleanup
                :enable (or icicle-search-overlays (overlayp icicle-search-current-overlay)
                         (overlayp icicle-search-refined-overlays)
-                        icicle-search-refined-overlays)))
+                        icicle-search-refined-overlays)
+               :help "Remove all highlighting from the last use of `icicle-search'"))
            (define-key icicle-menu-map [icicle-compilation-search]
              '(menu-item "+ Search Compilation/Grep Hits (Regexp)..." icicle-compilation-search
                :enable (and (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
                         (condition-case nil (eq (current-buffer) (compilation-find-buffer))
-                          (error nil)))))
+                          (error nil)))
+               :help "Icicles search, showing the matching compilation-buffer hit"))
            (define-key icicle-menu-map [icicle-grep-saved-file-candidates]
              '(menu-item "Grep Saved File-Name Candidates..."
-               icicle-grep-saved-file-candidates :enable icicle-saved-completion-candidates))
+               icicle-grep-saved-file-candidates :enable icicle-saved-completion-candidates
+               :help "Run `grep' on the set of completion candidates saved using `C-M->'"))
            (define-key icicle-menu-map [icicle-imenu-non-interactive-function]
              '(menu-item "Search Non-Command Fn Definition (Regexp)..."
-               icicle-imenu-non-interactive-function :enable (eq major-mode 'emacs-lisp-mode)))
+               icicle-imenu-non-interactive-function :enable (eq major-mode 'emacs-lisp-mode)
+               :help "Go to an Emacs non-interactive function definition with `icicle-search'"))
            (define-key icicle-menu-map [icicle-imenu-command]
              '(menu-item "Search Command Definition (Regexp)..." icicle-imenu-command
-               :enable (eq major-mode 'emacs-lisp-mode)))
+               :enable (eq major-mode 'emacs-lisp-mode)
+               :help "Go to an Emacs command definition using `icicle-search'"))
            (define-key icicle-menu-map [icicle-imenu]
              '(menu-item "+ Search Definition (Regexp)..." icicle-imenu
-               :enable imenu-generic-expression))
+               :enable imenu-generic-expression :help "Go to an Imenu entry using `icicle-search'"))
            (define-key icicle-menu-map [icicle-tags-search]
-             '(menu-item "+ Search Tagged Files ..." icicle-tags-search))
+             '(menu-item "+ Search Tagged Files ..." icicle-tags-search
+               :help "Search all source files listed in tags tables for matches for a regexp"))
            (define-key icicle-menu-map [icicle-search-bookmarks-together]
              '(menu-item "+ Search Bookmarks Together..." icicle-search-bookmarks-together
-               :visible (featurep 'bookmark+) :keys "C-u C-`"))
+               :visible (featurep 'bookmark+) :keys "C-u C-`"
+               :help "Search bookmarked regions (together)"))
            (define-key icicle-menu-map [icicle-search-bookmark]
              '(menu-item "+ Search Bookmarks Separately..." icicle-search-bookmark
-               :visible (featurep 'bookmark+)))
+               :visible (featurep 'bookmark+) :help "Search bookmarked text"))
            (define-key icicle-menu-map [icicle-search-file]
-             '(menu-item "+ Search Files (Regexp)..." icicle-search-file))
+             '(menu-item "+ Search Files (Regexp)..." icicle-search-file
+               :help "Search multiple files completely"))
            (define-key icicle-menu-map [icicle-search-buffer]
-             '(menu-item "+ Search Buffers (Regexp)..." icicle-search-buffer))
+             '(menu-item "+ Search Buffers (Regexp)..." icicle-search-buffer
+               :help "Search multiple buffers completely"))
            (define-key icicle-menu-map [icicle-search-text-property]
-             '(menu-item "+ Search Text Property..." icicle-search-text-property))
+             '(menu-item "+ Search Text Property..." icicle-search-text-property
+               :help "Search for text that has a property with a certain value"))
            (define-key icicle-menu-map [icicle-search-word]
              '(menu-item "+ Search for Word..." icicle-search-word
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Whole-word Icicles search"))
            (define-key icicle-menu-map [icicle-search-keywords]
              '(menu-item "+ Search with Keywords (Regexps)..." icicle-search-keywords
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Search with one or more keywords, which can each be a regexp"))
            (define-key icicle-menu-map [icicle-search]
              '(menu-item "+ Search (Regexp)..." icicle-search
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "Search for matches, with completion, cycling, and hit replacement"))
            (define-key icicle-menu-map [icicle-occur]
              '(menu-item "+ Occur (Regexp)..." icicle-occur
-               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))))
+               :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+               :help "`icicle-search' with a regexp of \".*\".  An `occur' with icompletion")))))
 
-  ;; Install Icicles menu-bar menu.
+  ;; Install `Icicles' menu-bar menu.
   (define-key icicle-mode-map [menu-bar icicles] (cons "Icicles" icicle-menu-map))
 
   ;; Optional `icicle-mode-map' bindings - governed by `icicle-top-level-key-bindings'.
@@ -1883,7 +2029,7 @@ Used on `pre-command-hook'."
     (let ((defn  (lookup-key ibuffer-mode-map "\M-si"))) ; Ibuffer `M-s i'
       (unless (and defn (not (integerp defn)))
         (define-key ibuffer-mode-map "\M-si" 'icicle-search-ibuffer-marked))
-      (unless icicle-touche-pas-aux-menus-flag ; Use Ibuffer > Operate menu.
+      (unless icicle-touche-pas-aux-menus-flag ; Use Ibuffer's `Operate' menu.
         (define-key ibuffer-mode-operate-map [icicle-search-ibuffer-marked]
           '(menu-item "Icicles Search (and Replace)..." icicle-search-ibuffer-marked
             :visible icicle-mode :enable (eq major-mode 'ibuffer-mode))))))
@@ -2057,6 +2203,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
      ;; `minibuffer-local-map': default minibuffer map.
      (let ((map  minibuffer-local-map))
+
+       ;; Menu-bar `Minibuf' menu.
        (define-key map [menu-bar minibuf quit] ; Replace `keyboard-escape-quit'
          '(menu-item "Quit" icicle-abort-recursive-edit
            :help "Cancel minibuffer input or recursive edit"))
@@ -2068,16 +2216,63 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          '(menu-item "Icicles Help" icicle-minibuffer-help
            :help "Display help for minibuffer input and completion"))
        (define-key map [menu-bar minibuf separator-last] '("--"))
-       (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-         '(menu-item "Insert File Name" icicle-read+insert-file-name
-           :help "Read and insert a file name using (lax) completion."))
+       (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
+         '(menu-item "Toggle All-Current Icicle-Search Highlighting"
+           icicle-toggle-highlight-all-current :enable icicle-searching-p
+           :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+       (define-key map [menu-bar minibuf icicle-regexp-quote-input]
+         '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
+           :enable (with-current-buffer (window-buffer (minibuffer-window))
+                     (not (zerop (buffer-size))))
+           :help "Regexp-quote current input or its active region, then apropos-complete"
+           :keys "C-M-;"))
+       (define-key map [menu-bar minibuf separator-set2] '("--"))
        (define-key map [menu-bar minibuf icicle-clear-current-history]
          '(menu-item "Clear History Entries" icicle-clear-current-history
-           :help "Clear current minibuffer history of selected entries."))
+           :help "Clear current minibuffer history of selected entries"))
+       (define-key map [menu-bar minibuf icicle-erase-minibuffer]
+         '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
+           :visible (memq last-command
+                     '(previous-history-element next-history-element
+                       icicle-erase-minibuffer-or-history-element
+                       previous-matching-history-element next-matching-history-element))
+           :help "Delete current history element (in minibuffer now)" :keys "M-k"))
+       (define-key map [menu-bar minibuf icicle-delete-history-element]
+         '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
+           :visible (not (memq last-command
+                          '(previous-history-element next-history-element
+                            icicle-erase-minibuffer-or-history-element
+                            previous-matching-history-element next-matching-history-element)))
+           :help "Erase the Minibuffer" :keys "M-k"))
+       (define-key map [menu-bar minibuf icicle-insert-list-join-string]
+         '(menu-item "Insert Join-String" icicle-insert-list-join-string
+           :help "Insert `icicle-list-join-string' into the minibuffer"))
+       (define-key map [menu-bar minibuf icicle-insert-key-description]
+         '(menu-item "Insert Key Description" icicle-insert-key-description
+           :visible (not icicle-searching-p) :keys "M-q"
+           :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
        (define-key map [menu-bar minibuf icicle-insert-history-element]
-         '(menu-item "Insert Previously Entered Input" icicle-insert-history-element
+         '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
            :enable (consp (symbol-value minibuffer-history-variable))
-           :help "Use completion to insert a previously entered input in the minibuffer."))
+           :help "Use completion to insert a previous input into the minibuffer"))
+       (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
+         '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
+           :visible current-prefix-arg :keys "C-="
+           :help "Read a variable name and insert its string value into the minibuffer"))
+       (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
+         '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
+           :visible (not current-prefix-arg) :keys "C-="
+           :help "Insert text from variable `icicle-input-string' into the minibuffer"))
+       (define-key map [menu-bar minibuf icicle-insert-string-at-point]
+         '(menu-item "Insert Text from Point" icicle-insert-string-at-point
+           :help "Insert text at or near the cursor into the minibuffer"))
+       (define-key map [menu-bar minibuf icicle-completing-read+insert]
+         '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
+           :visible (consp icicle-completing-read+insert-candidates)
+           :help "Read and insert something using (lax) completion"))
+       (define-key map [menu-bar minibuf icicle-read+insert-file-name]
+         '(menu-item "Insert File Name" icicle-read+insert-file-name
+           :help "Read and insert a file name using (lax) completion"))
 
        (define-key map [(control ??)]            'icicle-minibuffer-help) ; `C-?'
        (define-key map [(control ?g)]            'icicle-abort-recursive-edit) ; `C-g'
@@ -2114,16 +2309,63 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            '(menu-item "Icicles Help" icicle-minibuffer-help
              :help "Display help for minibuffer input and completion"))
          (define-key map [menu-bar minibuf separator-last] '("--"))
-         (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-           '(menu-item "Insert File Name" icicle-read+insert-file-name
-             :help "Read and insert a file name using (lax) completion."))
+         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
+           '(menu-item "Toggle All-Current Icicle-Search Highlighting"
+             icicle-toggle-highlight-all-current :enable icicle-searching-p
+             :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+         (define-key map [menu-bar minibuf icicle-regexp-quote-input]
+           '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
+             :enable (with-current-buffer (window-buffer (minibuffer-window))
+                       (not (zerop (buffer-size))))
+             :help "Regexp-quote current input or its active region, then apropos-complete"
+             :keys "C-M-;"))
+         (define-key map [menu-bar minibuf separator-set2] '("--"))
          (define-key map [menu-bar minibuf icicle-clear-current-history]
            '(menu-item "Clear History Entries" icicle-clear-current-history
-             :help "Clear current minibuffer history of selected entries."))
+             :help "Clear current minibuffer history of selected entries"))
+         (define-key map [menu-bar minibuf icicle-erase-minibuffer]
+           '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
+             :visible (memq last-command
+                       '(previous-history-element next-history-element
+                         icicle-erase-minibuffer-or-history-element
+                         previous-matching-history-element next-matching-history-element))
+             :help "Delete current history element (in minibuffer now)" :keys "M-k"))
+         (define-key map [menu-bar minibuf icicle-delete-history-element]
+           '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
+             :visible (not (memq last-command
+                            '(previous-history-element next-history-element
+                              icicle-erase-minibuffer-or-history-element
+                              previous-matching-history-element next-matching-history-element)))
+             :help "Erase the Minibuffer" :keys "M-k"))
+         (define-key map [menu-bar minibuf icicle-insert-list-join-string]
+           '(menu-item "Insert Join-String" icicle-insert-list-join-string
+             :help "Insert `icicle-list-join-string' into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-key-description]
+           '(menu-item "Insert Key Description" icicle-insert-key-description
+             :visible (not icicle-searching-p) :keys "M-q"
+             :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
          (define-key map [menu-bar minibuf icicle-insert-history-element]
-           '(menu-item "Insert Previously Entered Input" icicle-insert-history-element
+           '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
              :enable (consp (symbol-value minibuffer-history-variable))
-             :help "Use completion to insert a previously entered input in the minibuffer."))
+             :help "Use completion to insert a previous input into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
+           '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
+             :visible current-prefix-arg :keys "C-="
+             :help "Read a variable name and insert its string value into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
+           '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
+             :visible (not current-prefix-arg) :keys "C-="
+             :help "Insert text from variable `icicle-input-string' into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-string-at-point]
+           '(menu-item "Insert Text from Point" icicle-insert-string-at-point
+             :help "Insert text at or near the cursor into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-completing-read+insert]
+           '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
+             :visible (consp icicle-completing-read+insert-candidates)
+             :help "Read and insert something using (lax) completion"))
+         (define-key map [menu-bar minibuf icicle-read+insert-file-name]
+           '(menu-item "Insert File Name" icicle-read+insert-file-name
+             :help "Read and insert a file name using (lax) completion"))
 
          (define-key map [(control ??)]            'icicle-minibuffer-help) ; `C-?'
          (define-key map [(control ?g)]            'icicle-abort-recursive-edit) ; `C-g'
@@ -2160,16 +2402,63 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            '(menu-item "Icicles Help" icicle-minibuffer-help
              :help "Display help for minibuffer input and completion"))
          (define-key map [menu-bar minibuf separator-last] '("--"))
-         (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-           '(menu-item "Insert File Name" icicle-read+insert-file-name
-             :help "Read and insert a file name using (lax) completion."))
+         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
+           '(menu-item "Toggle All-Current Icicle-Search Highlighting"
+             icicle-toggle-highlight-all-current :enable icicle-searching-p
+             :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+         (define-key map [menu-bar minibuf icicle-regexp-quote-input]
+           '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
+             :enable (with-current-buffer (window-buffer (minibuffer-window))
+                       (not (zerop (buffer-size))))
+             :help "Regexp-quote current input or its active region, then apropos-complete"
+             :keys "C-M-;"))
+         (define-key map [menu-bar minibuf separator-set2] '("--"))
          (define-key map [menu-bar minibuf icicle-clear-current-history]
            '(menu-item "Clear History Entries" icicle-clear-current-history
-             :help "Clear current minibuffer history of selected entries."))
+             :help "Clear current minibuffer history of selected entries"))
+         (define-key map [menu-bar minibuf icicle-erase-minibuffer]
+           '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
+             :visible (memq last-command
+                       '(previous-history-element next-history-element
+                         icicle-erase-minibuffer-or-history-element
+                         previous-matching-history-element next-matching-history-element))
+             :help "Delete current history element (in minibuffer now)" :keys "M-k"))
+         (define-key map [menu-bar minibuf icicle-delete-history-element]
+           '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
+             :visible (not (memq last-command
+                            '(previous-history-element next-history-element
+                              icicle-erase-minibuffer-or-history-element
+                              previous-matching-history-element next-matching-history-element)))
+             :help "Erase the Minibuffer" :keys "M-k"))
+         (define-key map [menu-bar minibuf icicle-insert-list-join-string]
+           '(menu-item "Insert Join-String" icicle-insert-list-join-string
+             :help "Insert `icicle-list-join-string' into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-key-description]
+           '(menu-item "Insert Key Description" icicle-insert-key-description
+             :visible (not icicle-searching-p) :keys "M-q"
+             :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
          (define-key map [menu-bar minibuf icicle-insert-history-element]
-           '(menu-item "Insert Previously Entered Input" icicle-insert-history-element
+           '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
              :enable (consp (symbol-value minibuffer-history-variable))
-             :help "Use completion to insert a previously entered input in the minibuffer."))
+             :help "Use completion to insert a previous input into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
+           '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
+             :visible current-prefix-arg :keys "C-="
+             :help "Read a variable name and insert its string value into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
+           '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
+             :visible (not current-prefix-arg) :keys "C-="
+             :help "Insert text from variable `icicle-input-string' into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-insert-string-at-point]
+           '(menu-item "Insert Text from Point" icicle-insert-string-at-point
+             :help "Insert text at or near the cursor into the minibuffer"))
+         (define-key map [menu-bar minibuf icicle-completing-read+insert]
+           '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
+             :visible (consp icicle-completing-read+insert-candidates)
+             :help "Read and insert something using (lax) completion"))
+         (define-key map [menu-bar minibuf icicle-read+insert-file-name]
+           '(menu-item "Insert File Name" icicle-read+insert-file-name
+             :help "Read and insert a file name using (lax) completion"))
 
          (define-key map [(control ??)]            'icicle-minibuffer-help) ; `C-?'
          (define-key map [(control ?g)]            'icicle-abort-recursive-edit) ; `C-g'
@@ -2292,16 +2581,30 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
      ;; `minibuffer-local-map': default minibuffer map.
      (let ((map  minibuffer-local-map))
+
+       ;; Menu-bar `Minibuf' menu.
        (define-key map [menu-bar minibuf quit]
          '(menu-item "Quit" keyboard-escape-quit :help "Abort input and exit minibuffer"))
        (define-key map [menu-bar minibuf return]
          '(menu-item "Enter" exit-minibuffer
            :help "Terminate input and exit minibuffer" :keys "RET"))
-       (define-key map [menu-bar minibuf separator-help]                nil)
-       (define-key map [menu-bar minibuf completion-help]               nil)
-       (define-key map [menu-bar minibuf separator-last]                nil)
-       (define-key map [menu-bar minibuf icicle-clear-current-history]  nil)
-       (define-key map [menu-bar minibuf icicle-insert-history-element] nil)
+       (define-key map [menu-bar minibuf separator-help]                      nil)
+       (define-key map [menu-bar minibuf completion-help]                     nil)
+       (define-key map [menu-bar minibuf separator-last]                      nil)
+       (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current] nil)
+       (define-key map [menu-bar minibuf icicle-regexp-quote-input]           nil)
+       (define-key map [menu-bar minibuf separator-set2]                      nil)
+       (define-key map [menu-bar minibuf icicle-clear-current-history]        nil)
+       (define-key map [menu-bar minibuf icicle-erase-minibuffer]             nil)
+       (define-key map [menu-bar minibuf icicle-delete-history-element]       nil)
+       (define-key map [menu-bar minibuf icicle-insert-list-join-string]      nil)
+       (define-key map [menu-bar minibuf icicle-insert-key-description]       nil)
+       (define-key map [menu-bar minibuf icicle-insert-history-element]       nil)
+       (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]     nil)
+       (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]   nil)
+       (define-key map [menu-bar minibuf icicle-insert-string-at-point]       nil)
+       (define-key map [menu-bar minibuf icicle-completing-read+insert]       nil)
+       (define-key map [menu-bar minibuf icicle-read+insert-file-name]        nil)
 
        (define-key map [(control ??)]            nil) ; `C-?'
        (define-key map [(control ?g)]            (if (and (fboundp 'minibuffer-keyboard-quit)
@@ -2332,11 +2635,23 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [menu-bar minibuf return]
            '(menu-item "Enter" exit-minibuffer
              :help "Terminate input and exit minibuffer" :keys "RET"))
-         (define-key map [menu-bar minibuf separator-help]                nil)
-         (define-key map [menu-bar minibuf completion-help]               nil)
-         (define-key map [menu-bar minibuf separator-last]                nil)
-         (define-key map [menu-bar minibuf icicle-clear-current-history]  nil)
-         (define-key map [menu-bar minibuf icicle-insert-history-element] nil)
+         (define-key map [menu-bar minibuf separator-help]                      nil)
+         (define-key map [menu-bar minibuf completion-help]                     nil)
+         (define-key map [menu-bar minibuf separator-last]                      nil)
+         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current] nil)
+         (define-key map [menu-bar minibuf icicle-regexp-quote-input]           nil)
+         (define-key map [menu-bar minibuf separator-set2]                      nil)
+         (define-key map [menu-bar minibuf icicle-clear-current-history]        nil)
+         (define-key map [menu-bar minibuf icicle-erase-minibuffer]             nil)
+         (define-key map [menu-bar minibuf icicle-delete-history-element]       nil)
+         (define-key map [menu-bar minibuf icicle-insert-list-join-string]      nil)
+         (define-key map [menu-bar minibuf icicle-insert-key-description]       nil)
+         (define-key map [menu-bar minibuf icicle-insert-history-element]       nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]     nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]   nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-at-point]       nil)
+         (define-key map [menu-bar minibuf icicle-completing-read+insert]       nil)
+         (define-key map [menu-bar minibuf icicle-read+insert-file-name]        nil)
 
          (define-key map [(control ??)]            nil) ; `C-?'
          (define-key map [(control ?g)]            (if (and (fboundp 'minibuffer-keyboard-quit)
@@ -2367,11 +2682,23 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [menu-bar minibuf return]
            '(menu-item "Enter" exit-minibuffer
              :help "Terminate input and exit minibuffer" :keys "RET"))
-         (define-key map [menu-bar minibuf separator-help]                nil)
-         (define-key map [menu-bar minibuf completion-help]               nil)
-         (define-key map [menu-bar minibuf separator-last]                nil)
-         (define-key map [menu-bar minibuf icicle-clear-current-history]  nil)
-         (define-key map [menu-bar minibuf icicle-insert-history-element] nil)
+         (define-key map [menu-bar minibuf separator-help]                      nil)
+         (define-key map [menu-bar minibuf completion-help]                     nil)
+         (define-key map [menu-bar minibuf separator-last]                      nil)
+         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current] nil)
+         (define-key map [menu-bar minibuf icicle-regexp-quote-input]           nil)
+         (define-key map [menu-bar minibuf separator-set2]                      nil)
+         (define-key map [menu-bar minibuf icicle-clear-current-history]        nil)
+         (define-key map [menu-bar minibuf icicle-erase-minibuffer]             nil)
+         (define-key map [menu-bar minibuf icicle-delete-history-element]       nil)
+         (define-key map [menu-bar minibuf icicle-insert-list-join-string]      nil)
+         (define-key map [menu-bar minibuf icicle-insert-key-description]       nil)
+         (define-key map [menu-bar minibuf icicle-insert-history-element]       nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]     nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]   nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-at-point]       nil)
+         (define-key map [menu-bar minibuf icicle-completing-read+insert]       nil)
+         (define-key map [menu-bar minibuf icicle-read+insert-file-name]        nil)
 
          (define-key map [(control ??)]            nil) ; `C-?'
          (define-key map [(control ?g)]            (if (and (fboundp 'minibuffer-keyboard-quit)
@@ -2497,7 +2824,7 @@ MAP is `minibuffer-local-completion-map',
 `minibuffer-local-filename-completion-map', or
 `minibuffer-local-must-match-map'."
 
-  ;; Menu-bar Minibuf menu.
+  ;; Menu-bar `Minibuf' menu.
 
   ;; In Emacs 22+, local is parent of local-completion
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
@@ -2512,16 +2839,67 @@ MAP is `minibuffer-local-completion-map',
       '(menu-item "Icicles Help" icicle-minibuffer-help
         :help "Display help for minibuffer input and completion"))
     (define-key map [menu-bar minibuf separator-last] '("--"))
-    (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-      '(menu-item "Insert File Name" icicle-read+insert-file-name
-        :help "Read and insert a file name using (lax) completion."))
+    (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
+      '(menu-item "Toggle All-Current Icicle-Search Highlighting"
+        icicle-toggle-highlight-all-current :enable icicle-searching-p
+        :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+    (define-key map [menu-bar minibuf icicle-regexp-quote-input]
+      '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
+        :enable (with-current-buffer (window-buffer (minibuffer-window)) (not (zerop (buffer-size))))
+        :help "Regexp-quote current input or its active region, then apropos-complete"
+        :keys "C-M-;"))
+    (define-key map [menu-bar minibuf separator-set2] '("--"))
     (define-key map [menu-bar minibuf icicle-clear-current-history]
       '(menu-item "Clear History Entries" icicle-clear-current-history
-        :help "Clear current minibuffer history of selected entries."))
+        :help "Clear current minibuffer history of selected entries"))
+    (define-key map [menu-bar minibuf icicle-erase-minibuffer]
+      '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
+        :visible (memq last-command
+                  '(previous-history-element next-history-element
+                    icicle-erase-minibuffer-or-history-element
+                    previous-matching-history-element next-matching-history-element))
+        :help "Delete current history element (in minibuffer now)" :keys "M-k"))
+    (define-key map [menu-bar minibuf icicle-delete-history-element]
+      '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
+        :visible (not (memq last-command
+                       '(previous-history-element next-history-element
+                         icicle-erase-minibuffer-or-history-element
+                         previous-matching-history-element next-matching-history-element)))
+        :help "Erase the Minibuffer" :keys "M-k"))
+    (define-key map [menu-bar minibuf icicle-insert-list-join-string]
+      '(menu-item "Insert Join-String" icicle-insert-list-join-string
+        :help "Insert `icicle-list-join-string' into the minibuffer"))
+    (define-key map [menu-bar minibuf icicle-insert-key-description]
+      '(menu-item "Insert Key Description" icicle-insert-key-description
+        :visible (not icicle-searching-p) :keys "M-q"
+        :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
     (define-key map [menu-bar minibuf icicle-insert-history-element]
-      '(menu-item "Insert Previously Entered Input" icicle-insert-history-element
-        :enable (consp (symbol-value minibuffer-history-variable))
-        :help "Use completion to insert a previously entered input in the minibuffer.")))
+      '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
+        :help "Use completion to insert a previous input into the minibuffer"))
+    (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
+      '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
+        :visible current-prefix-arg :keys "C-="
+        :help "Read a variable name and insert its string value into the minibuffer"))
+    (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
+      '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
+        :visible (not current-prefix-arg) :keys "C-="
+        :help "Insert text from variable `icicle-input-string' into the minibuffer"))
+    (define-key map [menu-bar minibuf icicle-insert-string-at-point]
+      '(menu-item "Insert Text from Point" icicle-insert-string-at-point
+        :help "Insert text at or near the cursor into the minibuffer"))
+    (define-key map [menu-bar minibuf icicle-completing-read+insert]
+      '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
+        :visible (consp icicle-completing-read+insert-candidates)
+        :help "Read and insert something using (lax) completion"))
+    (define-key map [menu-bar minibuf icicle-read+insert-file-name]
+      '(menu-item "Insert File Name" icicle-read+insert-file-name
+        :help "Read and insert a file name using (lax) completion"))
+    )
+  (define-key map [menu-bar minibuf icicle-goto/kill-failed-input]
+    '(menu-item "Cursor to Mismatch (Repeat: Kill)" icicle-goto/kill-failed-input
+      :enable (and (overlayp icicle-input-completion-fail-overlay)
+               (overlay-start icicle-input-completion-fail-overlay))
+      :help "Put cursor where input fails to complete - repeat to kill mismatch"))
   (define-key map [menu-bar minibuf icicle-retrieve-next-input]
     '(menu-item "Restore Next Completion Input" icicle-retrieve-next-input
       :enable (consp (symbol-value (if (icicle-file-name-input-p)
@@ -2831,7 +3209,7 @@ MAP is `minibuffer-local-completion-map',
 `minibuffer-local-filename-completion-map', or
 `minibuffer-local-must-match-map'."
 
-  ;; Menu-bar Minibuf menu.
+  ;; Menu-bar `Minibuf' menu.
   ;; In Emacs 22+, local is parent of local-completion
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
     (define-key map [menu-bar minibuf quit]
@@ -2843,7 +3221,22 @@ MAP is `minibuffer-local-completion-map',
     (define-key map [menu-bar minibuf completion-help]                       nil)
     (define-key map [menu-bar minibuf separator-last]                        nil)
     (define-key map [menu-bar minibuf icicle-clear-current-history]          nil)
-    (define-key map [menu-bar minibuf icicle-insert-history-element]         nil))
+    (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]   nil)
+    (define-key map [menu-bar minibuf icicle-regexp-quote-input]             nil)
+    (define-key map [menu-bar minibuf separator-set2]                        nil)
+    (define-key map [menu-bar minibuf icicle-clear-current-history]          nil)
+    (define-key map [menu-bar minibuf icicle-erase-minibuffer]               nil)
+    (define-key map [menu-bar minibuf icicle-delete-history-element]         nil)
+    (define-key map [menu-bar minibuf icicle-insert-list-join-string]        nil)
+    (define-key map [menu-bar minibuf icicle-insert-key-description]         nil)
+    (define-key map [menu-bar minibuf icicle-insert-history-element]         nil)
+    (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]       nil)
+    (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]     nil)
+    (define-key map [menu-bar minibuf icicle-insert-string-at-point]         nil)
+    (define-key map [menu-bar minibuf icicle-completing-read+insert]         nil)
+    (define-key map [menu-bar minibuf icicle-read+insert-file-name]          nil)
+    )
+  (define-key map [menu-bar minibuf icicle-goto/kill-failed-input]           nil)
   (define-key map [menu-bar minibuf icicle-retrieve-next-input]              nil)
   (define-key map [menu-bar minibuf icicle-retrieve-previous-input]          nil)
   (define-key map [menu-bar minibuf separator-C-l]                           nil)
