@@ -51,8 +51,8 @@ EevMode is my partner for years.
 * Lisp:unify-buffer.el -- Concatenate multiple buffers
 * OneKey -- keystroke menu (with AndyStewart)
 * Lisp:one-key-default.el -- OneKey-ize default keymaps
-* SequentialCommand -- DoubleKeyBinding implementation
-** Lisp:sequential-command.el -- SequentialCommand framework
+* RepeatKeyDifferentBehaviors -- Sequential command implementation
+** Lisp:sequential-command.el -- Sequential command framework
 ** Lisp:sequential-command-config.el -- Useful sequential commands
 * Lisp:viewer.el -- ViewMode extension
 * ScreenShot -- Take a screenshot

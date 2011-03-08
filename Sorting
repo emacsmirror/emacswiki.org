@@ -1,10 +1,4 @@
-In Emacs, sorting can mean two things: sorting text in a [[buffer]] or sorting any [[list]] of EmacsLisp objects.
-
-
-[:SortingText]
-== Sorting as Text Editing ==
-
-You can sort lines, paragraphs, pages.  You can sort by fields, columns or even [[regexp]]. There are predefined Emacs commands to all of these things.
+Emacs can sort lines, paragraphs, pages.  It can sort by fields, columns or even [[regexp]]. There are predefined Emacs commands to all of these things.
 
 ; `M-x sort-lines': Sort lines in the region.
 ; `C-x h M-x sort-lines': Sort all lines in the buffer.
@@ -20,24 +14,16 @@ You can sort lines, paragraphs, pages.  You can sort by fields, columns or even 
 ; `M-x sort-columns': Sort the lines the region "covers" using the columns between region beginning and end.
 ; `C-u M-x sort-columns': Sort lines the region "covers" in reverse using the columns in the region.
 
-In addition to these [[command]]s, there are other EmacsLisp functions available for sorting text.
+In addition to these [[command]]s, there are other functions in EmacsLisp available for sorting text.  The general `sort' function can sort lists of Lisp objects, see DestructiveOperations or the ElispCookbook for examples.
 
 See nodes `Sorting' in the EmacsManual and `Sorting' in the Elisp manual, for details: Manual:Sorting.
 
-
-
-[:SortFunction]
-== The Emacs-Lisp `sort' Function ==
-
-The function `sort' is very general.  You can use it to sort any [[list]]. You simply pass it the list and a binary predicate, and it returns the list sorted. Be aware, however, that this is a destructive function: it operates by side effect, modifying the input list.
-
 See node `Rearrangement' in the Elisp manual for details: Manual:Rearrangement.
 
-See also: ApplesAndOranges for a way to combine simple predicates for sorting.
+'''See Also:'''
 
-
-----
-
+* ApplesAndOranges for a way to combine simple predicates for sorting.
+* SortWords for sorting the words in a region.
 
 ----
 CategoryEditing

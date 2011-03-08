@@ -1,35 +1,62 @@
-The Emacs [[ModeLine|mode line]] is highly configurable, offering special modes and functions that change its functionality.
+The Emacs ModeLine is configurable, offering special modes and functions that change its functionality.
 
-==Mode-line minor modes==
-Display of some standard information in the mode line is governed by these minor modes (toggles):
+Display of some standard information in the mode line is governed by these minor modes (each toggle on and off):
 
-* `display-time-mode' --- Enable the display of the current time with <tt>(display-time-mode 1)</tt>, see [[DisplayTime|display time]]
-* `line-number-mode' --- Enable or disable the display of the current line number, see [[ModeLinePosition|mode-line position]], [[LineNumbers|line numbers]]
-* `column-number-mode' --- Enable or disable the display of the current column number, see [[ModeLinePosition|mode-line position]]
-* `size-indication-mode' (for Emacs 22 and up) --- Enable or disable the current buffer size, see [[ModeLinePosition|mode-line position]]
-* `display-battery-mode' (for Emacs 22 and up) --- Enable or disable laptop battery information (%%supports GNU/Linux APM, ACPI, Mac OS X 10.3.x, FreeBSD and OpenBSD%%).
+* `display-time-mode' -- Enable the display of the current time, see DisplayTime
+* `line-number-mode' -- Enable or disable the display of the current line number, see also LineNumbers
+* `column-number-mode' -- Enable or disable the display of the current column number
+* `size-indication-mode' (for Emacs 22 and up) -- Enable or disable the current buffer size, Emacs 22 and later, see Manual:size-indication-mode
+* `display-battery-mode' -- Enable or disable laptop battery information, see DisplayBatteryMode.
 
-==Mode-line enhancements== 
 Here are particular enhancements to the mode line:
 
-* ModeLineMinorModeMenu --- Pop up minor-mode menus from the mode-line.
-* ModeLinePosition --- Display region size if region is active (in TransientMarkMode) and highlights the column number if greater than `modelinepos-column-limit'.  
-* ModeLinePosAtBeginning --- Display line and column numbers at the start of the mode line, so they are visible even when the TextCursor is inside a function with a long name.
-* HideModeLine --- Save screen real estate by hiding the mode line.
-* LunarModeLine --- Display current lunar phase in the modeline.
-* ModeLineDirtrack --- show the buffer's current directory in the mode-line.
-* SmlModeLine --- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
-* ShowPointMode --- Show value of point in the mode-line.
+* ModeLineMinorModeMenu -- Pop up minor-mode menus from the mode-line.
+* ModeLinePosition -- Display region size if region is active (in TransientMarkMode) and highlights the column number if greater than `modelinepos-column-limit'.  
+* ModeLinePosAtBeginning -- Display line and column numbers at the start of the mode line, so they are visible even when the TextCursor is inside a function with a long name.
+* HideModeLine -- Save screen real estate by hiding the mode line.
+* LunarModeLine -- Display current lunar phase in the modeline.
+* ModeLineDirtrack -- show the buffer's current directory in the mode-line.
+* SmlModeLine -- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
+* ShowPointMode -- Show value of point in the mode-line.
 
-==Mode-line customization==
+Customize the mode line by altering the `mode-line-format' variable.  The `header-line-format' variable customizes the HeaderLine.
 
-How to customize the mode-line further:
-* ModeLineCustomizationGuide
-* [http://www.gnu.org/software/emacs/elisp/html_node/Mode-Line-Format.html Mode-Line Format] at the Emacs Lisp Reference Manual
+The mode line is [[buffer]]-specific, meaning that the same buffer has the same mode line in different windows.
+
+The mode line may be [[HideModeLine|hidden]] for a specific buffer by changing `mode-line-format' to `nil'.
+
+The mode line normally looks something like this:
+
+    -u:**-F1  *scratch*   All L12    (Lisp Interaction)-------%-
+
+which may be cryptic to new users, so to make it like this:
+
+    Lisp Interaction: bufffer *scratch*, line 5 -- user: alice
+
+use:
+
+    (setq mode-line-format
+          (list
+           ;; value of `mode-name'
+           "%m: "
+           ;; value of current buffer name
+           "buffer %b, "
+           ;; value of current line number
+           "line %l "
+           "-- user: "
+           ;; value of user
+           (getenv "USER")))
+
+The mode line uses the same data structure as the FrameTitle and HeaderLine:
+
+* '''string''' -- A string appears verbatim except for %-constructs
+* '''symbol''' -- A symbol stands for its value, the symbols `t' and `nil' are ignored as is any symbol whose value is void.
+* '''(string rest...)''', '''(list rest...)''' -- A list whose first element is a string or list means to process all the elements recursively and concatenate the results. This is the most common form of mode-line construct.
+
+See also [Manual:mode+line Mode-Line Format] in the Emacs Lisp Reference Manual
 
 ----
 CategoryDisplay
 CategoryEditing
 CategoryWindows
 CategoryModeLine
-

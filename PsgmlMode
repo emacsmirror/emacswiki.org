@@ -174,4 +174,9 @@ Also sets xml mode"
 </pre>
 
 ----
+== PSGML Extensions ==
+
+* PsgmlSuperedit -- additional editing functions for PSGML
+
+----
 CategoryModes

@@ -344,7 +344,7 @@ It uses ruby because elisp is too slow."
         (anything-dabbrev-get-all-candidates anything-dabbrev-last-target))
   (anything-update))
 
-;;; from EmacsWiki (oddmuse-edit "EmacsWiki" "DoubleKeyBinding")
+;;; from EmacsWiki (oddmuse-edit "EmacsWiki" "RepeatKeyDifferentBehaviors")
 (unless (fboundp 'seq-times)
   (defvar seq-store-times 0)
   (defvar seq-start-point 0

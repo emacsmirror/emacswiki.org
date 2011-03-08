@@ -149,7 +149,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
 * <tt>[[macros+.el]]</tt> -- extensions to standard library `macros'
 * <tt>[[menu-bar+.el]]</tt> -- extensions to standard library `menu-bar'; see '''MenuBarPlus''' and '''HelpMenuBarPlus'''
-* <tt>[[misc-cmds.el]]</tt> -- miscellaneous commands (interactive functions); see also KillingBuffers, SecondarySelection, IsearchPlus, FindLongLines, DoubleKeyBinding, BackToIndentationOrBeginning, FileModes, and SequentialCommand.
+* <tt>[[misc-cmds.el]]</tt> -- miscellaneous commands (interactive functions); see also KillingBuffers, SecondarySelection, IsearchPlus, FindLongLines, RepeatKeyDifferentBehaviors, BackToIndentationOrBeginning, and FileModes.
 * <tt>[[misc-fns.el]]</tt> -- miscellaneous non-interactive functions
 * <tt>[[mouse+.el]]</tt> -- extensions to standard library `mouse' -- see MousePlus
 * <tt>[[novice+.el]]</tt> -- extensions to standard library `novice'

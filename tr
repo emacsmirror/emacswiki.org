@@ -20,5 +20,7 @@ than TO, then the excess characters are deleted.
   (replace-regexp-in-string "\000" "" str))
 }}}
 
+[new]
+The above code does not work for me so I wrote a new function ourcomments-tr and added that to [NxhtmlMode nXhtml].
 ----
 ElispCookbook

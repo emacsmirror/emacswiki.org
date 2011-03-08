@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 22 07:41:13 2011 (-0800)
+;; Last-Updated: Thu Mar  3 09:14:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 21597
+;;     Update #: 21599
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,9 +21,9 @@
 ;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `kmacro',
-;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel', `pp',
+;;   `pp+', `regexp-opt', `ring', `ring+', `strings', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2611,7 +2611,7 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
       (setq icicle-kmacro-alist
             (mapcar #'(lambda (x) (cons (format "%d" (setq count  (1+ count))) x))
                     (reverse (if nil kmacro-ring (cons (kmacro-ring-head) kmacro-ring))))))
-    nil 'no-exit-wo-match nil 'icicle-kmacro-history
+    nil 'NO-EXIT-WO-MATCH nil 'icicle-kmacro-history
     (and (kmacro-ring-head) (null kmacro-ring) "1") nil
     ((pref-arg  current-prefix-arg))    ; Additional bindings
     (progn                              ; First code

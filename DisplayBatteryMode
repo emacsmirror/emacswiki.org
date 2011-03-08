@@ -1,0 +1,15 @@
+Emacs can show the status of your system battery in the ModeLine.
+
+    UUU:@**--F1  *scratch*   All L5     (Lisp Interaction)--[100.0%]---
+
+Interactively, `M-x display-battery-mode' or put ##(display-battery-mode 1)##
+in your InitFile.
+
+Available in Emacs 22 and later.  Supports GNU/Linux APM, ACPI, Mac OS
+X 10.3.x, FreeBSD and OpenBSD.
+
+See also ModeLineConfiguration.
+
+----
+CategoryDisplay
+CategoryModeLine

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  3 11:42:46 2011 (-0800)
+;; Last-Updated: Fri Mar  4 10:12:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16733
+;;     Update #: 16776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4554,36 +4554,41 @@ If any of these conditions is true, remove all occurrences of CAND:
             (delete (funcall icicle-get-alist-candidate-function disp-cand) icicle-candidates-alist))))
   (when (consp icicle-completion-candidates)
     (setq icicle-completion-candidates
-          (if allp ; Delete only the first occurrence, or all if ALLP.
+          (if allp                      ; Delete only the first occurrence, or all if ALLP.
               (delete disp-cand icicle-completion-candidates)
             (icicle-delete-count disp-cand icicle-completion-candidates 1))))
+
   ;; Update `minibuffer-completion-predicate' or `read-file-name-predicate'
   ;; to effectively remove this candidate.
-  (cond ((and (icicle-file-name-input-p)
-              (boundp 'read-file-name-predicate) ; Emacs 22+ only.
-              read-file-name-predicate)
+  ;; The logic here is the same as for `icicle-narrow-candidates-with-predicate'.
+  (cond (;; File name input, Emacs 22+.  Update `read-file-name-predicate'.
+         (and (icicle-file-name-input-p) (> emacs-major-version 21))
          (setq read-file-name-predicate
                (if read-file-name-predicate
                    (lexical-let ((curr-pred  read-file-name-predicate))
                      `(lambda (file-cand)
-                        (and (not (equal ',disp-cand file-cand)) (funcall ',curr-pred file-cand))))
+                       (and (not (equal ',disp-cand file-cand)) (funcall ',curr-pred file-cand))))
                  `(lambda (file-cand) (not (equal ',disp-cand file-cand))))))
-        ;; < Emacs 22.  Do nothing for file name.
+
+        ;; File name input, Emacs 20 or 21.  We can do nothing for file name.
         ;; `TAB' or `S-TAB' will bring it back as a candidate.
         ((icicle-file-name-input-p))
-        (minibuffer-completion-predicate ; Add excluding candidate to existing predicate.
+
+        (t;; Non-file name input, all Emacs versions.  Update `minibuffer-completion-predicate'.
          (setq minibuffer-completion-predicate
-               (lexical-let ((curr-pred  minibuffer-completion-predicate))
-                 `(lambda (cand)             ; This corresponds to what we do in `icicle-mctize-all'.
-                    (and (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
-                                                (cdr mct-cand)
-                                                mct-cand)))
-                         (funcall ',curr-pred cand))))))
-        (t                     ; Set predicate to excluding candidate.
-         (setq minibuffer-completion-predicate ; This corresponds to what we do in `icicle-mctize-all'.
-               `(lambda (cand) (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
-                                                 (cdr mct-cand)
-                                                 mct-cand))))))))
+               (if minibuffer-completion-predicate
+                   ;; Add excluding of candidate to the existing predicate.
+                   (lexical-let ((curr-pred  minibuffer-completion-predicate))
+                     `(lambda (cand)    ; This corresponds to what we do in `icicle-mctize-all'.
+                       (and (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
+                                                   (cdr mct-cand)
+                                                   mct-cand)))
+                        (funcall ',curr-pred cand))))
+                 ;; Set predicate to excluding the candidate.
+                 `(lambda (cand) (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
+                                                        (cdr mct-cand)
+                                                        mct-cand)))))))))
+
 ;; $$$$$$$$$$$$ COULD USE THIS INSTEAD of updating the predicate,
 ;; but it works only when `minibuffer-completion-table' is an alist.
 ;;   (when (consp minibuffer-completion-table)
@@ -5276,8 +5281,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                          (icicle-retrieve-last-input)
                          icicle-current-input)
                (error (message (error-message-string i-narrow-candidates))))))
-          (t
-           ;; Read new predicate to apply.
+          (t                            ; Read new predicate and incorporate it.
            (let ((pred  (or predicate
                             (icicle-read-from-minibuf-nil-default
                              "Additional predicate to apply: "
@@ -5286,25 +5290,28 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                                                          'icicle-function-name-history)))))
              ;; Update `read-file-name-predicate' or `minibuffer-completion-predicate'
              ;; to also use new predicate, PRED.
-             (cond ((and (icicle-file-name-input-p) (boundp 'read-file-name-predicate))
-                    ;; File name input, Emacs 22+.  Update `read-file-name-predicate'.
+             ;; The logic here is the same as for `icicle-remove-cand-from-lists'.
+             (cond (;; File name input, Emacs 22+.  Update `read-file-name-predicate'.
+                    (and (icicle-file-name-input-p) (> emacs-major-version 21))
                     (setq read-file-name-predicate
                           (if read-file-name-predicate
                               (lexical-let ((curr-pred  read-file-name-predicate))
                                 `(lambda (file-cand)
                                   (and (funcall ',curr-pred file-cand) (funcall ',pred file-cand))))
                             pred)))
-                   ((icicle-file-name-input-p)
-                    ;; File name input, Emacs < 22.  We can do nothing for file name.
-                    ;; `TAB' or `S-TAB' will unfortunately bring it back as a candidate.
-                    )
-                   (t
-                    ;; Non-file name input.  Update `minibuffer-completion-predicate'.
+
+                   ;; File name input, Emacs 20 or 21.  We can do nothing for file name.
+                   ;; `TAB' or `S-TAB' will unfortunately bring it back as a candidate.
+                   ((icicle-file-name-input-p))
+
+                   (t;; Non-file name input, all versions.  Update `minibuffer-completion-predicate'.
                     (setq minibuffer-completion-predicate
                           (if minibuffer-completion-predicate
+                              ;; Add PRED to the existing predicate.
                               (lexical-let ((curr-pred  minibuffer-completion-predicate))
                                 `(lambda (cand)
                                   (and (funcall ',curr-pred cand) (funcall ',pred cand))))
+                            ;; Set predicate to PRED.
                             pred)))))))
     (funcall last-completion-cmd)))
 

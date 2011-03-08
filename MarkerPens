@@ -19,7 +19,7 @@ I think it is rude to `define-key' when the file is loaded.
 </pre>
 
 ----
-To change markerpen with sequence of calls, depends on DoubleKeyBinding.
+To change markerpen with sequence of calls, depends on RepeatKeyDifferentBehaviors.
 
 <pre>
 (defun markerpen-mark-region-seq ()

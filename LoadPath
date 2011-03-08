@@ -119,84 +119,6 @@ See SearchingLoadPath.
 == Discussion ==
 
 [new]
-I see that `with-temp-buffer' was replaced with `let'. Why? The
-current directory is a buffer-local property, and the use of
-`with-temp-buffer' ensures that all such properties are kept intact.
-(What if there are other variables we've forgotten to `let'?) In
-addition, ##(cd "~/.emacs.d/")## should expand the ##~## syntax
-properly on Windows. In my opinion,
-
-    (with-temp-buffer
-      (cd "~/elisp/")
-      (add-to-list 'load-path default-directory)
-      (normal-top-level-add-subdirs-to-load-path))
-
-is more to the point than
-
-    (let* ((my-lisp-dir "~/elisp/")
-           (default-directory my-lisp-dir))
-      (add-to-list 'load-path my-lisp-dir)
-      (normal-top-level-add-subdirs-to-load-path))
-
-I also think the "Including subdirectories" section could use some
-editing: the present exposition goes from snippet to snippet of
-code-which-almost-works (why?), until settling on a confusing hunk
-from a dead URL. It would be better to present a complete, working
-solution up front, followed by a detailed explanation thereof. --
-VegardOye
-
-[new]
-About the change from ##cd## to ##let## see above.
-
-I also think that this page is quite messy (and more misleading than
-helpful).  I tried to reorganize a bit by moving information to where
-it is actually useful, and removing illegal examples (e.g. missing
-trailing slash).  -- JonasBernoulli
-
-[new]
-The side effect of `cd' is to change the default directory of the
-''current buffer''. The `with-temp-buffer' macro creates a temporary
-buffer for `cd' to act on, protecting the directory of the original
-buffer. So, while the older revisions started out with
-
-    (progn
-      (cd "~/elisp")
-      (normal-top-level-add-subdirs-to-load-path))
-
-and then abandoned this clear code only because they couldn't figure
-out a way to contain the side effect, we can in fact work with what we
-have by replacing `progn' with `with-temp-buffer'. There:
-
-    (with-temp-buffer
-      (cd "~/elisp")
-      (normal-top-level-add-subdirs-to-load-path))
-
-I think the `cd' code is ''much'' more readable, especially since most
-people recognize "##cd##" from elsewhere. -- VegardOye
-
-[new]
-I agree.  The `cd' is much more readable and useful.  But for
-historical reasons, that's not the way Elisp is written to change the
-directory. See startup.el for example. -- AaronHawley
-
-[new]
-What are the historical reasons? Are they still relevant?
-
-And, what is the point of having a change directory function if we're
-not gonna friggin' ''use'' it? ;-) -- VegardOye
-
-[new]
-Again, as mentioned above, `cd' is meant for interactive use.  Using
-something `with-temp-buffer' to counter or nullify side effects from
-`cd' is bad programming style.  Embrace your inner `let'.  --
-AaronHawley
-
-[new]
-+1 Embrace your inner `let'. -- JonasBernoulli
-
-----
-
-[new]
 What is ##normal-top-level-add-to-load-path##?  It is not documented;
 I quickly looked at the code and couldn't make any sense of it.  Why
 is it needed? Isn't it only required during startup (and even then
@@ -205,6 +127,13 @@ benefits is it worth confusing people by suggesting to use an
 undocumented function?  If it is then its use should be explained in
 ##Adding a directory## (without removing ##add-to-list##) but I
 frankly have some doubts.  -- JonasBernoulli
+
+[new]
+I'm not sure why the code is documented in a comment and not a
+DocString. -- AaronHawley
+
+[new]
+It will be documented in Emacs 24 (and is documented in the trunk).
 
 ----
 CategoryHelp

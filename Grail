@@ -1,80 +1,97 @@
-Grail loads an .emacs configuration that has been broken up into several files. This allows a user's configuration
-to DTRT [Do the Right Thing] when used in different modes such as batch, or GUI. The user also benefits from
-an easier to maintain configuration
+Grail loads an .emacs configuration by looking into a directory tree,
+instead of loading a single monolothic .emacs.  There are many good
+reasons to do this, and some powerful features:
 
-Grail is grew out of a tidyconfig like need to re-organize after a .emacs bankrupcy. It has grown
-beyond organization alone into a comprehensive management of load-path, porting configurations between linux & Darwin,
-and partial/incremental loading to configure for batch, interactive, gui, and daemon modes.
+* The user's configuration will always DTRT [Do the Right Thing] when used in different modes such as batch, TTY, or GUI.
+* never touch load-path again ! it's automatically generated and updated.
+* errors in files are isolated to that file, try new snippets out without crashing your entire config
+* install ELPA - the Emacs Lisp Package Archive tool with a single command
+* profiles support - for powerusers a configuration can detect when third-party elisp is missing, install,load, and resume
+                     the startup of emacs.
 
-All these features are implemented by putting configuration bits into the files that Grail looks for,
-the rest is handled by Grail itself.
+== Why ? ==
+
+Grail is grew out of a tidyconfig like need to re-organize after a
+.emacs bankrupcy. It has grown beyond organization alone into a
+comprehensive management of load-path, porting configurations between
+linux & Darwin, and partial/incremental loading to configure for
+batch, interactive, gui, and daemon modes.
+
+I wrote Grail simply because I need it. I have Emacs on several
+different machines and operating systems. I need some elisp loaded on
+OSX, some on debian, gentoo etc. I need Emacs to work on a TTY or a
+GUI without barfing, and I love --daemon when I can use it.
+
+The advanced profiles support came out of a need to simply have a
+single configuration in a tarball/version-control and have all the
+third party stuff automatically installed when it is not there for
+some reason. I think stuffing other people's packages into my
+version-control is in bad taste, so I needed an install option.
+
+ELPA is the future, and will be in a future emacs (more proof), so I
+support it as the best way to install third party stuff.
+
+== Break it down ==
+
+Grail replaces your .emacs, and loads your configuration. You put your
+configuration in the places where grail looks for things. You can
+start by putting everything into user.el, or make it as fine-grained
+as you need so emacs always starts correctly.
 
 Examples of the files grail looks for:
 
 * elisp.el    : your library of non-interactive functions. (for elisp coders)
 * commands.el : interactive commands you have created.
+* display.el  : configuration stuff that is used on TTY's and GUI's
 * gui.el      : configuration that applies to emacs with a GUI
 * user.el     : general configuration of the builtin Emacs features and applications.
 
-Grail can also load "profile modules", defined by grail as a elisp file in a special "profiles" directory
-that loads, configures, and installs if necessary one or more packages into a cohesive set of
-related features.
+== Ordering ==
 
-This capability gives the Emacs configuration a "self-repair" capability when moving a configuration
-to a new machine. The API has been completed, but not documented yet.
+Grail loads things in a certian order that has been refined over time to keep your sanity.
+If these places do not exist, they are not placed in load-path. Only what you use ends
+up in load-path.
 
-For a closer look at grail the README.grail file is the best place to start, and if you are an
-Elisp programmer, a brief look through grail.el, a relatively short file, will introduce you to Grail.
+<pre>
+1. local/emacs/      The directory containing Emacs packages that over-ride emacs distributed files.
+2. local/elisp/      The directory containing Emacs libraries created and maintained by the user.
+3. dist/             The directory for managing distributed packages
+4. dist/elisp/       The directory containing third-party elisp extensions of Emacs
+5. dist/elpa         ELPA managed third party elisp.
+6. dist{cvs,git,svn} version control managed third party elisp
+</pre>
 
-[[README.grail]] ([Download:README.grail download])
+== ELPA ==
+
+Once you have installed grail simply execute the command: grail-install-elpa.
+Enjoy the excellent work of Tromney with package-list-packages. Grail will make
+sure that ELPA is installed in the right places.
+
+== Contact the Author ==
 
 Enjoy Grail, and feel free to give feedback, with the contact information provided on [[codermattie]].
 
+I love squasing bugs ! you find them ... I kill them !
+
 == Status: 0.3.0 Released: 20011-03-06 ==
 
-This release is largely compatible with 0.1.3 in terms of functionality. grail-groups.el has been
-removed. grail-profile.el replaces it.
+This release is largely compatible with 0.1.3 in terms of
+functionality. grail-groups.el has been removed. grail-profile.el
+replaces it.
 
-ELPA is now fully supported, grail now manages the load-path changes made by ELPA seamlessly integrating
-the two.
+ELPA is now fully supported, grail now manages the load-path changes
+made by ELPA seamlessly integrating the two.
 
-[[Changelog.grail]] ([Download:Changelog.grail download])
+== Testing ==
 
-it works reliably for me on Gentoo,Debian, and darwin. Adventurous users and elisp hackers (patches) are
-welcome. The 0.1.x branch is a stable branch, the changes are fixes and updates to reflect expected behavior
-only.
-
-== features: ==
-
-* Support for emacs --daemon mode. the user's file gui.el is loaded after the first graphical frame
-  is created so that the basic graphical definitions of Emacs are available when the configuration
-  is loaded.
-* Comprehensive management of load-path for both downloaded packages and user Elisp.
-* Errors in grail or the user's configuration are trapped and reported so that Emacs
-  always starts clean, though the configuration is degraded until the problems are resolved.
-* The user's Emacs configuration is loaded properly in all the ways Emacs is started:
-    emacs --daemon, 
-    emacs --batch, 
-    GUI,
-    and TTY modes
-* ELPA installer & full ELPA support.
+It works reliably for me on Gentoo & Debian. It was tested on OSX
+previously, but my mac is dead.  If it works for you please let me
+know so I can report the platforms it works on.
 
 == The Future ==
 
-At this point the major work is done on this project. What remains is documenting the API's and
-how to use the grail-profile feature set.
-
-== Updates: ==
-
-Samuel Bronson restored this diagram of the USER_ELISP structure. It is useful, and also helped
-me spot that README.grail was not escaped from markup. I have fixed README.grail and tried to
-improve the diagram a bit too.
-
-Samuel Bronson reworked the page with some EmacsWiki chops and it looks much better ! Thank
-you Mr. Bronson.
-
-The question regarding custom-file is now answered. handling user-init-file and custom-file
-is supported in 0.1.3
+At this point the major work is done on this project. What remains is
+documenting the API's and how to use the grail-profile feature set.
 
 == Download ==
 
@@ -82,43 +99,31 @@ is supported in 0.1.3
 * Lisp:grail-fn.el     ([Download:grail-fn.el download])
 * Lisp:grail-profile.el ([Download:grail-profile.el download])
 
-== Verifying the source files: ==
+== Install ==
 
-The source files can be verified with GnuPG after downloading.My key information is on
-my page [[codermattie]]
+These install instructions assume you already have a .emacs configuration.
 
-Detached Signature for grail.el
+1. choose a location where your Emacs configuration will live. This
+directory will be called $USER_ELISP.
+
+2. download the grail files from the download links above to $USER_ELISP
+
+3. copy your .emacs to $USER_ELISP/user.el
+
+4. copy/extract the customize generated settings to $USER_ELISP/customize-settings.el
+
+5. make link from ~/.emacs -> $USER_ELISP/grail.el
+
+you can now start Emacs with Grail loading your config
+
+6. start emacs like this:
+
 <pre>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkngC20ACgkQdfRchrkBInliYACginqE6W1RobX0PmDwkg0iszOg
-8zsAoI7SeT7iY6wUsdwWzwV+zoXFwyba
-=XfuU
------END PGP SIGNATURE-----
+USER_ELISP=<where you put grail and your config> emacs
 </pre>
 
-Detached Signature for grail-fn.el
-<pre>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkngC20ACgkQdfRchrkBInmTNACg7DvHaBFscYlv/yPph15ASZSu
-ZbMAniqRs9s0bfKqaB5Hd0T9wFTGbpyj
-=62j9
------END PGP SIGNATURE-----
-</pre>
-
-Detached Signature for grail-groups.el
-<pre>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkngEXcACgkQdfRchrkBInmNDwCeKKxU3P20F2PrYzrj8qbhgbyc
-KJUAoOnxTkB4URRvUlmSqjUt1Hk+BcE9
-=9C04
------END PGP SIGNATURE-----
-</pre>
+7. Look at the diagram of USER_ELISP in the next section and organize
+your configuration to your taste.
 
 == A diagram of USER_ELISP ==
 
@@ -144,12 +149,15 @@ This delay insures that the GUI is actually loaded before the user's
 customizations are loaded.
 
 <pre>
-|-- grail-fn.el               ;; grail files
-|-- grail-groups.el
-|-- grail.el
+|-- grail.el                  ;; grail files
+|-- grail-fn.el
+|-- grail-profile.el
 |
 |-- darwin.el      ;; platform specific files, loaded only on Darwin or Gnu/Linux.
 |-- linux.el
+|-- windows.el
+|
+|-- customize-settings.el      ;; where customize scribbles
 |
 |-- elisp.el       |BATCH,all| ;; A library of Elisp functions loaded in both batch and interactive mode.
 |

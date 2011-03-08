@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  4 06:45:37 2011 (-0800)
+;; Last-Updated: Fri Mar  4 10:13:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12155
+;;     Update #: 12156
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1100,6 +1100,9 @@ and `read-file-name-function'."
                                ipc)))
                 icicle-proxy-candidates))
               (minibuffer-completing-file-name  t)
+              (read-file-name-predicate  (or (and (boundp 'read-file-name-predicate)
+                                                  read-file-name-predicate)
+                                             nil))
               result)
 
          ;;  ;; $$$$$$ Does Emacs 23+ need explicit directory? If so, add these three lines
