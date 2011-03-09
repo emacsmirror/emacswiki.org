@@ -1,7 +1,8 @@
 Golisp-mode is for writing lisp programs. It helps you document, navigate, and analyze Common Lisp and Emacs Lisp source code from within GNU Emacs. Using golisp-mode, you can see how different pieces of code are related to one another, and jump quickly to related code.
 
-You can learn more and see a screenshot at http://dto.freeshell.org/notebook/GoLisp.html
+You can learn more and see a screenshot at http://dto.github.com/notebook/golisp.html
 
-(The above link appears to be broken as of 2009-05-14).
+Has been deprecated in favor of LinkdMode.
+
 -----
 CategoryModes CategoryProgramming

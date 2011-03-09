@@ -15,3 +15,7 @@ popwin resolves there problems. Windows of such temporary buffers will be shown 
 Please visit a project page for downloading and full documentation.
 
 https://github.com/m2ym/popwin-el
+
+---
+
+This doesn't seem to work when using split buffer with one buffer being ERC. Clue? -- [new:RyanDavis:2011-03-08 10:53 UTC]

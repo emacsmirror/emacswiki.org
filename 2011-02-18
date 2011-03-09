@@ -16,3 +16,8 @@ I recently changed the settings to a Media Wiki site to limit which namespaces c
 
 [new]
 Isn't there any simple way to use Akismet (WordPress) for wikis like this?
+
+[new]
+Not that I know of, but I could investigate...
+
+I'm starting to think that the spam dudes are targeting pages containing the word "discussion" in their title... -- Alex

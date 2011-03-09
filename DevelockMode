@@ -10,5 +10,7 @@ Available at: http://www.jpl.org/ftp/pub/elisp/develock.el.gz or at your near De
 
 * I find it helpful. I'm trying to figure out how to activate it for !ProofGeneral's !CoqMode --SamuelBronson
 
+* I personally like how it highlights text that goes past column 79, as well as trailing space.  To the ketchup and mustard guy: move point to ketchup and/or mustard; M-x customize-face; remove background color or make more subtle; done!  --DarrenEmbry
+
 ----
 ProgrammingModes

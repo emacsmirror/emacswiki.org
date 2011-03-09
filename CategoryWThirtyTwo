@@ -100,6 +100,7 @@ MS shell:
 * MakeSmartShortcuts -- seeing is believing, try it out
 * WThirtyTwoExecPredef -- execute Start Menu shortcuts from Emacs
 * WThirtyTwoUtl -- utility functions
+* WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
 
 Printing:
 

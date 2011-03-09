@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.32
+;; Version: 0.34
 ;; Last-Updated: Mon Feb  7 12:50:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1005
@@ -108,12 +108,18 @@
 ;;  (autoload 'auto-indent-kill-line "auto-indent-mode" "" t)
 ;;  (define-key global-map [remap kill-line] 'auto-indent-kill-line)
 ;;
-;;  Howeer, this does not honor the excluded modes in
+;;  However, this does not honor the excluded modes in
 ;;  `auto-indent-disabled-modes-list'
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 08-Mar-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
+;;    Changed `auto-indent-delete-line-char-remove-extra-spaces' to nil by default.
+;; 16-Feb-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
+;;    Added a just one space function for pasting
 ;; 15-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Removed the deactivation of advices when this mode is turned off.  I think it was causing some issues.
@@ -342,6 +348,8 @@
 (eval-when-compile
   (require 'cl))
 
+(defvar auto-indent-mode nil)
+
 (defgroup auto-indent nil
   "* Auto Indent Mode Customizations"
   :group 'editing)
@@ -391,7 +399,7 @@
   :type 'boolean
   :group 'auto-indent)
 
-(defcustom auto-indent-delete-line-char-remove-extra-spaces t
+(defcustom auto-indent-delete-line-char-remove-extra-spaces nil
   "* When deleting a return, delete any extra spaces between the newly joined lines"
   :type 'boolean
   :group 'auto-indent)
@@ -515,7 +523,7 @@ follows:
 
   (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char \":\")))
 
-This is similar to Textmate's behavior.  This is useful when used
+autoThis is similar to Textmate's behavior.  This is useful when used
 in conjunction with something that pairs delimiters like `autopair-mode'.
 "
   :type 'string
@@ -536,6 +544,7 @@ activated (when it should be).  If this is activated,
 auto-indent-mode tries to do the right thing by guessing what key
 should have been pressed to get this event.  If it is the key
 that was pressed enable the advice."
+  
   :type 'boolean :group 'auto-indent)
 
 (defcustom auto-indent-engine nil
@@ -748,6 +757,10 @@ http://www.emacswiki.org/emacs/AutoIndentation
   (when (not (minibufferp))
     (let ((pt (point)))
       (unless (memq indent-line-function auto-indent-disabled-indent-functions)
+	(save-excursion
+	  (skip-chars-backward " \t")
+	  (when (looking-at "[ \t]+")
+	    (replace-match " ")))
 	(if auto-indent-on-yank-or-paste
 	    (save-excursion
 	      (indent-region (progn (goto-char (mark t)) (point-at-bol))
@@ -1038,6 +1051,7 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
     ,(if function '(interactive (list (point) (mark))) nil)
     (if (not ,(if function t
 		'(and
+		  auto-indent-mode 
                   auto-indent-kill-remove-extra-spaces
 		  (not (auto-indent-remove-advice-p))
 		  (or (not auto-indent-force-interactive-advices)
@@ -1108,7 +1122,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
 
 (defvar auto-indent-last-pre-command-hook-point nil)
-(make-variable-buffer-local 'auto-indent-last-pre-command-hook-point)
+(make-variable-buffer-local 'auto-indent-mode-pre-command-hook-point)
 
 (defvar auto-indent-last-pre-command-hook-minibufferp nil)
 

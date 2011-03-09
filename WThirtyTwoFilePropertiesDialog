@@ -1,0 +1,27 @@
+<nowiki>FilePropertiesDialog</nowiki> is a command-line program which shows Windows "File Properties" dialog box for specified file or directory. 
+
+To achieve this <nowiki>FilePropertiesDialog</nowiki> runs explorer with "properties" verb.
+
+Usage: <nowiki>FilePropertiesDialog.exe</nowiki> <path>
+
+This program can be used as a part of extensions for Emacs dired mode, and as temporary workaround for w32-shell-execute command (unfortunately in latest GNU Emacs 23.2.1 it does not support "properties" verb).
+
+For example, lets say you want dired to open "File Properties" dialog for file under cursor each time you press Alt-Enter. To do that you can add following definition to your "~/.emacs" file:
+<pre>
+(defun slash-to-backslash (str)
+  "Returns STR where all slash symbols changed to back slashes"
+  (with-temp-buffer 
+    (insert str)
+    (replace-string "/" "\\" nil (point-min) (point-max)) 
+    (buffer-string)))
+
+(require 'dired)
+(define-key dired-mode-map [M-return] (lambda () 
+  "Shows window shell `File Properties' dialog for selected file in dired"
+  (interactive)
+  (start-process "dired-process" "dired-process-output" "C:\\PROGRA~1\\emacs-23.2\\GnuWin32\\bin\\FilePropertiesDialog.exe" (slash-to-backslash (dired-get-filename)))))
+</pre>
+where <nowiki>"C:\\PROGRA~1\\emacs-23.2\\GnuWin32\\bin\\FilePropertiesDialog.exe" is a 
+full path to "FilePropertiesDialog.exe"</nowiki> on your computer.
+
+Zip archive with binary and source can be downloaded from the http://www.mobilave.sx33.net/FilePropertiesDialog.zip
