@@ -3,6 +3,6 @@
 El modo Rexx es un modo mayor para la edición de ficheros Rexx bajo Emacs. Originalmente escrito por Anders Lingren años atrás, no había sido tocado desde entonces. Posteriormente James Perrin comenzó a escribir en REXX (en realidad ARexx en Amiga), con emacs19 y decidió agregar el soporte de resaltado de sintaxis. Esto lo llevó a hacerse cargo del mantenimiento del modo Rexx, otorgado por Anders e incluso construyó una página web para ello.  Con el tiempo Perrin suspendió su apoyo y la página desapareció, quedando una copia en el Archivo de Internet, a partir de la cual yo he hecho una réplica-espejo en un lugar más accesible (debido a una sugerencia en la lista de emacs-help):
 
 
-http://gnu.manticore.es/paginas-replica/rexx/rexx.es.html
+http://emacs-es.manticore.es/paginas-replica/rexx/rexx.es.html
 
 También, por consistencia, he decidido hacer una entrega "falsa" con el número de versión 1.2, que incluya las fuentes texinfo y los documentos Info de las que carece el original (no sólo en inglés, sino también en castellano). 

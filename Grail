@@ -183,7 +183,104 @@ customizations are loaded.
 |   |-- elisp (++)            ;; the user's Elisp is searched for in local/elisp.
 |   |   `**your Elisp**
 |   |-- emacs                 ;; modified copies of files distributed with Emacs.
-|   `-- profile               ;; profile configuration modules are found here.
+|   `-- profiles              ;; profile configuration modules are found here.
+</pre>
+
+== The Profiles Feature ==
+
+Profiles allow configuration snippets that depend on third-party code
+to download the third-party code, load, and resume the startup of
+Emacs.
+
+Here is an example of a profile from my configuration that loads all
+of my lisp programming settings.
+
+<pre>
+(grail-load 'mic-paren (grail-define-installer "mic-paren"
+                         "file"
+                         "http://www.emacswiki.org/cgi-bin/emacs/download/mic-paren.el"))
+
+(grail-load 'quack     (grail-define-installer "quack"
+                         "file"
+                         "http://www.neilvandyke.org/quack/quack.el"))
+
+(grail-load 'slime     (grail-define-installer "slime"
+                         "cvs"
+                         ":pserver:anonymous:anonymous@common-lisp.net:/project/slime/cvsroot"))
+
+(setq
+  paren-showing t
+  show-paren-style 'parenthesis
+  show-paren-delay 1
+  paren-sexp-mode 'match)
+</pre>
+
+When I copy my configuration to a new machine I simply copy this
+"profile" file and start Emacs. When Emacs starts Grail detects that
+the packages are missing _before_ the configuration bits runs. Grail
+installs the packages, adjusts load-path as needed, and attempts a
+second load of the package.
+
+It is almost this simple ! profiles are not automatically loaded just
+because they are in the profiles directory. I also place this command
+in one of the special files grail loads.
+
+<pre>
+(use-grail-profiles 0 "template" "lisp" "code-formatting" "sql")
+</pre>
+
+This is in a file automatically loaded by Grail. It is a list of the
+profiles that Grail should load. The first value is a digit indicating
+the loading priority. 0 is the highest priority while higher numbers
+are lower priorities. The profiles are loaded in highest to lowest
+priority.
+
+All of the profiles are loaded at the very end of the startup process
+so the configuration bits in the profile files can use the definitions
+from everything loaded previously.
+
+Here are some examples of my profiles:
+
+* Lisp:profile-lisp.el     ([Download:profile-lisp.el download])
+* Lisp:profile-template.el ([Download:profile-template.el download])
+
+Here is the documentation string for grail-define-installer
+
+<pre>
+(defun grail-define-installer ( name type &rest url-list )
+  "grail-define-installer NAME TYPE &rest URLS
+
+   define a installer for a package NAME.
+
+   The type of the installer indicates the format of the URL.
+
+   TYPE is the format of the URL for handling things like
+   compression,archives, and RCS systems.
+
+   recognized TYPE's : file, tar:bz2, tar:gz, cvs svn git
+
+   download a plain elisp file: (grail-define-installer \"bob\" \"file\" \"URL\")
+   download an tar.bz2 archive: (grail-define-installer \"bob\" \"tar:bz2\" \"URL\")
+   cvs checkout:              : (grail-define-installer \"bob\" \"cvs\" \"pserver\")
+
+   Most of the time a single URL suffices. Many packages are a
+   single elisp file, or a single tarball.
+
+   Other packages such as icicles are several elisp files, or
+   possibly several archives.
+
+   In this case a list of cons pairs can be given as the
+   URL. When this happens NAME becomes a sub-directory they are
+   installed to, and the files a list of (name . url) pairs.
+
+   (grail-define-installer PACKAGE \"file\"
+    '(\"foo.el\" . \"URL\")
+    '(\"bar.el\" . \"URL\")
+
+    this would install as:
+    PACKAGE/foo.el
+    PACKAGE/bar.el
+  "
 </pre>
 
 == Q&A ==
@@ -206,5 +303,5 @@ A: As of the grail-0.1.3 Grail handles customizations.
    other files have these customize settings, and migrate them to
    customize-settings.el
 
-   I will ponder a migration tool if I can come up with something safe ...
-completed
+   I will ponder a migration tool if I can come up with something safe.
+

@@ -42,5 +42,9 @@ So, I *am* saying that your package does work when running emacs as a daemon, an
 Though I don't use often pure console displays these days, I've noticed that enclosing the <code>(if fcr-mode ...)</code> sexp beginning from line 291 inside a <code>(when window-system ...)</code> seems to help a bit -- at least fcr-mode doesn't try to mess with the display when opening a new file in a text console, but those that were already opened in a graphical display look indeed ugly (with the rule split over every line at a different column).
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new:AlpAker:2011-03-10 01:50 UTC]
+
+I really should try out EmacsAsDaemon.  In any case, the fix you propose was the same one I had in mind when I talked about testing window-system at run time, so I've added a test at that place.  (That is, the package now tests window-system when the mode command fcr-mode is called.)  I'm going to have to add a more complex test to deal with the other problem you mention (with buffers already open on window frames); I'll get to that over the weekend, hopefully.  In any case, thanks for the suggestions.  (And sorry for the delay in replying; I've been traveling.)    
 ----
 CategoryFilling

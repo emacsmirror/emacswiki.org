@@ -1,30 +1,63 @@
-Hi, my name is RodrigoLazo. I'm a proud user of emacs since 2004. I've
-tried as many editors as you could imagine, but once I tried emacs for
-real I get caught.  My favorites packages are [[EmacsLispScreen]],
-[[DiredPlus]],[[JabberEl]],[[IteractivelyDoThings]], [[emacs-w3m]],
-[[EmacsIRCClient]], [[Gnus]] and background.el that you can find here
-http://www.jgk.org/src/background.el. The latter is a great package
-that let you run commands asynchronusly.
+Hi, my name is RodrigoLazo and I'm a proud user of emacs since
+2004. I have a blog [http://www.rlazo.org] and it's part of
+[[PlanetEmacsen]]. I use [[OrgMode]] for everything I can, from
+keeping notes to blogging (my blog's engine is Wordpress, and you
+posts directly from orgmode, here is how
+[http://www.rlazo.org/2010/10/28/org-mode-wordpress-org2blog-awesomeness/]). My
+IRC nick is rlazo.
 
-==ElScreen==
+I build my emacs binary directly from bzr, and it's /very/
+stable, but not *always*, and if you have a tendency to update
+your editor when you have a deadline coming, is a good idea to
+keep a stable release binary just in case.
 
-[[EmacsLispScreen]] is indispensable for my daily work. In fact, many of the
-elisp code I wrote is to better integrate it with the rest of emacs.
+==Third party packages I use==
 
-==Jabber==
+* alarm-clock.el		        
+* anything		        
+* auto-complete	        
+* autosmiley.el		        
+* background-dired	        
+* background		        
+* background-nobuffer         
+* boxquote		        
+* browse-kill-ring	        
+* company		        
+* dired-details	        
+* dired-details+	        
+* dired+		        
+* emacs-jabber		        
+* emacs-nav		        
+* emms			        
+* google-weather    
+* htmlize	   
+* icicles		   
+* identica-mode    
+* log4j-mode	   
+* lorem-ipsum	   
+* magit		   
+* multi-term	   
+* no-word.el	   
+* org2blog	   
+* org-contacts	   
+* org-google-weather
+* pair-mode	   
+* parenthesis	   
+* pastebin	   
+* php-mode         
+* python.el (by Fabián Gallina)		
+* rainbow-mode	
+* rst.el			
+* session		
+* smex			
+* sudoku		
+* text-translator	
+* twittering-mode	
+* unbound.el		
+* wclock		
+* weblogger		
+* yasnippet              
 
-I use jabber a lot, so I started to add some features to it. 
 
-Sometimes I need to send the same message several times in a row, but
-jabber.el lacked support for input history, so I wrote
-Lisp:jabber-chatx.el
-
-I also was used to the visual notifications other IM clients had, so I
-wrote [[jabberLibnotify]] that supports pop-up notifications using
-libnotify.
-
-==Configuration==
-
-This is my .emacs Lisp:rlazoDotEmacs.el
 ----
 CategoryHomepage

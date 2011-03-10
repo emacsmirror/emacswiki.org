@@ -12,6 +12,52 @@ Medium answer: I used GNU Emacs 18, and played with Epoch (!), and then switched
 
 Long answer: [http://amitp.blogspot.com/2007/01/weekend-project-xemacs-to-emacs.html here].
 
+== Init file structure ==
+
+I try to share the same Emacs setup across machines, but there are machine-specific settings that I keep in separate files. I then load those files with this:
+
+{{{
+(defvar my-modules
+  `(
+    ;; Loaded for all setups
+    settings
+    keybindings
+
+    ;; In addition to the modules that are always loaded, you can put
+    ;; in user-specific customization into [username].el:
+    ,(intern (user-login-name))
+
+    ;; You can also put in machine-specific or domain-specific
+    ;; customization.  For example, if you have both a shell.pobox.com
+    ;; account and a graphics.stanford.edu account, you can create
+    ;; shell.pobox.com.el (or pobox.com.el) and
+    ;; graphics.stanford.edu.el (or stanford.edu.el or edu.el).
+    ,@(get-hostname-and-parents (or (getenv "HOSTNAME")
+                                    (getenv "COMPUTERNAME")
+                                    (system-name)
+                                    "local")) ; customization per computer
+
+    ;; And you can put in platform-specific customization (mac=darwin)
+    ,(intern (subst-char-in-string ?/ ?-
+                                   (format "platform-%s" system-type)))
+
+    ;; Window system (mac=ns)
+    ,(intern (format "window-%s" (window-system)))
+    ))
+
+(loop for module in my-modules do
+  (condition-case err
+      (require module)
+    (file-error
+     (unless (equal err (list
+                         'file-error
+                         "Cannot open load file"
+                         (format "%s" module)))
+       (message "(require %s) failed: %s" module err)))))
+}}}
+
+For example, I have Mac-specific settings in <code>platform-darwin.el</code> and my Stanford settings in <code>stanford.el</code>.  Sometimes other people will copy my emacs setup but certain things are specific to me so I'll put them in <code>amitp.el</code> so that they're not automatically loaded by others. It's not a clean use of module names but it's simple and works reasonably well so far.
+
 == Contributions ==
 
 I haven't contributed much.  Among classmates and coworkers I'm usually the one who tries out new packages and shares customization tweaks.  I do contribute small items to the Emacs Wiki.  However, I haven't written any big packages that I've shared with the world.

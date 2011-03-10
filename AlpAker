@@ -1,6 +1,6 @@
 I recently decided to clean up and distribute some packages I've written in the years since I started using Emacs.  
 
-* [[PerWin]].  Per-win-mode changes how Emacs selects point when displaying a buffer in a window.  While it is enabled, each window keeps a record of the last value of point in every buffer that has been displayed in it.  When a window is switched back to a buffer it has displayed before, point and window-start are set to the values they had when that buffer was last displayed in the window.  
+* [[Rebound]].  Rebound mode changes how Emacs selects point when displaying a buffer in a window.  While it is enabled, each window keeps a record of the last value of point in every buffer that has been displayed in it.  When a window is switched back to a buffer it has displayed before, point and window-start are set to the values they had when that buffer was last displayed in the window.  
 
 * [[FillColumnRule]].  A minor mode that indicates the location of the fill column with a thin line running down the editing window.
 
@@ -12,8 +12,29 @@ I recently decided to clean up and distribute some packages I've written in the 
 Welcome to the wiki. -- DrewAdams
 
 
+[new:TN:2011-03-10 08:41 UTC]
+Hello AlpAker,
 
+what is the advantage of Rebound over clone-indirect-buffer?
+Till now I always use clone-indirect-buffer for that purpose but maybe I switch to Rebound if there are some strong reasons for that.
 
+Best regards,
+TN
 
+[new:AlpAker:2011-03-10 08:46 UTC]
+
+The differences between the two methods aren't great (I used to use indirect buffers for this purpose as well):
+
+* I prefer not to have to issue an extra command when I start working on a different part of a buffer.  In addition, clone-indirect-buffer uses pop-to-buffer to display the new indirect buffer, and the window pop-to-buffer selects is frequently not  the one I want to use, which requires another series of commands to restore the arrangement of buffers and windows I want (including moving point back to where I want it in the buffer that pop-to-buffer displaces).  I find that together these factors slow down the editing process for me in an annoying way.
+
+* Having multiple indirect buffers makes the buffer-menu more crowded, which (for me) slows down navigation between buffers, without any gain in information. (And I hate accidentally killing the base buffer when I intend only to kill one of the indirect copies.)
+
+* I find that if I'm working on three or more parts of buffer, using indirect buffers requires me to spend some thought remembering which indirect buffer is associated with which part of the buffer when switching back and forth between the buffer and something else.  Again, that (for me) slows down editing.  
+
+* Files that I work on in this way are often LaTeX files, and RefTeX is easily confused by indirect buffers.  (It wouldn't be hard to hack RefTeX to accomodate indirect buffers, but it would require redefinition of several RefTeX functions; the advice mechanism isn't sufficient for this.)
+
+* Any package using overlays works differently in the two cases.  With indirect buffers, the overlays in the base buffer and those in each indirect buffer are distinct.  With Rebound, the buffer is the same, so the overlays are the same.  Thus, with indirect buffers, folding in outline mode, in AucTeX, etc., works on each version independently.  With Rebound, each "version" of the buffer is controlled by outlining, etc. in the same way.  What one makes of this difference is very much a matter of personal taste.  Similarly, with indirect buffers mode changes affect only one version of the buffer.  This can be annoying when, e.g., toggling LaTeX-math-mode on and off.
+
+Those are the differences that occur to me immediately; there are probably others.  As I said, they're not huge, and which method is preferable for a particular person depends on their tastes and editing style.  For me, the first three issues especially are significant as regards preserving an uninterrupted work flow during editing.  I'd imagine that many others don't find such factors to be a problem at all.
 ----
 CategoryHomepage

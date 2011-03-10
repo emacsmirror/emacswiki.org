@@ -1,0 +1,16 @@
+== About ==
+
+r-autoyas is a small ESS complement. It provides automatically created yasnippets for R functions.
+
+Watch the demo screencast: http://www.youtube.com/watch?v=jLJPorf2LBE
+
+Get source code and info here: http://www.svenhartenstein.de/Software/R-autoyas
+
+Requirements:
+* yasnippet: http://code.google.com/p/yasnippet/
+* Obviously R and ESS
+* A R process must be running
+
+== User notes ==
+
+(none yet)

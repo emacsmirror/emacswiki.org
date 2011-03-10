@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.21
+;; Version: 0.22
 ;; Keywords: convenience, tools
 
 ;; This program is free software; you can redistribute it and/or
@@ -58,11 +58,11 @@
 ;; o If the fill-column rule is misaligned on some lines but otherwise
 ;;   looks normal, then you're most likely not displaying the buffer
 ;;   contents with a monospaced font.  Note that certain font-lock
-;;   themes set some faces so that they look monospaced aren't quite
+;;   themes set some faces so that they look monospaced but aren't quite
 ;;   so.  You can tell if that's the source of the problem by turning
 ;;   off font-lock and resetting fcr-mode.
 
-;; o If the fill-column rule is a dashed (rather than uninterrupted) line,
+;; o If the fill-column rule is a dashed (rather than uninterrupted) line
 ;;   and the buffer is unibyte, then that is the intended behavior.  If the
 ;;   buffer is multibyte, the issue is one of font selection; see the next
 ;;   section.
@@ -127,16 +127,18 @@
 ;; o If the buffer contents do not end in a newline, then the rule
 ;;   extends only to the penultimate line.
 
+;; There's no known way to fix the preceding, given Emacs present method of
+;; internally representing buffer contents.
+
 ;; Todo
 ;; ====
 
 ;; o Play well with outline minor mode and other forms of folding
 ;;   (nxhtml mode, etc.).
 
-;;; Code:
+;; o Perfrom better when Emacs is run as daemon.
 
-(unless window-system
-  (error "Fill-column-rule only works on window systems"))
+;;; Code:
 
 ;;; Version 
 
@@ -273,7 +275,7 @@ variables `fcr-color' and `fcr-font' instead.")
 ;; the last section of this file for an explanation.)
 
 (define-minor-mode fcr-mode
- "Toggle fcr mode on and off.
+  "Toggle fcr mode on and off.
 In fcr mode, a thin line (a `rule') is drawn in the editing
 window to indicate the location of the fill column.
 
@@ -286,58 +288,60 @@ and`fcr-fallback-character'.
 For further options, as well as tips for troubleshooting
 unexpected behavior, see the comments in fill-column-rule.el."
 
- nil nil nil
+  nil nil nil
 
- (if fcr-mode
-     ;; Enabling
-     (progn
-       ;; If we throw an error later in the initialization process and
-       ;; disable the mode, we need the data recorded by the next two forms
-       ;; to restore the buffer state, so they come first.
-       (unless buffer-display-table
-         (setq buffer-display-table (make-display-table)
-               fcr-prior-display-table nil))
-       (when (and fcr-handle-line-move-visual
-                  (boundp line-move-visual))
-         (make-local-variable 'line-move-visual)
-         (setq fcr-saved-line-move-visual line-move-visual
-               line-move-visual nil))
-       (aset buffer-display-table (string-to-char fcr-fake-newline) [10])
-       (let ((char (fcr-make-rule-char)))
-         (aset buffer-display-table
-               10
-               (vector 32 (make-glyph-code char 'fcr-face)  10))
-         (fcr-set-face-attributes char) 
-         (setq fcr-rule-glyph (propertize (char-to-string char) 
-                                          'face
-                                          'fcr-face)))
-       (add-hook 'after-change-functions 'fcr-after-change-function nil t)
-       (ad-enable-regexp "fill-column-rule")
-       (ad-activate-regexp "fill-column-rule")
-       ;; In case we were already in fcr-mode and are resetting the
-       ;; rule, clear out any existing overlays.
-       (fcr-delete-overlays-buffer)
-       (fcr-put-overlays-buffer)
-       ;; These are for the hscroll hack.
-       (add-hook 'post-command-hook 'fcr-post-command-check nil t)
-       (add-hook 'window-scroll-functions 'fcr-window-scroll-check nil t))
+  (if window-system
+      (if fcr-mode
+          ;; Enabling
+          (progn
+            ;; If we throw an error later in the initialization process and
+            ;; disable the mode, we need the data recorded by the next two forms
+            ;; to restore the buffer state, so they come first.
+            (unless buffer-display-table
+              (setq buffer-display-table (make-display-table)
+                    fcr-prior-display-table nil))
+            (when (and fcr-handle-line-move-visual
+                       (boundp line-move-visual))
+              (make-local-variable 'line-move-visual)
+              (setq fcr-saved-line-move-visual line-move-visual
+                    line-move-visual nil))
+            (aset buffer-display-table (string-to-char fcr-fake-newline) [10])
+            (let ((char (fcr-make-rule-char)))
+              (aset buffer-display-table
+                    10
+                    (vector 32 (make-glyph-code char 'fcr-face)  10))
+              (fcr-set-face-attributes char) 
+              (setq fcr-rule-glyph (propertize (char-to-string char) 
+                                               'face
+                                               'fcr-face)))
+            (add-hook 'after-change-functions 'fcr-after-change-function nil t)
+            (ad-enable-regexp "fill-column-rule")
+            (ad-activate-regexp "fill-column-rule")
+            ;; In case we were already in fcr-mode and are resetting the
+            ;; rule, clear out any existing overlays.
+            (fcr-delete-overlays-buffer)
+            (fcr-put-overlays-buffer)
+            ;; These are for the hscroll hack.
+            (add-hook 'post-command-hook 'fcr-post-command-check nil t)
+            (add-hook 'window-scroll-functions 'fcr-window-scroll-check nil t))
 
-   ;; Disabling
-   (if fcr-prior-display-table
-       ;; Note that we don't bother resetting the display table slot for the
-       ;; fake newline, since the assumption is that we have free use of that
-       ;; char.
-       (aset buffer-display-table 10 nil)
-     (setq buffer-display-table nil))
-   (when fcr-handle-line-move-visual
-     (setq line-move-visual fcr-saved-line-move-visual
-           fcr-saved-line-move-visual nil))
-   (remove-hook 'after-change-functions 'fcr-after-change-function t)
-   (ad-disable-regexp "fill-column-rule")
-   (ad-activate-regexp "fill-column-rule")
-   (fcr-delete-overlays-buffer)
-   (remove-hook 'post-command-hook 'fcr-post-command-check  t)
-   (remove-hook 'window-scroll-functions 'fcr-window-scroll-check  t)))
+        ;; Disabling
+        (if fcr-prior-display-table
+            ;; Note that we don't bother resetting the display table slot for the
+            ;; fake newline, since the assumption is that we have free use of that
+            ;; char.
+            (aset buffer-display-table 10 nil)
+          (setq buffer-display-table nil))
+        (when fcr-handle-line-move-visual
+          (setq line-move-visual fcr-saved-line-move-visual
+                fcr-saved-line-move-visual nil))
+        (remove-hook 'after-change-functions 'fcr-after-change-function t)
+        (ad-disable-regexp "fill-column-rule")
+        (ad-activate-regexp "fill-column-rule")
+        (fcr-delete-overlays-buffer)
+        (remove-hook 'post-command-hook 'fcr-post-command-check  t)
+        (remove-hook 'window-scroll-functions 'fcr-window-scroll-check  t))
+    (error "Fill-column-rule does not work on character terminals")))
 
 ;;; Initialization
 

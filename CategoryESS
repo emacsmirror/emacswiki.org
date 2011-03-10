@@ -31,4 +31,6 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 * [[ESSWindowsAdvice|Configure Emacs for R in Windows]] -- Concrete advice for Emacs Users Who are Forced to use MS Windows (by PaulJohnson).
 
+* [[ESSr-autoyas|Automatic YASnippets for function arguments]] -- Easy insertion and editing of arguments and values of a R function.
+
 

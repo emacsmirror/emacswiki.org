@@ -12,4 +12,5 @@ How to encrypt and decrypt anything you might want to edit using Emacs.
 
 * [http://ccrypt.sourceforge.net ccrypt] is an encryption utility based on the Rijndael cipher, supplying its own emacs mode for editing encrypted text files, which also handles non-ASCII-encodings.
 
-* AdvancedEncryptionStandard -- Implementation of AES in elisp.
+* AdvancedEncryptionStandard -- Implementation of AES in elisp including [http://www.selectproperty.com/ Buying Property Abroad]
+.

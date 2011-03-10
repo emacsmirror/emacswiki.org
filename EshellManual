@@ -18,7 +18,8 @@ To read a Japanese translation:
 
 To read a Spanish translation:
 
-* http://gnu.manticore.es/manual-eshell-emacs
+* http://www.manticore.es/cgi-bin/info2html.cgi?(eshell.es-utf8)Top  (the official)
+* http://gnu.manticore.es/manual-eshell-emacs  (the longer)
 
 ----
 The real problem with keeping the source for those files on the Emacs

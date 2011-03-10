@@ -168,10 +168,12 @@ Can you please report this on Launchpad in nXhtml bug database?
 
 I am rather unfamiliar with lisp and the EMACS internals and the statement "Download x file and eval it.." did not help me. I tried M-: filename after I placed the downloaded file in my .emacs.d/ but that brought up the a lisp debugger. M-x load-file <filename>, came up with "Symbol's value as variable is void: <\?xml". Downloading the zip and following the instructions works for me, except they seem to suggest that after you run autostart.el, every time you start emacs with an "example .html" extension, taht would somehow load the file and set the right mode. This is simply not the case in my experience. However adding this at the end worked:
 
+{{{
 (load "nxhtml/autostart.el")
-(setq auto-mode-alist (cons '("\\.html$" . nxhtml-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.shtml$" . nxhtml-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.htm$" . nxhtml-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.html$" . nxhtml-mode))
+(add-to-list 'auto-mode-alist '("\\.shtml$" . nxhtml-mode))
+(add-to-list 'auto-mode-alist '("\\.htm$" . nxhtml-mode))
+}}}
 
 I wish the instructions were a bit clearer..
 

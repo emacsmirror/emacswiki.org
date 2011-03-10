@@ -48,12 +48,18 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 
 
 [:OptionsAndCustomizeIciclesMenus]
-=== Options Menu: Icicles Submenu and Customize > Icicles Submenu ===
+[:OptionsIciclesMenu]
+=== Options Menu: Icicles Submenu ===
 : [[image:DrewsEmacsIciclesOptionsMenu]]
+
+'''Icicles''' augments the standard '''Options''' menu. It adds an '''Icicles''' submenu with items that let you modify specific '''Icicles''' options.
+
+[:CustomizeEmacsIciclesMenu]
+=== Customize Emacs Menu: Icicles Submenu ===
 
 : [[image:DrewsEmacsIciclesOptionsCustomizeMenu]]
 
-'''Icicles''' augments the standard '''Options''' menu. It adds an '''Icicles''' submenu with items that let you modify specific '''Icicles''' options. It also adds an '''Icicles''' submenu to the '''Customize''' submenu, with operations for customizing anything.  See [[Icicles - Customization and General Tips]].
+'''Icicles''' also adds an '''Icicles''' submenu to the '''Customize Emacs''' submenu of menu '''Options''', with operations for customizing anything.  See [[Icicles - Customization and General Tips]].
 
 
 [:CustomizeIciclesKeys]

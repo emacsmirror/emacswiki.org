@@ -331,7 +331,7 @@ Why would anyone want an alphabetically sorted list? You can save keystrokes if 
                    (sixth (file-attributes (concat ido-current-directory a)))))))
     (ido-to-end  ;; move . files to end (again)
      (delq nil (mapcar
-                (lambda (x) (and (char-equal (aref x 0) ?.) x))
+                (lambda (x) (and (char-equal (string-to-char x) ?.) x))
                 ido-temp-list))))
 
 If you want to ensure '.' is not buried by this, change the final lambda as follows (or equivalent):
@@ -340,6 +340,22 @@ If you want to ensure '.' is not buried by this, change the final lambda as foll
 }}}
 [new:DrewAdams:2008-08-17 20:24 UTC]
 Depending on the type of entities (e.g. file names) in the list and your current context, it can often be more convenient to sort alphabetically. It all depends. For files and directories, this is why we have different sort orders in DiredMode (see, e.g., DiredSortMenu).
+
+[new:Anonymous:2011-03-10 03:08 UTC]
+On my system (Debian squeeze), there are "files" in the root directory ending in a colon for which applying ##file-attributes## to them invokes tramp, and tramp hangs with "Tramp: Waiting for prompts from remote shell". Changing the sort predicate in the above code to the following seems to work:
+{{{
+    (lambda (a b)
+      (let ((a-tramp-file-p (string-match-p ":\\'" a))
+            (b-tramp-file-p (string-match-p ":\\'" b)))
+        (cond
+         ((and a-tramp-file-p b-tramp-file-p)
+          (string< a b))
+         (a-tramp-file-p nil)
+         (b-tramp-file-p t)
+         (t (time-less-p
+             (sixth (file-attributes (concat ido-current-directory b)))
+             (sixth (file-attributes (concat ido-current-directory a))))))))
+}}}
 
 See also [[#SortOrder]].
 

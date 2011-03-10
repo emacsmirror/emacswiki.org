@@ -67,12 +67,12 @@ With GNU Emacs 23.1.1 on Ubuntu 10.04, I was obliged to add a dash like below:
 = Configuration =
 
 By default ediff spawns a new frame to display files to be compared or
-merged. But I found it is less usable than use selected-frame to
-operate on. Also it splits window vertically to display files and I found
-it hard to perceive provided information in such way. Horizontal split
-is more attractive for me.
+merged. Some prefer to just use the selected frame. Also it splits
+window vertically to display files and one might find it hard to
+perceive provided information in such way. In such a case horizontal
+splitting is more attractive.
 
-To make ediff operate on selected-frame add next:
+To make `ediff' operate on selected-frame use the following:
 
     ;; This is what you probably want if you are using a tiling window
     ;; manager under X, such as ratpoison.
@@ -161,9 +161,9 @@ If you just want to save the window configuration, try the code bellow:
 
 = Discussion =
 
-EdiffMode is also can be used with pcl-cvs (see ConcurrentVersionsSystem) to use it type <code>d e</code> on some selected file. Original file will be fetched from cvs and then ediff applies to it - very useful. --ZajcevEvgeny
+EdiffMode can also be used with pcl-cvs (see ConcurrentVersionsSystem).  To use it, type <code>d e</code> on some selected file. The original file will be fetched from cvs and then ediff applies to it - very useful. --ZajcevEvgeny
 
-Another way to get you original window configuration back after running ediff is to use WinnerMode.  --BryanMurdock
+Another way to get your original window configuration back after running ediff is to use WinnerMode.  --BryanMurdock
 
 I came up with a simple configuration that seems to work OK for me with XEmacs. (I'm hedging a little because I haven't been using this for very long.) It creates a new frame for an ediff session and closes it when done:
 
@@ -271,7 +271,7 @@ Here is how to make ediff-directories use Tramp to test the equality of remote f
 
 [new]
 
-Don’t compare big files (> 10M) by ediff-files (or ediff) procedure or you will receive “Errors in diff output” message. Open both files in separate buffers and use ediff-buffers instead. I’ve also found out that when I compare binary files I also get “Errors in diff output” message. To solve it open both files in separate buffers, and then change the mode to hexl-mode. Now you can use ediff-buffers to compare files.
+Don’t compare large files (> 10M) using ediff-files (or ediff) or you will receive error messages like “Errors in diff output”. Open the files in Emacs and use `ediff-buffers' instead. I’ve also found out that when I compare binary files I also get “Errors in diff output” message. To solve it open both files in separate buffers, and then change the mode to hexl-mode. Now you can use ediff-buffers to compare files.
 
 --MateuszKopij
 

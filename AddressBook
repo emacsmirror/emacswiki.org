@@ -9,6 +9,10 @@ The homepage of the Emacs Addressbook is http://www.nongnu.org/addressbook
 
 * [http://es.gnu.org/~jemarch/images/addrbook-sc1.jpg Adressbook buffer showing a contact]
 
+== Hooks and interaction with other modes ==
+
+* [https://github.com/timotheus2/custom-emacs/blob/master/emacs-site/lisp/set-abook.el Integration with MH-E]
+
 == Comments ==
 
 Please, insert your suggestion/comment about AddressBook here.

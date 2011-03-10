@@ -16,7 +16,7 @@ Si desea extender Emacs, puede hacerlo mediante EmacsLisp, o Elisp para abreviar
 Emacs también viene provisto del archivo ##refcard.tex## (y ##refcard.ps## en formato <nowiki>PostScript</nowiki>), que contiene la mayoría de secuencias de teclado para realizar edición básica. En todo caso, Emacs es conocido como el editor "auto-documentable", así que mientras que el //refcard// puede ser útil, uno debe aprender a hacer uso de ##info## o ##C-h i## para la mayoría de características complicadas de este editor. Si no tiene acceso a <nowiki>TeX</nowiki> o a algún tipo de intérprete <nowiki>PostScript</nowiki> como <nowiki>GhostScript</nowiki>, entonces puede encontrar una versión PDF de este documento, la tarjeta de XEmacs, y de la CalculadoraDeEscritorioAvanzada en http://refcards.com/ .
 
 Por último se pueden encontrar buenas referencias en la web como por ejemplo:
-* [http://gnu.manticore.es los manuales en linea de GNU Emacs en español]
+* [http://emacs-es.manticore.es los manuales en linea de GNU Emacs en español]
 * [http://www.rpublica.net/emacs/emacs.html Iniciación a la edición]
 * TheCraftOfTextEditing por CraigFinseth que describe cómo operan los editores internamente usando emacs como ejemplo.
 * [http://www.gnu.org/software/emacs/manual/ los manuales en linea de GNU Emacs en inglés]
