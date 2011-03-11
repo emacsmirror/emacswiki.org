@@ -2,5 +2,30 @@ Emacs conveniently allows one to work on different parts of the same buffer at t
 
 In some cases, as when another Lisp program wants to move point in a buffer and then display that buffer in a window, it makes sense for Rebound not to position point in that window.  (For example, when looking up a function definition via `describe-function', point is moved to the function definition before the library that defines the function is displayed; we then don't want to move point away from the definition when the library is displayed.)  The package is reasonably intelligent in identifying situations in which it should defer to other Lisp programs.  It also provides a hook so that the user can define other types of exception.
 
+[new]
+Do you know about winpoint.el? How does rebound.el compare to winpoint.el? -- LennartBorgman
+
+[new:AlpAker:2011-03-10 21:29 UTC]
+
+I was unaware of Winpoint until now, but  the functionality appears to be very similar.  The differences I see at first glance: 
+
+* The internal mechanisms are different.  Winpoint uses post-command-hook and window-configuration-change-hook to record the most recent values of point, while Rebound advises functions such as switch-to-buffer, etc.  I haven't closely studied the Winpoint code, but there will likely be edge cases in which it fails to record the most up-to-date value of point (an early version of Rebound used the same mechanism as Winpoint and I ran into this problem).  These cases arise relatively infrequently, however.  
+
+* Winpoint doesn't appear to make any attempt to avoid conflicts with other Lisp programs, as described in the second paragraph of the Rebound description above.  (It allows you to specify, on an individual basis, buffers whose point values shouldn't be restored, but when, e.g., looking up function definitions in Elisp libraries, one needs dynamic identification of which buffers shouldn't have point restored.)   It wouldn't be hard to add this ability to Winpoint, however. 
+
+* Rebound allows the user more flexibility in specifying exceptions.  Winpoint, as mentioned, allows you only to specify names of buffers to ignore; Rebound lets you use any test that is a function of the buffer and the window the buffer is to be displayed in.  (Thus, for example, you can exempt all buffers whose name matches a particular regexp, or all buffers with a particular major mode.)  Again, it wouldn't be hard to hack Winpoint to add this ability.  
+
+* Winpoint appears only to restore point, not window-start.  Whether that matters to a user is purely a matter of taste, I suppose. 
+
+In sum, the differences aren't great, although I think Rebound is, as described above, more robust and flexible.  I should note, though, that Rebound depends on advising primitives, which some think is bad style in Elisp; that might be a reason to be prefer Winpoint.   --AA
+
+[new]
+
+This seems to be a copy of PerWin. If you renamed the project, please remove the old page and let it redirect here -- shjk
+
+[new:AlpAker:2011-03-10 21:00 UTC]
+
+You're right; I renamed the package.  I also edited the old page to redirect, but managed not to save the edit.  It should be fixed now.  Sorry about that. --AA
+
 ----
 CategoryBufferSwitching

@@ -82,25 +82,7 @@ I have a need for something simpler than this. I would like to have Emacs record
                            num-calls percent-calls cmd
                            (mapconcat
                             'key-description
-                            (mapcar
-                             ;; key-description takes a vector, but where-is-internal
-                             ;; returns vectors of either one key if the bind is one key
-                             ;; long, or a cons cell of multiple keys if it's multiple keys
-                             ;; long
-                             ;; e.g. this lambda form must take
-                             ;; ([(32 . 126)] [128])
-                             ;; and return
-                             ;; ([32 126] [128])
-                             (lambda (key-seq)
-                               (let ((event (aref key-seq 0)))
-                                 (if (listp event)
-                                     (vector (car event) (cdr event))
-                                   key-seq)))
-                             (where-is-internal cmd overriding-local-map)
-                             ;; resulting list is too long, makes command-frequency dump in
-                             ;; minibuffer for some reason
-                             ;; (where-is-internal cmd (accessible-keymaps global-map))
-                             )
+                            (where-is-internal cmd overriding-local-map)
                             ", "))))))
 
 : Also, in command-frequency.el, change the line
@@ -109,7 +91,7 @@ I have a need for something simpler than this. I would like to have Emacs record
 
 : to
 
-      (message "%s" (prin1-to-string l))
+      (message "%s" l)
 
 : It's interesting to see if your frequency rankings follow Zipf's law (this commenter's do: [[zort-command-frequency-zipf-plot]]).
 

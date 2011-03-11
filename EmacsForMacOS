@@ -17,7 +17,7 @@ If you've used Emacs before and already have your own emacs initialization file,
 
 These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super).
 
-* [http://emacsformacosx.com/ GNU Emacs 23.2 (Cocoa)]
+* [http://emacsformacosx.com/ GNU Emacs 23.3 (Cocoa)]
 
 * [http://atomized.org/wp-content/cocoa-emacs-nightly/ Nightly builds] of GNU Emacs 23 (Cocoa) from BZR, provided by IanEure
 
@@ -269,8 +269,8 @@ result of the command forward-word (M-f). To actually get forward-sexp I must "h
 : iTerm sends C-M-keys and mouse events.  Remote emacsen run for months via iTerm + ssh + [[screen]].
 Any volunteers to hack C-M- and mouse input into Terminal.app with GDB and Objective-C?
 
-See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html
- blog post] for swapping the cmd and meta key. Also, if you want to retain one of the Option key functions as modifier for national characters, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this] page for iTerm patch and/or binary.
+See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html [http://www.profi-fachuebersetzung.de Übersetzung Deutsch Niederländisch]
+ blog post] for swapping the cmd and meta key. Also, if you want to retain one of the Option key functions as modifier for national characters, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this] page for iTerm patch and/or binary. [http://www.uebersetzung-deutsch-englisch.com Übersetzung Englisch Deutsch]
 
 [new]
 : Terminals on most operating systems (including Terminal.app) have a very limited set of keys that they send to applications. Rarely will they send C-M-keys to the app.  For this and several other reasons I recommend running Emacs as a full app, not inside a terminal, except for quick changes.  You can use Esc C-f in a pinch but it's not as efficient as M-C-f.

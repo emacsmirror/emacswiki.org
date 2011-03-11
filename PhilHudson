@@ -1,14 +1,17 @@
 I use Emacs.
 
-Editing my init.el into a work of art.
-
-
 Started using emacs in 1988. Stopped using emacs in 1988. Started and stopped on and off over the years, then got serious about 2005. Still a beginner, then. :-) Beginning to move toward "living in emacs".
 
 [new:DrewAdams:2009-06-24 01:39 UTC]
 Welcome to the wiki. -- DrewAdams
 
+== Me: ==
 
+* [http://hudson-it.no-ip.biz Work blog]
+* GPG key ID: 0x887DCA63
+* Handles:
+** identi.ca: <nowiki>UWascalWabbit</nowiki>
+** Google Groups: Etrigan
 
 == Modes/features/extensions I use: ==
 
@@ -28,6 +31,9 @@ Welcome to the wiki. -- DrewAdams
 * [CategoryEshell Eshell]
 * [[IbufferMode]]
 * [[KeyboardMacros]]
+* [[Yasnippet]]
+* [[Bookmarks]]
+
 
 == Still to learn/master/enable: ==
 
@@ -37,10 +43,9 @@ Welcome to the wiki. -- DrewAdams
 * [[Icicles]]
 * [JavaDevelopmentEnvironment JDEE], [CollectionOfEmacsDevelopmentEnvironmentTools CEDET], [EmacsCodeBrowser ECB] and [[toggle.el]]
 * [[Anything]]
-* [[Yasnippet]]
 * [[Registers]]
 * [[Narrowing]]
-* [[Bookmarks]]
+
 
 == Probably never going to learn/master/enable: ==
 
@@ -53,6 +58,12 @@ All trivial one- or two-line mods (so far). You've got to start somewhere...
 * [[DVC]]
 * [[ratpoison]] (bundled elisp files)
 * [[slurp.el]]
+
+== Plan ==
+
+I'm gradually perfecting a multi-site-aware framework for init.el. You can (but don't have to) write host-, OS- and emacs-release-specific elisp files, and you can conditionally compile host-, OS-, and emacs-release-specific blocks of code within other files.
+
+I have a few bits of elisp and emacs-driving shell script that I think may be useful to the community. I'll be putting them up Real Soon Now.
 
 
 ----

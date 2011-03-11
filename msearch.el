@@ -73,6 +73,10 @@
 ;;
 ;; 2010-08-19, 0:0, TN:
 ;; Added menu button for explicitely setting msearch-word.
+;;
+;; 2011-03-10, 16:15, TN:
+;; Added custom-variable msearch-max-length and avoid crash through
+;; too long msearch words.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -80,6 +84,11 @@
 (defcustom msearch-face '(background-color . "yellow")
 "Face for highlighting matchings of mouse-selected text. See also msearch-mode.":type 'custom-face
 :group 'msearch)
+
+(defcustom msearch-max-length 1000
+  "Maximal length of search string."
+  :type 'integer
+  :group 'msearch)
 
 (defun msearch-lock-function (b e)
   "Highlight all matches of mouse-selection within the visible region."
@@ -97,6 +106,8 @@
 
 (defun msearch-cleanup ()
   "Remove overlays of msearch and deactivate msearch-lock-function."
+  (interactive)
+  (message "cleanup")
   (remove-overlays nil nil 'msearch 't)
   (jit-lock-unregister 'msearch-lock-function))
 
@@ -128,11 +139,12 @@ register-drag-mouse-1-handler instead.")
 (defun msearch-event-handler (e)
   "Must be bound to a mouse event."
   (interactive "e")
-  (message "Running event handler in %s" (buffer-name))
   (let ((start (posn-point (event-start e)))
 	(end (posn-point (event-end e))))
     (if (> start end)
 	(let ((tmp start)) (setq start end) (setq end tmp)))
+    (if (> (- end start) msearch-max-length)
+	(setq end (+ start msearch-max-length)))
     (let ((new-word (buffer-substring-no-properties start end))
 	  (slaves msearch-slaves)
 	  slaves-released
@@ -204,6 +216,7 @@ The slave buf is released when msearch of the master is switched off."
   "Menu for msearch mode."
   '("MSearch"
     ["Switch Off msearch" msearch-mode 't]
+    ["Unhighlight" msearch-cleanup 't]
     ["Help On msearch" msearch-help 't]
     ["Enslave Buffer" msearch-enslave-buffer 't]
     ["Release Buffer" msearch-release-buffer 't]

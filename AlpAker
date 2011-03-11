@@ -23,18 +23,24 @@ TN
 
 [new:AlpAker:2011-03-10 08:46 UTC]
 
-The differences between the two methods aren't great (I used to use indirect buffers for this purpose as well):
+The differences between the two methods aren't great (I used to use indirect buffers for this purpose as well).   In general, I find using Rebound to be faster and more intuitive than using indirect buffers.  (But it's not surprising that its behavior matches my intuition, since it was written to behave in a way I find intuitive.)  Here are four ways in which I find using something like Rebound to be smoother than using indirect buffers:
 
-* I prefer not to have to issue an extra command when I start working on a different part of a buffer.  In addition, clone-indirect-buffer uses pop-to-buffer to display the new indirect buffer, and the window pop-to-buffer selects is frequently not  the one I want to use, which requires another series of commands to restore the arrangement of buffers and windows I want (including moving point back to where I want it in the buffer that pop-to-buffer displaces).  I find that together these factors slow down the editing process for me in an annoying way.
+* With Rebound, I simply select the window and the buffer I want to edit a new part of.  With indirect buffers, I need to pause for the separate call to clone-indirect-buffer.  In addition, clone-indirect-buffer uses pop-to-buffer to display the new indirect buffer, and the window pop-to-buffer selects is frequently not  the one I want to use, which requires another series of commands to restore the arrangement of buffers and windows I want (including, sometimes, moving point back to where I want it in the buffer that pop-to-buffer displaces).  
 
-* Having multiple indirect buffers makes the buffer-menu more crowded, which (for me) slows down navigation between buffers, without any gain in information. (And I hate accidentally killing the base buffer when I intend only to kill one of the indirect copies.)
+* Having multiple indirect buffers makes the buffer menu more crowded, which (for me) slows down navigation between buffers.  
 
-* I find that if I'm working on three or more parts of buffer, using indirect buffers requires me to spend some thought remembering which indirect buffer is associated with which part of the buffer when switching back and forth between the buffer and something else.  Again, that (for me) slows down editing.  
+* When I'm done using an indirect buffer, I have to remember to kill it (so as to, e.g., unclog the buffer menu).  (Additionally, I sometimes accidentally kill the base buffer when I intend only to kill one of the indirect copies, which is very annoying.)
 
-* Files that I work on in this way are often LaTeX files, and RefTeX is easily confused by indirect buffers.  (It wouldn't be hard to hack RefTeX to accomodate indirect buffers, but it would require redefinition of several RefTeX functions; the advice mechanism isn't sufficient for this.)
+* With Rebound, I can conceptualize the parts of the buffer I'm editing in terms of screen location.  For example, I can think, "left window is associated with the top of the buffer, right window with the middle."    Using indirect buffers requires me to spend some thought remembering which version of the buffer is associated with which part of the buffer when switching back and forth among files.   (For one indirect buffer this is a trivial problem, but occasionally I need multiple indirect copies of the same buffer, in which case it becomes non-trivial.)
+
+For me, then, using indirect buffers interrupts the flow of editing.  That's the primary reason I wrote Rebound.  There are some other issues, however: 
+
+* Indirect buffers do not have file names associated with them; only the base buffer does.  Lisp functions that need to know the name of the file associated with the buffer can thus break down when used with indirect buffers.  For example,  I  often work on LaTeX files, and a number of RefTeX functions do not work properly on indirect buffers.  (It <i>shouldn't</i> be hard to hack RefTeX to accomodate indirect buffers, but it would require redefinition of several RefTeX functions; the advice mechanism isn't sufficient for this. And, unfortunately,  RefTeX is not as modular as it should be, so rewriting parts of it can be an annoying task.)
 
 * Any package using overlays works differently in the two cases.  With indirect buffers, the overlays in the base buffer and those in each indirect buffer are distinct.  With Rebound, the buffer is the same, so the overlays are the same.  Thus, with indirect buffers, folding in outline mode, in AucTeX, etc., works on each version independently.  With Rebound, each "version" of the buffer is controlled by outlining, etc. in the same way.  What one makes of this difference is very much a matter of personal taste.  Similarly, with indirect buffers mode changes affect only one version of the buffer.  This can be annoying when, e.g., toggling LaTeX-math-mode on and off.
 
-Those are the differences that occur to me immediately; there are probably others.  As I said, they're not huge, and which method is preferable for a particular person depends on their tastes and editing style.  For me, the first three issues especially are significant as regards preserving an uninterrupted work flow during editing.  I'd imagine that many others don't find such factors to be a problem at all.
+Those are the differences that occur to me immediately; there are probably others.  As I said, they're not huge, and which method is preferable for a particular person depends on their tastes and editing style.  For me, the first group of issues especially are significant as regards preserving an uninterrupted train of thought during editing.  I'd imagine that many others don't find such factors to be a problem at all.  
+
+I should also mention that my attention has recently been drawn to [[winpoint.el]], which is very similar to Rebound.  That's something you might want to look at as well.  (I discuss a few differences between Winpoint and Rebound on the [[Rebound]] page.) --AA  
 ----
 CategoryHomepage

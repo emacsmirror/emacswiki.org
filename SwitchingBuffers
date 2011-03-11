@@ -187,7 +187,7 @@ For exactly this use case there is pointback-mode: http://stud4.tuwien.ac.at/~e0
 
 [new:AlpAker:2011-03-04 03:39 UTC]
 
-This functionality is also provided by [[Rebound]].  It works somewhat differently:  Pointback requires the user to call explicitly for saving point and again for restoring it.  Rebound does it automatically.
+This functionality is also provided by both [[Rebound]] and [[winpoint.el]].  They work somewhat differently:  Pointback requires the user to call explicitly for saving point and again for restoring it.  Rebound and Winpoint do it automatically.
 ----
 
 [new]
