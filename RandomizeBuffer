@@ -1,13 +1,17 @@
-Here's what I use to manually shuffle playlists:
+A command to shuffle the lines in a region.  Operate on the whole
+buffer with `C-x h' before `M-x my-randomize-region'.
 
-    (defun my-randomize-buffer ()
-      (interactive)
-      (let ((lines (split-string (buffer-string) "\n")))
-        (erase-buffer)
-        (insert (mapconcat 'identity
-                           (sort* lines (lambda (&rest ignore) (> (random 2) 0)))
-                           "\n")
-                "\n")))
+  (defun my-randomize-region (beg end)
+    "Randomize lines in region from BEG to END."
+    (interactive "*r")
+    (let ((lines (split-string
+                   (delete-and-extract-region beg end) "\n")))
+      (when (string-equal "" (car (last lines 1)))
+        (setq lines (butlast lines 1)))
+      (apply 'insert
+        (mapcar 'cdr
+        (sort (mapcar (lambda (x) (cons (random) (concat x "\n"))) lines)
+              (lambda (a b) (< (car a) (car b))))))))
 
 See also RandomizeWords.
 

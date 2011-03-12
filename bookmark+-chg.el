@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Mar  5 09:19:39 2011 (-0800)
+;; Last-Updated: Fri Mar 11 06:27:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13309
+;;     Update #: 13310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/03/11 dadams
+;;     Protect use of mouse-wheel-*-event with boundp.  Thx to Chris Poole.
 ;; 2011/03/04 dadams
 ;;     bmkp-bookmark-description, bmkp-describe-bookmark: Added clickable thumbnail to the help.
 ;;     bmkp-bookmark-description: Split file name into dir & relname, so shorter line, in help.

@@ -87,6 +87,7 @@ MS Tips and Tricks:
 * WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
 * w32-toggle-lock-key function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
+* WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
 
 MS applications:
 

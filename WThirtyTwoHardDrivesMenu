@@ -1,0 +1,26 @@
+<nowiki>HardDrivesMenu</nowiki> is a command-line program which shows windows GUI <nowiki>ListBox</nowiki> menu with all available local drives, and then returns name of selected drive or otherwise nothing.
+
+To get usage information: <nowiki>HardDrivesMenu.exe</nowiki> -h
+
+This program can be used as a part of extensions for Emacs dired mode. It will keep you informed of all available local drives, so you can easily dired them.
+
+Following key-binding definition (Alt-F1) gives you such possibility:
+<pre>
+(require 'dired)
+
+(define-key dired-mode-map [M-f1] (lambda () 
+  "Shows hard-drives listing menu and lets user to select one of them. Opens selected drive in dired."
+  (interactive)
+  (let ((drive-name ""))
+    (with-temp-buffer
+      (call-process "C:\\PROGRA~1\\GnuWin32\\bin\\HardDrivesMenu.exe" nil t)
+      (setq drive-name 
+            (buffer-substring (point-min) (point-max))))
+    (if (not (string= drive-name ""))
+      (find-alternate-file drive-name)))))
+</pre>
+where <nowiki>"C:\\PROGRA~1\\GnuWin32\\bin\\HardDrivesMenu.exe" is a full path to "HardDrivesMenu.exe"</nowiki> on your computer.
+
+It should be placed in "~/.emacs" file.
+
+Zip archive with binary and source can be downloaded from the http://www.mobilave.sx33.net/HardDrivesMenu.zip

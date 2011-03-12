@@ -1,27 +1,41 @@
 Sorting words in a [[region]] can be done with:
 
-  (defun sort-words (reverse beg end)
-    "Sort words in region alphabetically, in REVERSE if negative.
-  Prefixed with negative \\[universal-argument], sorts in reverse.
-  
-  The variable `sort-fold-case' determines whether alphabetic case
-  affects the sort order.
-  
-  See `sort-regexp-fields'."
-    (interactive "P\nr")
-    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
+    (defun sort-words (reverse beg end)
+      "Sort words in region alphabetically, in REVERSE if negative.
+    Prefixed with negative \\[universal-argument], sorts in reverse.
 
-Running `M-x sort-words' on:
+    The variable `sort-fold-case' determines whether alphabetic case
+    affects the sort order.
 
-  first, second, third - last.
+    See `sort-regexp-fields'."
+      (interactive "*P\nr")
+      (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 
-produces:
+Run it with `M-x sort-words':
 
-  first, last, second - third.
+    first, second, third - last.
 
-and reversing the order can be done with `C-u M-x sort-words':
+This produces:
 
-  third, second, last - first.
+    first, last, second - third.
+
+Reversing the order can be done with `C-u M-x sort-words':
+
+    third, second, last - first.
+
+**Sorting symbols**
+
+Symbols are like words, but include additional characters:
+
+    (defun sort-symbols (reverse beg end)
+      "Sort symbols in region alphabetically, in REVERSE if negative.
+    See `sort-words'."
+      (interactive "*P\nr")
+      (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
+
+The symbol constituents vary with the language. In Lisp code, the characters ##$&*+-_<>'## are all part of a symbol, while in standard C, the only non-word character is ##_##.
+
+**See also**
 
 See ReverseWords for reversing the order of words as they appear, regardless of lexographical information.
 

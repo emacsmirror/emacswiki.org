@@ -1,0 +1,11 @@
+*JOVE* (Jonathan's Own Version of Emacs) is an open-source ErsatzEmacs implementation. 
+
+*JOVE* is primarily intended for Unix-like operating systems, but also supports MS-DOS and Microsoft Windows.  *JOVE* was inspired by GoslingEmacs but is much smaller and simpler, lacking any form of LISP or other extension language.  It was originally created in 1983 by Jonathan Payne while at Lincoln-Sudbury Regional High School in Massachusetts, USA on a PDP-11 minicomputer.  *JOVE* was distributed with several releases of BSD Unix, including 2.9BSD, 4.3BSD-Reno and 4.4BSD-Lite2.
+
+In 1990 while working at Sun Microsystems JonathanPayne wrote a series of articles on the comp.editors and comp.emacs newsgroups explaining the benefits of using a "Buffer Gap" technique in the implementation of a text editor.
+[http://vmlinux.org/jocke/editor/txt/buffer-gap.txt]
+However *JOVE* still uses a linked-list of pointers to lines of text (stored in a temporary file) with a maximum line length set at compile time.
+
+*JOVE* is currently maintained by Hugh Redelmeier:
+
+* [ftp://ftp.cs.toronto.edu/cs/ftp/pub/hugh/jove-dev/ FTP site for the development version of JOVE]

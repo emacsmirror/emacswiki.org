@@ -67,25 +67,29 @@ I have a need for something simpler than this. I would like to have Emacs record
 -- MaDa
 
 [new:Anonymous:2011-02-13 22:46 UTC]
-: This is almost exactly [http://xahlee.org/emacs/command-frequency.el command-frequency]. To get it to display the current bindings, eval the following:
-                
-    (put 'command-frequency 'interactive-form
-         '(interactive
-           (list nil
-                 (cond
-                      ((not current-prefix-arg) nil)
-                      ((> (prefix-numeric-value current-prefix-arg) 0))
-                      (t 'no-sort))
-                 nil
-                 (lambda (num-calls percent-calls cmd)
-                   (format "%6d  %5.2f  %-35s  %s\n"
-                           num-calls percent-calls cmd
-                           (mapconcat
-                            'key-description
-                            (where-is-internal cmd overriding-local-map)
-                            ", "))))))
+: This is almost exactly [http://xahlee.org/emacs/command-frequency.el command-frequency]. To get it to display the binds for each command, eval the following:
 
-: Also, in command-frequency.el, change the line
+      (put 'command-frequency 'interactive-form
+            '(interactive
+              (list
+               (if current-prefix-arg t "")
+               nil
+               (when current-prefix-arg (prefix-numeric-value current-prefix-arg))
+               (lambda (num-calls percent-calls cmd)
+                 (let ((bind-list (mapconcat
+                                   'key-description
+                                   ;; delete the boring menu binds
+                                   (delete-if (apply-partially 'some ''symbolp)
+                                              (where-is-internal
+                                               cmd
+                                               overriding-local-map))
+                                   ", ")))
+                   (if bind-list
+                       (format "%6d  %5.2f  %-35s  %s\n"
+                                num-calls percent-calls cmd bind-list)
+                     ""))))))
+
+: This code just specifies the fourth argument for interactive calls. A fair number of commands don't get their binds listed, and I believe it's simply because the keymaps to which they belong are bound (or brought into effect, in the case of mode maps) on the fly, so this can't really be fixed. Also, in command-frequency.el, change the line
 
       (message (prin1-to-string l))
 

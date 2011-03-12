@@ -114,6 +114,7 @@ Also returns nil if pid is nil."
 
 If anyone has a more robust implementation of `emacs-process-p,' feel free to provide it.
 
+[new]
 I implemented `emacs-process-p' by following way, it could work on both Windows and Linux.
 
 {{{
@@ -128,6 +129,14 @@ Also returns nil if pid is nil."
       (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
 
 }}}
+
+[new:PhilHudson:2011-03-11 22:46 UTC]
+I think the original function contains an error. Should it not end something like:
+{{{
+          (when (search-forward "emacs" nil t)
+            pid))))))
+}}}
+
 
 == Minimal Setup ==
 

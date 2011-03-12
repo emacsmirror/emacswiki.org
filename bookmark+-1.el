@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Mar  5 00:22:19 2011 (-0800)
+;; Last-Updated: Fri Mar 11 06:26:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1056
+;;     Update #: 1058
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -6806,7 +6806,9 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
   ;; For older Emacs versions you can bind the wheel event to `bmkp-next-bookmark-this-buffer'
   ;; in the global map.  IOW, prior to Emacs 23.3 a mouse event won't work with `repeat'.
-  (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 2)))
+  (when (and (boundp 'mouse-wheel-up-event)
+             (or (> emacs-major-version 23)
+                 (and (= emacs-major-version 23) (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-up-event))
       'bmkp-next-bookmark-this-buffer-repeat))
   (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-buffer-repeat)
@@ -6816,7 +6818,9 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
   ;; For older Emacs versions you can bind the wheel event to `bmkp-previous-bookmark-this-buffer'
   ;; in the global map.  IOW, prior to Emacs 23.3 a mouse event won't work with `repeat'.
-  (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 2)))
+  (when (and (boundp 'mouse-wheel-down-event)
+             (or (> emacs-major-version 23)
+                 (and (= emacs-major-version 23) (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-down-event))
       'bmkp-previous-bookmark-this-buffer-repeat))
   (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat)

@@ -18,7 +18,7 @@ The approach can be summed up in two points:
 
 But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page provides code which improves on Emacs' auto-indenting: whenever you press the ##<tab>## key, the appropriate amount of tabs and spaces is inserted.
 
-You can still use all spaces if you prefer, of course. The following code merely ensures that ''if'' you enable tabs (maybe when maintaining legacy code), they are inserted in a tab size-independent, semantic way.
+You can still use all spaces if you prefer, of course. The following code merely ensures that ''if'' you enable tabs (maybe when maintaining legacy code), they are inserted in a semantic, size-independent way.
 
 [:Implementations]
 == Code ==
