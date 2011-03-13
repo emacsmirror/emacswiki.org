@@ -645,7 +645,7 @@ I played around a little and made a command for incrementing/decrementing the ta
               (or tab-width 8)
               increment))
 
-By the way, since the arrow keys on my keyboard are broken after too much gaming, I want to use ##C-p## and ##C-n## to go "up" and "down". I tried to customize ##doremi-up-key## to ##C-p##. While it shows up in the prompt, it doesn't work. -- MariusAndersen
+By the way, since the arrow keys on my keyboard are broken after too much gaming, I want to use ##C-p## and ##C-n## to go "up" and "down". I tried to customize ##doremi-up-key## to ##C-p##. While it shows up in the prompt, it doesn't work.
 
 [:doremi-tab-width]
 [new:DrewAdams:2009-06-19 15:39 UTC]
@@ -666,7 +666,7 @@ Yes, that's the idea (I had forgotten I'd defined `doremi-limit'). Just bind the
 That should work for you. Or if you want to customize the keys, so they are the same everywhere, then customize them to `##?\C-p##', `##?\C-n##', etc. However, try the latest <tt>[[doremi.el]]</tt> -- there was a bug in the [[Customize]] type expected. It was expecting a [[symbol]] only, not a character or a symbol. Should be OK now; let me know, if not. -- DrewAdams
 
 [new]
-That works, thank you for the help! This is a very useful tool when dealing with weirdly formatted files. -- MariusAndersen
+That works, thank you for the help! This is a very useful tool when dealing with weirdly formatted files.
 
 
 

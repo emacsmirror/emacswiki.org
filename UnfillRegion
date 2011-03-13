@@ -11,7 +11,7 @@ Unfilling a region joins all the lines in a paragraph into a single line for eac
 For those that needs those functions, they are in the file ##util/ourcomments-util.el## in [NxhtmlMode nXhtml]. You can grab that file from the repository if you like. (But I think the functions should be in Emacs so we do not have to reinvent them so often as we do now ...)
 
 [new]
-I do this all the time with the cumbersome ##C-x f 999 M-q##. Thanks for the tip. :) --- MariusAndersen
+I do this all the time with the cumbersome ##C-x f 999 M-q##. Thanks for the tip.
 
 [new]
 Perhaps you meant `C-x f 999 M-x fill-region'?  The ''unfill'' version of `M-q' is at UnfillParagraph. -- AaronHawley

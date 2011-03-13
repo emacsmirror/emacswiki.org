@@ -18,6 +18,7 @@ http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
 
 [new]
 **Newest features** (see [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html#latest changelog]):
+* A new library bibhlp.el to make it easy to handle bibliographic references in for example org-mode. Only in the repository yet. (Yes, it has nothing to do with web-development and it will move on later I hope... ;-)
 * Web download directly from Emacs (without bzr, instead using *web-vcs.el*, see above)
 * Support for the new JavaScriptMode mode in CVS Emacs (called js-mode, formerly known as Espresso mode).
 * Chunks in chunks

@@ -10,7 +10,8 @@ Welcome to the wiki. -- DrewAdams
 * [http://hudson-it.no-ip.biz Work blog]
 * GPG key ID: 0x887DCA63
 * Handles:
-** identi.ca: <nowiki>UWascalWabbit</nowiki>
+** identi.ca: !DubFish
+*** Twitter (linked to identi.ca): @!UWascalWabbit
 ** Google Groups: Etrigan
 
 == Modes/features/extensions I use: ==
@@ -45,7 +46,7 @@ Welcome to the wiki. -- DrewAdams
 * [[Anything]]
 * [[Registers]]
 * [[Narrowing]]
-
+* [[Themes]] as a [EmacsWiki:id=CustomizeByPlatform workaround] for host- and OS-specific customization
 
 == Probably never going to learn/master/enable: ==
 

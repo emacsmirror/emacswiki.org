@@ -10,6 +10,31 @@ The echo area is also used for other informative messages -- those displayed by 
 
 Is there a way to clear the echo area of echoed keystrokes when a command is finished? -- VegardOye
 
+== Filtering messages ==
+The echo area can be useful, but sometimes messages are displayed there with overwhelming frequency. This is particularly frustrating when it happens often enough to interrupt typing into the minibuffer.
+
+Here is a hack to allowing filtering certain messages so that they go to the MessagesBuffer (`*Messages*'), but not to the echo area:
+
+{{{
+;; filter annoying messages
+(defvar message-filter-regexp-list '("^Starting new Ispell process \\[.+\\] \\.\\.\\.$"
+                                     "^Ispell process killed$")
+  "filter formatted message string to remove noisy messages")
+(defadvice message (around message-filter-by-regexp activate)
+  (if (not (ad-get-arg 0))
+      ad-do-it
+    (let ((formatted-string (apply 'format (ad-get-args 0))))
+      (if (and (stringp formatted-string)
+               (some (lambda (re) (string-match re formatted-string)) message-filter-regexp-list))
+          (save-excursion
+            (set-buffer "*Messages*")
+            (goto-char (point-max))
+            (insert formatted-string "\n"))
+        (progn
+          (ad-set-args 0 `("%s" ,formatted-string))
+          ad-do-it)))))
+}}}
+
 ----
 CategoryCommands
 CategoryDisplay

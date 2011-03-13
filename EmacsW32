@@ -19,7 +19,7 @@ http://ourcomments.org/Emacs/EmacsW32.html'''.
 Go to the download page http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl or CategoryWThirtyTwo.
 
 === 2006-12-15 Nxhtml/Nxml Modes Included ===
-NxhtmlMode and NxmlMode are distributed together with %%EmacsW32%% from %%EmacsW32%% version 1.18.
+NxhtmlMode (and previously also NxmlMode, but this is now in Emacs itself) are distributed together with %%EmacsW32%% from %%EmacsW32%% version 1.18.
 
 === 2006-11-30 Unix Programs Included ===
 From %%EmacsW32%% version 1.14 it includes the unix programs most commonly used by Emacs.

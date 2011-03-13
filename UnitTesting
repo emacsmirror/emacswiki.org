@@ -24,7 +24,7 @@ The following unit test frameworks exist for Emacs Lisp.
 
 === Included with Emacs ===
 
-'''[ErtTestLibrary ert.el]''' (Elisp Regression Testing) by Christian M. Ohler is now included in Emacs trunk. It can also be retrieved from its [http://github.com/ohler/ert old repository]. The framework provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively.
+'''[ErtTestLibrary ert.el]''' (Elisp Regression Testing) by Christian M. Ohler is now included in Emacs [BzrForEmacsCasualDevs trunk]. It can also be retrieved from its [http://github.com/ohler/ert old repository]. The framework provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively.
 
 === xUnit-like ===
 

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 358 $
+;; RCS Version: $Rev: 359 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 358 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 359 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1589,7 +1589,7 @@ automatically:
   displays the contents of that directory in the passive pane."
   (interactive "p")
   (let ((order (or order 0))
-        (path (expand-file-name (dired-default-directory)))
+        (path (expand-file-name (dired-current-directory)))
         (pos 0) (projections (list)) candidate)
     (setq path (replace-regexp-in-string "^/\\|/$" "" path))
     (if (< 0 (length path))
@@ -1933,7 +1933,7 @@ automatically:
           (overlay nil))
       (while next
         (beginning-of-line)
-        (setq overlay (make-overlay (1+ (point)) (- next 1)))
+        (setq overlay (make-overlay (+ 2 (point)) next))
         (setq attr-list (cons overlay attr-list))
         (overlay-put overlay 'invisible t)
         (overlay-put overlay 'intangible t)

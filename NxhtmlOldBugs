@@ -1116,30 +1116,6 @@ It should not be very hard to do it.
 And please contribute what you write back to us all!
 
 
-==== Documentation look-up ====
-
-As you asked for over at LookUpHTMLDoc, I rewrote some of the functions in ##xhtml-help.el##. Any chance they'll be included in a future release?
-
-[new]
-Ah, yes of course!
-I have been quite busy looking at a core Emacs bug (3467) and forgot this.
-I will have a look at it as soon as I can.
-However it would be very good if you could sign papers for Emacs in case this code will be transformed there some day in the future.
-What do you think about that?
-
-[new]
-I am not sure I understand what you mean by "signing papers". If it's about code rights, then everything posted on !EmacsWiki is licensed under version 2 of the GNU General Public License.
-
-[new]
-I think that this is not enough for Emacs. But I wonder where I can show you some more information about that to show you.
-Anyway I can include your changes in nXhtml, but for the future it would be good to have your name.
-Is that a problem for you currently?
-
-[new]
-No, by no means. I just hadn't got around to make a user page yet. -- MariusAndersen
-
-[new]
-Unfortunately Marius had to withdraw his suggestion.
 
 ==== Error if xhtml-loader.rnc is read-only ====
 Nxhtml throws an error when xhtml-loader.rnc is read-only, however, please remember that elisp files are usually read-only when a root user installs them on multi-user systems (like Un*x).
