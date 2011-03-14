@@ -18,6 +18,8 @@ However, redo.el is out-of-date and often destroys the contents of buffer becaus
 Note: it also seems to be available already in xemacs, at least for me.
 --gambarimasu who is at gmail
 
+If you're going to use Redo, you should also check UndoTree, which can do what Redo does, and more. --glasserc
+
 Note: i have long found that redo can often corrupt the buffer and
 your only recourse is to kill the buffer, or diff with backups.  it would
 be great if there were a redo without this bug.  maybe undo-browse.el?

@@ -47,6 +47,47 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 
 
 
+
+[:FileIciclesMenu]
+=== File Menu: Icicles Submenu ===
+: [[image:drew-icicles-File-submenu]]
+
+'''Icicles''' augments the standard '''File''' menu, adding an '''Icicles''' submenu that provides [[multi-command]]s and specialized [[Dired]] commands.
+
+
+
+
+
+[:EditIciclesMenu]
+=== Edit Menu: Icicles Submenu ===
+: [[image:drew-icicles-Edit-submenu]]
+
+'''Icicles''' augments the standard '''Edit''' menu, adding an '''Icicles''' submenu.
+
+
+
+
+
+[:BookmarksIciclesMenu]
+=== Bookmarks Menu: Icicles Submenu ===
+: [[image:drew-icicles-Bookmarks-submenu]]
+
+'''Icicles''' augments the standard '''Bookmarks''' menu (typically a submenu of the '''Edit''' menu), adding an '''Icicles''' submenu that provides [[multi-command]]s for navigating to and among different kinds of bookmarks.  Many of these menu items require you to also use '''[[Bookmark+]]'''.
+
+
+
+
+[:SearchIciclesMenu]
+=== Search Menu: Icicles Submenu ===
+: [[image:drew-icicles-Search-submenu]]
+
+'''Icicles''' augments the standard '''Search''' menu (typically a submenu of the '''Edit''' menu), adding an '''Icicles''' submenu that provides [[multi-command]]s for searching files and [[buffer]]s in various ways. 
+
+
+
+
+
+
 [:OptionsAndCustomizeIciclesMenus]
 [:OptionsIciclesMenu]
 === Options Menu: Icicles Submenu ===
@@ -60,6 +101,28 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 : [[image:DrewsEmacsIciclesOptionsCustomizeMenu]]
 
 '''Icicles''' also adds an '''Icicles''' submenu to the '''Customize Emacs''' submenu of menu '''Options''', with operations for customizing anything.  See [[Icicles - Customization and General Tips]].
+
+
+
+
+
+[:FramesIciclesMenu]
+=== Frames Menu: Icicles Submenu ===
+: [[image:drew-icicles-Frames-submenu]]
+
+If you use library <tt>[[menu-bar+.el]]</tt> then you have a '''Frames''' menubar menu.  '''Icicles''' augments this menu, adding an '''Icicles''' submenu that provides [[multi-command]]s affecting [[frame]]s.  If you do not use library ##menu-bar+.el## then the same menu items are added to the main '''Icicles''' menu.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 [:CustomizeIciclesKeys]

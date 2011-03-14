@@ -177,7 +177,9 @@ I am rather unfamiliar with lisp and the EMACS internals and the statement "Down
 }}}
 
 I wish the instructions were a bit clearer..
+[new] You and me both X(
 
+[new] How is one supposed to customize the colours of syntax colouring? Yes, I know "M-x customize-group RET mumamo RET". But which fecking value? customize-face doesn't seem appropriate, since the current face is mumamo-somehting-background.
 
 ----
 See also MultipleModes MuMaMo CategoryHypermedia HtmlMode

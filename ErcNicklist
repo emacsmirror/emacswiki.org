@@ -1,3 +1,4 @@
+[[es:Español]]
 See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-nicklist.el.
 
 To display channel nicknames in a side buffer, just add the following to your .emacs or ERC configuration file:
