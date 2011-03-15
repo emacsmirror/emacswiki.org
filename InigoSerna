@@ -1,0 +1,23 @@
+Hi, 
+
+
+== About me ==
+my name is Iñigo Serna, been a happy GNU Emacs user since many-many years ago.
+
+I use emacs to do all file editing, programming, and some agenda handling.
+
+
+[new:DrewAdams:2011-03-14 15:01 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+== elisp code I've written ==
+* [[DevelNotes]]: add annotations to sources and track them in an org file.
+
+
+== my init-file ==
+Maybe someday I'll clean and could show it...
+
+
+----
+CategoryHomepage

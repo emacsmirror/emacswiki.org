@@ -9,6 +9,13 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 ----
+== Now the NxhtmlMode page is empty ==
+
+Why?
+[new]
+Removing the "<nowiki>X)</nowiki>" emoticon from the page fixed it.  Didn't look into it any further. -- AaronHawley
+
+
 == Why is Sacha Chua's page empty? ==
 
 Why is the page SachaChua currently empty?

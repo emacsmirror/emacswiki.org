@@ -40,7 +40,8 @@ Click the heading to search for all pages related to manipulating files and dire
 * Image directories with thumbnails
 ** ThumbsMode
 ** [[Tumme]]
-* LsLisp -- `ls' implemented in Emacs Lisp* [[Nav]] -- a lightweight solution for Emacs users who want something like TextMate's file browser, or the Eclipse project view [http://code.google.com/p/emacs-nav/]
+* LsLisp -- `ls' implemented in Emacs Lisp
+* [[Nav]] -- a lightweight solution for Emacs users who want something like TextMate's file browser, or the Eclipse project view [http://code.google.com/p/emacs-nav/]
 * Norton Commander and Midnight Commander clones written for emacs:
 ** MidnightCommanderMode
 ** NortonCommanderMode

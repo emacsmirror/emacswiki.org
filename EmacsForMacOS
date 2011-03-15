@@ -269,7 +269,7 @@ result of the command forward-word (M-f). To actually get forward-sexp I must "h
 : iTerm sends C-M-keys and mouse events.  Remote emacsen run for months via iTerm + ssh + [[screen]].
 Any volunteers to hack C-M- and mouse input into Terminal.app with GDB and Objective-C?
 
-See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html http://www.profi-fachuebersetzung.de 
+See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html
  blog post] for swapping the cmd and meta key. Also, if you want to retain one of the Option key functions as modifier for national characters, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this] page for iTerm patch and/or binary. [http://www.uebersetzung-deutsch-englisch.com Übersetzung Englisch Deutsch]
 
 [new]
@@ -319,4 +319,4 @@ $ mv nextstep/Emacs.app /Applications
 Source: http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
 My recommendation for other how-to questions [http://www.mac-how.net Mac How]
 ------
-CategoryPorts CategoryBuilding
+CategoryPorts CategoryBuilding 

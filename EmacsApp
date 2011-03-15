@@ -11,6 +11,16 @@ Build from source:
 Emacs.app is the result of building Emacs with support for the !NeXTstep / !OpenStep / Cocoa API family. [http://lists.gnu.org/archive/html/emacs-devel/2005-09/msg00634.html]
 It will run on Mac OS 10.3 and later as well as [http://gnustep.org/ GNUstep], the free implementation of !OpenStep for GNU/Linux, Windows, Darwin, the free BSDs, and other unix platforms.
 
+For emacs 24 (pulled directly from bzr), I use
+
+   $ CC='gcc -arch i386' ./configure --with-ns --without-dbus
+   $ make
+   $ make install
+
+   Next, copy nextstep/Emacs.app to target location.
+
+NOTE:  I found I needed to add "--without-dbus" to allow emacs 24 to compile without error.
+
 Install via macports:
 
 {{{
