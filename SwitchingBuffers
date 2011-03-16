@@ -202,5 +202,8 @@ And with a positive prefix arg (e.g. `C-u C-x b'), only buffers visiting files a
 
 [new]
 Thanks for the answer. Just for the record - there is a small package that allows to do that without icicles - [[flobl.el]]. Very handy. -- Konsy
+
+[new:AlpAker:2011-03-16 01:29 UTC]]
+This functionality is also provided by the [[Locales]] package.
 ----
 CategoryBufferSwitching

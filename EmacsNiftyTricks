@@ -195,7 +195,7 @@ See also GnusNiftyTricks
 
 * Search Google and Wikipedia with BrowseAproposURL. 
 * [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
-* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] [broken link 2010-08-10] -- DanielJanus
+* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] [broken link 2010-08-10] -- DanielJanus (Try [http://korpus.pl/~nathell/blog/ the blog] or [http://blog.danieljanus.pl/fighting-procrastination.html this mirror].)
 
 [:Development]
 [:Programming]

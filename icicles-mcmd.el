@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  4 10:12:18 2011 (-0800)
+;; Last-Updated: Tue Mar 15 14:27:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16776
+;;     Update #: 16798
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4791,6 +4791,27 @@ See standard Emacs library `image-dired.el' for more information about
              ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
              (inode           (nth 10 attrs))
              (device          (nth 11 attrs))
+             (thumb-string    (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+                                   (if (fboundp 'string-match-p)
+                                       (string-match-p (image-file-name-regexp) filename)
+                                     (save-match-data
+                                       (string-match (image-file-name-regexp) filename)))
+                                   (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+                                   (require 'image-dired nil t)
+                                   (image-dired-get-thumbnail-image filename)
+                                   (apply #'propertize "XXXX"
+                                          `(display ,(append (image-dired-get-thumbnail-image filename)
+                                                             '(:margin 10))
+                                            rear-nonsticky (display)
+                                            mouse-face highlight
+                                            follow-link t
+                                            help-echo "`mouse-2' or `RET': Show full image"
+                                            keymap
+                                            (keymap
+                                             (mouse-2 . (lambda (e) (interactive "e")
+                                                                (find-file ,filename)))
+                                             (13 . (lambda () (interactive)
+                                                           (find-file ,filename))))))))
              (image-info      (and (require 'image-dired nil t)
                                    (fboundp 'image-file-name-regexp)
                                    (if (fboundp 'string-match-p)
@@ -4827,6 +4848,12 @@ See standard Emacs library `image-dired.el' for more information about
                (format "Device number:              %s\n" device)
                image-info)))
         (with-output-to-temp-buffer "*Help*" (princ help-text))
+        (when thumb-string
+          (with-current-buffer "*Help*"
+            (save-excursion
+              (goto-char (point-min))
+              (let ((buffer-read-only  nil))
+                (when (re-search-forward "Device number:.+\n" nil t) (insert thumb-string))))))
         help-text))))                   ; Return displayed text.
 
 ;; This is the same as `help-all-exif-data' in `help-fns+.el', but we avoid requiring that library.

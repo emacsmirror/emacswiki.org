@@ -51,5 +51,8 @@ I really should try out EmacsAsDaemon.  In any case, the fix you propose was the
 
 Unfortunately that doesn't work for me either. You see, define-minor-mode is run at load time, so emacs --daemon fails to run also when you throw an error from inside there. Of course removing the <code>(error ...)</code> sexp in line 344 makes it work again.
 
+[new:AlpAker:2011-03-16 02:06 UTC]
+
+That surprises me.  <tt>define-minor-mode</tt> is a macro, so when it's run it shouldn't evaluate the forms that become the body of the defined mode command.  It looks like I'll have to experiment with running Emacs as a daemon.  I'll let you know what I figure out.  In the meantime, I appreciate all the feedback. --AA
 ----
 CategoryFilling

@@ -1,7 +1,7 @@
 == Jeremy Rayman ==
-* Author of [[RainbowDelimiters]] (Lisp:rainbow-delimiters.el), which adds features to [http://dishevelled.net/elisp/rainbow-parens.el rainbow-parens.el].
+* Author of [[RainbowDelimiters]] (Lisp:rainbow-delimiters.el), which colorizes paren, bracket, and brace pairs according to their nested depth.
 
-* jeremy dot rayman dot public @ gmail.com
+* jeremy (dot) rayman (at) gmail.com
 
 
 

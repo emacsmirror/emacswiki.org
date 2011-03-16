@@ -1,0 +1,66 @@
+Many Emacs users like to use different frames for different projects, in which case it is convenient for the buffer menu to accomodate such functional grouping of buffers.  Versions of this functionality have been implemented in various packages such as [[flobl.el]] and DrewAdams's magisterial [[Icicles]]; the recently added option <i>Buffer-menu-use-frame-buffer-list</i> is useful in this regard as well.  These solutions typically privilege the buffers associated with the selected frame by placing those buffers at the top of the buffer list or by restricting the buffer list to buffers selected on the current frame.  
+
+The package [[locales.el]] (by AlpAker) generalizes these abilities.  The primary differences between it and the previous mentioned methods are:
+
+* When locales mode is enabled, the buffer menu can be toggled between two modes:  a "local" mode in which only buffers associated with the current frame are shown and a "global" mode in which all buffers are shown, with an extra indicator bit on each line to distinguish the local buffers.  (See below for screenshots illustrating the two modes.)
+
+* Since the local buffers are not distinguished by position in the buffer list, but by an indicator bit, the distinction between local and non-local buffers is meaningful even when the buffer list is sorted by buffer size, buffer name, or the like.
+
+* The above mentioned methods automatically consider a buffer to be local to a frame if it has been selected on the frame.  Locales allows further control of the association between buffers and frames.  The user can manually add and remove buffers from the local buffer list.  In addition, the criteria for automatic inclusion on the local buffer list can be customized.  For example, if the user would like a frame's local buffer list to include buffers that have been merely <i>displayed</i> on the  frame (rather than selected), Locales can accomodate that preference.
+
+* Locales makes the proper adjustment to the behavior of <i>other-buffer</i>, so that when Emacs automatically selects a buffer to display it prefers frame-local buffers.  Additionally, it respects any re-ordering of buffers that results from calls to <i>bury-buffer</i>.
+
+==New Functions in the Buffer Menu==
+
+All functions of the normal buffer menu remain available.  In addition, the buffer menu can be toggled between two modes.  In local mode, only buffers associated with the selected frame are shown.  In global mode, all buffers are shown, with the local buffers distinguished by an 'o' on their respectives lines.  Here are screenshots of the two modes:
+
+|| [[image:LocalesLocalMode]] || [[image:LocalesGlobalMode]] ||
+|| Buffer menu in local mode, sorted by buffer size. || Buffer menu in global mode, sorted by buffer size.  Note the fourth `L' column indicating the buffers local to this frame. ||
+
+The buffer menu can be toggled between the two modes by typing `a' .  In addition, the user can edit the local buffer list from within the buffer menu:
+
+* By typing `+' a file can be marked as to be added to the local buffer list.
+* By typing `-' a file can be marked as to be removed from the local buffer list.
+
+As with other actions in the buffer menu, these changes take effect when buffer-menu-execute is called.  (NB: They are also executed when toggling between local and global modes.)  When a buffer is made non-local, it is removed from any windows on the current frame displaying it and replaced with another frame-local buffer.
+
+Whether the buffer menu opens in local or global mode can be controlled via the variable <i>locales-open-in-global-mode</i>.  The character used to indicate frame-local buffers can be controlled via the variable <i>locales-local-bit</i>. (In addition, the appearance of the buffer menu can be controlled by the same variables that control the default buffer menu.  See the documentation of the command <i>locales-buffer-menu</i> for a list.)
+
+==New Functions outside the Buffer Menu==
+
+Buffers can also be made non-local outside the buffer menu.  The command <i>locales-make-non-local</i> can  be called interactively to remove a buffer from the  local buffer list; when called with no argument, it acts on the  current buffer.  
+
+==Controlling which Buffers Belong to the Local Buffer List==
+
+Packages that associate buffers with a frame typically use a single criterion:  If a buffer has been selected on a frame, it is considered to belong to that frame.  Locales allows for somewhat more flexibility in this regard.  As already mentioned, it allows the user manually to add and remove buffers from the local buffer list.  In addition, it allows some flexibility in automatic control over the buffer list, via the following variables:
+
+* If <i>locales-include-displayed-buffers</i> is non-nil, then buffers that are merely <i>displayed</i> on a frame are considered to be local to the frame, even if they have not been selected.
+* If <i>locales-include-scratch</i> is non-nil, then the scratch buffer is always added to the local buffer list. 
+* If the command that creates a new frame also creates new buffers, then one might want those buffers to count as local to the new frame.  If <i>locales-include-new-buffers</i> is non-nil, then such buffers are added to the new frame's local buffer list, even if they have not been selected or displayed.  (NB: This applies only to buffers that are created *after* the new frame is created.)
+*   If <i>locales-include-init-buffer</i> is non-nil, then the buffer that is current when the command creating a new frame is called (the init-buffer) will belong to the new frame.  If nil, it will not.  (NB: Other criteria take precedence over this variable.  If the init-buffer is selected after the new frame is created, then it will belong to the new frame.  Similarly, if <i>locales-include displayed-buffers</i> is non-nil and the init-buffer is displayed in some window when the frame-creating command terminates, then the init-buffer will belong to the new frame.)
+
+==Installation==
+
+See the `Installation' section at the top of  [[locales.el]].
+
+
+== Discussion ==
+
+[new:DrewAdams:2011-03-16 03:02 UTC]
+Good to see it!  Did you mean to leave ##(debug)## at the beginning of `locales-set-buffer-predicate'?  I also ran into these errors:
+
+* ##(void-variable locales-menu-files-only)## 
+
+* ##Symbol's function definition is void: copy-list## (need to require `cl' at runtime).
+
+* ##Error in post-command-hook: (wrong-type-argument frame-live-p #<dead frame *Backtrace* 0x33bb400>)##
+
+* An Emacs crash whenever I try `C-x C-b' (filed a bug)
+
+Have you tried to use Locales together with [[BufferMenuPlus]]?  I notice two default key-binding conflicts: `##+##' and `##-##', but perhaps otherwise they could work together -- dunno.  I tried briefly but ran into the problems above.  I could get past all but the crash (turned off the menu bar to get past the first one).  Perhaps the crash is due to trying to use them together -- dunno.  HTH.  -- DrewAdams
+
+[new:AlpAker:2011-03-16 07:01 UTC]
+
+Thanks for the quick feedback! I think I've fixed most of the problems.  (I don't want to require 'cl at runtime, but I only need a very simple version of copy-list, so I just defined an appropriate function in the package.)  However, I don't have a theory about what's causing the crash with ##C-x C-b##.  I'm going to have to look into that.   (Another problem that just occurred to me is that I've made no provision for when the user has ##pop-up-frames## set to ##t##.  That's going to require some work to accomodate.)
+
+Regarding BufferMenuPlus:  As it stands, the two packages aren't going to be compatible; there are various functions from buff-menu.el that we both redefine (e.g., ##list-buffers-no-select##).  I'll try to study your code over the next week or two and see what the best solution appears to be.   One possibility, just off the top of my head:  Locales is basically two libraries.  One part tracks which buffers are associated with which frames, and the other extends the buffer-menu to make use of that data.  It might make sense to split off the buffer-tracking functions as a separate library that could be used by other packages (like BufferMenuPlus) that extend the buffer menu's functionality.  These other packages could integrate the buffer-frame association data into the buffer menu as they wish.  The other part of Locales--the extensions to the buffer menu--would then be just another package extending the buffer menu.  Any thoughts you have here would definitely be appreciated. -- AlpAker

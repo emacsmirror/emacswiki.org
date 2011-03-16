@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar  6 18:40:24 2011 (-0800)
+;; Last-Updated: Tue Mar 15 11:39:08 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6144
+;;     Update #: 6146
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2204,6 +2204,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/03/15 dadams
+;;     icicle-describe-file: Added thumbnails for image files.
 ;; 2011/03/04 dadams
 ;;     icicle-remove-cand-from-lists, icicle-narrow-candidates-with-predicate:
 ;;       Corrected code for updating the predicate.
