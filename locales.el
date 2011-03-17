@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.75
+;; Version: 0.76
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -46,6 +46,18 @@
 ;; documentation string of the command `locales-buffer-menu' for a fuller
 ;; description of the new commands available in the buffer menu itself (or
 ;; see below under Usage).
+
+;; Caveats
+;; =======
+
+;; PLEASE NOTE:  Locales does not presently work if you have `pop-up-frames'
+;; set to non-nil.  Fixing that is on the todo list.
+
+;; PLEASE ALSO NOTE: Locales is a relatively new package (I've used it
+;; privately for some time, but have only recently cleaned it up for public
+;; distribution).  It's therefore likely to conflict with other extensions to
+;; the buffer-menu.  If you encounter any such problems, please send me a
+;; note so I can ensure compatibility.
 
 ;; Installation
 ;; ============
@@ -303,10 +315,11 @@ Do not set this variable directly.  Use the command
 (make-variable-buffer-local 'locales-menu-global)
 
 (defvar locales-version-23-24
-  (string-match "^2[34]" emacs-version))
+  (< 22 emacs-major-version))
 
 (defconst locales-buffer-menu-buffer-column 5)
 
+;; Shut up the compiler.
 (defvar locales-new-frame nil)
 (defvar locales-prev-buffers nil)
 (defvar locales-init-buffer nil)
@@ -383,7 +396,6 @@ local list can be controlled by the variables
         (global-set-key [(control ?x) (control ?b)] 'locales-list-buffers)
         (add-hook 'window-configuration-change-hook	'locales-window-change)
         (add-hook 'after-make-frame-functions 'locales-after-make-frame)
-        (add-hook 'delete-frame-functions 'locales-kill-dereferenced-menu-buffs)
         (run-hooks 'locales-mode-on-hook)
         (message "Per-frame buffer menus are enabled"))
     (dolist (frame (frame-list))
@@ -391,7 +403,6 @@ local list can be controlled by the variables
     (global-set-key [(control ?x) (control ?b)] 'list-buffers)
     (remove-hook 'window-configuration-change-hook 'locales-window-change)
     (remove-hook 'after-make-frame-functions 'locales-after-make-frame)
-    (remove-hook 'delete-frame-functions 'locales-kill-dereferenced-menu-buffs)
     (run-hooks 'locales-mode-off-hook)
     (message "Per-frame buffer menus are disabled"))
   (run-hooks 'locales-mode-hook))
@@ -468,25 +479,6 @@ local list can be controlled by the variables
   (set-frame-parameter frame 'locales-saved-buffer-predicate nil)
   (set-frame-parameter frame 'locales-buffer-menu-buffer nil)
   (set-frame-parameter frame 'locales-buffer-list nil))
-
-;; Called by delete-frame-functions.  Kills any buffer-menu buffer that is
-;; not associated with a frame.
-(defun locales-kill-dereferenced-menu-buffs (frame)
-  ;; The hook might call us before FRAME is deleted, in which case kill the
-  ;; local buffer menu if it still exists.
-  (if (and (frame-live-p frame)
-           (buffer-live-p (frame-parameter frame 'locales-buffer-menu-buffer)))
-        (kill-buffer (frame-parameter frame 'locales-buffer-menu-buffer))
-    ;; If the hook calls us after FRAME is deleted, look for any dereferenced
-    ;; buffer menu buffers and kill them.
-    (dolist (buf (buffer-list))
-      (when (string-match "^\\*Buffer List\\*" (buffer-name buf))
-        (unless (catch 'referenced
-                  (dolist (frame (frame-list))
-                    (when (eq buf (frame-parameter frame
-                                                   'locales-buffer-menu-buffer))
-                      (throw 'referenced t))))
-          (kill-buffer buf))))))
 
 ;;; Local Buffer List Maintenance and Manipulation
 

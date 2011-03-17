@@ -2,7 +2,9 @@ Emacs conveniently allows one to work on different parts of the same buffer at t
 
 In some cases, as when another Lisp program wants to move point in a buffer and then display that buffer in a window, it makes sense for Rebound not to position point in that window.  (For example, when looking up a function definition via `describe-function', point is moved to the function definition before the library that defines the function is displayed; we then don't want to move point away from the definition when the library is displayed.)  The package is reasonably intelligent in identifying situations in which it should defer to other Lisp programs.  It also provides a hook so that the user can define other types of exception.
 
-----
+==Discussion==
+
+===Rebound and Winpoint===
 [new]
 Do you know about winpoint.el? How does rebound.el compare to winpoint.el? -- LennartBorgman
 
@@ -30,7 +32,7 @@ I agree, of course, that using hooks is preferable to advising primitives.  Howe
 
 Even better would be to record independent window-point values at the level of C code.  In fact, from my limited perusal of the C code, something close to the necessary data structures seem to be already in place, so it wouldn't be a very hard change to implement.   -AA
 
-----
+===Rebound and Indirect Buffers===
 
 
 [new:TN:2011-03-10 08:41 UTC]

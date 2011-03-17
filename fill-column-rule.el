@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.22
+;; Version: 0.23
 ;; Keywords: convenience, tools
 
 ;; This program is free software; you can redistribute it and/or
@@ -317,13 +317,13 @@ unexpected behavior, see the comments in fill-column-rule.el."
             (add-hook 'after-change-functions 'fcr-after-change-function nil t)
             (ad-enable-regexp "fill-column-rule")
             (ad-activate-regexp "fill-column-rule")
+            ;; These are for the hscroll hack.
+            (add-hook 'post-command-hook 'fcr-post-command-check nil t)
+            (add-hook 'window-scroll-functions 'fcr-window-scroll-check nil t)
             ;; In case we were already in fcr-mode and are resetting the
             ;; rule, clear out any existing overlays.
             (fcr-delete-overlays-buffer)
-            (fcr-put-overlays-buffer)
-            ;; These are for the hscroll hack.
-            (add-hook 'post-command-hook 'fcr-post-command-check nil t)
-            (add-hook 'window-scroll-functions 'fcr-window-scroll-check nil t))
+            (fcr-put-overlays-buffer))
 
         ;; Disabling
         (if fcr-prior-display-table
@@ -337,10 +337,14 @@ unexpected behavior, see the comments in fill-column-rule.el."
                 fcr-saved-line-move-visual nil))
         (remove-hook 'after-change-functions 'fcr-after-change-function t)
         (ad-disable-regexp "fill-column-rule")
-        (ad-activate-regexp "fill-column-rule")
-        (fcr-delete-overlays-buffer)
+        (ad-activate 'lisp-fill-paragraph)
+        (ad-activate 'ada-fill-comment-paragraph)
+        (ad-activate 'delphi-fill-comment)
+        (ad-activate 'idlwave-indent-line)
+        (ad-activate 'set-fill-column)
         (remove-hook 'post-command-hook 'fcr-post-command-check  t)
-        (remove-hook 'window-scroll-functions 'fcr-window-scroll-check  t))
+        (remove-hook 'window-scroll-functions 'fcr-window-scroll-check  t)
+        (fcr-delete-overlays-buffer))
     (error "Fill-column-rule does not work on character terminals")))
 
 ;;; Initialization
@@ -422,7 +426,7 @@ unexpected behavior, see the comments in fill-column-rule.el."
    ;; required.  Motivation: at the beginning of a line,
    ;; insert-before-markers will grab the end marker of the overlay on the
    ;; previous line, and so we need to reset the previous line's overlay as
-   ;; well.  Unconditionally redoing the previous line is simplest and
+   ;; well.  Unconditionally redoing the previous line is the simplest and
    ;; fastest way to handle that case.  (Using a hook on the overlay is
    ;; conceptually tidier but incurs the overhead of multiple extra lisp
    ;; function calls.)

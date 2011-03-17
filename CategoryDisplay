@@ -14,6 +14,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 * RemoteEmacs -- running Emacs from an another machine over X11
 * HighlightCurrentLine
 * HighlightCurrentColumn
+* HighlightIndentation -- highlight indentation using vertical guide lines.
 * CrosshairHighlighting -- highline current line and column; track cursor or show cross hairs momentarily.
 * ChangingCursorDynamically -- automatically change the cursor, depending on the context
 * ModeLine -- the mode-line provides lots of information

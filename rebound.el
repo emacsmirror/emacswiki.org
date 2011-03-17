@@ -101,7 +101,7 @@ for a description of the mode.")
 ;;; Mode Definition
 
 (defun rebound-mode (&optional arg) 
-  "Toggle rebound-mode on and off.
+  "Toggle rebound mode on and off.
 
 With argument ARG, turn rebound mode on if and only if ARG is t or positive.
 
@@ -118,8 +118,9 @@ when repositioning should happen is provided by the variables
 `rebound-reposition-temp-buffers' and `rebound-reposition-tests'."
 
   (interactive "P")
-  (setq rebound-mode (if (not arg) (not rebound-mode)
-                         (> (prefix-numeric-value arg) 0)))
+  (setq rebound-mode (if (not arg)
+                         (not rebound-mode)
+                       (> (prefix-numeric-value arg) 0)))
   (if rebound-mode
       (progn 
         (setq rebound-alist nil)      
@@ -148,8 +149,10 @@ when repositioning should happen is provided by the variables
 
 ;; The following four functions are the main primitives that change which
 ;; buffers are displayed in windows.  We advise them so that they record
-;; window-point and window-start for the relevant window(s) before a change in
-;; display, then call the repositioning function after the change in display.
+;; window-point and window-start for the relevant window(s) before a change
+;; in display, then call the repositioning function after the change in
+;; display.  (Actually, display-buffer is no longer a primitive as of 23, but
+;; that doesn't change the way we need to treat it.)
 (defadvice switch-to-buffer (around rebound)
   (rebound-register-win (selected-window))
   ad-do-it

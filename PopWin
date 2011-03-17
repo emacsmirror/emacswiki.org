@@ -19,3 +19,9 @@ https://github.com/m2ym/popwin-el
 ---
 
 This doesn't seem to work when using split buffer with one buffer being ERC. Clue? -- [new:RyanDavis:2011-03-08 10:53 UTC]
+
+---
+
+I have added a ticket for that problem. Matsuyama
+
+https://github.com/m2ym/popwin-el/issues#issue/14

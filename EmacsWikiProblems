@@ -17,6 +17,10 @@ Removing the "<nowiki>X)</nowiki>" emoticon from the page fixed it.  Didn't look
 [new]
 Thanks Aaron.
 
+[new]
+Strange that the smilies have been causing problems, lately. I think this is annoying enough to disable
+smilies for the moment. Older pages that have them remain unaffacted until edited or until their HTML cache expires. -- Alex
+
 == Why is Sacha Chua's page empty? ==
 
 Why is the page SachaChua currently empty?
@@ -28,7 +32,6 @@ I see it too. No header/footer (so no History link). Nada. -- DrewAdams
 
 [new]
 Removing the "<nowiki>=)</nowiki>" smilies from the page fixed it.  Didn't look into it any further. -- AaronHawley
-
 
 == Page not found by search ==
 

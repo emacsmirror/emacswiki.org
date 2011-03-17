@@ -1,0 +1,37 @@
+'''highlight-indentation''' by AntonJohansson is a function made to show vertical guide lines of indentation levels (spaces only). The code is available at:
+
+https://github.com/antonj/Highlight-Indentation-for-Emacs/
+
+== Usage ==
+
+Appearance of guidelines is customizable by changing the face `highlight-indent-face'. By default, `highlight-indent-face' inherits from `fringe', which in most color-themes has an unobtrusive color.
+
+== Screenshot ==
+
+http://i.imgur.com/F509p.png
+
+== Discussion ==
+
+This looks really neat. Is there a way to extend it to work with Lisp code? Something like the following:
+
+    (if n
+    |   (let ((m 0) (p list))
+    |   | (while (consp p)
+    |   | | (setq m (1+ m)
+    |   | | |     p (cdr p)))
+    |   | (if (<= n 0) p
+    |   | | (if (< n m)
+    |   | | |   (nthcdr (- m n) list)
+    |   | | | list)))
+    | (while (consp (cdr list))
+    | | (setq list (cdr list)))
+    | list)
+
+It would really improve the readability of long ##if## forms like above (this is taken from the definition of `last' in ##subr.el##). -- VegardOye
+
+[new]
+
+In its current form, the actual functionality of `highlight-indentation' is very trivial: font-lock a space character followed by a fixed amount of space characters. So for it to work with lisp's variable indentation some major changes are needed... -- AntonJohansson
+
+----
+CategoryDisplay

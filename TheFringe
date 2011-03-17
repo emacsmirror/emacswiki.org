@@ -28,6 +28,35 @@ Is there a way to get the "\" end-of-line behavior in X? The little bars on the 
 [new:JohanBusk:2010-04-04 18:00 UTC]
 While it's not really an answer to your question, you can make the fringes smaller (like what calling it interactively and telling it to be "minimal" does) with (set-fringe-mode '(1 . 1)) which makes the fringe 1px large on each side - enough to see wraps, but small enough to not waste screen real estate. --JohanBusk
 
+[new]
+Here's a primitive example of using the fringe to show the location of the mark, by simply setting `overlay-arrow-position' to a marker that is at the beginning of the line for the mark.
+
+{{{
+(defvar ash-mark-bol
+  (save-excursion
+    (goto-char (or (mark) (point)))
+    (forward-line 0)
+    (point-marker))
+  "Marker from `beginning-of-line' for for `mark'.")
+
+(defun ash-mark-hook-fun ()
+  "Run with `activate-mark-hook'."
+  (let ((mark-bol-posn (save-excursion
+                         (goto-char (mark))
+                         (forward-line 0)
+                         (point))))
+    (if (markerp ash-mark-bol)
+        (set-marker ash-mark-bol mark-bol-posn)
+      (setq ash-mark-bol
+                     (save-excursion
+                     (goto-char mark-bol-posn)
+                     (point-marker))))))
+
+(add-to-list 'activate-mark-hook 'ash-mark-hook-fun)
+(setq overlay-arrow-position ash-mark-bol)
+}}}
+
+This will, however, show an arrow in the fringe and confuse users of various Emacs debugging modes.
 
 ----
 CategoryDisplay
