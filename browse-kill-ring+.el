@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 10:13:41 2010 (-0800)
+;; Last-Updated: Thu Mar 17 18:06:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 325
+;;     Update #: 327
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/browse-kill-ring+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -108,6 +108,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/03/17 dadams
+;;     browse-kill-ring-quit-deletes-window/frame:
+;;       If dedicated window, pass BUF to bury-buffer, to avoid sole-window error.
 ;; 2009/06/25 dadams
 ;;     Added: browse-kill-ring-quit-deletes-window/frame.
 ;;     Added key bindings for TAB, S-TAB.
@@ -410,11 +413,13 @@ other ring has no effect.)"
 Useful as customized value of `browse-kill-ring-quit-action'."
   (let ((buf            (current-buffer))
         (sole-window-p  (eq (selected-window) (frame-root-window))))
-    (if (and sole-window-p (window-dedicated-p (selected-window)))
-        (delete-frame)
-      (unless sole-window-p (delete-window)))
-    ;; Avoid giving BUF as explicit arg to `bury-buffer', since we want to undisplay it.
-    (with-current-buffer buf (bury-buffer))))
+    (cond ((and sole-window-p (window-dedicated-p (selected-window)))
+           (delete-frame)
+           (bury-buffer buf))
+          (t
+           (unless sole-window-p (delete-window))
+           ;; Avoid BUF as explicit arg to `bury-buffer', since we want to undisplay it.
+           (with-current-buffer buf (bury-buffer))))))
 
 (defun toggle-browse-kill-ring-display-style ()
   "Toggle browse-kill-ring-display-style between `separated' and `one-line'."

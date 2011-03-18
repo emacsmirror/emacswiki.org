@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Thu Mar  3 11:38:38 2011 (-0800)
+;; Last-Updated: Thu Mar 17 09:45:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 468
+;;     Update #: 478
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -72,6 +72,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/03/17 dadams
+;;     describe-file: Added clickable thumbnail image to the help for an image file.
 ;; 2011/03/02 dadams
 ;;     Added: help-all-exif-data
 ;;     describe-file: Show all EXIF data, using help-all-exif-data.
@@ -1069,7 +1071,8 @@ If FILENAME is nil, describe the current directory.
 Starting with Emacs 22, if the file is an image file and you have
 command-line tool `exiftool' installed and in your `$PATH' or
 `exec-path', then EXIF data (metadata) about the image is included.
-See library `image-dired.el' for more information about `exiftool'."
+See standard Emacs library `image-dired.el' for more information about
+`exiftool'."
   (interactive "FDescribe file: ")
   (unless filename (setq filename default-directory))
   (help-setup-xref (list #'describe-file filename) (interactive-p))
@@ -1087,6 +1090,27 @@ See library `image-dired.el' for more information about `exiftool'."
            ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
            (inode           (nth 10 attrs))
            (device          (nth 11 attrs))
+           (thumb-string    (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+                                 (if (fboundp 'string-match-p)
+                                     (string-match-p (image-file-name-regexp) filename)
+                                   (save-match-data
+                                     (string-match (image-file-name-regexp) filename)))
+                                 (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+                                 (require 'image-dired nil t)
+                                 (image-dired-get-thumbnail-image filename)
+                                 (apply #'propertize "XXXX"
+                                        `(display ,(append (image-dired-get-thumbnail-image filename)
+                                                           '(:margin 10))
+                                          rear-nonsticky (display)
+                                          mouse-face highlight
+                                          follow-link t
+                                          help-echo "`mouse-2' or `RET': Show full image"
+                                          keymap
+                                          (keymap
+                                           (mouse-2 . (lambda (e) (interactive "e")
+                                                              (find-file ,filename)))
+                                           (13 . (lambda () (interactive)
+                                                         (find-file ,filename))))))))
            (image-info      (and (require 'image-dired nil t)
                                  (fboundp 'image-file-name-regexp)
                                  (if (fboundp 'string-match-p)
@@ -1123,6 +1147,12 @@ See library `image-dired.el' for more information about `exiftool'."
              (format "Device number:              %s\n" device)
              image-info)))
       (with-output-to-temp-buffer "*Help*" (princ help-text))
+      (when thumb-string
+        (with-current-buffer "*Help*"
+          (save-excursion
+            (goto-char (point-min))
+            (let ((buffer-read-only  nil))
+              (when (re-search-forward "Device number:.+\n" nil t) (insert thumb-string))))))
       help-text)))                      ; Return displayed text.
 
 (defun help-all-exif-data (file)

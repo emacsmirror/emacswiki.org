@@ -382,6 +382,63 @@ This space is for ongoing discussion.
 
 ----
 
+
+
+
+
+[new]
+
+Drew,
+
+Here is a comment and rough code snippet that I think are in the 
+spirit of your emacs  browse-kill-ring  extensions:
+
+It seems to me that inserting a string using 'browse-kill-ring
+should be equivalent to a simple 'yank .  But it in fact leaves
+point and mark in quite a different state:
+- 'yank  sets a mark before the insertion and leaves point after it,
+so the region contains the newly inserted text.
+- But 'browse-kill-ring does neither so it is very difficult to keep
+track of the effect of the operation.
+
+Here's what I have added to my .emacs to fix this for just the one entry
+to this module that I think I'm going to use.  This code can certainly be
+made more general, and probably more elegant, but I still hope you find it
+interesting.
+
+Thanks much for  browse-kill-ring+.el ,
+-LenW
+
+{{{
+(defun XX-browse-kill-ring-insert-and-quit ()
+  "Like standard `browse-kill-ring-insert-and-quit', but sets mark first and leaves point at end of insert - as does yank"
+  (interactive)
+  (let ( (kill-ring-buffer (current-buffer))
+	 old-buffer-size 
+	 )
+    (set-buffer (window-buffer browse-kill-ring-original-window))
+    (push-mark)
+    (setq old-buffer-size (buffer-size))
+    (set-buffer kill-ring-buffer)
+    (browse-kill-ring-insert t)
+    (set-buffer (window-buffer browse-kill-ring-original-window))
+    (forward-char (- (buffer-size) old-buffer-size))
+    (set-buffer kill-ring-buffer) ))
+
+(setq browse-kill-ring-hook
+      (lambda ()
+	(define-key browse-kill-ring-mode-map (kbd "RET") 
+	  'XX-browse-kill-ring-insert-and-quit)
+	))
+}}}
+
+(sorry if I didn't do this edit correctly - first time wikier)
+
+----
+
+
+
+
 [new:MartialBoniou:2011-02-25 22:49 UTC]
 Hi Drew.  I notice a bug in my emacs: Gnu Emacs 23.2.92.1. The 'switch-to-buffer in autofit-frame.el (used by dired-details+) is blocked when I switch from some buffers (for example, from Customize, if I quit I get a 'buffer is nil' message. I did this:
 
@@ -722,6 +779,11 @@ Sorry; I don't know. It also probably depends on what "works" means. Non-ASCII k
 Thanks, Drew. I'll let you know how it goes.  -Tennis
 
 ----
+
+
+
+----
+
 
 [:AllLibraries]
 All libraries referenced here: 

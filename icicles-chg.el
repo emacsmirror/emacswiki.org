@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 15 11:39:08 2011 (-0700)
+;; Last-Updated: Thu Mar 17 09:53:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6146
+;;     Update #: 6154
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -672,6 +672,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/03/17 dadams
+;;     icicle-display-candidates-in-Completions: Added 2-pixel margin around thumbnail image.
 ;; 2011/03/04 dadams
 ;;     icicle-read-file-name: Bind read-file-name-predicate.  Thx to Michael Heerdegen.
 ;;     icicle-alt-act-fn-for-type: Ensure orig-window is live before use it.  Thx to Michael Heerdegen.
@@ -2204,6 +2206,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/03/17 dadams
+;;     icicle-candidate-set-complement:
+;;       Added condition-case: Emacs 23.2+ all-completions has no 4th arg.
+;;     icicle-delete-backward-char-dots, icicle-replace-input-w-parent-dir:
+;;       Use delete-char, not delete-backward-char (Emacs 23.2+ changed it to interactive only).
+;;     Added soft require of filesets.el when byte-compile.
 ;; 2011/03/15 dadams
 ;;     icicle-describe-file: Added thumbnails for image files.
 ;; 2011/03/04 dadams

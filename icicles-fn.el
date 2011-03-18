@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  4 10:13:46 2011 (-0800)
+;; Last-Updated: Thu Mar 17 09:46:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12156
+;;     Update #: 12162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -318,6 +318,7 @@
   (defvar minibuffer-local-filename-completion-map)
   (defvar minibuffer-local-must-match-filename-map)
   (defvar minibuffer-local-filename-must-match-map)
+  (defvar read-file-name-predicate)
   (defvar tooltip-mode))
 
 (when (< emacs-major-version 23)
@@ -2694,7 +2695,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                           (string-match-p (image-file-name-regexp) image-file)
                                         (save-match-data
                                           (string-match (image-file-name-regexp) image-file))))
-                             (let ((thumb-img  (image-dired-get-thumbnail-image image-file))
+                             (let ((thumb-img  (append (image-dired-get-thumbnail-image image-file)
+                                                       '(:margin 2)))
                                    (img-ov     (overlays-in (point) (1+ (point)))))
                                (if img-ov
                                    (delete-overlay (car img-ov))
@@ -2716,7 +2718,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                    ;; Remove all newlines for images-only display.
                    (when (eq icicle-image-files-in-Completions 'image-only)
                      (save-excursion (goto-char (icicle-start-of-candidates-in-Completions))
-                                     (while (and (re-search-forward "$") (not (eobp))) (delete-char 1)))))
+                                     (while (and (re-search-forward "$") (not (eobp)))
+                                       (delete-char 1)))))
                  (set-buffer-modified-p nil)
                  (setq buffer-read-only  t))))
            (with-current-buffer (get-buffer "*Completions*")

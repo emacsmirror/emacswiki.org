@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar 11 06:26:18 2011 (-0800)
+;; Last-Updated: Thu Mar 17 08:56:03 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1058
+;;     Update #: 1059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4635,7 +4635,9 @@ BOOKMARK is a bookmark name or a bookmark record."
             (let* ((image-file        (match-string 1))
                    (image-string      (save-match-data
                                         (apply #'propertize "X"
-                                               `(display ,(image-dired-get-thumbnail-image image-file)
+                                               `(display
+                                                 ,(append (image-dired-get-thumbnail-image image-file)
+                                                          '(:margin 10))
                                                  rear-nonsticky (display)
                                                  mouse-face highlight
                                                  follow-link t

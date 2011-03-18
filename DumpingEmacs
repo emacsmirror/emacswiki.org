@@ -103,4 +103,128 @@ If all you need to do is load some libraries, put the load statements in ##lisp/
 See also NoBloat.
 
 ----
+I use a dumped emacs under windows.When i modify my configuration,This function is invoked to update the dumped emacs.
+<pre>
+(defun my-dump-emacs ()
+  (interactive)
+  (load "e:/projects/emacs-config/install.el")
+  (start-process "dump-emacs" "*dump*" "cmd" "/c" "cd" "/d" "E:\\dev-env\\emacs-src\\git\\emacs\\src"
+                 "&&" ".\\oo-spd\\i386\\temacs.exe" "-batch" "-l" "loadup" "bootstrap")
+  (with-current-buffer "*dump*"
+    (viper-mode))
+  (switch-to-buffer "*dump*")
+  (labels ((%sentinel (process event)
+             (when (equal 'exit (process-status process))
+               (when (= 0 (process-exit-status process))
+                 (let ((tmp-path "d:/emacs/bin/emacs.exe2"))
+                   (when (file-exists-p tmp-path)
+                     (condition-case nil
+                          (delete-file tmp-path)
+                        (error (setq tmp-path "d:/emacs/bin/emacs.exe3")
+                               (when (file-exists-p tmp-path)
+                                 (delete-file tmp-path)))))
+                   (rename-file "d:/emacs/bin/emacs.exe" tmp-path))
+                 (copy-file "E:\\dev-env\\emacs-src\\git\\emacs\\src\\oo-spd\\i386\\emacs.exe"
+                            "d:/emacs/bin/emacs.exe" t)))))
+    (set-process-sentinel (get-process "dump-emacs") '%sentinel)))
+</pre>
+The site-init.el file i used like this:
+<pre>
+(let ((load-path '("e:/home/appdata/roaming/.emacs.d/site-lisp/emms/lisp" "e:/home/appdata/roaming/.emacs.d/site-lisp/color-theme" "e:/home/appdata/roaming/.emacs.d/site-lisp/bm" "e:/home/appdata/roaming/.emacs.d/site-lisp/google-weather-el" "e:/home/appdata/roaming/.emacs.d/site-lisp/org-mode/contrib/lisp" "e:/home/appdata/roaming/.emacs.d/site-lisp/org-mode/lisp" "e:/home/appdata/roaming/.emacs.d/site-lisp/imaxima/" "e:/home/appdata/roaming/.emacs.d/site-lisp/mew-6.3" "e:/home/appdata/roaming/.emacs.d/site-lisp/ac-slime/" "e:/home/appdata/roaming/.emacs.d/site-lisp/auto-complete/" "e:/home/appdata/roaming/.emacs.d/site-lisp/mmm-mode/" "e:/home/appdata/roaming/.emacs.d/site-lisp/html-helper-mode" "e:/home/appdata/roaming/.emacs.d/site-lisp/eim" "e:/home/appdata/roaming/.emacs.d/site-lisp/cl-lookup" "d:/lisp/asdf/site/slime/contrib" "D:/lisp/asdf/site/slime" "e:/home/appdata/roaming/.emacs.d/site-lisp/emacs-w3m" "e:/home/appdata/roaming/.emacs.d/site-lisp/git-emacs" "e:/home/appdata/roaming/.emacs.d/site-lisp/magit-0.8.2" "e:/Home/AppData/Roaming/.emacs.d/elpa/auctex-11.86/" "e:/Home/AppData/Roaming/.emacs.d/elpa/auctex-11.86" "e:/Home/AppData/Roaming/.emacs.d/elpa/js2-mode-20090814" "e:/Home/AppData/Roaming/.emacs.d/elpa/muse-3.20" "e:/Home/AppData/Roaming/.emacs.d/elpa/rainbow-mode-0.1" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-checkpoints-1.345" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-loop-3.315" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-mirror-2.350" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-modeline-2.345" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-popviewer-1.315" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-tabs-1.345" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-x-tree-1.345" "e:/Home/AppData/Roaming/.emacs.d/elpa/sunrise-commander-5.358" "e:/home/appdata/roaming/.emacs.d/site-lisp" "d:\\Emacs\\site-lisp\\bbdb" "e:/dev-env/emacs-src/git/emacs/lisp" "e:/dev-env/emacs-src/git/emacs/lisp/vc" "e:/dev-env/emacs-src/git/emacs/lisp/url" "e:/dev-env/emacs-src/git/emacs/lisp/textmodes" "e:/dev-env/emacs-src/git/emacs/lisp/progmodes" "e:/dev-env/emacs-src/git/emacs/lisp/play" "e:/dev-env/emacs-src/git/emacs/lisp/org" "e:/dev-env/emacs-src/git/emacs/lisp/nxml" "e:/dev-env/emacs-src/git/emacs/lisp/net" "e:/dev-env/emacs-src/git/emacs/lisp/mh-e" "e:/dev-env/emacs-src/git/emacs/lisp/mail" "e:/dev-env/emacs-src/git/emacs/lisp/language" "e:/dev-env/emacs-src/git/emacs/lisp/international" "e:/dev-env/emacs-src/git/emacs/lisp/gnus" "e:/dev-env/emacs-src/git/emacs/lisp/eshell" "e:/dev-env/emacs-src/git/emacs/lisp/erc" "e:/dev-env/emacs-src/git/emacs/lisp/emulation" "e:/dev-env/emacs-src/git/emacs/lisp/emacs-lisp" "e:/dev-env/emacs-src/git/emacs/lisp/cedet" "e:/dev-env/emacs-src/git/emacs/lisp/calendar" "e:/dev-env/emacs-src/git/emacs/lisp/calc" "e:/dev-env/emacs-src/git/emacs/lisp/obsolete" "e:/dev-env/emacs-src/git/emacs/leim")))
+  (require 'package)
+  (require 'help-fns)
+  ;; (setq viper-mode t)
+  ;; can backspace past start of insert / line
+  (setq viper-ex-style-editing nil)  
+  (require 'viper)
+  (setq vimpulse-experimental nil
+        viper-shift-width tab-width)
+  (custom-set-variables
+   '(viper-auto-indent t)
+   '(vimpulse-want-C-i-like-Vim nil)
+   '(vimpulse-incremental-search nil)
+   ;;conflict:will make too many sub menu items.
+   '(vimpulse-want-vi-keys-in-dired nil))
+  (require 'vimpulse)
+
+  (require 'package)
+  (require 'imenu+)
+  (require 'psvn)
+  (autoload 'asm86-mode "asm86-mode.el")
+  (require 'asm86_masm)
+  (require 'header2)
+  (require 'doc-view)
+  (require 'yasnippet)
+  (require 'browse-kill-ring)
+  (require 'mmm-mode)
+  (require 'mmm-auto)
+  (require 'mmm-sample)
+  (require 'auto-complete-config)
+  (require 'gnus)
+  (require 'cal-china-x)
+  ;; (require 'ess-site)
+
+  ;; (require 'gnuplot)
+  (require 'iimage)
+  (require 'remember)
+  (require 'google-weather)
+  (require 'appt)
+  (require 'tea-time)
+  ;; (require 'tramp)
+  (require 'dired)
+  ;; (require 'dired+)
+  (require 'dired-x)
+  (require 'ibuffer)
+  (require 'ibuf-ext nil t)
+  (require 'uniquify)
+  (require 'rect-mark)
+  (require 'bookmark)
+  (require 'bm)
+  (require 'bookmark+)
+  (require 'saveplace)
+  ;; (require 'folding)
+  ;; (require 'thumbs)
+  (require 'session)
+  (require 'desktop)
+  (require 'tabbar)
+  (require 'ido nil t)
+  (require 'recentf)
+  (require 'emms-setup)
+  (require 'color-theme)
+  (require 'inf-lisp)
+  (require 'eldoc)
+  ;; (require 'server)
+  (require 'hyperspec)
+  (require 'vc-git)
+  (load  "cl-indent")
+
+  ;; (require 'w3m-load) 
+  ;; (require 'w3m)
+  ;; (require 'w3m-cookie)
+
+  (require 'cl-indent-patches)
+  (require 'clisp-color)
+  (require 'clisp-indent)
+  (require 'my-utils)
+  (require 'my-english)
+  (require 'my-gnus)
+  (require 'my-kbd)
+  (require 'my-doc)
+  (require 'my-maxima)
+  (require 'my-program)
+  (require 'my-sys)
+  (require 'my-viper)
+  (require 'my-gtd)
+  ;; (require 'my-emacs-spec)
+  (require 'my-w3m)
+  (require 'my-mew)
+  (require 'my-color)
+  ;; (require 'my-lisp)
+
+  )
+
+</pre>
+-- Jingtao Xu
+
+----
 CategoryDotEmacs

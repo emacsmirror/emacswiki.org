@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 15 14:27:31 2011 (-0700)
+;; Last-Updated: Thu Mar 17 09:21:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16798
+;;     Update #: 16813
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -326,6 +326,9 @@
 
 (eval-when-compile (require 'cl)) ;; case, flet, lexical-let, loop
                                   ;; plus, for Emacs < 21: dolist, push
+(eval-when-compile (require 'filesets nil t)) ; Emacs 22+.
+  ;; filesets-data, filesets-entry-get-files, filesets-entry-mode, filesets-entry-set-files,
+  ;; filesets-files-equalp, filesets-init, filesets-member, filesets-set-config
 
 (eval-when-compile
  (or (condition-case nil
@@ -857,8 +860,8 @@ Handles Icicles dots (`.')."
   (let ((len  (length icicle-anychar-regexp)))
     (dotimes (i  (abs n))
       (if (icicle-looking-back-at-anychar-regexp-p)
-          (delete-backward-char len killflag)
-        (delete-backward-char 1 killflag)))))
+          (delete-char (- len) killflag)
+        (delete-char -1 killflag)))))
 
 ;;;###autoload
 (defun icicle-delete-char (n &optional killflag) ; Bound to `C-d' in minibuffer.
@@ -987,12 +990,10 @@ See description of `kill-region-wimpy'."
   (goto-char (point-max))
   (let ((directoryp  (equal ?/ (char-before)))
         (bob         (icicle-minibuffer-prompt-end)))
-    (while (and (> (point) bob) (not (equal ?/ (char-before))))
-      (delete-backward-char 1))
+    (while (and (> (point) bob) (not (equal ?/ (char-before))))  (delete-char -1))
     (when directoryp
-      (delete-backward-char 1)
-      (while (and (> (point) bob) (not (equal ?/ (char-before))))
-        (delete-backward-char 1)))))
+      (delete-char -1)
+      (while (and (> (point) bob) (not (equal ?/ (char-before))))  (delete-char -1)))))
 
 ;;; ;;;###autoload
 ;;; (defun icicle-kill-failed-input ()      ; Bound to `C-M-l' in minibuffer during completion.
@@ -5512,8 +5513,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (message "Complementing current set of candidates...")
   (setq icicle-completion-candidates
         (icicle-set-difference
-         (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
-                          icicle-ignore-space-prefix-flag)
+         (condition-case nil
+             (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
+                              icicle-ignore-space-prefix-flag)
+           (wrong-number-of-arguments   ; Emacs 23.2+ has no 4th arg.
+            (all-completions "" minibuffer-completion-table minibuffer-completion-predicate)))
          icicle-completion-candidates))
   (icicle-maybe-sort-and-strip-candidates)
   (message "Displaying completion candidates...")

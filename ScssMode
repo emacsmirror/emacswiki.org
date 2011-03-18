@@ -1,5 +1,33 @@
-Trivial mode for editing [http://sass-lang.com/ SCSS files] derived from css-mode, added highlight for variables and automatic compiling.
+Major mode for editing SCSS [http://sass-lang.com/] files in Emacs. The code is available at: https://github.com/antonj/scss-mode/
 
-[https://github.com/antonj/scss-mode scss-mode at github]
+  
+==  Features ==
+* Compilation of current file on save. (Disable by changing `scss-compile-at-save' to nil)
+* Flymake support, enable with `M-x flymake-mode'
+* Indentation and highlighting (Derived from CSS-mode)
+* Syntax highlighting for variables and inline comments.
+    
+http://i.imgur.com/Wdokb.png
+    
+http://i.imgur.com/9ed6X.png
+    
+== Installation ==
+
+Command line utility sass is required, http://sass-lang.com/. Make
+sure sass location is in emacs PATH, example:
+   
+    (setq exec-path (cons (expand-file-name "~/.gem/ruby/1.8/bin") exec-path))
+
+Or customize `scss-sass-command' to point directly to your sass executable.
+
+Add something like this to your emacs load file:
+
+{{{
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/folder-where-you-put-scss-mode-el"))
+(autoload 'scss-mode "scss-mode")
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
+}}}
+
+
 
 -- [[AntonJohansson]]
