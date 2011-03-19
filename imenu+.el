@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 10:50:07 2011 (-0800)
+;; Last-Updated: Fri Mar 18 12:32:09 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 573
+;;     Update #: 623
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,6 +63,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/03/18 dadams
+;;     imenu-emacs-key-defn-regexp-[1|2]: Handle (kbd "...").
+;;     emacs-lisp-imenu-generic-expression: Increased index from 4 to 5, to fit change for kbd.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from defvar, non-interactive fns.  Added for command.
 ;; 2007/01/16 dadams
@@ -133,13 +136,15 @@
 
 (defconst imenu-sort-function 'imenu--sort-by-name)
 
+;; For key definitions, we need to handle: strings and vectors, but also (kbd STRING).
+;; We just match optional `(kbd ' followed by a string or a vector'.
 (defvar imenu-emacs-key-defn-regexp-1 "(\\s-*\\(\\(global\\|local\\)-\\(un\\)?\
-set-key\\|undefine-keys-bound-to\\)\\s-*\\(\"[^\"]+\"\\|[[][^]]+[]]\\)"
+set-key\\|undefine-keys-bound-to\\)\\s-*\\((kbd\\s-*\\)?\\(\"[^\"]+\"\\|[[][^]]+[]]\\)"
   "*Regexp that recognizes Emacs key definitions.
 See also `imenu-emacs-key-defn-regexp-2'.")
 
 (defvar imenu-emacs-key-defn-regexp-2 "(\\s-*\\(define-key\\(-after\\)?\\s-+\
-\\|substitute-key-definition\\s-+'\\)\\(\\S-+\\)\\s-*'?\\(\"[^\"]+\"\\|[[][^]]+[]]\\)"
+\\|substitute-key-definition\\s-+'\\)\\(\\S-+\\)\\s-*'?\\((kbd\\s-*\\)?\\(\"[^\"]+\"\\|[[][^]]+[]]\\)"
   "*Regexp that recognizes Emacs key definitions.
 See also `imenu-emacs-key-defn-regexp-1'.")
 
@@ -156,12 +161,13 @@ See also `imenu-emacs-key-defn-regexp-1'.")
 (defvar imenu-lisp-fn-defn-regexp
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
-              (regexp-opt '("defun" "defun*" "defsubst" "defadvice" "define-skeleton"
-                            "define-minor-mode" "define-global-minor-mode"
-                            "define-globalized-minor-mode" "define-derived-mode"
-                            "define-generic-mode" "defsetf" "define-setf-expander"
-                            "define-method-combination" "defgeneric" "defmethod"
-                            "icicle-define-command" "icicle-define-file-command") t)
+              (regexp-opt '("defun" "defun*" "defsubst" "defadvice"
+                            "define-skeleton" "define-minor-mode"
+                            "define-global-minor-mode" "define-globalized-minor-mode"
+                            "define-derived-mode" "define-generic-mode" "defsetf"
+                            "define-setf-expander" "define-method-combination"
+                            "defgeneric" "defmethod" "icicle-define-command"
+                            "icicle-define-file-command") t)
               "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
     (concat "^\\s-*("
             (regexp-opt
@@ -206,8 +212,8 @@ See `imenu-generic-expression'.")
 (defvar emacs-lisp-imenu-generic-expression
   (list
    (list "Other" imenu-lisp-other-defn-regexp 2)
-   (list "Keys in Maps" imenu-emacs-key-defn-regexp-2 4)
-   (list "Keys" imenu-emacs-key-defn-regexp-1 4)
+   (list "Keys in Maps" imenu-emacs-key-defn-regexp-2 5)
+   (list "Keys" imenu-emacs-key-defn-regexp-1 5)
    (list "Macros" imenu-lisp-macro-defn-regexp 2)
    (list "Functions" imenu-lisp-fn-defn-regexp (if (string-match "\\(?:\\)" "") 2 6))
    (list "Variables" imenu-lisp-var-defn-regexp 2)
