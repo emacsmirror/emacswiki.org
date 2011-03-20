@@ -113,6 +113,25 @@ Lisp:suomalainen-kalenteri.el
 === French ===
 Lisp:french-holidays.el
 
+=== German ===
+This should be usable in parts of Germany:
+<pre>
+(setq holiday-other-holidays
+      '((holiday-fixed 1 1 "New Year's Day")
+        (holiday-fixed 5 1 "Labour Day")
+        (holiday-fixed 12 25 "Christmas Day")
+        (holiday-fixed 12 26 "St Stephen's Day")
+        (holiday-fixed 10 3 "German Unity Day")
+        (holiday-fixed 10 31 "Reformation Day")
+        (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
+        (holiday-easter-etc -2 "Good Friday")
+        (holiday-easter-etc 0 "Easter Day")
+        (holiday-easter-etc 1 "Easter Monday")
+        (holiday-easter-etc 39 "Ascension Day")
+        (holiday-easter-etc 49 "Pentecost (Whitsunday)")
+        (holiday-easter-etc 50 "Whit Monday")))
+</pre>
+
 === Irish ===
 To add a few key Irish public holidays:
 <pre>

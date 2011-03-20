@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 359 $
+;; RCS Version: $Rev: 361 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 359 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 361 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1583,24 +1583,30 @@ automatically:
       (sr-goto-dir target-dir))
     (sr-focus-filename target-file)))
 
-(defun sr-project-path (&optional order)
+(defun sr-project-path ()
   "Tries  to find a directory with a path similar to the one in the active pane,
-  but under the directory currently displayed in the passive  pane.  On  success
-  displays the contents of that directory in the passive pane."
-  (interactive "p")
-  (let ((order (or order 0))
-        (path (expand-file-name (dired-current-directory)))
-        (pos 0) (projections (list)) candidate)
-    (setq path (replace-regexp-in-string "^/\\|/$" "" path))
-    (if (< 0 (length path))
-        (while (and pos (< (length projections) order))
-          (setq candidate (concat sr-other-directory (substring path (1+ pos))))
-          (if (file-directory-p candidate)
-              (setq projections (cons candidate projections)))
-          (setq pos (string-match "/" path (1+ pos)))))
-    (if projections
-        (sr-in-other (sr-goto-dir (car projections)))
-      (message "Sunrise: sorry, no suitable projection found."))))
+  but under the  directory currently displayed in the passive  pane.  On success
+  displays the contents of that directory in the passive pane.  When alternative
+  projections of the directory exist, repeated invocations of this command allow
+  to visit all matches consecutively."
+  (interactive)
+  (let* ((path (expand-file-name (dired-current-directory)))
+         (path (replace-regexp-in-string "/*$" "" path))
+         (pos (if (< 0 (length path)) 1)) (candidate) (next-key))
+    (while pos
+      (setq candidate (concat sr-other-directory (substring path pos))
+            pos (string-match "/" path (1+ pos))
+            pos (if pos (1+ pos)))
+      (when (and (file-directory-p candidate)
+                 (not (sr-equal-dirs sr-this-directory candidate)))
+        (sr-goto-dir-other candidate)
+        (setq next-key (read-key-sequence "(press C-M-o again for more)"))
+        (if (eq (lookup-key sr-mode-map next-key) 'sr-project-path)
+            (sr-history-prev-other)
+          (setq unread-command-events (listify-key-sequence next-key)
+                pos nil))))
+    (unless next-key
+      (message "Sunrise: sorry, no suitable projections found."))))
 
 (defun sr-history-push (element)
   "Pushes a new path into the history ring of the current pane."

@@ -417,9 +417,8 @@ is displaying branch/some/deeply/nested/dir and your passive pane is  at  trunk/
 trunk/some/deeply/nested/dir in the passive pane by simply pressing **C‐M‐o** in
 the  active  one.  It’s  a  bit  similar  to  synchronizing the panes (M‐o), but
 constrained to the directory being currently displayed in the passive  pane.  If
-there  is more than one possible target you can prefix the command with a number
-(e.g. **2 C‐M‐o**) to specify which one of them to use. By default  the  longest
-path found is used.
+there  is more than one possible target you can alternate through all of them by
+simply pressing **C-M-o** repeatedly.
 
 ----
 [:AlternativeUsagePatterns]
