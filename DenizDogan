@@ -1,40 +1,60 @@
-Using Emacs since approximately 2006. 
+==About==
+
+Emacs user since approximately 2006.  Co-maintainer of [[rcirc]].
+
+==My configuration==
+
+===C-t and M-t===
 
 As a Dvorak user, I use ##C-t## instead of ##C-x## and ##M-t## instead of ##M-x##.
 
-    (global-unset-key (kbd "C-t"))
-    (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x")))
-    (global-set-key (kbd "C-t C-t") 'exchange-point-and-mark)
-    (global-set-key (kbd "C-t C-m") 'find-file)
-    (global-set-key (kbd "C-t C-n") 'mode-line-other-buffer)
-    (global-set-key (kbd "C-t C-k") 'bury-buffer)
-    (global-set-key (kbd "C-t u") 'switch-to-buffer)
-    
+    (keyboard-translate ?\C-t ?\C-x)
     (global-set-key (kbd "M-t") 'execute-extended-command)
-    (global-set-key (kbd "C-M-t") 'eval-defun)
 
-    ;; useful functions
-    (defun insert-key-sequence ()
-      "Reads a sequence of keys until C-g is hit, and inserts the
-    prettified key sequence with C-g excluded."
-      (interactive "*")
-      (let ((result "")
-            key)
-        (while (progn
-                 (setq key (read-key "Enter the key sequence: "))
-                 (unless (eq 7 key)
-                   (setq result (concat result (key-description (list key)) " ")))
-                 (not (eq 7 key))))
-        (when (not (string= result ""))
-          (insert result)
-          (backward-delete-char 1))))
+===M-å, M-ä and M-ö===
+
+I use a Swedish variant of Dvorak which puts ÅÄÖ right above AOE on the keyboard.
+
+    (defun switch-to-left-window ()
+      (interactive)
+      (other-window -1))
+
+    (defun switch-to-right-window ()
+      (interactive)
+      (other-window 1))
+
+    (global-set-key (kbd "M-å") 'switch-to-left-window)
+    (global-set-key (kbd "M-ä") 'mode-line-other-buffer)
+    (global-set-key (kbd "M-ö") 'switch-to-right-window)
+
+For the above to work, make sure Emacs knows it's UTF-8.
+
+    ;; -*- coding: utf-8 -*-
+
+===C-c bindings===
+
+I have a lot of mnemonic ##C-c## bindings.
+
+    (global-set-key (kbd "C-c c f") 'customize-face)
+    (global-set-key (kbd "C-c c g") 'customize-group)
+    (global-set-key (kbd "C-c c v") 'customize-variable)
+    (global-set-key (kbd "C-c d c") 'describe-char)
+    (global-set-key (kbd "C-c d f") 'describe-face)
+    (global-set-key (kbd "C-c d t") 'delete-trailing-whitespace)
+    (global-set-key (kbd "C-c e b") 'eval-buffer)
+    (global-set-key (kbd "C-c e r") 'eval-region)
+    (global-set-key (kbd "C-c i b") 'indent-buffer)
+    (global-set-key (kbd "C-c i r") 'indent-region)
+    (global-set-key (kbd "C-c r b") 'revert-buffer)
+    (global-set-key (kbd "C-c s l") 'sort-lines)
+    (global-set-key (kbd "C-c s L") 'mark-paragraph-and-sort-lines)
+    (global-set-key (kbd "C-c t i") 'toggle-input-method)
+
+==Discussion==
 
 [new:DrewAdams:2009-12-05 20:35 UTC]
 Welcome to the wiki. -- DrewAdams
 [new:DenizDogan:2009-12-25 13:37 UTC]Thank you. -- DenizDogan
-
-
-
 
 ----
 CategoryHomepage

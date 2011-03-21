@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 17 09:53:25 2011 (-0700)
+;; Last-Updated: Sun Mar 20 18:25:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6154
+;;     Update #: 6156
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2206,6 +2206,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/03/20 dadams
+;;     icicle-help-on-candidate-symbol: Don't bind help-xref-following.  Thx to Michael Heerdegen.
 ;; 2011/03/17 dadams
 ;;     icicle-candidate-set-complement:
 ;;       Added condition-case: Emacs 23.2+ all-completions has no 4th arg.

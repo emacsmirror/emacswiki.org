@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Mar 17 18:06:51 2011 (-0700)
+;; Last-Updated: Sun Mar 20 21:03:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 327
+;;     Update #: 761
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/browse-kill-ring+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -33,6 +33,9 @@
 ;;  then `browse-kill-ring-alternative-ring' is the secondary
 ;;  selection ring, and `browse-kill-ring' lets you use either that
 ;;  ring or the `kill-ring' as the selection ring to browse or pop.
+;;  You can even use both, in different `browse-kill-ring' display
+;;  buffers.  In such a buffer (in `browse-kill-ring-mode'), `o' pops
+;;  to the list for the other ring.
 ;;
 ;;  You can customize the set of commands to be recognized as yank
 ;;  commands and alternative yank commands - see options
@@ -63,6 +66,7 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `browse-kill-ring-switch-to-other-kill-ring',
 ;;    `toggle-browse-kill-ring-display-style'.
 ;;
 ;;  User options defined here:
@@ -74,19 +78,24 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `browse-kill-ring-quit-deletes-window/frame',
-;;    `browse-kill-ring-remove-dups'.
+;;    `browse-kill-ring-remove-dups',
+;;    `browse-kill-ring-target-overlay-at'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `browse-kill-ring-current-ring'.
+;;    `browse-kill-ring-current-ring', `browse-kill-ring-mode-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `browse-kill-ring.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;    `browse-kill-ring', `browse-kill-ring-default-keybindings',
-;;    `browse-kill-ring-delete', `browse-kill-ring-edit',
-;;    `browse-kill-ring-edit-finish', `browse-kill-ring-setup'.
+;;    `browse-kill-ring', `browse-kill-ring-current-string',
+;;    `browse-kill-ring-default-keybindings',
+;;    `browse-kill-ring-delete', `browse-kill-ring-do-append-insert',
+;;    `browse-kill-ring-do-insert',
+;;    `browse-kill-ring-do-prepend-insert', `browse-kill-ring-edit',
+;;    `browse-kill-ring-edit-finish', `browse-kill-ring-forward',
+;;    `browse-kill-ring-mode' `browse-kill-ring-setup'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard functions defined in `simple.el'
@@ -104,10 +113,61 @@
 ;;  `browse-kill-ring-default-keybindings'.  If you do not want that,
 ;;  then comment out this call (at the end of the file).
 ;;
+;;
+;;  TO DO:
+;;
+;;  @@@@@@ BUG: `1' doesn't work for secondary - it deletes an item
+;;  each time.  It's because `kill-new' is not the appropriate thing
+;;  to add back the item at the head.  Need to look for all
+;;  occurrences of `kill-new' and replace by applying some function
+;;  variable whose value is appropriate to the given sel-ring type.
+;;
+;;  The problematic code (the occurrences of `kill-new'):
+;;  `browse-kill-ring-insert-and-move'
+;;  `browse-kill-ring-prepend-insert-and-move',
+;;  `browse-kill-ring-append-insert-and-move',
+;;
+;;  Probably should also factor those three, as I did for
+;;  `browse-kill-ring-do-*-insert'.
+;;
+;;
+;;  @@@@@@ BUG: `browse-kill-ring-original-window' should work for the
+;;  secondary ring too.  It works by advising `kill-new'.  At least I
+;;  should document that it has an effect only for the `kill-ring'.
+;;
+;;
+;;  @@@@@@ BUG: `browse-kill-ring-edit': membership of kill text is
+;;  not sufficient, since there can be duplicates.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
+;; 2011/03/20 dadams
+;;     Added: browse-kill-ring-mode-map (defconst, so could move it out of the mode definition).
+;;     Added: browse-kill-ring-target-overlay-at, browse-kill-ring-current-string,
+;;            browse-kill-ring-do(-append|-prepend)-insert, browse-kill-ring-forward,
+;;            browse-kill-ring-mode, browse-kill-ring-switch-to-other-kill-ring,
+;;            browse-kill-ring-kill-number (commented out).
+;;     browse-kill-ring-do-insert: Added optional arg, so can factor out common code.
+;;       Use with-current-buffer. Use yank-excluded-properties.
+;;       (Bug fix) Set window point after inserting.  This makes the inserted text be the region.
+;;     browse-kill-ring-do-(append|prepend)-insert: Define using browse-kill-ring-do-insert.
+;;     browse-kill-ring-current-string, browse-kill-ring-do-insert, browse-kill-ring-delete,
+;;       browse-kill-ring-forward, browse-kill-ring-edit:
+;;         Move to bol first, so can use it at eol.
+;;     browse-kill-ring-delete, browse-kill-ring-forward, browse-kill-ring-edit:
+;;       Use browse-kill-ring-target-overlay-at.
+;;     browse-kill-ring-forward: Bug fixes.
+;;     browse-kill-ring-mode: Derive from text mode.  Don't define keymap here.  Use the right ring.
+;;     browse-kill-ring:
+;;       Calling it in b-k-r-mode: Chooses the right ring instead of switching to the other ring.
+;;                                 Uses browse-kill-ring-original-window, not selected window.
+;;       Removed read-only message.  Changed buffer name: Selection Ring.
+;;     Bindings: Bind o to browse-kill-ring-switch-to-other-kill-ring.
+;;               Bind 1 to browse-kill-ring-insert-and-move.
+;;               Removed bindings at top level - use defconst of browse-kill-ring-mode-map instead.
+;;     toggle-browse-kill-ring-display-style: Call browse-kill-ring.
 ;; 2011/03/17 dadams
 ;;     browse-kill-ring-quit-deletes-window/frame:
 ;;       If dedicated window, pass BUF to bury-buffer, to avoid sole-window error.
@@ -189,7 +249,51 @@ A value of nil means `kill-ring' is always used; that is,
 (defvar browse-kill-ring-current-ring 'kill-ring
   "Symbol whose value is the current selection ring for `browse-kill-ring'.")
 
-;; Your typical standard definition - same as `icicle-remove-duplicates'.
+
+;; These bindings are additional - not in `browse-kill-ring.el':
+;;
+;;   `1'     - `browse-kill-ring-insert-and-move'
+;;   `t'     - `toggle-browse-kill-ring-display-style'
+;;   `TAB'   - `browse-kill-ring-forward'
+;;   `S-TAB' - `browse-kill-ring-previous'
+;;
+;; This binding is a difference from `browse-kill-ring.el':
+;;
+;;   `o'     - `browse-kill-ring-switch-to-other-kill-ring' instead of
+;;             `browse-kill-ring-insert-and-move'
+;;
+(defconst browse-kill-ring-mode-map
+  (let ((map  (make-sparse-keymap)))
+    (define-key map (kbd "<tab>")   'browse-kill-ring-forward)
+    (define-key map [(control ?i)]  'browse-kill-ring-forward)
+    (define-key map (kbd "<S-tab>") 'browse-kill-ring-previous)
+    (define-key map (kbd "RET")     'browse-kill-ring-insert-and-quit)
+    (define-key map [(mouse-2)]     'browse-kill-ring-mouse-insert)
+    (define-key map (kbd "?")       'describe-mode)
+    (define-key map (kbd "1")       'browse-kill-ring-insert-and-move)
+    (define-key map (kbd "a")       'browse-kill-ring-append-insert)
+    (define-key map (kbd "b")       'browse-kill-ring-prepend-insert)
+    (define-key map (kbd "d")       'browse-kill-ring-delete)
+    (define-key map (kbd "e")       'browse-kill-ring-edit)
+    (define-key map (kbd "g")       'browse-kill-ring-update)
+    (define-key map (kbd "h")       'describe-mode)
+    (define-key map (kbd "i")       'browse-kill-ring-insert)
+    (define-key map (kbd "l")       'browse-kill-ring-occur)
+    (define-key map (kbd "n")       'browse-kill-ring-forward)
+    (define-key map (kbd "o")       'browse-kill-ring-switch-to-other-kill-ring)
+    (define-key map (kbd "p")       'browse-kill-ring-previous)
+    (define-key map (kbd "q")       'browse-kill-ring-quit)
+    (define-key map (kbd "r")       'browse-kill-ring-search-backward)
+    (define-key map (kbd "s")       'browse-kill-ring-search-forward)
+    (define-key map (kbd "t")       'toggle-browse-kill-ring-display-style)
+    (define-key map (kbd "u")       'browse-kill-ring-insert-move-and-quit)
+    (define-key map (kbd "U")       'browse-kill-ring-undo-other-window)
+    (define-key map (kbd "x")       'browse-kill-ring-insert-and-delete)
+    (define-key map (kbd "y")       'browse-kill-ring-insert)
+    map)
+  "Keymap for `browse-kill-ring-mode'.")
+
+;; The usual definition - e.g., same as `icicle-remove-duplicates'.
 (defun browse-kill-ring-remove-dups (list)
   "Copy of LIST with duplicate elements removed.  Tested with `equal'."
   (let ((tail  list)
@@ -212,10 +316,176 @@ non-nil."
          (delete (ad-get-arg 0) (symbol-value browse-kill-ring-current-ring))))
   ad-do-it)
 
+(defun browse-kill-ring-target-overlay-at (position)
+  "Return overlay at POSITION that has property `browse-kill-ring-target'.
+If no such overlay, raise an error."
+  (let ((ovs  (overlays-at (point))))
+    (catch 'browse-kill-ring-target-overlay-at
+      (dolist (ov  ovs)
+        (when (overlay-get ov 'browse-kill-ring-target)
+          (throw 'browse-kill-ring-target-overlay-at ov)))
+      (error "No selection-ring item here"))))
+
 
 ;; REPLACES ORIGINAL in `browse-kill-ring.el'.
 ;;
-;; Uses `browse-kill-ring-yank-commands', not necessarily `yank'.
+;; 1. Use the value of  `browse-kill-ring-current-ring', not `kill-ring'.
+;; 2. Move to bol first, so can use this at eol (after the kill's overlay).
+;;
+(defun browse-kill-ring-delete ()       ; Bound to `d' in selection-ring buffer.
+  "Remove all occurrences of selection at point from current selection ring."
+  (interactive)
+  (forward-line 0)
+  (let ((ov  (browse-kill-ring-target-overlay-at (point))))
+    (unwind-protect
+         (progn (setq buffer-read-only  nil)
+                (let ((target  (overlay-get ov 'browse-kill-ring-target)))
+                  (delete-region (overlay-start ov) (1+ (overlay-end ov)))
+                  (set browse-kill-ring-current-ring
+                       (delete target (symbol-value browse-kill-ring-current-ring))))
+                (when (get-text-property (point) 'browse-kill-ring-extra)
+                  (let ((prev  (previous-single-property-change (point) 'browse-kill-ring-extra))
+                        (next  (next-single-property-change (point) 'browse-kill-ring-extra)))
+                    (when prev (incf prev))
+                    (when next (incf next))
+                    (delete-region (or prev (point-min)) (or next (point-max))))))
+      (setq buffer-read-only  t)))
+  (browse-kill-ring-resize-window)
+  (browse-kill-ring-forward 0))
+
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+;; Move to bol first, so can use this at eol (after the kill's overlay).
+(defun browse-kill-ring-current-string (buffer position)
+  "Selection entry in BUFFER that is nearest POSITION."
+  (with-current-buffer buffer
+    (save-excursion
+      (goto-char position)
+      ;; The overlay is at bol but not at eol.  This ensures we can get the string from eol.
+      (forward-line 0)
+      (overlay-get (browse-kill-ring-target-overlay-at (point)) 'browse-kill-ring-target))))
+
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+;; 1. Put error test first.
+;; 2. Added optional arg APPEND/PREPEND, to factor out common code.
+;; 3. Move to bol first, so can use this at eol (after the kill's overlay).
+;; 4. Just use `with-current-buffer'.  No need for explicit `unwind-protect' etc.
+;; 5. Let `yank-excluded-properties' reflect `browse-kill-ring-depropertize'.  Emacs 22+.
+;; 6. (Bug fix) Set window point after inserting.
+;;
+(defun browse-kill-ring-do-insert (bkr-buf kill-pos &optional append/prepend)
+  "Insert the kill that is at position KILL-POS in buffer BKR-BUF.
+BKR-BUF is a browse-kill-ring buffer, with a list of selections.
+Insert it at point unless optional arg APPEND/PREPEND is:
+ `append'  - insert at eob, not at point
+ `prepend' - insert at bob, not at point"
+  (unless (window-live-p browse-kill-ring-original-window)
+    (error "Window `%s' was deleted.  Use `browse-kill-ring' again"
+           browse-kill-ring-original-window))
+;;;   ;; Move to bol first, so can use this at eol (after the overlay).
+;;;   (forward-line 0)
+  (let ((kill-string  (browse-kill-ring-current-string bkr-buf kill-pos)))
+    (with-current-buffer (window-buffer browse-kill-ring-original-window)
+      (save-excursion
+        (let ((yank-excluded-properties  (and browse-kill-ring-depropertize t))
+              (insert-pos                (case append/prepend
+                                           (append   (point-max))
+                                           (prepend  (point-min))
+                                           (t        (point)))))
+          (goto-char insert-pos)
+          (insert (if browse-kill-ring-depropertize
+                      (browse-kill-ring-depropertize-string kill-string)
+                    kill-string))
+          ;; Put point after insertion (mark is before insertion).
+          (set-window-point browse-kill-ring-original-window (point))
+          (when browse-kill-ring-highlight-inserted-item
+            (let ((ov  (make-overlay insert-pos (point))))
+              (overlay-put ov 'face 'highlight)
+              (sit-for 0.5)
+              (delete-overlay ov))))))))
+
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+(defun browse-kill-ring-do-prepend-insert (bkr-buf kill-pos)
+  "`browse-kill-ring-do-insert', with insertion at bob."
+  (browse-kill-ring-do-insert bkr-buf kill-pos 'prepend))
+  
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+(defun browse-kill-ring-do-append-insert (bkr-buf kill-pos)
+  "`browse-kill-ring-do-insert', with insertion at eob."
+  (browse-kill-ring-do-insert bkr-buf kill-pos 'append))
+  
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+;; 1. Move to bol first, so can use this at eol (after the kill's overlay).
+;; 2. Bug fixes.
+;; 
+(defun browse-kill-ring-forward (&optional arg)
+  "Move forward by ARG `kill-ring' entries."
+  (interactive "p")       ; Bound to `TAB', `n' in selection-ring buffer.
+  (forward-line 0)
+  (while (not (zerop arg))
+    (if (< arg 0)
+	(progn (incf arg)
+               (if (overlays-at (point))
+                   (progn
+                     (goto-char (overlay-start (browse-kill-ring-target-overlay-at (point))))
+                     (goto-char (previous-overlay-change (point)))
+                     (goto-char (previous-overlay-change (point))))
+                 (goto-char (previous-overlay-change (point)))
+                 (goto-char (previous-overlay-change (point)))
+                 (when (and (overlays-at (point)) (not (bobp)))
+                   (goto-char (overlay-start (browse-kill-ring-target-overlay-at (point))))))
+               (forward-line 0))
+      (decf arg)
+      (if (overlays-at (point))
+          (progn (goto-char (overlay-end (browse-kill-ring-target-overlay-at (point))))
+                 (goto-char (next-overlay-change (point)))
+                 ;; Don't let, for example, overlay from `show-paren-mode' interfere here.
+                 (while (not (bolp)) (goto-char (next-overlay-change (point)))))
+        (goto-char (next-overlay-change (point)))
+        (unless (eobp) (goto-char (overlay-start (browse-kill-ring-target-overlay-at (point))))))))
+  (when (and browse-kill-ring-highlight-current-entry  (overlays-at (point)))
+    (let ((ovs         (overlay-lists))
+	  (current-ov  (browse-kill-ring-target-overlay-at (point))))
+      (mapcar #'(lambda (ov) (overlay-put ov 'face nil)) (nconc (car ovs) (cdr ovs)))
+      (overlay-put current-ov 'face 'highlight)))
+  (when browse-kill-ring-recenter (recenter 1)))
+
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+;; 1. Derive from Text Mode, so typical movement keys, search keys, etc. work as expected.
+;; 2. Don't define the keymap here, just use it.
+;; 3. Use the appropriate ring for this `browse-kill-ring' buffer.
+;;
+(define-derived-mode browse-kill-ring-mode text-mode
+    "Selection-Ring"
+  "Major mode for browsing selection rings such as the `kill-ring'.
+Do not call `browse-kill-ring-mode' directly - use `browse-kill-ring'.
+
+\\{browse-kill-ring-mode-map}"
+  (set (make-local-variable 'font-lock-defaults)
+       '(nil t nil nil nil (font-lock-fontify-region-function . browse-kill-ring-fontify-region)))
+  (use-local-map browse-kill-ring-mode-map)
+  ;; Use the correct ring for this `browse-kill-ring' buffer.
+  (setq browse-kill-ring-current-ring
+        (if (or (not browse-kill-ring-alternative-ring)
+                (string= (buffer-name) "*Selection Ring: `kill-ring'*"))
+            'kill-ring
+          browse-kill-ring-alternative-ring)))
+
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
+;; Use `browse-kill-ring-yank-commands', not necessarily `yank'.
 ;;
 (defun browse-kill-ring-default-keybindings ()
   "Set up `M-y' so that it can invoke `browse-kill-ring'.
@@ -242,60 +512,35 @@ A yank command is a command in `browse-kill-ring-yank-commands'."
 
 ;; REPLACES ORIGINAL in `browse-kill-ring.el'.
 ;;
-;; Uses the value of  `browse-kill-ring-current-ring', not `kill-ring'.
+;; 1. Move to bol first, so can use this at eol (after the kill's overlay).
+;; 2. Use the value of  `browse-kill-ring-current-ring', not `kill-ring'.
 ;;
-(defun browse-kill-ring-delete ()
-  "Remove the item at point from the current selection ring."
-  (interactive)
-  (let ((over  (car (overlays-at (point)))))
-    (unless (overlayp over) (error "No kill ring item here"))
-    (unwind-protect
-         (progn
-           (setq buffer-read-only nil)
-           (let ((target  (overlay-get over 'browse-kill-ring-target)))
-             (delete-region (overlay-start over) (1+ (overlay-end over)))
-             (set browse-kill-ring-current-ring
-                  (delete target (symbol-value browse-kill-ring-current-ring))))
-           (when (get-text-property (point) 'browse-kill-ring-extra)
-             (let ((prev (previous-single-property-change (point) 'browse-kill-ring-extra))
-                   (next (next-single-property-change (point) 'browse-kill-ring-extra)))
-               (when prev(incf prev))   ; This is some voodoo.
-               (when next(incf next))
-               (delete-region (or prev (point-min)) (or next (point-max))))))
-      (setq buffer-read-only t)))
-  (browse-kill-ring-resize-window)
-  (browse-kill-ring-forward 0))
-
-
-;; REPLACES ORIGINAL in `browse-kill-ring.el'.
-;;
-;; Uses the value of  `browse-kill-ring-current-ring', not `kill-ring'.
-;;
-(defun browse-kill-ring-edit ()
+(defun browse-kill-ring-edit ()         ; Bound to `e' in selection-ring buffer.
   "Edit the current selection ring entry at point."
   (interactive)
-  (let ((overs  (overlays-at (point))))
-    (unless overs (error "No kill ring entry here"))
-    (let* ((target       (overlay-get (car overs) 'browse-kill-ring-target))
+  (forward-line 0)
+  (let ((ovs  (overlays-at (point))))
+    ;; $$$$$$ FIXME - membership of the text is not a sufficient test, to get the correct cell.
+    (let* ((target       (overlay-get (browse-kill-ring-target-overlay-at (point))
+                                      'browse-kill-ring-target))
 	   (target-cell  (member target (symbol-value browse-kill-ring-current-ring))))
-      (unless target-cell(error "Item deleted from the current selection ring"))
+      (unless target-cell (error "Item deleted from the current selection ring"))
       (switch-to-buffer (get-buffer-create "*Kill Ring Edit*"))
-      (setq buffer-read-only nil)
+      (setq buffer-read-only  nil)
       (erase-buffer)
       (insert target)
       (goto-char (point-min))
       (browse-kill-ring-resize-window)
       (browse-kill-ring-edit-mode)
-      (message "%s" (substitute-command-keys
-                     "Use \\[browse-kill-ring-edit-finish] to finish editing."))
-      (setq browse-kill-ring-edit-target target-cell))))
+      (message (substitute-command-keys "Use \\[browse-kill-ring-edit-finish] to finish editing."))
+      (setq browse-kill-ring-edit-target  target-cell))))
 
 
 ;; REPLACES ORIGINAL in `browse-kill-ring.el'.
 ;;
-;; Uses the value of  `browse-kill-ring-current-ring', not `kill-ring'.
+;; Use the value of  `browse-kill-ring-current-ring', not `kill-ring'.
 ;;
-(defun browse-kill-ring-edit-finish ()
+(defun browse-kill-ring-edit-finish ()  ; Bound to `C-c C-c' in `browse-kill-ring-edit-mode-map'
   "Commit the changes to the current selection ring."
   (interactive)
   (if browse-kill-ring-edit-target
@@ -311,102 +556,107 @@ A yank command is a command in `browse-kill-ring-yank-commands'."
 
 ;; REPLACES ORIGINAL in `browse-kill-ring.el'.
 ;;
+;; 1. Use `browse-kill-ring-current-ring', not necessarily `kill-ring'.
+;; 2. Don't require `cl.el' - use local function `browse-kill-ring-remove-dups'.
+;;
+(defun browse-kill-ring-setup (bkr-buf window &optional regexp window-config)
+  "FIXME - no doc string $$$$$$$"
+  (with-current-buffer bkr-buf
+    (unwind-protect
+         (progn
+           (browse-kill-ring-mode)
+           (setq buffer-read-only  nil)
+           (when (eq browse-kill-ring-display-style 'one-line) (setq truncate-lines  t))
+           (let ((inhibit-read-only  t))  (erase-buffer))
+           (setq browse-kill-ring-original-window         window
+                 browse-kill-ring-original-window-config  (or window-config
+                                                              (current-window-configuration)))
+           (let ((items  (mapcar (if browse-kill-ring-depropertize
+                                     #'browse-kill-ring-depropertize-string
+                                   #'copy-sequence)
+                                 (symbol-value browse-kill-ring-current-ring)))
+                 (browse-kill-ring-maximum-display-length
+                  (if (and browse-kill-ring-maximum-display-length
+                           (<= browse-kill-ring-maximum-display-length 3))
+                      4
+                    browse-kill-ring-maximum-display-length)))
+             (unless browse-kill-ring-display-duplicates
+               (setq items  (browse-kill-ring-remove-dups items)))
+             (when (stringp regexp)
+               (setq items  (delq nil (mapcar #'(lambda (item) (and (string-match regexp item) item))
+                                              items))))
+             (funcall (or (cdr (assq browse-kill-ring-display-style browse-kill-ring-display-styles))
+                          (error "Invalid `browse-kill-ring-display-style': %s"
+                                 browse-kill-ring-display-style))
+                      items)
+             (message (let* ((len    (length (symbol-value browse-kill-ring-current-ring)))
+                             (entry  (if (= 1 len) "entry" "entries")))
+                        (concat
+                         (if (and (not regexp) browse-kill-ring-display-duplicates)
+                             (format "%s %s in `%s'" len entry browse-kill-ring-current-ring)
+                           (format "%s (of %s) %s in `%s' shown" (length items) len entry
+                                   browse-kill-ring-current-ring))
+                         (substitute-command-keys "    Type \\[browse-kill-ring-quit] to quit.  \
+\\[describe-mode] for help."))))
+             (set-buffer-modified-p nil)
+             (goto-char (point-min))
+             (browse-kill-ring-forward 0)
+             (when regexp (setq mode-name  (concat "Kill Ring [" regexp "]")))
+             (run-hooks 'browse-kill-ring-hook)
+             (when (and (featurep 'xemacs) font-lock-mode)
+               (browse-kill-ring-fontify-region (point-min) (point-max)))))
+      (setq buffer-read-only  t))))
+
+
+;; REPLACES ORIGINAL in `browse-kill-ring.el'.
+;;
 ;; 1. Added prefix arg.
-;; 2. Added current ring name to name of display buffer: *Kill Ring: `<NAME>'*.
-;; 3. Don't show buffer if ring is empty and buffer is not already shown.  Just message.
-;; 4. Updated doc string to mention `browse-kill-ring-current-ring'.
+;; 2. Added current ring name to name of buffer: *Selection Ring: `<NAME>'*.
+;; 3. Choose right ring if buffer already in `browse-kill-ring-mode'.
+;; 4. Use `browse-kill-ring-original-window' if already in `browse-kill-ring-mode'.
+;; 5. Removed unused `let' binding of `orig-buf'.
+;; 6. Message if ring is empty.
+;; 7. Updated doc string to mention `browse-kill-ring-current-ring'.
 ;;
 (defun browse-kill-ring (&optional other-ring-p)
   "Display the items in `browse-kill-ring-current-ring'.
 With a prefix arg, switch to the other selection ring.
 
-Also, if the current buffer is in `browse-kill-ring-mode', then switch
-to the other selection ring.  When in a `browse-kill-ring' window, you
-can thus use this toggle between the two rings.
-
 \(If `browse-kill-ring-alternative-ring' is nil, then switching to the
 other ring has no effect.)"
   (interactive "P")
+  ;; If this is a browse-kill-ring buffer, use the right ring for it, by default.
   (when (eq major-mode 'browse-kill-ring-mode)
-    (setq other-ring-p  t)
-    (delete-window))
+    (setq browse-kill-ring-current-ring
+          (if (or (not browse-kill-ring-alternative-ring)
+                  (string= (buffer-name) "*Selection Ring: `kill-ring'*"))
+              'kill-ring
+            browse-kill-ring-alternative-ring)))
+  ;; Respect prefix arg to change to other ring.
   (when (and other-ring-p browse-kill-ring-alternative-ring)
     (setq browse-kill-ring-current-ring  (if (eq browse-kill-ring-current-ring 'kill-ring)
                                              browse-kill-ring-alternative-ring
                                            'kill-ring)))
-  (when buffer-read-only (message "Buffer is read-only %s" (current-buffer)))
-  (let ((orig-buf  (current-buffer))
-        (buf       (get-buffer-create (format "*Kill Ring: `%s'*"
-                                              browse-kill-ring-current-ring))))
+  (let ((bkr-buf  (get-buffer-create (format "*Selection Ring: `%s'*"
+                                             browse-kill-ring-current-ring))))
+    ;; $$$$$$ Should I do something special if only one kill?
     (unless (symbol-value browse-kill-ring-current-ring)
-      (message "Selection ring is empty"))
-     ;; If empty ring and BUF is not already displayed, then don't display it.
-    (when (or (symbol-value browse-kill-ring-current-ring)
-              (get-buffer-window buf 'visible))
-      (browse-kill-ring-setup buf (selected-window))
-      (pop-to-buffer buf)
-      (select-frame-set-input-focus (window-frame (selected-window))) ; Windows workaround
-      (browse-kill-ring-resize-window))
-    nil))
+      (message "`%s' is empty" browse-kill-ring-current-ring))
+    (browse-kill-ring-setup bkr-buf (if (eq major-mode 'browse-kill-ring-mode)
+                                        browse-kill-ring-original-window ; Keep same dest window.
+                                      (selected-window)))
+    (pop-to-buffer bkr-buf)
+    (select-frame-set-input-focus (window-frame (selected-window))) ; MS Windows workaround
+    (browse-kill-ring-resize-window))
+  nil)
 
-
-;; REPLACES ORIGINAL in `browse-kill-ring.el'.
-;;
-;; 1. Use `browse-kill-ring-current-ring', not necessarily `kill-ring'.
-;; 2. Don't require `cl.el' - use local function `browse-kill-ring-remove-dups'.
-;;
-(defun browse-kill-ring-setup (buf window &optional regexp window-config)
-  (with-current-buffer buf
-    (unwind-protect
-         (progn
-           (browse-kill-ring-mode)
-           (setq buffer-read-only nil)
-           (when (eq browse-kill-ring-display-style 'one-line) (setq truncate-lines t))
-           (let ((inhibit-read-only  t))  (erase-buffer))
-           (setq browse-kill-ring-original-window   window
-                 browse-kill-ring-original-window-config
-                 (or window-config (current-window-configuration)))
-           (let ((browse-kill-ring-maximum-display-length
-                  (if (and browse-kill-ring-maximum-display-length
-                           (<= browse-kill-ring-maximum-display-length 3))
-                      4
-                    browse-kill-ring-maximum-display-length))
-                 (items  (mapcar (if browse-kill-ring-depropertize
-                                     #'browse-kill-ring-depropertize-string
-                                   #'copy-sequence)
-                                 (symbol-value browse-kill-ring-current-ring))))
-             (unless browse-kill-ring-display-duplicates
-               (setq items (browse-kill-ring-remove-dups items)))
-             (when (stringp regexp)
-               (setq items (delq nil (mapcar #'(lambda (item)
-                                                 (when (string-match regexp item) item))
-                                             items))))
-             (funcall (or (cdr (assq browse-kill-ring-display-style
-                                     browse-kill-ring-display-styles))
-                          (error "Invalid `browse-kill-ring-display-style': %s"
-                                 browse-kill-ring-display-style))
-                      items)
-             (message
-              (let* ((len    (length (symbol-value browse-kill-ring-current-ring)))
-                     (entry  (if (= 1 len) "entry" "entries")))
-                (concat
-                 (if (and (not regexp) browse-kill-ring-display-duplicates)
-                     (format "%s %s in the ring." len entry)
-                   (format "%s (of %s) %s in the ring shown." (length items) len entry))
-                 (substitute-command-keys
-                  "    Type \\[browse-kill-ring-quit] to quit.  \
-\\[describe-mode] for help."))))
-             ;; End code from Michael Slass <mikesl@wrq.com>
-             (set-buffer-modified-p nil)
-             (goto-char (point-min))
-             (browse-kill-ring-forward 0)
-             (when regexp (setq mode-name (concat "Kill Ring [" regexp "]")))
-             (run-hooks 'browse-kill-ring-hook)
-             ;; I will be very glad when I can get rid of this gross
-             ;; hack, which solely exists for XEmacs users.
-             (when (and (featurep 'xemacs) font-lock-mode)
-               (browse-kill-ring-fontify-region (point-min) (point-max)))))
-      (setq buffer-read-only t))))
+(defun browse-kill-ring-switch-to-other-kill-ring () ; Bound to `o' in selection-ring buffer.
+  "Browse the other selection ring.
+If the current ring is `kill-ring' then browse the alternative ring
+\(e.g. `secondary-selection-ring'), and vice versa."
+  (interactive)
+  (unless browse-kill-ring-alternative-ring (error "No alternative kill ring"))
+  (browse-kill-ring 'OTHER))
 
 (defun browse-kill-ring-quit-deletes-window/frame ()
   "Bury buffer.  Delete window or, if dedicated, frame.
@@ -421,24 +671,33 @@ Useful as customized value of `browse-kill-ring-quit-action'."
            ;; Avoid BUF as explicit arg to `bury-buffer', since we want to undisplay it.
            (with-current-buffer buf (bury-buffer))))))
 
-(defun toggle-browse-kill-ring-display-style ()
+(defun toggle-browse-kill-ring-display-style () ; Bound to `t' in selection-ring buffer.
   "Toggle browse-kill-ring-display-style between `separated' and `one-line'."
   (interactive)
-  (setq browse-kill-ring-display-style (case browse-kill-ring-display-style
-                                         (separated 'one-line)
-                                         (otherwise 'separated)))
+  (setq browse-kill-ring-display-style  (case browse-kill-ring-display-style
+                                          (separated 'one-line)
+                                          (otherwise 'separated)))
+  (browse-kill-ring)
   (browse-kill-ring-update)
-  (message "browse-kill-ring-display-style is now %s" browse-kill-ring-display-style))
+  (message "Display style is now %s" (upcase (symbol-name browse-kill-ring-display-style))))
+
+;;; Currently not used for anything.
+;;; (defun browse-kill-ring-kill-number (pos)
+;;;   "Return the `kill-ring' index to use for this kill."
+;;;   (save-excursion
+;;;     (goto-char pos)
+;;;     (if (= (point-min) (previous-overlay-change (point)))
+;;;         0
+;;;       (let ((count  1))
+;;;         (while (and (condition-case nil (progn (browse-kill-ring-forward -1) t) (error nil))
+;;;                     (not (bobp)))
+;;;           (setq count  (1+ count)))
+;;;         count))))
 
 
 ;;; Key Bindings
 
 (browse-kill-ring-default-keybindings)
-
-(define-key browse-kill-ring-mode-map (kbd "t")     'toggle-browse-kill-ring-display-style)
-(define-key browse-kill-ring-mode-map (kbd "<tab>")   'browse-kill-ring-forward)
-(define-key browse-kill-ring-mode-map [(control ?i)]  'browse-kill-ring-forward)
-(define-key browse-kill-ring-mode-map (kbd "<S-tab>") 'browse-kill-ring-previous)
 
 ;;;;;;;;;;;;;;;;;;;;;
 

@@ -16,9 +16,7 @@ The approach can be summed up in two points:
 # Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art and tables, should be formatted with spaces.
 # Tabs are only used for '''expressing the indentation level'''. One tab per "block" -- any remaining whitespace is spaces only.
 
-But isn't this difficult and tedious to carry out in practice? Not if the editor handles it for you! This page provides code which improves on Emacs' auto-indenting: whenever you press the ##<tab>## key, the appropriate amount of tabs and spaces is inserted.
-
-You can still use all spaces if you prefer, of course. The following code merely ensures that ''if'' you enable tabs (maybe when maintaining legacy code), they are inserted in a semantic, size-independent way.
+This page provides code which improves on Emacs' auto-indenting, so that whenever you press the ##<tab>## key, the appropriate amount of tabs and spaces is automatically inserted. (You can still use all spaces if you prefer, of course; the code merely ensures that ''if'' you enable tabs (maybe when maintaining legacy code), the current tab size does not matter.)
 
 [:Implementations]
 == Code ==

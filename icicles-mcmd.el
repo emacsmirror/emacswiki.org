@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 17 09:21:11 2011 (-0700)
+;; Last-Updated: Sun Mar 20 18:24:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16813
+;;     Update #: 16814
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4745,7 +4745,8 @@ You can use this command only from the minibuffer or *Completions*
         ((and (fboundp 'help-follow-symbol) ; Emacs 22+
               (or (fboundp symb) (boundp symb) (facep symb)))
          (with-current-buffer (get-buffer-create "*Help*")
-           (let ((help-xref-following  t)) (help-xref-interned symb)))
+           ;; $$$$$$ (let ((help-xref-following  t)) (help-xref-interned symb)))
+           (help-xref-interned symb))
          (when (fboundp 'fit-frame-if-one-window)
            (save-selected-window (select-window (get-buffer-window "*Help*" 'visible))
                                  (fit-frame-if-one-window))))

@@ -2,22 +2,14 @@ With XFT support, GnuEmacs is able to use anti-aliased fonts in the X11 UI
 since version 23.1. Note that GnuEmacs already supported anti-aliased fonts for
 the Carbon and W32 UIs before.
 
-There is some experimental work going on for XFT support in GNU Emacs. 
-Of course, like for all experimental and unreleased code, you should
-expect problems and you are expected to report them to the proper
-place (i.e. not [[gnu.emacs.help]]) with `M-x report-emacs-bug'. It does,
-however, work fairly well.
-
-
 == Status ==
 
 Xft support is included and enabled by default since emacs 23.1.
 
-== GNU snapshot ==
-* pretest - Emacs 23
-** ftp://alpha.gnu.org/gnu/emacs/pretest/
-** http://alpha.gnu.org/gnu/emacs/pretest/
-
+== GNU Emacs 23 ==
+* release - Emacs 23.x
+** ftp://ftp.gnu.org/pub/gnu/emacs/
+** http://ftp.gnu.org/pub/gnu/emacs/
 
 == Ubuntu Packages ==
 

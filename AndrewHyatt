@@ -2,7 +2,7 @@ I'm a software engineer that spends most of my day in emacs.  I use it for readi
 
 I used to contribute to the JDE project.  I currently make minor contributions to the OrgMode project.
 
-I have started and am working on the [[Google_Wave_for_Emacs]] project, a project to create a client for Google Wave in emacs.
+I used to work on the [[Google_Wave_for_Emacs]] project, a project to create a client for Google Wave in emacs.  But, Wave got de-prioritized.  I may try to spin the websockets library out of it, though.
 
 
 [new:DrewAdams:2010-01-19 04:57 UTC]

@@ -1,23 +1,47 @@
-<b>NOTE: rainbow-delimiters is currently unavailable.</b> It was taken down due to problems using it with various modes. The author has found a better approach to implementing it; the mode is being rewritten from scratch and will be available again shortly.
-
 <b>[[RainbowDelimiters]]</b> is a "rainbow parentheses" mode to colorize parentheses, brackets, and braces. It conveys nesting depth by using a new color for each for each nested level. It correctly colorizes statements of the same depth - if two statements are the same level, they will be the same color.
 
-Each set of delimiters "()[]{}" is colored independently from one another. Parens, brackets, and braces are all colored based on their own depth independent of one another, so even a bracket nested within several levels of parentheses will start with the first (outermost) color, moving to the next color with each additional nested bracket.
+Great care has been taken to make this mode FAST. You should see no discernable change in scrolling or editing speed when using it with delimiter-rich languages such as Clojure, Lisp and Scheme.
+
+Each set of delimiters is colored independently from one another. Parens, brackets, and braces are all colored based on their own individual depth, so even if a bracket is nested within several levels of parentheses it will start with its first (outermost) color, moving to the next color with each additional nested bracket.
 
 You can customize the colors [[RainbowDelimiters]] uses.
 
-<b>NOTE:</b> Colors were taken from the [[http://slinky.imukuppi.org/zenburnpage/ ZenBurn]] theme. If you wish to change them, please M-x customize-group rainbow-delimiters-faces or add the appropriate faces to your color-theme. The customize interface is crude for now.
+<b>NOTE:</b> Default colors are based on the [[http://slinky.imukuppi.org/zenburnpage/ ZenBurn]] theme.
 
-== Download: ==
+= Download: =
 * Lisp:rainbow-delimiters.el
-The mode is currently unavailable for download but will be back within a week.
 
-== Setup instructions: ==
-Add Lisp:rainbow-delimiters.el to your load-path, then:
+= Setup instructions: =
+1. Add Lisp:rainbow-delimiters.el to your load-path.
 
+2. Byte-compile the file (necessary for speed):
+<pre>
+M-x byte-compile-file <location of rainbow-delimiters.el>
+</pre>
+
+3. Add the following to your dot-emacs/init file:
 <pre>
 (require 'rainbow-delimiters)
+;; Add hooks for modes where you want it enabled, for example:
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+</pre>
+
+4. **OPTIONAL**: You can also activate the mode temporarily in a buffer with:
+<pre>
 M-x rainbow-delimiters-mode
 </pre>
+
+== Customizing the color scheme: ==
+Each type of delimiter (paren, bracket, brace) has its own set of faces for depths 1-12.
+
+To *customize the color scheme*, you can use:
+<pre>
+M-x customize-group rainbow-delimiters
+</pre>
+Or add appropriate entries for each face name to your color-theme.el.
+
+Further information is available in the Lisp:rainbow-delimiters.el file.
+
+ 
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

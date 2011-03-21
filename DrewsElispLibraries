@@ -432,7 +432,23 @@ Thanks much for  browse-kill-ring+.el ,
 	))
 }}}
 
-(sorry if I didn't do this edit correctly - first time wikier)
+(sorry if I didn't do this edit correctly - first time wikier) -- LenW
+
+
+
+[new:DrewAdams:2011-03-21 04:14 UTC]
+Thanks for your feedback, Len.  I fixed this differently -- please try the latest.
+
+FYI -- I don't actually use <tt>[[browse-kill-ring+.el]]</tt> (or <tt>[[browse-kill-ring.el]]</tt>).  I use '''[[Icicles]]''' instead for this kind of thing.  In '''Icicles''', `C-y' yanks and `C-- C-y' lets you complete against the `kill-ring'.  IOW, `*Completions*' works like a (better version of) the `browse-kill-ring' buffer for choosing a kill.
+
+Thanks to your instigation, I cleaned up quite a bit of stuff in <tt>[[browse-kill-ring+.el]]</tt> (generally <tt>[[browse-kill-ring.el]]</tt> problems).  Fixed some bugs, etc.
+
+FYI, it turns out that the fix for the bug you noticed is just to `set-window-point' after inserting.  Took me quite a while to figure this out, though, for some reason. -- DrewAdams
+
+
+
+
+
 
 ----
 
