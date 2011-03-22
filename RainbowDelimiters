@@ -2,11 +2,7 @@
 
 Great care has been taken to make this mode FAST. You should see no discernable change in scrolling or editing speed when using it with delimiter-rich languages such as Clojure, Lisp and Scheme.
 
-Each set of delimiters is colored independently from one another. Parens, brackets, and braces are all colored based on their own individual depth, so even if a bracket is nested within several levels of parentheses it will start with its first (outermost) color, moving to the next color with each additional nested bracket.
-
-You can customize the colors [[RainbowDelimiters]] uses.
-
-<b>NOTE:</b> Default colors are based on the [[http://slinky.imukuppi.org/zenburnpage/ ZenBurn]] theme.
+You can customize the colors [[RainbowDelimiters]] uses. Default colors are based on the [[http://slinky.imukuppi.org/zenburnpage/ ZenBurn]] theme.
 
 = Download: =
 * Lisp:rainbow-delimiters.el
@@ -40,7 +36,10 @@ M-x customize-group rainbow-delimiters
 </pre>
 Or add appropriate entries for each face name to your color-theme.el.
 
+The group <code>rainbow-delimiters-all-delimiters-faces</code> contains the default color scheme for the mode. The faces for parens, brackets and braces all inherit from this group. If you want to make a color scheme change that affects all delimiters, just change the faces in the all-delimiters group.
+
 Further information is available in the Lisp:rainbow-delimiters.el file.
+
 
  
 ----

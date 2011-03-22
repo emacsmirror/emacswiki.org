@@ -1,4 +1,4 @@
-<code>yaml-path.el</code> provides a function to display an xpath-like string for the yaml element on the current line. It's meant to complement Yoshiki Kurihara's yaml-mode.el.
+<code>yaml-path.el</code> provides a function to display an xpath-like string for the yaml element on the current line. It's meant to complement Yoshiki Kurihara's YamlMode.
 
 Get it at http://alpheus.me/src/emacs/yaml-path/yaml-path.el
 

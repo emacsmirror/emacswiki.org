@@ -1,4 +1,4 @@
-From the manual, Manual:directory-variables:
+From the manual, Manual:Directory%20Variables:
 
 : If you put a file with a special name ##.dir-locals.el## in a
 directory, Emacs will read it when it visits any file in that directory

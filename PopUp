@@ -4,6 +4,49 @@ popup.el is a visual popup user interface library for Emacs. This
 provides a basic API and common UI widgets such as popup tooltips and
 popup menus.
 
+== Use Case ==
+
+Use popup-menu* to provide a drop-down menu for completion-at-point command (usually accessible via <TAB>).
+This is much simpler than AutoComplete or CompanyMode if you only want the drop-down menu for completion.
+--LinhDang
+
+  (defcustom complete-in-region-use-popup nil
+    "If non-NIL, complete-in-region will popup a menu with the possible completions."
+    :type 'boolean
+    :group 'completion)
+
+  (autoload 'popup-menu* "popup" "Show a popup menu" nil)
+
+  (defun popup-complete-in-region (next-func start end collection &optional predicate)
+    (if (not complete-in-region-use-popup)
+        (funcall next-func start end collection predicate)
+      (let* ((prefix (buffer-substring start end))
+             (completion (try-completion prefix collection predicate))
+             (replacement (if (and (stringp completion) (string= completion prefix))
+                              (popup-menu* (all-completions prefix collection predicate))
+                            completion))
+             (tail (and (stringp replacement)
+                        (not (string= prefix replacement))
+                        (substring replacement (- end start)))))
+        (cond ((eq completion t)
+               (goto-char end)
+               (message "Sole completion")
+               nil)
+              ((null completion)
+               (message "No match")
+               nil)
+              (tail
+               (goto-char end)
+               (insert tail)
+               t)
+              (t
+               (message "completion: something failed!")
+               (funcall next-func start end collection predicate))))))
+
+  (add-hook 'completion-in-region-functions 'popup-complete-in-region)
+
+  (provide 'popup-complete)
+
 == Screenshots ==
 
 [[image:PopupScreenshot1]]
