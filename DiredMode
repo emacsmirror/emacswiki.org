@@ -4,7 +4,7 @@ The closest thing to Dired in MS Windows is Windows Explorer.  In Emacs, we some
 
 The best way to learn about Dired is to try it out: type `C-x d' or `C-x 4 d' and enter a directory name. Then, try various Dired commands. The most important are available on the [[menu bar]] menus '''Operate''', '''Mark''', '''Regexp''', '''Immediate''', and '''Subdir'''. Use the menu to discover some of what is available; the menu also indicates the key sequences you can use as an alternative.
 
-You can read more about Dired mode by reading the help displayed using `C-h m' in a Dired buffer. Even more information is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features.
+You can read more about Dired mode by reading the help displayed using `C-h m' in a Dired buffer. Even more information is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features. (Or read [[Manual:Dired]] online.)
 
 These pages are about vanilla Dired, included with a GnuEmacs distribution:
 

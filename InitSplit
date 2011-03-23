@@ -15,6 +15,7 @@ Get it from here:
 
 * http://newartisans.com/johnw/Emacs/initsplit.el (2008.04.18 : currently this link is dead)
 * ftp://ftp.newartisans.com/pub/emacs/initsplit.el (alternative link)
+* https://github.com/dabrahams/initsplit (a bit enhanced -- doesn't clobber the kill ring, as below)
 ----
 
 One small annoyance I found with this otherwise excellent package is that it clobbers the KillRing quite drastically.  The following piece of advice fixes that.

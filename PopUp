@@ -22,9 +22,10 @@ This is much simpler than AutoComplete or CompanyMode if you only want the drop-
         (funcall next-func start end collection predicate)
       (let* ((prefix (buffer-substring start end))
              (completion (try-completion prefix collection predicate))
-             (replacement (if (and (stringp completion) (string= completion prefix))
-                              (popup-menu* (all-completions prefix collection predicate))
-                            completion))
+             (choice (and (stringp completion)
+                          (string= completion prefix)
+                          (popup-menu* (all-completions prefix collection predicate))))
+             (replacement (or choice completion))
              (tail (and (stringp replacement)
                         (not (string= prefix replacement))
                         (substring replacement (- end start)))))
@@ -39,6 +40,9 @@ This is much simpler than AutoComplete or CompanyMode if you only want the drop-
                (goto-char end)
                (insert tail)
                t)
+              (choice
+               (message "Nothing to do")
+               nil)
               (t
                (message "completion: something failed!")
                (funcall next-func start end collection predicate))))))

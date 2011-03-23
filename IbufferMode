@@ -116,6 +116,10 @@ find a quick way to turn them off. So here is an advice that does the trick:
   
   (ad-activate 'ibuffer-update-title-and-summary)
 
+== Group by version-control parent directory, and show vc status ==
+
+[https://github.com/purcell/ibuffer-vc This extension] to ibuffer-mode can dynamically create filter groups for the listed files' version-control trees, and show their status (e.g. up-to-date, modified etc.).
+
 ----
 
 == Sort by pathname ==

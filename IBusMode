@@ -76,6 +76,7 @@ ibus.el provides ibus-mode minor mode, which allows users on-the-spot style inpu
 : You can customize keybinding which toggles input status:
 
         ;; Use s-SPC to toggle input status
+        (ibus-define-common-key ?\S-\s nil)
         (global-set-key (kbd "s-SPC") 'ibus-toggle)
 
 === Using ibus-anthy ===

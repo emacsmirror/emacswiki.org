@@ -32,6 +32,9 @@ Next, [http://www.emacswiki.org/emacs/uihnscuskc/SiteMap follow this
 link] to set the cookie. This will prevent the reCAPTCHA code from
 being triggered.
 
+=== Editing other wikis is still a problem ===
+There is such a problem with captcha at other wikis: for example, [http://www.haskell.org/haskellwiki/HaskellWiki_talk:Community#captcha_not_visible_in_.28emacs-.29w3m_:.28 the problem described at the Haskell Wiki]. Can a solution be suggested for emacs-w3m for overcoming the captcha barrier?
+
 = Other WThreeM pages =
 
 * WThreeMHintsAndTips - Useful extensions and tips for using w3m

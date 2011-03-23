@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 26 12:58:44 2011 (-0800)
+;; Last-Updated: Tue Mar 22 06:43:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4211
+;;     Update #: 4213
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -256,6 +256,7 @@
 
 ;;; Constants used to define user options --
 
+;;;###autoload
 (defconst icicle-Completions-misc-submenu
     '(misc-menu
       menu-item
@@ -277,6 +278,7 @@
        (icicles-help menu-item "Icicles Help" icicle-minibuffer-help)))
   "Submenu for miscellaneous operations on completions.")
 
+;;;###autoload
 (defconst icicle-Completions-save/retrieve-submenu
     '(save-retrieve-menu
       menu-item
@@ -308,6 +310,7 @@
                  icicle-saved-completion-candidates))))
   "Submenu for saving and retrieving completion candidates.")
 
+;;;###autoload
 (defconst icicle-Completions-sets-submenu
     '(sets-menu
       menu-item
@@ -336,6 +339,7 @@
         :visible (not current-prefix-arg))))
   "Submenu for set operations on completion candidates.")
 
+;;;###autoload
 (defconst icicle-Completions-sorting-submenu
     '(sorting-menu
       menu-item
@@ -359,6 +363,7 @@
         icicle-toggle-alternative-sorting)))
   "Submenu for sorting completion candidates.")
 
+;;;###autoload
 (defconst icicle-Completions-this-candidate-submenu
     '(this-candidate-menu
       menu-item
@@ -382,6 +387,7 @@
        (all-list menu-item "Act on All as a List" icicle-all-candidates-list-action)))
   "Submenu for acting on candidate under the mouse.")
 
+;;;###autoload
 (defconst icicle-Completions-toggle-submenu
     '(toggle-menu
       menu-item
@@ -537,6 +543,7 @@ You can swap this with `icicle-sort-comparer' at any time by using
   :type '(choice (const :tag "None" nil) function) :group 'Icicles-Completions-Display)
 
 ;; Must be before `icicle-dot-string'.
+;;;###autoload
 (defconst icicle-anychar-regexp (let ((strg  (copy-sequence "\\(.\\|[\n]\\)")))
                                   (set-text-properties 0 (length strg)
                                                        '(display "." face highlight)

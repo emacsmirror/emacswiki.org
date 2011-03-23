@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 20 18:25:21 2011 (-0700)
+;; Last-Updated: Tue Mar 22 06:44:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6156
+;;     Update #: 6157
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4362,6 +4362,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/03/22 dadams
+;;     Added autoload cookies for defconsts.
 ;; 2011/02/26 dadams
 ;;     Added: icicle-Completions-(misc|save/retrieve|sets|sorting|this-candidate|toggle)-submenu,
 ;;            icicle-Completions-mouse-3-menu-entries.

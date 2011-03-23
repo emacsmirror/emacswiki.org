@@ -15,16 +15,17 @@ Once you set up pianobar you will have to download the elisp file and place it i
 }}}
 The second line will lazy load the file when you run the command M-x pianobar 
 
-You can set the username and password variables to login automatically when you run pianobar with the following:
+You can set the username, password, and station variables to login automatically when you run pianobar with the following:
 {{{
 (setq pianobar-username "MYEMAIL")
 (setq pianobar-password "MYPASSWORD")
+(setq pianobar-station "0") 
 }}}
 Also if the executable "pianobar" is not on your path you will need to set the variable pianobar-program-command.
 
 == Running == 
 
-Pianobar mode tries to be as unobtrusive as possible so as to not interrupt you while working. It works a lot in the same way that itunes for emacs does in that there is a prefix key (by default f7) that starts any pianobar command. These are globally set so you have them in any mode in any buffer. If you already have f7 bound to something else you can just change the value of the variable "pianobar-key". 
+Pianobar mode tries to be as unobtrusive as possible so as to not interrupt you while working. It functions much like itunes for emacs does in that there is a prefix key (by default f7) that starts any pianobar command. These are globally set so you have them in any mode in any buffer. If you already have f7 bound to something else you can just change the value of the variable "pianobar-key". 
 When the song changes you should get a notification in the message area and if the function "growl" is defined it will notify via growl of the new song. 
 The following are commonly used commands for running pianobar:
 
@@ -33,4 +34,4 @@ The following are commonly used commands for running pianobar:
 * Love Song [f7] + 
 * Hate Song [f7] - 
 
-This mode is still a work in progress so a lot of the commands will have to have some interaction with the *pianobar* process buffer. 
+This mode is still a work in progress so a lot of the commands will have to have some interaction with the "pianobar" process buffer. 

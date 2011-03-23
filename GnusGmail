@@ -1,4 +1,7 @@
 [[es:Gnus_y_Gmail]]
+
+*Note that this page is not GMail-specific.*
+
 [[Gnus]] can connect to the gmail server in two ways: by POP3, or by IMAP. Each protocol behaves in a different way, so you can select the one which better suits your needs. Furthermore, as a third solution you can download your mail with an external program like fetchmail and let Gnus handle it locally.
 
 This page describes how to configure Gnus to read and send mails from your gmail account, and should also explain how to do in Gnus what you're able to do through the web interface.

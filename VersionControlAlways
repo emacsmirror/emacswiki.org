@@ -159,6 +159,42 @@ still in progress. This git wip tool manages hidden side branches that
 live along side every other branch you work on. Any time it's invoked 
 it will commit the state of the working tree to this branch.
 
+
+[new]
+
+Some comments regarding  ensure-in-vc-or-check-in:
+# At least for RCS you should allow also RCS/%s,v
+# I would only restrict it to buffers which possess a buffer-file-name
+# I would not put this function globally in the after-save-hook.
+Either add to the local variables list 
+
+ Local Variables: 
+ eval: (add-hook (make-local-variable 'after-save-hook) 'ensure-in-vc-or-check-in)
+
+or I would write a function, which interactively adds ensure-in-vc-or-check-in locally to that hook and another functions which removes it. 
+
+So here is my modification.
+
+ (defun ensure-in-vc-or-check-in ()
+   "Automatically checkin file ,v can be in the same directory or in the
+ subdirectory RCS. The idea is  to call that function only for files
+ not for buffers. See the function ensure-in-vc-or-check-in-modes  
+ which could be use in an apropriate HOOK."
+   (interactive)
+   (when (buffer-file-name)   
+ 	(if (or (and (file-exists-p (format "%s,v" (buffer-file-name))))
+ 			(and (file-exists-p (format "RCS/%s,v" (file-name-nondirectory buffer-file-name)))))
+ 		(progn
+ 			(vc-checkin (buffer-file-name) nil "")   
+ 			(vc-toggle-read-only) 
+ 			(message "Checked in"))
+ 		  (ding)
+ 		  (beep)  
+  		  (message "You need to check this in! M-x vc-use"))))
+
+
+Uwe Brauer 
+
 ----
 CategoryVersionControl
 CategoryWishList

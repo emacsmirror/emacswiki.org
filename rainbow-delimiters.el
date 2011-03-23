@@ -32,6 +32,11 @@
 ;; - To activate rainbow-delimiters mode temporarily in a buffer:
 ;; M-x rainbow-delimiters-mode
 
+;; NOTE: If you find some parens are not being colored correctly,
+;;       check for unbalanced parentheses above the problem area.
+;;       The next release will provide an unmatched-face to
+;;       avoid this problem.
+
 ;;; Customization:
 
 ;; To customize options including faces for each type of delimiter:
@@ -39,9 +44,9 @@
 ;;
 ;; All-delimiter faces group:
 ;; The group of faces called 'rainbow-parens-all-delimiters-faces'
-;; allow you to make changes to the coloring of all types of
+;; are there so you can make changes to the coloring of all types of
 ;; delimiters at once. Each type of delimiter inherits its faces
-;; from this all-delimiter face group.
+;; from this group.
 ;;
 ;; Changing color scheme for a single type of delimiter:
 ;; If you prefer a separate color scheme for a certain delimiter,
@@ -91,10 +96,14 @@
 ;; pause to colorize the structure the very first time it is
 ;; displayed on screen; from then on editing this structure will
 ;; perform at full speed.
+;;
+;; Default colors have been chosen with the philosophy that it's
+;; better to err on the side of less intrusion than to be more
+;; colorful. Color schemes are always a matter of taste.
+;; If you do take the time to design a new color scheme,
+;; Please send it in! (jeremy.rayman@gmail.com)
 
-;; Default colors come from ZenBurn vim/emacs theme, available here:
-;; http://slinky.imukuppi.org/zenburnpage/
-
+;; NOTE:
 ;; Help would be appreciated in improving the default color scheme.
 ;; Since Emacs does not currently have color correction, colors
 ;; appear differently wide gamut displays compared to how they look
@@ -106,14 +115,14 @@
 ;; This would be a useful contribution.
 
 ;;; Changelog:
-;; 1.0 - Initial public release.
+;; 1.0 - Initial release.
 ;; 1.1 - Stop tracking each delimiter's depth independently.
 ;;       This had lead to confusing results when viewing clojure
 ;;       code. Instead, just color based on current nesting inside
-;;       of all delimiters combined.
-;;     - Add 'all-delimiters' faces to apply a color scheme to all
-;;       delimiter faces at once. Delimiter specific faces now
-;;       inherit from this group.
+;;       all delimiters combined.
+;;     - Added 'all-delimiters' faces to apply a color scheme to
+;;       all delimiters at once. Other faces inherit from this group.
+;; 1.1.1 - Change color scheme to a lighter, more subtle style.
 
 ;;; TODO:
 ;; - Provide option to colorize unmatched delimiters with a special face.
@@ -122,6 +131,7 @@
 ;;; Issues:
 ;; - Rainbow-delimiters does not change the appearance of delimiters when
 ;;   org-mode is enabled. Cause is unknown.
+;; - Unmatched close parentheses throw the colorization off.
 
 ;;; Code:
 
@@ -177,6 +187,12 @@ Attributes set here override the defaults inherited from the all-delimiters grou
 ;; NOTE: The use of repetitious definitions for depth faces is temporary.
 ;; Once the emacs 24 color theme support comes in, this will be reevaluated.
 
+;; Unmatched delimiter face:
+(defface rainbow-delimiters-unmatched-face
+  '((t (:foreground "#88090B")))
+  "Face to color unmatched delimiters with."
+  :group 'rainbow-delimiters)
+
 ;; All Delimiters - face that all other delimiters inherit from.
 ;; Changing the all-delimiters faces affect the faces of all delimiters.
 (defface rainbow-delimiters-all-delimiters-depth-1-face
@@ -185,59 +201,59 @@ Attributes set here override the defaults inherited from the all-delimiters grou
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-2-face
-  '((t (:foreground "#7F9F7F")))
+  '((t (:foreground "#93a8c6")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 2."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-3-face
-  '((t (:foreground "#8CD0D3")))
+  '((t (:foreground "#b0b1a3")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 3."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-4-face
-  '((t (:foreground "#DCA3A3")))
+  '((t (:foreground "#97b098")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 4."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-5-face
-  '((t (:foreground "#385F38")))
+  '((t (:foreground "#aebed8")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 5."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-6-face
-  '((t (:foreground "#F0DFAF")))
+  '((t (:foreground "#b0b0b3")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 6."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-7-face
-  '((t (:foreground "#BCA3A3")))
+  '((t (:foreground "#90a890")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 7."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-8-face
-  '((t (:foreground "#C0BED1")))
+  '((t (:foreground "#a2b6da")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 8."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-9-face
-  '((t (:foreground "#FFCFAF")))
+  '((t (:foreground "#9cb6ad")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 9."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 ;; Emacs doesn't sort face names by number correctly above 1-9; trick it into
 ;; proper sorting by prepending a _ before the faces with depths over 10.
 (defface rainbow-delimiters-all-delimiters-depth-_10-face
-  '((t (:foreground "#F0EFD0")))
+  '((t (:foreground "#83787e")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 10."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-_11-face
-  '((t (:foreground "#F0DFAF")))
+  '((t (:foreground "#e1ddca")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 11."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
 (defface rainbow-delimiters-all-delimiters-depth-_12-face
-  '((t (:foreground "#DFCFAF")))
+  '((t (:foreground "#e0c7c7")))
   "Face inherited by all delimiters in rainbow-delimiters mode, depth 12."
   :group 'rainbow-delimiters-all-delimiters-faces)
 
@@ -522,9 +538,7 @@ e.g. 'rainbow-delimiters-paren-depth-1-face'."
   "Syntax table for counting brace depth, ignoring other delimiter types.")
 
 (defun rainbow-delimiters-depth (point)
-  "Return 3-elt list of nesting depths at POINT for parens, brackets, and braces.
-
-Return depths as a list of the form (paren-depth, bracket-depth, brace-depth)."
+  "Return # of nested levels of parens, brackets, braces POINT is inside of."
   (save-excursion
       (beginning-of-defun)
       (with-syntax-table rainbow-delimiters-delim-syntax-table
@@ -596,10 +610,10 @@ Used by jit-lock for dynamic highlighting."
   (save-excursion
     (goto-char start)
     ;; START can be anywhere in buffer; begin depth counts from values at START.
-    (let* ((depth (rainbow-delimiters-depth start)))
+    (let ((depth (rainbow-delimiters-depth start)))
       (while (and (< (point) end)
                   (re-search-forward rainbow-delimiters-delim-regex end t))
-        (backward-char) ; re-search-forward places point after delim; go back.
+        (backward-char)                 ; re-search-forward places point after delim; go back.
         (unless (rainbow-delimiters-char-ineligible-p (point))
           (let ((delim (char-after (point))))
             (cond ((eq ?\( delim)       ; (
@@ -659,7 +673,13 @@ Used by jit-lock for dynamic highlighting."
 
 (provide 'rainbow-delimiters)
 
-;;; Other possible delimiter colors to use: (wide-gamut)
+;;; rainbow-delimiters.el ends here
+
+
+
+;;; Color schemes and scratchpad for useful colors
+
+;; Other possible delimiter colors to use: (wide-gamut)
 ;; "#7f7f7f"
 ;; "#7f7f91"
 ;; "#7f7fa1"
@@ -693,10 +713,96 @@ Used by jit-lock for dynamic highlighting."
 ;;   "#949194"
 ;;   "#949494"
 
+;; grey green blue brown green yellow
+;; #bdc797
+;; personal/custom design for default srgb colors:
+;; #2B5469 - deep tone blue
+;; #69402B - brown
+;;;;;;;;;;;;
+;;; Original zenburn-derived theme:
+;; grey55
+;; 7F9F7F
+;; 8CD0D3
+;; DCA3A3
+;; 385F38
+;; F0DFAF
+;; BCA3A3
+;; C0BED1
+;; FFCFAF
+;; F0EFD0
+;; F0DFAF
+;; DFCFAF
+;;;;;;;;;;;;
+
+;;;;;;;;;;;;
+;;; Light Theme #1 Final
+;; grey
+;; 93a8c6 light blue
+;; b0b1a3 linenish
+;; 97b098 light sage green
+;; aebed8 light blue
+;; b0b0b3 darklinen/gray
+;; 90a890 sage green
+;; a2b6da semi-light blue
+;; 9cb6ad lightish sage green
+;; 83787e light firebrick
+;; e1ddca yellow linen
+;; e0c7c7 pinkish
+;;;;;;;;;;;;;
+
+;; light theme #1 work in progress: (worked out order by hand)
+;; note: these colors are 1 shade lighter than the final theme #1
+;; grey
+;; a4b9d6 light blue
+;; c0c1b3 light brown
+;; a8c0a8 light hint of sage green
+;; bfcfe9 light blue
+;; 90a8a8 sage green
+;; c0c1b3 linen-like
+;; b3c7eb light blue
+;; adc7be light green
+;; 94898f brown/slightpink
+;; f2eedb linen
+;; f0d8d8 whiteish
+
+
+;; current best light not in order:
+;; grey
+;; #cad8bc light sage looks almost yellow
+;; #bfcfe9 ligght blue
+;; #a4b9d6 other nice light blue
+;; #99c193 excelling light discernable green
+;; #D8D8C0 ivory
+
+
+;; random lighter colors
+;; grey
+;; #bfcfe9 light blue
+;; #a4b9d6 slightly darker light blue
+;; #99c193 GREAT light green
+;; #a8c0a8 light green looks yellowish
+;; #a39762 light sage
+;; #cad8bc light green nice
+
+;; darker from color wheel
+;; 00ab6f
+;; 0b61a4 or 06799f
+;; bf7930
+;; 259238
+;; bfb430 or a69900
+
+;; work in progress slightly too dark:
+;; grey60
+;; #8395A6
+;; #83A68E
+;; #A6A583
+;; #8BA9AC
+;; #83a697
+;; #BCA3A3
+
 ;; personal/custom design for default srgb colors:
 ;; #2B5469 - deep tone blue
 ;; #69402B - brown
 
-;;; rainbow-delimiters.el ends here
 
 
