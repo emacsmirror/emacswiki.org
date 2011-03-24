@@ -2,7 +2,9 @@
 
 Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on, even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
 
-You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; it's easier to get used to a rainbow-parens mode this way. They look best on darker backgrounds. If you use a light background and want a set of darker faces, please leave a note on this wiki page and I will add faces for light backgrounds too. If you want your own set of colors, feel free to change the delimiter faces - information on this can be found below.
+You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; it's easier to get used to a rainbow-parens mode this way. 
+
+The default colors look best on darker backgrounds. If you want a set of more readable faces for light backgrounds, please leave a note on this wiki page saying so and I'll add the appropriate light/dark options to the faces.
 
 = Download: =
 * Lisp:rainbow-delimiters.el

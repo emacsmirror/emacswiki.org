@@ -336,5 +336,13 @@ Any way to add support for user switching? I.e. if you have multiple Twitter acc
 :[new]
 I like the feature in /rcirc/ that allows toggling between unread /msgs and the current coding buffer using `C-c C-@' (`@' -> space). Is there a chance of introducing this feature? -- Djui
 
+[new]
+Mar 23, 2011; I had similar problems, getting the message: "Authorization via OAuth failed. Type M-x twit to retry." on GNU Emacs (Windows), twittering-mode-1.0.0. I know SSL works because I write/use other Emacs applications that consume HTTPS content. The following steps fixed the situation for me: 1) Get the updated CA certificate from Git. 2) Save the certificate to twittering-mode-1.0.0/win-curl/equifax.cer 3) In your .emacs, add:
+{{{
+(setq twittering-curl-program (concat site-lisp-path "/twittering-mode-1.0.0/win-curl/curl.exe"))
+(setq twittering-cert-file (concat site-lisp-path "/twittering-mode-1.0.0/win-curl/equifax.cer"))
+}}}
+Where site-lisp-path expands to your Emacs site-lisp directory. Now when I do M-x twit, I see the successful connection in Wireshark and get the request for my OAuth Pin. -- sboles
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

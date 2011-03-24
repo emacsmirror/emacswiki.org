@@ -1,0 +1,60 @@
+The following describes writing commands that have a different
+behavior when repeated the second time.  For a more general approach see
+SequentialCommand.  See also RepeatKeyDifferentBehaviors.
+
+----
+This definition makes pressing  "End" to go to the end of the line and "End" again to go
+to the end of the buffer.
+
+  (defmacro make-double-command (name args doc-string interactive
+                                      first-form second-form)
+    (let ((int-form (if (not interactive)
+                        '(interactive)
+                      (list 'interactive interactive))))
+      `(progn
+       (defun ,name ,args ,doc-string
+         ,int-form
+         (if (eq last-command this-command)
+             ,(if (and (listp second-form) (> (length second-form) 1))
+                  (cons 'progn second-form)
+                second-form)
+           ,first-form)))))
+  (put 'make-double-command 'lisp-indent-function 2)
+  ;; See DefMacro for an explanation of this call to put
+  
+  (make-double-command my-home ()
+    "Go to beginning of line, or beginning of buffer." 
+    nil
+    (beginning-of-line)
+    (beginning-of-buffer))
+
+-- MarioLang
+
+----
+
+Inserts the string arg if a key is pressed twice.  For example, insert HTML character entities: (by [EmacsWiki:Rick_Bielawski rgb])
+
+{{{
+ (defmacro rgb-insert-if-double (otherwise)
+   "Insert OTHERWISE when the key mapped to this fcn is pressed twice.
+  For example typing && can result in &amp; appearing in place of &&.
+  Use C-u <count> <key> to insert <key> more than once without replace."
+   `(lambda (cnt raw)
+      (interactive "p\nP")
+      (if (and (equal (preceding-char) last-command-char)
+               (not raw))
+          (progn
+              (backward-delete-char 1)
+              (insert ,otherwise))
+          (self-insert-command cnt))))
+ 
+(add-hook 'html-mode-hook
+ (lambda ()
+   (define-key html-mode-map [(<)]  (rgb-insert-if-double "&lt;"))
+   (define-key html-mode-map [(>)]  (rgb-insert-if-double "&gt;"))
+   (define-key html-mode-map [(&)]  (rgb-insert-if-double "&amp;"))
+   (define-key html-mode-map [(\")] (rgb-insert-if-double "&quot;"))))
+}}}
+
+----
+CategoryKeys

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 361 $
+;; RCS Version: $Rev: 362 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,8 +154,6 @@
 ;; It  doesn't  even  try to look like MC, so the help window is gone (you're in
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
-
-;; This is version 4 $Rev: 361 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -512,6 +510,7 @@ substitution may be about to happen."
 
         g, C-c C-c .... refresh pane
         s ............. sort entries (by name, number, size, time or extension)
+        r ............. reverse the order of entries in the active pane (sticky)
         C-o ........... show/hide hidden files (requires dired-omit-mode)
         C-Backspace ... hide/show file attributes in pane
         C-c Backspace . hide/show file attributes in pane (console compatible)
@@ -677,6 +676,7 @@ automatically:
   transition."
   `(let ((inhibit-read-only t)
          (omit (or dired-omit-mode -1))
+         (hidden-attrs (not (null (get sr-selected-window 'hidden-attrs))))
          (path-face sr-current-path-face))
      (hl-line-mode 0)
      ,@body
@@ -685,6 +685,9 @@ automatically:
          (set (make-local-variable 'sr-current-path-face) path-face))
      (if (string= "NUMBER" (get sr-selected-window 'sorting-order))
          (sr-sort-by-operation 'sr-numerical-sort-op))
+     (if (get sr-selected-window 'sorting-reverse)
+         (sr-reverse-pane))
+     (if hidden-attrs (sr-hide-attributes))
      (sr-restore-point-if-same-buffer)))
 
 (defmacro sr-alternate-buffer (form)
@@ -696,7 +699,6 @@ automatically:
      ,form
      (setq sr-this-directory default-directory)
      (sr-keep-buffer)
-     (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes))
      (sr-highlight)
      (if (buffer-live-p dispose)
          (with-current-buffer dispose
@@ -727,9 +729,11 @@ automatically:
   (if (and sr-running
            (sr-equal-dirs dired-directory default-directory)
            (not (equal major-mode 'sr-mode)))
-      (let ((dired-listing-switches dired-listing-switches))
+      (let ((dired-listing-switches dired-listing-switches)
+            (sorting-options (or (get sr-selected-window 'sorting-options) "")))
         (if (null (string-match "^/ftp:" default-directory))
-            (setq dired-listing-switches sr-listing-switches))
+            (setq dired-listing-switches
+                  (concat sr-listing-switches sorting-options)))
         (sr-mode)
         (dired-unadvertise dired-directory))))
 (add-hook 'dired-before-readin-hook 'sr-dired-mode)
@@ -909,6 +913,7 @@ automatically:
 (define-key sr-mode-map "\C-c\d"      'sr-toggle-attributes)
 (define-key sr-mode-map "\M-l"        'sr-toggle-truncate-lines)
 (define-key sr-mode-map "s"           'sr-interactive-sort)
+(define-key sr-mode-map "r"           'sr-reverse-pane)
 (define-key sr-mode-map "\C-e"        'sr-scroll-up)
 (define-key sr-mode-map "\C-y"        'sr-scroll-down)
 (define-key sr-mode-map " "           'sr-scroll-quick-view)
@@ -1869,7 +1874,9 @@ automatically:
                 (local-variable-p 'sr-virtual-buffer))
       (dired-revert)
       (if (string= "NUMBER" (get sr-selected-window 'sorting-order))
-          (sr-sort-by-number t))))
+          (sr-sort-by-number t)
+        (if (get sr-selected-window 'sorting-reverse)
+            (sr-reverse-pane)))))
   (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes))
   (sr-highlight))
 
@@ -1999,6 +2006,7 @@ automatically:
       (sr-sort-virtual option)
     (progn
       (put sr-selected-window 'sorting-order label)
+      (put sr-selected-window 'sorting-options option)
       (let ((dired-listing-switches dired-listing-switches))
         (unless (string-match "^/ftp:" default-directory)
           (setq dired-listing-switches sr-listing-switches))
@@ -2022,7 +2030,9 @@ automatically:
   entries containing unpadded numbers in a more logical order than the presented
   when sorted alphabetically by name."
   (interactive)
-  (sr-sort-by-operation 'sr-numerical-sort-op (unless inhibit-label "NUMBER")))
+  (sr-sort-by-operation 'sr-numerical-sort-op (unless inhibit-label "NUMBER"))
+  (if (get sr-selected-window 'sorting-reverse) (sr-reverse-pane))
+  (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes)))
 
 (defun sr-interactive-sort (order)
   "Prompts for a new sorting order for the active pane and applies it."
@@ -2034,6 +2044,18 @@ automatically:
         ((eq order ?S) (sr-sort-by-size))
         ((eq order ?X) (sr-sort-by-extension))
         (t             (sr-sort-by-name))))
+
+(defun sr-reverse-pane (&optional interactively)
+  "Reverses the contents of the active pane."
+  (interactive "p")
+  (let ((line (line-number-at-pos))
+        (reverse (get sr-selected-window 'sorting-reverse)))
+    (sr-sort-by-operation 'identity)
+    (when interactively
+      (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes))
+      (put sr-selected-window 'sorting-reverse (not reverse))
+      (goto-char (point-min)) (forward-line (1- line))
+      (re-search-forward directory-listing-before-filename-regexp nil t))))
 
 (defun sr-sort-virtual (option)
   "Manages  sorting of buffers in Sunrise VIRTUAL mode."

@@ -30,6 +30,8 @@ hard to lose your work, and it has a great undo command: `##C-/##' or `##C-_##'.
 
 * Enable a random TipOfTheDay.
 
+* Play the game KeyWiz to learn Emacs key bindings. (This works for ViperMode key bindings too.)
+
 
 ----
 CategoryHelp CategoryDotEmacs

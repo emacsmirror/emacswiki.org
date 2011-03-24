@@ -20,7 +20,7 @@ Par la suite, j'ai été amené à travailler sur d'autres technologies et d'aut
 
 * un mode pour rational test real time        (bientôt quand il sera propre)
 * [[kis-mode]] -- un mode pour le développement kabira (KIS) (En cours de wikisation)
-
+* [[diameter-avp]] -- un petit bout de lisp m'ayant servi a valider des traces hexadecimale sur le protocole diameter rfc-3588
 
 == Mon .emacs (unsafe) ==
 
@@ -395,6 +395,11 @@ J'ai volontairement supprimé ou renommé certaines informations (adresse IP / l
 * N'ayant pas trouvé d'autre moyen de contacter l'auteur de cette page, je me permets d'ajouter cette section.
 Je suis très intéressé par le mode pour Rational Test Real Time, même s'il n'est pas encore "propre"...
 Pourriez-vous le diffuser dès maintenant, svp ?
+
+== Réponse ==
+
+j'ai un peu laissé tombé la mise a jour de cette page, mais j'y repasse de temps en temps, je vais voir si j'arrive à la retrouver.
+frances dot frederic chez gmail com
 
 
 ----

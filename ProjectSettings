@@ -50,7 +50,7 @@ at the root level you will have access to the project-root functions.
 This will allow you to write project-specific code.
 
 When ever you are in a project you will have access to
-`project-details' that will look look like this:
+`project-details' that will look like this:
 
 <pre>
 ("Generic Perl Project" . "/home/phil/projects/something")

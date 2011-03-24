@@ -1,0 +1,127 @@
+An idempotent command is a command whose effect when called twice is the same as when called once.  For example, `recenter' (center point in window and redisplay frame), commonly called by `C-l', is idempotent because `C-l' has the same effect as `C-l C-l'.
+
+The code snippet below lets one make use of the sequential `C-l C-l', `C-l C-l C-l', ... keystrokes. As `C-l' is hit, `(recenter nil)', `(recenter 1)', and `(recenter -2)' will be called in order, wrapping back if `C-l' continues to be hit.
+
+{{{
+(defvar my-recenter-points nil)
+
+(defun my-recenter (&optional arg)
+  "Move current line to window's center, top, and bottom, successively.
+With a prefix argument, this is the same as `recenter'."
+  (interactive "P")
+  (if arg
+      (recenter arg)
+    (progn
+      (if (or (not (eq last-command this-command))
+              (null my-recenter-points))
+          (setq my-recenter-points '(nil 0 -1)))
+      (funcall 'recenter (pop my-recenter-points)))))
+
+(global-set-key (kbd "C-l") 'my-recenter)
+}}}
+
+-- Anonymous, 2006-07-06
+
+See also RepeatKeyDifferentBehaviors.
+
+[new:DrewAdams:2007-11-06 18:50 UTC]
+In library Lisp:misc-cmds.el, command `recenter-top-bottom' cycles through ##(recenter)##, ##(recenter 0)##, and ##(recenter -1)##. Library Lisp:setup-keys.el binds this to `C-l'. This means that `C-l' cycles, putting the current line in the center of the window, at the window top, and at the window bottom. And you can still use a prefix arg to explicitly say which line to use. -- DrewAdams
+
+[new]
+I use the following function for sequence commands:
+
+ ;; Sequence commands  1.0
+ (defvar seq-store-times 0)
+ (defvar seq-start-point 0
+   "Stores location of pointer when sequence of calls of the same
+ function was started. This variable is updated by `seq-times'")
+
+ (defun seq-times (name &optional max)
+   "Returns number of times command `name' was executed. If `max'
+ is specified the counter will wrap around at the value of `max'
+ never reaching it. It also updates `seq-start-point'."
+   (if (eq last-command name)
+       (if (= (setq seq-store-times (1+ seq-store-times)) max)
+           (setq seq-store-times 0) seq-store-times)
+     (setq seq-start-point (point) seq-store-times 0)))
+
+
+Now creating double- and more- commands is soo easy:
+
+ (defun my-home ()
+    "Depending on how many times it was called moves the point to:
+ once - beginning of line; twice - indent;
+ three times - beginning of buffer; four times - back to where it was."
+    (interactive)
+    (let ((n (seq-times 'my-home 4)))
+      (cond ((= n 0) (beginning-of-line))
+            ((= n 1) (back-to-indentation))
+            ((= n 2) (beginning-of-buffer))
+            (t (goto-char seq-start-point)))))
+
+ (defun my-end () "Go to end of line or buffer" (interactive)
+   (let ((n (seq-times 'my-end 3)))
+     (cond ((= n 0) (end-of-line))
+           ((= n 1) (end-of-buffer))
+           (t (goto-char seq-start-point)))))
+
+It would be even simpler if there is a way of getting the name of function which called the executing one. -- mina86
+
+[new]
+: Functions don't need to have names and sometimes they have more than one name so what you want might be ambiguous or even nonexistent.  ##(eq last-command name)## can probably be replaced with ##(eq last-command this-command)## if that's what you were looking to do.
+
+[new]
+These are re-implemented in Lisp:sequential-command.el and Lisp:sequential-command-config.el . See `seq-home' and `seq-end'. -- [[rubikitch]]
+
+[new:rubikitch:2008-11-05 10:12 UTC]
+For electric upcase/capitalize/downcase see Lisp:sequential-comand-config.el .
+
+I bound M-u/M-c/M-l to seq-(upcase|capitalize|downcase)-backward-word. -- [[rubikitch]]
+
+[new]
+The function `ash-repeated-command-p' checks to see if the current command was repeated N times.
+
+{{{
+(defvar ash-previous-commands nil
+  "Last N commands.")
+
+(defvar ash-previous-commands-length 64
+  "Number of `ash-previous-commands' to remember.")
+
+(defun ash-pre-command-hook-fun ()
+  "Run before all commands."
+  (let ((len (length ash-previous-commands))
+        (lim ash-previous-commands-length))
+    (setq ash-previous-commands
+          (cons this-command
+                (butlast ash-previous-commands
+                         (1+ (- len lim)))))))
+
+(add-hook 'pre-command-hook 'ash-pre-command-hook-fun)
+
+(defun ash-repeated-command-p (n)
+  "If last N commands are the same return non-nil."
+  (let ((len (length ash-previous-commands)))
+    (and (>= len n)
+       (let* ((cmds (butlast ash-previous-commands (- len n)))
+              (is-eq t))
+         (while (and (cdr cmds) is-eq)
+           (setq is-eq (eq (car cmds) (cadr cmds))
+                 cmds (cdr cmds)))
+         is-eq))))
+}}}
+
+Here's how you'd use it to advise `minibuffer-complete' so that it runs `minibuffer-force-complete' on the third time.
+
+{{{
+(defadvice minibuffer-complete (around ash-maybe-force-complete activate)
+  "Force minibuffer completion on triple-TAB."
+  (when (and (eq this-command 'minibuffer-complete)
+             (ash-repeated-command-p 3))
+      (minibuffer-force-complete))
+    ad-do-it)
+}}}
+
+----
+CategoryCommands
+

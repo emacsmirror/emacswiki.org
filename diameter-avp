@@ -1,0 +1,60 @@
+== diameter avp ==
+
+Voici un petit bout de lisp pour emacs permettant de transformer des listes lisp en trames hexadecimales s'inspirant de la rfc3588.
+
+
+Ces code m'a servit lors de mon travail chez marben products (www.marben-products.com) sur ce protocole afin de valider certaines traces générée en hexadécimales par les couches protocolaires.
+
+Cependant, étant donnée les possibilités d'emacs 23 à créer des processus tcp et en modifiant un peu ce bout de programme pour encoder les trames en binaire au lieu de l'hexadécimal il y'a la possibilité de créer une petite application de test diameter. dans ce cas le décodage serait aussi à faire.
+
+Le fichier peut être récupéré ici <tt>[[diameter-avp.el]]</tt>
+
+== petits exemples d'utilisation ==
+<pre>
+M-x diameter-avp-encode
+(500 1 0 0 10415 "Hello Diameter World")
+</pre>
+
+Donne dans le buffer \*Message\*
+<pre>
+diameter-avp-encode (not-encoded): ((500 1 0 0 10415 Hello Diameter World))
+diameter-avp-encode (encoded): (000001F480000020000028AF48656c6c6f204469616d6574657220576f726c64)
+</pre>
+
+ou encore:
+<pre>
+    (message  "[%s]"
+          (diameter-avp-encode-list '((500  1 0 0 10415 (
+                                                         (501 1 0 0 10415 (
+                                                                           (503 1 1 0 10415 "-----")
+                                                                           (520 1 0 0 10415 0)
+                                                                           (521 0 1 0 10415 "------")
+                                                                           (522 0 0 0 10415 -1)))
+                                                         )
+                                            )
+                                      (500  1 0 0 10415 (
+                                                         (501 1 0 0 10415 (
+                                                                 (503 1 1 0 10415 "-----")
+                                                                 (520 1 0 0 10415 0)
+                                                                 (521 0 1 0 10415 "------")
+                                                                 (522 0 0 0 10415 -1)))
+                                                         (500  1 0 0 10415 (
+                                                                            (501 1 0 0 10415 (
+                                                                                              (503 1 1 0 10415 "-----")
+                                                                                              (520 1 0 0 10415 0)
+                                                                                              (521 0 1 0 10415 "------")
+                                                                                              (522 0 0 0 10415 -1)))
+                                                                            ))))
+                                      (500  1 0 0 10415 (
+                                               (501 1 0 0 10415 (
+                                                                 (503 1 1 0 10415 "-----")
+                                                                 (520 1 0 0 10415 0)
+                                                                 (521 0 1 0 10415 "------")
+                                                                 (522 0 0 0 10415 "------"))))))))
+
+</pre>
+
+Si quelqu'un y trouve une utilité....
+[[FrédéricFrances]]
+ 
+

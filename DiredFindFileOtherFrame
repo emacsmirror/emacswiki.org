@@ -1,0 +1,11 @@
+Here's a small function to open files in new frame from dired. This was requested on the EmacsChannel.
+
+  (defun dired-find-file-other-frame ()
+    "In Dired, visit this file or directory in another window."
+    (interactive)
+    (find-file-other-frame (dired-get-file-for-visit)))
+
+  (eval-after-load "dired"
+    '(define-key dired-mode-map "F" 'dired-find-file-other-frame))
+
+-- AnselmHelbig

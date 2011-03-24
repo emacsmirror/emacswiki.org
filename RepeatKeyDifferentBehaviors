@@ -1,69 +1,25 @@
-This page is about repeatedly using the same [[key]] or [[command]] and getting a different behavior each time.  Such a key or command is thus not idempotent.
+This page is about repeatedly using the same [[key]] or [[command]] and getting a different behavior each time.  Such a key or command is no longer idempotent.
 
 Starting with Emacs 23, `C-l' (`recenter-top-bottom') is an example of this: When you hit `C-l' it moves the current line (with [[point]]) to the middle, the top, or the bottom of the screen, in sequence: middle, top, bottom, middle,...  
 
-The code for this is in standard library ##window.el##.  It is based on `recenter-top-bottom' from <tt>[[misc-cmds.el]]</tt>.  See the source code for the technique used.
+The code for this is in standard library GIT:window.el.  It is based on `recenter-top-bottom' from <tt>[[misc-cmds.el]]</tt> which is based on material submitted to SequentialCommand.  See the source code for the technique used.
 
-The rest of this page indicates some additional ways to make a command or key act differently when it is repeated.
+The following are additional ways to make a command or key act differently when it is repeated.
 
-* `##beginning-of-line+##' and `##end-of-line+##' in <tt>[[misc-cmds.el]]</tt>. Use `C-a' and `C-e' repeatedly to zip up & down the beginnings or ends of lines.  First time: bol/eol, subsequently: next/previous line's bol/eol.
+* `##beginning-of-line+##' and `##end-of-line+##' in <tt>[[misc-cmds.el]]</tt>. Use `C-a' and `C-e' repeatedly to zip up and down the beginnings or ends of lines.  First time: bol/eol, subsequently: next/previous line's bol/eol.
 
 * DoReMi -- Use the arrow keys and the mouse wheel to execute a sequence of commands in sequence or to repeat commands.
 
 * ElectricDotAndDash
 
-* Lisp:sequential-comand-config.el -- Bind ##M-u/M-c/M-l## to ##seq-(upcase|capitalize|downcase)-backward-word##. 
+* RotateText -- Swap between multiple words in a circular list.
 
-* `rgb-insert-if-double' (by [http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski rgb]) -- Insert the string arg if a key is pressed twice.  For example, insert HTML character entities:
+* RotateWordCapitalization -- Switch through capitalization possibilities of current word.
 
-        (defmacro rgb-insert-if-double (otherwise)
-           "Insert OTHERWISE when the key mapped to this fcn is pressed twice.
-          For example typing && can result in &amp; appearing in place of &&.
-          Use C-u <count> <key> to insert <key> more than once without replace."
-           `(lambda (cnt raw)
-              (interactive "p\nP")
-              (if (and (equal (preceding-char) last-command-char)
-                       (not raw))
-                  (progn
-                      (backward-delete-char 1)
-                      (insert ,otherwise))
-                  (self-insert-command cnt))))
- 
-        (add-hook 'html-mode-hook
-         (lambda ()
-           (define-key html-mode-map [(<)]  (rgb-insert-if-double "&lt;"))
-           (define-key html-mode-map [(>)]  (rgb-insert-if-double "&gt;"))
-           (define-key html-mode-map [(&)]  (rgb-insert-if-double "&amp;"))
-           (define-key html-mode-map [(\")] (rgb-insert-if-double "&quot;"))))
+* Lisp:sequential-command-config.el -- Bind ##M-u/M-c/M-l## to ##seq-(upcase|capitalize|downcase)-backward-word##. 
 
-* `make-double-command' (by MarioLang):
-
-        (defmacro make-double-command (name args doc-string interactive
-                                       first-form second-form)
-            (let ((int-form (if (not interactive)
-                                '(interactive)
-                              (list 'interactive interactive))))
-              `(progn
-               (defun ,name ,args ,doc-string
-                 ,int-form
-                 (if (eq last-command this-command)
-                     ,(if (and (listp second-form) (> (length second-form) 1))
-                          (cons 'progn second-form)
-                        second-form)
-                   ,first-form)))))
-
-          (put 'make-double-command 'lisp-indent-function 2)
-
-          (make-double-command my-home ()
-            "Go to beginning of line, or beginning of buffer." 
-            nil
-            (beginning-of-line)
-            (beginning-of-buffer))
-
-
-
-
-
+* DoubleKeyBinding
 
 ----
-CategoryCommands CategoryKeys
+CategoryCommands
+CategoryKeys
