@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Aug 23 15:11:28 2010 (-0500)
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated:
 ;;           By:
 ;;     Update #: 46
@@ -27,6 +27,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 23-Mar-2011    Timothy C. Harper
+;;    Hook up R documentation in completion popup.
 ;; 22-Oct-2010    Matthew L. Fidler  
 ;;    Added caching mechanism for 3 characters or less
 ;; 23-Aug-2010    Matthew L. Fidler
@@ -54,8 +56,8 @@
 ;;
 ;;; Code:
 (defvar ac-R-cache '()
-  "A cache of R autocompletion."
-  )
+  "A cache of R autocompletion.")
+
 (make-variable-buffer-local 'ac-R-cache)
 (defun ac-R-add-to-alist (alist-var elt-cons &optional no-replace)
   "Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
@@ -81,24 +83,29 @@ The test for presence of the car of ELT-CONS is done with `equal'."
         (setq ret (assoc prefix present))
       (if ess-use-R-completion
           (setq ret (ac-R-complete-object-name))
-        (setq ret (ac-internal-complete-object-name))
-        )
+        (setq ret (ac-internal-complete-object-name)))
       (when (>= 3 (length prefix))
-        (ac-R-add-to-alist 'ac-R-cache (list prefix ret))
-        )
-      )
-    (symbol-value 'ret)
-    )
-  )
+        (ac-R-add-to-alist 'ac-R-cache (list prefix ret))))
+    (symbol-value 'ret)))
+
+(defun ess-get-help-text (sym)
+  (interactive)
+  (require 'ess-help)
+  (with-temp-buffer
+    (ess-command (format inferior-ess-help-command sym) (current-buffer))
+    (ess-help-underline)
+    ;; Stata is clean, so we get a big BARF from this.
+    (if (not (string= ess-language "STA"))
+        (ess-nuke-help-bs))
+    (buffer-substring (point-min) (point-max))))
 
 (setq ac-source-R
-      '(
-        (prefix . "\\<[^ \t\n,=.$]*")
+      '((prefix . "\\<[^ \t\n,=.$]*")
         (requires . 1)
         (candidates . ac-R)
-        (cache)
-        )
-      )
+        (document . ess-get-help-text)
+        (cache)))
+
 (defun ac-R-complete-object-name ()
   ;; Modified from ESS
   "Completion in R via R's completion utilities (formerly 'rcompgen').
@@ -127,9 +134,8 @@ To be used instead of ESS' completion engine for R versions >= 2.5.0
 	    (ess-command (concat NS ".completeToken()\n"))
 	    (ess-get-words-from-vector
 	     (concat NS ".retrieveCompletions()\n")))))
-    (symbol-value 'possible-completions)
-    )
-  )
+    (symbol-value 'possible-completions)))
+
 (defun ac-internal-complete-object-name (&optional listcomp)
   "Perform completion on `ess-language' object preceding point.
 The object is compared against those objects known by
@@ -203,8 +209,11 @@ completions are listed [__UNIMPLEMENTED__]."
         (lambda ()
           (add-to-list 'ac-sources 'ac-source-R)
           (make-local-variable ac-ignore-case)
-          (setq ac-ignore-case nil)
-          )
-        )
+          (setq ac-ignore-case nil)))
+(add-hook 'inferior-ess-mode-hook
+        (lambda ()
+          (add-to-list 'ac-sources 'ac-source-R)
+          (make-local-variable ac-ignore-case)
+          (setq ac-ignore-case nil)))
 
 (provide 'ac-R)

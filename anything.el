@@ -1847,7 +1847,7 @@ Anything plug-ins are realized by this function."
 ;; `anything-document-attribute' is public API.
 (defadvice documentation-property (after anything-document-attribute activate)
   "Hack to display plug-in attributes' documentation as `anything-sources' docstring."
-  (when (eq symbol 'anything-sources)
+  (when (eq (ad-get-arg 0) 'anything-sources)
     (setq ad-return-value
           (concat ad-return-value "\n"
                   (mapconcat (lambda (sym) (get sym 'anything-attrdoc))
@@ -2816,7 +2816,7 @@ if optional NOUPDATE is non-nil, anything buffer is not changed."
 
 (defadvice documentation-property (after anything-document-type-attribute activate)
   "Hack to display type attributes' documentation as `anything-type-attributes' docstring."
-  (when (eq symbol 'anything-type-attributes)
+  (when (eq (ad-get-arg 0) 'anything-type-attributes)
     (setq ad-return-value
           (concat ad-return-value "\n\n++++ Types currently defined ++++\n"
                   (mapconcat (lambda (sym) (get sym 'anything-typeattrdoc))

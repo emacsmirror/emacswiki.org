@@ -114,12 +114,11 @@ The function `ash-repeated-command-p' checks to see if the current command was r
 Here's how you'd use it to advise `minibuffer-complete' so that it runs `minibuffer-force-complete' on the third time.
 
 {{{
-(defadvice minibuffer-complete (around ash-maybe-force-complete activate)
+(defadvice minibuffer-complete (after ash-maybe-force-complete activate)
   "Force minibuffer completion on triple-TAB."
   (when (and (eq this-command 'minibuffer-complete)
              (ash-repeated-command-p 3))
-      (minibuffer-force-complete))
-    ad-do-it)
+    (minibuffer-force-complete)))
 }}}
 
 ----
