@@ -123,15 +123,17 @@
 ;;     - Added 'all-delimiters' faces to apply a color scheme to
 ;;       all delimiters at once. Other faces inherit from this group.
 ;; 1.1.1 - Change color scheme to a lighter, more subtle style.
+;; 1.1.2: (2011-03-25)
+;; - Add an unmatched-delimiter face and correct problem with
+;;   coloring of text following unmatched closing delims.
 
 ;;; TODO:
-;; - Provide option to colorize unmatched delimiters with a special face.
 ;; - Add support for nested tags (XML, HTML)
 
 ;;; Issues:
 ;; - Rainbow-delimiters does not change the appearance of delimiters when
 ;;   org-mode is enabled. Cause is unknown.
-;; - Unmatched close parentheses throw the colorization off.
+
 
 ;;; Code:
 
@@ -541,8 +543,12 @@ e.g. 'rainbow-delimiters-paren-depth-1-face'."
   "Return # of nested levels of parens, brackets, braces POINT is inside of."
   (save-excursion
       (beginning-of-defun)
-      (with-syntax-table rainbow-delimiters-delim-syntax-table
+      (let ((depth
+             (with-syntax-table rainbow-delimiters-delim-syntax-table
                (car (parse-partial-sexp (point) point)))))
+        (if (>= depth 0)
+            depth
+          0)))) ; check for negative depths from unmatched closing parens.
 
 
 ;;; Text properties
@@ -561,7 +567,9 @@ Sets text properties:
 `font-lock-face' to the corresponding delimiter face.
 `rear-nonsticky' to prevent color from bleeding into subsequent characters typed by the user."
   (with-silent-modifications
-    (let ((delim-face (rainbow-delimiters-depth-face delim-type depth)))
+    (let ((delim-face (if (<= depth 0)
+                          "rainbow-delimiters-unmatched-face"
+                        (rainbow-delimiters-depth-face delim-type depth))))
       ;; (when (eq depth -1) (message "Unmatched delimiter at char %s." point))
       (add-text-properties point (1+ point)
                            `(font-lock-face ,delim-face
@@ -613,7 +621,7 @@ Used by jit-lock for dynamic highlighting."
     (let ((depth (rainbow-delimiters-depth start)))
       (while (and (< (point) end)
                   (re-search-forward rainbow-delimiters-delim-regex end t))
-        (backward-char)                 ; re-search-forward places point after delim; go back.
+        (backward-char) ; re-search-forward places point after delim; go back.
         (unless (rainbow-delimiters-char-ineligible-p (point))
           (let ((delim (char-after (point))))
             (cond ((eq ?\( delim)       ; (
@@ -625,7 +633,8 @@ Used by jit-lock for dynamic highlighting."
                    (rainbow-delimiters-propertize-delimiter (point)
                                                             :paren
                                                             depth)
-                   (setq depth (1- depth)))
+                   (setq depth (or (and (<= depth 0) 0) ; unmatched paren
+                                   (1- depth))))
                   ((eq ?\[ delim)       ; [
                    (setq depth (1+ depth))
                    (rainbow-delimiters-propertize-delimiter (point)
@@ -635,7 +644,8 @@ Used by jit-lock for dynamic highlighting."
                    (rainbow-delimiters-propertize-delimiter (point)
                                                             :bracket
                                                             depth)
-                   (setq depth (1- depth)))
+                   (setq depth (or (and (<= depth 0) 0) ; unmatched bracket
+                                   (1- depth))))
                   ((eq ?\{ delim)       ; {
                    (setq depth (1+ depth))
                    (rainbow-delimiters-propertize-delimiter (point)
@@ -645,7 +655,8 @@ Used by jit-lock for dynamic highlighting."
                    (rainbow-delimiters-propertize-delimiter (point)
                                                             :brace
                                                             depth)
-                   (setq depth (1- depth))))))
+                   (setq depth (or (and (<= depth 0) 0) ; unmatched brace
+                                   (1- depth)))))))
         ;; move past delimiter so re-search-forward doesn't pick it up again
         (forward-char)))))
 
@@ -667,7 +678,7 @@ Used by jit-lock for dynamic highlighting."
   (if (not rainbow-delimiters-mode)
       (progn
         (jit-lock-unregister 'rainbow-delimiters-propertize-region)
-         (rainbow-delimiters-unpropertize-region (point-min) (1- (point-max))))
+        (rainbow-delimiters-unpropertize-region (point-min) (1- (point-max))))
     (jit-lock-register 'rainbow-delimiters-propertize-region t)))
 
 
@@ -677,7 +688,9 @@ Used by jit-lock for dynamic highlighting."
 
 
 
-;;; Color schemes and scratchpad for useful colors
+;;; --- Scratchpad for colors and color schemes ---
+
+;; Order of colors: grey blue brown green yellow blue brown ...
 
 ;; Other possible delimiter colors to use: (wide-gamut)
 ;; "#7f7f7f"
@@ -713,12 +726,6 @@ Used by jit-lock for dynamic highlighting."
 ;;   "#949194"
 ;;   "#949494"
 
-;; grey green blue brown green yellow
-;; #bdc797
-;; personal/custom design for default srgb colors:
-;; #2B5469 - deep tone blue
-;; #69402B - brown
-;;;;;;;;;;;;
 ;;; Original zenburn-derived theme:
 ;; grey55
 ;; 7F9F7F
@@ -732,9 +739,7 @@ Used by jit-lock for dynamic highlighting."
 ;; F0EFD0
 ;; F0DFAF
 ;; DFCFAF
-;;;;;;;;;;;;
 
-;;;;;;;;;;;;
 ;;; Light Theme #1 Final
 ;; grey
 ;; 93a8c6 light blue
@@ -748,9 +753,8 @@ Used by jit-lock for dynamic highlighting."
 ;; 83787e light firebrick
 ;; e1ddca yellow linen
 ;; e0c7c7 pinkish
-;;;;;;;;;;;;;
 
-;; light theme #1 work in progress: (worked out order by hand)
+;;; Light theme #1 work in progress: (worked out order by hand)
 ;; note: these colors are 1 shade lighter than the final theme #1
 ;; grey
 ;; a4b9d6 light blue
@@ -765,15 +769,13 @@ Used by jit-lock for dynamic highlighting."
 ;; f2eedb linen
 ;; f0d8d8 whiteish
 
-
-;; current best light not in order:
+;; nice light colors not in order:
 ;; grey
 ;; #cad8bc light sage looks almost yellow
 ;; #bfcfe9 ligght blue
 ;; #a4b9d6 other nice light blue
 ;; #99c193 excelling light discernable green
 ;; #D8D8C0 ivory
-
 
 ;; random lighter colors
 ;; grey
@@ -784,7 +786,7 @@ Used by jit-lock for dynamic highlighting."
 ;; #a39762 light sage
 ;; #cad8bc light green nice
 
-;; darker from color wheel
+;; darker colors from color wheel
 ;; 00ab6f
 ;; 0b61a4 or 06799f
 ;; bf7930
@@ -803,6 +805,3 @@ Used by jit-lock for dynamic highlighting."
 ;; personal/custom design for default srgb colors:
 ;; #2B5469 - deep tone blue
 ;; #69402B - brown
-
-
-

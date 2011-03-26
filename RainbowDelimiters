@@ -9,7 +9,10 @@ The default colors look best on darker backgrounds. If you want a set of more re
 = Download: =
 * Lisp:rainbow-delimiters.el
 
-* Current release: 1.1.1
+* Current release: <b>1.1.2</b> (2011-03-25)
+** Add unmatched-delimiter face.
+** Bugfix: Correctly color text following unmatched closing delimiters.
+
 
 = Setup instructions: =
 1. Add Lisp:rainbow-delimiters.el to your load-path.

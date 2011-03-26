@@ -42,3 +42,7 @@ public var sides:Array = [
 [new]
 
 http://code.google.com/p/flyparse-mode/ - an ActionScript parser.
+
+[new]
+
+(require 'cl)

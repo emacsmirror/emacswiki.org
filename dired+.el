@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Feb 24 14:57:23 2011 (-0800)
+;; Last-Updated: Fri Mar 25 15:32:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3079
+;;     Update #: 3082
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -218,6 +218,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/03/25 dadams
+;;     diredp-bookmark: Fixed typo: bmkp-file-indirect-set -> bmkp-file-target-set.
 ;; 2011/02/11 dadams
 ;;     diredp-deletion, diredp-deletion-file-name, diredp-executable-tag:
 ;;       Made default the same for dark background as for light.
@@ -2112,8 +2114,8 @@ Return nil for success, file name of unsuccessful operation otherwise."
   (let ((file  (dired-get-file-for-visit))
         failure)
     (condition-case err
-        (if (fboundp 'bmkp-file-indirect-set)
-            (bmkp-file-indirect-set file)
+        (if (fboundp 'bmkp-file-target-set)
+            (bmkp-file-target-set file)
           (let ((bookmark-make-record-function
                  (cond ((and (require 'image nil t) (require 'image-mode nil t)
                              (condition-case nil (image-type file) (error nil)))
@@ -2127,7 +2129,7 @@ Return nil for success, file name of unsuccessful operation otherwise."
       (error (setq failure  (error-message-string err))))
     (if (not failure)
 	nil                             ; Return nil for success.
-      (if (fboundp 'bmkp-file-indirect-set)
+      (if (fboundp 'bmkp-file-target-set)
           (dired-log failure)
         (dired-log "Failed to create bookmark for `%s':\n%s\n" file failure))
       (dired-make-relative file))))     ; Return file name for failure.
