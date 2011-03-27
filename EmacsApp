@@ -52,6 +52,41 @@ For those that like their PATHs from .bashrc and would like the environment.plis
 
 CREDIT GOES TO: http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html
 
+== Alternative Path Solution ==
+
+I found the above to be not quite right on my Mac OS 10.6 laptop.  The ##defaults## command generated gibberish in my ##environment.plist## file so I took the approach of creating a startup script (##~/bin/macosx-startup##) and added it to my User account login items list.  ##macosx-startup## is a bash one-liner:
+
+    #!/bin/bash
+    bash -l -c "/Applications/Emacs.app/Contents/MacOS/Emacs --batch -l ~/lib/emacs/elisp/macosx/environment-support.el -f generate-env-plist"
+
+where ##environment-support.el## is:
+
+    ;;; Provide support for the environment on Mac OS X
+
+    (defun generate-env-plist ()
+      "Dump the current environment into the ~/.MacOSX/environment.plist file."
+      ;; The system environment is found in the global variable:
+      ;; 'initial-environment as a list of "KEY=VALUE" pairs.
+      (let ((list initial-environment)
+            pair start)
+        ;; clear out the current environment settings
+        (find-file "~/.MacOSX/environment.plist")
+        (goto-char (point-min))
+        (setq start (search-forward "<dict>\n"))
+        (search-forward "</dict>")
+        (beginning-of-line)
+        (delete-region start (point))
+        (while list
+          (setq pair (split-string (car list) "=")
+                list (cdr list))
+          (insert "  <key>" (nth 0 pair) "</key>\n")
+          (insert "  <string>" (nth 1 pair) "</string>\n"))
+        ;; Save the buffer.
+        (save-buffer)))
+
+Note: You must create a dummy ##environment.plist## file to seed the process.
+
+
 == Launching from Spotlight ==
 
 Because Spotlight's parent process is launchd, Emacs won't pick up any environment variables you have set in your ##.bashrc## or similar. To set environment variables for launchd, put them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.

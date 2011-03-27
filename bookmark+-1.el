@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Mar 17 08:56:03 2011 (-0700)
+;; Last-Updated: Sat Mar 26 17:03:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1059
+;;     Update #: 1152
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -130,14 +130,20 @@
 ;;    `bmkp-dired-jump-other-window', `bmkp-edit-bookmark',
 ;;    `bmkp-edit-bookmark-record', `bmkp-edit-bookmark-record-mode',
 ;;    `bmkp-edit-bookmark-record-send', `bmkp-empty-file',
-;;    `bmkp-file-target-set', `bmkp-file-jump',
-;;    `bmkp-file-jump-other-window', `bmkp-gnus-jump',
-;;    `bmkp-gnus-jump-other-window', `bmkp-info-jump',
-;;    `bmkp-info-jump-other-window', `bmkp-jump-in-navlist',
-;;    `bmkp-jump-in-navlist-other-window', `bmkp-jump-to-type',
-;;    `bmkp-jump-to-type-other-window', `bmkp-list-all-tags',
-;;    `bmkp-list-defuns-in-commands-file', `bmkp-local-file-jump',
-;;    `bmkp-local-file-jump-other-window',
+;;    `bmkp-file-target-set', `bmkp-file-all-tags-jump',
+;;    `bmkp-file-all-tags-jump-other-window',
+;;    `bmkp-file-all-tags-regexp-jump',
+;;    `bmkp-file-all-tags-regexp-jump-other-window', `bmkp-file-jump',
+;;    `bmkp-file-jump-other-window', `bmkp-file-some-tags-jump',
+;;    `bmkp-file-some-tags-jump-other-window',
+;;    `bmkp-file-some-tags-regexp-jump',
+;;    `bmkp-file-some-tags-regexp-jump-other-window',
+;;    `bmkp-gnus-jump', `bmkp-gnus-jump-other-window',
+;;    `bmkp-info-jump', `bmkp-info-jump-other-window',
+;;    `bmkp-jump-in-navlist', `bmkp-jump-in-navlist-other-window',
+;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
+;;    `bmkp-list-all-tags', `bmkp-list-defuns-in-commands-file',
+;;    `bmkp-local-file-jump', `bmkp-local-file-jump-other-window',
 ;;    `bmkp-make-function-bookmark', `bmkp-man-jump',
 ;;    `bmkp-man-jump-other-window', `bmkp-menu-jump-other-window'
 ;;    (Emacs 20, 21), `bmkp-navlist-bmenu-list',
@@ -259,7 +265,8 @@
 ;;    `bmkp-dired-bookmark-p', `bmkp-dired-subdirs',
 ;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every', `bmkp-face-prop',
-;;    `bmkp-file-alist-only', `bmkp-file-alpha-cp',
+;;    `bmkp-file-alist-only', `bmkp-file-all-tags-alist-only',
+;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
 ;;    `bmkp-file-attribute-2-cp', `bmkp-file-attribute-3-cp',
 ;;    `bmkp-file-attribute-4-cp', `bmkp-file-attribute-5-cp',
@@ -267,7 +274,9 @@
 ;;    `bmkp-file-attribute-8-cp', `bmkp-file-attribute-9-cp',
 ;;    `bmkp-file-attribute-10-cp', `bmkp-file-attribute-11-cp',
 ;;    `bmkp-file-bookmark-p', `bmkp-file-names', `bmkp-file-remote-p',
-;;    `bmkp-float-time', `bmkp-full-tag', `bmkp-function-bookmark-p',
+;;    `bmkp-file-some-tags-alist-only',
+;;    `bmkp-file-some-tags-regexp-alist-only', `bmkp-float-time',
+;;    `bmkp-full-tag', `bmkp-function-bookmark-p',
 ;;    `bmkp-get-buffer-name', `bmkp-get-end-position',
 ;;    `bmkp-get-tag-value', `bmkp-get-tags', `bmkp-get-visit-time',
 ;;    `bmkp-get-visits-count', `bmkp-gnus-alist-only',
@@ -3405,6 +3414,44 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-file-bookmark-p bookmark-alist))
 
+(defun bmkp-file-all-tags-alist-only (tags)
+  "`bookmark-alist', with only file bookmarks having all tags in TAGS.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk)
+       (and (bmkp-file-bookmark-p bmk)
+            (let ((bmk-tags  (bmkp-get-tags bmk)))
+              (and bmk-tags (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+   bookmark-alist))
+
+(defun bmkp-file-all-tags-regexp-alist-only (regexp)
+  "`bookmark-alist', with only file bookmarks having all tags match REGEXP.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk)
+       (and (bmkp-file-bookmark-p bmk)
+            (let ((bmk-tags  (bmkp-get-tags bmk)))
+              (and bmk-tags (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                        bmk-tags)))))
+   bookmark-alist))
+
+(defun bmkp-file-some-tags-alist-only (tags)
+  "`bookmark-alist', with only file bookmarks having some tags in TAGS.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
+                        (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))
+   bookmark-alist))
+
+(defun bmkp-file-some-tags-regexp-alist-only (regexp)
+  "`bookmark-alist', with only file bookmarks having some tags match REGEXP.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
+                        (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                   (bmkp-get-tags bmk))))
+   bookmark-alist))
+
 (defun bmkp-gnus-alist-only ()
   "`bookmark-alist', filtered to retain only Gnus bookmarks.
 A new list is returned (no side effects)."
@@ -5670,8 +5717,7 @@ particular, for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-jump-to-type-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j :'
-  "Jump to a bookmark of a given type.  You are prompted for the type.
-See `bmkp-jump-to-type'."
+  "`bmkp-jump-to-type', but in another window."
   (interactive
    (let* ((completion-ignore-case  t)
           (type-cands              bmkp-types-alist)
@@ -5694,8 +5740,7 @@ This is a specialization of `bookmark-jump'."
 
 ;;;###autoload
 (defun bmkp-autonamed-jump-other-window (bookmark-name) ; `C-x 4 j # #'
-  "Jump to a autonamed bookmark in another window.
-See `bmkp-autonamed-jump'."
+  "`bmkp-autonamed-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-autonamed-alist-only)))
      (list (bmkp-read-bookmark-for-type "autonamed " alist t nil 'bmkp-autonamed-history))))
@@ -5712,8 +5757,7 @@ This is a specialization of `bookmark-jump'."
 
 ;;;###autoload
 (defun bmkp-autonamed-this-buffer-jump-other-window (bookmark-name) ; `C-x 4 j # .'
-  "Jump to a autonamed bookmark in the current buffer, in another window.
-See `bmkp-autonamed-jump'."
+  "`bmkp-autonamed-this-buffer-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-autonamed-this-buffer-alist-only)))
      (list (bmkp-read-bookmark-for-type "autonamed " alist t nil 'bmkp-autonamed-history))))
@@ -5754,8 +5798,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-dired-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j d'
-  "Jump to a Dired bookmark in another window.
-See `bmkp-dired-jump'."
+  "`bmkp-dired-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-dired-alist-only)))
      (list (bmkp-read-bookmark-for-type "Dired " alist t nil 'bmkp-dired-history)
@@ -5779,8 +5822,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-dired-jump-current-other-window (bookmark-name &optional use-region-p)
-  "Jump to a Dired bookmark for the current directory in another window.
-See `bmkp-dired-jump-current'."
+  "`bmkp-dired-jump-current', but in another window."
   (interactive
    (let ((alist  (bmkp-dired-alist-only)))
      (list (bmkp-read-bookmark-for-type "Dired " alist t
@@ -5804,8 +5846,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j f'
-  "Jump to a file or directory bookmark in another window.
-See `bmkp-file-jump'."
+  "`bmkp-file-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "file " alist t nil 'bmkp-file-history)
@@ -5825,8 +5866,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-gnus-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j g'
-  "Jump to a Gnus bookmark in another window.
-See `bmkp-gnus-jump'."
+  "`bmkp-gnus-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-gnus-alist-only)))
      (list (bmkp-read-bookmark-for-type "Gnus " alist t nil 'bmkp-gnus-history)
@@ -5846,8 +5886,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-info-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j i'
-  "Jump to an Info bookmark in another window.
-See `bmkp-info-jump'."
+  "`bmkp-info-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-info-alist-only)))
      (list (bmkp-read-bookmark-for-type "Info " alist t nil 'bmkp-info-history)
@@ -5867,8 +5906,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-local-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j l'
-  "Jump to a local file or directory bookmark in another window.
-See `bmkp-local-file-jump'."
+  "`bmkp-local-file-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-local-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "local file " alist t nil 'bmkp-local-file-history)
@@ -5888,8 +5926,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-man-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j m'
-  "Jump to a `man'-page bookmark in another window.
-See `bmkp-man-jump'."
+  "`bmkp-man-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-man-alist-only)))
      (list (bmkp-read-bookmark-for-type "`man' " alist t nil 'bmkp-man-history)
@@ -5909,8 +5946,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-non-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j b'
-  "Jump to a non-file (buffer) bookmark in another window.
-See `bmkp-non-file-jump'."
+  "`bmkp-non-file-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-non-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "non-file (buffer) " alist t nil 'bmkp-non-file-history)
@@ -5927,8 +5963,7 @@ This is a specialization of `bookmark-jump', but without a prefix arg."
 
 ;;;###autoload
 (defun bmkp-region-jump-other-window (bookmark-name) ; `C-x 4 j r'
-  "Jump to a region bookmark in another window.
-See `bmkp-region-jump'."
+  "`bmkp-region-jump', but in another window."
   (interactive (list (bmkp-read-bookmark-for-type "region " (bmkp-region-alist-only) t nil
                                                   'bmkp-region-history)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window t))
@@ -5946,8 +5981,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-remote-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j n'
-  "Jump to a remote file or directory bookmark in another window.
-See `bmkp-remote-file-jump'."
+  "`bmkp-remote-file-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-remote-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "remote file " alist t nil 'bmkp-remote-file-history)
@@ -5973,8 +6007,7 @@ for info about using a prefix argument."
 ;;;###autoload
 (defun bmkp-specific-buffers-jump-other-window (buffers bookmark-name
                                                 &optional use-region-p) ; `C-x 4 j = b'
-  "Jump to a bookmark for a buffer in list BUFFERS in another window.
-See `bmkp-specific-buffers-jump'."
+  "`bmkp-specific-buffers-jump', but in another window."
   (interactive
    (let ((buffs  ())
          buff)
@@ -6004,8 +6037,7 @@ for info about using a prefix argument."
 ;;;###autoload
 (defun bmkp-specific-files-jump-other-window (files bookmark-name
                                               &optional use-region-p) ; `C-x 4 j = f'
-  "Jump to a bookmark for a buffer in list BUFFERS in another window.
-See `bmkp-specific-buffers-jump'."
+  "`bmkp-specific-files-jump', but in another window."
   (interactive
    (let ((use-file-dialog  nil)
          (files            ())
@@ -6031,8 +6063,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-this-buffer-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j .'
-  "Jump to a bookmark for the current buffer in another window.
-See `bmkp-this-buffer-jump'."
+  "`bmkp-this-buffer-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-this-buffer-alist-only)))
      (unless alist  (error "No bookmarks for this buffer"))
@@ -6061,8 +6092,7 @@ See `bmkp-this-buffer-jump'."
 
 ;;; ;;;###autoload
 ;;; (defun bmkp-this-file-jump-other-window (bookmark-name &optional use-region-p)
-;;;   "Jump to a bookmark for the current file in another window.
-;;; See `bmkp-this-file-jump'."
+;;;   "`bmkp-this-file-jump', but in another window."
 ;;;   (interactive
 ;;;    (progn (unless (or (buffer-file-name) (and (eq major-mode 'dired-mode)
 ;;;                                               (if (consp dired-directory)
@@ -6100,8 +6130,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-url-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j u'
-  "Jump to an URL bookmark in another window.
-See `bmkp-url-jump'."
+  "`bmkp-url-jump', but in another window."
   (interactive
    (let ((alist  (if (fboundp 'w3m-list-buffers)
                      (bmkp-url-alist-only)
@@ -6123,8 +6152,7 @@ for info about using a prefix argument."
 
 ;;;###autoload
 (defun bmkp-w3m-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j w'
-  "Jump to an W3M bookmark in another window.
-See `bmkp-w3m-jump'."
+  "`bmkp-w3m-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-w3m-alist-only)))
      (list (bmkp-read-bookmark-for-type "W3M " alist t nil 'bmkp-w3m-history)
@@ -6147,11 +6175,7 @@ candidate."
 
 ;;;###autoload
 (defun bmkp-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t *'
-  "Jump to a BOOKMARK that has all of the TAGS, in another window.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter the bookmark name and each tag.
-If you specify no tags, then every bookmark that has some tags is a
-candidate."
+  "`bmkp-all-tags-jump', but in another window."
   (interactive
    (let* ((ts     (bmkp-read-tags-completing))
           (alist  (bmkp-all-tags-alist-only ts)))
@@ -6173,9 +6197,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 
 ;;;###autoload
 (defun bmkp-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % *'
-  "Jump to a BOOKMARK that has each tag matching REGEXP, in another window.
-You are prompted for the REGEXP.
-Then you are prompted for the BOOKMARK (with completion)."
+  "`bmkp-all-tags-regexp-jump', but in another window."
   (interactive
    (let* ((rgx    (read-string "Regexp for tags: "))
           (alist  (bmkp-all-tags-regexp-alist-only rgx)))
@@ -6198,9 +6220,7 @@ You can use completion to enter the bookmark name and each tag."
 
 ;;;###autoload
 (defun bmkp-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
-  "Jump to a BOOKMARK that has at least one of the TAGS, in another window.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter the bookmark name and each tag."
+  "`bmkp-some-tags-jump', but in another window."
   (interactive
    (let* ((ts     (bmkp-read-tags-completing))
           (alist  (bmkp-some-tags-alist-only ts)))
@@ -6223,14 +6243,104 @@ Then you are prompted for the BOOKMARK (with completion)."
 
 ;;;###autoload
 (defun bmkp-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % +'
-  "Jump to a BOOKMARK that has a tag matching REGEXP, in another window.
-You are prompted for the REGEXP.
-Then you are prompted for the BOOKMARK (with completion)."
+  "`bmkp-some-tags-regexp-jump', but in another window."
   (interactive
    (let* ((rgx    (read-string "Regexp for tags: "))
           (alist  (bmkp-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-all-tags-jump (tags bookmark) ; `C-x j t f *'
+  "Jump to a file or directory BOOKMARK that has all of the TAGS.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag.
+If you specify no tags, then every bookmark that has some tags is a
+candidate."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-all-tags-alist-only ts)))
+     (unless alist (error "No file or dir bookmarks have all of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t f *'
+  "`bmkp-file-all-tags-jump', but in another window."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-all-tags-alist-only ts)))
+     (unless alist (error "No file or dir bookmarks have all of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-all-tags-regexp-jump (regexp bookmark) ; `C-x j t f % *'
+  "Jump to a file or directory BOOKMARK that has each tag matching REGEXP.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-all-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t f % *'
+  "`bmkp-file-all-tags-regexp-jump', but in another window."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-all-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-some-tags-jump (tags bookmark) ; `C-x j t f +'
+  "Jump to a file or directory BOOKMARK that has at least one of the TAGS.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-some-tags-alist-only ts)))
+     (unless ts (error "You did not specify any tags"))
+     (unless alist (error "No file or dir bookmarks have any of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t f +'
+  "`bmkp-file-some-tags-jump', but in another window."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-some-tags-alist-only ts)))
+     (unless ts (error "You did not specify any tags"))
+     (unless alist (error "No file or dir bookmarks have any of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-some-tags-regexp-jump (regexp bookmark) ; `C-x j t f % +'
+  "Jump to a file or directory BOOKMARK that has a tag matching REGEXP.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-some-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t f % +'
+  "`bmkp-file-some-tags-regexp-jump', but in another window."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-some-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
 
 ;;;###autoload
@@ -6952,6 +7062,18 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (define-key bmkp-jump-other-window-map "t%*"  'bmkp-all-tags-regexp-jump-other-window)
 (define-key bmkp-jump-map              "t%+"  'bmkp-some-tags-regexp-jump)
 (define-key bmkp-jump-other-window-map "t%+"  'bmkp-some-tags-regexp-jump-other-window)
+(define-key bmkp-jump-map              "tf"   nil) ; For Emacs 20
+(define-key bmkp-jump-other-window-map "tf"   nil) ; For Emacs 20
+(define-key bmkp-jump-map              "tf*"  'bmkp-file-all-tags-jump)
+(define-key bmkp-jump-other-window-map "tf*"  'bmkp-file-all-tags-jump-other-window)
+(define-key bmkp-jump-map              "tf+"  'bmkp-file-some-tags-jump)
+(define-key bmkp-jump-other-window-map "tf+"  'bmkp-file-some-tags-jump-other-window)
+(define-key bmkp-jump-map              "tf%"  nil) ; For Emacs 20
+(define-key bmkp-jump-other-window-map "tf%"  nil) ; For Emacs 20
+(define-key bmkp-jump-map              "tf%*" 'bmkp-file-all-tags-regexp-jump)
+(define-key bmkp-jump-other-window-map "tf%*" 'bmkp-file-all-tags-regexp-jump-other-window)
+(define-key bmkp-jump-map              "tf%+" 'bmkp-file-some-tags-regexp-jump)
+(define-key bmkp-jump-other-window-map "tf%+" 'bmkp-file-some-tags-regexp-jump-other-window)
 (define-key bmkp-jump-map              "u"    'bmkp-url-jump)
 (define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window)
 (define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump)
@@ -7243,6 +7365,24 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (define-key bmkp-jump-menu [bmkp-some-tags-jump-other-window]
   '(menu-item "Any Tag in Set..." bmkp-some-tags-jump-other-window
     :help "Jump to a bookmark that has some of a set of tags that you enter"))
+
+;;; GROSS HACK.  When the menu has four more entries here, and the file is byte-compiled,
+;;; then Emacs 20 crashes.  It doesn't even matter what the menu entries are.
+(when (> emacs-major-version 20)
+  (define-key bmkp-jump-menu [jump-sep2] '("--"))
+  (define-key bmkp-jump-menu [bmkp-file-all-tags-regexp-jump-other-window]
+    '(menu-item "File, All Tags Matching Regexp..." bmkp-file-all-tags-regexp-jump-other-window
+      :help "Jump to a file or dir bookmark where each tag matches a regexp that you enter"))
+  (define-key bmkp-jump-menu [bmkp-file-some-tags-regexp-jump-other-window]
+    '(menu-item "File, Any Tag Matching Regexp..." bmkp-file-some-tags-regexp-jump-other-window
+      :help "Jump to a file or dir bookmark where at least one tag matches a regexp that you enter"))
+  (define-key bmkp-jump-menu [bmkp-file-all-tags-jump-other-window]
+    '(menu-item "File, All Tags in Set..." bmkp-file-all-tags-jump-other-window
+      :help "Jump to a file or dir bookmark that has all of a set of tags that you enter"))
+  (define-key bmkp-jump-menu [bmkp-file-some-tags-jump-other-window]
+    '(menu-item "File, Any Tag in Set..." bmkp-file-some-tags-jump-other-window
+      :help "Jump to a file or dir bookmark that has some of a set of tags that you enter")))
+
 (define-key bmkp-jump-menu [jump-sep1] '("--"))
 (define-key bmkp-jump-menu [bmkp-autonamed-this-buffer-jump]
   '(menu-item "Autonamed for This Buffer..." bmkp-autonamed-this-buffer-jump

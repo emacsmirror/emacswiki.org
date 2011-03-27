@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  3 11:33:36 2011 (-0800)
+;; Last-Updated: Sat Mar 26 12:29:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25835
+;;     Update #: 25838
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4450,26 +4450,31 @@
 ;;    if library `bookmark+.el' is used.)
 ;;  * Type-specific bookmark trips (requires library `bookmark+.el').
 ;;    (Use prefix key `C-x 4 j' for other-window commands.)
-;;    `icicle-bookmark-non-file'         (`C-x j b')
-;;    `icicle-bookmark-bookmark-list'    (`C-x j B')
-;;    `icicle-bookmark-dired'            (`C-x j d')
-;;    `icicle-bookmark-file'             (`C-x j f')
-;;    `icicle-bookmark-gnus'             (`C-x j g')
-;;    `icicle-bookmark-info'             (`C-x j i')
-;;    `icicle-bookmark-desktop'          (`C-x j K')
-;;    `icicle-bookmark-local-file'       (`C-x j l')
-;;    `icicle-bookmark-man'              (`C-x j m')
-;;    `icicle-bookmark-region'           (`C-x j r', `C-u C-x C-x')
-;;    `icicle-bookmark-remote-file'      (`C-x j n')
-;;    `icicle-bookmark-all-tags'         (`C-x j t *')
-;;    `icicle-bookmark-some-tags'        (`C-x j t +')
-;;    `icicle-bookmark-all-tags-regexp'  (`C-x j t % *')
-;;    `icicle-bookmark-some-tags-regexp' (`C-x j t % +')
-;;    `icicle-bookmark-url'              (`C-x j u')
-;;    `icicle-bookmark-w3m'              (`C-x j w')
-;;    `icicle-bookmark-this-buffer'      (`C-x j .')
-;;    `icicle-bookmark-specific-buffers' (`C-x j = b')
-;;    `icicle-bookmark-specific-files'   (`C-x j = f')
+;;    `icicle-bookmark-non-file'                 (`C-x j b')
+;;    `icicle-bookmark-bookmark-list'            (`C-x j B')
+;;    `icicle-bookmark-dired'                    (`C-x j d')
+;;    `icicle-bookmark-file'                     (`C-x j f')
+;;    `icicle-bookmark-gnus'                     (`C-x j g')
+;;    `icicle-bookmark-info'                     (`C-x j i')
+;;    `icicle-bookmark-desktop'                  (`C-x j K')
+;;    `icicle-bookmark-local-file'               (`C-x j l')
+;;    `icicle-bookmark-man'                      (`C-x j m')
+;;    `icicle-bookmark-region'                   (`C-x j r',
+;;                                                `C-u C-x C-x')
+;;    `icicle-bookmark-remote-file'              (`C-x j n')
+;;    `icicle-bookmark-all-tags'                 (`C-x j t *')
+;;    `icicle-bookmark-some-tags'                (`C-x j t +')
+;;    `icicle-bookmark-all-tags-regexp'          (`C-x j t % *')
+;;    `icicle-bookmark-some-tags-regexp'         (`C-x j t % +')
+;;    `icicle-bookmark-file-all-tags'            (`C-x j t f *')
+;;    `icicle-bookmark-file-all-tags-regexp'     (`C-x j t f % *')
+;;    `icicle-bookmark-file-some-tags'           (`C-x j t f +')
+;;    `icicle-bookmark-file-some-tags-regexp'    (`C-x j t f % +')
+;;    `icicle-bookmark-url'                      (`C-x j u')
+;;    `icicle-bookmark-w3m'                      (`C-x j w')
+;;    `icicle-bookmark-this-buffer'              (`C-x j .')
+;;    `icicle-bookmark-specific-buffers'         (`C-x j = b')
+;;    `icicle-bookmark-specific-files'           (`C-x j = f')
 ;;  * `icicle-buffer' (`C-x b')        - Trip among buffers
 ;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits
 ;;  * `icicle-dired'                   - Trip among directories

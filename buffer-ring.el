@@ -4,7 +4,7 @@
 ;; Author: Mike Mattie codermattie@gmail.com
 ;; Maintainer: Mike Mattie codermattie@gmail.com
 ;; Created: 2009-4-16
-;; Version: 0.0.2
+;; Version: 0.1.0
 
 ;; This file is NOT a part of Gnu Emacs.
 
@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(defconst buffer-ring-version "0.0.2" "buffer-ring version")
+(defconst buffer-ring-version "0.1.0" "buffer-ring version")
 (require 'dynamic-ring)
 
 ;;
@@ -46,6 +46,7 @@
 
 (global-set-key (kbd "C-c C-b n") 'buffer-torus-next-ring)
 (global-set-key (kbd "C-c C-b p") 'buffer-torus-prev-ring)
+(global-set-key (kbd "C-c C-b e") 'buffer-torus-delete-ring)
 
 (defvar buffer-ring-torus (make-dyn-ring)
   "a global ring of all the buffer rings. A torus I believe.")
@@ -238,7 +239,7 @@
       ((ring (bfr-ring-ring buffer-ring)))
 
       (if (< (dyn-ring-size ring) 2)
-        (message "There is only one ring in the buffer")
+        (message "There is only one buffer in the ring.")
         (progn
           (funcall direction ring)
           (switch-to-buffer (dyn-ring-value ring))) ))
@@ -335,10 +336,21 @@
 (defun buffer-torus-delete-ring ()
   "buffer-torus-delete-ring
 
-   Delete the entire buffer-ring.
+   Delete the entire current buffer-ring.
   "
-  (message "not implemented yet"))
+  (interactive)
 
+  (save-excursion
+    (mapc
+      (lambda ( buffer-name )
+        (with-current-buffer buffer-name
+          (buffer-ring-delete)))
+
+      (dyn-ring-map (bfr-current-ring) (lambda ( buffer-name )
+                                         buffer-name)) )
+    (dyn-ring-delete buffer-ring-torus (car buffer-ring-torus)) ))
+
+(buffer-torus-delete-ring)
 
 (provide 'buffer-ring)
 ;;; buffer-ring.el ends here

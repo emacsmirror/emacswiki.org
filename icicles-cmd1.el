@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  3 09:14:47 2011 (-0800)
+;; Last-Updated: Sat Mar 26 12:27:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21599
+;;     Update #: 21614
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -71,8 +71,17 @@
 ;;    `icicle-bookmark-dired-narrow',
 ;;    (+)`icicle-bookmarked-buffer-list',
 ;;    (+)`icicle-bookmarked-file-list', (+)`icicle-bookmark-file',
+;;    (+)`icicle-bookmark-file-all-tags',
+;;    (+)`icicle-bookmark-file-all-tags-other-window',
+;;    (+)`icicle-bookmark-file-all-tags-regexp',
+;;    (+)`icicle-bookmark-file-all-tags-regexp-other-window',
 ;;    (+)`icicle-bookmark-file-other-window',
-;;    `icicle-bookmark-file-narrow', (+)`icicle-bookmark-gnus',
+;;    `icicle-bookmark-file-narrow',
+;;    (+)`icicle-bookmark-file-some-tags',
+;;    (+)`icicle-bookmark-file-some-tags-other-window',
+;;    (+)`icicle-bookmark-file-some-tags-regexp',
+;;    (+)`icicle-bookmark-file-some-tags-regexp-other-window',
+;;    (+)`icicle-bookmark-gnus',
 ;;    (+)`icicle-bookmark-gnus-other-window',
 ;;    `icicle-bookmark-gnus-narrow',
 ;;    (+)`icicle-bookmark-info-other-window',
@@ -4042,24 +4051,28 @@ appropriate `bmkp-TYPE-alist-only' function."
 ;; The following sexps macro-expand to define these commands:
 ;;  `icicle-bookmark-bookmark-list',
 ;;  `icicle-bookmark-desktop',
-;;  `icicle-bookmark-dired',                `icicle-bookmark-dired-other-window',
-;;  `icicle-bookmark-file',                 `icicle-bookmark-file-other-window',
-;;  `icicle-bookmark-gnus',                 `icicle-bookmark-gnus-other-window',
-;;  `icicle-bookmark-info',                 `icicle-bookmark-info-other-window',
-;;  `icicle-bookmark-local-file',           `icicle-bookmark-local-file-other-window',
-;;  `icicle-bookmark-man',                  `icicle-bookmark-man-other-window',
-;;  `icicle-bookmark-non-file',             `icicle-bookmark-non-file-other-window',
-;;  `icicle-bookmark-region',               `icicle-bookmark-region-other-window',
-;;  `icicle-bookmark-remote-file',          `icicle-bookmark-remote-file-other-window',
-;;  `icicle-bookmark-specific-buffers',     `icicle-bookmark-specific-buffers-other-window'
-;;  `icicle-bookmark-specific-files',       `icicle-bookmark-specific-files-other-window'
-;;  `icicle-bookmark-all-tags',             `icicle-bookmark-all-tags-other-window'
-;;  `icicle-bookmark-all-tags-regexp',      `icicle-bookmark-all-tags-regexp-other-window'
-;;  `icicle-bookmark-some-tags',            `icicle-bookmark-some-tags-other-window'
-;;  `icicle-bookmark-some-tags-regexp',     `icicle-bookmark-some-tags-regexp-other-window'
-;;  `icicle-bookmark-this-buffer',          `icicle-bookmark-this-buffer-other-window'
-;;  `icicle-bookmark-url',                  `icicle-bookmark-url-other-window'
-;;  `icicle-bookmark-w3m',                  `icicle-bookmark-w3m-other-window'
+;;  `icicle-bookmark-dired',                 `icicle-bookmark-dired-other-window',
+;;  `icicle-bookmark-file',                  `icicle-bookmark-file-other-window',
+;;  `icicle-bookmark-file-all-tags',         `icicle-bookmark-file-all-tags-other-window',
+;;  `icicle-bookmark-file-all-tags-regexp',  `icicle-bookmark-file-all-tags-regexp-other-window',
+;;  `icicle-bookmark-file-some-tags',        `icicle-bookmark-file-some-tags-other-window',
+;;  `icicle-bookmark-file-some-tags-regexp', `icicle-bookmark-file-some-tags-regexp-other-window',
+;;  `icicle-bookmark-gnus',                  `icicle-bookmark-gnus-other-window',
+;;  `icicle-bookmark-info',                  `icicle-bookmark-info-other-window',
+;;  `icicle-bookmark-local-file',            `icicle-bookmark-local-file-other-window',
+;;  `icicle-bookmark-man',                   `icicle-bookmark-man-other-window',
+;;  `icicle-bookmark-non-file',              `icicle-bookmark-non-file-other-window',
+;;  `icicle-bookmark-region',                `icicle-bookmark-region-other-window',
+;;  `icicle-bookmark-remote-file',           `icicle-bookmark-remote-file-other-window',
+;;  `icicle-bookmark-specific-buffers',      `icicle-bookmark-specific-buffers-other-window'
+;;  `icicle-bookmark-specific-files',        `icicle-bookmark-specific-files-other-window'
+;;  `icicle-bookmark-all-tags',              `icicle-bookmark-all-tags-other-window'
+;;  `icicle-bookmark-all-tags-regexp',       `icicle-bookmark-all-tags-regexp-other-window'
+;;  `icicle-bookmark-some-tags',             `icicle-bookmark-some-tags-other-window'
+;;  `icicle-bookmark-some-tags-regexp',      `icicle-bookmark-some-tags-regexp-other-window'
+;;  `icicle-bookmark-this-buffer',           `icicle-bookmark-this-buffer-other-window'
+;;  `icicle-bookmark-url',                   `icicle-bookmark-url-other-window'
+;;  `icicle-bookmark-w3m',                   `icicle-bookmark-w3m-other-window'
 
 ;; Other-window means nothing for a bookmark list or a desktop.
 ;;;###autoload (autoload 'icicle-bookmark-non-file "icicles-cmd1.el")
@@ -4125,6 +4138,30 @@ appropriate `bmkp-TYPE-alist-only' function."
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-regexp-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "some-tags-regexp" nil           ; `C-x 4 j t % +'
+                                             (read-string "Regexp for tags: "))
+;;;###autoload (autoload 'icicle-bookmark-file-all-tags "icicles-cmd1.el")
+(icicle-define-bookmark-command              "file-all-tags" nil              ; `C-x j t f *'
+                                             (bmkp-read-tags-completing))
+;;;###autoload (autoload 'icicle-bookmark-file-all-tags-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "file-all-tags" nil              ; `C-x 4 j t f *'
+                                             (bmkp-read-tags-completing))
+;;;###autoload (autoload 'icicle-bookmark-file-some-tags "icicles-cmd1.el")
+(icicle-define-bookmark-command              "file-some-tags" nil             ; `C-x j t f +'
+                                             (bmkp-read-tags-completing))
+;;;###autoload (autoload 'icicle-bookmark-file-some-tags-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "file-some-tags" nil             ; `C-x 4 j t f +'
+                                             (bmkp-read-tags-completing))
+;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp "icicles-cmd1.el")
+(icicle-define-bookmark-command              "file-all-tags-regexp" nil       ; `C-x j t f % *'
+                                             (read-string "Regexp for tags: "))
+;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "file-all-tags-regexp" nil       ; `C-x 4 j t f % *'
+                                             (read-string "Regexp for tags: "))
+;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp "icicles-cmd1.el")
+(icicle-define-bookmark-command              "file-some-tags-regexp" nil      ; `C-x j t f % +'
+                                             (read-string "Regexp for tags: "))
+;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil      ; `C-x 4 j t f % +'
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-url "icicles-cmd1.el")
 (icicle-define-bookmark-command              "url")                           ; `C-x j u'

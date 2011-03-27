@@ -30,5 +30,7 @@ Hello i am trying to work with a source from a remote cvs. I want to use vc or  
 [new]
 : ssh-agent seems not to work in my case (CVS+extssh repository, Emacs 23, Ubuntu GNU/Linux). I ran: ##ssh-agent## before starting Emacs, and Emacs can read ##SSH_AUTH_SOCK## and ##SSH_AGENT_PID## (confirmed through ##env## in eshell). However, ##emacs -Q## asks me the password two times for two consecutive ##C-x v d##. A ##ps## shows the call hierarchy ##emacs→cvs→cvs→ssh→ssh-askpass##. That last process has the expected environment variables (confirmed through ##cat /proc/15228/environ##). So I don't know what is failing here or what else to test. -- [[DanielClemente]]
 
+:: Tried ssh-add? You need to run that first.
+
 ----
 CategoryExternalUtilities

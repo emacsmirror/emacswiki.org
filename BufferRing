@@ -35,22 +35,21 @@ global ring (torus) rotation
 * buffer-torus-prev-ring   ;; previous ring
 * buffer-torus-next-ring   ;; next ring
 * buffer-torus-list-rings  ;; list the rings in the torus
+* buffer-torus-delete-ring ;; delete the current buffer ring from the torus
 
 If it is too simple for you I suggest MTorus. I will definitely not add mark rings.
 set-mark-command-repeat-pop works well enough for me.
 
 == Status ==
 
-This is a work in progress, and not suitable for the casual user yet. The
-adventerous are welcome to try it, and please report any problems you
-encounter if you do [[codermattie]].
+This is a work in progress. The major functions have been completed. There may still be some
+bug hunting and polishing left. I welcome anyone to try it.
 
-Version 0.0.2 2009-4-16
+please contact me with problems or suggestions [[codermattie]].
 
-  * rename the API consistently
-  * provide a working global ring implementation
-  * document dynamic-ring.el
-  * add default keybindings
+Version 0.1.0 20011-03-26
+
+  * complete the interface by adding a function to delete buffer rings from the global torus
 
 == Download ==
 

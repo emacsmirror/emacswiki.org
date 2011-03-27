@@ -57,8 +57,8 @@ matches it against the current set of completion candidates.
 
 For example, suppose that you want to know about an Emacs function that deletes the character to the left of [[point]] (that is,
 backward).  You don't recall if it's `delete-character-back',
-`delete-backward-char', `character-delete-backward', or whatever.order.
-You take a guess that the name contains `delete', `char', and `back' in some 
+`delete-backward-char', `character-delete-backward', or whatever.
+You take a guess that the name contains `delete', `char', and `back'.
 
 # `C-h f char S-TAB' displays function names that contain "'''##char##'''".
 

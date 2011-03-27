@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Mar  3 11:35:59 2011 (-0800)
+;; Last-Updated: Sat Mar 26 10:37:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13449
+;;     Update #: 13456
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -478,6 +478,19 @@
 ;;  prefix key `C-x j t %'.  The key suffix is `*' for "all" and `+'
 ;;  for "some".  For example, `C-x j t % +' jumps to a bookmark you
 ;;  choose that has one or more tags that match the regexp you input.
+;;
+;;  Because it can be especially useful to tag file and directory
+;;  bookmarks, specialized versions of the jump commands for tags are
+;;  defined for such bookmarks.  These have prefix `C-x j t f' instead
+;;  of `C-x j t'.  For example, `C-x j t f % *' jumps to a file or
+;;  directory bookmark you choose, where all of its tags match a
+;;  regexp.
+;;
+;;  Remember that Bookmark+ collects lots of commands on only a few
+;;  predefined prefix keys, primarily as a mnemonic device.  Nothing
+;;  requires you to use the long key sequence `C-x j t f % *' to visit
+;;  a file that has a given set of tags.  It is expected that you will
+;;  bind short key sequences to commands that you use often.
 ;;
 ;;  The `C-x j' and `C-x 4 j' bindings are global.  In addition, in
 ;;  some modes `j' is bound to the corresponding type-specific jump

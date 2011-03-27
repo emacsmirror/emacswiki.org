@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Mar  5 09:19:50 2011 (-0800)
+;; Last-Updated: Sat Mar 26 14:12:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 459
+;;     Update #: 462
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1030,6 +1030,10 @@ Jump to (Visit)
 \\[bmkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
 \\[bmkp-all-tags-jump]\t- Jump to a bookmark with all tags you specify
 \\[bmkp-all-tags-regexp-jump]\t- Jump to a bookmark with all tags matching a regexp
+\\[bmkp-file-some-tags-jump]\t- Jump to file bookmark with some tags you specify
+\\[bmkp-file-some-tags-regexp-jump]\t- Jump to file bookmark with a tag matching regexp
+\\[bmkp-file-all-tags-jump]\t- Jump to file bookmark with all tags you specify
+\\[bmkp-file-all-tags-regexp-jump]\t- Jump to file bookmark with all tags matching regexp
 
 
 Cycle Bookmarks and Autonamed Bookmarks

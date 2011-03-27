@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar  6 19:11:58 2011 (-0800)
+;; Last-Updated: Sat Mar 26 14:47:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7349
+;;     Update #: 7373
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1594,6 +1594,48 @@ Used on `pre-command-hook'."
                :help "Go to a marker in this buffer, choosing it by its line"))
            (define-key icicle-bookmark-menu-map [icicle-separator-goto] '("--"))
            (when (featurep 'bookmark+)
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-all-tags-regexp-other-window]
+               '(menu-item "All Tags Matching Regexp..." icicle-bookmark-all-tags-regexp-other-window
+                 :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark that has each tag matching a regexp that you enter"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-some-tags-regexp-other-window]
+               '(menu-item "Any Tag Matching Regexp..." icicle-bookmark-some-tags-regexp-other-window
+                 :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark with at least one tag matching a regexp"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-all-tags-other-window]
+               '(menu-item "All Tags in Set..." icicle-bookmark-all-tags-other-window
+                 :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark that has all of a set of tags that you enter"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-some-tags-other-window]
+               '(menu-item "Any Tag in Set..." icicle-bookmark-some-tags-other-window
+                 :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a bookmark that has some of a set of tags that you enter"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-file-all-tags-regexp-other-window]
+               '(menu-item "File, All Tags Matching Regexp..."
+                 icicle-bookmark-file-all-tags-regexp-other-window :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a file or dir bookmark where each tag matches a regexp"))
+             (define-key icicle-bookmark-menu-map
+                 [icicle-bookmark-file-some-tags-regexp-other-window]
+               '(menu-item "File, Any Tag Matching Regexp..."
+                 icicle-bookmark-file-some-tags-regexp-other-window :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a file or dir bookmark where at least one tag matches a regexp"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-file-all-tags-other-window]
+               '(menu-item "File, All Tags in Set..." icicle-bookmark-file-all-tags-other-window
+                 :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a file or dir bookmark that has all of a set of tags"))
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-file-some-tags-other-window]
+               '(menu-item "File, Any Tag in Set..." icicle-bookmark-file-some-tags-other-window
+                 :visible icicle-mode
+                 :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+                 :help "Jump to a file or dir bookmark that has some of a set of tags"))
+             (define-key icicle-bookmark-menu-map [icicle-separator-bookmark-tags] '("--"))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-non-file-other-window]
                '(menu-item "+ Jump to Buffer (Non-File) Bookmark..."
                  icicle-bookmark-non-file-other-window :visible icicle-mode
@@ -1726,7 +1768,7 @@ Used on `pre-command-hook'."
              '(menu-item "+ Jump To Bookmark (Same Window)..." icicle-bookmark
                :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
                :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
-           (define-key icicle-menu-map [icicle-separator-bookmark-buffer] '("--"))))
+           (define-key icicle-menu-map [icicle-separator-bookmark] '("--"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
                 (boundp 'menu-bar-search-tags-menu)) ; Use `Tags' menu, defined in `menu-bar+.el'.

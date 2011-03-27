@@ -59,6 +59,10 @@ navigate.
 [:icicle-bookmark-all-tags-regexp]
 [:icicle-bookmark-some-tags]
 [:icicle-bookmark-some-tags-regexp]
+[:icicle-bookmark-file-all-tags]
+[:icicle-bookmark-file-all-tags-regexp]
+[:icicle-bookmark-file-some-tags]
+[:icicle-bookmark-file-some-tags-regexp]
 [:icicle-bookmark-url]
 [:icicle-bookmark-w3m]
 [:icicle-bookmark-this-buffer]
@@ -132,6 +136,10 @@ Here are some of the '''Icicles''' tripping commands:
 ** '''`icicle-bookmark-some-tags'''' ('''##C-x j t +##'''') -- Bookmarks having some of a set of tags
 ** '''`icicle-bookmark-all-tags-regexp'''' ('''##C-x j t % *##'''') -- Bookmarks having all tags match a [[regexp]]
 ** '''`icicle-bookmark-some-tags-regexp'''' ('''##C-x j t % +##'''') -- Bookmarks having some tags that match a regexp
+** '''`icicle-bookmark-file-all-tags'''' ('''##C-x j t f *##'''') -- File and directory bookmarks having all of a set of tags
+** '''`icicle-bookmark-file-some-tags'''' ('''##C-x j t f +##'''') -- File and directory bookmarks having some of a set of tags
+** '''`icicle-bookmark-file-all-tags-regexp'''' ('''##C-x j t f % *##'''') -- File and directory bookmarks having all tags match a [[regexp]]
+** '''`icicle-bookmark-file-some-tags-regexp'''' ('''##C-x j t f % +##'''') -- File and directory bookmarks having some tags that match a regexp
 ** '''`icicle-bookmark-url''''         ('''`C-x j u'''') -- URL bookmarks
 ** '''`icicle-bookmark-w3m''''         ('''`C-x j w'''') -- [[w3m|W3M]] bookmarks
 ** '''`icicle-bookmark-this-buffer''''  ('''`##C-x j .##'''') -- Bookmarks for the current buffer

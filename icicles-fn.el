@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 17 09:46:29 2011 (-0700)
+;; Last-Updated: Sat Mar 26 08:49:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12162
+;;     Update #: 12168
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1701,6 +1701,7 @@ candidate `*point face name*' to use the face at point."
            (cond ((assoc def face-list) (setq prompt  (concat prompt " (default " def "): ")))
                  (t (setq def     nil
                           prompt  (concat prompt ": "))))
+           (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
            (put-text-property 0 1 'icicle-fancy-candidates t prompt)
            (while (equal "" (setq face  (icicle-transform-multi-completion
                                          (completing-read
@@ -1814,6 +1815,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                                                                 (mapconcat 'symbol-name faces ",")
                                                               string-describing-default))
                         face)
+                    (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
                     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
                     (while (equal "" (setq face  (icicle-transform-multi-completion
                                                   (completing-read
@@ -2316,7 +2318,7 @@ the file's properties."
                                              (or icicle-shell-command-candidates-cache
                                                  (icicle-recompute-shell-command-candidates)))))
     (when icicle-extra-candidates
-      (setq prompt (copy-sequence prompt)) ; So we can modify it by adding property.
+      (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (let ((cmd  (icicle-read-file-name prompt nil default-value nil initial-contents)))
       (when icicle-quote-shell-file-name-flag (setq cmd (icicle-quote-file-name-part-of-cmd cmd)))

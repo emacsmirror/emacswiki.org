@@ -73,8 +73,8 @@ Below is an example configuration for spell-checking languages Finnish (using En
         (regexp-body . "[ \t]+")
         (regexp-end . "$")
         (regexp-discard . "")
-        (read-or-skip-faces)
-        (nil))
+        (read-or-skip-faces
+         (nil)))
        ("Highlight FIXMEs"
         (program . (lambda (strings)
                      (when (member "FIXME" strings)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 22 06:44:45 2011 (-0700)
+;; Last-Updated: Sat Mar 26 17:57:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6157
+;;     Update #: 6171
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/03/26 dadams
+;;     Added: icicle-bookmark-file-(all|some)-tags(-regexp)(-other-window).
 ;; 2011/02/22 dadams
 ;;     Added: icicle-lisp-completion-at-point.
 ;; 2011/01/06 dadams
@@ -672,6 +674,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/03/26 dadams
+;;     icicle-read-face-name: Need copy-sequence for prompt in later Emacs versions also (forgot).
 ;; 2011/03/17 dadams
 ;;     icicle-display-candidates-in-Completions: Added 2-pixel margin around thumbnail image.
 ;; 2011/03/04 dadams
@@ -3381,6 +3385,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/03/26 dadams
+;;     icicle-define-icicle-maps: Added tags commands.
 ;; 2011/03/06 dadams
 ;;     icicle-define-icicle-maps:
 ;;       Added to Options (sub)menu: icicle-toggle-search-whole-word.
@@ -4362,6 +4368,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/03/26 dadams
+;;     icicle-top-level-key-bindings:
+;;       Added: bmkp-file-(all|some)-tags(-regexp)-jump(-other-window).
+;;       Fixed typos: bmkp-(all|some)-tags-regexp-jump (forgot -regexp).  Use fboundp, not featurep. 
 ;; 2011/03/22 dadams
 ;;     Added autoload cookies for defconsts.
 ;; 2011/02/26 dadams

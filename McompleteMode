@@ -31,3 +31,10 @@ This was moved here from IciclesDiscussion:
 : ''Suggestion:'' Someone interested in McompleteMode and familiar with it can complete that page, argue for it, and compare/contrast it with '''Icicles'''. If there are questions about '''''Icicles''''' that can contribute to that comparison, I'll be glad to try to answer them. -- DrewAdams
 
 MComplete is basically "ido-*" style completion for all minibuffer input.  It's pretty straightforward.  I've used it with great results for the past few years.  And now I'm probably going to switch to icicles.  MComplete seeks to do all completions right in the minibuffer; while icicles uses a separate "Completions" buffer.  Functionally icicles is MComplete's superset; but MComplete is lighter weight and fulfills its purpose very well.   It depends on what you need, I guess.  Also for MCompleter users looking at icicles, I find icomplete+ very useful.  Keep in mind though, the minubuffer completions you see [with Icomplete] are not selectible.  --LeWang
+
+---
+I find mcomplete conflicts with my ido mode, and add following to fix it:
+<pre>
+(mapcar #'(lambda (f) (put f 'mcomplete-mode '(:mode off)))
+        '(ido-recentf-open ido-switch-buffer ido-delete-backward-updir ido-exit-minibuffer))
+</pre>

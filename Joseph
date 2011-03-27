@@ -16,6 +16,7 @@ I wrote:
 
 * AutoJavaComplete -- It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
 * [[anything-etags+.el]] -- Another Etags anything.el interface
+* [[anything-dired-history.el]] -- Show dired directories you have visited with anything.el support.[2011-03-26]
 * [[quick-jump.el]] -- Remember current position,and jump back 
 * [[term-toggle.el]] -- toggle "*terminal*" window ,like shell-toggle.el
 * [[joseph-scroll-screen.el]] -- Scroll half screen down or up, and highlight current line temporarily.

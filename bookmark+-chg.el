@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Mar 17 09:40:12 2011 (-0700)
+;; Last-Updated: Sat Mar 26 17:20:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13311
+;;     Update #: 13324
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/03/26 dadams
+;;     Added: bmkp-file-(all|some)-tags(-regexp)-(alist-only|jump(-other-window)).
+;;     bmkp-jump-menu: Added the new commands, but not Emacs 20, to avoid crash if byte-compiled.
+;;     bmkp-bookmark-jump*-other-window: Simplified doc strings - refer to same-window version. 
 ;; 2011/03/17 dadams
 ;;     bmkp-describe-bookmark: Added 10-pixel margin around thumbnail image.
 ;; 2011/03/11 dadams
@@ -215,6 +219,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/03/26 dadams
+;;     bookmark-bmenu-mode: Added new file-with-tags jump commands to the help.
 ;; 2011/03/05 dadams
 ;;     bmkp-bmenu-edit-bookmark: Use bmkp-refresh-menu-list, not *-surreptitiously-rebuild-list.
 ;; 2011/02/11 dadams
