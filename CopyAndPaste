@@ -94,6 +94,24 @@ This produces behaviour I like: The current region becomes PRIMARY as one might 
 <code>clipboard-yank</code> in particular seems eerily smart.
 
 
+==== Alternate alternate method ====
+
+Instead of relying on the above, you can install the xsel program for manipulating the X selection and pipe the region contents to it like this:
+
+<pre>
+(defun yank-to-x-clipboard ()
+  (interactive)
+  (if (region-active-p)
+	  (progn
+		(shell-command-on-region (region-beginning) (region-end) "xsel -i")
+		(message "Yanked region to clipboard!")
+		(deactivate-mark))
+	(message "No region active; can't yank to clipboard!")))
+
+(global-set-key [f8] 'yank-to-x-clipboard)
+</pre>
+
+
 ----
 AlexSchroeder originally reported in CategoryRegion:
 

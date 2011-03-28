@@ -6,6 +6,7 @@ Specific Init issues:
 
 * AlarmBell -- if you can not stand the beeping anymore
 * AutoCompileInit -- Automatically compile your InitFile
+* AutoCodingAlist -- Determine encoding by file name.
 * AutoModeAlist -- Determine mode by file name.
 * CustomizingBoth -- writing an InitFile for multiple platforms
 * DotEmacsBankruptcy -- Declare bankruptcy when things get so bad you have to start over.

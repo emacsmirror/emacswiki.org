@@ -1,0 +1,15 @@
+The [::auto-coding-alist] variable is an AssociationList that associates an encoding with a regexp pattern to match a file's full path, similar to AutoModeAlist.
+
+Each element looks like <code>(REGEXP . CODING-SYSTEM)</code>.
+A file whose name matches <code>REGEXP</code> is decoded by <code>CODING-SYSTEM</code> on reading. The settings in this alist take priority over `coding:' tags
+in the file (see the function `set-auto-coding')
+and the contents of `file-coding-system-alist'.
+
+==Recipes==
+
+   ;Associate nfo file suffix with 'IBM codepage 437' encoding
+   (add-to-list 'auto-coding-alist '("\\.nfo\\'" . cp437-dos))
+
+----
+CategoryDotEmacs
+CategoryInternationalization

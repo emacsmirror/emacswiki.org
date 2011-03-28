@@ -178,6 +178,21 @@ and I removed the when stuff:
 
 -Marco (marco[aet]rockiger.com)
 
+I hide some buffers with this:
+<pre>
+(setq *tabbar-ignore-buffers* '("idle.org" ".bbdb" "diary"))
+(setq tabbar-buffer-list-function
+             (lambda ()
+               (remove-if
+                (lambda (buffer)
+                  (and (not (eq (current-buffer) buffer)) ; Always include the current buffer.
+                       (loop for name in *tabbar-ignore-buffers* ;remove buffer name in this list.
+                          thereis (string-equal (buffer-name buffer) name))))
+                (buffer-list))))
+</pre>
+- Jingtao xu
+
+
 ==Add a buffer modification state indicator in the label==
 
  ;; add a buffer modification state indicator in the tab label,
