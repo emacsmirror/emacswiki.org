@@ -39,6 +39,9 @@ SES will come standard with version 22 of GnuEmacs.
 Addons for SES,
 
 * [[Chart]] -- stock quotes, with refresh.
+* [http://furius.ca/pubcode/pub/conf/bin/ses2any.html ses2any] -- a script to convert SES files into other spreadsheet formats
+  
+
 
 [new]
 I used SES for my classes: A list of students, points for all the

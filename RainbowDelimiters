@@ -4,14 +4,11 @@ Great care has been taken to make this mode FAST. You shouldn't see any change i
 
 You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; it's easier to get used to a rainbow-parens mode this way. 
 
-The default colors look best on darker backgrounds. If you want a set of more readable faces for light backgrounds, please leave a note on this wiki page saying so and I'll add the appropriate light/dark options to the faces.
-
 = Download: =
 * Lisp:rainbow-delimiters.el
 
-* Current release: <b>1.1.2</b> (2011-03-25)
-** Add unmatched-delimiter face.
-** Bugfix: Correctly color text following unmatched closing delimiters.
+* Current release: <b>1.2</b> (2011-03-28)
+** All delimiters now use a single set of faces for their colors. Faces take the form <code>rainbow-delimiters-depth-#-face</code>.
 
 
 = Setup instructions: =
@@ -35,19 +32,24 @@ M-x rainbow-delimiters-mode
 </pre>
 
 == Customizing the color scheme: ==
-Each type of delimiter (paren, bracket, brace) has its own set of faces for depths 1-12.
-
 To *customize the color scheme*, you can use:
 <pre>
 M-x customize-group rainbow-delimiters
 </pre>
 Or add appropriate entries for each face name to your color-theme.el.
 
-The group <code>rainbow-delimiters-all-delimiters-faces</code> contains the default color scheme for the mode. The faces for parens, brackets and braces all inherit from this group. If you want to make a color scheme change that affects all delimiters, just change the faces in the all-delimiters group.
+Each nested depth uses a face of the form <code>rainbow-delimiters-depth-#-face</code>. Depth begins at 1, the outermost color. Faces are numbered from 1-12.
 
-Further information is available in the Lisp:rainbow-delimiters.el file.
+The group <code>rainbow-delimiters-faces</code> contains these faces. Parens, brackets and braces all use them. Change them to customize the color scheme for yourself.
+
+*color-theme.el users:* Further information is available in the Lisp:rainbow-delimiters.el file.
+
+*NOTE*: The default colors are a little easier to tell apart on darker backgrounds, though they look good with any background color. If you want a set of colors specifically for light backgrounds, please leave a note on this wiki page saying so and I'll add the appropriate light/dark options to the faces.
+
+<pre>
 
 
- 
+
+</pre>
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

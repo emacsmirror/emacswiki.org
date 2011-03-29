@@ -9,6 +9,22 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+== Proportional Fonts and the Fill Column==
+
+[new] I've begun using Emacs 23 and have "prettified" my setup with beautiful, antialiased fonts. Finally I can use the world's best variable-width (proportional) text fonts with the world's best text editor -- it no longer looks like WordPerfect from 1987!
+
+However, there's a big problem. When you use a proportional font, the fill column does not work as expected: with a monospaced font at a particular size, it's easy to determine exactly how many characters you can get across your particular display screen. Not so with a proportional font! The best you can do is estimate, usually on the conservative side, and then go with that: but you'll still get lines that have too much empty whitespace on the right, and you'll still run into situations where words will wrap. So it's not possible (as far as I know) to use a proportional font with Emacs without this very basic problem.
+
+Does anyone know of a workaround? What I'm basically looking for is not fill-column anymore, but a way to instruct Emacs to not let text wrap to the end of line based on the size of the Emacs frame. Does anyone know if there is any development work going on to find a way to do proper line filling with proportional fonts? I'm completely stuck on this one, Google isn't helping, and I'd appreciate any info or advice. Thanks.
+
+[new]
+Newer versions of Emacs have `M-x toggle-word-wrap' that would give
+you a logical word wrap based on the current rendering of the font.
+The physical result is the file having long lines.  The modes `M-x
+auto-fill-mode' and `M-x fill-mode' physically add newlines to the
+file.  If they were font-sensitive than the filling would be silly if
+the file was viewed in a different font.
+
 == Help I'm in an infinite loop...==
 
 [new] I downloaded the latest, but when I run it it says something like "This version of Aquamacs won't work on this version of the os" or words to that effect. (I have MacOS X 10.4.11 on ppc). When I go to the bug page, it says "download the latest version".... Why not display on the download page which versions of OS each version works with?

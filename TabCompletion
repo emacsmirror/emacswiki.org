@@ -180,6 +180,27 @@ I wanted the mode-specific functionality of Sebastian's code, so I forked the gi
 
 : -- JohnAnderson
 
+== Fancy Tab ==
+
+[:FancyTab]
+
+This works for me better than SuperTab.  In Python, multiple presses to tab will re-indent at different levels and I like this functionality.  This function fixes it.  Likely it could be merged into SuperTab but I don't have the desire yet.
+
+{{{
+(defun fancy-tab (arg)
+  (interactive "P")
+  (setq this-command last-command)
+  (if (or (eq this-command 'hippie-expand) (looking-at "\\_>"))
+      (progn
+	(setq this-command 'hippie-expand)
+	(hippie-expand arg))
+    (setq this-command 'indent-for-tab-command)
+    (indent-for-tab-command arg)))
+
+
+(define-key read-expression-map [(tab)] 'hippie-expand)
+(global-set-key (kbd "TAB") 'fancy-tab)
+}}}
 
 == Other Solutions ==
 

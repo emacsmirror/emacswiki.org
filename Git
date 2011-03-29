@@ -56,8 +56,8 @@ git-emacs is yet another git mode on emacs for newbies.
 mo-git-blame is an interactive and iterative major mode for git blame.
 
 * Homepage: http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
-* Repository: ##git clone git://git.bunkus.org/mo-git-blame.git##
-* Documentation: http://www.bunkus.org/cgi-bin/gitweb.cgi?p=mo-git-blame.git;a=blob;f=README;hb=HEAD
+* Repository: ##git clone git://github.com/mbunkus/mo-git-blame.git##
+* Documentation: https://github.com/mbunkus/mo-git-blame/blob/master/README
 
 tortoise-git.el is a simple interface to TortoiseGit within emacs
 
