@@ -144,10 +144,10 @@ failure.
   (defun change-font ()
     "Change font of current frame."
     (interactive)
-    (let* ((orig-buff    (current-buffer))
-           (orig-window  (selected-window))
-           (orig-frame   (selected-frame))
-           (orig-font    (frame-parameter nil 'font))
+    (let* ((icicle-orig-buff    (current-buffer))
+           (icicle-orig-window  (selected-window))
+           (orig-frame          (selected-frame))
+           (orig-font           (frame-parameter nil 'font))
            (icicle-candidate-action-fn
             (lambda (candidate)
               (condition-case action-fn-return
@@ -166,10 +166,10 @@ failure.
                        (completing-read
                         "Font: " (mapcar #'list (x-list-fonts "*"))
                         nil t nil nil nil nil))))
-        (quit (switch-to-buffer orig-buff)
+        (quit (switch-to-buffer icicle-orig-buff)
               (modify-frame-parameters
                orig-frame (list (cons 'font orig-font))))
-        (error (switch-to-buffer orig-buff)
+        (error (switch-to-buffer icicle-orig-buff)
                (modify-frame-parameters
                 orig-frame (list (cons 'font orig-font)))
                (error (error-message-string act-on-choice))))))

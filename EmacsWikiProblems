@@ -9,6 +9,14 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 ----
+
+== Performance Problems? ==
+
+I get the impression that something has impacted the performance.  Just getting this page open for editing too 45 sec, and for a code page in the Elisp area it can take several minutes.  This is new.  Maybe it's just today; dunno. Preview is as quick as ever, however.  -- DrewAdams
+
+
+
+
 == Now the NxhtmlMode page is empty ==
 
 Why?

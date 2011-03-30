@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 26 12:27:04 2011 (-0700)
+;; Last-Updated: Tue Mar 29 10:53:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21614
+;;     Update #: 21626
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1443,7 +1443,7 @@ considered."
       ;; Use minibuffer to choose a completion.
       (let* ((enable-recursive-minibuffers                (active-minibuffer-window))
              (icicle-top-level-when-sole-completion-flag  t)
-             (orig-window                                 (selected-window)) ; For alt actions.
+             (icicle-orig-window                          (selected-window)) ; For alt actions.
              (alt-fn                                      nil)
              (icicle-show-Completions-initially-flag      t)
              (icicle-candidate-alt-action-fn
@@ -1554,7 +1554,7 @@ This is an Icicles command - see command `icicle-mode'."
                      (select-window (minibuffer-window))
                      (select-frame-set-input-focus (selected-frame))))
                 (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
-                (orig-window                           (selected-window)) ; For alt actions.
+                (icicle-orig-window                    (selected-window)) ; For alt actions.
                 (alt-fn                                nil)
                 (icicle-candidate-alt-action-fn
                  (or icicle-candidate-alt-action-fn
@@ -1588,7 +1588,7 @@ Same as `icicle-customize-face' except it uses a different window."
                      (select-window (minibuffer-window))
                      (select-frame-set-input-focus (selected-frame))))
                 (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
-                (orig-window                           (selected-window)) ; For alt actions.
+                (icicle-orig-window                    (selected-window)) ; For alt actions.
                 (alt-fn                                nil)
                 (icicle-candidate-alt-action-fn
                  (or icicle-candidate-alt-action-fn
@@ -2292,7 +2292,7 @@ commands, it need not be.  It can be useful anytime you need to use
         (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
         (icicle-act-before-cycle-flag           icicle-act-before-cycle-flag)
         (orig-pt-explore                        (point-marker))
-        (orig-win-explore                       (selected-window))
+        (icicle-orig-win-explore                (selected-window))
         result)
     (setq icicle-act-before-cycle-flag      nil
           icicle-candidates-alist           nil
@@ -2355,13 +2355,13 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
   nil  nil
   (setq this-command  new-last-cmd))    ; Final code: this will update `last-command'.
 
-;; Free vars here: `orig-buff' and `orig-window' are bound by `icicle-define-command'.
+;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
 ;;                 `new-last-cmd' and `orig-must-pass-after-match-predicate' are bound in
 ;;                 `icicle-execute-extended-command'.
 (defun icicle-execute-extended-command-1 (cmd-name)
   "Action function to execute command or named keyboard macro CMD-NAME."
-  (when (get-buffer orig-buff) (set-buffer orig-buff))
-  (when (window-live-p orig-window) (select-window orig-window))
+  (when (get-buffer icicle-orig-buff) (set-buffer icicle-orig-buff))
+  (when (window-live-p icicle-orig-window) (select-window icicle-orig-window))
   (when (string= "" cmd-name) (error "No command name"))
 
   (let* ((cmd                                       (intern cmd-name))
@@ -2627,11 +2627,11 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
       (when defining-kbd-macro (kmacro-end-or-call-macro current-prefix-arg) (error "Done"))
       (unless (or (kmacro-ring-head) kmacro-ring) (error "No keyboard macro defined"))))
 
-  ;; Free vars here: `orig-buff' and `orig-window' are bound by `icicle-define-command'.
+  ;; Free vars here: `icicle-orig-buff' & `icicle-orig-window' are bound by `icicle-define-command'.
   (defun icicle-kmacro-action (cand)
     "Action function for `icicle-kmacro'."
-    (when (get-buffer orig-buff) (set-buffer orig-buff))
-    (when (window-live-p orig-window) (select-window orig-window))
+    (when (get-buffer icicle-orig-buff) (set-buffer icicle-orig-buff))
+    (when (window-live-p icicle-orig-window) (select-window icicle-orig-window))
     (let* ((count  (if current-prefix-arg (prefix-numeric-value current-prefix-arg) pref-arg))
            (macro  (cadr (assoc cand icicle-kmacro-alist))))
       (unless macro (error "No such macro: `%s'" cand))
@@ -3783,8 +3783,8 @@ Remove crosshairs highlighting and unbind filtering keys."
 (defun icicle-bookmark-cleanup-on-quit ()
   "Do `icicle-bookmark-cleanup', then return to original window."
   (icicle-bookmark-cleanup)
-  (when (window-live-p orig-window)     ; `orig-window' is free here.
-    (select-window orig-window)
+  (when (window-live-p icicle-orig-window)
+    (select-window icicle-orig-window)
     (select-frame-set-input-focus (selected-frame))))
 
 ;;; These are minibuffer commands, but we define them here instead of in `icicles-mcmd.el'.
@@ -3900,7 +3900,7 @@ You are prompted for the FILES."
   (interactive)
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x)
-       (with-current-buffer orig-buff
+       (with-current-buffer icicle-orig-buff
          (bmkp-this-buffer-p (funcall icicle-get-alist-candidate-function (car x)))))))
 
 ;;;###autoload

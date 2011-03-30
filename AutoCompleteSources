@@ -39,6 +39,16 @@ Lisp:ac-R.el (0.1)
 
 -- [[MatthewFidler]]
 
+[new:IstaZahn:2011-03-29 21:59 UTC] ac-R.el interferes with mode switching between LaTeX and R in noweb mode. This interference can be eliminated by commenting out
+
+    (make-local-variable ac-ignore-case)
+
+in the 
+
+    (add-hook 'ess-mode-hook
+
+section near the end. I think this is harmless, but I don't know lisp well enough to be sure. It works but if someone has a better solution I'd love to hear it.
+
 == DynamicAbbreviations ==
 
 Lisp:ac-dabbrev.el (0.0.4)

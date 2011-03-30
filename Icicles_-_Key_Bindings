@@ -438,6 +438,18 @@ icompletion.  This includes keys such as `C-d',
 * '''`C-insert'''' -- `icicle-switch-to-Completions-buf': Move cursor to the
 current candidate in buffer `*Completions*'.
 
+[:icicle-scroll-Completions-forward]
+* '''`C-v''''    -- `icicle-scroll-Completions-forward': Scroll the `*Completions*' window forward
+
+[:icicle-scroll-Completions-backward]
+* '''`M-v''''    -- `icicle-scroll-Completions-backward': Scroll the `*Completions*' window backward
+
+[:icicle-scroll-forward]
+* '''`C-M-v''''  -- `icicle-scroll-forward': Scroll the current non-minibuffer window forward
+
+[:icicle-scroll-backward]
+* '''`C-M-V'''' ('''`C-M-S-v'''') -- `icicle-scroll-backward': Scroll the current non-minibuffer window backward
+
 [:icicle-narrow-candidates]
 * '''`M-*'''' -- `icicle-narrow-candidates': Narrow the set of completion candidates using another input regexp.
 
@@ -498,14 +510,14 @@ representation of a key sequence, during [[Icicles - Key Completion|key completi
 * '''`M-o'''' -- `icicle-insert-history-element': Invoke completion to insert a previously entered input in the minibuffer.
 
 [:icicle-read+insert-file-name]
-* '''`C-M-S-f'''' -- `##icicle-read+insert-file-name##': Invoke completion to
+* '''`C-M-F'''' ('''`C-M-S-f'''') -- `##icicle-read+insert-file-name##': Invoke completion to
 insert a file name in the minibuffer.
 
 [:icicle-completing-read+insert]
-* '''`C-M-S-c'''' -- `##icicle-completing-read+insert##': Invoke completion
+* '''`C-M-C'''' ('''`C-M-S-c'''') -- `##icicle-completing-read+insert##': Invoke completion
 to insert something other than a file name (not
 always available).
-(`C-M-S-f' and `C-M-S-c' are the default values for
+(`C-M-F' and `C-M-C' are the default values for
 the keys that invoke completion on demand.  You can
 customize the keys to use, using options
 '''`<tt>[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]</tt>''''.)
@@ -1008,6 +1020,8 @@ as input.
 * '''`C-mouse-3'''' -- `icicle-Completions-mouse-3-menu'
 * '''`M-mouse-3'''' -- `icicle-mouse-candidate-set-save-more': add region candidates or clicked candidate to saved set
 * '''`M-S-mouse-3'''' -- `icicle-mouse-candidate-set-save': save candidates in region or save clicked candidate
+* '''`wheel-down''''  -- `icicle-scroll-Completions-backward'
+* '''`wheel-up''''    -- `icicle-scroll-Completions-forward'
 
 ----
 

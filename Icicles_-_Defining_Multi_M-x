@@ -27,8 +27,8 @@ The definition of `icicle-execute-extended-command' provides an interesting illu
 
   (defun icicle-execute-extended-command-1 (cmd-name)
     "Candidate action function for `icicle-execute-extended-command'."
-    (set-buffer orig-buff) ; `orig-*' are bound by `icicle-define-command'.
-    (select-window orig-window)
+    (set-buffer icicle-orig-buff) ; bound by `icicle-define-command'.
+    (select-window icicle-orig-window)
     (let ((icicle-candidate-action-fn
            (lambda (x) (funcall (intern cmd-name) x))))
       (run-hooks 'post-command-hook)
@@ -67,34 +67,6 @@ And what if the command `cmd' does something that changes the focus away from th
      (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))
    (select-frame-set-input-focus (window-frame (minibuffer-window))))
 
-Here's the complete definition of `icicle-execute-extended-command-1':
-
- (defun icicle-execute-extended-command-1 (cmd-name)
-   "Candidate action function for `icicle-execute-extended-command'."
-   (when (get-buffer orig-buff) (set-buffer orig-buff))
-   (when (window-live-p orig-window) (select-window orig-window))
-   (let* ((cmd (intern cmd-name))
-          (icicle-candidate-action-fn
-           (lambda (arg)
-             (condition-case nil
-                 (funcall cmd arg)       ; Try to use string candidate `arg'.
-               ;; If that didn't work, use a symbol or number candidate.
-               (wrong-type-argument (funcall cmd (car (read-from-string arg))))
-               ;; If command wants other than one arg, punt: display help.
-               (wrong-number-of-arguments (funcall #'icicle-help-on-candidate)))
-             (select-frame-set-input-focus (window-frame (minibuffer-window))))))
-     (let ((fn (symbol-function cmd))
-           (count (prefix-numeric-value current-prefix-arg)))
-       (cond ((arrayp fn)
-              (setq this-command cmd)
-              (execute-kbd-macro fn count)
-              (when (> count 1) (message "(%d times)" count)))
-             (t
-              (run-hooks 'post-command-hook)
-              (setq this-command cmd)
-              (run-hooks 'pre-command-hook)
-              (let ((enable-recursive-minibuffers t))
-                (call-interactively cmd 'record-it)))))))
 
 The actual definitions of the action function and the main command
 are even more complex.  They need to take into account various

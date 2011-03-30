@@ -2,6 +2,22 @@ AquamacsEmacs User
 
 Welcome to Wiki! :) -- AndyStewart
 
+Emacs is great! i recommend using RevisionControlSystem for local files (like the OrgMode ones) instead of saving, for that use this hack:
+
+<pre>
+
+  (defun rcs-ci-co nil
+    "check in check out the file if it is under vc with rcs"
+    (when (eq (vc-backend (buffer-file-name)) 'RCS)
+      (progn
+        (vc-checkin (list (buffer-file-name)) 'RCS nil "saved" nil)
+        (vc-checkout (buffer-file-name) t) )))
+
+  (add-hook 'after-save-hook 'rcs-ci-co)
+
+</pre>
+
+the wiki page VersionControlAlways it's also nice
 
 ----
 CategoryHomepage

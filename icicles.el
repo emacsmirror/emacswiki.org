@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  2 10:36:00 2011 (-0800)
+;; Last-Updated: Tue Mar 29 11:53:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22814
+;;     Update #: 22836
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -455,10 +455,12 @@
 ;;    `icicle-retrieve-last-input', `icicle-retrieve-next-input',
 ;;    `icicle-retrieve-previous-input', `icicle-reverse-sort-order',
 ;;    `icicle-save-predicate-to-variable',
-;;    `icicle-save/unsave-candidate', `icicle-scroll-Completions',
-;;    `icicle-scroll-Completions-up',
-;;    `icicle-search-define-replacement', `icicle-self-insert',
-;;    `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency',
+;;    `icicle-save/unsave-candidate',
+;;    `icicle-scroll-Completions-backward',
+;;    `icicle-scroll-Completions-forward', `icicle-scroll-backward',
+;;    `icicle-scroll-forward', `icicle-search-define-replacement',
+;;    `icicle-self-insert', `icicle-sort-alphabetical',
+;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last',
 ;;    `icicle-sort-by-last-file-modification-time',
@@ -1057,8 +1059,9 @@
 ;;    `icicle-input-completion-fail-overlay', `icicle-input-fail-pos',
 ;;    `icicle-insert-string-at-pt-end',
 ;;    `icicle-insert-string-at-pt-start',
-;;    `icicle-interactive-history', `icicle-kill-history',
-;;    `icicle-kmacro-alist', `icicle-kmacro-history',
+;;    `icicle-interactive-history', `icicle-key-prefix-description',
+;;    `icicle-kill-history', `icicle-kmacro-alist',
+;;    `icicle-kmacro-history',
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command', `icicle-last-input',
@@ -1075,12 +1078,19 @@
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
 ;;    `icicle-old-read-file-name-fn', `icicle-options-menu-map',
+;;    `icicle-orig-buff', `icicle-orig-buff-key-complete',
+;;    `icicle-orig-extra-cands', `icicle-orig-font',
+;;    `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
+;;    `icicle-orig-pt-explore', `icicle-orig-show-initially-flag',
+;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',
+;;    `icicle-orig-win-key-complete', `icicle-other-window',
 ;;    `icicle-plist-last-initial-cand-set',
 ;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
 ;;    `icicle-pre-command-hook', `icicle-predicate-types-alist',
 ;;    `icicle-previous-raw-file-name-inputs',
 ;;    `icicle-previous-raw-non-file-name-inputs',
-;;    `icicle-progressive-completing-p',
+;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-remove-icicles-props-p',
 ;;    `icicle-re-no-dot', `icicle-require-match-p',
@@ -1095,7 +1105,7 @@
 ;;    `icicle-saved-regexp-search-ring-max',
 ;;    `icicle-saved-region-background',
 ;;    `icicle-saved-search-ring-max',
-;;    `icicle-scroll-Completions-backward-p', `icicle-search-command',
+;;    `icicle-scroll-Completions-reverse-p', `icicle-search-command',
 ;;    `icicle-search-context-level', `icicle-search-context-regexp',
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',
@@ -1105,8 +1115,9 @@
 ;;    `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
+;;    `icicle-target-window-recenter-amount',
 ;;    `icicle-text-property-value-history',
-;;    `icicle-thing-at-pt-fns-pointer',
+;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
 ;;    `icicle-transform-before-sort-p',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-vardoc-last-initial-cand-set',

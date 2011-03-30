@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 26 13:34:24 2011 (-0800)
+;; Last-Updated: Tue Mar 29 14:37:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27524
+;;     Update #: 27554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -491,7 +491,8 @@
 ;;  6. You can navigate among the source-buffer search contexts, using
 ;;     the multi-command action keys (`C-next', `C-prior', `C-RET',
 ;;     `C-mouse-2').  The contexts are highlighted in the source
-;;     buffer(s).
+;;     buffer(s).  You can scroll the current search-hits buffer
+;;     forward and backward using `C-M-v' and `C-M-S-v' (aka `C-M-V').
 ;;
 ;;  7. As always in Icicles, your current minibuffer input filters the
 ;;     set of current candidates - the search contexts, so that only
@@ -5992,6 +5993,18 @@
 ;;    `C-insert' - `icicle-switch-to-Completions-buf': Move cursor to
 ;;               the current candidate in buffer `*Completions*'.
 ;;
+;;    `C-v'    - `icicle-scroll-Completions-forward': Scroll the
+;;               `*Completions*' window forward
+;;
+;;    `M-v'    - `icicle-scroll-Completions-backward': Scroll the
+;;               `*Completions*' window backward
+;;
+;;    `C-M-v'  - `icicle-scroll-forward': Scroll the current
+;;               non-minibuffer window forward
+;;
+;;    `C-M-V' (`C-M-S-v') - `icicle-scroll-backward': Scroll the
+;;               current non-minibuffer window backward
+;;
 ;;    `M-*'    - `icicle-narrow-candidates': Narrow the set of
 ;;               completion candidates using another input regexp.
 ;;
@@ -6057,14 +6070,14 @@
 ;;    `M-o'    - `icicle-insert-history-element': Invoke completion to
 ;;               insert a previously entered input in the minibuffer.
 ;;
-;;    `C-M-S-f' - `icicle-read+insert-file-name': Invoke completion to
-;;               insert a file name in the minibuffer.
+;;    `C-M-F' (`C-M-S-f') - `icicle-read+insert-file-name': Invoke
+;;               completion to insert a file name in the minibuffer.
 ;;
-;;    `C-M-S-c' - `icicle-completing-read+insert': Invoke completion
-;;               to insert something other than a file name (not
-;;               always available).
+;;    `C-M-C' (`C-M-S-c') - `icicle-completing-read+insert': Invoke
+;;               completion to insert something other than a file name
+;;               (not always available).
 ;;
-;;               (`C-M-S-f' and `C-M-S-c' are the default values for
+;;               (`C-M-F' and `C-M-C' are the default values for
 ;;               the keys that invoke completion on demand.  You can
 ;;               customize the keys to use, using options
 ;;               `icicle-read+insert-file-name-keys' and
@@ -6425,6 +6438,8 @@
 ;;    `C-mouse-3'     - `icicle-Completions-mouse-3-menu'
 ;;    `M-mouse-3'     - `icicle-mouse-candidate-set-save-more'
 ;;    `M-S-mouse-3'   - `icicle-mouse-candidate-set-save'
+;;    `wheel-down'    - `icicle-scroll-Completions-backward'
+;;    `wheel-up'      - `icicle-scroll-Completions-forward'
  
 ;;(@* "Customizing Key Bindings")
 ;;
@@ -7442,8 +7457,8 @@
 ;;  The following bindings are predefined - you can refer to them in
 ;;  the command body:
 ;;
-;;   `orig-buff'   is bound to (current-buffer)
-;;   `orig-window' is bound to (selected-window)
+;;   `icicle-orig-buff'   is bound to (current-buffer)
+;;   `icicle-orig-window' is bound to (selected-window)
 ;;
 ;;  Before running any "undo" code that you supply, the original
 ;;  buffer is restored, in case of error or user quit (`C-g').
@@ -7949,8 +7964,8 @@
 ;;
 ;;  (defun icicle-execute-extended-command-1 (cmd-name)
 ;;    "Action function for `icicle-execute-extended-command'."
-;;     (set-buffer orig-buff) ; bound by `icicle-define-command'.
-;;     (select-window orig-window)
+;;     (set-buffer icicle-orig-buff) ; bound by `icicle-define-command'.
+;;     (select-window icicle-orig-window)
 ;;     (let ((icicle-candidate-action-fn
 ;;            (lambda (x) (funcall (intern cmd-name) x))))
 ;;       (run-hooks 'post-command-hook)
@@ -8167,10 +8182,10 @@
 ;;  (defun change-font ()
 ;;    "Change font of current frame."
 ;;    (interactive)
-;;    (let* ((orig-buff    (current-buffer))
-;;           (orig-window  (selected-window))
-;;           (orig-frame   (selected-frame))
-;;           (orig-font    (frame-parameter nil 'font))
+;;    (let* ((icicle-orig-buff    (current-buffer))
+;;           (icicle-orig-window  (selected-window))
+;;           (orig-frame          (selected-frame))
+;;           (orig-font           (frame-parameter nil 'font))
 ;;           (icicle-candidate-action-fn
 ;;            (lambda (candidate)
 ;;              (condition-case action-fn-return
@@ -8189,10 +8204,11 @@
 ;;                       (completing-read
 ;;                        "Font: " (mapcar #'list (x-list-fonts "*"))
 ;;                        nil t nil nil nil nil))))
-;;        (quit (switch-to-buffer orig-buff)
+;;        (quit (switch-to-buffer icicle-orig-buff)
 ;;              (modify-frame-parameters
-;;               orig-frame (list (cons 'font orig-font))))
-;;        (error (switch-to-buffer orig-buff)
+;;               orig-frame
+;;               (list (cons 'font orig-font))))
+;;        (error (switch-to-buffer icicle-orig-buff)
 ;;               (modify-frame-parameters
 ;;                orig-frame (list (cons 'font orig-font)))
 ;;               (error (error-message-string act-on-choice))))))

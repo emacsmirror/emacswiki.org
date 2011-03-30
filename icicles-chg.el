@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 26 17:57:43 2011 (-0700)
+;; Last-Updated: Tue Mar 29 13:50:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6171
+;;     Update #: 6224
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/03/29 dadams
+;;     Use new icicle-* vars for various free vars (orig-buff etc.).
 ;; 2011/03/26 dadams
 ;;     Added: icicle-bookmark-file-(all|some)-tags(-regexp)(-other-window).
 ;; 2011/02/22 dadams
@@ -358,6 +360,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/03/29 dadams
+;;     icicle-search-action-1: Set icicle-other-window.  Use icicle-target-window-recenter-amount.
+;;     Use new icicle-* vars for various free vars (orig-buff etc.).
+;;     icicle-frame-(bg|fg), icicle-read-color: prompt -> icicle-prompt.
 ;; 2011/03/03 dadams
 ;;     icicle-insert-thesaurus-entry: Changed to strict completion from lax.
 ;;     icicle-describe-option-of-type, icicle-(fun|var)doc, icicle-plist:
@@ -674,6 +680,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/03/29 dadams
+;;     icicle-show-help-in-mode-line: Removed boundp condition for icicle-completing-keys-p.
+;;     icicle-scroll-or-update-Completions:
+;;       Applied renaming: icicle-scroll-Completions to icicle-scroll-Completions-forward.
+;;     icicle-color-completion-setup: prompt -> icicle-prompt.
+;;     icicle-alt-act-fn-for-type: orig-window -> icicle-orig-window.
 ;; 2011/03/26 dadams
 ;;     icicle-read-face-name: Need copy-sequence for prompt in later Emacs versions also (forgot).
 ;; 2011/03/17 dadams
@@ -2107,6 +2119,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2011/03/29 dadams
+;;     Renamed: orig-(buff|window) to icicle-orig-(buff|window).
 ;; 2011/01/17 dadams
 ;;     Require cl.el at compile time for Emacs 20.
 ;; 2011/01/06 dadams
@@ -2210,6 +2224,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/03/29 dadams
+;;     Added: icicle-scroll-(back|for)ward.
+;;     Renamed:  icicle-scroll-Completions(-up) to icicle-scroll-Completions-(back|for)ward.
+;;     orig-buf(f) -> icicle-orig-buff.
+;;     icicle-help-on-candidate: Removed boundp condition for icicle-completing-keys-p.
+;;     Applied renaming: icicle-scroll-Completions-backward-p to icicle-scroll-Completions-reverse-p.
 ;; 2011/03/20 dadams
 ;;     icicle-help-on-candidate-symbol: Don't bind help-xref-following.  Thx to Michael Heerdegen.
 ;; 2011/03/17 dadams
@@ -3385,6 +3405,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/03/29 dadams
+;;     icicle-define-minibuffer-maps, icicle-bind-completion-keys:
+;;       Bound C-M-(v|V) to icicle-scroll-(forward|backward).
+;;     Applied renaming: icicle-scroll-Completions(-up) to icicle-scroll-Completions-(back|for)ward.
 ;; 2011/03/26 dadams
 ;;     icicle-define-icicle-maps: Added tags commands.
 ;; 2011/03/06 dadams
@@ -4925,6 +4949,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/03/29 dadams
+;;     Added: icicle-key-prefix-description, icicle-orig-(buff|window|font|frame|pixelsize|pointsize),
+;;            icicle-orig-(buff|win)-key-complete, icicle-completing-keys-p, icicle-prompt,
+;;            icicle-orig-(pt|win)-explore, icicle-orig-show-initially-flag, icicle-orig-extra-cands,
+;;            icicle-other-window, icicle-target-window-recenter-amount, icicle-this-cmd-keys.
+;;     Renamed: icicle-scroll-Completions-backward-p to icicle-scroll-Completions-reverse-p.
+;;     icicle-complete-keys-alist: Removed conditional definition (just don't use it before Emacs 22).
 ;; 2011/01/17 dadams
 ;;     Removed compile-time require of cl.el.
 ;; 2010/12/26 dadams

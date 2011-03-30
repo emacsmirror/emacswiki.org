@@ -223,8 +223,10 @@ The arguments to `icicle-define-command' here are as follows:
 The following bindings are predefined -- you can refer to them in
 the command body:
 
-* `orig-buff'   is bound to ##(current-buffer)##
-* `orig-window' is bound to ##(selected-window)##
+[:icicle-orig-buff]
+[:icicle-orig-window]
+* '''`icicle-orig-buff''''   is bound to ##(current-buffer)##
+* '''`icicle-orig-window'''' is bound to ##(selected-window)##
 
 Before running any "undo" code that you supply, the original
 buffer is restored, in case of error or user quit (`C-g').

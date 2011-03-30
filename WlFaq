@@ -52,7 +52,7 @@ Create a filter folder,
 == Unicode ==
 
 Release 2.14 was created before emacs23 was released. As a consequence, there may occur some problems with unicode
-support. They can be fixed by using a snapshot from the CVS repository. For a working variant, please see 
+support. They can be fixed by using a snapshot from the CVS repository. For a working variant, please see
 [http://permalink.gmane.org/gmane.mail.wanderlust.general/2768] .
 
 == How can I change which headers wl displays when viewing a message? ==
@@ -239,7 +239,7 @@ variable `elmo-multi-divide-number' to an appropriate value.
 (setq elmo-multi-divide-number 1000000)
 }}}
 
-== WL hangs when I wake from hibernation == 
+== WL hangs when I wake from hibernation ==
 
 The problem seems to be that elmo doesn't realize that the connection its IMAP or other connection has timed out on the other side, and so keeps trying it.
 You can work around it if you use emacs-server by issuing an emacsclient command approximately like this before hibernation:
@@ -250,9 +250,9 @@ You can work around it if you use emacs-server by issuing an emacsclient command
 
 and then toggle back on after resume.
 
-Since hibernation/suspend-to-ram sometiems happen in ways you can't control -- e.g., if you leave your laptop on somewhere and run out of battery power -- it's best to havethis doen automatically.  
+Since hibernation/suspend-to-ram sometiems happen in ways you can't control -- e.g., if you leave your laptop on somewhere and run out of battery power -- it's best to havethis doen automatically.
 
-If you use the hibernate script for hibernation/suspend, you can add a scriptlet /etc/hibernate/scriptlets.d/wanderlust that will 
+If you use the hibernate script for hibernation/suspend, you can add a scriptlet /etc/hibernate/scriptlets.d/wanderlust that will
 do this for you automatically; here's a very simple example:
 
 {{{
@@ -281,7 +281,7 @@ WanderlustOptions() {
 }
 }}}
 
-A better way to do this would be to check each running emacsserver instance. In any case I found this didn't always solve the problem, possibly because plugging back in after resume may occur before your new internet connection has been negotiated, which would give you the same issue.  
+A better way to do this would be to check each running emacsserver instance. In any case I found this didn't always solve the problem, possibly because plugging back in after resume may occur before your new internet connection has been negotiated, which would give you the same issue.
 
 I now use pm-utils instead, and have this in /etc/pm/sleep.d/09_wl_fix:
 
@@ -334,3 +334,23 @@ Simply tell SEMI to accept encoded sequences in header fields.
 {{{
 (setq mime-header-accept-quoted-encoded-words t)
 }}}
+
+== Integration with Offline IMAP and fast searches ==
+
+Integration with [https://github.com/nicolas33/offlineimap offlineimap] is simple and easy since wanderlust understands the [http://en.wikipedia.org/wiki/Maildir MailDir] format.  Storing emails locally improves the speed of reading messages significantly even compared to using Wanderlusts native facility for caching messages.
+
+Using the [http://en.wikipedia.org/wiki/Maildir MailDir] format also has the advantage of being able to use native text-based search for all messages.  By default wanderlust is designed to use Namazu, but you can easily replace it with [http://www.djcbsoftware.nl/code/mu/ mu search].  Once you have mu setup you can integrate it into wanderlust with the following in either your init.el or .wl :
+
+
+{{{
+
+(elmo-search-register-engine
+ 'mu 'local-file
+ :prog "mu"
+ :args '("find" pattern "-o" "plain" "-f" "l")
+ :charset 'utf-8)
+
+(setq elmo-search-default-engine 'mu)
+
+}}}
+

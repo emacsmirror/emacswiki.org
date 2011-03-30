@@ -51,6 +51,21 @@ calls vc-diff)"
 Note that if a prefix is used when saving the file, the file is only checked-in allowing you to put a meaningfull message to the Changelog.
 
 [new]
+it did'nt work for me (the first defun trew errors), but this other did the trick
+<pre>
+  (defun rcs-ci-co nil
+    "check in check out the file if it is under vc with rcs"
+    (when (eq (vc-backend (buffer-file-name)) 'RCS)
+      (progn
+        (vc-checkin (list (buffer-file-name)) 'RCS nil "saved" nil)
+        (vc-checkout (buffer-file-name) t) )))
+
+  (add-hook 'after-save-hook 'rcs-ci-co)
+</pre>
+there is also a discussion here: VersionControlAlways
+
+
+[new]
 starting with Emacs 22 (in earlier versions the vc-rcs-*-switches were present, but ignored by the functions) you can also just use
 
   (setq vc-rcs-checkin-switches "-l")

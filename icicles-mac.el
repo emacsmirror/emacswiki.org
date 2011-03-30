@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 17 08:38:39 2011 (-0800)
+;; Last-Updated: Tue Mar 29 09:11:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 564
+;;     Update #: 566
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -286,8 +286,8 @@ BINDINGS is a list of `let*' bindings added around the command code.
   The following bindings are pre-included - you can refer to them in
   the command body (including in FIRST-SEXP, LAST-SEXP, UNDO-SEXP).
 
-  `orig-buff'   is bound to (current-buffer)
-  `orig-window' is bound to (selected-window)
+  `icicle-orig-buff'   is bound to (current-buffer)
+  `icicle-orig-window' is bound to (selected-window)
 BINDINGS is macroexpanded, so it can also be a macro call that expands
 to a list of bindings.  For example, you can use
 `icicle-buffer-bindings' here.
@@ -348,8 +348,8 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 
 This is an Icicles command - see command `icicle-mode'.")
     ,(and (not not-interactive-p) '(interactive))
-    (let* ((orig-buff    (current-buffer))
-           (orig-window  (selected-window))
+    (let* ((icicle-orig-buff    (current-buffer))
+           (icicle-orig-window  (selected-window))
            ,@(macroexpand bindings)
            (icicle-candidate-action-fn
             (lambda (candidate)
@@ -374,20 +374,20 @@ This is an Icicles command - see command `icicle-mode'.")
                 (condition-case in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have killed the buffer or deleted the window.
-                    (cond ((and (buffer-live-p orig-buff) (window-live-p orig-window))
-                           (with-current-buffer orig-buff
-                             (save-selected-window (select-window orig-window)
+                    (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
+                           (with-current-buffer icicle-orig-buff
+                             (save-selected-window (select-window icicle-orig-window)
                                                    (funcall ',function candidate))))
-                          ((window-live-p orig-window)
-                           (save-selected-window (select-window orig-window)
+                          ((window-live-p icicle-orig-window)
+                           (save-selected-window (select-window icicle-orig-window)
                                                  (funcall ',function candidate)))
                           (t
                            (funcall ',function candidate)))
                   (error (unless (string= "Cannot switch buffers in minibuffer window"
                                           (error-message-string in-action-fn))
                            (error "%s" (error-message-string in-action-fn)))
-                         (when (window-live-p orig-window)
-                           (select-window orig-window)
+                         (when (window-live-p icicle-orig-window)
+                           (select-window icicle-orig-window)
                            (select-frame-set-input-focus (selected-frame)))
                          (funcall ',function candidate)))
                 (select-window (minibuffer-window))
@@ -400,8 +400,8 @@ This is an Icicles command - see command `icicle-mode'.")
             ;; Reset after reading input, so that commands can tell whether input has been read.
             (setq icicle-candidate-action-fn  nil)
             (funcall ',function cmd-choice))
-        (quit  (icicle-try-switch-buffer orig-buff) ,undo-sexp)
-        (error (icicle-try-switch-buffer orig-buff) ,undo-sexp
+        (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
+        (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
                (error "%s" (error-message-string act-on-choice))))
       ,last-sexp)))
 
@@ -428,8 +428,8 @@ BINDINGS is a list of `let*' bindings added around the command code.
   The following bindings are pre-included - you can refer to them in
   the command body (including in FIRST-SEXP, LAST-SEXP, UNDO-SEXP).
 
-  `orig-buff'   is bound to (current-buffer)
-  `orig-window' is bound to (selected-window)
+  `icicle-orig-buff'   is bound to (current-buffer)
+  `icicle-orig-window' is bound to (selected-window)
 BINDINGS is macroexpanded, so it can also be a macro call that expands
 to a list of bindings.  For example, you can use
 `icicle-buffer-bindings' here.
@@ -489,8 +489,8 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 
 This is an Icicles command - see command `icicle-mode'.")
     ,(and (not not-interactive-p) '(interactive))
-    (let* ((orig-buff    (current-buffer))
-           (orig-window  (selected-window))
+    (let* ((icicle-orig-buff    (current-buffer))
+           (icicle-orig-window  (selected-window))
            ,@(macroexpand bindings)
            (icicle-candidate-action-fn
             (lambda (candidate)
@@ -517,20 +517,20 @@ This is an Icicles command - see command `icicle-mode'.")
                 (condition-case in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have deleted the file or the window.
-                    (cond ((and (buffer-live-p orig-buff) (window-live-p orig-window))
-                           (with-current-buffer orig-buff
-                             (save-selected-window (select-window orig-window)
+                    (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
+                           (with-current-buffer icicle-orig-buff
+                             (save-selected-window (select-window icicle-orig-window)
                                                    (funcall ',function candidate))))
-                          ((window-live-p orig-window)
-                           (save-selected-window (select-window orig-window)
+                          ((window-live-p icicle-orig-window)
+                           (save-selected-window (select-window icicle-orig-window)
                                                  (funcall ',function candidate)))
                           (t
                            (funcall ',function candidate)))
                   (error (unless (string= "Cannot switch buffers in minibuffer window"
                                           (error-message-string in-action-fn))
                            (error "%s" (error-message-string in-action-fn)))
-                         (when (window-live-p orig-window)
-                           (select-window orig-window)
+                         (when (window-live-p icicle-orig-window)
+                           (select-window icicle-orig-window)
                            (select-frame-set-input-focus (selected-frame)))
                          (funcall ',function candidate)))
                 (select-window (minibuffer-window))
@@ -546,8 +546,8 @@ This is an Icicles command - see command `icicle-mode'.")
             ;; Reset after reading input, so that commands can tell whether input has been read.
             (setq icicle-candidate-action-fn  nil) ; Reset after completion.
             (funcall ',function file-choice))
-        (quit  (icicle-try-switch-buffer orig-buff) ,undo-sexp)
-        (error (icicle-try-switch-buffer orig-buff) ,undo-sexp
+        (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
+        (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
                (error "%s" (error-message-string act-on-choice))))
       ,last-sexp)))
 

@@ -16,6 +16,8 @@ One line needs to be removed to make mmm-mode work for emacs 24; the line that u
 make-local-hook is not defined in emacs 24 so that mmm-mode does not work if not removed.
 A patch was submitted to mmm-mode.sf.net as a bug report on 2010/12/04.
 
+A git clone containing bugfixes for Emacs >= 23 is here: https://github.com/purcell/mmm-mode
+
 ----
 CategoryModes
 MultipleModes

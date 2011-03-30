@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 26 14:47:46 2011 (-0700)
+;; Last-Updated: Tue Mar 29 13:35:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7373
+;;     Update #: 7391
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2328,6 +2328,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [(meta ?:)]               'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
        (define-key map [(control ?a)]            'icicle-beginning-of-line+) ; `C-a'
        (define-key map [(control ?e)]            'icicle-end-of-line+) ; `C-e'
+       (define-key map [(control meta ?v)]       'icicle-scroll-forward) ; `C-M-v'
+       (define-key map [(control meta shift ?v)] 'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
        (dolist (key  icicle-completing-read+insert-keys)
          (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
        (dolist (key  icicle-read+insert-file-name-keys)
@@ -2421,6 +2423,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [(meta ?:)]              'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map [(control ?a)]            'icicle-beginning-of-line+) ; `C-a'
          (define-key map [(control ?e)]            'icicle-end-of-line+) ; `C-e'
+         (define-key map [(control meta ?v)]       'icicle-scroll-forward) ; `C-M-v'
+         (define-key map [(control meta shift ?v)] 'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
          (dolist (key  icicle-completing-read+insert-keys)
            (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys)
@@ -2514,6 +2518,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [(meta ?:)]              'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map [(control ?a)]            'icicle-beginning-of-line+) ; `C-a'
          (define-key map [(control ?e)]            'icicle-end-of-line+) ; `C-e'
+         (define-key map [(control meta ?v)]       'icicle-scroll-forward) ; `C-M-v'
+         (define-key map [(control meta shift ?v)] 'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
          (dolist (key  icicle-completing-read+insert-keys)
            (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys)
@@ -2586,8 +2592,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [(control ?i)]     'icicle-move-to-next-completion) ; `TAB'
        (define-key map [tab]              'icicle-move-to-next-completion) ; `TAB'
        (when (boundp 'mouse-wheel-down-event) ; Emacs 22+ -  `wheel-down', `wheel-up'
-         (define-key map (vector mouse-wheel-down-event) 'icicle-scroll-Completions-up)
-         (define-key map (vector mouse-wheel-up-event) 'icicle-scroll-Completions))
+         (define-key map (vector mouse-wheel-down-event) 'icicle-scroll-Completions-backward)
+         (define-key map (vector mouse-wheel-up-event) 'icicle-scroll-Completions-forward))
        (define-key map [S-down-mouse-2]   'icicle-mouse-remove-candidate) ; `S-mouse-2'
        (define-key map [S-mouse-2]        'ignore)
        (define-key map [C-S-down-mouse-2] 'icicle-mouse-candidate-alt-action) ; `C-S-mouse-2'
@@ -2663,6 +2669,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [(meta ?:)]               nil) ; `M-:'
        (define-key map [(control ?a)]            nil) ; `C-a'
        (define-key map [(control ?e)]            nil) ; `C-e'
+       (define-key map [(control meta ?v)]       nil) ; `C-M-v'
+       (define-key map [(control meta shift ?v)] nil) ; `C-M-S-v' (aka `C-M-V')
        (dolist (key  icicle-completing-read+insert-keys) (define-key map key nil)) ; `C-M-S-c'
        (dolist (key  icicle-read+insert-file-name-keys) (define-key map key nil)) ; `C-M-S-f'
        (define-key map "\n"                      'exit-minibuffer) ; `C-j'
@@ -2710,6 +2718,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [(meta ?:)]               nil) ; `M-:'
          (define-key map [(control ?a)]            nil) ; `C-a'
          (define-key map [(control ?e)]            nil) ; `C-e'
+         (define-key map [(control meta ?v)]       nil) ; `C-M-v'
+         (define-key map [(control meta shift ?v)] nil) ; `C-M-S-v' (aka `C-M-V')
          (dolist (key  icicle-completing-read+insert-keys) (define-key map key nil)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys) (define-key map key nil)) ; `C-M-S-f'
          (define-key map "\n"                      'exit-minibuffer) ; `C-j'
@@ -2757,6 +2767,8 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [(meta ?:)]               nil) ; `M-:'
          (define-key map [(control ?a)]            nil) ; `C-a'
          (define-key map [(control ?e)]            nil) ; `C-e'
+         (define-key map [(control meta ?v)]       nil) ; `C-M-v'
+         (define-key map [(control meta shift ?v)] nil) ; `C-M-S-v' (aka `C-M-V')
          (dolist (key  icicle-completing-read+insert-keys) (define-key map key nil)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys) (define-key map key nil)) ; `C-M-S-f'
          (define-key map "\n"                      'exit-minibuffer))) ; `C-j'
@@ -3152,6 +3164,8 @@ complete)"))
     ;; Note: `setup-keys.el' binds `C-o' to `1on1-fit-minibuffer-frame' if defined.
     (define-key map [(control ?a)]           'icicle-beginning-of-line+) ; `C-a'
     (define-key map [(control ?e)]           'icicle-end-of-line+) ; `C-e'
+    (define-key map [(control meta ?v)]      'icicle-scroll-forward) ; `C-M-v'
+    (define-key map [(control meta shift ?v)] 'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
     (define-key map [(control ?=)]           'icicle-insert-string-from-variable) ; `C-='
     ;; Replaces `tab-to-tab-stop':
     (define-key map [(meta ?i)]              'icicle-clear-current-history) ; `M-i'
@@ -3222,8 +3236,8 @@ complete)"))
   (define-key map [(control meta ?&)]        'icicle-save-predicate-to-variable) ; `C-M-&'
   (define-key map [(shift ?\ )]              'icicle-apropos-complete-and-narrow) ; `S-SPC'
   (define-key map [(shift backspace)]        'icicle-apropos-complete-and-widen) ; `S-DEL'
-  (define-key map "\C-v"                     'icicle-scroll-Completions) ; `C-v'
-  (define-key map "\M-v"                     'icicle-scroll-Completions-up) ; `M-v'
+  (define-key map "\C-v"                     'icicle-scroll-Completions-forward) ; `C-v'
+  (define-key map "\M-v"                     'icicle-scroll-Completions-backward) ; `M-v'
   (define-key map "."                        'icicle-insert-dot-command) ; `.'
   (define-key map "\M-m"                     'icicle-toggle-show-multi-completion) ; `M-m'
   (define-key map "\C-x."                    'icicle-toggle-hiding-common-match) ; `C-x .'

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  3 09:08:22 2011 (-0800)
+;; Last-Updated: Tue Mar 29 13:47:23 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2478
+;;     Update #: 2556
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -307,7 +307,6 @@
 ;; (< emacs-major-version 22)
 (defvar compilation-current-error)
 (defvar cookie-cache)
-(defvar icicle-complete-keys-alist)   ; In `icicles-var.el'
 (defvar Info-menu-entry-name-re)      ; In `info.el'
 (defvar Info-read-node-completion-table) ; In `info.el'
 (defvar tags-case-fold-search)        ; In `etags.el'
@@ -330,33 +329,36 @@
 ;;;###autoload (autoload 'icicle-font "icicles-cmd2.el")
 (icicle-define-command icicle-font      ; Command name
   "Change font of current frame."       ; Doc string
-  (lambda (font) (modify-frame-parameters orig-frame (list (cons 'font font)))) ; Action function
+  (lambda (font) (modify-frame-parameters icicle-orig-frame (list (cons 'font font)))) ; Action fn
   "Font: "                              ; `completing-read' args
   (let ((fonts  ())
         fws)
     (dolist (ft  (x-list-fonts "*")  fonts) ; Just avoiding two traversals, one to remove nil elts.
       (when (setq fws  (icicle-font-w-orig-size ft)) (push fws fonts)))) ; Ignore nil entries.
   nil t nil (if (boundp 'font-name-history) 'font-name-history 'icicle-font-name-history) nil nil
-  ((orig-frame           (selected-frame)) ; Bindings
-   (orig-font            (frame-parameter nil 'font))
-   (orig-pixelsize       (aref (x-decompose-font-name orig-font) xlfd-regexp-pixelsize-subnum))
-   (orig-pointsize       (aref (x-decompose-font-name orig-font) xlfd-regexp-pointsize-subnum))
-   (orig-menu-bar        (assq 'menu-bar-lines (frame-parameters orig-frame))))
+  ((icicle-orig-frame      (selected-frame)) ; Bindings
+   (icicle-orig-font       (frame-parameter nil 'font))
+   (icicle-orig-pixelsize  (aref (x-decompose-font-name icicle-orig-font)
+                                 xlfd-regexp-pixelsize-subnum))
+   (icicle-orig-pointsize  (aref (x-decompose-font-name icicle-orig-font)
+                                 xlfd-regexp-pointsize-subnum))
+   (icicle-orig-menu-bar   (assq 'menu-bar-lines (frame-parameters icicle-orig-frame))))
   ;; First code - remove menu-bar, to avoid Emacs bug that resizes frame.
-  (modify-frame-parameters orig-frame (list '(menu-bar-lines . 0)))
-  (modify-frame-parameters orig-frame (list (cons 'font orig-font) orig-menu-bar)) ; Undo code.
-  (modify-frame-parameters orig-frame (list orig-menu-bar))) ; Last code.
+  (modify-frame-parameters icicle-orig-frame (list '(menu-bar-lines . 0)))
+  (modify-frame-parameters icicle-orig-frame ; Undo code.
+                           (list (cons 'font icicle-orig-font) icicle-orig-menu-bar))
+  (modify-frame-parameters icicle-orig-frame (list icicle-orig-menu-bar))) ; Last code.
 
-;; Free var here: `orig-pixelsize' is bound in `icicle-font'.
+;; Free var here: `icicle-orig-pixelsize' is bound in `icicle-font'.
 (defun icicle-font-w-orig-size (font)
-  "Return a font the same as FONT, but with pixel size `orig-pixelsize'.
+  "Return a font like FONT, but with pixel size `icicle-orig-pixelsize'.
 Return nil if `x-decompose-font-name' returns nil for FONT.
-`orig-pixelsize' is the original pixel size for `icicle-font'."
+`icicle-orig-pixelsize' is the original pixel size for `icicle-font'."
   (let ((xlfd-fields  (x-decompose-font-name font)))
     (if (not xlfd-fields)               ; Can't handle such font names - return nil.
         nil
-      (aset xlfd-fields xlfd-regexp-pixelsize-subnum orig-pixelsize)
-      (aset xlfd-fields xlfd-regexp-pointsize-subnum orig-pointsize)
+      (aset xlfd-fields xlfd-regexp-pixelsize-subnum icicle-orig-pixelsize)
+      (aset xlfd-fields xlfd-regexp-pointsize-subnum icicle-orig-pointsize)
       (let* ((sized-font   (x-compose-font-name xlfd-fields))
              (font-info    (and (or icicle-help-in-mode-line-flag ; Get it only if user will see it.
                                     (and (boundp 'tooltip-mode) tooltip-mode))
@@ -414,12 +416,12 @@ and HSV (hue, saturation, value) color components.
 This command is intended only for use in Icicle mode." ; Doc string
   (lambda (color)                       ; Action function
     (modify-frame-parameters
-     orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
-  prompt named-colors nil t nil         ; `completing-read' args
+     icicle-orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
+  icicle-prompt named-colors nil t nil  ; `completing-read' args
   (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
-  ((orig-frame                         (selected-frame)) ; Bindings
+  ((icicle-orig-frame                  (selected-frame)) ; Bindings
    (orig-bg                            (frame-parameter nil 'background-color))
-   (prompt                             "Background color: ")
+   (icicle-prompt                      "Background color: ")
    (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
@@ -432,7 +434,7 @@ This command is intended only for use in Icicle mode." ; Doc string
    icicle-proxy-candidates)
 
   (icicle-color-completion-setup)       ; First code
-  (modify-frame-parameters orig-frame (list (cons 'background-color orig-bg))) ; Undo code
+  (modify-frame-parameters icicle-orig-frame (list (cons 'background-color orig-bg))) ; Undo code
   nil)                                  ; Last code
 
 ;;;###autoload (autoload 'icicle-frame-fg "icicles-cmd2.el")
@@ -441,12 +443,12 @@ This command is intended only for use in Icicle mode." ; Doc string
 See `icicle-frame-bg' - but this is for foreground, not background." ; Doc string
   (lambda (color)                       ; Action function
     (modify-frame-parameters
-     orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
-  prompt named-colors nil t nil         ; `completing-read' args
+     icicle-orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
+  icicle-prompt named-colors nil t nil  ; `completing-read' args
   (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
-  ((orig-frame                         (selected-frame)) ; Bindings
+  ((icicle-orig-frame                  (selected-frame)) ; Bindings
    (orig-bg                            (frame-parameter nil 'foreground-color))
-   (prompt                             "Foreground color: ")
+   (icicle-prompt                      "Foreground color: ")
    (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
@@ -459,7 +461,7 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
    icicle-proxy-candidates)
 
   (icicle-color-completion-setup)       ; First code
-  (modify-frame-parameters orig-frame (list (cons 'foreground-color orig-bg))) ; Undo code
+  (modify-frame-parameters icicle-orig-frame (list (cons 'foreground-color orig-bg))) ; Undo code
   nil)                                  ; Last code
 
 ;; Bind this, not `icicle-Info-index', to `i' in Info mode,
@@ -788,21 +790,21 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
     (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
       (error "You must first load library `synonyms.el'"))
     (synonyms-ensure-synonyms-read-from-cache))
-  (when (window-live-p orig-window)     ; Undo code
-    (select-window orig-window)
+  (when (window-live-p icicle-orig-window) ; Undo code
+    (select-window icicle-orig-window)
     (select-frame-set-input-focus (selected-frame))
     (goto-char icicle-track-pt))
-  (when (window-live-p orig-window)     ; Last code
-    (select-window orig-window)
+  (when (window-live-p icicle-orig-window) ; Last code
+    (select-window icicle-orig-window)
     (select-frame-set-input-focus (selected-frame))
     (goto-char icicle-track-pt)))
 
-;; Free vars here: `orig-buff' is bound in `icicle-insert-thesaurus-entry'.
+;; Free vars here: `icicle-orig-buff' is bound in `icicle-insert-thesaurus-entry'.
 (defun icicle-insert-thesaurus-entry-cand-fn (string)
   "Action function for `icicle-insert-thesaurus-entry'.
 Insert STRING, followed by a space, at position TRACK-PT of buffer
 ORIG-BUFF."
-  (set-buffer orig-buff)
+  (set-buffer icicle-orig-buff)
   (goto-char icicle-track-pt)
   (insert string " ")
   (setq icicle-track-pt  (point))
@@ -860,11 +862,11 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
         #'(lambda (c) (commandp (intern c)))
       #'(lambda (c)
           (setq c  (intern c))
-          (with-current-buffer orig-buff
+          (with-current-buffer icicle-orig-buff
             (and (commandp c) (where-is-internal c overriding-local-map 'non-ascii))))))
    (icicle-candidate-help-fn
     #'(lambda (c)
-        (with-current-buffer orig-buff
+        (with-current-buffer icicle-orig-buff
           (let* ((keys   (where-is-internal (intern-soft c) overriding-local-map))
                  (keys1  (mapconcat 'key-description keys ", ")))
             (message (if (string= "" keys1)
@@ -1810,7 +1812,7 @@ RING is the marker ring to use."
                      (move-marker (cdr mrkr+txt) nil))))
               (icicle-alternative-sort-comparer  nil)
               (icicle-last-sort-comparer         nil)
-              (orig-buff                         (current-buffer)))
+              (icicle-orig-buff                  (current-buffer)))
          (unless (consp markers)
            (error (if global-ring-p "No global markers" "No markers in this buffer")))
          (cond ((cdr markers)
@@ -2336,20 +2338,20 @@ The hit's frame is raised and selected."
     (select-frame-set-input-focus (selected-frame))
     (run-hooks 'icicle-search-hook)))
 
-;; Free vars here: `orig-pt-explore', `orig-win-explore' are bound in `icicle-explore'.
+;; Free vars here: `icicle-orig-pt-explore', `icicle-orig-win-explore' are bound in `icicle-explore'.
 (defun icicle-search-quit-or-error ()
   "Return to the starting point."
-  (when (window-live-p orig-win-explore)
-    (select-window orig-win-explore)
-    (goto-char orig-pt-explore)))
+  (when (window-live-p icicle-orig-win-explore)
+    (select-window icicle-orig-win-explore)
+    (goto-char icicle-orig-pt-explore)))
 
-;; Free vars here: `orig-win-explore' is bound in `icicle-explore'.
+;; Free vars here: `icicle-orig-win-explore' is bound in `icicle-explore'.
 (defun icicle-search-cleanup ()
   "Clean up search highlighting, if `icicle-search-cleanup-flag'.
 Select original window."
   (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-  (when (window-live-p orig-win-explore)
-    (select-window orig-win-explore)
+  (when (window-live-p icicle-orig-win-explore)
+    (select-window icicle-orig-win-explore)
     (select-frame-set-input-focus (selected-frame))))
 
 (defun icicle-search-define-candidates (beg end scan-fn-or-regexp require-match where args)
@@ -2595,7 +2597,7 @@ STRING is a search-hit string.  It is matched by the initial regexp
     (select-window (minibuffer-window))
     (select-frame-set-input-focus (selected-frame))))
 
-;; Free vars here: `orig-win-explore' is bound in `icicle-explore'.
+;; Free vars here: `icicle-orig-win-explore' is bound in `icicle-explore'.
 (defun icicle-search-action-1 (cand+mrker &optional replace-string)
   "Same as `icicle-search-action', but using full candidate, not string.
 CAND+MRKER is a full alist completion-candidate entry, not just a
@@ -2610,17 +2612,20 @@ display string as in `icicle-search-action'."
                  (marker                       (cdr-safe cand+mrker))
                  (icicle-search-in-context-fn  (or icicle-search-in-context-fn
                                                    'icicle-search-in-context-default-fn)))
+            (when (get-buffer-window (marker-buffer marker) 0)
+              (setq icicle-other-window  (get-buffer-window (marker-buffer marker) 0)))
             (unless marker (error "No such occurrence"))
             (condition-case icicle-search-action-1-save-window
                 (save-selected-window
-                  (when (window-live-p orig-win-explore) (select-window orig-win-explore))
+                  (when (window-live-p icicle-orig-win-explore)
+                    (select-window icicle-orig-win-explore))
                   (let ((completion-ignore-case  case-fold-search)
                         (buf                     (marker-buffer marker)))
                     (unless (bufferp buf) (error "No such buffer: %s" buf))
                     (pop-to-buffer buf)
                     (raise-frame)
                     (goto-char marker)
-                    (unless (pos-visible-in-window-p) (recenter -2))
+                    (unless (pos-visible-in-window-p) (recenter icicle-target-window-recenter-amount))
                     ;; Highlight current search context using `icicle-search-main-regexp-current'.
                     (icicle-place-overlay (- marker (length candidate)) marker
                                           'icicle-search-current-overlay
@@ -4645,7 +4650,7 @@ filtering:
  `icicle-buffer-no-match-regexp'      - Regexp buffers must not match
  `icicle-buffer-predicate'            - Predicate buffer must satisfy
  `icicle-buffer-sort'                 - Sort function for candidates"
-  (let ((orig-window  (selected-window))) ; For alternative actions.
+  (let ((icicle-orig-window  (selected-window))) ; For alternative actions.
     (case type
       (buffer
        (let ((completion-ignore-case          (or (and (boundp 'read-buffer-completion-ignore-case)
@@ -4776,7 +4781,7 @@ filtering:
 (defun icicle-read-var-value-satisfying (pred)
   "Read a variable that satisfies predicate PRED and returns its value."
   (symbol-value
-   (let ((orig-window                             (selected-window))
+   (let ((icicle-orig-window                      (selected-window))
          (icicle-must-pass-after-match-predicate  `(lambda (s)
                                                     (setq s  (intern s))
                                                     (and (boundp s)
@@ -4859,14 +4864,13 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `icicle-mode'."
     (interactive)
     (let* ((icicle-transform-function               'icicle-remove-duplicates)
-           (orig-sort-orders-alist                  icicle-sort-orders-alist) ; For recursive use.
-           (orig-show-initially-flag                icicle-show-Completions-initially-flag)
+           (icicle-orig-sort-orders-alist           icicle-sort-orders-alist) ; For recursive use.
+           (icicle-orig-show-initially-flag         icicle-show-Completions-initially-flag)
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
-           ;; `orig-(buff|win)-key-complete' are used free in `icicle-complete-keys-action'.
-           (orig-buff-key-complete                  (current-buffer))
-           (orig-win-key-complete                   (selected-window))
+           (icicle-orig-buff-key-complete           (current-buffer))
+           (icicle-orig-win-key-complete            (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
            (icicle-sort-comparer                    'icicle-local-keys-first-p)
            (icicle-alternative-sort-comparer        'icicle-prefix-keys-first-p)
@@ -4885,17 +4889,18 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
   ;; Free vars here: `icicle-complete-keys-alist' is bound in `icicles-var.el'.
   (defun icicle-complete-keys-1 (prefix) ; PREFIX is a free var in `icicle-complete-keys-action'.
     "Complete a key sequence for prefix key PREFIX (a vector)."
-    (let ((orig-extra-cands  icicle-extra-candidates)) ; Free in `icicle-complete-keys-action'.
+    (let ((icicle-orig-extra-cands  icicle-extra-candidates)) ; Free in `icicle-complete-keys-action'.
       (unwind-protect
            (progn
              (icicle-keys+cmds-w-prefix prefix)
              (unless icicle-complete-keys-alist (error "No keys for prefix `%s'" prefix))
-             (let* ((this-cmd-keys      ; For error report - e.g. mouse cmd.
+             (let* ((icicle-this-cmd-keys ; For error report - e.g. mouse command.
                      (this-command-keys-vector)) ; Free var in `icicle-complete-keys-action'.
-                    (prefix-description
+                    (icicle-key-prefix-description
                      (icicle-key-description prefix (not icicle-key-descriptions-use-<>-flag)))
-                    (prompt  (concat "Complete keys" (and (not (string= "" prefix-description))
-                                                          (concat " " prefix-description))
+                    (prompt  (concat "Complete keys"
+                                     (and (not (string= "" icicle-key-prefix-description))
+                                          (concat " " icicle-key-prefix-description))
                                      ": ")))
                (put-text-property 0 1 'icicle-fancy-candidates t prompt)
                (icicle-complete-keys-action
@@ -4906,8 +4911,8 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
               icicle-complete-keys-alist))))
 
   ;; Free vars here:
-  ;; `orig-buff-key-complete' and `orig-win-key-complete' are bound in `icicle-complete-keys'.
-  ;; `prefix', `orig-extra-cands', and `this-cmd-keys' are bound in `icicle-complete-keys-1'.
+  ;; `icicle-orig-buff-key-complete', `icicle-orig-win-key-complete' bound in `icicle-complete-keys'.
+  ;; `prefix', `icicle-orig-extra-cands', `icicle-this-cmd-keys' bound in `icicle-complete-keys-1'.
   (defun icicle-complete-keys-action (candidate)
     "Completion action function for `icicle-complete-keys'."
     (let* ((key+binding    (cdr-safe (assq (intern candidate) icicle-complete-keys-alist)))
@@ -4917,8 +4922,8 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (action-window  (selected-window)))
       (unwind-protect
            (progn
-             (set-buffer orig-buff-key-complete)
-             (select-window orig-win-key-complete)
+             (set-buffer icicle-orig-buff-key-complete)
+             (select-window icicle-orig-win-key-complete)
              (if (string= ".." candidate)
                  (setq cmd-name  "..")
                (unless (and (string-match "\\(.+\\)  =  \\(.+\\)" candidate) (match-beginning 2))
@@ -4933,7 +4938,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                    (t
                     (setq this-command             binding
                           last-command             binding
-                          icicle-extra-candidates  orig-extra-cands) ; Restore it.
+                          icicle-extra-candidates  icicle-orig-extra-cands) ; Restore it.
                     (when (eq 'self-insert-command binding)
                       (unless key (error "Cannot insert `%s'" key))
                       (setq last-command-char  (aref key 0)))
@@ -4944,14 +4949,15 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                       (icicle-msg-maybe-in-minibuffer "Negative argument"))
                     (setq last-nonmenu-event  1) ; So *Completions* mouse-click info is ignored.
                     (condition-case try-command ; Bind so vanilla context when invoke chosen cmd.
-                        (let ((icicle-show-Completions-initially-flag  orig-show-initially-flag)
-                              (icicle-candidate-action-fn              nil)
+                        (let ((icicle-candidate-action-fn              nil)
                               (icicle-completing-keys-p                nil)
-                              (icicle-sort-orders-alist                orig-sort-orders-alist)
+                              (icicle-sort-orders-alist                icicle-orig-sort-orders-alist)
                               (icicle-sort-comparer                    'icicle-case-string-less-p)
                               (icicle-alternative-sort-comparer
-                               'icicle-historical-alphabetic-p))
-                          (call-interactively binding nil this-cmd-keys))
+                               'icicle-historical-alphabetic-p)
+                              (icicle-show-Completions-initially-flag
+                               icicle-orig-show-initially-flag))
+                          (call-interactively binding nil icicle-this-cmd-keys))
                       (error (error (error-message-string try-command)))))))
         (select-window action-window))))
 
@@ -5321,7 +5327,8 @@ used with `C-u', with Icicle mode turned off)."
             icicle-list-end-string             icicle-proxy-candidate-regexp
             named-colors                       icicle-proxy-candidates)
         ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
-        (setq prompt  (copy-sequence (or prompt "Color: ")))
+        ;; Use `icicle-prompt' from now on, since that's what `icicle-color-completion-setup' sets up.
+        (setq icicle-prompt  (copy-sequence (or prompt "Color: ")))
         (icicle-color-completion-setup)
         (setq icicle-proxy-candidates
               (append icicle-proxy-candidates
@@ -5331,14 +5338,14 @@ used with `C-u', with Icicle mode turned off)."
                                    icicle-list-end-string))
                        '((("*mouse-2 foreground*")) (("*mouse-2 background*")))))
               color  (icicle-transform-multi-completion
-                      (let ((orig-window  (selected-window))
+                      (let ((icicle-orig-window  (selected-window))
                             (icicle-candidate-alt-action-fn
                              (or icicle-candidate-alt-action-fn
                                  (icicle-alt-act-fn-for-type "color")))
                             (icicle-all-candidates-list-alt-action-fn
                              (or icicle-all-candidates-list-alt-action-fn
                                  (icicle-alt-act-fn-for-type "color"))))
-                        (completing-read prompt named-colors))))
+                        (completing-read icicle-prompt named-colors))))
         (when (fboundp 'eyedrop-foreground-at-point)
           (cond ((string-match "^\*mouse-2 foreground\*" color)
                  (setq color  (prog1 (eyedrop-foreground-at-mouse

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 26 08:49:48 2011 (-0700)
+;; Last-Updated: Tue Mar 29 13:13:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12168
+;;     Update #: 12178
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3535,7 +3535,7 @@ Do this only if `icicle-help-in-mode-line-flag' is non-nil."
                               (consp lacarte-menu-items-alist)
                               (cdr (assoc candidate lacarte-menu-items-alist)))
                              (;; Key-completion candidate.  Get command from candidate.
-                              (and (boundp 'icicle-completing-keys-p) icicle-completing-keys-p)
+                              icicle-completing-keys-p
                               (if (string= ".." candidate)
                                   "GO UP"
                                 (let ((cmd-name  (save-match-data
@@ -4215,7 +4215,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
   (if (get-buffer-window "*Completions*" 0)
       (if (eq last-command this-command)
           ;; User repeated the command.  Scroll window around.
-          (icicle-scroll-Completions)
+          (icicle-scroll-Completions-forward)
         ;; User did something else (e.g. changed input).  Update the display.
         (icicle-display-candidates-in-Completions)
         (save-selected-window (select-window (minibuffer-window)) (minibuffer-message msg)))
@@ -5389,7 +5389,7 @@ Return STRING, whether propertized or not."
 (defun icicle-color-completion-setup ()
   "Set up for color-name/RGB-value completion (helper function).
 Sets these variables, which are assumed to be already `let'-bound:
-  `prompt'
+  `icicle-prompt'
   `icicle-candidate-help-fn'
   `completion-ignore-case'
   `icicle-transform-function'
@@ -5400,12 +5400,12 @@ Sets these variables, which are assumed to be already `let'-bound:
   `icicle-proxy-candidate-regexp'
   `named-colors'
   `icicle-proxy-candidates'
-Puts property `icicle-fancy-candidates' on string `prompt'."
+Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
   (unless (featurep 'hexrgb) (error "`icicle-color-completion-setup' requires library `hexrgb.el'"))
   (if (< emacs-major-version 22)
       (require 'eyedropper nil t)
     (or (require 'palette nil t) (require 'eyedropper nil t)))
-  (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+  (put-text-property 0 1 'icicle-fancy-candidates t icicle-prompt)
   (icicle-highlight-lighter)
   (setq icicle-candidate-help-fn           'icicle-color-help
         completion-ignore-case             t
@@ -5543,8 +5543,8 @@ If it is t, then set it to the value of ACTION, so the next call
   "Returns an action function chosen by user for type TYPE (a string).
 Typical use: Bind `icicle-candidate-alt-action-fn' and 
 `icicle-all-candidates-list-alt-action-fn' to the return value.
-However, you must first bind `orig-window' to the window that is
-current before user input is read from the minibuffer."
+However, you must first bind `icicle-orig-window' to the window that
+is current before user input is read from the minibuffer."
   (lexical-let ((type  type))           ; Does this binding really help?
     `(lambda (cands)
       (unless (listp cands) (setq cands (list cands))) ; So it works for both single and all cands.
@@ -5567,9 +5567,9 @@ current before user input is read from the minibuffer."
                 (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function"))
                       icicle-saved-completion-candidate)
                   (icicle-with-selected-window
-                   (if (and (boundp 'orig-window) (window-live-p orig-window))
-                       orig-window
-                     (selected-window)) ; Punt wo `orig-window'.
+                   (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
+                       icicle-orig-window
+                     (selected-window)) ; Punt wo `icicle-orig-window'.
                    (dolist (cand  cands)
                      (setq icicle-saved-completion-candidate  cand)
                      (icicle-apply-to-saved-candidate fn t ,type))))))
@@ -5606,9 +5606,9 @@ current before user input is read from the minibuffer."
                                                                   (completing-read "How (action): "
                                                                                    actions))))
                    (icicle-with-selected-window
-                    (if (and (boundp 'orig-window) (window-live-p orig-window))
-                        orig-window
-                      (selected-window)) ; Punt: no `orig-window'.
+                    (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
+                        icicle-orig-window
+                      (selected-window)) ; Punt: no `icicle-orig-window'.
                     (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
                       (dolist (cand  cands)
                         (setq icicle-saved-completion-candidate  cand)
