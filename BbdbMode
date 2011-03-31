@@ -1,25 +1,22 @@
 BBDB (The insidious Big Brother Database)
 
-== What is that ? ==
-
 It functions as a complete address book for nearly every email and news client written for Emacs, and its functionality supports (by default) making entries in the address book automatically when reading email or posts by people, and easy lookup of addresses while composing messages.  Additionally some work has been done recently to allow it to sync to a Palm Pilot.
 
-== Authors ==
-
-Originally written by JamieZawinski, BbdbMode is now maintained by RonanWaide and many volunteers.
+Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopfFenk, previously RonanWaide, and many volunteers.  The BBDB 3.0 rewrite was started by RolandWinkler and announced on 2010-05-13.
 
 == Project information ==
 
 * Homepage: http://bbdb.sourceforge.net
-* Sourceforge Project Page:  http://sourceforge.net/projects/bbdb
+* Savannah project page:  http://savannah.nongnu.org/projects/bbdb/
+* Old Sourceforge project page:  http://sourceforge.net/projects/bbdb/
 * Mailing List Archive: http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/
 * Gmane: http://gmane.org/find.php?list=bbdb
-  Manual: http://bbdb.sourceforge.net/bbdb.html
-
-== Editing Notes ==
+* Manual: http://bbdb.sourceforge.net/bbdb.html
 
 If you keep elaborate notes on people, consider using MiniEdit to
 enter multi-line descriptions, instead of using the minibuffer.
 
 ----
-CategoryPersonalInformationManager | CategoryBbdb | CategoryMailAddons
+CategoryBbdb
+CategoryMailAddons
+CategoryPersonalInformationManager

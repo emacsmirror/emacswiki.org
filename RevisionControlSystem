@@ -62,8 +62,9 @@ it did'nt work for me (the first defun trew errors), but this other did the tric
 
   (add-hook 'after-save-hook 'rcs-ci-co)
 </pre>
-there is also a discussion here: VersionControlAlways
-
+but it has problems anyway, for example: vc-checkin first tries to save, which is a problem when you want to create another mayor version.
+There is also a nice discussion here: VersionControlAlways 
+ -- AlvaroMartinez
 
 [new]
 starting with Emacs 22 (in earlier versions the vc-rcs-*-switches were present, but ignored by the functions) you can also just use

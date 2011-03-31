@@ -22,44 +22,61 @@ You can toggle the pretty display on and off, using minor mode `pretty-control-l
 
 See Also: OverlayControlL for an alternative approach, which uses an overlay.
 
+
+
+
+
+
+
+== Discussion ==
+
 [new:ViniciusJoseLatorre:2007-02-09 23:35:16 GMT]
 Cool! -- ViniciusJoseLatorre
 
 ===problem with whitespace-mode?===
 
 i have a problem with whitespace-mode. My setup is this:
-(require 'pp-c-l)
-(setq pp^L-^L-string "                                                           ")
-(pretty-control-l-mode 1)
+
+ (require 'pp-c-l)
+ (setq pp^L-^L-string
+       "                                                           ")
+ (pretty-control-l-mode 1)
 
 and
 
 <pre>
 ;; Make whitespace-mode with very basic background coloring for whitespaces
-(setq whitespace-style (quote ( spaces tabs newline space-mark tab-mark newline-mark )))
+(setq whitespace-style
+      '(spaces tabs newline space-mark tab-mark newline-mark))
 </pre>
 
 <pre>
-;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and ▷ for tab.
-(setq
- whitespace-display-mappings
- '( 
-   (space-mark 32 [183] [46]) ; normal space, MIDDLE DOT, FULL STOP.
-   (space-mark 160 [164] [95]) 
-   (space-mark 2208 [2212] [95]) 
-   (space-mark 2336 [2340] [95]) 
-   (space-mark 3616 [3620] [95]) 
-   (space-mark 3872 [3876] [95]) 
-   (newline-mark 10 [182 10]) ; newlne
-   (tab-mark 9 [9655 9] [92 9]) ; tab
-))
+;; Make whitespace-mode and whitespace-newline-mode
+;; use “¶” for end of line char and ▷ for tab.
+(setq whitespace-display-mappings
+      '((space-mark 32 [183] [46]) ; normal space, MIDDLE DOT, FULL STOP.
+        (space-mark 160 [164] [95]) 
+        (space-mark 2208 [2212] [95]) 
+        (space-mark 2336 [2340] [95]) 
+        (space-mark 3616 [3620] [95]) 
+        (space-mark 3872 [3876] [95]) 
+        (newline-mark 10 [182 10]) ; newlne
+        (tab-mark 9 [9655 9] [92 9]))) ; tab
 </pre>
 
 this should make it look like this (second screenshot):
 http://xahlee.org/emacs/whitespace-mode.html
+however, it seems when pretty print is loaded, all those triangle and middle dot doesn't show. -- XahLee
 
-however, it seems when pretty print is loaded, all those triangle and middle dot doesn't show.
+[new:DrewAdams:2011-03-30 15:54 UTC]
+Maybe someone else can help, here. I don't use `whitespace-mode'.  I confirm that there is a problem.  If I follow your instructions minus loading ##pp-c-l.el##, and I turn on `global-whitespace-mode', then I see what you expect (your screenshot).  If I then load ##pp-c-l.el## the whitespace effect is gone --- even if I then turn off `pretty-control-l-mode'.
+
+AFAICT, the only thing `pretty-control-l-mode' does is change the display-table entry for one character (form-feed, aka ^L).  Dunno why that would louse things up so much.
+
+Perhaps someone familiar with `whitespace-mode' (Vinicius?) can look into this.  From your mail to ##help-gnu-emacs@gnu.org## ([http://lists.gnu.org/archive/html/help-gnu-emacs/2011-03/msg00891.html]),
+the same problem seems to exist with at least some other libraries, besides ##pp-c-l.el##.  If you do make progress debugging this and can point to a problem in the <tt>[[pp-c-l.el]]</tt> code I'll try to take a look.  Sorry.  -- DrewAdams
 
 ----
-PageBreaks CategoryHideStuff
+PageBreaks CategoryHideStuff CategoryDisplay
+
 Libraries referenced here: Lisp:pp-c-l.el

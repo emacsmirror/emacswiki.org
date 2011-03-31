@@ -23,8 +23,9 @@ BBDB stands for The Insidious Big Brother Database -- an address book that you c
 ** [http://www.mailmeanywhere.org/sw.free/neda/eoe/bbdbFilters/bbdb-filters/accessPage.html BBDB BBDB Input and Output Filters]
 ** [http://search.cpan.org/search?query=BBDB Perl Packages on CPAN]
 
-==BbdbMode related pages==
+==Related pages==
 
+* BbdbMode -- getting it
 * BbdbAndMailCrypt -- interfacing with encryption routines
 * BbdbCanonicalizeAddresses -- dealing with ever changing addresses
 * BbdbConfiguration -- interesting things to do with BBDB

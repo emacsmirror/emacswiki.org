@@ -50,12 +50,8 @@ These are some libraries that use or define '''Do Re Mi''' functions:
 [:DirectManipulation]
 == Direct Manipulation for Emacs ==
 
-Are you old enough to remember coming across a keyboard with repeating keys for the first time -- where you could hold down a key and have it repeat? Of course not! We're talking manual typewriters here. Well, I've been there. Magic it was. Let's just say that "the repeating key" is the muse for this page.
+Are you old enough to remember coming across a keyboard with repeating keys for the first time -- where you could hold down a key and have it repeat? Of course not! We're talking electric, as opposed to manual, typewriters here. Well, I've been there. Magic it was. Let's just say that "the repeating key" is the muse for this page.
 
-[new]
-Um, actually, Geezer, we're talking electric typewriters here.  Manual typewriters only auto-repeat if you have auto-repeating fingers.
-
-[new]
 In user-interface design, direct manipulation is a '''''good thing'''''. It means you can grab something and manipulate it directly, without going through a bunch of commands, menus, dialog boxes, and so on. Things like handles on graphic objects that let you move, turn, scale, twist and reshape the objects provide interaction that is more immediate -- less mediated by interface junk.
 
 I (DrewAdams) have written library '''<tt>[[doremi.el]]</tt>''', which is a start in the direction of more direct manipulation for some of the things we do in Emacs. More specifically, it provides a command, `doremi', that you can use to define other commands that let you use the arrow keys (or other keys) and/or the mouse wheel to make incremental changes to things. Howzat? By the old "repeating key" trick, Grasshopper...

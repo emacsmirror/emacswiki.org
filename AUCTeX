@@ -89,7 +89,7 @@ Well, I guess this won't be as naturally done as in elisp. But there is latex-do
 
 
 [new:RedBlue:2010-06-26 08:21 UTC]
-Latex2e-help-texinfo  comes with latex documentation in .info format http://www.ctan.org/tex-archive/info/latex2e-help-texinfo/. It also contains ltx-help.el which defines latex-help function. I've just put latex2e.info in my info directory following the instructions on info installation from emacs FAQ. Put ltx-help.el in my .emacs.d. Then corrected slightly the reg expressions in latex-help-get-cmd-alist function to recognize all the entries in the doc index and oala, help of all latex commands is under my fingertips (C-c i to be more specific). 
+Latex2e-help-texinfo  comes with latex documentation in .info format http://www.ctan.org/tex-archive/info/latex2e-help-texinfo/. It also contains ltx-help.el which defines latex-help function. I've just put latex2e.info in my info directory following the instructions on info installation from emacs FAQ. Put ltx-help.el in my .emacs.d. Then corrected slightly the reg expressions in latex-help-get-cmd-alist function to recognize all the entries in the doc index and oala, help of all latex commands is under my fingertips (C-c i to be more specific).
 Here is the version of latex-help-get-cmd-alist function which worked for me:
 
   (defun latex-help-get-cmd-alist () ;corrected version:
@@ -134,14 +134,23 @@ By default, !AUCTeX shares its abbreviations with the major mode text-mode. This
 
 Abbrevs defined from a file in one of the auctex modes will then be stored in the default .abbrev_defs file using the table <code>TeX-mode-abbrev-table</code> instead of <code>text-mode-table</code>.
 
-== Anything and LaCarte for mathematical symbols ==
+== Mathematical Symbols ==
+=== Auto-Completion ===
+Several ac-sources for the marvelous  [http://www.emacswiki.org/emacs/AutoComplete auto-completion] package are available [http://code.google.com/p/ac-math/ here].
+
+https://ac-math.googlecode.com/svn/trunk/latex-symbols.png
+
+It allows for a context dependent completion of LaTeX tags and unicode symbols.
+In order to make full use of unicode functionality you need to use [http://tug.ctan.org/pkg/unicode-math unicode-math] package.
+
+=== Anything and LaCarte for Math Input ===
 [new:RedBlue:2010-06-26 09:37 UTC]
-LaCarte offers a great facility for navigating menus; [[Anything]] - fast display and reg-exp filtering. Combined and specialized for `Math' sub-menu give a  nifty symbol lookup and insertion mechanism.  
+LaCarte offers a great facility for navigating menus; [[Anything]] - fast display and reg-exp filtering. Combined and specialized for `Math' sub-menu give a  nifty symbol lookup and insertion mechanism.
 
 [[image:AnythingLacarteMath]]
 
 To make it work, install [[Anything]] and LaCarte and put this in your .emacs:
- 
+
   (require 'anything-config)
   (require 'lacarte)
 
@@ -268,7 +277,7 @@ Feel free to improve this function to suit your needs (for example by adding sup
 
 == Synctex and Evince ==
 
-Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl 
+Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
 and the left mouse button within a PDF document to be taken back to the corresponding line of the .tex source file that generated the PDF.  This requires synctex.  Thanks to Tassilo Horn for solving this problem!
 http://permalink.gmane.org/gmane.emacs.auctex.general/4074
 
@@ -285,7 +294,7 @@ http://permalink.gmane.org/gmane.emacs.auctex.general/4074
        (unless (= col -1)
          (move-to-column col)))))
 
-(when (and 
+(when (and
        (eq window-system 'x)
        (fboundp 'dbus-register-signal))
   (dbus-register-signal

@@ -130,5 +130,22 @@ ErikArneson suggests this alternate function, based on rgr/mailto but using deve
     (gnus-setup-message 'message (message-mail to))))
 </pre>
 
+== Emacs Lisp code : Wanderlust ==
+
+Using emacs-mailto-handler as above, this function can be used to start composition of a new message in Wanderlust:
+ 
+<pre>
+(defun mailto-compose-mail (mailto-url)
+  (if (and (stringp mailto-url)
+           (string-match "\\`mailto:" mailto-url))
+      (progn
+        (require 'rfc2368)
+        (let* ((headers (mapcar (lambda (h) (cons (intern (car h)) (cdr h)))
+                          (rfc2368-parse-mailto-url mailto-url)))
+               (good-headers (remove-if (lambda (h) (member (car h) '(Body))) headers))
+               (body (cdr (assoc 'Body headers))))
+          (wl-draft good-headers nil nil body)))))
+</pre>
+
 ----
 CategoryMail
