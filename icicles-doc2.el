@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 14:37:25 2011 (-0700)
+;; Last-Updated: Thu Mar 31 13:50:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27554
+;;     Update #: 27559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -493,6 +493,8 @@
 ;;     `C-mouse-2').  The contexts are highlighted in the source
 ;;     buffer(s).  You can scroll the current search-hits buffer
 ;;     forward and backward using `C-M-v' and `C-M-S-v' (aka `C-M-V').
+;;     Whenever the destination would be off-screen, user option
+;;     `icicle-recenter' is passed to `recenter' to make it visible.
 ;;
 ;;  7. As always in Icicles, your current minibuffer input filters the
 ;;     set of current candidates - the search contexts, so that only
@@ -5021,6 +5023,10 @@
 ;;    run after searching and moving to an `icicle-search' match,
 ;;    whether you move there by `RET', `C-RET', `C-next', or
 ;;    `C-prior'.
+;;
+;;  * User option `icicle-recenter' is passed as argument to
+;;    `recenter' Whenever the current navigation destination would be
+;;    off-screen, to make it visible.
 ;;
 ;;  * User option `icicle-bookmark-name-length-max' is the maximum
 ;;    number of characters to use when `icicle-bookmark-cmd' (`C-x r

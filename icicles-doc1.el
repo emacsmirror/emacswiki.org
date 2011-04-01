@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 26 12:29:11 2011 (-0700)
+;; Last-Updated: Thu Mar 31 08:39:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25838
+;;     Update #: 25854
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -113,6 +113,19 @@
 ;;    that fact provokes compiler warnings.  If you get byte-compiler
 ;;    errors (not warnings), then please report a bug, using `M-x
 ;;    icicle-send-bug-report'.
+;;
+;;    Whenever you update Icicles (i.e., download new versions of
+;;    Icicle source files), I recommend that you do the following:
+;;
+;;      1. Delete all existing byte-compiled Icicles files
+;;         (icicles*.elc).
+;;      2. Load Icicles (`load-library' or `require').
+;;      3. Byte-compile the source files.
+;;
+;;    In particular, always load `icicles-mac.el' (not
+;;    `icicles-mac.elc') before you byte-compile new versions of the
+;;    files, in case there have been any changes to Lisp macros (in
+;;    `icicles-mac.el').
 ;;
 ;;    After startup, you can turn Icicle mode on or off at any time
 ;;    interactively, using command `icy-mode' (aka `icicle-mode' -

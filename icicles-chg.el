@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 13:50:41 2011 (-0700)
+;; Last-Updated: Thu Mar 31 15:46:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6224
+;;     Update #: 6239
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/03/31 dadams
+;;     icicle-search-action-1: Applied renaming: i*-target-window-recenter-amount to icicle-recenter.
+;;     icicle-customize-apropos-options-of-type: Wrap icicle-var-is-of-type-p with condition-case.
 ;; 2011/03/29 dadams
 ;;     Use new icicle-* vars for various free vars (orig-buff etc.).
 ;; 2011/03/26 dadams
@@ -360,6 +363,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/03/31 dadams
+;;     icicle-describe-opt-of-type-complete: Wrap icicle-var-is-of-type-p with condition-case.
 ;; 2011/03/29 dadams
 ;;     icicle-search-action-1: Set icicle-other-window.  Use icicle-target-window-recenter-amount.
 ;;     Use new icicle-* vars for various free vars (orig-buff etc.).
@@ -680,6 +685,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/03/31 dadams
+;;     icicle-read-file-name, icicle-read-number, icicle-read-char-exclusive,
+;;       icicle-read-string-completing, icicle-color-completion-setup:
+;;         Wrap calls to icicle-var-is-of-type-p with condition-case.  Thx to Michael Heerdegen.
 ;; 2011/03/29 dadams
 ;;     icicle-show-help-in-mode-line: Removed boundp condition for icicle-completing-keys-p.
 ;;     icicle-scroll-or-update-Completions:
@@ -4392,6 +4401,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/03/31 dadams
+;;     Renamed icicle-target-window-recenter-amount to icicle-recenter & moved from icicles-var.el.
 ;; 2011/03/26 dadams
 ;;     icicle-top-level-key-bindings:
 ;;       Added: bmkp-file-(all|some)-tags(-regexp)-jump(-other-window).
@@ -4949,6 +4960,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/03/31 dadams
+;;     Renamed icicle-target-window-recenter-amount to icicle-recenter & moved to icicles-opt.el.
 ;; 2011/03/29 dadams
 ;;     Added: icicle-key-prefix-description, icicle-orig-(buff|window|font|frame|pixelsize|pointsize),
 ;;            icicle-orig-(buff|win)-key-complete, icicle-completing-keys-p, icicle-prompt,

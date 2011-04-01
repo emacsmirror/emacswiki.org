@@ -11,7 +11,7 @@ Various '''testing frameworks''' simplify the task of writing and running tests.
 * '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it wasn't (the comparison returned ##nil##), ##assert## would signal an error.
 * '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
 * '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object implementing the suite is sometimes called the "test case" or "test harness".)
-* '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. In other words, "stubbing out" the external behavior is useful when testing a unit which depends on that function. (Roughly speaking, mocks and stubs do the same thing, but mocks are more sophisticated.)
+* '''Mock/stub:''' a stand-in for actual code, useful for "stubbing out" external behavior. (Roughly speaking, mocks and stubs do the same thing, but mocks are generally more sophisticated.) A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. 
 * '''Fixture:''' setting up (and tearing down) an environment for a test or a test suite.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
 * '''Test-Driven Developent''': a methodology that emphasizes continual testing as part of the "development cycle".
@@ -39,8 +39,6 @@ The following unit test frameworks exist for Emacs Lisp.
 '''[[ETest]]''' (Emacs Testing Framework) by Phil Jackson allows arbitrary nesting of tests. It also works with [[EmacsLispMock|el-mock.el]]. [http://www.shellarchive.co.uk/content/etest.html Manual].
 
 '''[http://github.com/technomancy/dotfiles/tree/master/.emacs.old/behave/ behave.el]''' by PhilHagelberg is a BDD framework with expectations-like syntax. [http://technomancy.us/73 Description].
-
-'''[http://gitorious.org/vimpulse/vimpulse/blobs/development/test-framework.el test-framework.el]''' by VegardOye is a prototype framework providing assertions, annotations, suites, fixtures, mocks, stubs, and a choice between xUnit-like and BDD-like syntax.
 
 === Others ===
 

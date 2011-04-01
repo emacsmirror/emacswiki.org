@@ -366,5 +366,81 @@ $ diff -c putty-src/WINDOWS/WINDOW.c WINDOW-patched.C
         if ((cfg.funky_type == FUNKY_VT400 ||
 </pre>
 
+== Windows PuTTY client:  xterm broken ==
+
+The following is tested in Windows 7 SP-1 using PuTTY 0.60 to connect to Kubuntu 10.4 and 8.4.  This is isolated to PuTTY because the same keyboard connecting to the same systems over vnc sends the right keys both in the GUI emacs as well as in the terminal windows with <tt>emacs -nw</tt>.
+
+PuTTY claims to be an <tt>xterm</tt> but it mangles most of the keys.  Most notably, <tt>Ctrl</tt> does not modify most of the function keys and keypad keys.  Here follows what I have been able to put together using a combination of <tt>quoted-insert</tt> and the dribble file.  This is nothing like what Emacs expects in <tt>xterm.el</tt>.  <tt>\e</tt> is escape (<tt>^[</tt>).  <tt>^M</tt> is <tt>0x13</tt>.  <tt><></tt> means nothing happens.  <tt><putty></tt> means PuTTY grabs it.  <tt><w7></tt> means Windows 7 grabs it.  
+
+<pre>
+                Normal    Ctrl      Shift     Alt       CrSh      CrAlt     ShAlt     CrShAlt  
+Left Arrow      \eOD      \e[D      \eOD      \e\eOD    \eOD      \e\eOD    \e\eOD    \e\eOD 
+Right Arrow     \eOC      \e[C      \eOC      \e\eOC    \eOC      \e\eOC    \e\eOC    \e\eOC 
+Up Arrow        \eOA      \e[A      \eOA      \e\eOA    \eOA      \e\eOA    \e\eOA    \e\eOA 
+Down Arrow      \eOB      \e[B      \eOB      \e\eOB    \eOB      \e\eOB    \e\eOB    \e\eOB
+
+                Normal    Ctrl      Shift     Alt       CrSh      CrAlt     ShAlt     CrShAlt  
+Home            \e[1~     <>        \e[1~     \e\e[1~   <>        <>        \e\e[1~   <>
+Insert          \e[2~     <>        \e[2~     \e\e[2~   <>        <>        \e\e[2~   <>
+Delete          \e[3~     <>        \e[3~     \e\e[3~   <>        <w7>      \e\e[3~   <>     
+Page Up         \e[5~     <putty>   \e[5~     \e\e[5~   <>        <putty>   \e\e[5~   <>     
+End             \e[4~     <>        \e[4~     \e\e[4~   <>        <>        \e\e[4~   <>     
+Page Down       \e[6~     <putty>   \e[6~     \e\e[6~   <>        <putty>   \e\e[6~   <>     
+
+                Normal    Ctrl      Shift     Alt       CrSh      CrAlt     ShAlt     CrShAlt  
+F1              \e[11~    \e[11~    \e[23~    \e\e[11~  \e[23~    \e\e[11~  \e\e[23~  \e\e[23~
+F2              \e[12~    \e[12~    \e[24~    \e\e[12~  \e[24~    \e\e[12~  \e\e[24~  \e\e[24~       
+F3              \e[13~    \e[13~    \e[25~    \e\e[13~  \e[25~    \e\e[13~  \e\e[25~  \e\e[25~
+F4              \e[14~    \e[14~    \e[26~    <w7>      \e[26~    <>        <w7>      <>
+F5              \e[15~    \e[15~    \e[28~    \e\e[15~  \e[28~    \e\e[15~  \e\e[28~  \e\e[28~
+F6              \e[17~    \e[17~    \e[29~    \e\e[17~  \e[29~    \e\e[17~  \e\e[29~  \e\e[29~
+F7              \e[18~    \e[18~    \e[31~    \e\e[18~  \e[31~    \e\e[18~  \e\e[31~  \e\e[31~
+F8              \e[19~    \e[19~    \e[32~    \e\e[19~  \e[32~    \e\e[19~  \e\e[32~  \e\e[32~
+F9              \e[20~    \e[20~    \e[33~    \e\e[20~  \e[33~    \e\e[20~  \e\e[33~  \e\e[33~
+F10             \e[21~    \e[21~    \e[34~    \e\e[21~  \e[34~    \e\e[21~  \e\e[34~  \e\e[34~
+F11             \e[23~    \e[23~    \e[23~    \e\e[23~  \e[23~    \e\e[23~  \e\e[23~  \e\e[23~
+F12             \e[24~    \e[24~    \e[24~    \e\e[24~  \e[24~    \e\e[24~  \e\e[24~  \e\e[24~
+
+NUM LOCK ON     Normal    Ctrl      Shift     Alt       CrSh      CrAlt     ShAlt     CrShAlt  
+Num Lock        \eOP      <>        <>        <>        <>        <>        <w7>      <>
+/               \eOQ      \eOQ      \eOQ      \e/       \eOQ      <>        \e/       <>
+*               \eOR      \eOR      \eOR      \e*       \eOR      <>        \e*       <>
+-               \eOS      \eOS      \eOS      \e-       \eOS      <>        \e-       <>
++               \eOl      \eOm      \eOm      \e+       \eOm      <>        \e+       <>
+Enter           \eOM      \eOM      \eOM      \e^M      \eOM      \e^M      \e^M      \e^M
+.               \eOn      \eOn      \eOn      \e.       \eOn      <w7>      \e.       <>
+0               \eOp      \eOp      \eOp      <w7>      \eOp      <>        <>        <>
+1               \eOq      \eOq      \eOq      <w7>      \eOq      <>        <>        <>
+2               \eOr      \eOr      \eOr      <w7>      \eOr      <>        <>        <>
+3               \eOs      \eOs      \eOs      <w7>      \eOs      <>        <>        <>
+4               \eOt      \eOt      \eOt      <w7>      \eOt      <>        <>        <>
+5               \eOu      \eOu      \eOu      <w7>      \eOu      <>        <>        <>
+6               \eOv      \eOv      \eOv      <w7>      \eOv      <>        <>        <>
+7               \eOw      \eOw      \eOw      <w7>      \eOw      <>        <>        <>
+8               \eOx      \eOx      \eOx      <w7>      \eOx      <>        <>        <>
+9               \eOy      \eOy      \eOy      <w7>      \eOy      <>        <>        <>
+
+NUM LOCK OFF    Normal    Ctrl      Shift     Alt       CrSh      CrAlt     ShAlt     CrShAlt  
+Num Lock       
+/               \eOQ      \eOQ      \eOQ      \e/       \eOQ      <>        \e/       <>
+*               \eOR      \eOR      \eOR      \e*       \eOR      <>        \e*       <>
+-               \eOS      \eOS      \eOS      \e-       \eOS      <>        \e-       <>
++               \eOl      \eOm      \eOm      \e+       \eOm      <>        \e+       <>
+Enter           \eOM      \eOM      \eOM      \e^M      \eOM      \e^M      \e^M      \e^M
+.               \eOn      \eOn      \eOn      \e.       \eOn      <w7>      \e.       <>
+0               \eOp      \eOp      \eOp      <w7>      \eOp      <>        <>        <>
+1               \eOq      \eOq      \eOq      <w7>      \eOq      <>        <>        <>
+2               \eOr      \eOr      \eOr      <w7>      \eOr      <>        <>        <>
+3               \eOs      \eOs      \eOs      <w7>      \eOs      <>        <>        <>
+4               \eOt      \eOt      \eOt      <w7>      \eOt      <>        <>        <>
+5               \eOu      \eOu      \eOu      <w7>      \eOu      <>        <>        <>
+6               \eOv      \eOv      \eOv      <w7>      \eOv      <>        <>        <>
+7               \eOw      \eOw      \eOw      <w7>      \eOw      <>        <>        <>
+8               \eOx      \eOx      \eOx      <w7>      \eOx      <>        <>        <>
+9               \eOy      \eOy      \eOy      <w7>      \eOy      <>        <>        <>
+</pre>
+
+If I create a keymap for this I'll post it.  
+
 ----
 CategoryExternalUtilities CategoryWThirtyTwo

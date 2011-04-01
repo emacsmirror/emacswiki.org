@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 13:47:23 2011 (-0700)
+;; Last-Updated: Thu Mar 31 13:41:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2556
+;;     Update #: 2559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -263,7 +263,7 @@
   ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
   ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-flag,
-  ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag,
+  ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag, icicle-recenter,
   ;; icicle-require-match-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
   ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-comparer,
@@ -1024,12 +1024,14 @@ This is used as the value of `minibuffer-completion-table'."
              #'(lambda (opt+typ)
                  (and (string-match ops-re (symbol-name (car opt+typ)))
                       (or (null tp)
-                          (icicle-var-is-of-type-p (car opt+typ) (list tp)
-                                                   (case mode
-                                                     ((inherit inherit-or-regexp) 'inherit)
-                                                     ((direct  direct-or-regexp)  'direct)
-                                                     (inherit-or-value     'inherit-or-value)
-                                                     (direct-or-value      'direct-or-value))))))
+                          (condition-case nil
+                              (icicle-var-is-of-type-p (car opt+typ) (list tp)
+                                                       (case mode
+                                                         ((inherit inherit-or-regexp) 'inherit)
+                                                         ((direct  direct-or-regexp)  'direct)
+                                                         (inherit-or-value     'inherit-or-value)
+                                                         (direct-or-value      'direct-or-value)))
+                            (error nil)))))
              result)))
     ;; Change alist entries to multi-completions: "op^G^Jtp".  Add short help for mode-line, tooltip.
     (setq result
@@ -2625,7 +2627,7 @@ display string as in `icicle-search-action'."
                     (pop-to-buffer buf)
                     (raise-frame)
                     (goto-char marker)
-                    (unless (pos-visible-in-window-p) (recenter icicle-target-window-recenter-amount))
+                    (unless (pos-visible-in-window-p) (recenter icicle-recenter))
                     ;; Highlight current search context using `icicle-search-main-regexp-current'.
                     (icicle-place-overlay (- marker (length candidate)) marker
                                           'icicle-search-current-overlay

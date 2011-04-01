@@ -1,7 +1,7 @@
 This README is the Ansys mode documentation (The text formatting is
 targeted for the Emacs Wiki)
 
-Copyright (C) 2006 - 2010  H. Dieter Wilhelm GPL V3
+Copyright (C) 2006 - 2011  H. Dieter Wilhelm GPL V3
 
 == Introduction ==
 Editor support for working with Ansys FEA.
@@ -18,9 +18,9 @@ Ansys solver processes as well.
 The mode's capabilities are sophisticated but the comprehensive
 documentation is targeted for Ansys users with little Emacs
 experience.  Any suggestions for improvements are very welcome.  The
-current stable version 12.0.1 is available at the Google Code site
+current stable version 13.0.1 is available at the Google Code site
 http://code.google.com/p/ansys-mode ("wget
-http://ansys-mode.googlecode.com/files/ansys-mode-12.0.1.tgz",
+http://code.google.com/p/ansys-mode/downloads/list/ansys-mode-13.0.1.tgz",
 development versions can be checked out with "svn checkout
 http://ansys-mode.googlecode.com/svn/trunk ansys-mode").  For the
 installation, issues and comments please have a look at the Ansys mode
@@ -28,15 +28,16 @@ Wiki (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).
 
 == Requirements ==
 
-The code is based on Ansys version 12.0 and is written for the editor
+The code is based on Ansys version 13.0 and is written for the editor
 GNU Emacs (not consciously targeted for XEmacs).  It is tested with
-Emacs-23.2 and Emacs-23.1 under XP32, XP64 and GNU/Linux.  The code
-compiles also with Emacs-22.1, i. e. it should work with this and any
-newer version.  (Emacs-23.1 was relased in Jul. 2009, Emacs-22.1 in
-Jul. 2007.)  The code can be loaded but won't run flawlessly without
-minor adaptions for Emacs-21.3 (released in Mar. 2003).
+Emacs-23.3, Emacs-23.2 and Emacs-23.1 under XP32, XP64 and GNU/Linux.
+The code compiles and runs also with Emacs-22.1, i. e. it should work
+with this and any newer version.  (Emacs-23.2 was relased in May 2010,
+Emacs-23.1 in July 2009, Emacs-22.1 in July 2007.)  The code can be
+loaded but won't run flawlessly without adaptions for Emacs-21.3
+(released in Mar. 2003).
 
-If applicable please grab the package of a pre-compiled Emacs-23.2 for
+If applicable please grab the package of a pre-compiled Emacs-23.3 for
 Windows together with a preconfigured Ansys mode at above Google Code
 site and unpack this archive anywhere on your system.  Alternatively
 visit http://ftp.gnu.org/pub/gnu/emacs/ for an original version of GNU
@@ -72,15 +73,19 @@ section for a list of them.
   keywords, undocumented commands, deprecated elements, ...)  and
   optionally also user defined variables (experimental)
 
+* Alignment (beautification) of whole sections with variable
+  defintions
+
 * Overview of *every* variable definition (*GET, *DIM, *SET, =, *DO,
   CM, *VGET, ...), as well as component names, in the current file.
   These are shown in another window.  In the highest decoration level
-  (2) these user variables are highlighted as well
+  (2) these "user variables" are highlighted as well
 
 * Preview and insertion (optionally auto-insertion) of header and
   Ansys code templates for APDL files.  Respective snippets represent
   examples of APDL work flows and considerable Ansys know-how and are
-  easily extensible to boot
+  easily extensible to boot.  The templates are partly interactive
+  i. e. they are asking for or completing user input.
 
 * Convenient comment handling, commenting out whole paragraphs or
   whole control blocks and vice versa
@@ -164,7 +169,7 @@ load-file ansys-mode RET', i. e. typing "M-x" (first) the "Alt" key
 and then the "x" key simultaneously, you'll end up in the so called
 Emacs minibuffer prompt, now type "load-file" (you might apply the
 "TAB" key for the Emacs auto-completion feature at every intermediate
-stage ) and conclude this input with the "RET" key. Emacs will then
+stage) and conclude this input with the "RET" key. Emacs will then
 prompt you for a file, type in the directory where you have extracted
 the code and "ansys-mode.el" (or better "ansys-mode.elc" for speed
 reasons if the compiled version is available) and press RET to execude
@@ -284,9 +289,12 @@ classical Ansys macro library.
 Ansys mode changes the default behaviour of Emacs
 
 globally:
+
+* Switches on font-lock-mode if toggled off, e.g when calling Emacs with
+  the -D (basic display) option
 * Activated Delete Selection Mode (delete-selection-mode t)
-* Advised M-w (kill-ring-save) without active region to copy the whole line
 * Activated Show Paren Mode (show-paren-mode t)
+* Advised M-w (kill-ring-save) without active region to copy the whole line
 
 (Delete Selection Mode can be switched off in the Ansys menu.)
 
@@ -303,14 +311,36 @@ In no particular order:
 * Eli Zaretzki
 * Markus Triska
 * Mathias Dahl
-* And of course: rms
+* rms
 
 == History and News ==
 
-The version scheme is a mixture of the Ansys release (currently 12.0)
+The version scheme is a mixture of the Ansys release (currently 13.0)
 on which the highlighting and completing code is based and the version
-increments (currently .1) of Ansys mode for this particular Ansys
-release.
+increments (currently .1) of Ansys mode (thus 13.0.1) for this
+particular Ansys release.
+
+=== Version 13.0.1 ===
+
+* Added support for aligning whole sections of Ansys variable
+  definitions, both in the Ansys menu and as a keyboard shortcut 'C-c
+  C-a'
+
+* Enhanced ansys-display-skeleton with an optional argument for
+  inserting the respective skeleton in the APDL buffer.
+
+* Enhanced some "interactive" code templates with lists for completing
+  the input and sensible defaults
+
+* Refined some abbreviation definitions and focused the display of
+  abbreviations to the mode specific ones
+
+* Fixed insert pair functions, like 'C-c %'
+
+* Changed keyboard shortcut for calling the Ansys help to 'C-c C-h'
+
+* Updated keyword list, deprecated elements, undocumented commands,
+  etc. to release 13.0 of Ansys, as usual.
 
 === Version 12.0.1 ===
 
@@ -488,3 +518,9 @@ the following options:
 * It might be helpful for you to visit the Emacs Wiki
   (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).  At the Wiki you
   can add some comments or wishes.
+
+Local Variables:
+word-wrap: t
+show-trailing-whitespace: t
+indicate-empty-lines: t
+End:

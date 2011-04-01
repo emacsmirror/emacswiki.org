@@ -166,7 +166,7 @@ match) with more semantic search criteria.  After building up a complex predicat
 # '''Icicles''' finds all of the qualified search contexts, and presents them to you as ''completion candidates''.  As always for
 '''Icicles''' completion, the number of search hits (matching candidates), is displayed in the [[mode line]] of buffer `*Completions*' -- e.g., '''`##72 candidates##''''.
 
-# You can ''navigate'' among the source-buffer search contexts, using the [[multi-command]] action keys (`C-next', `C-prior', `C-RET', `C-mouse-2').  The contexts are highlighted in the source buffer(s).  You can ''scroll'' the current search-hits buffer forward and backward using '''`C-M-v'''' and '''`C-M-S-v'''' (aka '''`C-M-V'''').
+# You can ''navigate'' among the source-buffer search contexts, using the [[multi-command]] action keys (`C-next', `C-prior', `C-RET', `C-mouse-2').  The contexts are highlighted in the source buffer(s).  You can ''scroll'' the current search-hits buffer forward and backward using '''`C-M-v'''' and '''`C-M-S-v'''' (aka '''`C-M-V'''').  Whenever the destination would be off-screen, [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-recenter|icicle-recenter]]</tt>'''' is passed to `recenter' to make it visible.
 
 # As always in '''Icicles''', your current minibuffer input ''filters'' the set of current candidates -- the search contexts, so that only those that contain matches to your input remain as candidates.  This is a second level of matching: looking for a ''refinement pattern within the search contexts''.   And this constitutes a '''_fifth way_''' you can limit the set of search contexts.
 

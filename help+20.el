@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 10:01:46 2011 (-0800)
+;; Last-Updated: Thu Mar 31 07:38:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2098
+;;     Update #: 2104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/03/31 dadams
+;;     help-var-(matches|inherits)-type-p: Wrap string-match with save-match-data.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive function and define-key.
 ;; 2009/08/30 dadams
@@ -809,7 +811,7 @@ impossible to know which concrete types a value must match."
     (let ((var-type (get variable 'custom-type)))
       (dolist (type types)
         (when (if (stringp type)
-                  (string-match type (format "%s" (format "%S" var-type)))
+                  (save-match-data (string-match type (format "%s" (format "%S" var-type))))
                 (equal var-type type))
           (throw 'help-type-matches t))))
     nil))  
@@ -821,12 +823,14 @@ impossible to know which concrete types a value must match."
       (dolist (type types)
         (while var-type
           (when (or (and (stringp type)
-                         (string-match type (format "%s" (format "%S" var-type))))
+                         (save-match-data
+                           (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'help-type-inherits t))
           (when (consp var-type) (setq var-type (car var-type)))
           (when (or (and (stringp type)
-                         (string-match type (format "%s" (format "%S" var-type))))
+                         (save-match-data
+                           (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'help-type-inherits t))
           (setq var-type (car (get var-type 'widget-type))))

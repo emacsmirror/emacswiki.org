@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 0.1
-;; Last-Updated: Tue Feb  8 08:58:14 2011 (-0600)
+;; Version: 0.12
+;; Last-Updated: Tue Feb  8 08:58:39 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1472
+;;     Update #: 1473
 ;; URL: http://www.emacswiki.org/emacs/textmate-import.el
 ;; Keywords: Yasnippet Textmate
 ;; Compatibility: Tested with Windows Emacs 23.2
@@ -34,6 +34,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 31-Mar-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb  8 08:58:39 2011 (-0600) #1473 (Matthew L. Fidler)
+;;    Add `yas/editing-field-num-p'
 ;; 08-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Feb  8 08:58:04 2011 (-0600) #1471 (Matthew L. Fidler)
 ;;    Added autoload cookies.
@@ -264,7 +267,7 @@ Possible choices are:
       (with-temp-buffer
         ;; Emacs http://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-of-Regexps.html#Syntax-of-Regexps
         ;; Textmate http://manual.macromates.com/en/drag_commands#drag_commands
-
+	
         ;; \w => \w
         ;; \W => \W
         ;; \s => \s- (Whitespace)
@@ -1381,6 +1384,22 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
       (insert default-text)))))
 (defalias 'yas/ma 'yas/text-on-moving-away)
 (defalias 'yas/emld 'yas/text-on-moving-away)
+
+(defun yas/editing-field-num-p (&optional arg)
+  "Which field is active?"
+  (interactive)
+  (let* ((arg (or arg
+                  0))
+         (snippet (first (yas/snippets-at-point)))
+         (active-field (overlay-get yas/active-field-overlay 'yas/field))
+         (live-fields (remove-if #'(lambda (field)
+                                     (and (not (eq field active-field))
+                                          (yas/field-probably-deleted-p snippet field)))
+                                 (yas/snippet-fields snippet)))
+         (active-field-pos (position active-field live-fields)))
+    (= active-field-pos arg)))
+
+
 (defvar yas/t-lst '()
   "Variable for expanding textmate transformations with Yasnippet")
 

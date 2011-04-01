@@ -71,12 +71,24 @@ customize '''Icicles''' key bindings, see [[Icicles - Customizing Key Bindings]]
 might also want to customize some of the '''Icicles''' faces, since a
 text terminal is sometimes limited in the colors it can handle.
 
+[:byte-compile]
 It is of course best to byte-compile all of the libraries (except ##icicles-chg.el##, ##icicles-doc1.el##, and ##icicles-doc2.el##).  You
 will likely get some byte-compiler warning messages.  These are
 probably benign -- ignore them.  '''Icicles''' is designed to work with
 multiple versions of Emacs, and that fact provokes compiler
 warnings.  If you get byte-compiler errors (not warnings), then
 please report a bug, using `M-x icicle-send-bug-report'.
+
+Whenever you update '''Icicles''' (i.e., download new versions of
+'''Icicle''' source files), I recommend that you do the following:
+
+# Delete all existing byte-compiled '''Icicles''' files (##icicles*.elc##).
+# Load '''Icicles''' (`load-library' or `require').
+# Byte-compile the source files.
+
+In particular, always load ##icicles-mac.el## (''not'' ##icicles-mac.el##<u>##c##</u>)
+before you byte-compile new versions of the files, in case there
+have been any changes to Lisp macros (in ##icicles-mac.el##).
 
 After startup, you can turn ''Icicle'' mode on or off at any time
 interactively, using command '''`icy-mode'''' (aka `icicle-mode' --

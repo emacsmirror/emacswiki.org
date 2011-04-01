@@ -1,5 +1,5 @@
 ;;; help-fns+.el --- Extensions to `help-fns.el'.
-;; 
+;;
 ;; Filename: help-fns+.el
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
@@ -7,22 +7,22 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Thu Mar 17 09:45:17 2011 (-0700)
+;; Last-Updated: Thu Mar 31 07:42:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 478
+;;     Update #: 483
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `button', `help-fns', `help-mode', `view', `wid-edit',
 ;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Extensions to `help-fns.el'
 ;;
 ;;  Keys bound here:
@@ -52,7 +52,7 @@
 ;;
 ;;    `variable-name-history'.
 ;;
-;; 
+;;
 ;;  ***** NOTE: The following functions defined in `help-fns.el'
 ;;              have been REDEFINED HERE:
 ;;
@@ -69,9 +69,11 @@
 ;;  "display-completion-list should not strip text properties".
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change log:
 ;;
+;; 2011/03/31 dadams
+;;     help-var-(matches|inherits)-type-p: Wrap string-match with save-match-data.
 ;; 2011/03/17 dadams
 ;;     describe-file: Added clickable thumbnail image to the help for an image file.
 ;; 2011/03/02 dadams
@@ -142,7 +144,7 @@
 ;; 2007/12/06 dadams
 ;;     describe-option-of-type:
 ;;       If nil type, all defcustom vars are candidates.  Use custom-variable-p.
-;;       Specific error if no such custom type.  
+;;       Specific error if no such custom type.
 ;; 2007/12/04 dadams
 ;;     Added: describe-option-of-type, help-remove-duplicates, help-var-is-of-type-p.
 ;;     Bound o to describe-option, M-o to describe-option-of-type,
@@ -157,24 +159,24 @@
 ;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'help-fns)
@@ -992,10 +994,10 @@ impossible to know which concrete types a value must match."
     (let ((var-type (get variable 'custom-type)))
       (dolist (type types)
         (when (if (stringp type)
-                  (string-match type (format "%s" (format "%S" var-type)))
+                  (save-match-data (string-match type (format "%s" (format "%S" var-type))))
                 (equal var-type type))
           (throw 'help-type-matches t))))
-    nil))  
+    nil))
 
 (defun help-var-inherits-type-p (variable types)
   "VARIABLE's type matches or is a subtype of a member of list TYPES."
@@ -1004,12 +1006,14 @@ impossible to know which concrete types a value must match."
       (dolist (type types)
         (while var-type
           (when (or (and (stringp type)
-                         (string-match type (format "%s" (format "%S" var-type))))
+                         (save-match-data
+                           (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'help-type-inherits t))
           (when (consp var-type) (setq var-type (car var-type)))
           (when (or (and (stringp type)
-                         (string-match type (format "%s" (format "%S" var-type))))
+                         (save-match-data
+                           (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'help-type-inherits t))
           (setq var-type (car (get var-type 'widget-type))))

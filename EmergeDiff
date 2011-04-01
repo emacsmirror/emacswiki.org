@@ -7,5 +7,20 @@ Also, you might want to set the "emerge-diff-options" variable to "--ignore-all-
 
     (setq emerge-diff-options "--ignore-all-space")
 
+= start emerge faster for git-mergetool =
+If you want to use emerge as git-mergetool, and want to start emacs using emacs -Q, then
+
+* create a script $HOME/bin/emerge-for-git, and run chmod +x on it.
+
+    #!/bin/sh
+    emacs -Q $*
+
+* set path for emerge
+
+    $ git config --global merge.tool emerge
+    $ git config --global mergetool.emerge.path $HOME/bin/emerge-for-git
+
+Now git-mergetool should start emacs using emacs -Q. I still don't know how to use emacsclient for emerge.
+
 ----
 CategoryExternalUtilities CategoryProgrammerUtils

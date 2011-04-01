@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 26 12:10:53 2011 (-0700)
+;; Last-Updated: Thu Mar 31 19:16:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4240
+;;     Update #: 4249
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -166,7 +166,7 @@
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-completion-methods-per-command',
-;;    `icicle-TAB-shows-candidates-flag',
+;;    `icicle-TAB-shows-candidates-flag', `icicle-recenter',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
 ;;    `icicle-top-level-key-bindings',
@@ -3009,6 +3009,16 @@ second `TAB'.
 Actually, the concerned keys are those defined by option
 `icicle-prefix-complete-keys', not necessarily `TAB'."
   :type 'boolean :group 'Icicles-Key-Bindings)
+
+;;;###autoload
+(defcustom icicle-recenter -4
+  "Argument passed to `recenter' to recenter point in the target window.
+Used during functions such as `icicle-search' when the destination to
+visit would otherwise be off-screen."
+  :type '(choice
+	  (const   :tag "To mid-window" nil)
+	  (integer :tag "On this line number (negative: from bottom)" nil))
+  :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-test-for-remote-files-flag t ; Toggle with `C-^'.

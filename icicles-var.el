@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 11:53:14 2011 (-0700)
+;; Last-Updated: Thu Mar 31 13:41:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1419
+;;     Update #: 1421
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -138,7 +138,6 @@
 ;;    `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
-;;    `icicle-target-window-recenter-amount',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
 ;;    `icicle-transform-before-sort-p',
@@ -1283,11 +1282,6 @@ a single overlay (or nil).  Otherwise, this is a list of overlays.")
 (defvar icicle-successive-grab-count 0
   "Number of text things to be grabbed by next `\\<minibuffer-local-map>\
 \\[icicle-insert-string-at-point]'.")
-
-(defvar icicle-target-window-recenter-amount -4
-  "Argument to `recenter' for the target window.
-Used during `icicle-search' when the destination to visit would
-otherwise be off screen.")
 
 (defvar icicle-text-property-value-history nil
   "History variable for reading text properties.")

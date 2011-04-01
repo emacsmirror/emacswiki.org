@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 13:13:05 2011 (-0700)
+;; Last-Updated: Thu Mar 31 08:06:10 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12178
+;;     Update #: 12186
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1095,8 +1095,10 @@ and `read-file-name-function'."
                                (mapatoms
                                 (lambda (cand)
                                   (when (and (user-variable-p cand)
-                                             (icicle-var-is-of-type-p
-                                              cand '(file (file :must-match t))))
+                                             (condition-case nil
+                                                 (icicle-var-is-of-type-p cand
+                                                                          '(file (file :must-match t)))
+                                               (error nil)))
                                     (push (concat "'" (symbol-name cand) "'") ipc))))
                                ipc)))
                 icicle-proxy-candidates))
@@ -1356,9 +1358,11 @@ whose value or whose custom type is compatible with type `integer',
                        (mapatoms
                         (lambda (cand)
                           (when (and (user-variable-p cand)
-                                     (icicle-var-is-of-type-p cand (if (>= emacs-major-version 22)
-                                                                       '(number integer float)
-                                                                     '(number integer))))
+                                     (condition-case nil
+                                         (icicle-var-is-of-type-p cand (if (>= emacs-major-version 22)
+                                                                           '(number integer float)
+                                                                         '(number integer)))
+                                       (error nil)))
                             (push (symbol-name cand) ipc))))
                        ipc)))
              
@@ -1405,7 +1409,9 @@ whose value is compatible with type `character'."
                     (let ((ipc  ()))
                       (mapatoms (lambda (cand)
                                   (when (and (user-variable-p cand)
-                                             (icicle-var-is-of-type-p cand '(character)))
+                                             (condition-case nil
+                                                 (icicle-var-is-of-type-p cand '(character))
+                                               (error nil)))
                                     (push (symbol-name cand) ipc))))
                       ipc)))
               str temp)
@@ -1441,7 +1447,9 @@ whose value or whose custom type is compatible with type `string'."
                    (let ((ipc  ()))
                      (mapatoms (lambda (cand)
                                  (when (and (user-variable-p cand)
-                                            (icicle-var-is-of-type-p cand '(string color regexp)))
+                                            (condition-case nil
+                                                (icicle-var-is-of-type-p cand '(string color regexp))
+                                              (error nil)))
                                    (push (symbol-name cand) ipc))))
                      ipc)))
              ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
@@ -5461,7 +5469,7 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
             (mapatoms
              (lambda (cand)
                (when (and (user-variable-p cand)
-                          (icicle-var-is-of-type-p cand '(color))
+                          (condition-case nil (icicle-var-is-of-type-p cand '(color)) (error nil))
                           ;; This should not be necessary, but type `color' isn't
                           ;; enforced - it just means `string' (so far).
                           (x-color-defined-p (symbol-value cand)))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 10:53:39 2011 (-0700)
+;; Last-Updated: Thu Mar 31 19:29:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21626
+;;     Update #: 21628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1790,7 +1790,9 @@ you see which options will be available in the customize buffer."
                                 (or (get s 'saved-value) (custom-variable-p s))
                                 (or (not typ) ; `typ' = nil means use all types.
                                     (if pref-arg
-                                        (icicle-var-is-of-type-p s (list typ))
+                                        (condition-case nil
+                                            (icicle-var-is-of-type-p s (list typ))
+                                          (error nil))
                                       (equal (get s 'custom-type) typ)))))))
                   (completing-read "Customize options matching (regexp): "
                                    obarray nil nil nil 'regexp-history)))))
@@ -2291,7 +2293,7 @@ commands, it need not be.  It can be useful anytime you need to use
         (icicle-whole-candidate-as-text-prop-p  t)
         (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
         (icicle-act-before-cycle-flag           icicle-act-before-cycle-flag)
-        (orig-pt-explore                        (point-marker))
+        (icicle-orig-pt-explore                 (point-marker))
         (icicle-orig-win-explore                (selected-window))
         result)
     (setq icicle-act-before-cycle-flag      nil

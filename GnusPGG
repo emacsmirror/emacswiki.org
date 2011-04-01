@@ -1,3 +1,5 @@
+Beware: by default Gnus now (March, 2011) uses EasyPG if it is available.
+
 PGG is part of (No/Oort) Gnus, and documented in the manual.
 
 PGG allows Gnus to perform mail signing/encrypting. 

@@ -1211,6 +1211,16 @@ run after searching and moving to an `icicle-search' match,
 whether you move there by `RET', `C-RET', `C-next', or
 `C-prior'.   See [[Icicles - Search Commands, Overview]].
 
+
+----
+[:icicle-recenter]
+==== Option icicle-recenter ====
+
+User option `icicle-recenter' is passed as argument to
+`recenter' whenever the current navigation destination would be
+off-screen, to make it visible.
+
+
 ----
 [:icicle-bookmark-name-length-max]
 ==== Option icicle-bookmark-name-length-max ====

@@ -33,6 +33,13 @@ in a given situation, like in the gnus group buffer, use this command:
 
 Thanks to David Kastrup for giving it to me. --memnon
 
+you might need to wait for the correct mode to be loaded before seting the key
+
+    (eval-after-load 'text-mode
+                     '(define-key text-mode-map (kbd "'") 'maybe-open-apostrophe))
+
+
+
 == Usability ==
 
 DefaultOrCustomKeyBindings -- Discussion on using Emacs vanilla or to roll your own.

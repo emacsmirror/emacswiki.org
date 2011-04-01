@@ -72,6 +72,7 @@ I generally don't mind the graphical password prompt when I'm at my desk, but wh
 Here is my solution that turns off the use of the agent in these cases: http://www.enigmacurry.com/2009/01/14/extending-emacs-with-advice/
 ----
 How about (setenv "GPG_AGENT_INFO" nil)
+Note: another form is: (setenv (concat "GPG_AGENT_INFO" nil))
 
 - this did it for me in emacs 23 : nice solution.
 

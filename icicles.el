@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 11:53:32 2011 (-0700)
+;; Last-Updated: Thu Mar 31 13:43:42 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22836
+;;     Update #: 22839
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -646,10 +646,11 @@
 ;;    `icicle-prefix-cycle-previous-help-keys',
 ;;    `icicle-previous-candidate-keys',
 ;;    `icicle-quote-shell-file-name-flag',
-;;    `icicle-read+insert-file-name-keys', `icicle-regexp-quote-flag',
-;;    `icicle-regexp-search-ring-max', `icicle-region-background',
-;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
-;;    `icicle-search-cleanup-flag', `icicle-search-from-isearch-keys',
+;;    `icicle-read+insert-file-name-keys', `icicle-recenter',
+;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
+;;    `icicle-region-background', `icicle-require-match-flag',
+;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
+;;    `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
 ;;    `icicle-search-highlight-context-levels-flag',
 ;;    `icicle-search-highlight-threshold', `icicle-search-hook',
@@ -1115,7 +1116,6 @@
 ;;    `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
-;;    `icicle-target-window-recenter-amount',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
 ;;    `icicle-transform-before-sort-p',
