@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Mar 26 14:12:12 2011 (-0700)
+;; Last-Updated: Fri Apr  1 16:58:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 462
+;;     Update #: 467
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -32,6 +32,8 @@
 ;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (this file)
 ;;    `bookmark+-1.el'   - other required code (non-bmenu) 
+;;    `bookmark+-key.el' - key and menu bindings
+;;
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -1014,7 +1016,9 @@ Jump to (Visit)
 \\[bmkp-bookmark-list-jump]\t- Jump to a bookmark-list bookmark
 \\[bmkp-bookmark-file-jump]\t- Jump to a bookmark-file bookmark
 \\[bmkp-dired-jump]\t- Jump to a Dired bookmark
-\\[bmkp-file-jump]\t- Jump to a file bookmark
+\\[bmkp-dired-this-dir-jump]\t- Jump to a Dired bookmark for this dir
+\\[bmkp-file-jump]\t- Jump to a file or directory bookmark
+\\[bmkp-file-this-dir-jump]\t- Jump to a bookmark for a file or subdir in this dir
 \\[bmkp-local-file-jump]\t- Jump to a local-file bookmark
 \\[bmkp-remote-file-jump]\t- Jump to a remote-file bookmark
 \\[bmkp-region-jump]\t- Jump to a region bookmark

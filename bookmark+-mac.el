@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Mon Jan  3 10:48:09 2011 (-0800)
+;; Last-Updated: Fri Apr  1 16:24:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 76
+;;     Update #: 78
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -30,6 +30,8 @@
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
 ;;    `bookmark+-1.el'   - other (non-bmenu) required code
 ;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
+;;    `bookmark+-key.el' - key and menu bindings
+;;
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;

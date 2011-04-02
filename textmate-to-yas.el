@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 0.12
+;; Version: 0.13
 ;; Last-Updated: Tue Feb  8 08:58:39 2011 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1473
@@ -34,16 +34,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
-;; 31-Mar-2011    Matthew L. Fidler  
+;; 01-Apr-2011    Matthew L. Fidler
+;;    Last-Updated: Tue Feb  8 08:58:39 2011 (-0600) #1473 (Matthew L. Fidler)
+;;    Changed `yas/ma' so that it applies the mirrors upon moving away.
+;; 31-Mar-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  8 08:58:39 2011 (-0600) #1473 (Matthew L. Fidler)
 ;;    Add `yas/editing-field-num-p'
-;; 08-Feb-2011    Matthew L. Fidler  
+;; 08-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  8 08:58:04 2011 (-0600) #1471 (Matthew L. Fidler)
 ;;    Added autoload cookies.
-;; 28-Nov-2010    Matthew L. Fidler  
+;; 28-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sun Nov 28 18:22:04 2010 (-0600) #1466 (Matthew L. Fidler)
 ;;    Bug-fix for names.
-;; 28-Nov-2010    Matthew L. Fidler  
+;; 28-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sun Nov 28 15:14:17 2010 (-0600) #1463 (Matthew L. Fidler)
 ;;    bug fix for yas/t/ when $1 doesn't exist.
 ;; 12-Nov-2010    Matthew L. Fidler
@@ -267,7 +270,7 @@ Possible choices are:
       (with-temp-buffer
         ;; Emacs http://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-of-Regexps.html#Syntax-of-Regexps
         ;; Textmate http://manual.macromates.com/en/drag_commands#drag_commands
-	
+
         ;; \w => \w
         ;; \W => \W
         ;; \s => \s- (Whitespace)
@@ -1348,11 +1351,11 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
             ;; Treat string as multiple lines.  Instead of matching ^ or $ to
             ;; the beginning or ending of the string, it matches the
             ;; beginning or ending of the line.
-            
+
             ;; In theory, the default behavior is to match the beginning and
             ;; ending of the string.
-            
-            
+
+
             ;; Currently this does NOTHING.
             )
           (cond
@@ -1380,8 +1383,19 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
   (cond
    ((and (not yas/modified-p) yas/moving-away-p)
     (if (string= "" default-text)
-        (yas/skip-and-clear-or-delete-char)
-      (insert default-text)))))
+        (progn
+          (yas/skip-and-clear-or-delete-char)
+          (when (boundp 'yas/text)
+            (setq yas/text ""))
+          (when (boundp 'text)
+            (setq text ""))
+          (let ((snippet (car (yas/snippets-at-point))))
+            (when snippet
+              (yas/update-mirrors snippet))))
+      (insert default-text)
+      (let ((snippet (car (yas/snippets-at-point))))
+	(when snippet
+	  (yas/update-mirrors snippet)))))))
 (defalias 'yas/ma 'yas/text-on-moving-away)
 (defalias 'yas/emld 'yas/text-on-moving-away)
 

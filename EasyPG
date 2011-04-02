@@ -156,6 +156,44 @@ Being difficult to find it online I decided to extract and publish the EasyPG As
 
 You can find the manual here: http://virgo977virgo.blogspot.com/2009/09/easypg-assistant-users-manual-from.html
 
+== Gnus ==
+
+AFAIK Gnus now prefers EasyPG for mail encryption (over PGG, mailcrypt...).
+
+A working customization code (April 2011, using Debian, Emacs 23, No Gnus 0.16 (git version) and GnuPG 1) follows:
+{{{
+(require 'epg-config)
+ (setq mml2015-use 'epg
+
+       mml2015-verbose t
+       epg-user-id gpgpgpkeyID
+       mml2015-encrypt-to-self t
+       mml2015-always-trust nil
+       mml2015-cache-passphrase t
+       mml2015-passphrase-cache-expiry '36000
+       mml2015-sign-with-sender t
+
+       gnus-message-replyencrypt t
+       gnus-message-replysign t
+       gnus-message-replysignencrypted t
+       gnus-treat-x-pgp-sig t
+ 
+;;       mm-sign-option 'guided
+;;       mm-encrypt-option 'guided
+       mm-verify-option 'always
+       mm-decrypt-option 'always
+
+       gnus-buttonized-mime-types
+       '("multipart/alternative"
+         "multipart/encrypted"
+         "multipart/signed")
+
+      epg-debug t ;;  then read the *epg-debug*" buffer
+)
+}}}
+
+To solve problems first suppress any "encrypt-to" in your ~/.gnupg/gpg.conf (beware: it can lead to new problems because you may therefore produce cyphered files/mail NOT cyphered using your key)
+
 ----
 CategoryCryptography
 CategoryInterface

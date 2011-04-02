@@ -7,18 +7,18 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  3 09:57:15 2011 (-0800)
+;; Last-Updated: Fri Apr  1 17:00:42 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 14949
+;;     Update #: 14953
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-1', `bookmark+-bmu', `bookmark+-lit',
-;;   `bookmark+-mac', `dired', `dired-aux', `dired-x', `ffap', `pp',
-;;   `pp+'.
+;;   `bookmark', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `bookmark+-mac', `dired', `dired-aux',
+;;   `dired-x', `ffap', `pp', `pp+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -33,6 +33,8 @@
 ;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
 ;;    `bookmark+-1.el'   - other required code (non-bmenu)
+;;    `bookmark+-key.el' - key and menu bindings
+;;
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -123,12 +125,13 @@
                                         ; not want to use `bookmark+-lit.el' then simply do not put
                                         ; it in your `load-path'.
 (require 'bookmark+-bmu)                ; `*Bookmark List*' stuff.
-(require 'bookmark+-1)                  ; Rest of Bookmark+ required stuff.
+(require 'bookmark+-1)                  ; Rest of Bookmark+ required stuff, except keys & menus.
+(require 'bookmark+-key)                ; Keys & menus.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defconst bmkp-version-number "3.2.0")
+(defconst bmkp-version-number "3.2.1")
 
 ;;;###autoload
 (defun bmkp-version ()

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 362 $
+;; RCS Version: $Rev: 363 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2286,10 +2286,11 @@ automatically:
   (sr-mouse-change-window e)
   (sr-advertised-find-file))
 
-(defun sr-prev-subdir-other ()
+(defun sr-prev-subdir-other (&optional count)
   "Go to the previous subdirectory in the other pane."
-  (interactive)
-  (sr-in-other (sr-dired-prev-subdir)))
+  (interactive "P")
+  (let ((count (or count 1)))
+    (sr-in-other (sr-dired-prev-subdir count))))
 
 (defun sr-follow-file-other ()
   "Go to the same directory where the selected file is, but in the other pane."
@@ -3452,10 +3453,11 @@ or (c)ontents? ")
   (interactive)
   (sr-ti (dired-unmark-backward 1)))
 
-(defun sr-ti-prev-subdir ()
+(defun sr-ti-prev-subdir (&optional count)
   "Runs dired-prev-subdir on active pane from the terminal window."
-  (interactive)
-  (sr-ti (sr-dired-prev-subdir)))
+  (interactive "P")
+  (let ((count (or count 1)))
+    (sr-ti (sr-dired-prev-subdir count))))
 
 (defun sr-ti-unmark-all-marks ()
   "Removes all marks on active pane from the terminal window."

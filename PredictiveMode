@@ -50,6 +50,8 @@ The default behaviour is quite instrusive, but predictive mode can easily be cus
 
 == Screenshots ==
 
+See the AUCTeX page for more screenshots of Predictive Mode in action.
+
 One of the easiest ways of using Predictive Mode is to start with an empty dictionary and let it learn automatically. In this case, it learned the stuff in the paragraph the user just typed. The last word starts with a T and thus Predictive Mode predicts you want either "The" or "Temple".
 
 [[image:Predictive Mode Screenshot]]

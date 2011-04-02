@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Mar 26 10:37:46 2011 (-0700)
+;; Last-Updated: Fri Apr  1 17:18:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13456
+;;     Update #: 13464
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -31,7 +31,9 @@
 ;;    `bookmark+-mac.el' - Lisp macros
 ;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
-;;    `bookmark+-1.el'   - other required code (non-bmenu) 
+;;    `bookmark+-1.el'   - other required code (non-bmenu)
+;;    `bookmark+-key.el' - key and menu bindings
+;;
 ;;    `bookmark+-doc.el' - documentation (comment-only - this file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -150,10 +152,12 @@
 ;;  ** Installing Bookmark+ **
 ;;
 ;;  The main Bookmark+ library is `bookmark+.el'.  The other required
-;;  libraries are `bookmark+-mac.el', `bookmark+-bmu.el' and
-;;  `bookmark+-1.el'.  If you want to be able to highlight bookmarks
-;;  then you will also want to use library `bookmark+-lit.el'.  I
-;;  recommend that you byte-compile the libraries.
+;;  libraries are `bookmark+-mac.el', `bookmark+-bmu.el',
+;;  `bookmark+-1.el', and `bookmark+-key.el'.  If you want to be able
+;;  to highlight bookmarks then you will also need library
+;;  `bookmark+-lit.el'.  I recommend that you byte-compile all of the
+;;  libraries, after loading the source files (in particular, load
+;;  `bookmark+-mac.el').
 ;;
 ;;  Put the directory of these libraries in your `load-path' and add
 ;;  this to your init file (~/.emacs):
@@ -500,11 +504,11 @@
 ;;  These commands are also added to the mode's menu-bar menu.
 ;;
 ;;  In Dired mode, `C-j' is bound to a special Dired-specific jump
-;;  command, `bmkp-dired-jump-current', whose destinations all use the
-;;  current Dired directory.  The aim of `C-j' is not to change
-;;  directories but to change to a different set of markings,
-;;  switches, inserted subdirectories, or hidden subdirectories for
-;;  the same Dired directory.
+;;  command, `bmkp-dired-this-dir-jump', whose destinations all use
+;;  the current directory (`default-directory').  The aim of `C-j' is
+;;  not to change directories but to change to a different set of
+;;  Dired markings, switches, inserted subdirectories, or hidden
+;;  subdirectories for the same Dired directory.
 ;;
 ;;  In addition to the predefined bookmark types, which you can use as
 ;;  described above, you can define a "type"-specific jump command for

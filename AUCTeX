@@ -134,6 +134,36 @@ By default, !AUCTeX shares its abbreviations with the major mode text-mode. This
 
 Abbrevs defined from a file in one of the auctex modes will then be stored in the default .abbrev_defs file using the table <code>TeX-mode-abbrev-table</code> instead of <code>text-mode-table</code>.
 
+
+== Predictive Completion and AUCTeX ==
+
+PredictiveMode integrates with AUCTeX "out-of-the-box". It provides predictive completion for normal text, as usual. But when PredictiveMode is used in LaTeX-mode, in addition it provides context-sensitive predictive completion for LaTeX commands, environments, math commands, cross-reference labels, and more besides.
+
+PredictiveMode also knows about a number of additional LaTeX packages, so if you include them in your document using LaTeX's \usepackage command, PredictiveMode will automatically include commands from that package in the completions it offers. Adding support for new packages is often as easy as writing a list of the new commands, and generating an appropriately named dictionary from it. (The PredictiveMode user manual explains in more detail how to add support for new LaTeX packages; if you add support for a new package, consider contributing it so it can be included in the PredictiveMode package.)
+
+In other words, PredictiveMode provides full "Intellisense" features for writing LaTeX documents in Emacs.
+
+The following screen-shots show this in action, and also demonstrate some of the different (configurable) ways in which the possible completion candidates can be displayed.
+
+[[image:PredictiveModeTooltip]]
+
+PredictiveMode knows where the preamble of your document starts and ends, it knows where LaTeX expects an environment name, it knows where LaTeX expects text commands and where maths commands are required, and it will offer appropriate completions in each section (completions for LaTeX environments displayed here in a pop-up frame):
+
+[[image:PredictiveModePopupFrame]]
+
+The "completion browser" menu is particularly useful when hunting for that LaTeX command whose name you can't quite remember:
+
+[[image:PredictiveModeCompletionBrowser]]
+
+LaTeX label definitions also are automatically recognized by PredictiveMode, so that completing within a cross-referencing command such as \ref only brings up valid labels:
+
+[[image:PredictiveModeDynamicCompletion]]
+
+
+
+
+
+
 == Mathematical Symbols ==
 === Auto-Completion ===
 Several ac-sources for the marvelous  [http://www.emacswiki.org/emacs/AutoComplete auto-completion] package are available [http://code.google.com/p/ac-math/ here].

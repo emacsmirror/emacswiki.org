@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2111, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Mon Jan  3 14:19:47 2011 (-0800)
+;; Last-Updated: Fri Apr  1 16:24:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 692
+;;     Update #: 732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -30,6 +30,8 @@
 ;;    `bookmark+-lit.el' - code for highlighting bookmarks (this file)
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*'
 ;;    `bookmark+-1.el'   - other required code (non-bmenu) 
+;;    `bookmark+-key.el' - key and menu bindings
+;;
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -716,39 +718,47 @@ Non-interactively:
       (when bmk                         ; Just skip bad bookmark if not interactive.
         (cond ((setq bmk-ov  (bmkp-overlay-of-bookmark bmk))
                (if (not (or style face))
-                   (when msgp (error "Already highlighted - use prefix arg to change")) ; No-op batch.
+                   (when msgp           ; No-op batch.
+                     (error "Already highlighted - use prefix arg to change"))
                  (when style (bmkp-make/move-overlay-of-style style pos autonamedp bmk-ov))
                  (when (and face (not (memq styl '(lfringe rfringe none))))
                    (overlay-put bmk-ov 'face face)))
                (when msgp (message "%sighlighted bookmark `%s'" (if bmk-ov "H" "UNh") bmk-name)))
               (passes-when-p
                (save-excursion
-                 (bookmark-handle-bookmark bmk)
-                 ;; POINTP is non-nil when `bmkp-light-bookmark' is called from `bookmark--jump-via'.
-                 (when (and pointp bmkp-auto-light-relocate-when-jump-flag)
-                   (setq pos  (point)))
-                 (when (and pos (< pos (point-max)))
-                   (let ((ov  (bmkp-make/move-overlay-of-style styl pos autonamedp)))
-                     (when ov           ; nil means `none' style.
-                       (let ((ovs  (if autonamedp
-                                       'bmkp-autonamed-overlays
-                                     'bmkp-non-autonamed-overlays)))
-                         (push ov (symbol-value ovs)))
-                       (when (and (not (bmkp-lighted-p bmk))
-                                  (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
-                         (setq nb-lit  (1- nb-lit))
-                         (throw 'bmkp-light-bookmark bmk))
-                       (overlay-put ov 'priority
-                                    (or (cdr (assoc (if autonamedp
-                                                        'bmkp-autonamed-overlays
-                                                      'bmkp-non-autonamed-overlays)
-                                                    bmkp-light-priorities))
-                                        (apply #'min (mapcar #'cdr bmkp-light-priorities))))
-                       (unless (memq styl '(lfringe rfringe none)) (overlay-put ov 'face fac))
-                       (overlay-put ov 'evaporate t)
-                       (overlay-put ov 'category  'bookmark-plus)
-                       (overlay-put ov 'bookmark  bmk-name))
-                     (when msgp (message "%sighlighted bookmark `%s'" (if ov "H" "UNh") bmk-name))))))
+
+                 ;; See note in comments of `bmkp-light-bookmarks' - same considerations here.
+                 ;; (let ((bmkp-jump-display-function  nil)) (bookmark-handle-bookmark bmk))
+                 ;;
+                 (with-current-buffer (or (and buf (get-buffer buf)) (current-buffer))
+
+                   ;; POINTP is non-nil when `bmkp-light-bookmark' is called from
+                   ;; `bookmark--jump-via'.
+                   (when (and pointp bmkp-auto-light-relocate-when-jump-flag)
+                     (setq pos  (point)))
+                   (when (and pos (< pos (point-max)))
+                     (let ((ov  (bmkp-make/move-overlay-of-style styl pos autonamedp)))
+                       (when ov         ; nil means `none' style.
+                         (let ((ovs  (if autonamedp
+                                         'bmkp-autonamed-overlays
+                                       'bmkp-non-autonamed-overlays)))
+                           (push ov (symbol-value ovs)))
+                         (when (and (not (bmkp-lighted-p bmk))
+                                    (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
+                           (setq nb-lit  (1- nb-lit))
+                           (throw 'bmkp-light-bookmark bmk))
+                         (overlay-put ov 'priority
+                                      (or (cdr (assoc (if autonamedp
+                                                          'bmkp-autonamed-overlays
+                                                        'bmkp-non-autonamed-overlays)
+                                                      bmkp-light-priorities))
+                                          (apply #'min (mapcar #'cdr bmkp-light-priorities))))
+                         (unless (memq styl '(lfringe rfringe none)) (overlay-put ov 'face fac))
+                         (overlay-put ov 'evaporate t)
+                         (overlay-put ov 'category  'bookmark-plus)
+                         (overlay-put ov 'bookmark  bmk-name))
+                       (when msgp
+                         (message "%sighlighted bookmark `%s'" (if ov "H" "UNh") bmk-name)))))))
               (t
                (when msgp (message "Bookmark's condition canceled highlighting"))))))))
 
@@ -813,7 +823,7 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
          'MSG))
   (unless overlays-symbols
     (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
-  (let ((bmkp-use-region  nil)     ; Inhibit region handling.
+  (let ((bmkp-use-region  nil)          ; Inhibit region handling.
         (total            0)
         (nb-auto          0)
         (nb-non-auto      0)
@@ -835,31 +845,44 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
           (setq pos  (bookmark-get-position bmk)
                 buf  (bmkp-get-buffer-name bmk))
           (save-excursion
-            (bookmark-handle-bookmark bmk)
-            (when (and pos (< pos (point-max)))
-              (dolist (ov-symb  overlays-symbols)
-                (when (or (and (eq 'bmkp-autonamed-overlays     ov-symb) autonamedp)
-                          (and (eq 'bmkp-non-autonamed-overlays ov-symb) (not autonamedp)))
-                  (let ((ov  (bmkp-make/move-overlay-of-style style pos autonamedp bmk-ov)))
-                    (when ov            ; nil means `none' style.
-                      (set ov-symb (cons ov (symbol-value ov-symb)))
-                      (when (eq 'bmkp-autonamed-overlays ov-symb)
-                        (unless bmk-ov (setq new-auto  (1+ new-auto)))
-                        (setq nb-auto  (1+ nb-auto)))
-                      (when (eq 'bmkp-non-autonamed-overlays ov-symb)
-                        (unless bmk-ov (setq new-non-auto  (1+ new-non-auto)))
-                        (setq nb-non-auto  (1+ nb-non-auto)))
-                      (when (and (not bmk-ov) (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
-                        (setq nb-lit  (1- nb-lit))
-                        (throw 'bmkp-light-bookmarks bmk))
-                      (setq total  (1+ total))
-                      (overlay-put ov 'priority ; > ediff's 100+, < isearch-overlay's 1001.
-                                   (or (cdr (assoc ov-symb bmkp-light-priorities))
-                                       (apply #'min (mapcar #'cdr bmkp-light-priorities))))
-                      (unless (memq style '(lfringe rfringe none)) (overlay-put ov 'face face))
-                      (overlay-put ov 'evaporate t)
-                      (overlay-put ov 'category 'bookmark-plus)
-                      (overlay-put ov 'bookmark bmk-name))))))))))
+            ;; An alternative here would be to call the handler at let it do the highlighting.
+            ;; In that case, we would need at least to bind the display function to nil while
+            ;; handling, so we don't also do the jump.  In particular, we don't want to pop to
+            ;; the bookmark in a new window or frame.
+            ;; Calling the handler would be good for some cases, such as Info, where the
+            ;; highlighting is not really specific to the buffer but to a narrowed part of it.
+            ;;
+            ;; (let ((bmkp-jump-display-function  nil)) (bookmark-handle-bookmark bmk))
+            ;;
+            ;; But calling the handler is in general the wrong thing.  We don't want highlighting
+            ;; all Dired bookmarks in a given directory to also do all the file marking and
+            ;; subdir hiding associated with each of the bookmarks.  So we do just the
+            ;; highlighting, no handling, putting the code in side `with-current-buffer'.
+            (with-current-buffer (or (and buf (get-buffer buf)) (current-buffer))
+              (when (and pos (< pos (point-max)))
+                (dolist (ov-symb  overlays-symbols)
+                  (when (or (and (eq 'bmkp-autonamed-overlays     ov-symb) autonamedp)
+                            (and (eq 'bmkp-non-autonamed-overlays ov-symb) (not autonamedp)))
+                    (let ((ov  (bmkp-make/move-overlay-of-style style pos autonamedp bmk-ov)))
+                      (when ov          ; nil means `none' style.
+                        (set ov-symb (cons ov (symbol-value ov-symb)))
+                        (when (eq 'bmkp-autonamed-overlays ov-symb)
+                          (unless bmk-ov (setq new-auto  (1+ new-auto)))
+                          (setq nb-auto  (1+ nb-auto)))
+                        (when (eq 'bmkp-non-autonamed-overlays ov-symb)
+                          (unless bmk-ov (setq new-non-auto  (1+ new-non-auto)))
+                          (setq nb-non-auto  (1+ nb-non-auto)))
+                        (when (and (not bmk-ov) (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
+                          (setq nb-lit  (1- nb-lit))
+                          (throw 'bmkp-light-bookmarks bmk))
+                        (setq total  (1+ total))
+                        (overlay-put ov 'priority ; > ediff's 100+, < isearch-overlay's 1001.
+                                     (or (cdr (assoc ov-symb bmkp-light-priorities))
+                                         (apply #'min (mapcar #'cdr bmkp-light-priorities))))
+                        (unless (memq style '(lfringe rfringe none)) (overlay-put ov 'face face))
+                        (overlay-put ov 'evaporate t)
+                        (overlay-put ov 'category 'bookmark-plus)
+                        (overlay-put ov 'bookmark bmk-name)))))))))))
     (when msgp (message "%s New: %d auto + %d other,  Total: %d auto + %d other = %d"
                         (if (consp current-prefix-arg)
                             (if (> (prefix-numeric-value current-prefix-arg) 4)

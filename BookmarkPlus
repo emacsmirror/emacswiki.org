@@ -14,16 +14,17 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 * <tt>[[bookmark+-mac.el]]</tt> -- Lisp macros
 * <tt>[[bookmark+-bmu.el]]</tt> -- code for the `##*Bookmark List*##' (`bookmark-bmenu-mode')
 * <tt>[[bookmark+-1.el]]</tt> -- other required code (non-bmenu)
+* <tt>[[bookmark+-key.el]]</tt> -- key and menu bindings (non-bmenu)
 * <tt>[[bookmark+-lit.el]]</tt> -- ''optional'' code for highlighting bookmark locations
 * <tt>[[bookmark+-doc.el]]</tt> -- documentation (essentially the same as this wiki page)
 * <tt>[[bookmark+-chg.el]]</tt> -- change log entries
 
 
 The main '''Bookmark+''' library is ##bookmark+.el##.  The other required
-libraries are ##bookmark+-mac.el##, ##bookmark+-bmu.el##, and ##bookmark+-1.el##.  If you
-want to be able to highlight bookmarks then you will also want to
-use library ##bookmark+-lit.el##.  I recommend that you byte-compile
-the libraries.
+libraries are ##bookmark+-mac.el##, ##bookmark+-bmu.el##, ##bookmark+-1.el##, and ##bookmark+-key.el##.  If you
+want to be able to highlight bookmarks then you will also need library ##bookmark+-lit.el##.  I recommend that you byte-compile all of
+the libraries, after loading the source files (in particular, load
+##bookmark+-mac.el##).
 
 Put the directory of these libraries in your `load-path' and add this to your [[init file]]:
 
@@ -409,9 +410,9 @@ is already taken for `dired-goto-file'.)  These commands are also
 added to the mode's menu-bar menu.
 
 In Dired mode, '''`C-j'''' is bound to a special Dired-specific jump
-command, `bmkp-dired-jump-current', whose destinations all
-use the current Dired directory.  The aim of `C-j' is not to
-change directories but to change to a different set of markings,
+command, `bmkp-dired-this-dir-jump', whose destinations all
+use the current directory (`default-directory').  The aim of `C-j' is not to
+change directories but to change to a different set of Dired markings,
 switches, inserted subdirectories, or hidden subdirectories for the same Dired directory.
 
 

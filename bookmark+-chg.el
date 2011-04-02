@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Mar 26 17:20:39 2011 (-0700)
+;; Last-Updated: Fri Apr  1 17:12:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13324
+;;     Update #: 13352
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -32,6 +32,8 @@
 ;;    `bookmark+-lit'    - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
 ;;    `bookmark+-1.el'   - other (non-bmenu) required code
+;;    `bookmark+-key.el' - key and menu bindings
+;;
 ;;    `bookmark+-doc'    - documentation (comment-only file)
 ;;    `bookmark+-chg'    - change log (this file)
 ;;
@@ -95,12 +97,22 @@
 ;;
 ;;  (@> "CHANGE LOG FOR `bookmark+-1.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-bmu.el'")
+;;  (@> "CHANGE LOG FOR `bookmark+-key.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+.el'")
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/01 dadams
+;;     Moved key and menu bindings to (new) bookmark+-key.el.
+;;     Added: bmkp-(dired|file)-this-dir-alist-only, bmkp-(dired|file)-this-dir-bookmark-p,
+;;            bmkp-file-this-dir-jump(-other-window).
+;;     Renamed: bmkp-dired-jump-current(*) to bmkp-dired-this-dir-jump(*).
+;;     bmkp-dired-this-dir-jump(-other-window): Use bmkp-dired-this-dir-alist-only.
+;;     bmkp-types-alist: Added (dired|file)-this-dir.
+;;     Bound bmkp-(dired|file)-this-dir-jump to C-d and C-f in bookmark-jump(-other-window)-map.
+;;     bmkp-jump-dired, bmkp-jump-man: Treat null bmkp-jump-display-function as display-buffer.
 ;; 2011/03/26 dadams
 ;;     Added: bmkp-file-(all|some)-tags(-regexp)-(alist-only|jump(-other-window)).
 ;;     bmkp-jump-menu: Added the new commands, but not Emacs 20, to avoid crash if byte-compiled.
@@ -219,6 +231,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/01 dadams
+;;     bookmark-bmenu-mode: Added to mode help: bmkp-(dired|file)-this-dir-jump.
 ;; 2011/03/26 dadams
 ;;     bookmark-bmenu-mode: Added new file-with-tags jump commands to the help.
 ;; 2011/03/05 dadams
@@ -260,8 +274,16 @@
 ;; 2010/07/14 dadams
 ;;     Created from bookmark+.el code.
  
+;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
+;;
+;; 2011/04/01 dadams
+;;     Added to bmkp-jump-menu: bmkp-(dired|file)-this-dir-jump-other-window.
+;;     Created from code in bookmark+-1.el.
+ 
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2011/04/01 dadams
+;;     bmkp-light-bookmark(s): Don't call bookmark-handle-bookmark.  Wrap with with-current-buffer.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies: defcustoms and commands.
 ;; 2010/12/10 dadams
@@ -301,6 +323,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2011/04/01 dadams
+;;     Require bookmark+-key.el (new).  Version 3.2.1.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies: defconst, command.
 ;; 2010/08/19

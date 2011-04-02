@@ -9,6 +9,27 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+== gunzip in dired no longer working in ubuntu 10.10 builds of emacs ==
+[new]
+In Ubuntu 10.10 I have install via their repository 23.1.1 . It seems at least since this (ubuntu) release I can 
+no longer open .gz files in dired. They fail with (wrong-type-argument characterp "gzip")
+I toggled on debug and the full output is:
+
+Debugger entered--Lisp error: (wrong-type-argument characterp "gzip")
+  signal(wrong-type-argument (characterp "gzip"))
+  byte-code("<elided this bit seems to cause WIKI problems>" [error-code local-file visit notfound x file-error 3 signal "Opening input file" "Searching for program" error "Uncompression program `%s' not found"] 5)
+  jka-compr-insert-file-contents("/tmp/CNV00001.jpg.key.gz" t nil nil nil)
+  apply(jka-compr-insert-file-contents ("/tmp/CNV00001.jpg.key.gz" t nil nil nil))
+  jka-compr-handler(insert-file-contents "/tmp/CNV00001.jpg.key.gz" t nil nil nil)
+  insert-file-contents("/tmp/CNV00001.jpg.key.gz" t)
+  byte-code(" 	\")" [inhibit-read-only filename t insert-file-contents] 3)
+  find-file-noselect-1(#<buffer CNV00001.jpg.key.gz> "/tmp/CNV00001.jpg.key.gz" nil nil "/tmp/CNV00001.jpg.key.gz" (1084785 2050))
+  find-file-noselect("/tmp/CNV00001.jpg.key.gz" nil nil nil)
+  find-file("/tmp/CNV00001.jpg.key.gz")
+  dired-advertised-find-file()
+  call-interactively(dired-advertised-find-file nil nil)
+
+
 == Proportional Fonts and the Fill Column==
 
 [new] I've begun using Emacs 23 and have "prettified" my setup with beautiful, antialiased fonts. Finally I can use the world's best variable-width (proportional) text fonts with the world's best text editor -- it no longer looks like WordPerfect from 1987!

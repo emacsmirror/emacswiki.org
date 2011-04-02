@@ -9,8 +9,8 @@ A '''unit test''' is a piece of a code that checks the correctness of some other
 Various '''testing frameworks''' simplify the task of writing and running tests. The following terms are commonly encountered:
 
 * '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it wasn't (the comparison returned ##nil##), ##assert## would signal an error.
-* '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
-* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object implementing the suite is sometimes called the "test case" or "test harness".)
+* '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the unit and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
+* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object containing the tests is sometimes called the "test case" or "test harness".)
 * '''Mock/stub:''' a stand-in for actual code, useful for "stubbing out" external behavior. (Roughly speaking, mocks and stubs do the same thing, but mocks are generally more sophisticated.) A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. 
 * '''Fixture:''' setting up (and tearing down) an environment for a test or a test suite.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
@@ -52,15 +52,24 @@ The following unit test frameworks exist for Emacs Lisp.
 
 == Without a framework ==
 
-Where do you put your unit tests? In Emacs Lisp, you can sprinkle your code with tests. Here is an example:
+To sprinkle your code with tests, wrap them in ##eval-when-compile##:
+
+    (eval-when-compile
+      ;; unit test code
+      ...)
+
+Then, when you byte-compile the file, the test code is executed; when you load the file, it is not. A more flexible approach is to define a ##run-my-tests## variable and set it to ##t## during compilation:
 
     (defvar run-my-tests nil)
+
     (eval-when-compile
      (setq run-my-tests t))
 
-Thus, when your code is being compiled, ##run-my-tests## is set to ##t##. When a user loads a compiled ##.elc## file, the variable will remain ##nil##.
+    (when run-my-tests
+      ;; unit test code
+      ...)
 
-Then define your functions, and add tests right after the definitions.
+That compiles the test code too, and the ##run-my-tests## variable is evaluated a lot when loading the file. But since all the tests are skipped when loading, the compiled ##.elc## files are still much faster than the uncompiled ##.el## files.
 
 === Assertions ===
 
@@ -113,12 +122,6 @@ While fixtures are a great syntactic simplification in other languages, they are
       )
 
 The [https://github.com/ohler/ert/blob/bc51e3e8121d51dc88618847f0958e7ec832c7d2/doc/misc/ert.texi documentation of ert.el] sketches out a more general solution.
-
-=== More on compilation ===
-
-Thus, the tests will still be compiled into your ##.elc## files, and ##run-my-tests## will be evaluated a lot while you load the file, but since no other code gets executed, loading the ##.elc## files is still much faster than the ##.el## files -- all the tests are skipped. Still, the ##.elc## will contain the unit test code.
-
-Instead of using a variable, you can wrap all tests in a macro, of course. The simplest solution is to do away with the ##run-my-tests## variable and wrap all tests in an ##eval-when-compile## macro. This will save a bit of time while loading the compiled files, because the ##.elc## will no longer contain the unit test code.
 
 == External links ==
 
