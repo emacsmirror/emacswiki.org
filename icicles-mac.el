@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 09:11:12 2011 (-0700)
+;; Last-Updated: Sat Apr  2 15:43:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 566
+;;     Update #: 567
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -217,7 +217,7 @@ before the others."
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
     (icicle-all-candidates-list-alt-action-fn
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-    (bufflist
+    (icicle-bufflist
      (if current-prefix-arg
          (cond ((zerop (prefix-numeric-value current-prefix-arg))
                 (let ((this-mode  major-mode))

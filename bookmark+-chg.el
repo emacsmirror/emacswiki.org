@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  1 17:12:15 2011 (-0700)
+;; Last-Updated: Sat Apr  2 11:18:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13352
+;;     Update #: 13366
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/02 dadams
+;;     Added: bmkp-autofile-set, bmkp-file-this-dir-(all|some)-tags(-regexp)-jump(-other-window),
+;;            bmkp-file-this-dir-(all|some)-tags(-regexp)-alist-only.
 ;; 2011/04/01 dadams
 ;;     Moved key and menu bindings to (new) bookmark+-key.el.
 ;;     Added: bmkp-(dired|file)-this-dir-alist-only, bmkp-(dired|file)-this-dir-bookmark-p,
@@ -231,6 +234,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/02 dadams
+;;     bookmark-bmenu-mode: Added to mode help: bmkp-file-this-dir-(all|some)-tags(-regexp)-jump.,
+;;                                              Create/Set section, with bmkp-autofile-set.
 ;; 2011/04/01 dadams
 ;;     bookmark-bmenu-mode: Added to mode help: bmkp-(dired|file)-this-dir-jump.
 ;; 2011/03/26 dadams
@@ -276,6 +282,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/02 dadams
+;;     Added bindings for (new) bmkp-autofile-set,
+;;                              bmkp-file-this-dir-(all|some)-tags(-regexp)-jump(-other-window).
 ;; 2011/04/01 dadams
 ;;     Added to bmkp-jump-menu: bmkp-(dired|file)-this-dir-jump-other-window.
 ;;     Created from code in bookmark+-1.el.

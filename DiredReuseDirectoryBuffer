@@ -24,7 +24,7 @@ directory tree you accumulate Dired buffers, one for each directory you visit.
 : Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
 
 * http://www.northbound-train.com/emacs/dired-single.el
-
+* Lisp:joseph-single-dired.el
 * The [[Sunrise_Commander]] kills automatically all unused Dired buffers (though selected buffers can be prevented from being disposed using tabs).
 
 == Advise `dired-find-file' ==

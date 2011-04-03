@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr  1 16:42:29 2011 (-0700)
+;; Last-Updated: Sat Apr  2 10:37:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1252
+;;     Update #: 1296
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -95,8 +95,8 @@
 ;;
 ;;    `bmkp-add-tags', `bmkp-all-tags-jump',
 ;;    `bmkp-all-tags-jump-other-window', `bmkp-all-tags-regexp-jump',
-;;    `bmkp-all-tags-regexp-jump-other-window', `bmkp-autonamed-jump',
-;;    `bmkp-autonamed-jump-other-window',
+;;    `bmkp-all-tags-regexp-jump-other-window', `bmkp-autofile-set',
+;;    `bmkp-autonamed-jump', `bmkp-autonamed-jump-other-window',
 ;;    `bmkp-autonamed-this-buffer-jump',
 ;;    `bmkp-autonamed-this-buffer-jump-other-window',
 ;;    `bmkp-bookmark-file-jump', `bmkp-bookmark-list-jump',
@@ -140,14 +140,22 @@
 ;;    `bmkp-file-some-tags-jump-other-window',
 ;;    `bmkp-file-some-tags-regexp-jump',
 ;;    `bmkp-file-some-tags-regexp-jump-other-window',
+;;    `bmkp-file-this-dir-all-tags-jump',
+;;    `bmkp-file-this-dir-all-tags-jump-other-window',
+;;    `bmkp-file-this-dir-all-tags-regexp-jump',
+;;    `bmkp-file-this-dir-all-tags-regexp-jump-other-window',
 ;;    `bmkp-file-this-dir-jump',
-;;    `bmkp-file-this-dir-jump-other-window', `bmkp-gnus-jump',
-;;    `bmkp-gnus-jump-other-window', `bmkp-info-jump',
-;;    `bmkp-info-jump-other-window', `bmkp-jump-in-navlist',
-;;    `bmkp-jump-in-navlist-other-window', `bmkp-jump-to-type',
-;;    `bmkp-jump-to-type-other-window', `bmkp-list-all-tags',
-;;    `bmkp-list-defuns-in-commands-file', `bmkp-local-file-jump',
-;;    `bmkp-local-file-jump-other-window',
+;;    `bmkp-file-this-dir-jump-other-window',
+;;    `bmkp-file-this-dir-some-tags-jump',
+;;    `bmkp-file-this-dir-some-tags-jump-other-window',
+;;    `bmkp-file-this-dir-some-tags-regexp-jump',
+;;    `bmkp-file-this-dir-some-tags-regexp-jump-other-window',
+;;    `bmkp-gnus-jump', `bmkp-gnus-jump-other-window',
+;;    `bmkp-info-jump', `bmkp-info-jump-other-window',
+;;    `bmkp-jump-in-navlist', `bmkp-jump-in-navlist-other-window',
+;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
+;;    `bmkp-list-all-tags', `bmkp-list-defuns-in-commands-file',
+;;    `bmkp-local-file-jump', `bmkp-local-file-jump-other-window',
 ;;    `bmkp-make-function-bookmark', `bmkp-man-jump',
 ;;    `bmkp-man-jump-other-window', `bmkp-menu-jump-other-window'
 ;;    (Emacs 20, 21), `bmkp-navlist-bmenu-list',
@@ -283,8 +291,12 @@
 ;;    `bmkp-file-some-tags-alist-only',
 ;;    `bmkp-file-some-tags-regexp-alist-only',
 ;;    `bmkp-file-this-dir-alist-only',
-;;    `bmkp-file-this-dir-bookmark-p', `bmkp-float-time',
-;;    `bmkp-full-tag', `bmkp-function-bookmark-p',
+;;    `bmkp-file-this-dir-all-tags-alist-only',
+;;    `bmkp-file-this-dir-all-tags-regexp-alist-only',
+;;    `bmkp-file-this-dir-bookmark-p',
+;;    `bmkp-file-this-dir-some-tags-alist-only',
+;;    `bmkp-file-this-dir-some-tags-regexp-alist-only',
+;;    `bmkp-float-time', `bmkp-full-tag', `bmkp-function-bookmark-p',
 ;;    `bmkp-get-buffer-name', `bmkp-get-end-position',
 ;;    `bmkp-get-tag-value', `bmkp-get-tags', `bmkp-get-visit-time',
 ;;    `bmkp-get-visits-count', `bmkp-gnus-alist-only',
@@ -3432,15 +3444,6 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-file-bookmark-p bookmark-alist))
 
-(defun bmkp-file-this-dir-alist-only ()
-  "`bookmark-alist', filtered with `bmkp-file-this-dir-bookmark-p'.
-Only names of files and subdirectoriess that are in `default-directory'.
-This excludes bookmarks that might contain file information but are
-particular in some way - for example, Info bookmarks or Gnus bookmarks.
-A new list is returned (no side effects)."
-  (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not #'bmkp-file-this-dir-bookmark-p bookmark-alist))
-
 (defun bmkp-file-all-tags-alist-only (tags)
   "`bookmark-alist', with only file bookmarks having all tags in TAGS.
 A new list is returned (no side effects)."
@@ -3475,6 +3478,57 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
    #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
+                        (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                   (bmkp-get-tags bmk))))
+   bookmark-alist))
+
+(defun bmkp-file-this-dir-alist-only ()
+  "`bookmark-alist', filtered with `bmkp-file-this-dir-bookmark-p'.
+Include only files and subdir that are in `default-directory'.
+This excludes bookmarks that might contain file information but are
+particular in some way - for example, Info bookmarks or Gnus bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-file-this-dir-bookmark-p bookmark-alist))
+
+(defun bmkp-file-this-dir-all-tags-alist-only (tags)
+  "`bookmark-alist', for files in this dir having all tags in TAGS.
+Include only files and subdir that are in `default-directory'.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk)
+       (and (bmkp-file-this-dir-bookmark-p bmk)
+            (let ((bmk-tags  (bmkp-get-tags bmk)))
+              (and bmk-tags (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+   bookmark-alist))
+
+(defun bmkp-file-this-dir-all-tags-regexp-alist-only (regexp)
+  "`bookmark-alist', for files in this dir having all tags match REGEXP.
+Include only files and subdir that are in `default-directory'.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk)
+       (and (bmkp-file-this-dir-bookmark-p bmk)
+            (let ((bmk-tags  (bmkp-get-tags bmk)))
+              (and bmk-tags (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                        bmk-tags)))))
+   bookmark-alist))
+
+(defun bmkp-file-this-dir-some-tags-alist-only (tags)
+  "`bookmark-alist', for files in this dir having some tags in TAGS.
+Include only files and subdir that are in `default-directory'.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
+                        (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))
+   bookmark-alist))
+
+(defun bmkp-file-this-dir-some-tags-regexp-alist-only (regexp)
+  "`bookmark-alist', for files in this dir having some tags match REGEXP.
+Include only files and subdir that are in `default-directory'.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
                         (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
                                    (bmkp-get-tags bmk))))
    bookmark-alist))
@@ -4469,6 +4523,7 @@ bookmark name is the prefix followed by the URL."
 ;;;###autoload
 (defun bmkp-file-target-set (file &optional prefix-only-p name) ; Bound to `C-x p c f'
   "Set a bookmark for FILE.
+The bookmarked position is the beginning of the file.
 Interactively you are prompted for FILE.  Completion is available.
 Use `M-n' to pick up the file name at point as the default.
 
@@ -4509,6 +4564,23 @@ FILE."
     (if (not failure)
         nil                             ; Return nil for success.
       (error "Failed to create bookmark for `%s':\n%s\n" file failure))))
+
+(defun bmkp-autofile-set (file &optional prefix) ; Bound to `C-x p c a'
+  "Set a bookmark for FILE, autonaming the bookmark for the file.
+Interactively, you are prompted for FILE.
+The bookmark name is the non-directory part of FILE, but with a prefix
+arg you are also prompted for a PREFIX string to prepend to the
+bookmark name.  The bookmarked position is the beginning of the file."
+  (interactive
+   (list (read-file-name "File: " nil
+                         (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
+                                 (run-hook-with-args-until-success 'file-name-at-point-functions)
+                               (ffap-guesser))
+                             (thing-at-point 'filename)
+                             (thing-at-point 'url)
+                             (url-get-url-at-point)))
+         (and current-prefix-arg (read-string "Prefix for bookmark name: " nil nil ""))))
+  (bmkp-file-target-set file t prefix))
 
 (defun bmkp-default-handler-for-file (filename)
   "Return a default bookmark handler for FILENAME.
@@ -6379,6 +6451,98 @@ Then you are prompted for the BOOKMARK (with completion)."
   (interactive
    (let* ((rgx    (read-string "Regexp for tags: "))
           (alist  (bmkp-file-some-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-all-tags-jump (tags bookmark) ; `C-x j t C-f *'
+  "Jump to a file BOOKMARK in this dir that has all of the TAGS.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag.
+If you specify no tags, then every bookmark that has some tags is a
+candidate."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-this-dir-all-tags-alist-only ts)))
+     (unless alist (error "No file or dir bookmarks have all of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t C-f *'
+  "`bmkp-file-this-dir-all-tags-jump', but in another window."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-this-dir-all-tags-alist-only ts)))
+     (unless alist (error "No file or dir bookmarks have all of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-all-tags-regexp-jump (regexp bookmark) ; `C-x j t C-f % *'
+  "Jump to a file BOOKMARK in this dir that has each tag matching REGEXP.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-this-dir-all-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t C-f % *'
+  "`bmkp-file-this-dir-all-tags-regexp-jump', but in another window."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-this-dir-all-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-some-tags-jump (tags bookmark) ; `C-x j t C-f +'
+  "Jump to a file BOOKMARK in this dir that has at least one of the TAGS.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-this-dir-some-tags-alist-only ts)))
+     (unless ts (error "You did not specify any tags"))
+     (unless alist (error "No file or dir bookmarks have any of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t C-f +'
+  "`bmkp-file-this-dir-some-tags-jump', but in another window."
+  (interactive
+   (let* ((ts     (bmkp-read-tags-completing))
+          (alist  (bmkp-file-this-dir-some-tags-alist-only ts)))
+     (unless ts (error "You did not specify any tags"))
+     (unless alist (error "No file or dir bookmarks have any of the specified tags"))
+     (list ts (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-some-tags-regexp-jump (regexp bookmark) ; `C-x j t C-f % +'
+  "Jump to a file BOOKMARK in this dir that has a tag matching REGEXP.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-this-dir-some-tags-regexp-alist-only rgx)))
+     (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
+     (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bmkp-file-this-dir-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t C-f % +'
+  "`bmkp-file-this-dir-some-tags-regexp-jump', but in another window."
+  (interactive
+   (let* ((rgx    (read-string "Regexp for tags: "))
+          (alist  (bmkp-file-this-dir-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))

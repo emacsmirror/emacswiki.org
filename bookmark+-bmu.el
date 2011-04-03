@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr  1 16:58:25 2011 (-0700)
+;; Last-Updated: Sat Apr  2 11:10:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 467
+;;     Update #: 486
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -998,46 +998,62 @@ bookmark-list bookmark
 \t- Create a sequence bookmark from the marked bookmarks
 
 
+Create/Set
+----------
+
+\\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Set/delete an autonamed bookmark here
+\\[bmkp-autofile-set]\t- Set and autoname a bookmark for a file
+\\[bmkp-file-target-set]\t- Set a bookmark for a file
+\\[bmkp-url-target-set]\t- Set a bookmark for a URL
+\\[bookmark-set]\t- Set a bookmark here
+\\[bmkp-set-desktop-bookmark]\t- Set a bookmark for the current desktop
+\\[bmkp-set-bookmark-file-bookmark]\t- Set a bookmark for a bookmark file
+
+
 Jump to (Visit)
 ---------------
 
-\\[bookmark-bmenu-select]\t- Jump to this bookmark and also visit bookmarks marked `>'
-\\[bookmark-bmenu-this-window]\t- Jump to this bookmark in the same window
-\\[bookmark-bmenu-other-window]\t- Jump to this bookmark in another window
-\\[bookmark-bmenu-switch-other-window]\t- Visit this bookmark in other window, without selecting it
-\\[bookmark-bmenu-1-window]\t- Jump to this bookmark in a full-frame window
-\\[bookmark-bmenu-2-window]\t- Jump to this bookmark and last-visited bookmark
+\\[bookmark-bmenu-select]\t- This bookmark and also visit bookmarks marked `>'
+\\[bookmark-bmenu-this-window]\t- This bookmark in the same window
+\\[bookmark-bmenu-other-window]\t- This bookmark in another window
+\\[bookmark-bmenu-switch-other-window]\t- This bookmark in other window, without selecting it
+\\[bookmark-bmenu-1-window]\t- This bookmark in a full-frame window
+\\[bookmark-bmenu-2-window]\t- This bookmark and last-visited bookmark
 
-\\[bookmark-jump]\t- Jump to a bookmark by name
-\\[bmkp-jump-to-type]\t- Jump to a bookmark by type
-\\[bmkp-jump-in-navlist]\t- Jump to a bookmark in the navigation list
-\\[bmkp-lighted-jump]\t- Jump to a highlighted bookmark
-\\[bmkp-desktop-jump]\t- Jump to a desktop bookmark
-\\[bmkp-bookmark-list-jump]\t- Jump to a bookmark-list bookmark
-\\[bmkp-bookmark-file-jump]\t- Jump to a bookmark-file bookmark
-\\[bmkp-dired-jump]\t- Jump to a Dired bookmark
-\\[bmkp-dired-this-dir-jump]\t- Jump to a Dired bookmark for this dir
-\\[bmkp-file-jump]\t- Jump to a file or directory bookmark
-\\[bmkp-file-this-dir-jump]\t- Jump to a bookmark for a file or subdir in this dir
-\\[bmkp-local-file-jump]\t- Jump to a local-file bookmark
-\\[bmkp-remote-file-jump]\t- Jump to a remote-file bookmark
-\\[bmkp-region-jump]\t- Jump to a region bookmark
-\\[bmkp-info-jump]\t- Jump to an Info bookmark
-\\[bmkp-man-jump]\t- Jump to a `man'-page bookmark
-\\[bmkp-non-file-jump]\t- Jump to a non-file (buffer) bookmark
-\\[bmkp-gnus-jump]\t- Jump to a Gnus bookmark
-\\[bmkp-url-jump]\t- Jump to a URL bookmark
-\\[bmkp-variable-list-jump]\t- Jump to a variable-list bookmark
-\\[bmkp-autonamed-jump]\t- Jump to an autonamed bookmark
-\\[bmkp-autonamed-this-buffer-jump]\t- Jump to an autonamed bookmark in buffer
-\\[bmkp-some-tags-jump]\t- Jump to a bookmark with some tags you specify
-\\[bmkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
-\\[bmkp-all-tags-jump]\t- Jump to a bookmark with all tags you specify
-\\[bmkp-all-tags-regexp-jump]\t- Jump to a bookmark with all tags matching a regexp
-\\[bmkp-file-some-tags-jump]\t- Jump to file bookmark with some tags you specify
-\\[bmkp-file-some-tags-regexp-jump]\t- Jump to file bookmark with a tag matching regexp
-\\[bmkp-file-all-tags-jump]\t- Jump to file bookmark with all tags you specify
-\\[bmkp-file-all-tags-regexp-jump]\t- Jump to file bookmark with all tags matching regexp
+\\[bookmark-jump]\t- Bookmark by name
+\\[bmkp-jump-to-type]\t- Bookmark by type
+\\[bmkp-jump-in-navlist]\t- Bookmark in the navigation list
+\\[bmkp-lighted-jump]\t- Highlighted bookmark
+\\[bmkp-desktop-jump]\t- Desktop bookmark
+\\[bmkp-bookmark-list-jump]\t- Bookmark-list bookmark
+\\[bmkp-bookmark-file-jump]\t- Bookmark-file bookmark
+\\[bmkp-dired-jump]\t- Dired bookmark
+\\[bmkp-file-jump]\t- File or directory bookmark
+\\[bmkp-dired-this-dir-jump]\t- Dired bookmark for this dir
+\\[bmkp-file-this-dir-jump]\t- Bookmark for a file or subdir in this dir
+\\[bmkp-local-file-jump]\t- Local-file bookmark
+\\[bmkp-remote-file-jump]\t- Remote-file bookmark
+\\[bmkp-region-jump]\t- Region bookmark
+\\[bmkp-info-jump]\t- Info bookmark
+\\[bmkp-man-jump]\t- `man'-page bookmark
+\\[bmkp-non-file-jump]\t- Non-file (buffer) bookmark
+\\[bmkp-gnus-jump]\t- Gnus bookmark
+\\[bmkp-url-jump]\t- URL bookmark
+\\[bmkp-variable-list-jump]\t- Variable-list bookmark
+\\[bmkp-autonamed-jump]\t- Autonamed bookmark
+\\[bmkp-autonamed-this-buffer-jump]\t- Autonamed bookmark in buffer
+\\[bmkp-some-tags-jump]\t- Bookmark having some tags you specify
+\\[bmkp-all-tags-jump]\t- Bookmark having each tag you specify
+\\[bmkp-some-tags-regexp-jump]\t- Bookmark having a tag that matches a regexp
+\\[bmkp-all-tags-regexp-jump]\t- Bookmark having all its tags match a regexp
+\\[bmkp-file-some-tags-jump]\t- File bookmark having some tags you specify
+\\[bmkp-file-all-tags-jump]\t- File bookmark having each tag you specify
+\\[bmkp-file-some-tags-regexp-jump]\t- File bookmark having a tag that matches a regexp
+\\[bmkp-file-all-tags-regexp-jump]\t- File bookmark having all its tags match a regexp
+\\[bmkp-file-this-dir-some-tags-jump]\t- File in this dir having some tags you specify
+\\[bmkp-file-this-dir-all-tags-jump]\t- File in this dir having each tag you specify
+\\[bmkp-file-this-dir-some-tags-regexp-jump]\t- File in this dir having a tag that matches a regexp
+\\[bmkp-file-this-dir-all-tags-regexp-jump]\t- File in this dir having all its tags match a regexp
 
 
 Cycle Bookmarks and Autonamed Bookmarks

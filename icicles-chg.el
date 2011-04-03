@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 31 15:46:00 2011 (-0700)
+;; Last-Updated: Sat Apr  2 18:26:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6239
+;;     Update #: 6304
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/04/02 dadams
+;;     Added: icicle-bookmark-file-this-dir((-all|some)-tags(-regexp))(-other-window),
+;;            icicle-locate-file-(action-fn|no-symlinks-p).
+;;     icicle-kmacro(-action), icicle-clear(-current)-history(-1):
+;;       Use (new) icicle-pref-arg, not pref-arg.
+;;     icicle(-kill|-insert)-buffer(-other-window), icicle-default-buffer-names,
+;;       icicle-filter-buffer-cands-for-mode, icicle-add-buffer-candidate:
+;;         Use (new) icicle-bufflist, not bufflist.
+;;     icicle-locate-file(-1|-no-symlinks)(-other-window):
+;;       Use (new) icicle-locate-file-no-symlinks-p, not no-symlinks-p.
 ;; 2011/03/31 dadams
 ;;     icicle-search-action-1: Applied renaming: i*-target-window-recenter-amount to icicle-recenter.
 ;;     icicle-customize-apropos-options-of-type: Wrap icicle-var-is-of-type-p with condition-case.
@@ -363,6 +373,22 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/04/02 dadams
+;;     Added: icicle-info-(buff|window), icicle-key-prefix(-2), icicle-active-map,
+;;     Moved here from icicles-var.el:
+;;       icicle-orig-buff-key-complete, icicle-orig-extra-cands, icicle-orig-font, icicle-orig-frame,
+;;       icicle-orig-menu-bar, icicle-orig-pixelsize, icicle-orig-pointsize, icicle-this-cmd-keys,
+;;       icicle-orig-show-initially-flag, icicle-orig-sort-orders-alist, icicle-orig-win-key-complete.
+;;     icicle-Info-index(-goto-node)(-action):
+;;       Use (new) icicle-info-(buff|window), not info-(buff|window).
+;;     icicle-describe-option-of-type, icicle-describe-opt-of-type-complete:
+;;       Use (new) icicle-pref-arg, not pref-arg.
+;;     icicle-search: Bind (new) icicle-scan-fn-or-regexp.
+;;     Moved any alias inside emacs-major-version test.
+;;     icicle-complete-keys-1: Bind (new) icicle-key-prefix.
+;;     icicle-complete-keys-action: Use (new) icicle-key-prefix, not prefix.
+;;     icicle-keys+cmds-w-prefix: Bind (new) icicle-key-prefix-2.  Use icicle-active-map, not map.
+;;     icicle-add-key+cmd: Use icicle-key-prefix-2 and icicle-active-map, not prefix and map.
 ;; 2011/03/31 dadams
 ;;     icicle-describe-opt-of-type-complete: Wrap icicle-var-is-of-type-p with condition-case.
 ;; 2011/03/29 dadams
@@ -2128,6 +2154,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2011/04/02 dadams
+;;     icicle-buffer-bindings: Bind (new) icicle-bufflist, not bufflist.
 ;; 2011/03/29 dadams
 ;;     Renamed: orig-(buff|window) to icicle-orig-(buff|window).
 ;; 2011/01/17 dadams
@@ -2233,6 +2261,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/04/02 dadams
+;;     icicle-search-define-replacement: Use (new) icicle-scan-fn-or-regexp, not scan-fn-or-regexp.
 ;; 2011/03/29 dadams
 ;;     Added: icicle-scroll-(back|for)ward.
 ;;     Renamed:  icicle-scroll-Completions(-up) to icicle-scroll-Completions-(back|for)ward.
@@ -4401,6 +4431,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/04/02 dadams
+;;     NOTE: IF you customized icicle-top-level-key-bindings and you use Bookmark+, then you will want
+;;           to REMOVE THAT CUSTOMIZATION AND CUSTOMIZE AGAIN.  Otherwise, you will miss Icicles
+;;           multi-command versions of the new Bookmark+ commands.
+;;     icicle-top-level-key-bindings:
+;;       Added icicle-bookmark-file-this-dir-((all|some)-tags(-regexp))(-other-window).
 ;; 2011/03/31 dadams
 ;;     Renamed icicle-target-window-recenter-amount to icicle-recenter & moved from icicles-var.el.
 ;; 2011/03/26 dadams
@@ -4960,6 +4996,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/04/02 dadams
+;;     Added: icicle-bufflist, icicle-pref-arg, icicle-scan-fn-or-regexp.
+;;     Moved to icicles-cmd2.el:
+;;       icicle-orig-(buff|win)-key-complete, icicle-orig-extra-cands, icicle-orig-menu-bar,
+;;       icicle-orig-(font|frame|pixelsize|pointsize), icicle-orig-show-initially-flag,
+;;       icicle-orig-sort-orders-alist, icicle-this-cmd-keys.
 ;; 2011/03/31 dadams
 ;;     Renamed icicle-target-window-recenter-amount to icicle-recenter & moved to icicles-opt.el.
 ;; 2011/03/29 dadams

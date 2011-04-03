@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 31 13:41:20 2011 (-0700)
+;; Last-Updated: Sat Apr  2 17:11:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1421
+;;     Update #: 1458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -38,11 +38,11 @@
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
 ;;    `icicle-bookmark-history', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history', `icicle-candidate-action-fn',
-;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
-;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
-;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
-;;    `icicle-char-property-value-history',
+;;    `icicle-buffer-config-history', `icicle-bufflist',
+;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
+;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
+;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
+;;    `icicle-candidates-alist', `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -103,15 +103,12 @@
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
 ;;    `icicle-old-read-file-name-fn', `icicle-orig-buff',
-;;    `icicle-orig-buff-key-complete', `icicle-orig-extra-cands',
-;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
-;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
-;;    `icicle-orig-pt-explore', `icicle-orig-show-initially-flag',
-;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',
-;;    `icicle-orig-win-explore', `icicle-orig-win-key-complete',
-;;    `icicle-other-window', `icicle-plist-last-initial-cand-set',
-;;    `icicle-predicate-types-alist', `icicle-pre-minibuffer-buffer',
-;;    `icicle-post-command-hook', `icicle-pre-command-hook',
+;;    `icicle-orig-pt-explore', `icicle-orig-window',
+;;    `icicle-orig-win-explore', `icicle-other-window',
+;;    `icicle-plist-last-initial-cand-set',
+;;    `icicle-predicate-types-alist', `icicle-pref-arg',
+;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
+;;    `icicle-pre-command-hook',
 ;;    `icicle-previous-raw-file-name-inputs',
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
@@ -128,7 +125,7 @@
 ;;    `icicle-saved-kmacro-ring-max', `icicle-saved-proxy-candidates',
 ;;    `icicle-saved-regexp-search-ring-max',
 ;;    `icicle-saved-region-background',
-;;    `icicle-saved-search-ring-max',
+;;    `icicle-saved-search-ring-max', `icicle-scan-fn-or-regexp',
 ;;    `icicle-scroll-Completions-reverse-p', `icicle-search-command',
 ;;    `icicle-search-context-level', `icicle-search-context-regexp',
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
@@ -139,7 +136,7 @@
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
-;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
+;;    `icicle-thing-at-pt-fns-pointer',
 ;;    `icicle-transform-before-sort-p',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-use-candidates-only-once-alt-p',
@@ -252,6 +249,9 @@ An empty list and the singleton list `(all)', where `all' is a symbol,
 are equivalent and stand for the set of all bookmarks (of any type).")
 
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
+
+(defvar icicle-bufflist nil
+  "List of buffers defined by macro `icicle-buffer-bindings'.")
 
 (defvar icicle-candidate-action-fn nil
   "Action function to apply to current completion candidate.
@@ -1040,44 +1040,14 @@ For versions of Emacs before 22, this is `read-file-name'.")
 (defvar icicle-orig-buff nil
   "Current buffer when you invoked an Icicles multi-command.")
 
-(defvar icicle-orig-buff-key-complete nil
-  "Current buffer when you invoked `icicle-complete-keys'.")
-
-(defvar icicle-orig-extra-cands ()
-  "Value of `icicle-extra-candidates', before command.")
-
-(defvar icicle-orig-font nil
-  "Font of selected frame, before command.")
-
-(defvar icicle-orig-frame nil
-  "Selected frame, before command.")
-
-(defvar icicle-orig-menu-bar nil
-  "`menu-bar-lines' of selected frame, before command.")
-
-(defvar icicle-orig-pixelsize nil
-  "Size of font of selected frame in pixels, before command.")
-
-(defvar icicle-orig-pointsize nil
-  "Size of font of selected frame in points, before command.")
-
 (defvar icicle-orig-pt-explore nil
   "Point when you invoked `icicle-explore'.")
-
-(defvar icicle-orig-show-initially-flag nil
-  "Value of `icicle-show-Completions-initially-flag', before command.")
-
-(defvar icicle-orig-sort-orders-alist ()
-  "Value of `icicle-sort-orders-alist', before command.")
 
 (defvar icicle-orig-window nil
   "Selected window when you invoked an Icicles multi-command.")
 
 (defvar icicle-orig-win-explore nil
   "Selected window when you invoked `icicle-explore'.")
-
-(defvar icicle-orig-win-key-complete nil
-  "Selected window when you invoked `icicle-complete-keys'.")
 
 (defvar icicle-other-window nil
   "Window scrolled by `icicle-scroll-forward'/`icicle-scroll-backward'")
@@ -1122,6 +1092,9 @@ Use command `icy-mode' (aka `icicle-mode') to set this up properly.")
   "Alist of type names that are predicate names.
 Each element is cons of a predicate name and the associated type from
 `icicle-type-actions-alist' (or nil if there is no associated type).")
+
+(defvar icicle-pref-arg nil
+  "Prefix arg value when you invoked an Icicles multi-command.")
 
 (defvar icicle-pre-minibuffer-buffer nil
   "Buffer that was current before the minibuffer became active.")
@@ -1222,6 +1195,9 @@ Used for completion in `icicle-candidate-set-retrieve-from-variable'.")
 
 (defvar icicle-saved-search-ring-max search-ring-max
   "Saved value of `search-ring-max', so it can be restored.")
+
+(defvar icicle-scan-fn-or-regexp nil
+  "`icicle-search' parameter SCAN-FN-OR-REGEXP.  Used by `M-,'.")
 
 (defvar icicle-scroll-Completions-reverse-p nil
   "Non-nil means `icicle-scroll-Completions-*' scrolls in opposite direction.")
@@ -1373,9 +1349,6 @@ a single overlay (or nil).  Otherwise, this is a list of overlays.")
 (defvar icicle-thing-at-pt-fns-pointer 0
   "Current index into the car of `icicle-thing-at-point-functions'.
 This points to the current function in the list.")
-
-(defvar icicle-this-cmd-keys ()
-  "Value of `this-command-keys-vector' at some point in key completion.")
 
 (defvar icicle-transform-before-sort-p nil
   "Non-nil means transform each multi-completion candidate before sorting.

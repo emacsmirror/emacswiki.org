@@ -19,6 +19,7 @@ I wrote:
 * [[anything-dired-history.el]] -- Show dired directories you have visited with anything.el support.[2011-03-26]
 * [[quick-jump.el]] -- Remember current position,and jump back 
 * [[term-toggle.el]] -- toggle "*terminal*" window ,like shell-toggle.el
+* [[joseph-single-dired.el]] --Only open a single dired buffer.[2011-04-03]
 * [[joseph-scroll-screen.el]] -- Scroll half screen down or up, and highlight current line temporarily.
 * [[joseph-autopair.el]] --  Do something like autopair or skeleton.
 * [http://www.emacswiki.org/emacs/joseph-go-to-char joseph-goto-char] -- like command f in vi.

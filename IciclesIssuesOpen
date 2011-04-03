@@ -76,9 +76,38 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 ''Enter your report below.''
 
-
+[new] 
 <pre>
+ ;;bugs about icicle and autoload
+(require 'autoload)
+(setq source-directory "~/.emacs.d/site-lisp/")
+(setq generated-autoload-file "joseph-loaddefs.el")
+;;so there is a ~/.emacs.d/site-lisp/lisp/joseph-loaddefs.el now
 
+
+;; now I run
+(update-directory-autoloads "~/.emacs.d/site-lisp/icicles/") ;;all files about icicles are in this directory 
+;;to update  `joseph-loaddefs.el' now.
+
+;; now I load icicles
+(add-to-list 'load-path "~/.emacs.d/site-lisp/icicles")
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/lisp/")
+;;add joseph-loaddefs require
+(require 'joseph-loaddefs)
+
+;;then I run  
+(icy-mode)
+;; I got 
+;; Debugger entered--Lisp error: (void-function icicle-restore-standard-options)
+;;   (icicle-restore-standard-options)
+;;   (cond (icicle-mode (add-hook ... ...) (add-hook ... ...) (add-hook ... ...) (add-hook ... ... ...) (icicle-redefine-standard-options) (icicle-undo-std-completion-faces) (icicle-redefine-std-completion-fns)) (t (remove-hook ... ...) (remove-hook ... ...) (remove-hook ... ...) (remove-hook ... ...) (icicle-restore-standard-options) (icicle-restore-std-completion-fns)))
+;;   (let ((last-message ...)) (setq icicle-mode (cond ... ... ...)) (cond (icicle-mode ... ... ... ... ... ... ...) (t ... ... ... ... ... ...)) (message "Turning %s Icicle mode..." (if icicle-mode "ON" "OFF")) (icicle-rebind-completion-maps icicle-mode) (message "Turning %s Icicle mode...done" (if icicle-mode "ON" "OFF")) (run-hooks (quote icicle-mode-hook) (if icicle-mode ... ...)) (if (called-interactively-p ...) (progn ... ...)))
+;;   icy-mode()
+;;   eval-buffer(#<buffer  *load*> nil "/home/jixiuf/.emacs" nil t)  ; Reading at buffer position 601
+;;   load-with-code-conversion("/home/jixiuf/.emacs" "/home/jixiuf/.emacs" t t)
+;;   load("~/.emacs" t t)
+;;   #[nil " \205\264
 </pre>
 ----
 

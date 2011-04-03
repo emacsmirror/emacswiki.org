@@ -1,0 +1,188 @@
+The "byte-code" is a special representation that is executed by Emacs VM.
+The Emacs VM is a simple stack-machine interpreter.
+This page collects informations for byte-code and Emacs VM.
+
+== Documents ==
+
+The byte-code is translated by the Emacs Lisp compiler.
+See the documentation for byte compiling: CompiledFile and [http://www.gnu.org/software/emacs/elisp/html_node/Byte-Compilation.html Info (Elisp, Section 16, Byte Compilation)].
+
+== Specs ==
+
+See the emacs lisp and C sources for byte-code spec and VM details: bytecomp.el, disass.el and bytecode.c.
+
+=== Instruction Table ===
+
+Here is the Emacs VM instruction table for 23.3. (Collected from bytecomp.el and bytecode.c)
+
+|| *OPCODE* || *Instruction*          || *Operands* || *Stack IN*     || *Stack Out* || *Note*                                                    ||
+||         ||                         ||           ||               ||            ||                                                           ||
+||        0||stack_ref                ||           ||               ||            ||stack_ref+0 -> dup.                                       ||
+||       +N||: stack_ref+0..5         ||           ||               ||var         ||                                                          ||
+||       +6||: stack_ref+6            ||index8     ||               ||var         ||                                                          ||
+||       +7||: stack_ref+7            ||index16    ||               ||var         ||                                                          ||
+||      010||varref                   ||           ||               ||            ||                                                          ||
+||       +N||: varref+0..5            ||           ||               ||var         ||                                                          ||
+||       +6||: varref+6               ||index8     ||               ||var         ||                                                          ||
+||       +7||: varref+7               ||index16    ||               ||var         ||                                                          ||
+||      020||varset                   ||           ||               ||            ||                                                          ||
+||       +N||: varset+0..5            ||           ||var            ||            ||                                                          ||
+||       +6||: varset+6               ||index8     ||var            ||            ||                                                          ||
+||       +7||: varset+7               ||index16    ||var            ||            ||                                                          ||
+||      030||varbind                  ||           ||               ||            ||let, specbind                                             ||
+||       +N||: varbind+0..5           ||           ||var            ||            ||                                                          ||
+||       +6||: varbind+6              ||index8     ||var            ||            ||                                                          ||
+||       +7||: varbind+7              ||index16    ||var            ||            ||                                                          ||
+||      040||call                     ||           ||               ||            ||                                                          ||
+||       +N||: call+0..5              ||           ||func,args..    ||retval      ||                                                          ||
+||       +6||: call+6                 ||num8       ||func,args..    ||retval      ||                                                          ||
+||       +7||: call+7                 ||num16      ||func,args..    ||retval      ||                                                          ||
+||      050||unbind                   ||           ||               ||            ||unbind_to                                                 ||
+||       +N||: unbind+0..5            ||           ||               ||            ||                                                          ||
+||       +6||: unbind+6               ||num8       ||               ||            ||                                                          ||
+||       +7||: unbind+7               ||num16      ||               ||            ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||      070||nth                      ||           ||list, num      ||val         ||                                                          ||
+||      071||symbolp                  ||           ||val            ||result      ||                                                          ||
+||      072||consp                    ||           ||val            ||result      ||                                                          ||
+||      073||stringp                  ||           ||val            ||result      ||                                                          ||
+||      074||listp                    ||           ||val            ||result      ||                                                          ||
+||      075||eq                       ||           ||val1, val2     ||result      ||                                                          ||
+||      076||memq                     ||           ||list, elm      ||result      ||                                                          ||
+||      077||not                      ||           ||val            ||result      ||                                                          ||
+||     0100||car                      ||           ||cell           ||car         ||                                                          ||
+||     0101||cdr                      ||           ||cell           ||cdr         ||                                                          ||
+||     0102||cons                     ||           ||cdr,car        ||cons        ||                                                          ||
+||     0103||list1                    ||           ||elm            ||list        ||                                                          ||
+||     0104||list2                    ||           ||val2,val1      ||list        ||                                                          ||
+||     0105||list3                    ||           ||val3,2,1       ||list        ||                                                          ||
+||     0106||list4                    ||           ||val4,3,2,1     ||list        ||                                                          ||
+||     0107||length                   ||           ||list           ||length      ||                                                          ||
+||     0110||aref                     ||           ||array, num     ||val         ||                                                          ||
+||     0111||aset                     ||           ||array,num,val  ||val         ||                                                          ||
+||     0112||symbol_value             ||           ||sym            ||val         ||                                                          ||
+||     0113||symbol_function          ||           ||sym            ||val         ||                                                          ||
+||     0114||set                      ||           ||val, sym       ||val         ||                                                          ||
+||     0115||fset                     ||           ||val, sym       ||val         ||                                                          ||
+||     0116||get                      ||           ||prop, sym      ||val         ||                                                          ||
+||     0117||substring                ||           ||to,from,str    ||result      ||                                                          ||
+||     0120||concat2                  ||           ||str2,1         ||result      ||                                                          ||
+||     0121||concat3                  ||           ||str3,2,1       ||result      ||                                                          ||
+||     0122||concat4                  ||           ||str4,3,2,1     ||result      ||                                                          ||
+||     0123||sub1                     ||           ||num            ||result      ||                                                          ||
+||     0124||add1                     ||           ||num            ||result      ||                                                          ||
+||     0125||eqlsign                  ||           ||num2,num1      ||result      ||                                                          ||
+||     0126||gtr                      ||           ||right,left     ||result      ||                                                          ||
+||     0127||lss                      ||           ||right,left     ||result      ||                                                          ||
+||     0130||leq                      ||           ||right,left     ||result      ||                                                          ||
+||     0131||geq                      ||           ||right,left     ||result      ||                                                          ||
+||     0132||diff                     ||           ||right,left     ||result      ||                                                          ||
+||     0133||negate                   ||           ||num            ||result      ||                                                          ||
+||     0134||plus                     ||           ||right,left     ||result      ||                                                          ||
+||     0135||max                      ||           ||num1,num2      ||result      ||                                                          ||
+||     0136||min                      ||           ||num1,num2      ||result      ||                                                          ||
+||     0137||mult                     ||           ||right,left     ||result      ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0140||point                    ||           ||               ||point       ||Was Bmark in v17.                                         ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0141||save_current_buffer      ||           ||               ||            ||Obsolete.                                                 ||
+||     0142||goto_char                ||           ||point          ||point       ||                                                          ||
+||     0143||insert                   ||           ||string         ||string      ||                                                          ||
+||     0144||point_max                ||           ||               ||point       ||                                                          ||
+||     0145||point_min                ||           ||               ||point       ||                                                          ||
+||     0146||char_after               ||           ||point          ||result      ||                                                          ||
+||     0147||following_char           ||           ||               ||result      ||                                                          ||
+||     0150||preceding_char           ||           ||               ||result      ||                                                          ||
+||     0151||current_column           ||           ||               ||result      ||                                                          ||
+||     0152||indent_to                ||           ||num            ||result      ||                                                          ||
+||     0153||scan_buffer              ||           ||               ||(error)     ||No longer generated as of v18                             ||
+||     0154||eolp                     ||           ||               ||result      ||                                                          ||
+||     0155||eobp                     ||           ||               ||result      ||                                                          ||
+||     0156||bolp                     ||           ||               ||result      ||                                                          ||
+||     0157||bobp                     ||           ||               ||result      ||                                                          ||
+||     0160||current_buffer           ||           ||               ||buf         ||                                                          ||
+||     0161||set_buffer               ||           ||buf            ||buf         ||                                                          ||
+||     0162||save_current_buffer_1    ||           ||               ||            ||Replacing Bsave_current_buffer. record_unwind_protect     ||
+||     0162||read_char                ||           ||               ||            ||No longer generated as of v19                             ||
+||     0163||set_mark                 ||           ||               ||(error)     ||this loser is no longer generated as of v18               ||
+||     0164||interactive_p            ||           ||               ||result      ||Obsolete.                                                 ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0165||forward_char             ||           ||num            ||nil         ||                                                          ||
+||     0166||forward_word             ||           ||num            ||result      ||                                                          ||
+||     0167||skip_chars_forward       ||           ||limit,string   ||result      ||                                                          ||
+||     0170||skip_chars_backward      ||           ||limit,string   ||result      ||                                                          ||
+||     0171||forward_line             ||           ||num            ||result      ||                                                          ||
+||     0172||char_syntax              ||           ||char           ||result      ||                                                          ||
+||     0173||buffer_substring         ||           ||end,start      ||result      ||                                                          ||
+||     0174||delete_region            ||           ||end,start      ||nil         ||                                                          ||
+||     0175||narrow_to_region         ||           ||end,start      ||nil         ||                                                          ||
+||     0176||widen                    ||           ||               ||nil         ||                                                          ||
+||     0177||end_of_line              ||           ||num            ||nil         ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0201||constant2                ||num16      ||               ||value       ||                                                          ||
+||     0202||goto                     ||dst16      ||               ||            ||quit                                                      ||
+||     0203||gotoifnil                ||dst16      ||val            ||            ||                                                          ||
+||     0204||gotoifnonnil             ||dst16      ||val            ||            ||                                                          ||
+||     0205||gotoifnilelsepop         ||dst16      ||val            ||            ||                                                          ||
+||     0206||gotoifnonnilelsepop      ||dst16      ||val            ||            ||                                                          ||
+||     0207||return                   ||           ||result         ||            ||goto exit                                                 ||
+||     0210||discard                  ||           ||discard        ||            ||                                                          ||
+||     0211||dup                      ||           ||val            ||val1,val2   ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0212||save_excursion           ||           ||               ||            ||record_unwind_protect                                     ||
+||     0213||save_window_excursion    ||           ||               ||result      ||Obsolete. record_unwind_protect / progn                   ||
+||     0214||save_restriction         ||           ||               ||            ||record_unwind_protect / save_restriction_save             ||
+||     0215||catch                    ||           ||tag            ||result      ||internal_catch / eval_sub                                 ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0216||unwind_protect           ||           ||finally        ||            ||record_unwind_protect / progn                             ||
+||     0217||condition_case           ||           ||handlers,body  ||result      ||                                                          ||
+||     0220||temp_output_buffer_setup ||           ||bufname        ||buf         ||Obsolete.                                                 ||
+||     0221||temp_output_buffer_show  ||           ||val,buf        ||val         ||Obsolete. unbind_to                                       ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0222||unbind_all               ||           ||               ||            ||Obsolete.  unbind_to -> count                             ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0223||set_marker               ||           ||buf,pos,marker ||marker      ||                                                          ||
+||     0224||match_beginning          ||           ||subexp         ||result      ||                                                          ||
+||     0225||match_end                ||           ||subexp         ||result      ||                                                          ||
+||     0226||upcase                   ||           ||obj            ||result      ||                                                          ||
+||     0227||downcase                 ||           ||obj            ||result      ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0230||stringeqlsign            ||           ||str2,str1      ||result      ||                                                          ||
+||     0231||stringlss                ||           ||str2,str1      ||result      ||                                                          ||
+||     0232||equal                    ||           ||obj2,obj1      ||result      ||                                                          ||
+||     0233||nthcdr                   ||           ||list,num       ||result      ||                                                          ||
+||     0234||elt                      ||           ||num,seq        ||result      ||                                                          ||
+||     0235||member                   ||           ||list,elt       ||result      ||                                                          ||
+||     0236||assq                     ||           ||list,key       ||result      ||                                                          ||
+||     0237||nreverse                 ||           ||list           ||result      ||                                                          ||
+||     0240||setcar                   ||           ||val,cell       ||result      ||                                                          ||
+||     0241||setcdr                   ||           ||val,cell       ||result      ||                                                          ||
+||     0242||car_safe                 ||           ||obj            ||result      ||                                                          ||
+||     0243||cdr_safe                 ||           ||obj            ||result      ||                                                          ||
+||     0244||nconc                    ||           ||list2,list1    ||result      ||                                                          ||
+||     0245||quo                      ||           ||right,left     ||result      ||/                                                         ||
+||     0246||rem                      ||           ||right,left     ||result      ||%                                                         ||
+||     0247||numberp                  ||           ||obj            ||result      ||                                                          ||
+||     0250||integerp                 ||           ||obj            ||result      ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0252||Rgoto                    ||raddr8     ||               ||            ||relative jump : raddr - 127                               ||
+||     0253||Rgotoifnil               ||raddr8     ||var            ||            ||relative jump : raddr - 127                               ||
+||     0254||Rgotoifnonnil            ||raddr8     ||var            ||            ||relative jump : raddr - 127                               ||
+||     0255||Rgotoifnilelsepop        ||raddr8     ||var            ||            ||relative jump : raddr - 127                               ||
+||     0256||Rgotoifnonnilelsepop     ||raddr8     ||var            ||            ||relative jump : raddr - 127                               ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0257||listN                    ||num8       ||values         ||list        ||                                                          ||
+||     0260||concatN                  ||num8       ||values         ||result      ||                                                          ||
+||     0261||insertN                  ||num8       ||values         ||nil         ||                                                          ||
+||         ||                         ||           ||               ||            ||                                                          ||
+||     0262||stack_set                ||num8       ||value          ||            ||stack_ref is code 0                                       ||
+||     0263||stack_set2               ||num16      ||value          ||            ||                                                          ||
+||     0266||discardN                 ||num8       ||               ||            ||                                                          ||
+||     0300||constant                 ||           ||               ||            ||                                                          ||
+||       +N||: constant               ||           ||               ||value       ||                                                          ||
+
+
+== Tools ==
+
+-[http://groups.google.com/group/gnu.emacs.sources/browse_thread/thread/a0c7d94ffe0ec6b7 Assembler for Emacs' bytecode interpreter]
+

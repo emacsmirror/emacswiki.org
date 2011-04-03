@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  1 17:18:52 2011 (-0700)
+;; Last-Updated: Sat Apr  2 09:46:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13464
+;;     Update #: 13474
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -489,6 +489,22 @@
 ;;  of `C-x j t'.  For example, `C-x j t f % *' jumps to a file or
 ;;  directory bookmark you choose, where all of its tags match a
 ;;  regexp.
+;;
+;;  Bookmark names are global.  File names are not; that is, the
+;;  non-directory portion is not.  Suppose you have two similar
+;;  directories with some like-named files, perhaps tagged in similar
+;;  ways.  Imagine image files of your vacations organized in
+;;  different directories by year.  It is sometimes useful to narrow
+;;  your focus to the file bookmarks in one directory.
+;;
+;;  Commands such as `bmkp-file-this-dir-jump' (`C-x j C-f') offer as
+;;  completion candidates only bookmarks for files and subdirs in the
+;;  current directory (`default-directory').  For tags, there are
+;;  equivalent commands.  For example, `C-x j t C-f % *' is the same
+;;  as `C-x j t f % *', but the destinations are limited to files in
+;;  the current directory.  All of the "this-dir" file jump commands
+;;  are bound to the same keys as the general file jump commands, but
+;;  with `C-f' instead of `f'.
 ;;
 ;;  Remember that Bookmark+ collects lots of commands on only a few
 ;;  predefined prefix keys, primarily as a mnemonic device.  Nothing

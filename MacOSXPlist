@@ -8,3 +8,23 @@ If you'd like Emacs to update its environment based on the contents of ~/.MacOSX
 Share and Enjoy!
 
 -- EdwardOConnor
+
+This file (tagged version 1.0.0 in its source) only parses plist files whose root node is a dict.
+
+If you want to use it to parse plist files whose root node is an array, a quick fix is to replace the defun on line 84:
+<pre>
+(defun osx-plist-parse-file (file)
+  "Parse the plist file FILE into an elisp hash table."
+  (let ((xml (car (xml-parse-file file))))
+    (when (osx-plist-p xml)
+      (osx-plist-node-value (car (xml-get-children xml 'dict))))))
+</pre>
+with the following
+<pre>
+(defun osx-plist-parse-file (file)
+  "Parse the plist file FILE into an elisp hash table."
+  (let ((xml (car (xml-parse-file file))))
+    (when (osx-plist-p xml)
+      (osx-plist-node-value (car (or (xml-get-children xml 'dict)
+				     (xml-get-children xml 'array)))))))
+</pre>

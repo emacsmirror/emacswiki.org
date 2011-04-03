@@ -77,7 +77,7 @@ Emacs 22 uses.
 
 <pre>
 (defconst colour-triplet-regex
-  "\\([0-9A-Fa-f]{2}\\)\\([0-9A-Fa-f]{2}\\)\\([0-9A-Fa-f]{2}\\)")
+  "\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)")
 
 (defun parse-colour (colour frame)
   (cond ((and (stringp colour) (string-match colour-triplet-regex colour))

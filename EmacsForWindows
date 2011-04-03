@@ -5,12 +5,12 @@ The page has also links to the precompiled binaries for MS-Windows of the curren
 
 If you want precompiled binaries for the latest Emacses (version 23.2 is officially released stable; v24 is in early development phase) please see CategoryWThirtyTwo.
 
-(For example there is among several others an unofficial sourceforge project with the latest Win32 builds of emacs at http://ntemacs.sourceforge.net/. As of September 2010 they have 24.X builds available.
-Unfortunately they do not always update their dates on the wiki page above.)
+Project ntemacs at (http://ntemacs.sourceforge.net/) provides clean, optimized binary builds of the latest Emacs bzr snapshot, with image support enabled and necessary dependencies bundled in the package.
 
 == Resources ==
 
 If you want to install Emacs on MS-Windows using a simple installer, you may have a look at the following ressources:
+* [http://ntemacs.sourceforge.net/ ntemacs]
 * [http://emacs-win.sourceforge.net/ emacs-win (portuguese)]
 * [[EmacsW32]]
 * [http://code.google.com/p/emacs-for-windows/ Latest Precompiled Emacs for Windows]

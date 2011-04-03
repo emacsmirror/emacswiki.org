@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 10:45:02 2011 (-0700)
+;; Last-Updated: Sat Apr  2 16:54:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16859
+;;     Update #: 16862
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1615,7 +1615,7 @@ Bound to `M-,' in the minibuffer."
         (icicle-inhibit-sort-p (message "Cannot sort candidates now"))
         (t (icicle-change-alternative-sort-order))))
 
-;; Free vars here: `scan-fn-or-regexp' is bound in `icicle-search' (a parameter).
+;; Free vars here: `icicle-scan-fn-or-regexp' is bound in `icicle-search'.
 ;;;###autoload
 (defun icicle-search-define-replacement () ; Bound to `M-,' in minibuffer during `icicle-search'.
   "Prompt user and set new value of `icicle-search-replacement'.
@@ -1633,7 +1633,7 @@ Bound to `M-,' in the minibuffer."
           (icicle-completing-read-history "Replace with: " 'icicle-search-replacement-history)))
   ;; Just a sanity check.  Cannot really test equivalence of two regexps.
   (while (if icicle-search-replace-whole-candidate-flag
-             (equal icicle-search-replacement scan-fn-or-regexp)
+             (equal icicle-search-replacement icicle-scan-fn-or-regexp)
            (equal icicle-search-replacement icicle-current-input))
     (setq icicle-search-replacement
           (let ((enable-recursive-minibuffers        t)

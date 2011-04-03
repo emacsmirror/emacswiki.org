@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 31 19:16:54 2011 (-0700)
+;; Last-Updated: Sat Apr  2 15:15:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4249
+;;     Update #: 4257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3236,6 +3236,10 @@ toggle Icicle mode off and then back on."
      icicle-bookmark-file (fboundp 'bmkp-file-jump))                           ; `C-x j f'
     (bmkp-file-jump-other-window
      icicle-bookmark-file-other-window (fboundp 'bmkp-file-jump))              ; `C-x 4 j f'
+    (bmkp-file-this-dir-jump
+     icicle-bookmark-file-this-dir (fboundp 'bmkp-file-this-dir-jump))         ; `C-x j C-f'
+    (bmkp-file-this-dir-jump-other-window
+     icicle-bookmark-file-this-dir-other-window (fboundp 'bmkp-file-this-dir-jump)) ; `C-x 4 j C-f'
     (bmkp-gnus-jump
      icicle-bookmark-gnus (fboundp 'bmkp-gnus-jump))                           ; `C-x j g'
     (bmkp-gnus-jump-other-window
@@ -3311,6 +3315,30 @@ toggle Icicle mode off and then back on."
     (bmkp-file-some-tags-regexp-jump-other-window
      icicle-bookmark-file-some-tags-regexp-other-window
      (fboundp 'bmkp-file-some-tags-regexp-jump))                               ; `C-x 4 j t f % +'
+    (bmkp-file-this-dir-all-tags-jump
+     icicle-bookmark-file-this-dir-all-tags ; `C-x j t C-f *'
+     (fboundp 'bmkp-file-this-dir-all-tags-jump))
+    (bmkp-file-this-dir-all-tags-jump-other-window
+     icicle-bookmark-file-this-dir-all-tags-other-window ; `C-x 4 j t C-f *'
+     (fboundp 'bmkp-file-this-dir-all-tags-jump))
+    (bmkp-file-this-dir-all-tags-regexp-jump
+     icicle-bookmark-file-this-dir-all-tags-regexp ; `C-x j t % C-f *'
+     (fboundp 'bmkp-file-this-dir-all-tags-regexp-jump))
+    (bmkp-file-this-dir-all-tags-regexp-jump-other-window
+     icicle-bookmark-file-this-dir-all-tags-regexp-other-window ; `C-x 4 j t % C-f *'
+     (fboundp 'bmkp-file-this-dir-all-tags-regexp-jump))
+    (bmkp-file-this-dir-some-tags-jump
+     icicle-bookmark-file-this-dir-some-tags ; `C-x j t C-f +'
+     (fboundp 'bmkp-file-this-dir-some-tags-jump))
+    (bmkp-file-this-dir-some-tags-jump-other-window
+     icicle-bookmark-file-this-dir-some-tags-other-window ; `C-x 4 j t C-f +'
+     (fboundp 'bmkp-file-this-dir-some-tags-jump))
+    (bmkp-file-this-dir-some-tags-regexp-jump
+     icicle-bookmark-file-this-dir-some-tags-regexp   ; `C-x j t % C-f +'
+     (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump))
+    (bmkp-file-this-dir-some-tags-regexp-jump-other-window
+     icicle-bookmark-file-this-dir-some-tags-regexp-other-window ; `C-x 4 j t % C-f +'
+     (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump))
     (bmkp-url-jump
      icicle-bookmark-url (fboundp 'bmkp-url-jump))                             ; `C-x j u'
     (bmkp-url-jump-other-window
