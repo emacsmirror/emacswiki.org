@@ -18,8 +18,6 @@ and configure ido-mode. Another good setting to enable is ido-enable-flex-matchi
 
 == Using IDO ==
 
-A screencast demonstrating its features can be found here: http://www.vimeo.com/1013263
-
 To switch between buffers, press "C-x b", then:
 
 * type some characters appearing in the buffer name, RET to visit the buffer in the front the list.

@@ -187,5 +187,8 @@ I wish the instructions were a bit clearer..
 [new]
 And I would like a bug report to understand where the problem is... ;-)
 
+[new]
+In recent Emacs 24, there appears to be a problem with the defadvice of directory-files in find-recursive.el. It makes all calls to directory-files (which has only 4 arguments) break with an incorrect number of arguments (5).
+
 ----
 See also MultipleModes MuMaMo CategoryHypermedia HtmlMode

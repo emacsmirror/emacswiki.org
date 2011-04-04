@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr  2 11:18:20 2011 (-0700)
+;; Last-Updated: Sun Apr  3 18:51:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13366
+;;     Update #: 13377
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/03 dadams
+;;     Added: bmkp-make-record-for-target-file, bmkp-replace-existing-bookmark (not used).
+;;     bmkp-file-this-dir-bookmark-p: Corrected it to compare directory to default-directory.
+;;     bmkp-file-target-set: Added arg NO-OVERWRITE (pass to bookmark-store).
+;;                           Use (new) bmkp-make-record-for-target-file.
+;;     bmkp-autofile-set: Do nothing if bookmark with same name, file and dir exists.
+;;                        Else create one, even if the bookmark name is the same.
+;;                        You can have multiple autofile bookmarks with the same name (diff files).
 ;; 2011/04/02 dadams
 ;;     Added: bmkp-autofile-set, bmkp-file-this-dir-(all|some)-tags(-regexp)-jump(-other-window),
 ;;            bmkp-file-this-dir-(all|some)-tags(-regexp)-alist-only.

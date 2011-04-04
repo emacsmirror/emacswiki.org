@@ -96,7 +96,7 @@ Here's a simpler example of threaded summary view using Unicode characters:
 
     (setq-default
      gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
-     gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
+     gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
      gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
      gnus-thread-sort-functions '(gnus-thread-sort-by-date)
      gnus-sum-thread-tree-false-root ""
@@ -104,18 +104,17 @@ Here's a simpler example of threaded summary view using Unicode characters:
      gnus-sum-thread-tree-leaf-with-other "├► "
      gnus-sum-thread-tree-root ""
      gnus-sum-thread-tree-single-leaf "╰► "
-     gnus-sum-thread-tree-vertical "│"
-    )
+     gnus-sum-thread-tree-vertical "│")
 
 The summary buffer looks like this:
 
-    O   01.08.2009 22:47  joakim@verona.s  imagemagick patch v1
-    O   02.08.2009 00:04  Eli Zaretskii    ├► 
-    O   02.08.2009 00:29  joakim@verona.s  │╰► 
-    O   02.08.2009 03:46  Stephen J. Turn  │ ├► 
-    O   02.08.2009 12:52  Andreas Schwab   │ ╰► 
-    O   02.08.2009 17:24  Chong Yidong     ╰► 
-    O   03.08.2009 01:39  joakim@verona.s   ╰►
+    O   2009-08-01 22:47  joakim@verona.s  imagemagick patch v1
+    O   2009-08-02 00:04  Eli Zaretskii    ├► 
+    O   2009-08-02 00:29  joakim@verona.s  │╰► 
+    O   2009-08-02 03:46  Stephen J. Turn  │ ├► 
+    O   2009-08-02 12:52  Andreas Schwab   │ ╰► 
+    O   2009-08-02 17:24  Chong Yidong     ╰► 
+    O   2009-08-03 01:39  joakim@verona.s   ╰►
 
 
 ----

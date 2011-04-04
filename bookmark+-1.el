@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr  2 10:37:19 2011 (-0700)
+;; Last-Updated: Sun Apr  3 18:47:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1296
+;;     Update #: 1372
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -325,6 +325,7 @@
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
 ;;    `bmkp-make-dired-record', `bmkp-make-gnus-record',
 ;;    `bmkp-make-man-record', `bmkp-make-plain-predicate',
+;;    `bmkp-make-record-for-target-file',
 ;;    `bmkp-make-url-browse-record', `bmkp-make-variable-list-record',
 ;;    `bmkp-make-w3m-record', `bmkp-make-woman-record' (Emacs 21+),
 ;;    `bmkp-man-alist-only', `bmkp-man-bookmark-p',
@@ -352,9 +353,9 @@
 ;;    `bmkp-remote-file-alist-only', `bmkp-remote-file-bookmark-p',
 ;;    `bmkp-remove-assoc-dups', `bmkp-remove-dups', `bmkp-remove-if',
 ;;    `bmkp-remove-if-not', `bmkp-repeat-command',
-;;    `bmkp-root-or-sudo-logged-p', `bmkp-same-creation-time-p',
-;;    `bmkp-same-file-p', `bmkp-save-menu-list-state',
-;;    `bmkp-save-new-region-location',
+;;    `bmkp-replace-existing-bookmark', `bmkp-root-or-sudo-logged-p',
+;;    `bmkp-same-creation-time-p', `bmkp-same-file-p',
+;;    `bmkp-save-menu-list-state', `bmkp-save-new-region-location',
 ;;    `bmkp-select-buffer-other-window', `bmkp-sequence-bookmark-p',
 ;;    `bmkp-set-tag-value-for-bookmarks', `bmkp-set-union',
 ;;    `bmkp-some', `bmkp-some-marked-p', `bmkp-some-tags-alist-only',
@@ -2215,7 +2216,10 @@ LAXP non-nil means use lax completion."
       (if (and (string-equal "" str) default) default str))))
 
 (defun bmkp-jump-1 (bookmark display-function use-region-p)
-  "Helper function for `bookmark-jump' commands."
+  "Helper function for `bookmark-jump' commands.
+BOOKMARK is a bookmark name (a string) or a bookmark record.
+DISPLAY-FUNCTION is passed to `bookmark--jump-via'.
+Non-nil USE-REGION-P means activate the region, if recorded."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (unless bookmark (error "No bookmark specified"))
   (bookmark-maybe-historicize-string (bookmark-name-from-full-record bookmark))
@@ -2857,15 +2861,15 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (when (> emacs-major-version 22)
   (defvar bmkp-isearch-bookmarks nil
-    "List of bookmarks whose locations are to be incrementally searched.")
+    "Bookmarks whose locations are to be incrementally searched.")
 
   (defun bmkp-isearch-next-bookmark-buffer (&optional bookmark wrap)
     "Return the next buffer in a series of bookmark buffers.
 Used as a value for `multi-isearch-next-buffer-function', for Isearch
 of multiple bookmarks.
 
-Variable `bmkp-isearch-bookmarks' is a list of bookmark names.
-Each bookmark in that list is visited by `bookmark--jump-via', and the
+Variable `bmkp-isearch-bookmarks' is a list of bookmarks.  Each
+bookmark in the list is visited by `bookmark--jump-via', and the
 corresponding bookmark buffer is returned."
     (let ((bookmarks  (if isearch-forward bmkp-isearch-bookmarks (reverse bmkp-isearch-bookmarks))))
       (bookmark--jump-via
@@ -3216,9 +3220,7 @@ This excludes bookmarks of a more specific kind (e.g. Info, Gnus)."
 BOOKMARK is a bookmark name or a bookmark record.
 This excludes bookmarks of a more specific kind (e.g. Info, Gnus)."
   (and (bmkp-file-bookmark-p bookmark)
-       (let ((filename  (bookmark-get-filename bookmark)))
-         (and filename (> (length (file-name-nondirectory filename)) 0)
-              (file-exists-p (expand-file-name (file-name-nondirectory filename)))))))
+       (equal (file-name-directory (bookmark-get-filename bookmark)) default-directory)))
 
 (defun bmkp-function-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a function bookmark.
@@ -4521,7 +4523,8 @@ bookmark name is the prefix followed by the URL."
       url)))                            ; Return URL name for failure.
 
 ;;;###autoload
-(defun bmkp-file-target-set (file &optional prefix-only-p name) ; Bound to `C-x p c f'
+(defun bmkp-file-target-set (file
+                             &optional prefix-only-p name/prefix no-overwrite) ; Bound to `C-x p c f'
   "Set a bookmark for FILE.
 The bookmarked position is the beginning of the file.
 Interactively you are prompted for FILE.  Completion is available.
@@ -4530,7 +4533,11 @@ Use `M-n' to pick up the file name at point as the default.
 You are also prompted for the bookmark name.  But with a prefix arg,
 you are prompted only for a bookmark-name prefix.  In that case, the
 bookmark name is the prefix followed by the non-directory part of
-FILE."
+FILE.
+
+From Lisp code, optional arg NO-OVERWRITE is passed to
+`bookmark-store': non-nil means do not overwrite an existing bookmark
+that has the same name."
   (interactive
    (list (read-file-name "File: " nil
                          (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
@@ -4543,23 +4550,13 @@ FILE."
          (if current-prefix-arg
              (read-string "Prefix for bookmark name: " nil nil)
            (bmkp-completing-read-lax "Bookmark name"))))
-  (unless name (setq name  ""))
-  (let* ((default-handler  (bmkp-default-handler-for-file file))
-         (bookmark-make-record-function
-          (cond (default-handler        ; User default handler
-                    (lambda () `((filename . ,file) (position . 0) (handler . ,default-handler))))
-                ;; Non-user defaults.
-                ((and (require 'image nil t) (require 'image-mode nil t) ; Image
-                      (condition-case nil (image-type file) (error nil)))
-                 'image-bookmark-make-record)
-                ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
-                 (lambda () `((filename . ,file) (handler . bmkp-sound-jump))))
-                (t
-                 (lambda () `((filename . ,file) (position . 0))))))
-         failure)
+  (unless name/prefix (setq name/prefix  ""))
+  (let ((bookmark-make-record-function (bmkp-make-record-for-target-file file))
+        failure)
     (condition-case err
-        (bookmark-store (if prefix-only-p (concat name (file-name-nondirectory file)) name)
-                        (cdr (bookmark-make-record)) nil)
+        (bookmark-store
+         (if prefix-only-p (concat name/prefix (file-name-nondirectory file)) name/prefix)
+         (cdr (bookmark-make-record)) no-overwrite)
       (error (setq failure  (error-message-string err))))
     (if (not failure)
         nil                             ; Return nil for success.
@@ -4570,7 +4567,15 @@ FILE."
 Interactively, you are prompted for FILE.
 The bookmark name is the non-directory part of FILE, but with a prefix
 arg you are also prompted for a PREFIX string to prepend to the
-bookmark name.  The bookmarked position is the beginning of the file."
+bookmark name.  The bookmarked position is the beginning of the file.
+
+If a bookmark with the same name already exists for the same FILE in
+`default-directory' then do nothing.
+
+Otherwise, create a new bookmark for FILE, even if a bookmark with the
+same name already exists.  This means that you can have more than one
+autofile bookmark with the same bookmark name and same relative file
+name (non-directory part), but with different absolute file names."
   (interactive
    (list (read-file-name "File: " nil
                          (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
@@ -4580,7 +4585,62 @@ bookmark name.  The bookmarked position is the beginning of the file."
                              (thing-at-point 'url)
                              (url-get-url-at-point)))
          (and current-prefix-arg (read-string "Prefix for bookmark name: " nil nil ""))))
-  (bmkp-file-target-set file t prefix))
+  (let* ((fname     (file-name-nondirectory file))
+         (bname     (if prefix (concat prefix fname) fname))
+         ;; Look for existing bookmark with same name, same file, in `default-directory'.
+         (same-bmk  (catch 'bmkp-autofile-set
+                      (dolist (bmk  bookmark-alist)
+                        (when (string= bname (bookmark-name-from-full-record bmk))
+                          (let* ((bfil  (bookmark-get-filename bmk))
+                                 (bdir  (and bfil (file-name-directory bfil))))
+                            (when (and bfil
+                                       (string= fname (file-name-nondirectory bfil))
+                                       (equal bdir default-directory))
+                              (throw 'bmkp-autofile-set bmk)))))
+                      nil)))
+    (if same-bmk
+        ;; Do nothing.
+        ;; We could, alternatively, replace the existing one with a new one, as follows:
+        ;; (let ((bookmark-make-record-function (bmkp-make-record-for-target-file file)))
+        ;;   (bmkp-replace-existing-bookmark same-bmk)) ; Update the existing bookmark.
+        nil
+      (bmkp-file-target-set file t prefix 'NO-OVERWRITE)))) ; Create a new bookmark.
+
+(defun bmkp-make-record-for-target-file (file)
+  "Return a function that creates a bookmark record for FILE.
+The bookmarked position will be the beginning of the file."
+  (let ((default-handler  (bmkp-default-handler-for-file file)))
+    (cond (default-handler              ; User default handler
+              (lambda () `((filename . ,file) (position . 0) (handler . ,default-handler))))
+          ;; Non-user defaults.
+          ((and (require 'image nil t) (require 'image-mode nil t) ; Image
+                (condition-case nil (image-type file) (error nil)))
+           'image-bookmark-make-record)
+          ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
+           (lambda () `((filename . ,file) (handler . bmkp-sound-jump))))
+          (t
+           (lambda () `((filename . ,file) (position . 0)))))))
+
+;; $$$$$$ Not used currently.
+(defun bmkp-replace-existing-bookmark (bookmark)
+  "Replace existing BOOKMARK with a new one of the same name.
+BOOKMARK is a full bookmark record, not a bookmark name.
+This replaces the existing bookmark data with the data for a new
+bookmark, based on `bookmark-make-record-function'.  The bookmark name
+is unchanged."
+  (let (failure)
+    (condition-case err
+        ;; Same code as `bookmark-store', but giving it the full bookmark to update.
+        (progn
+          (setcdr bookmark (cdr (bookmark-make-record)))
+          (bmkp-maybe-save-bookmarks)
+          (setq bookmark-current-bookmark  (bookmark-name-from-full-record bookmark))
+          (bookmark-bmenu-surreptitiously-rebuild-list))
+      (error (setq failure  (error-message-string err))))
+    (if (not failure)
+        nil                             ; Return nil for success.
+      (error "Failed to update bookmark `%s':\n%s\n"
+             (bookmark-name-from-full-record bookmark) failure))))
 
 (defun bmkp-default-handler-for-file (filename)
   "Return a default bookmark handler for FILENAME.
@@ -4605,7 +4665,7 @@ function is applied directly to FILENAME."
                          (and (require 'mailcap nil t) ; Emacs 23+
                               (car (mailcap-file-default-commands (list filename)))))))
     (cond ((stringp shell-cmd) `(lambda (bmk)
-                                  (dired-do-shell-command ,shell-cmd nil ',(list filename))))
+                                 (dired-do-shell-command ,shell-cmd nil ',(list filename))))
           ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
            `(lambda (bmk) (funcall #',bmkp-user ,filename)))
           (t nil))))    

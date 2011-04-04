@@ -12,9 +12,7 @@ Nethack-el also requires a patched version of nethack. The patch comes with the 
 I love playing nethack in emacs, but was annoyed that simple cp437(IBMgraphics) to UTF8 was not handled.  The following patch should fix this problem.  Since it only effects the map display, the following could be easily modified to allow map character to be translated to anything without effecting the rest of the display.  Undoubtedly a more elegant solution exists.
 
 {{{
-(add-hook 
- 'nethack-load-hook
- (lambda () (defun nh-ibm-trans (ch)
+(defun nh-ibm-trans (ch)
          (nth ch '( #x2007 #x263A #x263B #x2665 #x2666 #x2663
          #x2660 #x2022 #x25D8 #x25CB #x25D9 #x2642 #x2640 #x266A
          #x266B #x263C #x25BA #x25C4 #x2195 #x203C #x00B6 #x00A7
@@ -76,7 +74,7 @@ I love playing nethack in emacs, but was annoyed that simple cp437(IBMgraphics) 
            (put-text-property (gamegrid-cell-offset x y)
                               (1+ (gamegrid-cell-offset x y))
                               'face
-                              color)))))))
+                              color)))))
 }}}
 
 ----

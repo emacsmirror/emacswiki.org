@@ -76,6 +76,17 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 ''Enter your report below.''
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+
+
 [new] 
 <pre>
  ;;bugs about icicle and autoload
@@ -109,11 +120,36 @@ Better yet, use this to separate threads (puts space before and after the horizo
 ;;   load("~/.emacs" t t)
 ;;   #[nil " \205\264
 </pre>
-----
+-- [[Joseph]]
+
+
+[new:DrewAdams:2011-04-04 01:10 UTC]
+MichaelHeerdegen was kind enough to take a look.  He wasn't able to reproduce the problem, but he thinks it might be due to a recently fixed typo in the sources.  Could you please download the '''Icicles''' sources and try again.  Try first without byte-compiling (remove any byte-compiled files), to simplify.
+
+Let me know if you still see a problem.  Sorry for your trouble.  You can reach me by email (`M-x icicle-send-bug-report') if you continue to have the problem.  Thx -- DrewAdams
+
+
 
 <pre>
 
 </pre>
+----
+<pre>
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
 ----
 
 || *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesStale || IciclesIssuesClosed || 

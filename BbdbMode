@@ -16,6 +16,21 @@ Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopf
 If you keep elaborate notes on people, consider using MiniEdit to
 enter multi-line descriptions, instead of using the minibuffer.
 
+== BBDB 3 and Backwards Compatibility ==
+
+If you plan on updating to BBDB 3, please note that many of the bbdb
+functions and variables have been renamed, potentially leading to
+broken configurations. For instance, if you have the following hook in
+your ~/.emacs:
+
+        (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+
+You will need to change it to:
+
+        (add-hook 'message-setup-hook 'bbdb-get-mail-aliases)
+
+Or else message-mode will not set up new mail buffers correctly.
+
 ----
 CategoryBbdb
 CategoryMailAddons
