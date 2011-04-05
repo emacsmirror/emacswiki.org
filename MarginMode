@@ -82,6 +82,10 @@ Thanks, Lennart
     (remove-hook 'after-change-functions 'highlight-fill-column  t)))
 }}}
 
+[new:AlpAker:2011-04-05 00:44 UTC]]
+
+FillColumnIndicator can do the sort of shading that Lennart asks about above.  (It requires at least v22, though.) -- AlpAker
+
 == Font-lock suggestion ==
 
 [new]

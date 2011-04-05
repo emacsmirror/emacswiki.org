@@ -15,6 +15,7 @@ I have a Chinese blog at [http://blog.csdn.net/jixiuffff MyBlog].
 I wrote:
 
 * AutoJavaComplete -- It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
+* DiredFileTypeFaces --- Set Different Faces for Different File Types in Dired Buffer.
 * [[anything-etags+.el]] -- Another Etags anything.el interface
 * [[anything-dired-history.el]] -- Show dired directories you have visited with anything.el support.[2011-03-26]
 * [[quick-jump.el]] -- Remember current position,and jump back 

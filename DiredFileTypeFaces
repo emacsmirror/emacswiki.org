@@ -1,0 +1,13 @@
+Set Different Faces for Different File Type in dired buffer.
+
+==Lisp==
+Lisp:dired-filetype-face.el
+
+==Source code==
+ Source code is hosted on github: 
+[[https://github.com/jixiuf/dired-filetype-face dired-filetype-face]]
+
+==Screenshot ==
+
+http://www.emacswiki.org/emacs/dired-filetype-face-screenshot
+

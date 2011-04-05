@@ -100,5 +100,9 @@ I too cycle through different languages, but not all that is available in the sy
 How can I ignore or add a word without using the popup menu?
 
 Use flyspell-auto-correct-word.
+
+This is not working for me.  With flyspell-auto-correct-word I can go
+through all suggestions for correction, but I do not get an option to
+insert the word into my dictionary.
 ----
 CategoryModes | CategorySpelling

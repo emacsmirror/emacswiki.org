@@ -46,9 +46,9 @@ Highlighting or finding long lines without filling them:
 
 (Any recommendations? Too much choice!)
 
-Indicating the location of the fill column:
+Visualizing the location of the fill column:
 
-* FillColumnRule -- a minor mode that draws a line down the editing window at the location of the fill column
+* FillColumnIndicator -- a minor mode that indicates the fill column, either by drawing a line down the editing window or by shading the area past the fill column
 
 Unwrapping:
 

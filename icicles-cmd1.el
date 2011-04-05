@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 18:13:16 2011 (-0700)
+;; Last-Updated: Mon Apr  4 08:13:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21665
+;;     Update #: 21669
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3711,6 +3711,7 @@ You probably don't want to use this.  Use
             (pop-to-buffer (car cell) 'other-window)
           (switch-to-buffer (car cell)))
         (goto-char (cdr cell))
+        (unless (pos-visible-in-window-p) (recenter icicle-recenter))
         (progn (run-hooks 'bookmark-after-jump-hook) t)
         ;; If there is an annotation for this bookmark, show it in a buffer.
         (when bookmark-automatically-show-annotations (bookmark-show-annotation bookmark)))))
@@ -4407,6 +4408,7 @@ this remapping, then customize option
   (let ((marker  (ring-remove find-tag-marker-ring 0)))
     (pop-to-buffer (or (marker-buffer marker) (error "The marked buffer has been deleted")))
     (goto-char (marker-position marker))
+    (unless (pos-visible-in-window-p) (recenter icicle-recenter))
     (set-marker marker nil nil)))
 
 (defun icicle-find-tag-define-candidates (regexp arg)

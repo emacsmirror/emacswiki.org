@@ -1,0 +1,48 @@
+Many modern editors and IDEs can graphically indicate the location of the fill column, either by shading the area to the right of the fill column or by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  Fill-column-indicator implements both of these facilities in Emacs.
+
+The two different fill-column indicators look like this:
+
+|| [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
+|| "Shading" style || "Rule" style ||
+
+The style can be set globally or on a per-buffer basis.  The appearance of each style can be customized; under v23 and later, this can also be done on a per-buffer basis.   See the comments in [[fill-column-indicator.el]] for details.
+
+==Dicussion==
+
+
+===Problems when Using Emacs as a Daemon===
+[new]
+Really neat stuff :)
+
+I've just spotted a small problem. In order to use with EmacsAsDaemon one needs to comment out these lines:
+
+    (unless window-system
+        (error "Fill-column-indicator only works on window systems"))
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new:AlpAker:2011-04-05 00:17 UTC]
+
+[Some ensuing back and forth edited out.]  After playing around with EmacsAsDaemon and emacsclient for a while, I think you're right:  The best thing to do is not throw any kind of error when Emacs is running as a daemon, and instead depend on the user to figure out when they can invoke fci-mode and when they can't.  Thanks for pointing out the problem. --AA
+
+
+===From the (E-)Mailbag===
+
+[new]
+
+I want the fill-column indicator to be appear at column 80, but it only appears at column 70.  How do I set it to use a different column?
+
+[new:AlpAker:2011-04-05 00:17 UTC]
+
+Fci-mode uses the whatever value you have ##fill-column## set to.  As 70 is the default, you probably haven't set ##fill-column## to your desired value.  You can use the command ##set-fill-column## to change the value of ##fill-column## in a buffer, or put ##(setq-default fill-column 80)## in your .emacs to set it globally. --AA
+
+[new]
+
+How can I get the package to work properly on a character terminal?
+
+[new:AlpAker:2011-04-05 00:17 UTC]
+
+When running on a character terminal, Emacs outsources rendering to the terminal emulator; as a result, certain kinds of display elements aren't supported.  Unfortunately, fci-mode depends on just that sort of thing.  The bottom line is that it will only work on window-system displays. --AA
+
+----
+CategoryFilling

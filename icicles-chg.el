@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 18:26:05 2011 (-0700)
+;; Last-Updated: Mon Apr  4 08:30:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6304
+;;     Update #: 6313
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/04/04 dadams
+;;     icicle-bookmark-jump-1, icicle-pop-tag-mark: Use icicle-recenter.
 ;; 2011/04/02 dadams
 ;;     Added: icicle-bookmark-file-this-dir((-all|some)-tags(-regexp))(-other-window),
 ;;            icicle-locate-file-(action-fn|no-symlinks-p).
@@ -373,6 +375,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/04/04 dadams
+;;     icicle-insert-thesaurus-entry-cand-fn, icicle-goto-marker-1-action, icicle-search-final-act,
+;;       icicle-comint-search:  Use icicle-recenter.
 ;; 2011/04/02 dadams
 ;;     Added: icicle-info-(buff|window), icicle-key-prefix(-2), icicle-active-map,
 ;;     Moved here from icicles-var.el:

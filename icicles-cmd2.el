@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 17:47:05 2011 (-0700)
+;; Last-Updated: Mon Apr  4 08:08:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2620
+;;     Update #: 2626
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -841,6 +841,7 @@ ORIG-BUFF."
   (goto-char icicle-track-pt)
   (insert string " ")
   (setq icicle-track-pt  (point))
+  (unless (pos-visible-in-window-p) (recenter icicle-recenter))
   (with-current-buffer (window-buffer (minibuffer-window)) (icicle-clear-minibuffer))
   (save-selected-window (icicle-remove-Completions-window)))
 
@@ -1867,6 +1868,7 @@ RING is the marker ring to use."
   (pop-to-buffer (marker-buffer (cdr cand)))
   (select-frame-set-input-focus (selected-frame))
   (goto-char (cdr cand))
+  (unless (pos-visible-in-window-p) (recenter icicle-recenter))
   (when (fboundp 'crosshairs-highlight) (crosshairs-highlight)))
 
 (defun icicle-marker+text (marker &optional globalp)
@@ -2371,6 +2373,7 @@ The hit's frame is raised and selected."
     (pop-to-buffer buf)
     (raise-frame)
     (goto-char (marker-position marker))
+    (unless (pos-visible-in-window-p) (recenter icicle-recenter))
     (select-frame-set-input-focus (selected-frame))
     (run-hooks 'icicle-search-hook)))
 
@@ -3922,7 +3925,8 @@ information about the arguments, see the doc for command
          (icicle-search beg end
                         (concat comint-prompt-regexp "\\S-.*") nil) ; Match not required (edit).
       (remove-hook 'icicle-search-hook 'icicle-comint-search-send-input)))
-  (goto-char (point-max)))
+  (goto-char (point-max))
+  (unless (pos-visible-in-window-p) (recenter icicle-recenter)))
 
 (defun icicle-comint-search-send-input ()
   "Grab current completion input and use that for comint input."

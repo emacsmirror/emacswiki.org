@@ -118,6 +118,10 @@ Don't disturb me if someone chage presence status (usually remote clients make t
 <pre>
 (set  jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil)
 </pre>
+[new]
+The above didn't work for me, and has unbalenced parenthesis in any case...
+M-x customise-variable jabber-alert-presence-hooks 
+should give you the defcustom offered by the package (jabber-presence-echo is the one)
 
 [new]
 Redefine standard binding for sending message form RET to C-RET:

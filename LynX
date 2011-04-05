@@ -1,0 +1,22 @@
+I like Emacs, and I use it on Linux, Windows. 
+
+I also had a chance to use it on i5/OS and it was awesome :) To do this I ran it in PASE mode through SSH with Emacs binaries for AIX :)
+
+I use Emacs as a file manager (dired is great), shell, and as an IDE for Java, C++ in cases when usage of Eclipse is not possible :)
+
+My works are:
+
+* WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
+* WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
+
+
+
+[new:DrewAdams:2011-04-04 20:36 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+----
+CategoryHomepage

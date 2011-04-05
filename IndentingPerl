@@ -181,6 +181,22 @@ Now I get:
 
 -- KukiYomanai
 
+Rather than hacking into the source, I think it's better to just redefine that small function that you commented out to do the right thing; i.e. in .emacs, add:
+
+
+ ;;load cperl, then work around indent issue
+ (load-library "cperl-mode")
+ (defun cperl-backward-to-start-of-continued-exp (lim)
+  (if (memq (preceding-char) (append ")]}\"'`" nil))
+      (forward-sexp -1))
+  (beginning-of-line)
+  (if (or (<= (point) lim) (< 0 cperl-continued-statement-offset))
+      (goto-char (1+ lim)))
+  (skip-chars-forward " \t"))
+
+
+-- SteveSanbeg
+
 Does anybody have an idea about how to influence the indentation of subs as arguments?
 I often run into situations like this:
 
@@ -193,6 +209,8 @@ where cperl-mode pushes the body of the sub so far to the right that it is almos
 impossible to limit the line length to 80 chars.
 
 -- PeterD
+
+
 
 ----
 CategoryIndentation

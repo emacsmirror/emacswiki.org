@@ -1,19 +1,10 @@
-I recently decided to clean up and distribute some packages I've written in the years since I started using Emacs.  
+The following are libraries I've authored, all of which concern, in one way or another, usability and human interface issues.
 
-* [[Locales]].  Locales mode extends Emacs's buffer menu so that it understands a distinction between those buffers that "belong" to a frame and those that do not. The buffer menu can be toggled between a list of all buffers and a list of only buffers that are local to a frame.  Buffers can be manually added to and removed from the local buffer list. In addition, the criteria governing which buffers are automatically added to the local buffer list can be customized through various options.  The package interacts properly with <i>other-buffer</i> and respects changes in buffer ordering made by <i>bury-buffer</i>.
+* [[Locales]].  Locales mode extends Emacs's buffer menu so that it understands a distinction between those buffers that "belong" to a frame and those that do not. The buffer menu can be toggled between a list of all buffers and a list of only buffers that are local to a frame.  Buffers can be manually added to and removed from the local buffer list. In addition, the criteria governing which buffers are automatically added to the local buffer list can be customized through various options.  The package interacts properly with <tt>other-buffer</tt> and respects changes in buffer ordering made by <tt>bury-buffer</tt>.
 
 * [[Rebound]].  Rebound mode changes how Emacs selects point when displaying a buffer in a window.  While it is enabled, each window keeps a record of the last value of point in every buffer that has been displayed in it.  When a window is switched back to a buffer it has displayed before, point and window-start are set to the values they had when that buffer was last displayed in the window.  
 
-* [[FillColumnRule]].  A minor mode that indicates the location of the fill column with a thin line running down the editing window.
+* [[FillColumnIndicator]].  A minor mode that indicates the location of the fill column, either by shading the area of the window to the right of the fill column or by drawing a thin line down the editing window at the location of the fill column.
 
-
-[new:DrewAdams:2011-03-01 00:16 UTC]
-Welcome to the wiki. -- DrewAdams
-
-[new:AlpAker:2011-03-11 23:47 UTC]
-
-----
-
-I've moved some discussion of [[Rebound]] to the page for that project. --AA
 ----
 CategoryHomepage
