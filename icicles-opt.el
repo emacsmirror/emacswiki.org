@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 15:15:37 2011 (-0700)
+;; Last-Updated: Tue Apr  5 14:26:42 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4257
+;;     Update #: 4258
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2458,7 +2458,8 @@ This highlighting uses face `icicle-search-main-regexp-others'."
 
 ;;;###autoload
 (defcustom icicle-search-hook nil
-  "*List of hook functions run by `icicle-search' (see `run-hooks')."
+  "*List of functions run by `icicle-search' after you visit a search hit.
+See `run-hooks'."
   :type 'hook :group 'Icicles-Searching)
 
 ;;;###autoload

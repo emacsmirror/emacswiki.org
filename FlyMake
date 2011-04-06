@@ -155,6 +155,17 @@ java -jar ~/bin/compiler.jar --warning_level VERBOSE --js $1 --js_output_file /d
 </pre>
 1. Don't forget to start flymake mode by adding (flymake-mode t) to your javascript mode hook.
 
+
+=== Display flymake errors/warnings on the fringe ===
+
+See [http://www.emacswiki.org/emacs/RFringe rfringe.el] to display the buffer-relative positions of flymake errors and warnings on the fringe .  This works with any language.  Just add this to your .emacs:
+
+    (require 'rfringe)
+  
+Example appearance:
+
+http://i.imgur.com/34ceS.png
+
 == More Tips and Questions ==
 
 === Wine build system ==

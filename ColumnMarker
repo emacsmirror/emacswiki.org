@@ -58,6 +58,7 @@ This is all you need to do, to create an additional column marker:
 * ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
 * MarginMode
 * EightyColumnRule
+* FillColumnIndicator
 
 
 

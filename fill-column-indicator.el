@@ -1,9 +1,9 @@
 ;;; fill-column-indicator.el --- indicate the fill column with a thin line
 
-;; Copyright (c) 2011 Alp Aker
+;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.27
+;; Version: 0.28
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -26,13 +26,13 @@
 ;; fill column, either by shading the area to the right of the fill column or
 ;; by drawing a thin line (in design parlance, a `rule') down the length of
 ;; the editing window.  Fill-column-indicator implements both of these
-;; facilities in Emacs.
+;; facilities in Emacs. 
 
 ;; Installation
 ;; ============
 
-;; Put this file in your load path and put
-;;
+;; Put this file in your load path and put 
+;; 
 ;;   (require 'fill-column-indicator)
 ;;
 ;; in your .emacs.  
@@ -45,8 +45,8 @@
 
 ;; Fill-column-indicator has two modes of operation:
 
-;; (1) In shading mode, it shades the portion of the window to the right of the
-;;     fill column.  This is the default.
+;; (1) In shading mode, it shades the portion of the window to the right of
+;;     the fill column.  This is the default.
 
 ;; (2) In rule mode, it draws a thin line at the fill column. (For rule mode
 ;;     to operate correctly, some font configuration may be required.  This
@@ -58,9 +58,13 @@
 ;;
 ;;   (setq fci-style 'rule)
 ;;
-;; in your .emacs.  
+;; in your .emacs.  (Buffer-local values of fci-style are supported.)
 
-;; Further considerations to be aware of:
+;; To change to the color of the shading, adjust the attributes of
+;; `fcr-shading-face'.  To change the color the rule, set `fcr-rule-color' to
+;; the desired color.
+
+;; Some further considerations to be aware of:
 
 ;; o Fci-mode uses the value of fill-column in effect when it is enabled.  If
 ;;   you change the fill column using `set-fill-column', it will
@@ -136,9 +140,9 @@
 ;;
 ;;   (insert (mapconcat #'car (x-font-family-list) "\n"))
 
-;; You can then ask fill-column-indicator to use a specific font by setting the
-;; variable `fci-font' to the name of a font family (the value should be a
-;; string). You might have to try various options before finding one that
+;; You can then ask fill-column-indicator to use a specific font by setting
+;; the variable `fci-font' to the name of a font family (the value should be
+;; a string). You might have to try various options before finding one that
 ;; displays well on screen.
 
 ;; If explicitly specifying the font family doesn't work, then it might be
@@ -258,7 +262,7 @@ unibyte buffers it is always used.
 Changes to this variable do not take effect until the mode
 function `fci-mode' is run."
  :group 'fill-column-indicator
- :tag "Fill-column rule fallback string"
+ :tag "Fill-column rule fallback character"
  :type 'character)
 
 ;;; Other Options
@@ -483,28 +487,30 @@ unexpected behavior, see the comments in fill-column-indicator.el."
 ;; redraws the indicator after each buffer change.  Note that we redraw an
 ;; extra preceding line.  Motivation: at the beginning of a line,
 ;; insert-before-markers will grab the end marker of the overlay on the
-;; previous line, which requires us to reset the previous line's overlay as
-;; well.  Unconditionally redoing the previous line is the fastest way to
-;; accomodate that case.  (Using a hook on the overlay is conceptually tidier
+;; previous line, in which case we need to reset the previous line's overlay
+;; as well.  Unconditionally redoing the previous line is the fastest way to
+;; handle that case.  (Using a hook on the overlay is conceptually tidier
 ;; but incurs the overhead of multiple extra lisp function calls.)
 (defun fci-after-change-function (start end unused)
- (save-excursion
-   ;; Make sure our bounds span at least whole lines.
-   (goto-char start)
-   (setq start (line-beginning-position 0))
-   (goto-char end)
-   (setq end (line-beginning-position 2))
-   ;; Clear any existing overlays.
-   (fci-delete-overlays-region start end)
-   ;; Then set the fill-column indicator in that region.
-   (funcall fci-put-overlays-function start end)))
+  (save-match-data
+    (save-excursion
+      ;; Make sure our bounds span at least whole lines.
+      (goto-char start)
+      (setq start (line-beginning-position 0))
+      (goto-char end)
+      (setq end (line-beginning-position 2))
+      ;; Clear any existing overlays.
+      (fci-delete-overlays-region start end)
+      ;; Then set the fill-column indicator in that region.
+      (funcall fci-put-overlays-function start end))))
 
 (defun fci-put-overlays-buffer ()
- (overlay-recenter (point-max))
- (save-excursion
-   (save-restriction
-     (widen)
-     (funcall fci-put-overlays-function (point-min) (point-max)))))
+  (overlay-recenter (point-max))
+  (save-match-data
+    (save-excursion
+      (save-restriction
+        (widen)
+        (funcall fci-put-overlays-function (point-min) (point-max))))))
 
 (defun fci-delete-overlays-buffer ()
  (save-excursion

@@ -46,6 +46,12 @@ Please also consider visiting these pages in order to getting started:
 ; [[rcircExampleSettings]]: examples of stuff you can do to configure rcirc.
 ; [[rcircAutoAuthentication]]: How to get automatic authentication with nickserv &c.
 
+==Connecting to servers using SSL/TLS ==
+
+You need a fork of rcirc:
+
+https://github.com/nealey/rcirc/wiki
+
 ==rcirc add-ons and commands==
 
 ; [[rcircColoredNicks]]: Color each nick using a separate color and add the ##/color## command

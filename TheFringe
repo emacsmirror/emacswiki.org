@@ -58,6 +58,10 @@ Here's a primitive example of using the fringe to show the location of the mark,
 
 This will, however, show an arrow in the fringe and confuse users of various Emacs debugging modes.
 
+[new]
+See also, [http://www.emacswiki.org/emacs/RFringe RFringe], which displays a dash in the fringe to indicate a buffer-relative position.  --DinoChiesa, 5 April 2011
+
+
 ----
 CategoryDisplay
 CategoryGlossary

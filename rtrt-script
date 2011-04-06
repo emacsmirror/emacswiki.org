@@ -1,0 +1,18 @@
+RTRT est un outils de test développé par rational et est soumis à licence pour son utilisation.
+
+Ce mode, à l'état de brouillon, couvre la partie test unitaire de cet outil qui redéfinit tout un langage afin de tester du code.
+Je ne compte pas le maintenir à moins de retravailler à nouveau avec ce logiciel dont le langage à du évoluer depuis.
+
+Je le poste maintenant suite à un passage sur ma page ou j'ai remarqué que quelqu'un avait laissé un message pour ce mode.
+le voici (après une exhumation chez un ami qui l'utilisait en même temps que moi)...
+
+De mémoire ce n'est pas la dernière version, je pense qu'elle est perdue, cette version incluait la possibilité de compiler direcement depuis emacs et avec une modification de compilation-error-regexp-alist d'aller directement sur la ligne en erreur lors des compilation.
+Pour pouvoir mettre en place cette compilation, il suffit dans un premier temps de rendre rtrt plus bavard que la normale afin de voir les lignes de commandes lancées par ce dernier, et de les réutiliser à partir du bon répertoire (en les incluant dans une fonction spécifique ou en modifiant la commande de compilation par défaut).
+
+Le lancement en ligne de commande ne contourne pas les licence d'ailleurs, c'était une fonctionnalité mal documenté du logiciel à l'époque mais possible, cet outil est a usage professionnel et si une entreprise le choisi pour faire ses test elle doit faire en sorte d'être en règle, de même qu'il est de bon ton de redistribuer à la communauté les modifications apportés aux logiciels open source.
+
+<tt>[[rtrt-script.el]]</tt>
+
+
+page perso:
+[[FrédéricFrances]]

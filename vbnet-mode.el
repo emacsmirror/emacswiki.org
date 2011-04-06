@@ -6,15 +6,16 @@
 ;;            : T.K.Anderson
 ;;            : Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : April 1996
-;; Modified   : February 2011
-;; Version    : 1.5a
+;; Modified   : April 2011
+;; Version    : 1.5c
 ;; Keywords   : languages, basic, VB, VBNET
 ;; X-URL      : http://code.google.com/p/vbnetmode/
-;; Last-saved : <2011-February-27 14:31:17>
+;; Last-saved : <2011-April-05 11:58:58>
 
 ;; Copyright (C) 1996 Fred White <fwhite@alum.mit.edu>
 ;; Copyright (C) 1998 Free Software Foundation, Inc.
 ;;   (additions by Dave Love and others)
+;; Copyright (C) 2011 Dino Chiesa
 
 
 ;; This file is NOT part of GNU Emacs but the same permissions apply.
@@ -42,20 +43,23 @@
 
 ;; Purpose of this package: This is a mode for editing programs written
 ;;   in Visual Basic .NET (VB.NET).  This mode features automatic
-;;   indentation, font locking, keyword capitalization, integration with
-;;   compile.el, integration with flymake.el, integration with
-;;   ya-snippet.el, and some minor convenience functions.
+;;   indentation of VB.NET syntax; font locking; automatic keyword
+;;   capitalization; integration with compile.el, flymake.el, and
+;;   imenu.el; built-in snippets for ya-snippet.el; and some minor
+;;   convenience functions.
 
 ;; Installation instructions
+;; --------------------------------
 ;;
-;;  Put vbnet-mode.el somewhere in your load path, optionally compile
+;;  Put vbnet-mode.el somewhere in your load path, optionally byte-compile
 ;;  it, and add the following to your .emacs file:
 ;;
 ;;    (autoload 'vbnet-mode "vbnet-mode" "Mode for editing VB.NET code." t)
 ;;    (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|vb\\)$" .
 ;;                                  vbnet-mode)) auto-mode-alist))
 ;;
-;;  And optionally, add something like this to your .emacs file as well:
+;;  Optionally, add a mode-hook function.  To do so, use something
+;;  like this to your .emacs file:
 ;;
 ;;    (defun my-vbnet-mode-fn ()
 ;;      "My hook for VB.NET mode"
@@ -72,11 +76,159 @@
 ;;    )
 ;;    (add-hook 'vbnet-mode-hook 'my-vbnet-mode-fn)
 ;;
-;;  Optionally, add a line like this to each .vb file that you use
-;;  flymake with:
 ;;
-;;   '  flymake-command: c:\.net3.5\vbc.exe /t:module /nologo Filename.vb
+;;  General
+;;  ----------------------------
 ;;
+;;  Mostly VB.NET mode will "just work."  Use `describe-mode' to see the
+;;  default keybindings and the highlights of the mode.
+;;
+;;  Some points of interest:
+;;
+;;     `vbnet-mode-indent' - customizable variable setting the indent size,
+;;          in spaces. The default is 4.
+;;
+;;     `vbnet-mark-defun' marks the current function, if there is one.
+;;
+;;     `vbnet-split-line' splits the current line at point, and inserts a
+;;          continuation character.
+;;
+;;     `vbnet-join-continued-lines' does the converse.
+;;
+;;     `vbnet-new-sub' - inserts a subroutine template into the buffer at
+;;          point.
+;;
+;;     `vbnet-moveto-beginning-of-defun'
+;;     `vbnet-moveto-end-of-defun'
+;;     `vbnet-moveto-beginning-of-block'
+;;     `vbnet-moveto-end-of-block'
+;;          Functions to move within the VB.NET buffer. The first two
+;;          move to the beginning and end, respectively, of a Function
+;;          or Sub. The latter two move to the beginning and end,
+;;          respectively, of the innermost containing block, whatever it
+;;          is - a Function, Sub, Struct, Enum, While, etc.
+;;
+;;     `vbnet-close-current-block' - intelligently closes a block, For
+;;          example, it inserts "End Class" when invoked if point is
+;;          after a Class declaration. This fn is naive: it
+;;          will insert an "End Class" even if an "End Class" is present
+;;          on the next line, and likewise for any other type of block.
+;;
+;;  Some of these functions are by default, bound to keystrokes when
+;;  vbnet-mode loads. Consult the documentation for each of these
+;;  functions for more information.
+;;
+;;
+;;  Fontification
+;;  ----------------------------
+;;
+;;  There are a couple font-face name variables you can use to control
+;;  the appearance of fontified vb.net buffers. In
+;;  `vbnet-namespace-face', store the name of the face for namespaces
+;;  (from the Imports statement).  In `vbnet-funcall-face', store the
+;;  name of the font to use for function calls.  There are also faces
+;;  with the same names as these variables; they represent the default
+;;  faces for these classes of code syntax.
+;;
+;;  You can set `vbnet-want-fontification' (via customize) to nil to
+;;  skip the fontification.
+;;
+;;
+;;  Flymake Integration
+;;  ----------------------------
+;;
+;;  You can use flymake with vb.net code to automatically check the
+;;  syntax of your vb.net code, and highlight errors.  To do so, add a
+;;  comment line like this to each .vb file that you use flymake with:
+;;
+;;   '  flymake-command: c:\.net3.5\vbc.exe /t:module /nologo
+;;
+;;  That lines specifies a command "stub".  Flymake appends the name of
+;;  the file to compile, and then runs the command to check
+;;  syntax. Flymake assumes that syntax errors will be noted in the
+;;  output of the command in a form that fits one of the regexs in the
+;;  `compilation-error-regexp-alist-alist'. Check the flymake module for
+;;  more information on that.
+;;
+;;  Some rules for the command:
+;;
+;;    1. it must appear all on a single line.
+;;
+;;    2. vbnet-mode generally looks for the marker line in the first N
+;;       lines of the file, where N is set in
+;;       `vbnet-flymake-cmd-line-limit'.  See the documentation on that
+;;       variable for more information.
+;;
+;;    3. the command SHOULD NOT include the name of the source file
+;;       currently being edited. This is because flymake saves a copy of
+;;       the buffer into a temporary file with a unique name, and then
+;;       compiles that temporary file. The name of the temp file is
+;;       automatically appended to the end of the command .
+;;
+;;  If you use vbc.exe as the syntax check tool (as almost everyone
+;;  will), the /t:module is important. vbnet-mode assumes that the
+;;  syntax-check compile command will produce a file named
+;;  NAME.netmodule, which is the default when using /t:module. (Remember
+;;  than NAME is dynamically generated).  vbnet-mode will remove the
+;;  generated netmodule file after the syntax check is complete. If you
+;;  don't specify /t:module, then vbnet-mode won't know what file to
+;;  delete.
+;;
+;;  vbnet-mode also fiddles with some other flymake things.  In
+;;  particular it: adds vb to the flymake "allowed filename masks"; adds
+;;  parsing for vbc error messages; redefines the process sentinel to
+;;  not treat non-zero exit status as an error (because vbc.exe returns
+;;  non-zero status when syntax errors are present); and adds advice to
+;;  the parsing logic. This all should be pretty benign for all other
+;;  flymake buffers.  But it might not be.
+;;
+;;  You can explicitly turn the flymake integration for VB.NET off by
+;;  setting `vbnet-want-flymake-fixup' to nil.
+;;
+;;
+;;  Imenu integration
+;;  ----------------------------
+;;
+;;  imenu provides the capability to scan a buffer to produce an "index"
+;;  of the highlights or points of interest in that buffer, and then
+;;  present that index as a popup menu (for example on the menubar) or
+;;  completion buffer.
+;;
+;;  vbnet-mode integrates with imenu to produce the index for a vb.net
+;;  buffer.  Automatically, there will be an "index" menu item in the
+;;  menubar when you open a VB.NET buffer. It will contain menu items
+;;  corresponding to namespaces, classes, methods, functions and
+;;  properties defined in that source module.
+;;
+;;  To turn off the vbnet+imenu integration, set vbnet-want-imenu to
+;;  nil, in your vbnet mode hook function.
+;;
+;;  Compile Integration
+;;  ----------------------------
+;;
+;;  VBnet-mode now installs an error regexp for vbc.exe into
+;;  `compilation-error-regexp-alist-alist', which allows `next-error'
+;;  and `previous-error' (defined in compile.el) to navigate to the next
+;;  and previous compile errors in the vb buffer.
+;;
+;;
+;;  YASnippet integration
+;;  -----------------------------
+;;
+;;  vbnet-mode (as of v1.5b) defines some built-in snippets for
+;;  convenience. For example, if statements, ifelse, for, foreach, and
+;;  so on.  You can see them on the YASnippet menu that is displayed
+;;  when a vbnet-mode buffer is opened.  vbnet-mode defines this
+;;  snippets happens only if ya-snippet is available. (It is done in an
+;;  `eval-after-load' clause.)  The builtin snippets will not overwrite
+;;  snippets that use the same name, if they are defined in the normal
+;;  way (in a compiled bundle) with ya-snippet.
+;;
+;;  You can explicitly turn off ya-snippet integration. See the var,
+;;  `vbnet-want-yasnippet-fixup'.
+;;
+
+
 
 
 ;; Revisions:
@@ -136,11 +288,11 @@
 ;;     Tweaked the `vbnet-continuation-regexp' slightly nto be more
 ;;     correct. It needed a space before the continuation char.
 ;;
-;;     Fixed `vbnet-defun-start-regexp' to handle Public Shared Functions.
-;;     Also renamed it to `vbnet-block-start-regexp' to reflect its
-;;     true meaning, and renamed `vbnet-defun-end-regexp' similarly.
-;;
-;;     Put all the defconst regexps into an alist for simpler access.
+;;     Fixed `vbnet-defun-start-regexp' to handle Public Shared
+;;     Functions.  Also renamed it to `vbnet-block-start-regexp' to
+;;     reflect its true meaning, and renamed `vbnet-defun-end-regexp'
+;;     similarly. Actually, those names are irrelevant, because I put
+;;     all the defconst regexps into an alist for simpler access.
 ;;
 ;;     Added "Namespace" as a keyword, and added a regexp and fn for
 ;;     handling namespace statements. Also modified `vbnet-calculate-indent'
@@ -167,11 +319,11 @@
 ;;     snippets for convenience.  This works only if ya-snippet is available.
 ;;     The builtin snippets will not overwrite snippets defined
 ;;     in the normal way with ya-snippet (in a compiled bundle).
-;;     See also the var, `vbnet-want-fixup-yasnippet'.
+;;     See also the var, `vbnet-want-yasnippet-fixup'.
 ;;
 ;;     Integration with flymake.el .  Tweaks some defuns
 ;;     and vars to allow flymake to work with VB.NET. This happens only
-;;     if flymake is in use. See also the var, `vbnet-want-fixup-flymake'.
+;;     if flymake is in use. See also the var, `vbnet-want-flymake-fixup'.
 ;;
 ;;     Removed the find-matching-* fns, they were simple and called
 ;;     from only one place, so added nothing.
@@ -184,9 +336,56 @@
 ;;
 ;;      Added the feature where vbnet-mode scans the buffer for a line that
 ;;      specifies the flymake command to use.  For example, specify
-;;      flymake-command: c:\.net3.5\vbc.exe /t:module /nologo Filename.vb
+;;      flymake-command: c:\.net3.5\vbc.exe /t:module /nologo
 ;;      in the comment at the top of the file, to tell flymake to use
-;;      that command. See also, the var `vbnet-flymake-cmd-line-limit'.
+;;      that command. For info, see the var `vbnet-flymake-cmd-line-limit'.
+;;
+;; 1.5b DPC changes February 2011
+;;
+;;      Fixed bug with missing fn vbnet-find-matching-try .
+;;      I missed that one during the prior refactoring.
+;;
+;; 1.5c DPC changes April 2011
+;;
+;;      Fixed imenu integration. The imenu stuff was for old-syntax VB6,
+;;      and did not handle namespaces, classes, structures, interfaces, and
+;;      so on. Rather than using `imenu-generic-expression', the integration
+;;      for VB.NET uses `imenu-create-index-function'.
+;;
+;;      Corrected the documentation and behavior of the flymake
+;;      integration.  In practice, vbnet-mode now uses the name of the
+;;      temporary file, as the thing to compile.
+;;
+;;      Corrected indentation to handle .net attributes (eg,
+;;      <DllImport>) which precede a line and use a
+;;      line-continuation. To do this, I modified
+;;      `vbnet--back-to-start-of-continued-statement', which was
+;;      previouisly named `vbnet-find-original-statement', to accept an
+;;      optional arg telling it to NOT backup over attributes.
+;;
+;;      Fixed indenting for functions where the decl line is "continued", even
+;;      without a preceding attribute.
+;;      Example:
+;;        Public Shared Function _
+;;               SetForegroundWindow(ByVal handle As IntPtr) As Boolean
+;;
+;;      Added indentation support for classes marked
+;;      NotInheritable. Previously this keyword caused indentation to
+;;      break.  Likewise for Friend functions.
+;;
+;;      New interactive fn, `vbnet-close-current-block', to insert the
+;;      "End Xxxx" statement to close the current block.
+;;
+;;      New interactive fns, `vbnet-moveto-beginning-of-defun' and
+;;      `vbnet-moveto-end-of-defun', that move to the beginning or end of the
+;;      current Sub or Function.
+;;
+;;      Implement indentation and fontification for Structures and Enums.
+;;
+;;      Properly fontify reserved words used as variable names. (in square
+;;      brackets)
+;;
+;;      Updated comments on usage.
 ;;
 
 
@@ -232,42 +431,56 @@
 ;;
 
 
-;; todo?:
+;; Todo?:
 ;;
-;;  fwd/back-compound-statement
+;;  - Handle interfaces. how did I leave this out?
+;;    need a regexp, and to handle in the imenu helper, as well
+;;    as in the indentation logic.
 ;;
-;;  smart completion over object fields, methods, and properties.
+;;  - additional flymake work: allow the user to specify the command to
+;;    run, through a buffer-local variable - eg, without requiring a
+;;    comment in the source code.
 ;;
-;;  IDE integration
+;;  - Smart completion over object fields, methods, and properties. This
+;;    would require a sourcecode analysis engine, something like
+;;    NRefactory.
 ;;
-;;  Change behaviour of ESC-q to recognise words used as paragraph
-;;  titles and prevent them being dragged into the previous
-;;  paragraph.
+;;  - IDE integration - not sure what this might mean. Need suggestions
+;;  - here.
 ;;
-;;  etc.
-
+;;  - Change behaviour of ESC-q to recognise words used as paragraph
+;;    titles and prevent them being dragged into the previous
+;;    paragraph.(?)
+;;
+;;  - others?
+;;
 
 ;;; Code:
 
 (defvar vbnet-xemacs-p (string-match "XEmacs\\|Lucid" (emacs-version)))
 (defvar vbnet-winemacs-p (string-match "Win-Emacs" (emacs-version)))
 (defvar vbnet-win32-p (eq window-system 'w32))
+(defvar vbnet--yasnippet-has-been-fixed nil)
 
 ;; Variables you may want to customize.
 (defcustom vbnet-mode-indent 4
   "*Default indentation per nesting level."
     :type 'integer :group 'vbnet)
 
-(defcustom vbnet-fontify-p t
-  "*Whether to fontify Basic buffers."
+(defcustom vbnet-want-fontification t
+  "*Whether to fontify VB.NET buffers."
   :type 'boolean :group 'vbnet)
 
-(defcustom vbnet-want-fixup-yasnippet t
+(defcustom vbnet-want-imenu t
+  "*Whether to generate a buffer index via imenu for VB.NET buffers."
+  :type 'boolean :group 'vbnet)
+
+(defcustom vbnet-want-yasnippet-fixup t
   "*Whether to enable the builtin snippets for ya-snippet. This is meaningful
 only if ya-snippet is available."
   :type 'boolean :group 'vbnet)
 
-(defcustom vbnet-want-fixup-flymake t
+(defcustom vbnet-want-flymake-fixup t
   "*Whether to enable the builtin supprot for flymake. This is meaningful
 only if flymake is loaded."
   :type 'boolean :group 'vbnet)
@@ -290,26 +503,50 @@ only if flymake is loaded."
   :type 'boolean :group 'vbnet)
 
 (defcustom vbnet-flymake-cmd-line-limit 18
-  "The number of lines at the top of the file, to look for, for
-a flymake cmd line. The format  should be:
+  "The number of lines at the top of the file to look in, to find
+the command \"stub\" that flymake will use to check the syntax for the
+current buffer.  The command \"stub\" string is prefixed with
+\"flymake-command:\".  For example,
 
-  flymake-command: vbc.exe /target:netmodule /r:foo.dll Filename.vb
+  flymake-command: DOTNETDIR\vbc.exe /target:netmodule /r:foo.dll
 
-If the value is zero, then vbnet looks everywhere in the file.
-If the value is positive, then vbnet looks only in the first N
-lines. If negative, then only in the final N lines.
+Be sure to specify the proper path for your vbc.exe. This line
+should appear in a comment inside the VB.NET buffer. The string
+should not include the name of the file for the buffer being
+checked.  vbnet-mode appends the name of the source file to
+compile, to this \"stub\" before passing the command to flymake
+to run it.
 
-If the string flymake-command: is present in the given set of lines,
-vbnet-mode will take anything after flymake-command: as the
-command to run for a flymake check.
+If the buffer depends on external libraries, then you will want
+to include /R arguments to that vbc.exe command.
+
+To repeat, this variable sets the number of lines to search.  It
+is an integer. Do not set this variable to the flymake command
+string.
+
+If the value of this variable is zero, then vbnet-mode looks
+everywhere in the file.  If the value is positive, then vbnet
+looks only in the first N lines. If negative, then only in the
+final N lines.
+
+If the string flymake-command: is present in the given set of
+lines, vbnet-mode will take anything after flymake-command: as
+the command to run for a flymake check.  Be sure to make it a
+legal command, or flymake will report an error and disable
+itself.
 
 "
-  :type 'string  :group 'vbnet)
+  :type 'integer   :group 'vbnet)
 
 
+;; Fri, 01 Apr 2011
+;; DPC
 ;; This is the kind of thing that is better done by a general-purpose
 ;; snippet package, customized to vbnet, and customized further for
 ;; the particular VBNET user.  ya-snippet.el is a good one.
+;;
+;; But I'm leaving this code in, as a legacy.
+;;
 (defvar vbnet-defn-templates
   (list "Public Sub ()\nEnd Sub\n\n"
         "Public Function () As Variant\nEnd Function\n\n"
@@ -317,16 +554,317 @@ command to run for a flymake check.
   "*List of function templates though which vbnet-new-sub cycles.")
 
 
-(defvar vbnet-imenu-generic-expression
-  '((nil "^\\s-*\\(public\\|private\\)*\\s-+\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\sw+\\>\\)"
-         4)
-    ("Constants"
-     "^\\s-*\\(private\\|public\\|global\\)*\\s-*\\(const\\s-+\\)\\(\\sw+\\>\\s-*=\\s-*.+\\)$\\|'"
-     3)
-    ("Variables"
-     "^\\(private\\|public\\|global\\|dim\\)+\\s-+\\(\\sw+\\>\\s-+as\\s-+\\sw+\\>\\)"
-     2)
-    ("Types" "^\\(public\\s-+\\)*type\\s-+\\(\\sw+\\)" 2)))
+
+;; ==================================================================
+;;; imenu stuff
+
+;; (defun vbnet-imenu-create-index-function-fake ()
+;;   "producees a fake index for imenu. See the documentation for
+;; `vbnet-imenu-create-index-function' for more information.
+;;
+;; "
+;;   ;; example:
+;;   ;;
+;;   ;;  (("New" . #<marker at 589 in Rijndael-vb.vb>)
+;;   ;;   ("New" . #<marker at 678 in Rijndael-vb.vb>)
+;;   ;;   ("GetRijndaelManaged" . #<marker at 765 in Rijndael-vb.vb>)
+;;   ;;   ("Run" . #<marker at 1282 in Rijndael-vb.vb>)
+;;   ;;   ("Encrypt" . #<marker at 2381 in Rijndael-vb.vb>)
+;;   ;;   ("Decrypt" . #<marker at 3384 in Rijndael-vb.vb>))
+;;
+;;
+;;   '(("Somewhere in the header comment"  . 20)
+;;     ("Imports"  . 375)
+;;     ("Namespace Ionic.Tests.Crypto" . 447)
+;;     ("Class RijndaelVb - a submenu"
+;;      ("ctor"  . 597)
+;;      ("A function..."  . 1282)
+;;      ("etc..." . 3222))))
+
+
+
+;; define some advice for menu construction.
+
+;; The way imenu constructs menus from the index alist, in
+;; `imenu--split-menu', is ... ah ... perplexing.  If the vbnet
+;; create-index fn returns an ordered menu, and the imenu "sort" fn has
+;; been set to nil, imenu still sorts the menu, according to the rule
+;; that all submenus must appear at the top of any menu. Why?  I don't
+;; know. This advice disables that weirdness in VB buffers.
+
+(defadvice imenu--split-menu (around
+                              vbnet--imenu-split-menu-patch
+                              activate compile)
+  ;; This advice will run in all buffers.  Let's may sure we
+  ;; actually execute the important bits only when a VB buffer is active.
+  (if (and (string-match "\\.[Vv][Bb]$"  (file-relative-name buffer-file-name))
+           (boundp 'vbnet-want-imenu)
+           vbnet-want-imenu)
+      (let ((menulist (copy-sequence menulist))
+            keep-at-top)
+        (if (memq imenu--rescan-item menulist)
+            (setq keep-at-top (list imenu--rescan-item)
+                  menulist (delq imenu--rescan-item menulist)))
+        ;; This is the part from the original imenu code
+        ;; that puts submenus at the top.  huh?
+        ;; --------------------------------------------
+        ;; (setq tail menulist)
+        ;; (dolist (item tail)
+        ;;   (when (imenu--subalist-p item)
+        ;;     (push item keep-at-top)
+        ;;     (setq menulist (delq item menulist))))
+        (if imenu-sort-function
+            (setq menulist (sort menulist imenu-sort-function)))
+        (if (> (length menulist) imenu-max-items)
+            (setq menulist
+                  (mapcar
+                   (lambda (menu)
+                     (cons (format "From: %s" (caar menu)) menu))
+                   (imenu--split menulist imenu-max-items))))
+        (setq ad-return-value
+              (cons title
+                    (nconc (nreverse keep-at-top) menulist))))
+    ;; else
+    ad-do-it))
+
+
+
+
+
+(defun vbnet--imenu-create-index-function-helper (&optional parent-ns indent-level)
+  "Helper fn for `vbnet-imenu-create-index-function-real'.
+
+Scans for a namespace, then scans within the namespace for subs
+and functions. Returns a list, suitable for use as an imenu index
+alist. Leaves point after the \"End Namespace\", if it exists.
+
+"
+
+  ;; A VB.NET module consists of zero of more explicitly denoted (and
+  ;; possibly nested) namespaces. (in the absence of an
+  ;; explicitly-denoted namespace, the global namespace is implicitly
+  ;; applied).  Within each namespace there can be zero or more
+  ;; "container" things - like class, struct, or interface; each with
+  ;; zero or more indexable items - like Functions, Subs, Properties,
+  ;; and so on.
+
+  ;; This fn parses the module and indexes those items, creating a
+  ;; hierarchically organized list to describe them.  Each container
+  ;; (ns/class/struct/etc) is represented on a separate submenu.
+
+  ;; It works like this:
+  ;;
+  ;; 1. Examine each line
+  ;;
+  ;; 2. does the line start a container?
+  ;;
+  ;;    a. are we not not *in* a container? create a menu item for the
+  ;;       top of the container, add to the submenu and continue
+  ;;       parsing.
+  ;;
+  ;;    b. if already in a container, backup to start-of-line and recurse.
+  ;;
+  ;; 3. end of container?
+  ;;
+  ;;    a. are we in a container?
+  ;;       add a "bottom" item to the current submenu and then add the
+  ;;       submenu to the master menu.  Clear the submenu, to ready to
+  ;;       find another start container. go to step 6.
+  ;;
+  ;;    b. not in a container, then pop out and let the parent fn call
+  ;;       handle this.
+  ;;
+  ;; 4. Is it an indexable item?  and
+  ;;    are we in a container?
+  ;;    add the item to the submenu, and go to step 6.
+  ;;
+  ;; 5. otherwise - it is a legal line of code and we are NOT in a container.
+  ;;    In this case pop out of the (presumably nested) fn call, and let
+  ;;    the caller handle it.
+  ;;
+  ;; 6. if not popping out, go to the next line in the buffer, and
+  ;;    resume at step 1.
+  ;;
+
+
+  (if (not indent-level) (setq indent-level ""))
+
+  (let ((state 0)
+        done
+        menu-structure
+        submenu
+        suppress-next
+        this-flavor
+        this-item
+        container-name
+        (item-regex-tuples
+         '((func-start func-end)
+           (sub-start sub-end)
+           (propset-start propset-end)
+           (propget-start propget-end))))
+
+    (while (not done)
+
+      (if (eobp) (setq done t)
+        (setq suppress-next nil)
+        (cond
+         ;; handle open-container blocks
+         ((or
+           (looking-at (vbnet-regexp 'class-start))
+           (looking-at (vbnet-regexp 'intf-start))
+           (looking-at (vbnet-regexp 'struct-start))
+           (looking-at (vbnet-regexp 'enum-start))
+           (looking-at (vbnet-regexp 'namespace-start)))
+
+          (if (string= (downcase (match-string-no-properties 1)) "namespace")
+              (setq this-flavor (match-string-no-properties 1)
+                    this-item (match-string-no-properties 2))
+            (setq this-flavor (match-string-no-properties 2)
+                  this-item (match-string-no-properties 3)))
+
+          (cond
+           ((eq state 0)
+            ;; we've been waiting for an open-container
+            (incf state)
+
+            ;; produce a fully-qualified name for this thing
+            (setq container-name
+                  (if parent-ns
+                      (concat parent-ns "." this-item)
+                    this-item))
+
+            ;; add the flavor + name of the thing to the menu. This
+            ;; will act as the submenu heading.
+            (push (concat this-flavor " " container-name) submenu)
+
+            ;; add an item to the submenu pointing to the top of the container
+            ;; (namespace, class, etc)
+            (push (cons "(top)"
+                        (let ((m (make-marker)))
+                          (set-marker m (match-beginning 1)))) submenu))
+
+           ((eq state 1)
+            ;; inside a container, and another one is being opened.
+            ;; therefore, recurse.
+            ;;(goto-char (match-beginning 0))
+            (let ((child-menu
+                   (vbnet--imenu-create-index-function-helper container-name
+                                                              (concat indent-level "  "))))
+              ;; there may be multiple children; add them all
+              (if child-menu
+                  (mapcar
+                   '(lambda (item)
+                      (push item submenu))
+                   child-menu))
+              (setq suppress-next t)))))
+
+
+         ;; handle the container end
+         ((or
+           (looking-at (vbnet-regexp 'class-end))
+           (looking-at (vbnet-regexp 'intf-end))
+           (looking-at (vbnet-regexp 'struct-end))
+           (looking-at (vbnet-regexp 'enum-end))
+           (looking-at (vbnet-regexp 'namespace-end)))
+
+          (cond
+           ((eq state 1)
+            (decf state)
+            (push (cons "(bottom)"
+                        (let ((m (make-marker)))
+                          (set-marker m (match-end 0)))) submenu)
+            (push (nreverse submenu) menu-structure)
+            ;; prepare to start again:
+            (setq submenu nil))
+
+           ((eq state 0)
+            ;; close of parent container.
+            (setq done t))))
+
+
+         ;; handle indexable items within the container (class/enum/struct/etc)
+         ((eq state 1)  ;; we're inside a container
+          (let (found)
+            (dolist (pair item-regex-tuples)
+              (if (and (not found)
+                       (looking-at (vbnet-regexp (car pair))))
+                  ;; capture 1 - protection modifier
+                  ;; capture 2 - type of thing (Sub, Function, etc)
+                  ;; capture 3 - name of the thing
+                  (progn
+                    (setq found t)
+                    (push (cons
+                           (concat
+                            (match-string-no-properties 3)
+                            " ("
+                            (downcase (substring (match-string-no-properties 2) 0 1))
+                            ")")
+                           (let ((m (make-marker)))
+                             (set-marker m (match-beginning 1)))) submenu)
+                    ;; advance to the corresponding end of the indexable thing
+                    (re-search-forward (vbnet-regexp (cadr pair)) nil t))))))
+
+         (t
+          (setq done t))))
+
+      (if (and (not done)
+               (not suppress-next))
+          (vbnet-next-line-of-code)))
+
+    (nreverse menu-structure)))
+
+
+
+
+
+(defun vbnet-imenu-create-index-function ()
+  "a function called by imenu to create an index for the current
+VB.NET buffer, conforming to the format specified in
+`imenu--index-alist' .  To produce the index, which lists the
+classes, functions, methods, and properties for the current
+buffer, this function scans the entire buffer.
+
+imenu calls this fn only when the buffer has been updated.
+
+See `imenu-create-index-function' for more information.
+
+"
+  (save-excursion
+    (save-restriction
+      (widen)
+      ;; start at the top
+      (goto-char (point-min))
+      (vbnet-next-line-of-code)
+      (let ((index-alist
+             (vbnet--imenu-create-index-function-helper)))
+
+        ;; If the index menu contains exactly one element, and it is a
+        ;; namespace menu, then remove it.  This simplifies the menu,
+        ;; and results in no loss of information: all types get
+        ;; fully-qualified names anyway. This may cover the majority of
+        ;; cases, because often a VB source module defines either one class, or
+        ;; a set of related classes inside a single namespace.
+
+        ;; To remove that namespace, we need to prune & graft the tree.
+        ;; Remove the ns hierarchy level, but also remove the 1st and
+        ;; last elements in the sub-menu, which represent the top and
+        ;; bottom of the namespace.
+
+        (if (and
+             (= 1 (length index-alist))
+             (consp (car index-alist))
+             (let ((tokens (split-string
+                            (car (car index-alist))
+                            "[ \t]" t)))
+               (and (<= 1 (length tokens))
+                    (string= (downcase
+                              (nth 0 tokens)) "namespace"))))
+            (nreverse (cdr (nreverse (cddar index-alist))))
+          index-alist)))))
+
+
+;; ==================================================================
+
 
 
 
@@ -339,19 +877,37 @@ command to run for a flymake check.
   (modify-syntax-entry ?\\ "w" vbnet-mode-syntax-table)
   (modify-syntax-entry ?\= "." vbnet-mode-syntax-table)
   (modify-syntax-entry ?\< "." vbnet-mode-syntax-table)
-  (modify-syntax-entry ?\> "." vbnet-mode-syntax-table)) ; Make =, etc., punctuation so that dynamic abbreviations work properly
+  ; Make =, etc., punctuation so that dynamic abbreviations work properly
+  (modify-syntax-entry ?\> "." vbnet-mode-syntax-table))
 
 
 (defvar vbnet-mode-map nil)
-(if vbnet-mode-map
-    ()
+
+(if vbnet-mode-map ()
   (setq vbnet-mode-map (make-sparse-keymap))
   (define-key vbnet-mode-map "\t" 'vbnet-indent-line)
   (define-key vbnet-mode-map "\r" 'vbnet-newline-and-indent)
-  (define-key vbnet-mode-map "\M-\C-a" 'vbnet-beginning-of-defun)
-  (define-key vbnet-mode-map "\M-\C-e" 'vbnet-end-of-defun)
+
+  ;;It is bound to C->, <C-M-end>, C-M-e, ESC <C-end>.
+  ;;It is bound to C-<, <C-M-home>, C-M-a, ESC <C-home>.
+
+  (define-key vbnet-mode-map "\M-\C-a"            'vbnet-moveto-beginning-of-defun)
+  (define-key vbnet-mode-map (kbd "ESC <C-home>") 'vbnet-moveto-beginning-of-defun)
+  (define-key vbnet-mode-map (kbd "C-<")          'vbnet-moveto-beginning-of-defun)
+
+  (define-key vbnet-mode-map "\M-\C-e"            'vbnet-moveto-end-of-defun)
+  (define-key vbnet-mode-map (kbd "ESC <C-end>")  'vbnet-moveto-end-of-defun)
+  (define-key vbnet-mode-map (kbd "C->")          'vbnet-moveto-end-of-defun)
+
+  ;;(define-key vbnet-mode-map "\M-\C-a" 'vbnet-moveto-beginning-of-defun)
+  ;; (define-key vbnet-mode-map "\M-\C-e" 'vbnet-moveto-end-of-defun)
+  ;; (define-key vbnet-mode-map "\M-\C-end" 'vbnet-moveto-end-of-defun)
+  ;; (define-key vbnet-mode-map "\C->" 'vbnet-moveto-end-of-defun)
+
+
   (define-key vbnet-mode-map "\M-\C-h" 'vbnet-mark-defun)
   (define-key vbnet-mode-map "\M-\C-\\" 'vbnet-indent-region)
+  (define-key vbnet-mode-map "\C-c/" 'vbnet-close-current-block)
   (define-key vbnet-mode-map "\M-q" 'vbnet-fill-or-indent)
   (define-key vbnet-mode-map "\M-\C-j" 'vbnet-split-line)
   (define-key vbnet-mode-map (kbd "M-RET") 'vbnet-split-line)
@@ -402,20 +958,22 @@ command to run for a flymake check.
      `(block-start  ;; general-purpose block start
        ,(concat
          "^[ \t]*" ;; leading whitespace
-         "\\([Pp]ublic\\(?: [Ss]hared\\)?\\|"
-         "[Pp]rivate\\(?: [Ss]hared\\)?\\|"
-         "[Ss]tatic\\|"
-         "[Ff]riend\\)"
+         "\\([Pp]ublic\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Pp]rivate\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Ff]riend\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Ss]tatic\\)"
          "[ \t]+"
          "\\([Ss]ub\\|"
          "[Ff]unction\\|"
+         "[Ss]tructure\\|"
          "[Pp]roperty\\|"
+         "[Ii]nterface\\|"
          "[Tt]ype\\|"
          "[Ee]num\\|"
          "[Cc]lass\\|"
          "[Mm]odule\\)"
          "[ \t]+"
-         "\\([^ \t\(]+\\)" ;; name of thing
+         "\\([^ \t\(\n]+\\)" ;; name of thing
          "[ \t]*"
          "\(?"))  ;; optional open-paren
 
@@ -425,23 +983,53 @@ command to run for a flymake check.
          "\\("
          "[Ss]ub\\|"
          "[Ff]unction\\|"
+         "[Ss]tructure\\|"
          "[Pp]roperty\\|"
+         "[Ii]nterface\\|"
          "[Tt]ype\\|"
          "[Ee]num\\|"
          "[Cc]lass\\|"
          "[Mm]odule\\)"))
+
+     `(block-flavor
+       ,(concat
+         "\\b\\("
+         "[Ss]ub\\|"
+         "[Ff]unction\\|"
+         "[Pp]roperty\\|"
+         "[Ii]nterface\\|"
+         "[Tt]ype\\|"
+         "[Ee]num\\|"
+         "[Cc]lass\\|"
+         "[Mm]odule\\)\\b"))
+
+     `(intf-start
+       ,(concat
+         "^[ \t]*" ;; leading whitespace
+         "\\([Pp]ublic\\(?: [Ss]hared\\)?\\|"
+         "[Pp]rivate\\(?: [Ss]hared\\)?\\|"
+         "[Ff]riend\\(?: [Ss]hared\\)?\\|"
+         "[Ss]tatic\\)"
+         "[ \t]+"
+         "\\([Ii]nterface\\)"
+         "[ \t]+"
+         "\\([^ \t\(\n]+\\)" ;; name of interface
+         "[ \t]*"
+         "\(?"))  ;; open-paren
+
+     '(intf-end      "^[ \t]*[Ee]nd +[Ii]nterface")
 
      `(func-start
        ,(concat
          "^[ \t]*" ;; leading whitespace
          "\\([Pp]ublic\\(?: [Ss]hared\\)?\\|"
          "[Pp]rivate\\(?: [Ss]hared\\)?\\|"
-         "[Ss]tatic\\|"
-         "[Ff]riend\\)"
+         "[Ff]riend\\(?: [Ss]hared\\)?\\|"
+         "[Ss]tatic\\)"
          "[ \t]+"
          "\\([Ff]unction\\)"
          "[ \t]+"
-         "\\([^ \t\(]+\\)" ;; name of func
+         "\\([^ \t\(\n]+\\)" ;; name of func
          "[ \t]*"
          "\(?"))  ;; open-paren
 
@@ -457,7 +1045,7 @@ command to run for a flymake check.
          "[ \t]+"
          "\\([Ss]ub\\)"
          "[ \t]+"
-         "\\([^ \t\(]+\\)" ;; name of sub
+         "\\([^ \t\(\n]+\\)" ;; name of sub
          "[ \t]*"
          "\(?"))  ;; optional open-paren
 
@@ -471,7 +1059,7 @@ command to run for a flymake check.
          "\\)"                                   ;; no qualifier at all
          "\\([Pp]roperty\\)"
          "[ \t]+"
-         "\\([^ \t\(]+\\)" ;; name of prop
+         "\\([^ \t\(\n]+\\)" ;; name of prop
          ))
 
      '(prop-end      "^[ \t]*[Ee]nd +[Pp]roperty")
@@ -479,45 +1067,78 @@ command to run for a flymake check.
      `(class-start
        ,(concat
          "^[ \t]*" ;; leading whitespace
-         "\\([Pp]ublic\\(?: [Ss]hared\\)?\\|"
-         "[Pp]rivate\\(?: [Ss]hared\\)?\\|"
-         "[Ss]tatic\\)"
-         "[ \t]+"
+         "\\([Pp]ublic\\b\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Pp]rivate\\b\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Ss]tatic\\b\\|"
+         "\\)"
+         "[ \t]*"
          "\\([Cc]lass\\)"
          "[ \t]+"
-         "\\([^ \t\(]+\\)" ;; name of class
+         "\\([^ \t\(\n]+\\)" ;; name of class
          "[ \t]*"))  ;; optional ws
 
      '(class-end      "^[ \t]*[Ee]nd +[Cc]lass")
+
+     `(struct-start
+       ,(concat
+         "^[ \t]*"
+         "\\([Pp]ublic\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Pp]rivate\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Ff]riend\\(?: [Ss]hared\\)?\\(?: [Nn]ot[Ii]nheritable\\)?\\|"
+         "[Ss]tatic\\)"
+         "[ \t]+"
+         "\\([Ss]tructure\\)"
+         "[ \t]+"
+         "\\([^ \t\(\n]+\\)" ;; name of struct
+         "[ \t]*"))  ;; optional ws
+
+     '(struct-end      "^[ \t]*[Ee]nd +[Ss]tructure")
+
+     `(enum-start
+       ,(concat
+         "^[ \t]*"
+         "\\([Pp]ublic\\|"
+         "[Pp]rivate\\|"
+         "[Ff]riend\\)"
+         "[ \t]+"
+         "\\([Ee]num\\)"
+         "[ \t]+"
+         "\\([^ \t\(\n]+\\)" ;; name of enum
+         "\\(?:\\([ \t]+[Aa]s\\)\\([ \t]+[^ \t\(\n]+\\)\\)?" ;; optional base type
+         "[ \t]*"))  ;; optional trailing ws
+
+     '(enum-end      "^[ \t]*[Ee]nd +[Ee]num")
 
      `(namespace-start
        ,(concat
          "^[ \t]*"
          "\\([Nn]amespace\\)"
          "[ \t]+"
-         "\\([^ \t\(]+\\)" ;; name of ns
+         "\\([^ \t\(\n]+\\)" ;; name of ns
          "[ \t]*"))
 
      '(namespace-end   "^[ \t]*[Ee]nd[ \t]+[Nn]amespace\\b")
 
-     '(if              "^[ \t]*#?[Ii]f[ \t]+.*[ \t_]+")
-     '(ifthen          "^[ \t]*#?[Ii]f.+\\<[Tt]hen\\>\\s-\\S-+")
+     '(if              "^[ \t]*#?\\([Ii]f\\)[ \t]+.*[ \t_]+")
+     '(ifthen          "^[ \t]*#?\\([Ii]f\\)\\b.+\\<[Tt]hen\\>\\s-\\S-+")
      '(else            "^[ \t]*#?[Ee]lse\\([Ii]f\\)?")
      '(endif           "[ \t]*#?[Ee]nd[ \t]*[Ii]f")
+     '(end-of-attr-and-continuation    "^.*>[ \t]+_[ \t]*$")
      '(continuation    "^.* _[ \t]*$")
      '(label           "^[ \t]*[a-zA-Z0-9_]+:$")
-     '(select          "^[ \t]*[Ss]elect[ \t]+[Cc]ase")
+     '(select          "^[ \t]*\\([Ss]elect\\)[ \t]+[Cc]ase")
      '(case            "^[ \t]*[Cc]ase")
      '(select-end      "^[ \t]*[Ee]nd[ \t]+[Ss]elect")
      '(for             "^[ \t]*[Ff]or\\b")
      '(next            "^[ \t]*[Nn]ext\\b")
      '(do              "^[ \t]*[Dd]o\\b")
      '(loop            "^[ \t]*[Ll]oop\\b")
-     '(while           "^[ \t]*[Ww]hile\\b")
+     '(while           "^[ \t]*\\([Ww]hile\\)\\b")
+     '(end-while       "^[ \t]*[Ee]nd[ \t]+[Ww]hile\\b")
      '(wend            "^[ \t]*[Ww]end\\b")
-     '(with            "^[ \t]*[Ww]ith\\b")
+     '(with            "^[ \t]*\\([Ww]ith\\)\\b")
      '(end-with        "^[ \t]*[Ee]nd[ \t]+[Ww]ith\\b")
-     '(try             "^[ \t]*[Tr]ry\\b")
+     '(try             "^[ \t]*\\([Tr]ry\\)\\b")
      '(catch           "^[ \t]*[Cc]atch\\b")
      '(finally         "^[ \t]*[Ff]inally\\b")
      '(end-try         "^[ \t]*[Ee]nd[ \t]+[Tt]ry\\b")
@@ -525,15 +1146,15 @@ command to run for a flymake check.
      '(end-class       "^[ \t]*[Ee]nd[ \t]+[Cc]lass\\b")
      '(module          "^[ \t]*[Mm]odule\\b")
      '(end-module      "^[ \t]*[Ee]nd[ \t]+[Mm]odule\\b")
-     '(using           "^[ \t]*[Uu]sing\\b")
+     '(using           "^[ \t]*\\([Uu]sing\\)\\b")
      '(end-using       "^[ \t]*[Ee]nd[ \t]+[Uu]sing\\b")
      '(blank           "^[ \t]*$")
      '(comment         "^[ \t]*\\s<.*$")
 
-     '(propget-start   "^[ \t]*[Gg]et[ \t]*$")
+     '(propget-start   "^[ \t]*\\([Gg]et\\)[ \t]*$")
      '(propget-end     "^[ \t]*[Ee]nd[ \t]+[Gg]et\\b")
 
-     '(propset-start   "^[ \t]*[Ss]et[ \t]*(")
+     '(propset-start   "^[ \t]*\\([Ss]et\\)[ \t]*(")
      '(propset-end     "^[ \t]*[Ee]nd[ \t]+[Ss]et\\b")
 
 
@@ -544,9 +1165,20 @@ command to run for a flymake check.
 
      '(import          "^[ \t]*[Ii]mports[ \t]+\\([[:alpha:]_][[:alnum:]_.]+\\)[ \t]*$")
 
-     ;; some of these regexps match on partial lines.
+     ;; Some of these regexps match on partial lines.
      ;; The Dim regexp is one example.  This allows the AS fragment and
      ;; its following typename to be fontified independently.
+
+
+     `(field         ;; Public foo As Integer
+       ,(concat
+         "\\(?:[Pp]ublic\\|[Pp]rivate\\|[Ff]riend\\)"
+         "[ \t]+"                            ;; ws
+         "\\([^- \t\(]+\\)"                  ;; name of field
+         "[ \t]+"                            ;; ws
+         "\\([Aa]s\\)\\([ \t]+[^- \t\(\n]+\\)" ;; type decl
+         "[ \t]*"                            ;; optional trailing ws
+         ))
 
      `(dim            ;; Dim X
        ,(concat
@@ -567,10 +1199,13 @@ command to run for a flymake check.
        ;; partial match, leave point after equals sign
        ,(concat
          "^[ \t]*"
-         "\\([[:alpha:]_][[:alnum:]_.]+\\)" ;; variable name
-         "[ \t]*"                 ;; optional white space
+         "\\("
+         "[[:alpha:]_][[:alnum:]_.]+\\|" ;; variable name
+         "\\[[[:alpha:]_][[:alnum:]_.]+\\]" ;; var name in square brackets (for resvd words)
+         "\\)"
+         "[ \t]*"                 ;; optional ws
          "\\(?:([^)]*)\\)?"       ;; optional array dimension (no capture)
-         "[ \t]*"                 ;; optional white space
+         "[ \t]*"                 ;; optional ws
          "="
          "[ \t]*"                 ;; optional white space
          ))
@@ -590,9 +1225,10 @@ command to run for a flymake check.
          "\\([[:alpha:]_][[:alnum:]_.]+\\)" ;; constructor
          ))
 
-     `(constant   "\\b\\([1-9][0-9.]*\\|[0-9]\\)\\b")
+     `(constant   "\\(\\b\\(?:[1-9][0-9.]*\\|[0-9]\\)\\b\\|&H[0-9A-F]+\\)")
 
      )))
+
 
 
 (defun vbnet-regexp (symbol)
@@ -650,6 +1286,7 @@ fast enough.
       "SelBookmarks" "Select" "SelectedComponents" "SendKeys" "Set"
       "SetAttr" "SetDataAccessOption" "SetDefaultWorkspace" "Sgn" "Shell"
       "Sin" "Single" "Snapshot" "Space" "Spc" "Sqr" "Static" "Step" "Stop" "Str"
+      "Structure"
       "StrComp" "StrConv"
       ;;"String"
       "Sub" "SubMenu" "Switch" "Tab" "Table"
@@ -682,7 +1319,12 @@ in VB.NET buffers.")
 ;;   "Face name to use for diagnostic purposes in VB.NET buffers.")
 
 
-;; logic for fontifying
+;; The setup for fontifying. See font-lock.el, in particular the documentation
+;; for `font-lock-keywords'.  This form uses mostly the form of font-lock-keywords
+;; like this:   (MATCHER . HIGHLIGHT), where HIGHLIGHT is MATCH-HIGHLIGHT and
+;; MATCH-HIGHLIGHT is of the form: (SUBEXP FACENAME [OVERRIDE [LAXMATCH]]) .
+;;
+
 (defvar vbnet-font-lock-keywords-1
   (eval-when-compile
     (list
@@ -702,6 +1344,12 @@ in VB.NET buffers.")
      (list (vbnet-regexp 'dim)
            '(1 font-lock-variable-name-face)
            '(2 font-lock-type-face nil t))
+
+     ;; Field - as in a struct
+     (list (vbnet-regexp 'field)
+           '(1 font-lock-variable-name-face nil t)
+           '(2 font-lock-keyword-face nil t)
+           '(3 font-lock-type-face nil t))
 
      ;; As fragment
      (list (vbnet-regexp 'as)
@@ -725,9 +1373,23 @@ in VB.NET buffers.")
 
      ;; class decl
      (list (vbnet-regexp 'class-start)
-           '(1 font-lock-keyword-face nil t)
-           '(2 font-lock-keyword-face nil t)
-           '(3 font-lock-type-face))
+           '(1 font-lock-keyword-face nil t)  ;; protection modifiers
+           '(2 font-lock-keyword-face nil t)  ;; "Class"
+           '(3 font-lock-type-face))    ;; name of type
+
+     ;; struct decl
+     (list (vbnet-regexp 'struct-start)
+           '(1 font-lock-keyword-face nil t)  ;; protection modifiers
+           '(2 font-lock-keyword-face nil t)  ;; "Structure"
+           '(3 font-lock-type-face))  ;; name of type
+
+     ;; enum decl
+     (list (vbnet-regexp 'enum-start)
+           '(1 font-lock-keyword-face nil t)  ;; protection
+           '(2 font-lock-keyword-face nil t)  ;; "Enum"
+           '(3 font-lock-type-face)  ;; name of enum
+           '(4 font-lock-keyword-face)  ;; "As" (optional)
+           '(5 font-lock-type-face))  ;; derived type (optional)
 
      ;; namespace decl
      (list (vbnet-regexp 'namespace-start)
@@ -833,6 +1495,7 @@ in VB.NET buffers.")
       (and (null (nth 3 list))          ; inside string.
            (null (nth 4 list))))))      ; inside comment
 
+
 (defun vbnet-pre-abbrev-expand-hook ()
   ;; Allow our abbrevs only in a code context.
   (setq local-abbrev-table
@@ -849,22 +1512,305 @@ in VB.NET buffers.")
   (call-interactively 'newline-and-indent))
 
 
-(defun vbnet-beginning-of-block ()
-  (interactive)
-  (re-search-backward (vbnet-regexp 'block-start)))
+(defun vbnet-moveto-beginning-of-block ()
+  "Moves to the line containing the start of the smallest containing block,
+regardless whether it is a Function, Sub, Class, Namespace, etc.
 
-(defun vbnet-end-of-block ()
+See also, the related functions,  `vbnet-moveto-end-of-block',
+ `vbnet-moveto-beginning-of-defun', and `vbnet-moveto-end-of-defun'.
+
+"
   (interactive)
-  (re-search-forward (vbnet-regexp 'block-end)))
+  (if (re-search-backward (vbnet-regexp 'block-start) 0 t)
+      (back-to-indentation)))
+
+
+(defun vbnet-moveto-end-of-block ()
+  "Moves to the line containing the end of the smallest containing block,
+regardless whether it is a Function, Sub, Class, Namespace, etc.
+
+See also, the related functions,  `vbnet-moveto-beginning-of-block',
+ `vbnet-moveto-beginning-of-defun', and `vbnet-moveto-end-of-defun'.
+
+"
+  (interactive)
+  (if (re-search-forward (vbnet-regexp 'block-end) nil t)
+      (back-to-indentation)))
+
+
+
+(defun vbnet-close-current-block ()
+  "Inserts the \"End Xxxx\" (etc) string to close the current
+containing block, whether it is a Sub, Class, Function,
+Namespace, Struct, If, While, For, Enum, Using, etc.
+
+It looks backwards in the source code to find the innermost \"block\"
+that is open, and inserts the appropriate ending syntax for that block.
+
+The logic is naive. If you invoke this fn when point is within a
+class declaration, it will insert \"End Class\" even if there is
+an \"End Class\" on the line immediately following point.  So
+don't do that.
+
+"
+  (interactive)
+  (let ((orig-point (point))
+        (block-regex-tuples ;; regex regex idx count
+         (list '(prop-start prop-end 2 0)
+               '(select select-end 1 0)
+               '(with end-with 1 0)
+               '(using end-using 1 0)
+               '(if endif 1 0)
+               '(for next "Next" 0)
+               '(while end-while 1 0)
+               '(sub-start sub-end 2 0)
+               '(try end-try 1 0)
+               '(func-start func-end 2 0)
+               '(intf-start intf-end 2 0)
+               '(class-start class-end 2 0)
+               '(struct-start struct-end 2 0)
+               '(enum-start enum-end 2 0)
+               '(propset-start propset-end 1 0)
+               '(propget-start propget-end 1 0)
+               '(namespace-start namespace-end 1 0)
+               ))
+        block-end
+        done)
+
+    ;; The approach here used to determine the smallest containing block:
+
+    ;;   1. goto the previous line.
+    ;;
+    ;;   2. if (bobp), quit.
+    ;;
+    ;;   3. for each type of block, check if the line is an "end block"
+    ;;      of that type. If so, increment the count for that block type,
+    ;;      and continue to step 1.  otheriwse, continue to step 3.
+    ;;
+    ;;   4. for each type of block, check if the line is a "start block"
+    ;;      of that type.  If so, and if the count is zero, this is the
+    ;;      start of the smallest containing block.  If it is the start
+    ;;      of a block, but the count of ends for that block type is
+    ;;      non-zero, decrement the appropriate count and continue to
+    ;;      step 1.
+    ;;
+
+    (while (not done)
+
+      (let (found
+            eol)
+
+        ;; steo 1
+        (vbnet-previous-line-of-code)
+
+        ;; steo 2
+        (if (bobp) (setq done t)
+
+          (setq eol (save-excursion
+                      (end-of-line)
+                      (point)))
+
+          ;; steo 3: check for end-blocks, incf nesting counts as necessary
+          (dolist (tuple block-regex-tuples)
+            (if (not found)
+                (if (re-search-forward (vbnet-regexp (cadr tuple)) eol t)
+                    (progn
+                      (incf (cadddr tuple))
+                      (setq found t)))))
+
+
+          ;; steo 4: check for begin-blocks, checking the nesting count
+          (if (not found)
+              (dolist (tuple block-regex-tuples)
+                (if (not found)
+                    (if (re-search-forward (vbnet-regexp (car tuple)) eol t)
+                        (if (eq (cadddr tuple) 0)
+                            (setq found t
+                                  done t
+                                  block-end
+                                  (let ((value (caddr tuple)))
+                                    (if (integerp value)
+                                        (concat "End " (match-string value))
+                                      value)))
+
+                          (decf (cadddr tuple))
+                          (setq found t)))))))))
+
+    (goto-char orig-point)
+
+    ;; If I was ambitious, I could insert logic here to determine if
+    ;; there is already an "End Xxx" for the given block. But that would
+    ;; be hard to do correctly, and I'm not that ambitious. I'll settle
+    ;; for properly documenting the naivete of this fn.
+
+    (if block-end
+        (progn
+          (insert block-end)
+          (vbnet-indent-line)
+          ;; (back-to-indentation)
+          (move-end-of-line 1)
+          (just-one-space 0)
+          ))))
+
+
+(defun vbnet--moveto-boundary-of-defun (goto-top)
+  "Moves to a boundary of the Function (or Sub) that surrounds point.
+
+If GOTO-TOP is non-nil, then it moves to the top of the
+Function (or Sub). Otherwise, it moves to the bottom of the
+Function (or Sub).
+
+If the original point is not within a Function or Sub, returns nil, and
+does not move point.
+
+"
+  (let* ((orig-point (point))
+         (block-regex-tuples
+          '((func-start func-end)
+            (sub-start sub-end)
+            (propset-start propset-end)
+            (propget-start propget-end)))
+         get-regex-fn1
+         get-regex-fn2
+         test-done-fn
+         move-fn
+         found
+         done)
+
+    (if goto-top
+        (setq get-regex-fn1 'cadr
+              get-regex-fn2 'car
+              test-done-fn 'bobp
+              move-fn 'vbnet-previous-line-of-code)
+      (setq get-regex-fn1 'car
+            get-regex-fn2 'cadr
+            test-done-fn 'eobp
+            move-fn 'vbnet-next-line-of-code))
+
+    (while (not done)
+      (let (eol)
+        (funcall move-fn)
+        (if (funcall test-done-fn) (setq done t)
+          (setq eol (save-excursion (end-of-line) (point)))
+          (dolist (regex-pair block-regex-tuples)
+            (if (not done)
+                (if (re-search-forward (vbnet-regexp (funcall get-regex-fn1 regex-pair)) eol t)
+                    (setq done t))))
+
+          (if (not done)
+              (dolist (regex-pair block-regex-tuples)
+                (if (not done)
+                    (if (re-search-forward (vbnet-regexp (funcall get-regex-fn2 regex-pair)) eol t)
+                        (progn
+                          (setq done t found t)
+                          (vbnet-indent-line)
+                          (if goto-top
+                              (back-to-indentation)
+                            (move-end-of-line 1))))))))))
+
+    (if (not found)
+        (progn
+          (goto-char orig-point)))
+
+    found))
+
+
+
+(defun vbnet-moveto-beginning-of-defun ()
+  "Moves to the top of the Function (or Sub) that surrounds point.
+
+If the original point is not within a Function or Sub, it throws
+an error.
+
+See also, `vbnet-moveto-end-of-defun'.
+
+--------
+
+NB: Emacs has a fn called `beginning-of-defun' which is designed
+to do the same thing, for lisp code. It allows for alternative
+logic to search to the beginning of the containing function, via
+the variable `beginning-of-defun-function'. So, if things worked
+nicely, vbnet-mode could simply set that variable to this
+function.
+
+But, for `beginning-of-defun' does additional things beyond after
+calling the custom function. Not sure why, and VBnet-mode doesn't
+want that extra stuff for navigating in VB.NET code. So, we don't
+use that facility.  In fact, I'm not sure of the utility of that
+extension mechanism, but, whatever.
+
+"
+  (interactive)
+  (let (debug-on-error)
+    ;; Set debug-on-error to nil here. In case of an error, I just want
+    ;; this interactive fn to ding the bell and post a message.  Not
+    ;; sure why "enter the debugger on error" by default is appropriate.
+    ;;
+    ;; See doc on `eval-expression-debug-on-error' for more background.
+    ;;
+    (if (not (vbnet--moveto-boundary-of-defun t))
+        (error "Not in Function, not in Sub"))))
+
+
+
+(defun vbnet-moveto-end-of-defun ()
+  "Moves to the bottom of the Function (or Sub) that surrounds point.
+
+If the original point is not within a Function or Sub, it throws an error.
+
+See also, `vbnet-moveto-beginning-of-defun'.
+
+--------
+
+NB: Emacs has a fn called `end-of-defun' which is designed
+to do the same thing, for lisp code. Also, it allows for alternative
+logic to search to the end of the containing function, via
+the variable `end-of-defun-function'. So, if things worked
+nicely, vbnet-mode could simply set that variable to this
+function.
+
+But, for `end-of-defun' does additional things beyond after
+calling the custom function. Not sure why, and VBnet-mode doesn't
+want that extra stuff for navigating in VB.NET code. So, we don't
+use that facility.  In fact, I'm not sure of the utility of that
+extension mechanism, but, whatever.
+"
+  (interactive)
+  (let (debug-on-error)
+    ;; Set debug-on-error to nil here. In case of an error, I just want
+    ;; this interactive fn to ding the bell and post a message.  Not
+    ;; sure why "enter the debugger on error" by default is appropriate.
+    ;;
+    ;; See doc on `eval-expression-debug-on-error' for more background.
+    ;;
+    (if (not (vbnet--moveto-boundary-of-defun nil))
+        (error "Not in Function, not in Sub"))))
+
+
+
 
 (defun vbnet-mark-defun ()
+  "Sets the mark to the bottom of the Function (or Sub) that surrounds point,
+then sets the point to the top of the Function (or Sub).
+
+If the original point is not within a Function or Sub, returns nil.
+"
   (interactive)
-  (beginning-of-line)
-  (vbnet-end-of-defun)
-  (set-mark (point))
-  (vbnet-beginning-of-defun)
-  (if vbnet-xemacs-p
-      (zmacs-activate-region)))
+  ;; (beginning-of-line) ;; ?huh?
+  (let ((orig-point (point)))
+    (condition-case ()
+        (progn
+          (vbnet-moveto-end-of-defun)
+          (set-mark (point))
+          (goto-char orig-point)
+          (vbnet-moveto-beginning-of-defun)
+          (if vbnet-xemacs-p
+              (zmacs-activate-region)))
+      (progn
+        (goto-char orig-point)
+        (error "Not in a Function or Sub")))))
+
+
 
 (defun vbnet-indent-defun ()
   (interactive)
@@ -919,7 +1865,12 @@ in VB.NET buffers.")
 
 
 (defun vbnet-new-sub ()
-  "Insert template for a new subroutine.  Repeat to cycle through alternatives."
+  "Insert template for a new subroutine.  Repeat to cycle through
+alternatives.
+
+This is probably better handled with a dedicated template module,
+like ya-snippet.
+"
   (interactive)
   (beginning-of-line)
   (let ((templates (cons (vbnet-regexp 'blank)
@@ -939,14 +1890,12 @@ in VB.NET buffers.")
 
 
 (defun vbnet-untabify ()
-  "Do not allow any tabs into the file."
+  "Used to convert any tabs present in the file, to spaces."
   (if (eq major-mode 'vbnet-mode)
       (untabify (point-min) (point-max)))
   nil)
 
-
-
-(defun vbnet-default-tag ()
+(defun vbnet-get-tag-around-point ()
   (if (and (not (bobp))
            (save-excursion
              (backward-sexp)
@@ -962,7 +1911,7 @@ in VB.NET buffers.")
 (defun vbnet-grep (tag)
   "Search BASIC source files in current directory for TAG."
   (interactive
-   (list (let* ((def (vbnet-default-tag))
+   (list (let* ((def (vbnet-get-tag-around-point))
                 (tag (read-string
                       (format "Grep for [%s]: " def))))
            (if (string= tag "") def tag))))
@@ -1023,7 +1972,9 @@ See also `vbnet-indent-line'.
         ((fboundp 'deactivate-mark)
          (deactivate-mark))))
 
+
 (defun vbnet-previous-line-of-code ()
+  "Moves to the previous non-blank, non-comment line in the buffer."
   (if (not (bobp))
       (forward-line -1))        ; previous-line depends on goal column
   (while (and (not (bobp))
@@ -1032,15 +1983,36 @@ See also `vbnet-indent-line'.
     (forward-line -1)))
 
 
-(defun vbnet-find-original-statement ()
-  "If the current line is a continuation, move back to the original stmt."
+(defun vbnet-next-line-of-code ()
+  "Moves to the next non-blank, non-comment line in the buffer."
+  (if (not (eobp))
+      (forward-line 1)) ;; moves to bol
+  (while (and (not (eobp))
+              (or (looking-at (vbnet-regexp 'blank))
+                  (looking-at (vbnet-regexp 'comment))))
+    (forward-line 1)))
+
+
+
+
+(defun vbnet--back-to-start-of-continued-statement (&optional dont-backup-over-attributes)
+  "If the current line is a continuation, move back to the original statement.
+
+Do not backup over attributes if the optional arg,
+DONT-BACKUP-OVER-ATTRIBUTES, is t.
+"
   (let ((here (point)))
+
     (vbnet-previous-line-of-code)
     (while (and (not (bobp))
-                (looking-at (vbnet-regexp 'continuation)))
+                (looking-at (vbnet-regexp 'continuation))
+                (not (and dont-backup-over-attributes
+                          (looking-at (vbnet-regexp 'end-of-attr-and-continuation))))
+                )
       (setq here (point))
       (vbnet-previous-line-of-code))
     (goto-char here)))
+
 
 (defun vbnet-find-matching-stmt (open-regexp close-regexp)
   "Search backwards to find a matching statement. Attempts to properly
@@ -1048,20 +2020,81 @@ handle nested blocks. "
   (let ((level 0))
     (while (and (>= level 0) (not (bobp)))
       (vbnet-previous-line-of-code)
-      (vbnet-find-original-statement)
+      (vbnet--back-to-start-of-continued-statement t) ;; don't backup over attributes!
       (cond ((looking-at close-regexp)
              (setq level (+ level 1)))
             ((looking-at open-regexp)
              (setq level (- level 1)))))))
 
 
+
+(defun vbnet--get-indent-column-for-continued-line (original-point)
+  "Calculate indent for a line which follows a continuation line.
+
+Upon entry, the point must be positioned on the line *prior to
+the one to be indented*, and ORIGINAL-POINT refers to the line
+being indented.
+
+Indent continuation lines according to some rules.
+
+   1. If the continuation line is a .NET Attribute, (eg
+      <DllImport(...)> then indent the following line to the same
+      column.
+
+   2. if the continued line has an open paren pair, then
+      indent the following line to the first open paren on the
+      previous line.
+
+   3. otherwise, indent one word in.
+
+"
+  (let ((starting (point)))
+
+    (cond
+     ;; does the preceding line end an attribute?
+     ((looking-at (vbnet-regexp 'end-of-attr-and-continuation))
+      (vbnet--back-to-start-of-continued-statement)
+      (back-to-indentation)
+      (current-column))
+
+     (t
+      (vbnet--back-to-start-of-continued-statement)
+
+      (let* ((orig-stmt (point))
+           (matching-open-paren
+            (condition-case ()
+                (save-excursion
+                  (goto-char original-point)
+                  (beginning-of-line)
+                  (backward-up-list 1)
+                  ;; Only if point is now w/in cont. block.
+                  (if (<= orig-stmt (point))
+                      (current-column)))
+              (error nil))))
+
+      (cond (matching-open-paren ;; found?
+             (1+ matching-open-paren))
+            (t
+             ;; Else, after first word on original line.
+             (back-to-indentation)
+             (forward-word 1)
+             (while (looking-at "[ \t]")
+               (forward-char 1))
+             (current-column))))))))
+
+
+
 (defun vbnet-calculate-indent ()
-  "Calculates the indentation for the current point in a vb.net buffer."
+  "Calculate the indentation for the current point in a vb.net buffer."
   (let ((original-point (point)))
     (save-excursion
       (beginning-of-line)
       ;; Some cases depend only on where we are now.
       (cond
+
+       ;; special case the beginning-of-buffer
+       ((bobp)
+        0)
 
        ;; The following indents class start to the 0th column.
        ;; In VB.NET, this is wrong, due to enclosing namespaces.
@@ -1083,6 +2116,16 @@ handle nested blocks. "
        ((looking-at (vbnet-regexp 'class-end))
         (vbnet-find-matching-stmt (vbnet-regexp 'class-start)
                                   (vbnet-regexp 'class-end))
+        (current-indentation))
+
+       ((looking-at (vbnet-regexp 'struct-end))
+        (vbnet-find-matching-stmt (vbnet-regexp 'struct-start)
+                                  (vbnet-regexp 'struct-end))
+        (current-indentation))
+
+       ((looking-at (vbnet-regexp 'enum-end))
+        (vbnet-find-matching-stmt (vbnet-regexp 'enum-start)
+                                  (vbnet-regexp 'enum-end))
         (current-indentation))
 
        ((looking-at (vbnet-regexp 'prop-end))
@@ -1119,7 +2162,8 @@ handle nested blocks. "
 
        ((or (looking-at (vbnet-regexp 'catch))
             (looking-at (vbnet-regexp 'finally)))
-        (vbnet-find-matching-try)
+        (vbnet-find-matching-stmt (vbnet-regexp 'try)
+                                  (vbnet-regexp 'end-try))
         (current-indentation))
 
        ;; All the other matching pairs act alike.
@@ -1136,6 +2180,11 @@ handle nested blocks. "
        ((looking-at (vbnet-regexp 'wend))
         (vbnet-find-matching-stmt (vbnet-regexp 'while)
                                   (vbnet-regexp 'wend))
+        (current-indentation))
+
+       ((looking-at (vbnet-regexp 'end-while))
+        (vbnet-find-matching-stmt (vbnet-regexp 'while)
+                                  (vbnet-regexp 'end-while))
         (current-indentation))
 
        ((looking-at (vbnet-regexp 'end-with))
@@ -1175,32 +2224,10 @@ handle nested blocks. "
         (cond
 
          ((looking-at (vbnet-regexp 'continuation))
-          (vbnet-find-original-statement)
-          ;; Indent continuation line under matching open paren,
-          ;; or else one word in.
-          (let* ((orig-stmt (point))
-                 (matching-open-paren
-                  (condition-case ()
-                      (save-excursion
-                        (goto-char original-point)
-                        (beginning-of-line)
-                        (backward-up-list 1)
-                        ;; Only if point is now w/in cont. block.
-                        (if (<= orig-stmt (point))
-                            (current-column)))
-                    (error nil))))
-            (cond (matching-open-paren
-                   (1+ matching-open-paren))
-                  (t
-                   ;; Else, after first word on original line.
-                   (back-to-indentation)
-                   (forward-word 1)
-                   (while (looking-at "[ \t]")
-                     (forward-char 1))
-                   (current-column)))))
+          (vbnet--get-indent-column-for-continued-line original-point))
 
          (t
-          (vbnet-find-original-statement) ;; why?
+          (vbnet--back-to-start-of-continued-statement t) ;; why?
 
           (let ((indent (current-indentation)))
             ;; All the various +indent regexps.
@@ -1210,6 +2237,8 @@ handle nested blocks. "
               (+ indent vbnet-mode-indent))
 
              ((or (looking-at (vbnet-regexp 'class-start))
+                  (looking-at (vbnet-regexp 'struct-start))
+                  (looking-at (vbnet-regexp 'enum-start))
                   (looking-at (vbnet-regexp 'namespace-start))
                   (looking-at (vbnet-regexp 'propget-start))
                   (looking-at (vbnet-regexp 'propset-start))
@@ -1231,7 +2260,6 @@ handle nested blocks. "
                   (looking-at (vbnet-regexp 'finally)))
               (+ indent vbnet-mode-indent))
 
-
              ((or (looking-at (vbnet-regexp 'do))
                   (looking-at (vbnet-regexp 'for))
                   (looking-at (vbnet-regexp 'while))
@@ -1242,6 +2270,8 @@ handle nested blocks. "
              (t
               ;; By default, just copy indent from prev line.
               indent))))))))))
+
+
 
 
 (defun vbnet-indent-to-column (col)
@@ -1357,12 +2387,18 @@ See also `vbnet-split-line'
 "Load files that are useful to have around when editing the source
 of the file that has just been loaded.
 
-The file must have a local variable that lists the files to be
-loaded.  If the file name is relative it is relative to the
-directory containing the current buffer.  If the file is already
-loaded nothing happens, this prevents circular references causing
-trouble.  After an associated file is loaded its associated files
-list will be processed."
+The buffer must have a local variable, `vbnet-associated-files',
+that is a list of strings, naming the \"associated\" files to be
+opened into editing buffers.  If the file name is relative it is
+relative to the directory containing the current buffer.  If the
+file is already loaded into an editing buffer, nothing happens;
+this prevents circular references from causing trouble.
+
+After an associated file is loaded, if it is a VB.NET module and
+if it has the appropriate variable set, its associated files list
+will be processed in turn.
+"
+
   (if (boundp 'vbnet-associated-files)
       (let ((files vbnet-associated-files)
             (file nil))
@@ -1389,17 +2425,18 @@ If file is relative then default-directory provides the path"
 (defun vbnet-fixup-yasnippet ()
   "Sets snippets into ya-snippet for VB.NET, if they do not already exist.
 "
-  (if (fboundp 'yas/snippet-table-fetch)
-      (let ((snippet-table (yas/snippet-table 'vbnet-mode))
-            (keymap (if yas/use-menu
-                        (yas/menu-keymap-for-mode mode)
-                      nil))
-            (yas/require-template-condition nil)
-            (builtin-snips
-             '(
-               ("wl" "System.Console.WriteLine(${1://thing to write})
+  (if (not vbnet--yasnippet-has-been-fixed)
+      (if (fboundp 'yas/snippet-table-fetch)
+          (let ((snippet-table (yas/snippet-table 'vbnet-mode))
+                (keymap (if yas/use-menu
+                            (yas/menu-keymap-for-mode mode)
+                          nil))
+                (yas/require-template-condition nil)
+                (builtin-snips
+                 '(
+                   ("wl" "System.Console.WriteLine(${1://thing to write})
 " "WriteLine (...)" nil)
-               ("prop" "   Private _${1:Name} as ${2:Type}
+                   ("prop" "   Private _${1:Name} as ${2:Type}
    Public Property ${1:Name}() As ${2:Type}
 
       Get
@@ -1413,27 +2450,27 @@ If file is relative then default-directory provides the path"
    End Property ' ${1:Name}
 
 " "Property ... { ... }" nil)
-               ("ife" "If ${1:predicate} Then
+                   ("ife" "If ${1:predicate} Then
   ${2:// then clause}
 Else
   ${3:// else clause}
 End If" "If ... Then  ... Else  ... End If" nil)
-               ("if" "If ${1:predicate} Then
+                   ("if" "If ${1:predicate} Then
   ${2:// then clause}
 End If
 " "If ... Then  ... End If" nil)
-               ("fore" "Dim ${1:var} As ${2:type}
+                   ("fore" "Dim ${1:var} As ${2:type}
 For Each $1 In ${3:IEnumerable}
     ${4:'' body...}
 Next
 
 " "For Each ... Next" nil)
-               ("for" "For ${1:index} As Integer = 0 To ${2:finish}
+                   ("for" "For ${1:index} As Integer = 0 To ${2:finish}
     ${3:''body}
 Next $1
 
 " "for (...) { ... }" nil)
-               ("args" "        Dim i As Integer
+                   ("args" "        Dim i As Integer
         For i = 0 To args.Length - 1
             Select Case(args(i))
                 Case \"-b\":
@@ -1479,48 +2516,46 @@ Next $1
         End If
 
 " "Select Case(args(i) ..." nil)
-               )))
+                   )))
 
+            (setq vbnet--yasnippet-has-been-fixed t)
 
-        ;; TODO: Fix. when vbnet-mode is loaded after yasnippet,
-        ;; vbnet-mode does not show up on the yasnippet menu.
-        ;; This code naively attempts to insert it manually.
-        ;; To be correct, Should check to see if it is already there.
+            ;; TODO: Fix. when vbnet-mode is loaded after yasnippet,
+            ;; vbnet-mode does not show up on the yasnippet menu.
+            ;; This code naively attempts to insert it manually.
+            ;; To be correct, Should check to see if it is already there,
+            ;; to handle the case when vbnet is loaded before yasnippet.
 
-        (when yas/use-menu
-          (define-key
-            yas/menu-keymap
-            (vector 'vbnet-mode)
-            `(menu-item "VB.Net" ,keymap)))
+            (when yas/use-menu
+              (define-key
+                yas/menu-keymap
+                (vector 'vbnet-mode)
+                `(menu-item "VB.Net" ,keymap)))
 
-        ;; insert those snips into the table if they
-        ;; are not already defined.
-        (mapcar
-         '(lambda (item)
-            (let* ((full-key (car item))
-                   (existing-snip
-                    (yas/snippet-table-fetch snippet-table full-key)))
-              (if (not existing-snip)
-                  (let* ((key (file-name-sans-extension full-key))
-                        (name (caddr item))
-                        (condition (nth 3 item))
-                        (template (yas/make-template (cadr item)
-                                                     (or name key)
-                                                     condition)))
-                    (yas/snippet-table-store snippet-table
-                                             full-key
-                                             key
-                                             template)
-                    (when yas/use-menu
-                      (define-key keymap (vector (make-symbol full-key))
-                        `(menu-item ,(yas/template-name template)
-                                    ,(yas/make-menu-binding (yas/template-content template))
-                                    :keys ,(concat key yas/trigger-symbol))))))))
-         builtin-snips))))
-
-(eval-after-load "yasnippet"
-  (if vbnet-want-fixup-yasnippet
-      (vbnet-fixup-yasnippet)))
+            ;; Insert the snippets from above into the table if they
+            ;; are not already defined.
+            (mapcar
+             '(lambda (item)
+                (let* ((full-key (car item))
+                       (existing-snip
+                        (yas/snippet-table-fetch snippet-table full-key)))
+                  (if (not existing-snip)
+                      (let* ((key (file-name-sans-extension full-key))
+                             (name (caddr item))
+                             (condition (nth 3 item))
+                             (template (yas/make-template (cadr item)
+                                                          (or name key)
+                                                          condition)))
+                        (yas/snippet-table-store snippet-table
+                                                 full-key
+                                                 key
+                                                 template)
+                        (when yas/use-menu
+                          (define-key keymap (vector (make-symbol full-key))
+                            `(menu-item ,(yas/template-name template)
+                                        ,(yas/make-menu-binding (yas/template-content template))
+                                        :keys ,(concat key yas/trigger-symbol))))))))
+             builtin-snips)))))
 
 
 ;; ========================================================================
@@ -1535,7 +2570,7 @@ Next $1
 Use CREATE-TEMP-F for creating temp copy."
   (let* ((args nil)
         (temp-source-file-name  (flymake-init-create-temp-buffer-copy create-temp-f)))
-
+    ;;(message "vbnet/init:temp source file: %s" temp-source-file-name)
     (setq args (flymake-get-syntax-check-program-args
                 temp-source-file-name "."
                 use-relative-base-dir use-relative-source
@@ -1547,13 +2582,17 @@ Use CREATE-TEMP-F for creating temp copy."
   "Delete the temporary .netmodule file created in syntax checking,
 then call through to flymake-simple-cleanup."
   (if flymake-temp-source-file-name
-  (let* ((netmodule-name
-          (concat (file-name-sans-extension flymake-temp-source-file-name)
-                              ".netmodule"))
-         (expanded-netmodule-name (expand-file-name netmodule-name ".")))
-    (if (file-exists-p expanded-netmodule-name)
-        (flymake-safe-delete-file expanded-netmodule-name))))
-    (flymake-simple-cleanup))
+      (progn
+        ;;(message "vbnet/clean:temp source file: %s" flymake-temp-source-file-name)
+
+        (let* ((netmodule-name
+                (concat (file-name-sans-extension flymake-temp-source-file-name)
+                        ".netmodule"))
+               (expanded-netmodule-name (expand-file-name netmodule-name ".")))
+          (if (file-exists-p expanded-netmodule-name)
+              (flymake-safe-delete-file expanded-netmodule-name)))
+        ))
+  (flymake-simple-cleanup))
 
 (defvar vbnet-flymake-vbc-arguments
   (list "/t:module" "/nologo")
@@ -1562,10 +2601,6 @@ compiler, when using flymake with a
 direct vbc.exe build for syntax checking purposes.")
 
 
-(defun vbnet-flymake-foo ()
-  "foo"
-  (interactive)
-  (vbnet-flymake-get-cmdline "source" "base-dir"))
 
 
 (defun vbnet-flymake-get-cmdline (source base-dir)
@@ -1590,8 +2625,8 @@ build.
 See `vbnet-flymake-cmd-line-limit' for a way to restrict where vbnet-mode
 will search for the command.
 
-If this string is not found, then this fn will fallback to a vbc.exe
-command.
+If this string is not found, then this fn will fallback to a
+generated vbc.exe command.
 
 "
   (let ((explicitly-specified-command
@@ -1627,8 +2662,10 @@ command.
 
     (cond
      (explicitly-specified-command
+      ;; the marker string was found in the buffer
       (let ((tokens (split-string explicitly-specified-command "[ \t]" t)))
-        (list (car tokens) (cdr tokens))))
+        ;; implicitly append the name of the temporary source file
+        (list (car tokens) (append (cdr tokens) (list flymake-temp-source-file-name)))))
 
      (t
       ;; fallback
@@ -1671,10 +2708,10 @@ It burps if a different /t argument is found.
 
 
 
-(defvar vbnet-vbc-error-pattern
+(defvar vbnet-flymake-vbc-error-pattern
   "^[ \t]*\\([_A-Za-z0-9][^(]+\\.[Vv][Bb]\\)(\\([0-9]+\\)) : \\(\\(error\\|warning\\) BC[0-9]+:[ \t\n]*\\(.+\\)\\)"
 
-  "Regexp to find error messages in the output of VBC.exe")
+  "Regexp to find error messages in the output of VBC.exe. Used for Flymake integration.")
 
 
 (defun vbnet-flymake-install ()
@@ -1689,11 +2726,11 @@ This fn does four things:
    This isn't strictly necessary because of item #4.
 
 3. redefine flymake-process-sentinel to NOT check the process
-   exit status.  Vbc.exe  returns a 1 when there are compile-time
+   exit status. Vbc.exe  returns a 1 when there are compile-time
    errors. This causes flymake to disable itself, which we don't want.
 
 4. provide advice to flymake-parse-line, specifically set up for
-   VB.NET buffers.  This allows optimized searching for errors
+   VB.NET buffers. This allows optimized searching for errors
    in vbc.exe output.
 
 It's necessary to invoke this function only once, not every time
@@ -1704,6 +2741,7 @@ once, after flymake has loaded.
   (flymake-log 2 "vbnet-flymake-install")
 
   ;; 1. add a VB.NET entry to the flymake-allowed-file-name-masks
+
   (let* ((key "\\.vb\\'")
          (vbnet-entry (assoc key flymake-allowed-file-name-masks)))
     (if vbnet-entry
@@ -1721,7 +2759,7 @@ once, after flymake has loaded.
   ;; respectively.
   (add-to-list
    'flymake-err-line-patterns
-   (list vbnet-vbc-error-pattern 1 2 nil 3))
+   (list vbnet-flymake-vbc-error-pattern 1 2 nil 3))
 
 
   ;; 3.  override the definition for flymake-process-sentinel
@@ -1771,14 +2809,14 @@ once, after flymake has loaded.
   (defadvice flymake-parse-line (around
                                  flymake-for-csharp-parse-line-patch
                                  activate compile)
-    ;; This advice will be used in all buffers.  Let's may sure we
-    ;; actually execute it only when a VB buffer is active.
+    ;; This advice will run in all buffers.  Let's may sure we
+    ;; actually execute the important stiff only when a VB buffer is active.
     (if (string-match "\\.[Vv][Bb]$"  (file-relative-name buffer-file-name))
 
         (let (raw-file-name
               e-text
               result
-              (pattern (list vbnet-vbc-error-pattern 1 2 nil 3))
+              (pattern (list vbnet-flymake-vbc-error-pattern 1 2 nil 3))
               (line-no 0)
               (err-type "e"))
           (if (string-match (car pattern) line)
@@ -1800,16 +2838,11 @@ once, after flymake has loaded.
                              line-idx line-no
                              e-text)
                 (setq ad-return-value
-                      (flymake-ler-make-ler raw-file-name line-no err-type e-text nil 0))
-                )
-            ;; else
-            ad-do-it))))
-  )
+                      (flymake-ler-make-ler raw-file-name line-no err-type e-text nil nil))
+                )))
 
-(eval-after-load "flymake"
-  '(progn
-     (if vbnet-want-fixup-flymake
-         (vbnet-flymake-install))))
+      ;; else - not in a vb.net buffer
+      ad-do-it)))
 
 
 ;; ========================================================================
@@ -1836,12 +2869,50 @@ once, after flymake has loaded.
   "A mode for editing Microsoft Visual Basic .NET programs.
 This is version 1.5 of the mode.
 
-This mode features automatic indentation, font locking, keyword
-capitalization, integration with compile.el, integration with
-flymake.el, integration with ya-snippet.el, and some minor
-convenience functions.
+This mode features automatic indentation of VB.NET syntax, font
+locking, keyword capitalization, integration with compile.el,
+integration with flymake.el, integration with ya-snippet.el, and
+some minor convenience functions.
 
-Commands:
+As for those functions, here are some points of interest:
+
+    `vbnet-mode-indent' - customizable variable setting the indent size,
+         in spaces. The default is 4.
+
+    `vbnet-mark-defun' marks the current function, if there is one.
+
+    `vbnet-split-line' splits the current line at point, and inserts a
+         continuation character.
+
+    `vbnet-join-continued-lines' does the converse.
+
+    `vbnet-new-sub' - inserts a subroutine template into the buffer at
+         point.
+
+    `vbnet-moveto-beginning-of-defun'
+    `vbnet-moveto-end-of-defun'
+    `vbnet-moveto-beginning-of-block'
+    `vbnet-moveto-end-of-block'
+         Functions to move within the VB.NET buffer. The first two
+         move to the beginning and end, respectively, of a Function
+         or Sub. The latter two move to the beginning and end,
+         respectively, of the innermost containing block, whatever it
+         is - a Function, Sub, Struct, Enum, While, etc.
+
+    `vbnet-close-current-block' - intelligently closes a block, For
+         example, it inserts \"End Class\" when invoked if point is
+         after a Class declaration. This fn is naive: it
+         will insert an \"End Class\" even if an \"End Class\" is present
+         on the next line.
+
+Consult the documentation for each of these functions for more
+information.
+
+For the syntax highlighting, it does not (yet?) support in-line
+XML syntax, nor LINQ syntax.
+
+Here's a summary of the key bindings:
+
 \\{vbnet-mode-map}"
   (interactive)
   (kill-all-local-variables)
@@ -1871,21 +2942,54 @@ Commands:
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'vbnet-indent-line)
 
-  (if vbnet-fontify-p
-      (vbnet-enable-font-lock))
 
-  (make-local-variable 'imenu-generic-expression)
-  (setq imenu-generic-expression vbnet-imenu-generic-expression)
+  ;; These vars are defined in lisp.el - not sure if
+  ;; this is helpful. See the documentation on
+  ;; `vbnet-moveto-beginning-of-defun' for why.
+  (set (make-local-variable 'beginning-of-defun-function)
+       'vbnet-moveto-beginning-of-defun)
 
-  (set (make-local-variable 'imenu-syntax-alist)
-       `((,(string-to-char "_") . "w")))
-  (set (make-local-variable 'imenu-case-fold-search) t)
+  (set (make-local-variable 'end-of-defun-function)
+       'vbnet-moveto-end-of-defun)
 
   ;;(make-local-variable 'vbnet-associated-files)
   ;; doing this here means we need not check to see if it is bound later.
   (add-hook 'find-file-hooks 'vbnet-load-associated-files)
 
-  (run-hooks 'vbnet-mode-hook))
+  (run-hooks 'vbnet-mode-hook)
+
+  ;; post-hook setup.
+  ;; Run this stuff here because it's conditional on things that may
+  ;; have been modified in the hook functions.
+
+  ;; imenu
+  (if vbnet-want-imenu
+      (progn
+        ;; There are two ways to do imenu indexing. One is to provide a
+        ;; function, via `imenu-create-index-function'.  The other is to
+        ;; provide imenu with a list of regexps via
+        ;; `imenu-generic-expression'; imenu will do a "generic scan" for you.
+        ;; vbnet-mode uses the former method.
+        ;;
+        (setq imenu-create-index-function 'vbnet-imenu-create-index-function)
+        (imenu-add-menubar-index)))
+
+  ;; fontification
+  (if vbnet-want-fontification
+      (vbnet-enable-font-lock))
+
+  ;; yasnippet
+  (eval-after-load "yasnippet"
+    (if vbnet-want-yasnippet-fixup
+        (vbnet-fixup-yasnippet)))
+
+  ;; flymake
+  (eval-after-load "flymake"
+    '(progn
+       (if vbnet-want-flymake-fixup
+           (vbnet-flymake-install))))
+
+  )
 
 
 

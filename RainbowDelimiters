@@ -51,4 +51,9 @@ Each nested depth uses a face of the form <code>rainbow-delimiters-depth-#-face<
 
 </pre>
 ----
+[new]
+Is there any way to restore the behaviour mentioned in the changelog of having independent depths for each paren type?  In C, most code is within a {} function block which means everything starts at depth 2.  Conditional expressions wrapped in () are also coloured differently depending on whether they're inside a for loop or other code block, but it would be nice if the colour scheme was more consistent (i.e. outer bracket is always the same colour.)  This would work if the depth was tracked independently for each character type.
+
+Is there also a way to add or remove tracking of particular paren types?  I'm not so interested in having {} coloured but very keen on having () highlighted.
+----
 CategoryFaces CategoryModes ParenthesesAppearance

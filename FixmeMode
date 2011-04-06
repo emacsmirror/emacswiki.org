@@ -42,3 +42,10 @@ This highlighting of FIXMEs etc. can be done with WcheckMode. Here's an example 
           wcheck-language-data)
 
 Now `wcheck-change-language' to FIXME and turn on `wcheck-mode' (a minor mode).
+
+----
+
+[new]
+Would be nice to integrate FixmeMode and WcheckMode with [http://www.emacswiki.org/emacs/RFringe rfringe].  --DinoChiesa, 5 April 2011
+
+http://imgur.com/RqBj7.png

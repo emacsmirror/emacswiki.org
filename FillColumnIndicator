@@ -1,14 +1,29 @@
-Many modern editors and IDEs can graphically indicate the location of the fill column, either by shading the area to the right of the fill column or by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  Fill-column-indicator implements both of these facilities in Emacs.
+Many modern editors and IDEs can graphically indicate the location of the fill column, either by shading the area to the right of the fill column or by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  The package [[fill-column-indicator.el]] (by AlpAker) implements both of these facilities in Emacs.
 
-The two different fill-column indicators look like this:
+The two different styles of fill-column indication look like this:
 
 || [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
 || "Shading" style || "Rule" style ||
 
-The style can be set globally or on a per-buffer basis.  The appearance of each style can be customized; under v23 and later, this can also be done on a per-buffer basis.   See the comments in [[fill-column-indicator.el]] for details.
+== Installation and Usage ==
+
+Put the package file in your load path and put ##(require 'fill-column-indicator)## in your .emacs.
+
+To toggle graphical indication of the fill column in a buffer, use the command ##fci-mode##.  
+
+The style of indication is controlled by the variable ##fci-style##.  The recognized values are ##'shading## and ##'rule## (the default value is ##'shading##).  Buffer-local values are supported.
+
+For further customization options, as well as advice on troubleshooting, see the comments in the package file.
+
+== See also ==
+
+* ColumnMarker
+* HighlightCurrentColumn -- Highlight the current column when Emacs is idle, or momentarily, or in such a way that the highlighting tracks the cursor. An extension of <tt>[[column-marker.el]]</tt>.
+* ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
+* MarginMode
+* EightyColumnRule
 
 ==Dicussion==
-
 
 ===Problems when Using Emacs as a Daemon===
 [new]
@@ -42,7 +57,11 @@ How can I get the package to work properly on a character terminal?
 
 [new:AlpAker:2011-04-05 00:17 UTC]
 
-When running on a character terminal, Emacs outsources rendering to the terminal emulator; as a result, certain kinds of display elements aren't supported.  Unfortunately, fci-mode depends on just that sort of thing.  The bottom line is that it will only work on window-system displays. --AA
+When running on a character terminal, Emacs outsources rendering to the terminal emulator; as a result, certain display features aren't supported.  These latter include the overlay properties fci-mode depends on.  The bottom line is that it will only work on window-system displays. --AA
+
+[new:JasonMcBrayer:2011-04-05 12:24 UTC]
+
+Note that on a character terminal, there are other packages you can use. WhiteSpace will optionally highlight lines that are longer than a specific value. It doesn't look as good as FillColumnIndicator, but pretty reasonable for a termainal. I think there are other packages that take a similar approach.
 
 ----
-CategoryFilling
+CategoryFilling 

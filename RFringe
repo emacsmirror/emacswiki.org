@@ -1,0 +1,34 @@
+RFringe is "relative [http://www.emacswiki.org/emacs/TheFringe fringe]".
+
+In emacs, displaying fringe indicators is done via text overlays. In
+that way, bitmaps in the fringe are attached to the lines of text
+shown in the buffer window.
+
+This works nicely when the fringe is used to indicate information
+that is relevant to the adjacent line; for example, text overflow, or
+something similar. But, there isn't a simple way for an application
+or module to use the fringe to display buffer-relative information -
+for example, the location of compiler error messages.
+
+In fact, using the fringe to communicate this kind of information -
+buffer-relative positions - is probably more intuitive and is
+certainly more useful for the user. 
+
+rfringe.el addresses that. 
+
+Lisp:rfringe.el
+
+rfringe.el includes an extension to flymake, to display the buffer-relative positions of error messages in the fringe. This is not the only  purpose of rfringe.el.  It could also be used to display relative positions of diffs in diff-mode, for example. It could be used to indicate document sections. It could be used to indicate positions of "TODO" items in a document. Use your imagination for other possibilities.
+
+Here's an example of rfringe showing indicators in the fringe for flymake errors, in a vb.net buffer:
+
+freeze-frame:
+
+http://imgur.com/RqBj7.png
+
+in action: 
+
+http://i.imgur.com/Sjzgx.gif
+
+----
+CategoryDisplay

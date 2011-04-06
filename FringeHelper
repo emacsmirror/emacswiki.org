@@ -13,7 +13,10 @@ It contains a few stock fringe bitmaps and helps taking care of creating and ins
 [new]
 This looks extremely useful. Fringes are clearly under-used. Perhaps <tt>[[hideshowvis.el]]</tt> can use it to display <tt>+</tt>/<tt>-</tt> markers on [http://www.emacswiki.org/emacs/HideShow foldable regions] (more easily)?
 
+[new]
+See also, [http://www.emacswiki.org/emacs/RFringe rfringe], which allows the use of the fringe for indicating buffer-relative positions.  --DinoChiesa, 5 April 2011
 
+http://imgur.com/RqBj7.png
 
 ----
 CategoryWindows

@@ -242,6 +242,16 @@ I guess this may be more correctly solved by changing the wscons
 terminal types to something better than vt100, but I've not been able
 to figure out the correct naming.
 
+=== OpenBSD console ===
+
+Add the following line to /etc/wsconsctl.conf:
+
+    keyboard.encoding=us.metaesc
+
+You can also set it interactively using the wsconsctl command (but the setting will be lost unless you add it to /etc/wsconsctl.conf):
+
+    wsconsctl keyboard.encoding=us.metaesc
+
 === Linux console ===
 
 If your Meta key works in the console, but Meta + Control + something
