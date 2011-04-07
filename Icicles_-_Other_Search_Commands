@@ -33,7 +33,7 @@ commands for particular buffers.]
 Besides the commands described on this page, there are '''Icicles'''
 search commands for navigating TagsFile definitions and searching
 their associated source files.  These are described in section
-[[Icicles - Tags Enhancements]].
+[[Icicles - Emacs Tags Enhancements]].
 
 If you use '''`M-g'''' in the [[minibuffer]] to toggle option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''', then you can use just `next'
@@ -132,7 +132,7 @@ Another difference from Emacs tags, besides the need for a tags file, is that, s
 
 The differences mean that `icicle-imenu' does not provide a substitute for Emacs tags; it provides some similar functionality. It is another tool in your belt, handier in some situations than using tags, and less useful in some other situations.
 
-'''See Also:''' [[Icicles - Tags Enhancements]]
+'''See Also:''' [[Icicles - Emacs Tags Enhancements]]
 
 
 

@@ -22,7 +22,7 @@ A [[tags file]] can have multiple definitions, hence multiple tags, for the same
 
 It's good to have a way to navigate among different definitions of the same name in such a way that you can tell where each source definition is located before you go to it. The following libraries all help you choose from among multiple tags for the same name in multiple files:
 
-* [[Icicles - Tags Enhancements]]
+* [[Icicles - Emacs Tags Enhancements]]
 * EtagsSelect
 * [[VTags]]
 * Lisp:anything-etags.el is [[Anything]] interface to select candidates.
@@ -30,7 +30,7 @@ It's good to have a way to navigate among different definitions of the same name
 
 == Icicles Helps You Work with Tags ==
 
-You can use use '''[[Icicles]]''' [[Icicles - Multi-Commands|multi-commands]] '''‘icicle-search-tag’''' and '''`icicle-find-tag'''' to do all of what you normally do with a combination of commands `find-tag’, `tags-loop-continue’ (`##M-,##’), `tags-apropos’, `tags-query-replace', `list-tags', and more.  Each of these is a general ''tags browser''.  Being multi-commands, you can visit any number of tags, in any order, in a single command invocation. You see a list of all tags that match your (reexp) input, and those choices are dynamically updated when you change your minibuffer input. See [[Icicles - Tags Enhancements]].
+You can use use '''[[Icicles]]''' [[Icicles - Multi-Commands|multi-commands]] '''‘icicle-search-tag’''' and '''`icicle-find-tag'''' to do all of what you normally do with a combination of commands `find-tag’, `tags-loop-continue’ (`##M-,##’), `tags-apropos’, `tags-query-replace', `list-tags', and more.  Each of these is a general ''tags browser''.  Being multi-commands, you can visit any number of tags, in any order, in a single command invocation. You see a list of all tags that match your (reexp) input, and those choices are dynamically updated when you change your minibuffer input. See [[Icicles - Emacs Tags Enhancements]].
 
 
 In addition, you can use '''Icicles''' multi-command `icicle-imenu' as an alternative to using tags.  Like tags, it lets you navigate among definitions in multiple files -- and also multiple saved regions and non-file buffers.  Like ImenuMode, you need not build a tags file.

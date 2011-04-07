@@ -96,7 +96,7 @@ these.  (A [[TagsFile|tags file]] is just a saved index for project files.)
 '''See Also:'''
 
 * [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]]
-* [[Icicles - Tags Enhancements]]
+* [[Icicles - Emacs Tags Enhancements]]
 * [[Icicles - Other Search Commands#IciclesCompileOrGrep|Compile/Grep Search]]
 
 

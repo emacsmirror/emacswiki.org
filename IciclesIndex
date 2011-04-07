@@ -405,7 +405,7 @@ This is a general conceptual index for '''[[Icicles]]'''.  For user options, see
 ==== T ====
 
 * `TAB' -- [[Icicles - Key Bindings]]
-* tags -- [[Icicles - Tags Enhancements]], [[Icicles - Other Search Commands#IciclesImenu|Imenu vs Tags]]
+* tags -- [[Icicles - Emacs Tags Enhancements]], [[Icicles - Other Search Commands#IciclesImenu|Imenu vs Tags]]
 * telnet mode enhancements -- [[Icicles - Search Commands, Overview]]
 * text completion in a buffer -- [[Icicles - Completion in Other Buffers]]
 * thesaurus-lookup completion -- [[Icicles - Completion in Other Buffers]]

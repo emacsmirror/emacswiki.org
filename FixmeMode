@@ -46,6 +46,8 @@ Now `wcheck-change-language' to FIXME and turn on `wcheck-mode' (a minor mode).
 ----
 
 [new]
-Would be nice to integrate FixmeMode and WcheckMode with [http://www.emacswiki.org/emacs/RFringe rfringe].  --DinoChiesa, 5 April 2011
+Would be nice to integrate FixmeMode and WcheckMode with [http://www.emacswiki.org/emacs/RFringe rfringe]. It would give a visual indication in the fringe of the number and the buffer-relative positions of the FIXME notes throughout the buffer.  See below for what it looks like. --DinoChiesa, 5 April 2011
 
 http://imgur.com/RqBj7.png
+
+actually, I built a simple fixme that does this, depends on rfringe. The code is here: Lisp:myfixme.el

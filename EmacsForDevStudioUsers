@@ -17,7 +17,7 @@ How do I:
 ;;; M-*     : pop back from tag
 
 [new:DrewAdams:2008-02-23 08:11 UTC]
-:: Try `icicle-search-tag' (`##M-.##' in Icicle mode). It does all that and more in one command -- a tags browser. [[Icicles - Tags Enhancements]] -- DrewAdams
+:: Try `icicle-search-tag' (`##M-.##' in Icicle mode). It does all that and more in one command -- a tags browser. [[Icicles - Emacs Tags Enhancements]] -- DrewAdams
 [new]
 
 ;; Or use ImenuMode: See also [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu browser]].

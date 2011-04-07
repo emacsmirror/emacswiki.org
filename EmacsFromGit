@@ -6,7 +6,7 @@ A [[Git]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available. 
 
 <b>Note:</b> Git repository includes the entire history of GNU Emacs development and therefore weighs about 300MB.
 
-Official [http://savannah.gnu.org/projects/emacs Savnnah Emacs page] reffer to git Emacs mirror intended for those who prefer to use git as their VCS:
+Official [http://savannah.gnu.org/projects/emacs Savannah Emacs page] reffer to git Emacs mirror intended for those who prefer to use git as their VCS:
 <pre>
   $ git clone git://git.savannah.gnu.org/emacs.git
 </pre>

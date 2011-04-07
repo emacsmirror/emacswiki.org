@@ -18,7 +18,7 @@ rfringe.el addresses that.
 
 Lisp:rfringe.el
 
-rfringe.el includes an extension to flymake, to display the buffer-relative positions of error messages in the fringe. This is not the only  purpose of rfringe.el.  It could also be used to display relative positions of diffs in diff-mode, for example. It could be used to indicate document sections. It could be used to indicate positions of "TODO" items in a document. Use your imagination for other possibilities.
+rfringe.el includes an extension to flymake, to display the buffer-relative positions of error messages in the fringe. This is not the only  purpose of rfringe.el.  It could also be used to display relative positions of diffs in diff-mode, for example. It could be used to indicate document sections. It could be used to indicate positions of "TODO" or "FIXME" items in a document. Use your imagination for other possibilities.
 
 Here's an example of rfringe showing indicators in the fringe for flymake errors, in a vb.net buffer:
 

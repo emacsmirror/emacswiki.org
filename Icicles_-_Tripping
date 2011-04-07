@@ -237,7 +237,7 @@ This page has additional screenshots for '''Icicles''' search commands: [[Icicle
 * [[Icicles - File-Name Input]] for information
   about `icicle-find-file', `icicle-find-file-absolute', `icicle-find-file-in-tags-table', 
   `icicle-locate-file', and `icicle-recent-file'.
-* [[Icicles - Tags Enhancements]]
+* [[Icicles - Emacs Tags Enhancements]]
   for information about `icicle-find-first-tag' and
   `icicle-find-tag'.
 * [[Icicles - Bookmark Enhancements]] for information about the bookmark browsing commands.

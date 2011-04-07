@@ -208,6 +208,17 @@ These are wishes related to interacting with Emacs or with the graphical user in
 [new]
 * I'd like the 'suggested fix' feature thats in IDEA, or something like it. IDEA parses the buffer continually when idle, lightbulb appears when the TextCursor is over some parts of the buffer where an autocorrection is possible (typically warnings, errors), pressing Alt-Enter presents a menu of tasks, typically fixes but sometimes other things (eg 'Implement this interface'). Its spelling correction on steroids. A minor mode perhaps? Example uses: in an html editing mode suggested fixes may optionally include fixing tag spelling, closing tags, fixing text spelling, fixing text grammar, adding required attributes ... emacs has all this kind of thing, but all done as separately like ispell, rather than all cooperating on a common 'blackboard' of tasks/fixes.
 
+[new]
+
+** A start at something like this is available in CSharpMode. It relies on flymake which performs a compile check, then inspects the compiler errors and proposes quick fixes in a popup menu.  The fixes that are proposed are all coded into the csharp-mode extension for flymake, they are all custom-engineered. Basic common errors like a missing semicolon are handled with a menu choice,  
+"insert a semicolon".  Almost as trivially, missing namespaces result in a menu choice like "import the XXXX namespace".  Figuring out reasonable fixes for compiler errors is not so easy, though. 
+
+** I suppose you could extend the idea to run static analysis (FxCop, StyleCop) on the buffer, in addition to the csc.exe compiler. Then emacs could propose somewhat more useful fixes or changes. (Eg, "use appropriate capitalization on Methods" etc.) 
+
+** Currently the csharp stuff is all very language-specific. It wouldn't be difficult to modularize and generalize it. 
+[new]
+
+
 * I would like to see (as an option) the ability to close a frame and have 
   the file closed as well, making Emacs work a bit more like a Mac or Windows
   editor.  I tend to open and close a lot of windows (currently using 
@@ -352,6 +363,8 @@ about programming Emacs.  Those are filed above under extensibility.
 
 * we need built-in line-number in emacs .. show line-number in the left column.
 
+** See [[LineNumbers]]
+
 * I think the [[tags file]] can be used more. When the [[cursor]] is over a word found in the tags file, The definition of it should be visible together with the path of the file it is in. This should be done real-time and I think it is not so cpu intensive (since the whole tags file is in memory, right?). Today the user has to press M-. or C-x 4 . to view the whole file and sometimes this is irritating. Moreover if the users has a new &quot;special&quot; window open (e.g. with C-x 4 .) it should be updated real time with whatever the cursor is on, always according to the tags file. Finally the speedbar should automagically highlight the file that the tag is found in. No matter how hard I 've searched, I haven't found yet those features in any package. 
 
 ** The development version (at the time of writing) has a generalized Eldoc
@@ -361,6 +374,9 @@ mode.  You would write a function to assign to
 
 * I'd like to have a tool that counts all C++ and commentary lines in all files marked in dired.
 ** SemanticBovinator doesn't do this exactly but it might be the best option.
+[new]
+** word-count.el does this for a single file; it should take just a few minutes to script it to count all marked files. 
+[new]
 * A xlock/vlock for emacs :)
 ** GNU screen has this feature if that's any help.
 * I'd like to able able to goto and browse functions within a buffer like I would switch buffers using iswitch-buffer or ido.

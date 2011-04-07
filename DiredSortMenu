@@ -13,10 +13,12 @@ Here is a screenshot showing the `dired-sort-menu' popup menu with sorting by fi
 
 Library <tt>[[dired-sort-menu+.el]]</tt> enhances ##dired-sort-menu.el## in some minor ways: better key bindings and menu locations.
 
-== Dired Sort Map ==
 
-##dired-sort-map.el## is a library that provides DiredMode with sorting by pressing `s' then `s', `x', `t' or `n' to sort by Size, eXtension, Time or Name.
+See also:
 
+* DiredSort
+* DiredSortBySizeAndExtension 
+* DiredSortDirectoriesFirst
 * Lisp:dired-sort-map.el
 
 

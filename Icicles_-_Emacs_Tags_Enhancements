@@ -4,7 +4,7 @@
 
 ----
 
-== Icicles Tags Enhancements ==
+== Icicles Enhancements for Emacs Tags ==
 
 In Emacs and '''Icicles''', the word "'''tag'''" is used in multiple ways.
 This section is about [[tags]] as identifiers of source-code

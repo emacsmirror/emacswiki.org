@@ -28,6 +28,6 @@ Please send any bug reports to me [mailto:mah@everybody.org via email].
 TODO:
 
 * Optionally use org-mode formatting for editing and translate that to mw
-* Better error handling for toekn timeout, etc.
+* Better error handling for token timeout, etc.
 
 CategoryModes CategoryHypermedia

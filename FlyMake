@@ -207,6 +207,9 @@ I've tried it (linux, stock emacs).. GREAT.. but.. I found that the buffer is on
 
 : No, it is supposed to run automatically -- VagnJohansen
 
+: Re: "the buffer is only updated..."  Yes, if you are speaking about saving the buffer to its backing file, it is normal.  Flymake saves the buffer to a temp file, then compiles *that*.  The real file that backs your edited buffer doesn't get saved until you explicitly save it. -- DinoChiesa
+
+
 === Using CEDET tools for unsupported modes ===
 If you have a mode that flymake does not support (and you can't/won't add flymake support for it), then you can use lmcompile.el/linemark.el from the CEDET tools (CollectionOfEmacsDevelopmentEnvironmentTools) to at least get automatic highlighting after compiles.
 

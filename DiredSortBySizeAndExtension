@@ -1,3 +1,4 @@
+from DinoChiesa
 This code extends Dired to allow it to sort by file name, file time, file extension, or file size, instead of only name and time as is the default.  Just press 's' in a dired buffer to cycle through these sort modes. 
 
 <pre>
@@ -106,3 +107,18 @@ This code extends Dired to allow it to sort by file name, file time, file extens
 
 
 </pre>
+
+
+See also:
+
+* DiredSort
+* DiredSortDirectoriesFirst
+* DiredSortMenu
+* Lisp:dired-sort-map.el
+
+
+
+
+----
+
+CategoryDirectories DiredMode

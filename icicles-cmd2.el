@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  4 08:08:30 2011 (-0700)
+;; Last-Updated: Wed Apr  6 10:32:10 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2626
+;;     Update #: 2629
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3884,8 +3884,10 @@ for reuse.  If the region is active, then only it is searched;
 otherwise, the entire buffer is searched.
 
 Use `C-RET' or `C-mouse-2' to choose a previous input for reuse.  Use
-`C-down', `C-up', `C-next', `C-prior', `C-end', or `C-home' to cycle
-among your previous inputs.
+`down', `up', `next', `prior', `end', or `home' to cycle among your
+previous inputs.  (You probably do NOT want to use `C-next' etc.,
+since such keys will not only cycle to another candidate but also
+reuse it immediately.)
 
 As for other Icicles search commands, your current input narrows the
 set of possible candidates.  See `icicle-search' for more
@@ -3914,6 +3916,7 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
 information about the arguments, see the doc for command
 `icicle-search'."
+  ;; $$$$$$ It would be good to somehow rebind C-next etc. to just what next etc. does.
   (interactive (icicle-region-or-buffer-limits))
   ;; Is there a better test we can use, to make sure the current mode inherits from `comint-mode'?
   (unless (where-is-internal 'comint-send-input (keymap-parent (current-local-map)))

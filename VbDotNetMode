@@ -28,6 +28,19 @@ http://imgur.com/OlY0e.png
 
 ----
 
+2011-April-06
+DinoChiesa
+
+Another update.  v1.5c. 
+
+Summary: 
+* imenu now works; jump to Class, Namespace, Structure, Property, Sub, Function, etc. 
+* corrected flymake integration
+* fixed indentation for .NET attributes eg, <DllImport>
+* fixed indentation of Subs/Functions with line continuations within the declaration.
+* New interactive fn, `vbnet-close-current-block', to insert the "End Class" or whatever is pending. 
+* New interactive fns, `vbnet-moveto-{beginning,end}-of-defun'
+
 
 Installation instructions
 
@@ -54,4 +67,9 @@ Installation instructions
      ...other mode-setup code here...
    )
    (add-hook 'vbnet-mode-hook 'my-vbnet-mode-fn)
+
+----
+
+CategoryModes 
+CategoryProgrammerUtils
 

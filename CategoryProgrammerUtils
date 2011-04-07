@@ -53,7 +53,7 @@ Code navigation and hints:
 *** BuildTags -- How to create them.
 *** ExuberantCtags (ctags) -- Support for more languages and editors than etags.
 ** Navigating to tags (definitions)
-*** [[Icicles - Tags Enhancements]] -- Find or browse tags from all tags files (including multiple matches for a tag).
+*** [[Icicles - Emacs Tags Enhancements]] -- Find or browse tags from all tags files (including multiple matches for a tag).
 *** EtagsSelect -- Select from multiple matches to a tag.
 *** EctagsSelect -- Etags replacement that uses ExuberantCtags and eldoc.
 *** EtagsStack -- Navigate the tags stack.

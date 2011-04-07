@@ -40,7 +40,22 @@ I've just spotted a small problem. In order to use with EmacsAsDaemon one needs 
 
 [Some ensuing back and forth edited out.]  After playing around with EmacsAsDaemon and emacsclient for a while, I think you're right:  The best thing to do is not throw any kind of error when Emacs is running as a daemon, and instead depend on the user to figure out when they can invoke fci-mode and when they can't.  Thanks for pointing out the problem. --AA
 
+===Problem using dabbrev-expand===
+[new]
+With <tt>fci-mode</tt> active in a buffer, using <tt>dabbrev-expand</tt> at the end of a line seems to jump the point down a couple of lines lines. So a buffer containing:
 
+  abcdef
+
+  abc
+
+  foofoo
+
+Position the point after the second <tt>abc</tt> and use <tt>dabbrev-expand</tt>, I get the correct expansion, but the point jumps to the third <tt>o</tt> in <tt>foofoo</tt>. Without <tt>fdi-mode</tt> I get the correct expansion and the point is left after the expanded <tt>abcdef</tt>.
+
+[new:AlpAker:2011-04-06 17:19 UTC]]
+
+I've uploaded a new version (0.28) that fixes the bug.  -- AA
+ 
 ===From the (E-)Mailbag===
 
 [new]

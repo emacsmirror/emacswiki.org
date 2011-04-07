@@ -203,7 +203,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 ** defining -- [[Icicles - Defining Icicles Commands]]
 ** use -- [[Icicles - File-Name Input]]
 
-* (+) '''`icicle-find-first-tag'''', (+) '''`icicle-find-first-tag-other-window'''', (+) '''`icicle-find-tag'''' (`##C-x 4 .##', `##M-.##') -- [[Icicles - Tags Enhancements]]
+* (+) '''`icicle-find-first-tag'''', (+) '''`icicle-find-first-tag-other-window'''', (+) '''`icicle-find-tag'''' (`##C-x 4 .##', `##M-.##') -- [[Icicles - Emacs Tags Enhancements]]
 
 * (+) '''`icicle-font'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-font|key binding]]''
 
@@ -304,7 +304,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 
 * (+) '''`icicle-plist'''' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Completions]], [[Icicles - Programming Multi-Completions]]
 
-* `icicle-pop-tag-mark' (`##M-,##') -- [[Icicles - Tags Enhancements]]
+* `icicle-pop-tag-mark' (`##M-,##') -- [[Icicles - Emacs Tags Enhancements]]
 
 * `icicle-pp-eval-expression' -- [[Icicles - Customization and General Tips#icicle-pp-eval-expression-print-length|Customization]]
 
@@ -406,7 +406,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 [:T]
 ==== T ====
 
-* (+) '''`icicle-tags-search'''' -- [[Icicles - Tags Enhancements]]
+* (+) '''`icicle-tags-search'''' -- [[Icicles - Emacs Tags Enhancements]]
 
 * `##icicle-toggle-~-for-home-dir##' -- [[Icicles - File-Name Completion Tips]], ''[[Icicles - Key Bindings#icicle-toggle-tilde-for-home-dir|key binding]]''
 
