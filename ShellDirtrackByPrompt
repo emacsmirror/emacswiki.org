@@ -46,5 +46,46 @@ If you want the matched PWD to be removed from the output, add this as well:
         (replace-match "" t t string 0)
       string))
 
+== Another try ==
+
+Hi, different author here. I tried this on my GNU emacs 22.2.1 and it was a bit of a disaster. It's close but no cigar so I'll share what I had to do 
+to make this work.
+
+There are two major parts, the shell prompt and emacs lisp. The shell prompt I use is for bash. I ended up with this in my bashrc:
+
+  if [ "x$INSIDE_EMACS" != "x" ]; then
+      PS1="|PrOmPt|\w|\u@\h \$ "
+  else
+    case $TERM in ....
+
+The <tt>INSIDE_EMACS</tt> variable overrides any other <tt>TERM</tt> tweaking. I have no excuse for why I chose different magic strings for the prompt but that was the easiest part. The elisp side
+is a mess since the documentation is amazingly wrong. Here's what I have in my .emacs.el:
+
+  ;; Shell mode stuff. Set up cwd tracking via the 
+  ;; subshell prompt and strip it.
+  (require 'dirtrack)
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              (setq dirtrack-list '("^|PrOmPt|\\([^|]*\\)|" 1 nil))
+              (shell-dirtrack-mode nil)
+              (add-hook 'comint-preoutput-filter-functions
+                        'dirtrack nil t)
+              (add-hook 'comint-preoutput-filter-functions
+                        'dirtrack-filter-out-pwd-prompt t t)))
+
+  ;; Now strip the goofy strings from the prompt before it gets into
+  ;; the shell buffer.
+  (defun dirtrack-filter-out-pwd-prompt (string)
+    "dirtrack-mode doesn't remove the PWD match from the prompt.  This does."
+    ;; TODO: support dirtrack-mode's multiline regexp.
+    (if (and (stringp string) (string-match (first dirtrack-list) string))
+        (replace-match "" t t string 0)
+      string))
+
+Problems encountered:
+* dirtrack is not loaded by default. You must <tt>require</tt> it.
+* Even though it shows up in the info pages, there is no <tt>dirtrack-mode</tt> function. There is a <tt>dirtrack-toggle</tt> but that doesn't take any arguments so it will always toggle. That makes <tt>dirtrack-toggle</tt> useless for forcing the mode on. Instead, I add the dirtrack hook myself via <tt>add-hook</tt>.
+* I had to turn off the standard <tt>shell-dirtrack</tt>. <tt>(shell-dirtrack-mode nil)</tt> does this fine but causes the script to whine in the minibuffer. I haven't attempted to fix this.
+* <tt>dirtrack-list</tt> is <tt>buffer-local</tt> so setting that has to be inside the <tt>shell-mode</tt> hook.
 
 CategoryShell

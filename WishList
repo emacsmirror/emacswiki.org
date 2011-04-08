@@ -350,6 +350,14 @@ How about:
 
 * I'd like to use an outline for EmacsPresentation like JMP's software.
 
+==== Php Mode in Emacs ====
+The currently available mode for php is not within Emacs and hardly maintained at the moment.
+The reason is that no one believes that the current php-mode.el can be included in Emacs since all the contributors has not signed papers for Emacs.
+
+So a new php-mode is badly needed. A php-mode where all the contributors has signed papers for Emacs.
+
+Anyone interested in this could read more about it in the Emacs Devel mailing list archive.
+
 === Documentation Wishes ===
 
 These are wishes related to Emacs's documentation or with the Info system.

@@ -5,17 +5,17 @@
 ;; Author: Matthew L. Fidler <matthew dot fidler at gmail . com>
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Jan 12 14:51:05 2011 (-0600)
-;; Version: 0.1
-;; Last-Updated: Tue Jan 18 15:24:11 2011 (-0600)
-;;           By: Matthew L. Fidler
-;;     Update #: 438
+;; Version: 0.2
+;; Last-Updated: Thu Apr  7 14:35:07 2011 (-0500)
+;;           By: US041375
+;;     Update #: 443
 ;; URL: http://www.emacswiki.org/emacs/download/org-table-comment.el
 ;; Keywords: org-mode orgtbl
 ;; Compatibility: Tested with Org 7.4 on Windows Emacs 23.2 
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `org-table'.
+;;   `org', `org-table'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -90,6 +90,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 07-Apr-2011      
+;;    Last-Updated: Thu Apr  7 14:32:50 2011 (-0500) #439 (US041375)
+;;    Minor changes.  Beter ELPA support.
 ;; 18-Jan-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Jan 18 15:23:04 2011 (-0600) #437 (Matthew L. Fidler)
 ;;    Made permissive text only include a certain number (specified)
@@ -203,7 +206,7 @@ IF ALLOW-BLANKS, a blank line is considered an org-table-comment"
           over)
       (setq over (make-overlay (nth 0 region) (nth 1 region) nil nil t))
       (overlay-put over 'category 'org-table-comment-category)
-      (overlay-put over 'modification-hooks 'org-table-comment-mod)
+      (overlay-put over 'modification-hooks 'org-table-comment-mode)
       over)))
 
 (defun org-table-comment-overlay-rm (beg end)
@@ -421,6 +424,8 @@ Zero or below is considered a non-permissive comment
     (error
      (message "[org-table-comment] Error running post-command-hook: %s" (error-message-string error)))))
 
+(defalias 'org-table-comment-mode 'orgtbl-comment-mode)
+;;;###autoload
 (define-minor-mode orgtbl-comment-mode
   "Orgtbl comment mode.  Changes how orgtbl works for modes that don't support block comment regions (like emacs-lisp).
 

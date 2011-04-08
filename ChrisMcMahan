@@ -1,4 +1,41 @@
-==Emacs notes from Chris McMahan==
+==Emacs Notes==
+===Geektools and Org-mode===
+[2011 04 08] I've discovered GeekTools for OS X
+
+I discovered Geektools this week. This program can take any textual output and place it directly onto your desktop, similar to the Samurize program I used for Windows.
+
+The first thing I though of was how to get my org-agenda to show on the desktop. With some help from others on the web, I've come up with the following configuration:
+
+* Org-mode setup
+Create a suitable org-agenda, but make sure you assign it a file to which the output can be directed.
+
+Here's my agenda setup::
+
+    (setq org-agenda-custom-commands
+     '(("g" "GeekTool Agenda"
+        ((agenda ""))
+        ((org-agenda-todo-keyword-format "%-11s")
+         (org-agenda-prefix-format "  %-10T%?-16t% s")
+         (org-agenda-show-inherited-tags nil)
+         (org-agenda-remove-tags 'prefix)
+         (org-agenda-tags-column 70))
+        ("~/.org-agenda.txt"))))
+
+The file that will hold the output is ~/.org-agenda.txt in this case.
+
+Then you create a shell output within Geektools, with the following command line
+
+    /Applications/Emacs.app/Contents/MacOS/bin/emacsclient -e "(progn (org-store-agenda-views))" ; cat ~/.org-agenda.txt
+
+I'm using the OSX version of emacs, but the idea is to point it to wherever you have the emacsclient installed.
+Make sure you tell the Geektools program to refresh this output every few minutes (I have it set to 5 minutes).
+
+The biggest restriction to have this function correctly is that emacs must be running, either in daemon mode or server in order to accept the call from emacsclient.
+
+As a side benefit, I creates a quick bash alias to print out the agenda onto my terminal window.
+
+
+===Github and other changes===
 [2010 08 24] Big changes these last months.
 
 * I'm working primarily on a Linux system now (Ubuntu), and a MacbookPro at home, so my Windows/Cygwin configurations have become somewhat neglected.
@@ -15,7 +52,7 @@ I'm currently using the XP version of Emacs 22 on Windows XP with Cygwin install
 ; McMahanEmacsConfiguration: Emacs configuration called by the .emacs file
 ; McMahanEmacsMacros: Various helpful functions that I've created/borrowed over time. I should probably rename this file, since it only has a few macros recorded now.
 
-==View Mail configuration with Windows XP and Cygwin==
+===View Mail configuration with Windows XP and Cygwin===
 I was having some serious difficulty getting the 8x versions of VM to compile under Windows XP emacs (native XP version, 22.2, using cygwin tools).
 
 The solution I found was to edit the vm-8.xx/lisp/Makefile generated from the configuration and replace any occurrence of '`pwd`' with the literal path, using the format drive<colon>/emacs/lisp/vm-8xxx/lisp as the build directory

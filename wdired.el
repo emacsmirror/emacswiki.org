@@ -1,9 +1,11 @@
+Note that wdired.el is part of GNU emacs since version 23 per [http://comments.gmane.org/gmane.linux.debian.devel.emacsen/2590 this post].
+
 ;;; wdired.el --- Rename files editing their names in dired buffers
 
-;; Copyright (C) 2001 Juan León Lahoz García
+;; Copyright (C) 2001 Juan Leï¿½n Lahoz Garcï¿½a
 
 ;; Filename: wdired.el
-;; Author: Juan León Lahoz García <juan-leon.lahoz@tecsidel.es>
+;; Author: Juan Leï¿½n Lahoz Garcï¿½a <juan-leon.lahoz@tecsidel.es>
 ;; Version: 1.9.2pre3
 ;; Keywords: dired, environment, files, renaming
 
@@ -105,7 +107,7 @@
 
 ;; From 1.91 to 1.9.2
 ;;
-;; - René Kyllingstad <kyllingstad at users dot sourceforge dot net>
+;; - Renï¿½ Kyllingstad <kyllingstad at users dot sourceforge dot net>
 ;;   added support for XEmacs. Reported to work under XEmacs 21.4.6.
 ;;
 ;; - Small fix to make WDired work with XEmacs 21.1. Thanks to Uwe

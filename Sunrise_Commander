@@ -57,7 +57,9 @@ there before:
   forwards and backwards and also  displayed  in  its  own  pane  as  a  virtual
   directory.
 
-* Sorting directory contents by name, date, size, extension.
+* Sorting directory contents by file names either alphabetically or numerically
+  (e.g. /file9.txt/ placed *before* /file10.txt/) or by date, size, extension;
+  both in ascending and descending order.
 
 * Comparing directories by file names, sizes and thoroughly (using MD5 sums).
 
