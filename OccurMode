@@ -243,5 +243,28 @@ See also IncrementalOccur
 
 -- ThierryVolpiatto
 
+
+== Keep the *Occur* window visible when using next-error/previous-error ==
+
+When using `next-error' I like to keep the `*Occur*' window visible just like when I open the matches by pressing `RET' on them in the `*Occur*' window. If I use `next-error' from an other window then it reuses the `*Occur*' window and displays the match in it (Emacs 23). The following advice selects the `*Occur*' window before calling `occur-next-error' thereby keeping it displaying the matches and showing the match in the other window:
+
+    (defadvice occur-next-error (before my-occur-next-error activate)
+      (let ((win (get-buffer-window (current-buffer))))
+        (if win
+            (select-window win))))
+
+-- [[Anonymous]]
+
+[new:DrewAdams:2011-04-08 18:21 UTC]
+I don't have a problem in this regard, because I use a dedicated window for `*Occur*':
+
+  (setq special-display-regexps  '("[ ]?[*][^*]+[*]"))
+
+-- DrewAdams
+
+[new]
+
+But this solution opens an additional frame for occur by default which I don't want, so it would need further configuration to prevent that. The solution above doesn't have this problem, because it operates in the current frame. -- anon
+
 ----
 CategoryModes CategoryRegexp GrepMode CategorySearchAndReplace

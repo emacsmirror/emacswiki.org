@@ -20,7 +20,24 @@ Instead of the above or editing the registry keys directly you can in Windows Ex
 
 and then the tab "File Types".
 
-== other ramblings ==
+== Make files with no extension be treated as text files ==
+
+In the Command Prompt execute:
+
+    ASSOC .=txtfile
+
+If that doesn't work, then investigate the following registry keys. Possibly delete them and repeat the above step.
+
+    HKEY_CLASSES_ROOT\.
+    HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.
+
+== Open text files with EMACS ==
+
+In the Command Prompt execute, after adapting the path of EmacsClient:
+
+    FTYPE txtfile="C:\Program Files\Emacs\bin\emacsclientw.exe" -n "%1"
+
+== Other ramblings ==
 
 : There are _many_ ways and places the verbs are stored.  HKEY_CLASSES_ROOT contains many of them (using various rules), but a few of the other places they may be found (according to my rummaging around) are:
 :: <nowiki>[HKCU|HKLM]\Classes\Applications</nowiki>

@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.34
-;; Last-Updated: Mon Feb  7 12:50:38 2011 (-0600)
-;;           By: Matthew L. Fidler
-;;     Update #: 1005
+;; Version: 0.35
+;; Last-Updated: Fri Apr  8 23:08:47 2011 (-0500)
+;;           By: US041375
+;;     Update #: 1016
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -114,6 +114,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 08-Apr-2011      
+;;    Last-Updated: Fri Apr  8 23:08:08 2011 (-0500) #1014 (US041375)
+
+;;    Bug fix for when Yasnippet is disabled. Now will work with it
+;;    disabled or enbaled.
+
 ;; 08-Mar-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Changed `auto-indent-delete-line-char-remove-extra-spaces' to nil by default.
@@ -605,6 +611,7 @@ work in some modes but may cause things such as `company-mode' or
     (insert (format "%s" auto-indent-eol-char)))
   (call-interactively (auto-indent-original-binding (kbd "RET"))))
 
+;;;###autoload
 (defalias 'auto-indent-mode 'auto-indent-minor-mode)
 
 (define-minor-mode auto-indent-minor-mode
@@ -1143,6 +1150,10 @@ Allows the kill ring save to delete the beginning white-space if desired."
   (condition-case error
       (progn
 	(setq auto-indent-last-pre-command-hook-minibufferp (minibufferp))
+	(unless (eq (nth 0 post-command-hook) 'auto-indent-mode-post-command-hook)
+	  (when (memq 'auto-indent-mode-post-command-hook post-command-hook)
+	    (remove-hook 'post-command-hook 'auto-indent-mode-post-command-hook t))
+	  (add-hook 'post-command-hook 'auto-indent-mode-post-command-hook nil t))
 	(when (and (not (minibufferp)))
 	  (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
 	  (setq auto-indent-last-pre-command-hook-point (point))))
@@ -1150,19 +1161,20 @@ Allows the kill ring save to delete the beginning white-space if desired."
      (message "[Auto-Indent Mode] Ignoring Error in `auto-indent-mode-pre-command-hook': %s" (error-message-string error)))))
 
 (defun auto-indent-mode-post-command-hook ()
-  "Hook for auto-indent-mode to go to the right place when moving around and the whitespace was deleted from the line."
+  "Hook for auto-indent-mode to go to the right place when moving
+around and the whitespace was deleted from the line."
   (condition-case err
       (when (and (not auto-indent-last-pre-command-hook-minibufferp) (not (minibufferp))
 		 (not (memq indent-line-function auto-indent-disabled-indent-functions)))
 	
 	(unless (memq 'auto-indent-mode-pre-command-hook pre-command-hook)
 	  (setq auto-indent-mode-pre-command-hook-line -1)
-	  (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
+	  (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil t))
 	(when auto-indent-minor-mode
 	  (cond
 	   ((and last-command-event (memq last-command-event '(10 13 return)))
 	    (when (or (not (fboundp 'yas/snippets-at-point))
-		      
+		      (and (boundp 'yas/minor-mode) (not yas/minor-mode))
 		      (and yas/minor-mode
 			   (let ((yap (yas/snippets-at-point 'all-snippets)))
 			     (or (not yap) (and yap (= 0 (length yap)))))))
@@ -1185,7 +1197,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
 			 auto-indent-mode-pre-command-hook-line)))
 	    (when (and (looking-back "^[ \t]*") (looking-at "[ \t]*$"))
 	      (indent-according-to-mode))))))
-    (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-post-command-hook' %s" (error-message-string err)))))
+    (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-mode-post-command-hook' %s" (error-message-string err)))))
 (provide 'auto-indent-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; auto-indent-mode.el ends here

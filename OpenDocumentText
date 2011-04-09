@@ -3,7 +3,7 @@
 ==Create==
 [[OrgMode]] files can now be exported to OpenDocumentText. 
 
-See the [http://lists.gnu.org/archive/html/emacs-orgmode/2011-01/msg01210.html announcement in Orgmode mailing list] and the [http://orgmode.org/worg/org-faq.html#convert-to-open-office Orgmode FAQ entry].
+See the [http://thread.gmane.org/gmane.emacs.orgmode/39833/ announcement in emacs-orgmode mailing list] and the [http://orgmode.org/worg/org-faq.html#convert-to-open-office Orgmode FAQ entry].
 
 ==View and edit==
 

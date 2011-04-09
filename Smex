@@ -56,3 +56,11 @@ Does anyone know how to modify smex so that typing a space will insert a hyphen 
 : To not have it complete if there's only one match, fset ##ido-complete-space## to that lambda form above, then fset it back after ##ad-do-it## (##flet## doesn't work for interactive functions).
 [new]
 /Wicked cool./ Is it inspired by this [http://www.vimeo.com/1013263 video]? :)
+
+[new:jpkotta:2011-04-08 15:44 UTC]
+I don't like to have smex update every time I run (auto-update is usually good enough, and is noticeably faster).  But it's annoying when I manually load a file and the new commands are not in smex.  So I add a smex-update to after-load-functions.
+
+    (defun smex-update-after-load (unused)
+      (when (boundp 'smex-cache)
+        (smex-update)))
+    (add-hook 'after-load-functions 'smex-update-after-load)

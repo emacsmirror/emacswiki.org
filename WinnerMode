@@ -24,6 +24,8 @@ winner.el comes with GNU Emacs, starting with version 20.
 
 [new]
 winner-mode in the latest (2011-04-02 at least) breaks highlighting of spelling errors using flyspell-mode.  Disabling winner-mode returns flyspell-mode functionality
+
+Fixed as far as I can tell at least in 2011-04-08
 [new]
 
 In XEmacs similar functionality can be achieved with pop-window-configuration & unpop-window-configuration commands

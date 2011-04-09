@@ -283,20 +283,9 @@ The -a option of emacsclient, or the environment variable ALTERNATE_EDITOR can b
 
 Using a utility like NirCmd (http://www.nirsoft.net/utils/nircmd.html) to supress the command window for emacsclient, it makes for a much smoother experience.  As emacsclientw pops a dialog on initial run.
 
-==== Associate files with no extension with Emacs 22 ====
+==== Associate files with no extension with Emacs ====
 
-Emacs is a handy editor for various files without an extension, such as "README" or "ChangeLog". To have these files opened in Emacs upon double click in Explorer, add the following registry entries (adjust the path were Emacs resides):
-
-<pre>
-[HKEY_CLASSES_ROOT\.]
-
-[HKEY_CLASSES_ROOT\.\shell]
-
-[HKEY_CLASSES_ROOT\.\shell\open]
-
-[HKEY_CLASSES_ROOT\.\shell\open\command]
-(Standard) "C:\Program Files\Emacs\bin\emacsclientw.exe" -n "%1"
-</pre>
+See: WThirtyTwoFileAssociations
 
 ==== VBS for context menu or hot key ====
 Bind this script to the registry key as above to edit files from the context menu, starting emacs as required. Run the script with no argument and it will open a new emacs or make the already running emacs the top window. I put a shortcut to the script on my desktop and attach a hot key so emacs is just a keystroke away and I never have more than one running.
@@ -969,6 +958,13 @@ It is assumed that <tt>emacsclient --alternate-editor /usr/bin/false ...</tt> re
 
 -- TN
 [new]
+
+If you happen to be using Eshell, you can get this via:
+
+<pre>
+cat myfile > (switch-to-buffer "*my-buf*")
+</pre>
+
 == Setting frame colors differently for graphical clients and console clients ==
 
 See: SettingFrameColorsForEmacsClient
