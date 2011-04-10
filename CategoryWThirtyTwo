@@ -58,7 +58,7 @@ Installation:
 * [[EmacsPortable]] -- Another enhancement and installation program for Emacs on MS-windows especially customized for PortableApplications.  '''Note 1:''' It is also a run time environment including keyboard adjustments for either viper, ergemacs or standard keys, printing (taken from a version of EmacsW32) etc. '''Note 2:''' It can also extract the Emacs MS-Windows binaries .tar.gz file. However, this is done by including the appropriate GnuWin32 binaries instead of relying of 7-zip. '''Note 3:''' This will run on portable drives, and should allow customization of pacakges installed.  It will also install locally.  When running locally AND a portable apps usb drive with EmacsPortable is inserted, the "HOME" directory is changed to the USB drive.  Hence there are portable customizations between each computer.  Just insert your USB drive!
 * MsWindowsInstallation -- Installation guidelines when not using !EmacsW32
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
-* The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.
+* The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.  You can also use [http://cheeso.members.winisp.net/srcview.aspx?dir=Tar&file=Tar.cs this simple Tar program in C#]
 
 Customization:
 
@@ -99,6 +99,7 @@ MS applications:
 
 * MsOutlook -- use Emacs as the editor for Microsoft Outlook
 * XKeymacs --  use the Emacs keybindings everywhere
+* PowerShell -- run Windows Powershell as an inferior shell within Emacs.
 
 MS shell:
 * WThirtyTwoShellExecute -- execute any of the 'Explorer verbs' available for a file or directory.
@@ -125,6 +126,11 @@ MS-Windows development:
 * MinGW -- using GCC directly without the Cygwin library
 * CmdMode -- editing cmd and bat files
 * SlnMode -- open sln projects inside emacs
+* VbDotNetMode - major mode for editing VB.NET code
+* CSharpMode - major mode for editing C# code
+* [http://www.emacswiki.org/emacs/PowerShell#toc2 Powershell mode] - mode for editing powershell code
+* [http://www.emacswiki.org/emacs/MSTFS MS TFS] - commands for checkout/checkin to TFS from emacs (via TF.exe)
+* [http://code.google.com/p/jslint-for-wsh/ JSLint for WSH] - Run the canonical Javascript lint tool using WScript.exe. includes an elisp module to make it work nicely with Flymake.
 
 Reading proprietary file formats:
 

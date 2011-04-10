@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 15:09:18 2011 (-0800)
+;; Last-Updated: Sat Apr  9 09:52:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 330
+;;     Update #: 338
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wide-n.el
 ;; Keywords: narrow restriction widen
 ;; Compatibility: Emacs 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/04/09 dadams
+;;     narrow-to-region defadvice:
+;;       Use ad-get-arg - don't refer to args by name (work around Emacs bug #8457).
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies (for commands).
 ;; 2010/04/26 dadams
@@ -118,7 +121,7 @@
 ;;     Bind non-repeatable version, wide-n, in Emacs 21.
 ;; 2010/04/19 dadams
 ;;     wide-n, narrow-to-region, wide-n-restrictions:
-;;       Use nil default val & use make-local-variable, so can use destructive operations.
+;;       Use nil default val & use make-local-variable, so can use destructive ops.
 ;;     narrow-to-region: Use delete, not remove.
 ;;     Zero prefix arg now widens completely and empties ring.
 ;;     Negative prefix arg now pops the ring.
@@ -204,7 +207,8 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                  wide-n-restrictions  (mapcar #'wide-n-markerize wide-n-restrictions))
            (if (not (eq 'all (car wide-n-restrictions)))
                (condition-case err
-                   (narrow-to-region (caar wide-n-restrictions) (cdar wide-n-restrictions))
+                   (narrow-to-region (caar wide-n-restrictions)
+                                     (cdar wide-n-restrictions))
                  (args-out-of-range
                   (setq wide-n-restrictions  (cdr wide-n-restrictions))
                   (error "Restriction removed because of invalid limits"))
@@ -262,7 +266,8 @@ This is a repeatable version of `wide-n'."
 (defadvice narrow-to-region (before push-wide-n-restrictions activate)
   "Push the region limits to `wide-n-restrictions'.
 You can use `C-x n x' to widen to a previous buffer restriction."
-  (when (or (interactive-p) wide-n-push-anyway-p)  (wide-n-push start end)))
+  (when (or (interactive-p) wide-n-push-anyway-p)
+    (wide-n-push (ad-get-arg 0) (ad-get-arg 1)))) ; Args START and END.
 
 
 ;; REPLACE ORIGINAL in `lisp.el'.

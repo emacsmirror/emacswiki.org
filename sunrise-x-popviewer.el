@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 1
-;; RCS Version: $Rev: 315 $
+;; RCS Version: $Rev: 364 $
 ;; Keywords: Sunrise Commander Emacs File Manager Accessibility Viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
@@ -38,12 +38,6 @@
 ;; together, if you're using the Buttons extension remove  it  first  from  your
 ;; .emacs file.
 
-;; This is version 1 $Rev: 315 $ of the Sunrise Commander PopViewer Extension.
-
-;; This  piece  of code is still in alpha stage. If you find it useful and think
-;; you may contribute to it with suggestions of even more code,  please  let  me
-;; know  by sending a message to the comp.emacs newsgroup.
-
 ;;; Installation and Usage:
 
 ;; 1) Put this file somewhere in your emacs load-path.
@@ -68,6 +62,14 @@
 (require 'sunrise-commander)
 
 (remove-hook 'window-size-change-functions 'sr-lock-window)
+(define-key sr-mode-map "o" 'sr-popviewer-quick-view)
+(define-key sr-mode-map "v" 'sr-popviewer-quick-view)
+
+(defcustom sr-popviewer-reuse-frame nil
+  "Whether to display the viewer window always in the same frame (as long as it 
+  remains open)."
+  :group 'sunrise
+  :type 'boolean)
 
 (defun sr-setup-windows()
   "Setup the Sunrise window configuration (two windows in sr-mode.)"
@@ -93,21 +95,36 @@
   (sr-force-passive-highlight)
   (run-hooks 'sr-start-hook))
 
-(defun sr-quick-view (&optional arg)
-  "Allows to quick-view the currently selected item: on regular files, it opens
-  the file in a new frame, on directories, visits the selected directory in the
-  passive pane, and on symlinks follows the file the link points to."
-  (interactive)
-  (let ((name (dired-get-filename nil t)))
-    (cond ((file-directory-p name) (sr-quick-view-directory name))
-          ((file-symlink-p name) (sr-quick-view-symlink name))
-          (t (find-file-other-frame (dired-get-file-for-visit))))))
+(defun sr-popviewer-quick-view (&optional arg)
+  "Allows to quick-view the currently selected  item: on regular files, it opens
+  the file in a separate frame,  on directories visits the selected directory in
+  the passive pane, and  on symlinks follows the file the link  points to in the
+  passive pane."
+  (interactive "P")
+  (let ((sr-popviewer-reuse-frame
+         (if arg (not sr-popviewer-reuse-frame) sr-popviewer-reuse-frame)))
+    (sr-quick-view (and (null window-system) arg))
+    (sr-select-window sr-selected-window)))
 
 (defun sr-select-viewer-window (&optional force-setup)
-  "Tries to select a window that is not a sr pane."
+  "Tries to select a window that is not a SC pane in a separate frame."
   (interactive)
-  (make-frame '((name . "Sunrise Viewer Frame")))
-  (select-frame-by-name "Sunrise Viewer Frame"))
+  (if (null window-system)
+      (let ((sr-selected-window sr-selected-window))
+        (sr-select-window (sr-other)))
+    (let* ((frame-name "Sunrise Viewer Frame")
+           (vframe  (cdr (assoc frame-name (make-frame-names-alist))))
+           (target-frame))
+      (when vframe
+        (select-frame vframe)
+        (if sr-popviewer-reuse-frame
+            (setq target-frame vframe)
+          (set-frame-name (buffer-name))))
+      (unless target-frame
+        (setq other-window-scroll-buffer nil)
+        (setq target-frame (make-frame `((name . ,frame-name)))))
+      (select-frame target-frame)
+      (raise-frame))))
 
 (provide 'sunrise-x-popviewer)
 

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 363 $
+;; RCS Version: $Rev: 364 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -201,6 +201,7 @@
 (require 'sort)
 (eval-when-compile (require 'cl)
                    (require 'desktop)
+                   (require 'dired-aux)
                    (require 'esh-mode)
                    (require 'recentf)
                    (require 'term))
@@ -980,6 +981,7 @@ automatically:
 (define-key sr-mode-map "\C-ct"       'sr-term)
 (define-key sr-mode-map "\C-cT"       'sr-term-cd)
 (define-key sr-mode-map "\C-c\C-t"    'sr-term-cd-newterm)
+(define-key sr-mode-map "\C-c;"       'sr-follow-viewer)
 (define-key sr-mode-map "q"           'sr-quit)
 (define-key sr-mode-map "\C-xk"       'sr-quit)
 (define-key sr-mode-map "\M-q"        'sunrise-cd)
@@ -1588,6 +1590,21 @@ automatically:
       (sr-goto-dir target-dir))
     (sr-focus-filename target-file)))
 
+(defun sr-follow-viewer ()
+  "Go to the same directory as the file displayed in the viewer window is."
+  (interactive)
+  (when sr-running
+    (let* ((viewer (sr-viewer-window))
+           (viewer-buffer (if viewer (window-buffer viewer)))
+           (target-dir) (target-file))
+      (when viewer-buffer
+        (with-current-buffer viewer-buffer
+          (setq target-dir default-directory
+                target-file (sr-directory-name-proper (buffer-file-name)))))
+      (sr-select-window sr-selected-window)
+      (if target-dir (sr-goto-dir target-dir))
+      (if target-file (sr-focus-filename target-file)))))
+
 (defun sr-project-path ()
   "Tries  to find a directory with a path similar to the one in the active pane,
   but under the  directory currently displayed in the passive  pane.  On success
@@ -1917,13 +1934,15 @@ automatically:
   "Opens  the selected file on the viewer window without selecting it. Kills any
   other buffer opened previously the same way. With optional argument kills  the
   last quick view buffer without opening a new one."
-  (let ((split-width-threshold (* 10 (window-width))))
-    (if (buffer-live-p other-window-scroll-buffer)
-        (kill-buffer other-window-scroll-buffer))
+  (let ((split-width-threshold (* 10 (window-width)))
+        (filename (expand-file-name (dired-get-filename nil t))))
     (save-selected-window
       (condition-case description
           (progn
-            (dired-find-file-other-window)
+            (sr-select-viewer-window)
+            (if (buffer-live-p other-window-scroll-buffer)
+                (kill-buffer other-window-scroll-buffer))
+            (find-file filename)
             (sr-scrollable-viewer (current-buffer)))
         (error (message "%s" (cadr description)))))))
 
@@ -3608,6 +3627,7 @@ or (c)ontents? ")
                        ("\C-c\t"      . sr-ti-change-window)
                        ("\M-\t"       . sr-ti-change-pane)
                        ("\C-ct"       . sr-term-cd-newterm)
+                       ("\C-c;"       . sr-follow-viewer)
                        ("\M-\S-g"     . sr-ti-revert-buffer)
                        ("%"           . sr-clex-start)
                        ("\t"          . term-dynamic-complete)

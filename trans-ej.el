@@ -8,7 +8,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.3.2")
+(defconst trans-ej-version "0.3.3")
 
 ;; This program is free software.
 
@@ -63,6 +63,9 @@
 
 ;;; ChangeLog:
 
+;; 2011-04-10  S. Irie
+;;        * Version 0.3.3
+;;        * Updated for livedoor translate
 ;; 2011-03-01  S. Irie
 ;;        * Version 0.3.2
 ;;        * Bug fix
@@ -248,16 +251,16 @@ See `trans-ej-site-prof-alist' for details.")
     ;; livedoor
     ((livedoor en ja)
      "livedoor translate (powered by Amikai)"
-     "http://translate.livedoor.com/"
-     "trns_type=1,2&src_text=%s"
+     "http://livedoor-translate.naver.jp/text/"
+     "translateParams.slang=en&translateParams.tlang=ja&translateParams.originalText=%s"
      utf-8-dos
-     (("<textarea [^>]*name=\"tar_text\"[^>]*>\\([^<]*\\)</textarea>" . 1)))
+     (("<textarea [^>]*id=\"trans-lang-text\"[^>]*>\\([^<]*\\)</textarea>" . 1)))
     ((livedoor ja en)
      "livedoor translate (powered by Amikai)"
-     "http://translate.livedoor.com/"
-     "trns_type=2,1&src_text=%s"
+     "http://livedoor-translate.naver.jp/text/"
+     "translateParams.slang=ja&translateParams.tlang=en&translateParams.originalText=%s"
      utf-8-dos
-     (("<textarea [^>]*name=\"tar_text\"[^>]*>\\([^<]*\\)</textarea>" . 1)))
+     (("<textarea [^>]*id=\"trans-lang-text\"[^>]*>\\([^<]*\\)</textarea>" . 1)))
     ;; Fresheye
     ((fresheye en ja)
      "Fresheye translation"

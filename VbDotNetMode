@@ -11,7 +11,15 @@ DinoChiesa
 
 I've just updated vbnet-mode.el to v1.5.  
 
-Summary of changes: 
+Here's the summary: This is a mode for editing programs written
+in Visual Basic .NET (VB.NET).  This mode features automatic
+indentation of VB.NET syntax; font locking; automatic keyword
+capitalization; integration with compile.el, flymake.el, and
+imenu.el; built-in snippets for ya-snippet.el; and some minor
+convenience functions.
+
+
+Summary of recent changes: 
 
 * replaced many defvar to defcustom, to make it more user friendly.
 * fixed fontification for using statements, vars, namespaces, imports, and so on. It looks pretty good now. 
