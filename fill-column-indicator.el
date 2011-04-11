@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.28
+;; Version: 0.29
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -56,28 +56,28 @@
 ;; recognized values are 'shading and 'rule.  If you'd like fci-mode to use a
 ;; rule by default, put
 ;;
-;;   (setq fci-style 'rule)
+;;   (setq fci-style 'rule) 
 ;;
 ;; in your .emacs.  (Buffer-local values of fci-style are supported.)
 
 ;; To change to the color of the shading, adjust the attributes of
-;; `fcr-shading-face'.  To change the color the rule, set `fcr-rule-color' to
-;; the desired color.
+;; `fcr-shading-face'.  To change the color of the rule, set `fcr-rule-color'
+;; to the desired color.
 
 ;; Some further considerations to be aware of:
 
 ;; o Fci-mode uses the value of fill-column in effect when it is enabled.  If
 ;;   you change the fill column using `set-fill-column', it will
 ;;   automatically adjust the fill-column indicator.  If you change the value
-;;   of `fill-column' manually, then you must reset fci-mode to update the
+;;   of fill-column manually, then you must reset fci-mode to update the
 ;;   indicator.
 
 ;; o Fci-mode will not work on character terminals. 
 
 ;; o Under v23 and later, it is recommended that `line-move-visual' be set to
-;;   nil while using fci-mode.  By default, fci-mode sets it to nil when enabled
-;;   and restores it to its previous value when disabled.  This feature can be
-;;   turned off by putting
+;;   nil while using fci-mode.  By default, fci-mode sets it to nil when
+;;   evnabled and restores it to its previous value when disabled.  This
+;;   feature can be turned off by putting
 ;;
 ;;     (setq fci-handle-line-move-visual nil)
 ;;
@@ -101,7 +101,9 @@
 ;;   width.  Also, be aware that certain font-lock themes set some faces so
 ;;   that they look monospaced but aren't quite so.
 
-;; o The buffer will look odd if you have `truncate-lines' set to nil.  
+;; o The buffer will look odd if you have `truncate-lines' set to nil.  If
+;;   you have a suggestion as to what the right behavior should be in this
+;;   case, please let me know.
 
 ;; o If the rule is a dashed (rather than uninterrupted) line, and the buffer
 ;;   is unibyte, then that is the intended behavior.
@@ -331,11 +333,11 @@ variables `fci-rule-color' and `fci-font' instead.")
 
 ;; Overview of how it works: The basic strategy is to set the buffer's local
 ;; display table so that the newline character displays as a space followed
-;; either by a rule glyph and the newline (in rule mode) or by a shaded newline
-;; (in shading mode).  Each newline that falls short of the fill-column then
-;; receives an overlay with a space-width display specification that stretches
-;; the space character by the amount necessary to make the indicator appear at
-;; the fill column.
+;; either by a rule glyph and the newline (in rule mode) or by a shaded
+;; newline (in shading mode).  Each newline that falls short of the
+;; fill-column then receives an overlay with a space-width display
+;; specification that stretches the space character by the amount necessary
+;; to make the indicator appear at the fill column.
 
 (define-minor-mode fci-mode
   "Toggle fci mode on and off.
@@ -357,8 +359,8 @@ unexpected behavior, see the comments in fill-column-indicator.el."
           ;; Enabling
           (progn
             ;; If we throw an error later in the initialization process and
-            ;; disable the mode, we need the data recorded by the next two forms
-            ;; to restore the buffer state, so they come first.
+            ;; disable the mode, we need the data recorded by the next two
+            ;; forms to restore the buffer state, so they come first.
             (unless buffer-display-table
               (setq buffer-display-table (make-display-table)
                     fci-prior-display-table nil))
@@ -453,7 +455,8 @@ unexpected behavior, see the comments in fill-column-indicator.el."
                    (if (color-defined-p fci-rule-color)
                        fci-rule-color
                      (fci-mode -1)
-                     (error "Value of `fci-rule-color' is not a recognized color"))
+                     (error 
+                      "Value of `fci-rule-color' is not a recognized color"))
                  ;; Otherwise, choose an appropriate color.  
                  (if (equal (frame-parameter (selected-frame) 'background-mode)
                             'light)
@@ -470,7 +473,8 @@ unexpected behavior, see the comments in fill-column-indicator.el."
                                (face-valid-attribute-values :family))
                         `(:family ,fci-font)
                       (fci-mode -1)
-                      (error "Value of `fci-font' is not a valid font family"))))
+                      (error 
+                       "Value of `fci-font' is not a valid font family"))))
         ;; Avoid inheriting these properties from font-lock.
         (weight-slant '(:weight normal :slant normal))
         ;; All together now.
@@ -572,8 +576,8 @@ unexpected behavior, see the comments in fill-column-indicator.el."
 ;; space-[rule-]newline glyphs on lines that appear within the window.  These
 ;; overlays have a display spec that replaces the newline glyphs with a
 ;; string of the same visual appearance, designed to avoid triggering the
-;; rendering bug.  When horizontally scrolling returns to normal we delete
-;; any secondaries in the vicinity of the window contents; remaining
+;; rendering bug.  When horizontal scrolling returns to normal we delete
+;; any secondaries in the vicinity of the window content; remaining
 ;; secondaries are deleted during the next idle period. (Having many overlays
 ;; of this secondary type can slow vertical navigation.)
 
@@ -615,9 +619,10 @@ unexpected behavior, see the comments in fill-column-indicator.el."
           (overlay-put o 'category 'fci)
           (overlay-put o 'fci2 t)
           (overlay-put o 'priority 1)
-          (overlay-put o 'display (concat (make-string (- fci-column (current-column))
-                                                       32)
-                                          fci-secondary-line-end)))
+          (overlay-put o 'display (concat 
+                                   (make-string (- fci-column (current-column))
+                                                32)
+                                   fci-secondary-line-end)))
         (goto-char (match-end 0))))))
 
 (defun fci-window-scroll-check (win start)

@@ -1,0 +1,53 @@
+Hi, I have been using XEmacs ever since -- for about 15 years -- to do everything (fist under unix now ubuntu). Since March 2011 I use emacs
+23. The move to emacs imposed a significant psychological burden, and I was
+most afraid of the following:
+
+     + Q1.7 How do I run Gnus on both Emacs and XEmacs?
+
+     A: You don't.
+
+But this turned out to be no problem at all. 
+
+==Has XEmacs-Emacs feature translation==
+
+As expected, moving from a fully customized system to a slightly
+different system, requires adjustments, here are some:
+
+* the last line of my xemacs init.el file says: (plan) but emacs would not show planner-default-page at startup. Here is the fix:
+
+ (setq inhibit-startup-screen 'yes-please)
+ (add-hook 'after-init-hook 'plan)
+ 
+* Starting with Emacs 22.1, `SPC' no longer completes file names in
+the minibuffer. Obviously, a person from my generation spaces never creates
+filenames with spaces (if you want to smooth and quickly get rid of the spaces in
+all your filenames, try this: [[file-list.el]]). Whatsoever, here is how to
+get the good old behaviour back:
+
+ (define-key minibuffer-local-filename-completion-map (kbd "SPC")
+  'minibuffer-complete-word)
+
+ (define-key minibuffer-local-must-match-filename-map (kbd "SPC")
+  'minibuffer-complete-word)
+     
+* XEmacs uses extents and Emacs uses text properties. I dont really
+understand the differences or advantages, but to get my XEmacs lisp
+code to work under emacs I changed 'buffer-substring' to
+'buffer-substring-no-properties'.
+
+==Needs XEmacs-Emacs feature translation ==
+
+* What is the emacs equivalent of 'pop-window-configuration'?
+
+----
+
+[new:DrewAdams:2011-04-10 14:13 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+
+----
+CategoryHomepage

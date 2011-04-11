@@ -197,6 +197,10 @@ Rather than hacking into the source, I think it's better to just redefine that s
 
 -- SteveSanbeg
 
+The above bit from SteveSanbeg works great except that it screws up indents on continuing  -- pushing them far over to the right. Does anybody have a fix?
+
+--JohnAnderson
+
 Does anybody have an idea about how to influence the indentation of subs as arguments?
 I often run into situations like this:
 

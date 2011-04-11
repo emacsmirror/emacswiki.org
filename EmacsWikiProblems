@@ -10,6 +10,16 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== Problems with edit shortcut ==
+
+The first bullet point on [[HowToEdit]] tells me "In common browsers,
+to edit a page, just use `Alt e’" I tried firefox and chromium browser
+under ubuntu, and both do open an internal menu instead of putting the
+current page in edit mode. It would be nice to have a remark on the
+[[HowToEdit]] page, for EmacsWiki newbies like me, which explains how
+to get the shortcuts for edit, preview and save to work. Thanks! -- ThomasAlexanderGerds
+
+
 == Performance Problems? ==
 
 I get the impression that something has impacted the performance.  Just getting this page open for editing too 45 sec, and for a code page in the Elisp area it can take several minutes.  This is new.  Maybe it's just today; dunno. Preview is as quick as ever, however.  -- DrewAdams

@@ -24,7 +24,7 @@ The packages that come with Emacs are:
 * [[Gnus]] -- the news and mail reader with likely the largest user base
 * [[MH-E]] -- interface to the MH mail system
 
-Some other packages that are distributed seperately are also commonly
+Some other packages that are distributed separately are also commonly
 used:
 
 * WanderLust -- very good IMAP4 and Offline support
