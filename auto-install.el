@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.52 2011/01/29 11:11:47 rubikitch Exp $
+;; $Id: auto-install.el,v 1.53 2011/04/12 06:28:20 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.52 $
+;; Version: $Revision: 1.53 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.52 2011/01/29 11:11:47 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.53 2011/04/12 06:28:20 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -296,6 +296,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.53  2011/04/12 06:28:20  rubikitch
+;; fix for proxy
+;;
 ;; Revision 1.52  2011/01/29 11:11:47  rubikitch
 ;; bugfix: auto-install-buffer-save cannot treat auto-install-directory properly if it doesn't end with `/'
 ;;
@@ -872,7 +875,11 @@ You can use this to download marked files in Dired asynchronously."
     (error "This command is only for `dired-mode'.")))
 
 (defun auto-install-network-available-p (host)
-  (ignore-errors (ffap-machine-p host 80 t)))
+  (if auto-install-use-wget
+      (eq (call-process auto-install-wget-command nil nil nil "-q" "--spider" host) 0)
+    (with-current-buffer (url-retrieve-synchronously (concat "http://" host))
+      (prog1 (not (zerop (buffer-size)))
+        (kill-buffer (current-buffer))))))
 ;; (auto-install-network-available-p "www.emacswiki.org")
 
 (defun auto-install-update-emacswiki-package-name (&optional unforced)

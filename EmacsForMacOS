@@ -68,11 +68,11 @@ Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] 
 
 === Building Emacs for OS X ===
 
-There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer[http://www.kwick.de/french200/#/french200/blog/ .]
+There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
 ==== Aquamacs ====
 
-AquamacsEmacs can be built via build script or manually (step by step)[http://ermaechtigteruebersetzer.blogmonster.de/ .]  The source is available from a Git repository.  Then, do:
+AquamacsEmacs can be built via build script or manually (step by step).  The source is available from a Git repository.  Then, do:
 
 <pre>
   ./configure
@@ -134,7 +134,7 @@ Emacs can be compiled on the classic MacOS using the Macintosh
 Programmer's Workshop.  MPW is a unix-like environment for the
 MacOS, which used to cost thousands $$$$ USD but is
 now freely available due to believed obsolescence.  Die hard
-MacOS9 aficiondos rejoice[http://uebersetzer1.wordpress.com/ .]
+MacOS9 aficiondos rejoice.
 MPW is available from:
 ftp://ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_etc./
 Then, follow the instructions in the Emacs source, in the file $EMACS/mac/INSTALL .

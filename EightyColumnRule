@@ -146,5 +146,9 @@ I'm currently using Emacs 23.0.91.1 with the GTK interface.  What I'd like is a 
 
 [new]
 ColumnMarker. -- AlexSchroeder
+
+[new:AlpAker:2011-04-12 02:45 UTC]
+
+You might also look at FillColumnIndicator.
 ----
 CategoryFilling CategoryDisplay

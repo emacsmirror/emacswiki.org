@@ -28,7 +28,9 @@ Settings will be saved to the location of `diredful-init-file' (by default it is
 
 ==Tips==
 
-File type names are sorted alphabetically before being processed. In case two file types have matched the same file, the file type that comes last in an alphabetically sorted list will take precedence (e.g., zworldwritable). 
+File type names are sorted alphabetically before being processed. In case two file types have matched the same file, the file type that comes last in an alphabetically-sorted list will take precedence (e.g., zworldwritable). 
+
+The world-writable regexp pattern used in the screenshot is <code>[rwx-][rwx-][rwx-][rwx-][rwx-][rwx-][rwx-]w[trwx-]</code>
 
 ==Screenshots==
 

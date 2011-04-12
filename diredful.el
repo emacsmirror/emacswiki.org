@@ -1,12 +1,12 @@
 ;;; diredful.el --- colorful file names in dired buffers
 
 ;; Author: Thamer Mahmoud <thamer.mahmoud@gmail.com>
-;; Version: 1.1
-;; Time-stamp: <2010-10-21 09:32:47 thamer>
+;; Version: 1.2
+;; Time-stamp: <2011-04-11 14:36:44 thamer>
 ;; URL: http://www.emacswiki.org/emacs/download/diredful.el
 ;; Keywords: dired, colors, extension, widget
 ;; Compatibility: Tested on GNU Emacs 23.2
-;; Copyright (C) 2010 Thamer Mahmoud, all rights reserved.
+;; Copyright (C) 2011 Thamer Mahmoud, all rights reserved.
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -21,7 +21,7 @@
 ;; General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  f not, write to
+;; along with this program; see the file COPYING. If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
 
@@ -45,30 +45,33 @@
 ;;
 ;;     M-x diredful-add
 ;;
-;; This will ask you to define a new file type name, like
-;; "images". You can then specify a list of extensions or file names
-;; that belong to this file type, and customize the face that will be
+;; This will ask you to define a new name for a file type, like
+;; "images". You can then specify a list of extensions and file names
+;; that belong to this type, and customize the face that will be
 ;; used to display them. A new face will be automatically generated
 ;; and updated for each type.
 ;;
-;; File Types can be added, edited, and deleted using the following
-;; three commands:
+;; Note: changes will only be applied to newly created dired
+;; buffers.
 ;;
-;;     M-x diredful-add/delete/edit
+;; File Types can be added, edited, and deleted using any of the
+;; following three commands:
 ;;
-;; Note that changes will only apply to newly created dired buffers.
+;;     M-x diredful-add
+;;     M-x diredful-delete
+;;     M-x diredful-edit
 ;;
 ;; These settings will be saved to the location of
-;; `diredful-init-file' (by default it is
+;; `diredful-init-file' (the default location is
 ;; "~/.emacs.d/diredful-conf.el"). You may choose a different location
 ;; by doing:
 ;;
 ;;     M-x customize-variable diredful-init-file
 ;;
-;; File type names are sorted alphabetically before being
-;; processed. In case two file types have matched the same file, the
+;; Tip: File type names are sorted alphabetically before being
+;; applied. If two file types matched the same file, the
 ;; file type that comes last in an alphabetically-sorted list will
-;; take precedence (e.g., a file type named "zworldwritable" will take
+;; take precedence (e.g., a type named "zworldwritable" will take
 ;; priority over other file types).
 ;;
 
@@ -91,22 +94,21 @@
   "List holding the names of patterns as strings.")
 
 (defvar diredful-alist nil
-  "Alist of lists with each element represent a file type that
+  "An alist of lists with each element representing a file type that
 will be matched when running and displaying files in dired
 buffers. Each type has the following structure:
- NAME ;; Unique name representing a file type,  and used as a key.
- FACE ;; A Face as symbol that will be used to display the files.
- PATTERN  ;; A string holding one or more regexp patterns.
- PATTERN-TYPE  ;;
-      nil: regexp is a list of file extensions (default)
-      t: regexp is a list of file or directory names
-      1: apply regexp on the whole line shown by dired.
- WHOLELINE ;; if non-nil apply face to the whole line \
+ NAME ;; Name for a file type, used as a key.
+ FACE ;; Face as a symbol that will be used to display the files.
+ PATTERN ;; String holding one or more regexp patterns.
+ PATTERN-TYPE ;; Set the pattern-type for pattern
+      nil: List of file extensions (default)
+      t: List of file or directory names
+      1: Regexp applied to the whole line shown by dired.
+ WHOLELINE ;; if non-nil, apply face to the whole line \
  not just the file name.
- WITHDIR ;; if non-nil include directories when applying pattern.
- WITHOUTLINK ;; if non-nil exclude symbolic links when applying.
- pattern"
-  )
+ WITHDIR ;; if non-nil, include directories when applying pattern.
+ WITHOUTLINK ;; if non-nil, exclude symbolic links when applying.
+ pattern")
 
 (defun diredful-settings-save ()
   (let ((file (expand-file-name diredful-init-file)))
@@ -144,8 +146,8 @@ file found. Run diredful-add.")
 only the faces that we've added can be returned."
   (if (and  (stringp (car l))
             (> (length l) 0)
-            (= (length (cadr x)) 4))
-      (car (cdr (car (last (cadr x)))))
+            (= (length (cadr l)) 4))
+      (car (cdr (car (last (cadr l)))))
     nil))
 
 (defun diredful-apply (regexp face whole enable)
@@ -243,6 +245,8 @@ trigger an error."
 another name" doc-string)))) name)
 
 (defun diredful-add (name)
+  "Add a file type used for choosing colors to file names in
+dired buffers"
   (interactive
    (append
     (let* ((name (read-string (format "New name for file type: "))))
@@ -254,6 +258,8 @@ another name" doc-string)))) name)
   (diredful-edit name))
 
 (defun diredful-delete (name)
+  "Delete a file type used for choosing colors to file names in
+dired buffers"
   (interactive
    (list
     (completing-read
@@ -276,6 +282,8 @@ another name" doc-string)))) name)
   "List holding widget information.")
 
 (defun diredful-edit (name)
+  "Edit a file type used for choosing colors to file names in
+dired buffers"
   (interactive
    (list (completing-read "Edit Dired Color: "
                           diredful-names nil t)))
@@ -298,8 +306,8 @@ another name" doc-string)))) name)
     (make-local-variable 'diredful-widgets)
     (erase-buffer)
     (remove-overlays)
-    (unless (facep face-str)
-      (setq face-value 'default))
+    ;; (unless (facep face-str)
+    ;;   (setq face-str 'default))
     (require 'widget)
     ;; FIXIT: Loading this alone might break customize colors?
     (require 'cus-edit) ;; for custom-face-edit
@@ -328,8 +336,8 @@ regexps. Ex. jpe?g gif png (case-insensitive)\n"
             '(item :format "A list of space-separated regexps \
 applied to file names. Ex. README [Rr]eadme.\n"
                    t)
-            '(item :format "Regexp on whole line including file \
-name.\n"
+            '(item :format "Regexp on whole line (starting from \
+the first permission column), and including file name.\n"
                    1))
            (ignore (widget-insert "\n "))
            ;; Check Boxes
@@ -443,7 +451,7 @@ defined. Define a new file type using diredful-add.")
                   (split-string ft-pattern) ft-withdir ft-withoutlink)
                  (if (facep ft-face)
                      (symbol-name ft-face)
-                   (diredful-make-face (car sorted) ft-face)) ft-whole
+                  (diredful-make-face (car sorted) ft-face)) ft-whole
                    enable)))
              ;; Type is a file name
              ((eq ft-type t)

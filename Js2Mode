@@ -7,3 +7,17 @@ http://steve-yegge.blogspot.com/2008/03/js2-mode-new-javascript-mode-for-emacs.h
 [[https://github.com/mooz/js2-mode|GitHub fork with some improvements]]
 
 [[SmartTabs#Js2Mode|Smart Tabs: Js2Mode]]
+
+The js2-mode has a nice feature in that it highlights undeclared variables, but sometimes you want to ignore these for certain symbols (perhaps you know the global is defined properly in another file). The jslint tool will look for a globals comment at the top of a file and consider any symbols defined in there to be valid globals, the following elisp code installs a hook into js2-mode so it that it respects the same declaration
+
+
+    ;; After js2 has parsed a js file, we look for jslint globals decl comment ("/* global Fred, _, Harry */") and
+    ;; add any symbols to a buffer-local var of acceptable global vars
+    (add-hook 'js2-post-parse-callbacks 
+              (lambda ()
+                (let ((btext (buffer-substring-no-properties 1 (buffer-size))))
+                  (setq js2-additional-externs
+                        (split-string
+                         (if (string-match "/\\* *global \\(.*\\)\\*/" btext) (match-string-no-properties 1 btext) "")
+                         "[ ,\t\n]+" t))
+                )))
