@@ -33,6 +33,8 @@ outer_namespace > inner_namespace > class > member_function
 void member_function (int a, int b) | outer_namespace::inner_namespace::class
 }}}
 
+Q: Could you specify how you achieved the format in the screenshot?
+
 == Alternatives ==
 
 An alternative mode that offers similar functionality for several programming languages is WhichFuncMode.

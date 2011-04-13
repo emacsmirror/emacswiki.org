@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 31 08:06:10 2011 (-0700)
+;; Last-Updated: Sun Apr 10 17:06:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12186
+;;     Update #: 12220
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -193,8 +193,9 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-crm-local-completion-map',
-;;    `icicle-crm-local-must-match-map',
-;;    `old-crm-local-completion-map', `old-crm-local-must-match-map'.
+;;    `icicle-crm-local-must-match-map', `icicle-dirs-done',
+;;    `icicle-files', `old-crm-local-completion-map',
+;;    `old-crm-local-must-match-map'.
 ;;
 ;;
 ;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
@@ -2208,27 +2209,31 @@ specifies the value of ERROR-BUFFER."
                                      display-error-buffer)
       (old-shell-command-on-region start end command output-buffer replace error-buffer))))
 
+(defvar icicle-files () "A files list")
+
 
 ;; REPLACE ORIGINAL `dired-read-shell-command' defined in `dired-aux.el'
 ;; and redefined in `dired-x.el', saving it for restoration when you toggle `icicle-mode'.
 ;; Uses Icicles completion.
 ;; Uses `icicle-minibuffer-default-add-dired-shell-commands', not
 ;; `minibuffer-default-add-dired-shell-commands'.
+;; Binds `icicle-files' for use as free var elsewhere.
 ;;
 (defun icicle-dired-read-shell-command (prompt arg files)
   "Read a shell command for FILES using file-name completion.
 Uses Icicles completion - see `icicle-read-shell-command-completing'.
 ARG is passed to `dired-mark-prompt' as its first arg, for the prompt.
 FILES are the files for which the shell command should be appropriate."
-  (if (fboundp 'minibuffer-with-setup-hook)
-      (minibuffer-with-setup-hook
-       (lambda ()
-         (set (make-local-variable 'minibuffer-default-add-function)
-              'icicle-minibuffer-default-add-dired-shell-commands))
-       (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
-                           (format prompt (dired-mark-prompt arg files)) files))
-    (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
-                        (format prompt (dired-mark-prompt arg files)) files)))
+  (let ((icicle-files  files))
+    (if (fboundp 'minibuffer-with-setup-hook)
+        (minibuffer-with-setup-hook
+         (lambda ()
+           (set (make-local-variable 'minibuffer-default-add-function)
+                'icicle-minibuffer-default-add-dired-shell-commands))
+         (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
+                             (format prompt (dired-mark-prompt arg files)) files))
+      (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
+                          (format prompt (dired-mark-prompt arg files)) files))))
 
 (defun icicle-dired-guess-shell-command (prompt files)
   "Read a shell command for FILES using file-name completion.
@@ -2238,17 +2243,17 @@ Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
 ;; Similar to `minibuffer-default-add-dired-shell-commands', but if Dired-X is available
 ;; we include also the commands from `dired-guess-default'.
 ;;
-;; Free var here: `files' is bound in `icicle-dired-read-shell-command'.
+;; Free var here: `icicle-files' is bound in `icicle-dired-read-shell-command'.
 ;;;###autoload
 (defun icicle-minibuffer-default-add-dired-shell-commands ()
   "Return a list of all commands associated with current dired files.
 The commands are from `minibuffer-default-add-dired-shell-commands',
 and if `dired-x.el' is used, `dired-guess-default'."
   (interactive)
-  (let ((dired-guess-cmds  (and (boundp 'files) (fboundp 'dired-guess-default)
-                                (dired-guess-default files)))
-        (mailcap-cmds      (and (boundp 'files) (require 'mailcap nil t)
-                                (mailcap-file-default-commands files))))
+  (let ((dired-guess-cmds  (and (boundp 'icicle-files) (fboundp 'dired-guess-default)
+                                (dired-guess-default icicle-files)))
+        (mailcap-cmds      (and (boundp 'icicle-files) (require 'mailcap nil t)
+                                (mailcap-file-default-commands icicle-files))))
     (when (stringp dired-guess-cmds) (setq dired-guess-cmds  (list dired-guess-cmds)))
     (if (listp minibuffer-default)
         (append minibuffer-default dired-guess-cmds mailcap-cmds)
@@ -3080,7 +3085,7 @@ prefix over all candidates."
               (if (icicle-not-basic-prefix-completion-p)
                   (icicle-completion-all-completions input minibuffer-completion-table
                                                      minibuffer-completion-predicate (length input))
-                (all-completions input minibuffer-completion-table default-directory
+                (all-completions input minibuffer-completion-table minibuffer-completion-predicate
                                  icicle-ignore-space-prefix-flag)))
              (icicle-extra-candidates
               (icicle-remove-if-not
@@ -3209,9 +3214,9 @@ input over all candidates."
                          (not icicle-apropos-complete-match-fn)
                          (functionp minibuffer-completion-table))
                     ;; Let the function do it all.
-                    (all-completions input minibuffer-completion-table default-directory
+                    (all-completions input minibuffer-completion-table minibuffer-completion-predicate
                                      icicle-ignore-space-prefix-flag)
-                  (all-completions "" minibuffer-completion-table default-directory
+                  (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
                                    icicle-ignore-space-prefix-flag)))
                (icicle-extra-candidates
                 (icicle-remove-if-not
@@ -3533,7 +3538,6 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
       (substring filename 0 (1+ (match-beginning 0)))
     (or (file-name-directory filename) ""))) ; Don't return nil, in any case.
       
-
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
 Do this only if `icicle-help-in-mode-line-flag' is non-nil."
@@ -4789,7 +4793,8 @@ defined)."
     (setq input  (or (icicle-file-name-nondirectory input)  ""))
     (condition-case nil
         (progn (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
-               (let ((candidates (all-completions "" minibuffer-completion-table default-directory
+               (let ((candidates (all-completions "" minibuffer-completion-table
+                                                  minibuffer-completion-predicate
                                                   icicle-ignore-space-prefix-flag))
                      (case-fold-search  (if (boundp 'read-file-name-completion-ignore-case)
                                             read-file-name-completion-ignore-case
@@ -4851,6 +4856,9 @@ there are no such matching candidates, then LIST is returned."
   "Return non-nil if FILE (a string) names a writable file."
   (and (not (string= "" file))  (file-writable-p file)  (not (file-directory-p file))))
 
+(defvar icicle-dirs-done ()
+  "Directories already processed.")
+
 (defun icicle-files-within (file-list accum &optional no-symlinks-p)
   "List of all readable files in FILE-LIST.
 Accessible directories in FILE-LIST are processed recursively to
@@ -4859,11 +4867,12 @@ include their files and the files in their subdirectories.
 Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links.
 
 The list of files is accumulated in ACCUM, which is used for recursive
-calls."
-  (let ((dirs-done  ()))
+calls.
+Bind `icicle-dirs-done' for use as free var elsewhere."
+  (let ((icicle-dirs-done  ()))
     (icicle-files-within-1 file-list accum no-symlinks-p)))
 
-(defun icicle-files-within-1 (file-list accum no-symlinks-p)
+(defun icicle-files-within-1 (file-list accum no-symlinks-p) ; `icicle-dirs-done' is free here.
   "Helper for `icicle-files-within'."
   (let ((res  accum)
         file)
@@ -4873,12 +4882,12 @@ calls."
         (if (file-directory-p file)
             ;; Skip directory if ignored, already treated, or inaccessible.
             (when (and (not (member (file-name-nondirectory file) icicle-ignored-directories))
-                       (not (member (file-truename file) dirs-done)) ; `dirs-done' is free here.
+                       (not (member (file-truename file) icicle-dirs-done))
                        (file-accessible-directory-p file))
               (setq res  (icicle-files-within-1 (directory-files file 'full icicle-re-no-dot)
                                                 res
                                                 no-symlinks-p))
-              (push (file-truename file) dirs-done))
+              (push (file-truename file) icicle-dirs-done))
           (when (file-readable-p file) (setq res  (cons file res)))))
       (pop file-list))
     res))
@@ -5389,10 +5398,10 @@ Return STRING, whether propertized or not."
     (put-text-property 0 (length string) 'help-echo help string))
   string)
 
-;; Free vars here: `prompt', `icicle-candidate-help-fn', `completion-ignore-case',
+;; Free vars here: `icicle-prompt', `icicle-candidate-help-fn', `completion-ignore-case',
 ;;                 `icicle-transform-function', `icicle-sort-orders-alist',
 ;;                 `icicle-list-nth-parts-join-string', `icicle-list-join-string',
-;;                 `icicle-list-end-string', `icicle-proxy-candidate-regexp', `named-colors',
+;;                 `icicle-list-end-string', `icicle-proxy-candidate-regexp', `icicle-named-colors',
 ;;                 `icicle-proxy-candidates'.
 (defun icicle-color-completion-setup ()
   "Set up for color-name/RGB-value completion (helper function).
@@ -5406,7 +5415,7 @@ Sets these variables, which are assumed to be already `let'-bound:
   `icicle-list-join-string'
   `icicle-list-end-string'
   `icicle-proxy-candidate-regexp'
-  `named-colors'
+  `icicle-named-colors'
   `icicle-proxy-candidates'
 Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
   (unless (featurep 'hexrgb) (error "`icicle-color-completion-setup' requires library `hexrgb.el'"))
@@ -5441,7 +5450,7 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
         icicle-list-end-string             ""
         icicle-proxy-candidate-regexp      "^[*'].+[*']"
 
-        named-colors                       (mapcar #'icicle-make-color-candidate
+        icicle-named-colors                (mapcar #'icicle-make-color-candidate
                                                    (hexrgb-defined-colors))
         icicle-proxy-candidates
         (mapcar                         ; Convert multi-completions to strings.

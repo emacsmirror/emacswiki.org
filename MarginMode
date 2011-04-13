@@ -110,7 +110,7 @@ Can someone please demonstrate how?  As stated above, column-marker.el only mark
 What do you need to do to make it look more like the Visual Studio guidelines feature -- for instance, http://blogs.msdn.com/b/saraford/archive/2004/11/15/257953.aspx ?  I didn't get anywhere customizing the column-marker-1 face.
 
 [new:AlpAker:2011-02-28 22:10 UTC]
-I've uploaded up a package FillColumnRule that can draw a line at the fill column in the way John Yates describes above. --- AlpAker
+I've uploaded up a package FillColumnIndicator that can draw a line at the fill column in the way John Yates describes above. --- AlpAker
 ----
 See also: ColumnMarker, EightyColumnRule and HighlightLongLines.
 

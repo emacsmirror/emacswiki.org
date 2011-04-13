@@ -2,7 +2,7 @@ Shell Script mode, `sh-mode', is the major mode for editing Unix and GNU/Linux s
 
 It supports several shell variants, including ##bash##, ##csh##, ##ksh## and ##zsh##, as well as plain Bourne shell, ##sh##.
 
-* GIT:sh-script.el
+* GIT:progmodes/sh-script.el
 
 See ShellMode, for using the shell interactively.
 

@@ -59,12 +59,12 @@
   "Enable each window to remember its value of point in each buffer."
   :group 'convenience)
 
-(defcustom rebound-no-reposition-regexps '("^\\*.*\\*$")
+(defcustom rebound-no-reposition-regexps '("^\\*.+\\*$")
   "Rebound does not repositiona  buffer whose name matches a regexp in this list."
   :group 'rebound
   :type '(repeat regexp))
 
-(defcustom rebound-no-reposition-names '()
+(defcustom rebound-no-reposition-names nil
   "Rebound does not reposition a buffer whose name is an elements of this list."
   :group 'rebound
   :type '(repeat string))

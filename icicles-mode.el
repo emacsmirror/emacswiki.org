@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 29 13:35:32 2011 (-0700)
+;; Last-Updated: Thu Apr  7 08:50:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7391
+;;     Update #: 7429
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -848,6 +848,25 @@ Used on `pre-command-hook'."
         :help "Display help for minibuffer input and completion"
         :keys "C-? in minibuf"))
     (define-key icicle-menu-map [icicle-separator-last] '("--"))
+
+    (when (and (not icicle-touche-pas-aux-menus-flag) ; `Bookmark+' menu.
+               (boundp 'bmkp-bmenu-menubar-menu)) ; Defined in `bookmark+-bmu.el'.
+      (defvar icicle-bookmark+-menu-map (make-sparse-keymap)
+        "Icicles submenu for `Bookmark+' menu.")
+      (define-key bmkp-bmenu-menubar-menu [icicles]
+        (list 'menu-item "Icicles" icicle-bookmark+-menu-map :visible 'icicle-mode))
+      (define-key icicle-bookmark+-menu-map [icicle-search-bookmark-list-marked]
+        '(menu-item "Search & Replace in Marked Files..." icicle-search-bookmark-list-marked
+          :visible icicle-mode :enable (eq major-mode 'bookmark-bmenu-mode)))
+      (define-key icicle-bookmark+-menu-map [icicle-bookmark-save-marked-files-more]
+        '(menu-item "Saved Marked Files as More Candidates..." icicle-bookmark-save-marked-files-more
+          :visible icicle-mode :enable (eq major-mode 'bookmark-bmenu-mode)))
+      (define-key icicle-bookmark+-menu-map [icicle-bookmark-save-marked-files]
+        '(menu-item "Saved Marked Files as Candidates..." icicle-bookmark-save-marked-files
+          :visible icicle-mode :enable (eq major-mode 'bookmark-bmenu-mode)))
+      (define-key icicle-bookmark+-menu-map [icicle-bookmark-save-marked-files-as-project]
+        '(menu-item "Save Marked Files as Project" icicle-bookmark-save-marked-files-as-project
+          :visible icicle-mode :enable (eq major-mode 'bookmark-bmenu-mode))))
 
     (unless icicle-touche-pas-aux-menus-flag ; Use Dired's `Multiple' or `Operate' menu.
       (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
@@ -2047,6 +2066,22 @@ Used on `pre-command-hook'."
     (icicle-remap 'Info-index      'icicle-Info-index-cmd      Info-mode-map) ; `i'
     (icicle-remap 'Info-menu       'icicle-Info-menu-cmd       Info-mode-map)) ; `m'
 
+  ;; Bind some keys in `bookmark-bmenu-mode' mode (*Bookmark List*) - requires Bookmark+.
+  (when (and (featurep 'bookmark+) (boundp 'bookmark-bmenu-mode-map))
+    (unless (lookup-key bookmark-bmenu-mode-map [(control meta ?>)]) ; *Bookmark List* `C-M->'
+      (define-key bookmark-bmenu-mode-map [(control meta ?>)] 'icicle-bookmark-save-marked-files))
+    (unless (lookup-key bookmark-bmenu-mode-map [(control ?>)]) ; *Bookmark List* `C->'
+      (define-key bookmark-bmenu-mode-map [(control ?>)] 'icicle-bookmark-save-marked-files-more))
+    (unless (lookup-key bookmark-bmenu-mode-map [(control meta ?})]) ; *Bookmark List* `C-M-}'
+      (define-key bookmark-bmenu-mode-map [(control meta ?})]
+        'icicle-bookmark-save-marked-files-to-variable))
+    (unless (lookup-key bookmark-bmenu-mode-map [(control ?})]) ; *Bookmark List* `C-}'
+      (define-key bookmark-bmenu-mode-map [(control ?})]
+        'icicle-bookmark-save-marked-files-as-project))
+    (let ((defn  (lookup-key bookmark-bmenu-mode-map "\M-si"))) ; *Bookmark List* `M-s i'
+      (unless (and defn  (not (integerp defn)))
+        (define-key bookmark-bmenu-mode-map "\M-si" 'icicle-search-dired-marked))))    
+
   ;; Bind some keys in Dired mode.
   (when (boundp 'dired-mode-map)
     (unless (lookup-key dired-mode-map [(control meta ?<)]) ; Dired `C-M-<'
@@ -2063,13 +2098,13 @@ Used on `pre-command-hook'."
     (unless (lookup-key dired-mode-map [(control ?})]) ; Dired `C-}'
       (define-key dired-mode-map [(control ?})] 'icicle-dired-save-marked-as-project))
     (let ((defn  (lookup-key dired-mode-map "\M-si"))) ; Dired `M-s i'
-      (unless (and defn (not (integerp defn)))
+      (unless (and defn  (not (integerp defn)))
         (define-key dired-mode-map "\M-si" 'icicle-search-dired-marked))))
 
   ;; Bind keys in Ibuffer mode.
   (when (boundp 'ibuffer-mode-map)
     (let ((defn  (lookup-key ibuffer-mode-map "\M-si"))) ; Ibuffer `M-s i'
-      (unless (and defn (not (integerp defn)))
+      (unless (and defn  (not (integerp defn)))
         (define-key ibuffer-mode-map "\M-si" 'icicle-search-ibuffer-marked))
       (unless icicle-touche-pas-aux-menus-flag ; Use Ibuffer's `Operate' menu.
         (define-key ibuffer-mode-operate-map [icicle-search-ibuffer-marked]
@@ -2079,7 +2114,7 @@ Used on `pre-command-hook'."
   ;; Bind keys in Buffer Menu mode.
   (when (boundp 'Buffer-menu-mode-map)
     (let ((defn  (lookup-key Buffer-menu-mode-map "\M-si"))) ; Buffer-Menu `M-s i'
-      (unless (and defn (not (integerp defn)))
+      (unless (and defn  (not (integerp defn)))
         (define-key Buffer-menu-mode-map "\M-si" 'icicle-search-buff-menu-marked))))
 
   ;; Bind `S-TAB' in major maps, for key completion.
@@ -2166,6 +2201,14 @@ from keymap MAP."
     (icicle-unmap 'Info-goto-node Info-mode-map 'icicle-Info-goto-node-cmd)
     (icicle-unmap 'Info-index     Info-mode-map 'icicle-Info-index-cmd)
     (icicle-unmap 'Info-menu      Info-mode-map 'icicle-Info-menu-cmd))
+
+  ;; Unbind keys in `bookmark-bmenu-mode' mode (*Bookmark List*) - requires Bookmark+.
+  (when (and (featurep 'bookmark+) (boundp 'bookmark-bmenu-mode-map))
+    (define-key bookmark-bmenu-mode-map [(control meta ?>)] nil)
+    (define-key bookmark-bmenu-mode-map [(control ?>)] nil)
+    (define-key bookmark-bmenu-mode-map [(control meta ?})] nil)
+    (define-key bookmark-bmenu-mode-map [(control ?})] nil)
+    (define-key bookmark-bmenu-mode-map "\M-si" nil))
 
   ;; Unbind keys in Dired mode.
   (when (boundp 'dired-mode-map)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  1 17:00:42 2011 (-0700)
+;; Last-Updated: Tue Apr 12 19:41:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 14953
+;;     Update #: 14955
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -131,7 +131,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defconst bmkp-version-number "3.2.1")
+(defconst bmkp-version-number "3.2.2")
 
 ;;;###autoload
 (defun bmkp-version ()

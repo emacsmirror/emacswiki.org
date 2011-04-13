@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  6 10:32:10 2011 (-0700)
+;; Last-Updated: Sat Apr  9 17:10:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2629
+;;     Update #: 2644
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -84,6 +84,7 @@
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-bookmark',
 ;;    (+)`icicle-search-bookmark-list-bookmark',
+;;    `icicle-search-bookmark-list-marked',
 ;;    (+)`icicle-search-bookmarks-together',
 ;;    (+)`icicle-search-buffer', (+)`icicle-search-buff-menu-marked',
 ;;    (+)`icicle-search-char-property', (+)`icicle-search-defs',
@@ -184,8 +185,9 @@
 ;;
 ;;    `icicle-active-map', `icicle-info-buff', `icicle-info-window',
 ;;    `icicle-key-prefix', `icicle-key-prefix-2',
-;;    `icicle-orig-buff-key-complete', `icicle-orig-extra-cands',
-;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-named-colors', `icicle-orig-buff-key-complete',
+;;    `icicle-orig-extra-cands', `icicle-orig-font',
+;;    `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
 ;;    `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-win-key-complete',
@@ -399,6 +401,9 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
         (icicle-candidate-short-help help-string sized-font)
         (list sized-font)))))
 
+(defvar icicle-named-colors ()
+  "Named colors.")
+
 ;;;###autoload (autoload 'icicle-frame-bg "icicles-cmd2.el")
 (icicle-define-command icicle-frame-bg  ; Command name
   "Change background of current frame.
@@ -444,7 +449,7 @@ This command is intended only for use in Icicle mode." ; Doc string
   (lambda (color)                       ; Action function
     (modify-frame-parameters
      icicle-orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
-  icicle-prompt named-colors nil t nil  ; `completing-read' args
+  icicle-prompt icicle-named-colors nil t nil  ; `completing-read' args
   (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
   ((icicle-orig-frame                  (selected-frame)) ; Bindings
    (orig-bg                            (frame-parameter nil 'background-color))
@@ -457,7 +462,7 @@ This command is intended only for use in Icicle mode." ; Doc string
 
    icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
    icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-   icicle-list-end-string       icicle-proxy-candidate-regexp      named-colors
+   icicle-list-end-string       icicle-proxy-candidate-regexp      icicle-named-colors
    icicle-proxy-candidates)
 
   (icicle-color-completion-setup)       ; First code
@@ -471,7 +476,7 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
   (lambda (color)                       ; Action function
     (modify-frame-parameters
      icicle-orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
-  icicle-prompt named-colors nil t nil  ; `completing-read' args
+  icicle-prompt icicle-named-colors nil t nil  ; `completing-read' args
   (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
   ((icicle-orig-frame                  (selected-frame)) ; Bindings
    (orig-bg                            (frame-parameter nil 'foreground-color))
@@ -484,7 +489,7 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
 
    icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
    icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-   icicle-list-end-string       icicle-proxy-candidate-regexp      named-colors
+   icicle-list-end-string       icicle-proxy-candidate-regexp      icicle-named-colors
    icicle-proxy-candidates)
 
   (icicle-color-completion-setup)       ; First code
@@ -3131,8 +3136,7 @@ together instead of one at a time.
                                 (not (consp current-prefix-arg)))
                            (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
                        bmkp-sorted-alist)
-                  (setq bmkp-sorted-alist
-                        (bmkp-sort-and-remove-dups bookmark-alist)))))))
+                  (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist)))))))
   (progn                                ; First code
     (require 'bookmark)
     (when (featurep 'bookmark+)
@@ -3289,8 +3293,7 @@ command")))
                                  (icicle-bookmark-propertize-candidate bname))
                                 guts))
                       (error nil))))
-       (bmkp-sort-and-remove-dups (funcall ',(intern (format "bmkp-%s-alist-only" type))
-                                   ,@args)))))
+       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
     nil                                 ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (icicle-bookmark-cleanup)))         ; Last code
@@ -3678,6 +3681,20 @@ without arguments BEG, END, and WHERE."
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match
          (let ((icicle-show-Completions-initially-flag  t)) (icicle-file-list))
          args))
+
+;;;###autoload
+(defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match &rest args)
+  "Search the files of the marked bookmarks in `*Bookmark List*'.
+Arguments are the same as for `icicle-search', but without arguments
+BEG, END, and WHERE."
+  (interactive `(,(if icicle-search-whole-word-flag
+                      (icicle-search-read-word)
+                      (icicle-search-read-context-regexp))
+                 ,(not icicle-show-multi-completion-flag)))
+  (unless (fboundp 'bmkp-bmenu-get-marked-files)
+    (error "Command `icicle-bookmark-save-marked-files' requires library Bookmark+"))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args))
 
 ;;;###autoload
 (defun icicle-search-dired-marked (scan-fn-or-regexp require-match &rest args)
@@ -5404,7 +5421,7 @@ used with `C-u', with Icicle mode turned off)."
             icicle-transform-function          icicle-sort-orders-alist
             icicle-list-nth-parts-join-string  icicle-list-join-string
             icicle-list-end-string             icicle-proxy-candidate-regexp
-            named-colors                       icicle-proxy-candidates)
+            icicle-named-colors                icicle-proxy-candidates)
         ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
         ;; Use `icicle-prompt' from now on, since that's what `icicle-color-completion-setup' sets up.
         (setq icicle-prompt  (copy-sequence (or prompt "Color: ")))
@@ -5424,7 +5441,7 @@ used with `C-u', with Icicle mode turned off)."
                             (icicle-all-candidates-list-alt-action-fn
                              (or icicle-all-candidates-list-alt-action-fn
                                  (icicle-alt-act-fn-for-type "color"))))
-                        (completing-read icicle-prompt named-colors))))
+                        (completing-read icicle-prompt icicle-named-colors))))
         (when (fboundp 'eyedrop-foreground-at-point)
           (cond ((string-match "^\*mouse-2 foreground\*" color)
                  (setq color  (prog1 (eyedrop-foreground-at-mouse

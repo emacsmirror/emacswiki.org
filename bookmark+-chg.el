@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr  3 18:51:37 2011 (-0700)
+;; Last-Updated: Tue Apr 12 19:42:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13377
+;;     Update #: 13575
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,53 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/12
+;;     Added: bmkp-bookmark-name-member, bmkp-names-same-bookmark-p, bmkp-sort-omit,
+;;            bmkp-remove-omitted, bmkp-delete-bookmark-name-from-list, bmkp-bookmark-a-file (alias),
+;;            bmkp-autofile-(add|remove)-tags, bmkp-(un)tag-a-file (aliases),
+;;            bmkp-get-autofile-bookmark, bmkp-find-file-(all|some)-tags(-regexp)(-other-window).
+;;     Removed: bmkp-remove-assoc-dups, bmkp-sort-and-remove-dups.
+;;     Applied renaming: bmkp-bmenu-omitted-list to bmkp-bmenu-omitted-bookmarks.
+;;     bookmark-store: Redefine for all Emacs versions now:
+;;       Put the bookmark on the name as property bmkp-full-record.  Use bmkp-maybe-save-bookmarks.
+;;       Return the bookmark.
+;;     bookmark-get-bookmark: Redefine for all Emacs versions now:
+;;       If BOOKMARK is a bookmark-name string that has property bmkp-full-record, return that value.
+;;     bookmark-send-edited-annotation: Make sure it's the annotation buffer that gets killed.
+;;     bookmark-default-handler: Return nil, like vanilla (but why?).
+;;     bookmark-location: Pass full bookmark to the various "get" functions.
+;;     bookmark-rename: Put bmkp-full-record property on new name.
+;;     bookmark-delete:
+;;       Use bmkp-delete-bookmark-name-from-list: If name has bmkp-full-record property, use that
+;;         with name to find bookmark to delete.
+;;       Pass full bookmark to unlight.
+;;     bmkp-edit-bookmark: Save if either is non-empty, not if both are.  Thx to Michael Heerdegen.
+;;     bmkp-edit-bookmark-record: Bind print-circle to t around pp.
+;;     bmkp-default-bookmark-name:
+;;       Use bookmark-name-from-full-record plus bookmark-get-bookmark, not assoc.
+;;       If BNAME is nil (no default) then do not try to look it up in alist.
+;;     bookmark-write-file: Unpropertize only for Emacs 20 or nil bmkp-propertize-bookmark-names-flag.
+;;                          Bind print-circle to t around pp.
+;;     bmkp-save-menu-list-state: Make it interactive (a command).  Bind print-circle.
+;;                                Use bmkp-maybe-unpropertize-bookmark-names on alists and name lists.
+;;                                Bind print-circle to t around pp.
+;;     bmkp-unomit-all: Use bmkp-delete-bookmark-name-from-list, not delete.
+;;     bmkp-dired-this-dir-bookmark-p: Use bmkp-same-file-p, not string=.
+;;     bmkp-url-target-set, bmkp-replace-existing-bookmark:: Return the bookmark.
+;;     bmkp-file-target-set:  Return bookmark.  Added arg MSGP: msg if no file yet.
+;;     bmkp-autofile-set:
+;;       Added DIR arg and MSGP arg: msg if no file yet.  Return the bookmark.
+;;       If read absolute file name, create bmk in its dir, not in default-directory.  Else use DIR.
+;;       Use bmkp-get-autofile-bookmark, so uses bmkp-same-file-p for each file part (not equal).
+;;     bmkp-marked-bookmark-p, bmkp-omitted-bookmark-p: Use bmkp-bookmark-name-member, not member.
+;;     bookmark-location: Pass full bookmark to the various "get" functions.
+;;     bmkp-choose-navlist-from-bookmark-list, bmkp-cycle-this-buffer:
+;;       Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
+;;     bmkp-bookmark-description, bmkp-describe-bookmark-internals: Add Bookmark `' to title.
+;;     bmkp-make-bookmark-list-record: Use bmkp-maybe-unpropertize-bookmark-names on lists.
+;;     bmkp-printable-p: Bind print-circle to t around prin1.
+;;     bmkp-delete-autonamed(-this-buffer)-no-confirm:
+;;       Do nothing if bookmarks not loaded.  Thx to Christoph Scholtes.
 ;; 2011/04/03 dadams
 ;;     Added: bmkp-make-record-for-target-file, bmkp-replace-existing-bookmark (not used).
 ;;     bmkp-file-this-dir-bookmark-p: Corrected it to compare directory to default-directory.
@@ -242,6 +289,39 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/12
+;;     Added: bmkp-propertize-bookmark-names-flag, bmkp-maybe-unpropertize-bookmark-names,
+;;            bmkp-bmenu-get-marked-files.
+;;     Renamed: bmkp-bmenu-omitted-list to bmkp-bmenu-omitted-bookmarks.
+;;     bmkp-bmenu-define-full-snapshot-command:
+;;       Bind print-circle to t around pp.  Use bmkp-maybe-unpropertize-bookmark-names on lists.
+;;     bookmark-bmenu-(show|hide)-filenames, bmkp-bmenu-toggle-show-only-(un)marked,
+;;       bmkp-bmenu-(un)omit-marked:
+;;         Fit one-window frame only if selected window is *Bookmark List*.
+;;     bookmark-bmenu-bookmark: Added optional arg FULL.  Non-nil means return full bookmark record.
+;;     bookmark-bmenu-unmark, bookmark-bmenu-delete, bmkp-bmenu-unomit-marked:
+;;       Use bmkp-delete-bookmark-name-from-list, not delete.
+;;     bookmark-bmenu-execute-deletions: Pass full bookmark, not name, to delete, and don't use assoc.
+;;     bookmark-bmenu-rename: Use bmkp-bmenu-goto-bookmark-named instead of just searching for name.
+;;     bmkp-bmenu-toggle-marks, bmkp-bmenu-unomit-marked, bmkp-bmenu-define-jump-marked-command,
+;;       bmkp-bmenu-mouse-3-menu:
+;;         Use bmkp-bookmark-name-member, not member.
+;;     bmkp-bmenu-make-sequence-from-marked: Do not invoke bookmark-bmenu-list when no displayed list.
+;;     bmkp-bmenu-define-command: Use bmkp-maybe-unpropertize-bookmark-names on *-omitted-bookmarks.
+;;     bmkp-bmenu-list-1: Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
+;;                        Pass full bookmark to bmkp-bmenu-propertize-item.
+;;     bmkp-bmenu-propertize-item:
+;;       First arg is now a full bookmark, not a bookmark name.  Get bookmark name from it.
+;;       Put prop bmkp-bookmark-name on buffer text with propertized bookmark-name string as value.
+;;       String has property bmkp-full-record with value the full bookmark record, with string as car.
+;;       Return propertized bookmark-name string.
+;;     bmkp-bmenu-isearch-marked-bookmarks(-regexp), bmkp-bmenu-dired-marked,
+;;       bmkp-bmenu-(search|query-replace)-marked-bookmarks-regexp:
+;;         Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
+;;     bmkp-bmenu-goto-bookmark-named:
+;;       If NAME has property bmkp-full-record then go to the bookmark it indicates.  Otherwise, just
+;;       go to the first bookmark with the same name.
+;;     bookmark-bmenu-mode: Added bmkp-save-menu-list-state (now a command) to the mode help.
 ;; 2011/04/02 dadams
 ;;     bookmark-bmenu-mode: Added to mode help: bmkp-file-this-dir-(all|some)-tags(-regexp)-jump.,
 ;;                                              Create/Set section, with bmkp-autofile-set.
@@ -299,6 +379,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2011/04/12
+;;     bmkp-cycle-lighted-this-buffer: Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
 ;; 2011/04/01 dadams
 ;;     bmkp-light-bookmark(s): Don't call bookmark-handle-bookmark.  Wrap with with-current-buffer.
 ;; 2011/01/03 dadams
@@ -327,6 +409,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;
+;; 2011/04/12
+;;     bmkp-define-cycle-command: Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies: defmacro.
 ;; 2010/09/25 dadams
@@ -340,6 +424,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2011/04/12 dadams
+;;     Version 3.2.2.
 ;; 2011/04/01 dadams
 ;;     Require bookmark+-key.el (new).  Version 3.2.1.
 ;; 2011/01/03 dadams

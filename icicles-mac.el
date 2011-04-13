@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 15:43:01 2011 (-0700)
+;; Last-Updated: Sat Apr  9 16:24:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 567
+;;     Update #: 573
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -178,11 +178,12 @@ Optional arg DONT-SAVE non-nil means do not call
       (message "Added to `%s': `%S'" ',alist-var new-item))))
 
 ;;;###autoload
-(defmacro icicle-buffer-bindings (&optional more-bindings)
+(defmacro icicle-buffer-bindings (&optional pre-bindings post-bindings)
   "Bindings to use in multi-command definitions for buffer names.
-MORE-BINDINGS is a list of additional bindings, which are created
-before the others."
-  `(,@more-bindings
+PRE-BINDINGS is a list of additional bindings, which are created
+before the others.  POST-BINDINGS is similar, but the bindings are
+created after the others."
+  `(,@pre-bindings
     (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
                                                       read-buffer-completion-ignore-case)
                                                   completion-ignore-case))
@@ -228,14 +229,16 @@ before the others."
                 (cdr (assq 'buffer-list (frame-parameters))))
                (t
                 (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
-       (buffer-list)))))
+       (buffer-list)))
+    ,@post-bindings))
 
 ;;;###autoload
-(defmacro icicle-file-bindings (&optional more-bindings)
+(defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
   "Bindings to use in multi-command definitions for file names.
-MORE-BINDINGS is a list of additional bindings, which are created
-before the others."
-  `(,@more-bindings
+PRE-BINDINGS is a list of additional bindings, which are created
+before the others.  POST-BINDINGS is similar, but the bindings are
+created after the others."
+  `(,@pre-bindings
     (completion-ignore-case
      (or (and (boundp 'read-file-name-completion-ignore-case) read-file-name-completion-ignore-case)
       completion-ignore-case))
@@ -261,7 +264,8 @@ before the others."
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
     (icicle-all-candidates-list-alt-action-fn
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-    (icicle-delete-candidate-object              'icicle-delete-file-or-directory)))
+    (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
+    ,@post-bindings))
 
 ;;;###autoload
 (defmacro icicle-define-command
@@ -432,7 +436,7 @@ BINDINGS is a list of `let*' bindings added around the command code.
   `icicle-orig-window' is bound to (selected-window)
 BINDINGS is macroexpanded, so it can also be a macro call that expands
 to a list of bindings.  For example, you can use
-`icicle-buffer-bindings' here.
+`icicle-buffer-bindings' or `icicle-file-bindings' here.
 
 In case of user quit (`C-g') or error, an attempt is made to restore
 the original buffer.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  4 08:30:58 2011 (-0700)
+;; Last-Updated: Tue Apr 12 19:49:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6313
+;;     Update #: 6381
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/04/12 dadams
+;;     Added: icicle-bookmark-save-marked-files(-as-project|-more|-persistently|-to-variable),
+;;            icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-(un)tag-a-file.
+;;     icicle-bookmark(-list|-set|-other-window|-delete-action), icicle-define-bookmark-command-1:
+;;       Applied Bookmark+ renaming: bmkp-sort-and-remove-dups -> bmkp-sort-omit.
+;;     icicle-bookmark-set: Fixed typo: bmkp-light-bookmarks-this-buffer -> bmkp-light-this-buffer. 
+;;     icicle-define-bookmark-command-1: Doc strings now mention corresponding Bookmark+ command.
+;;     icicle-execute-extended-command-1:
+;;       Apply icicle-transform-multi-completion to arg.  Thx to Michael Heerdegen.
 ;; 2011/04/04 dadams
 ;;     icicle-bookmark-jump-1, icicle-pop-tag-mark: Use icicle-recenter.
 ;; 2011/04/02 dadams
@@ -375,6 +384,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/04/12 dadams
+;;     Added: icicle-search-bookmark-list-marked, icicle-named-colors.
+;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
+;;       Applied Bookmark+ renaming: bmkp-sort-and-remove-dups -> bmkp-sort-omit.
+;;     icicle-comint-search: Improved doc string (don't use C-next etc.).
+;;     icicle-frame-(bg|fg), icicle-read-color: Rename free var named-colors to icicle-named-colors.
+;;       Bind it in icicle-frame-(bg|fg), icicle-read-color, for use in icicle-color-completion-setup.
 ;; 2011/04/04 dadams
 ;;     icicle-insert-thesaurus-entry-cand-fn, icicle-goto-marker-1-action, icicle-search-final-act,
 ;;       icicle-comint-search:  Use icicle-recenter.
@@ -716,6 +732,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/04/12 dadams
+;;     Added defvars for icicle-dirs-done and icicle-files, for free vars.
+;;       Bind *-files in icicle-dired-read-shell-command.  Bind *-dirs-done in icicle-files-within.
+;;       Use *-files in icicle-*-add-dired-*.  Use *-dirs-done in icicle-files-within-1.
+;;     icicle-color-completion-setup: Renamed (free elsewhere): named-colors -> icicle-named-colors.
+;;                                    Applied renaming: prompt -> icicle-prompt.
+;;     icicle-unsorted-file-name-prefix-candidates, icicle-unsorted-file-name-apropos-candidates,
+;;       icicle-apropos-any-file-name-candidates-p:
+;;         Use minibuffer-completion-predicate, not default-directory, in calls to all-completions.
+;;         Thx to Michael Heerdegen.
 ;; 2011/03/31 dadams
 ;;     icicle-read-file-name, icicle-read-number, icicle-read-char-exclusive,
 ;;       icicle-read-string-completing, icicle-color-completion-setup:
@@ -2159,6 +2185,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2011/04/12 dadams
+;;     icicle-buffer-bindings, icicle-file-bindings: Added optional POST-BINDINGS arg.
 ;; 2011/04/02 dadams
 ;;     icicle-buffer-bindings: Bind (new) icicle-bufflist, not bufflist.
 ;; 2011/03/29 dadams
@@ -3449,6 +3477,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/04/12 dadams
+;;     icicle-define-icicle-maps: Added Icicles submenu for Bookmark+ menu.
+;;     icicle-(bind|restore)-other-keymap-keys:
+;;       Bound icicle-bookmark-save-marked-files(-as-project|-more) in bookmark-bmenu-mode-map.
 ;; 2011/03/29 dadams
 ;;     icicle-define-minibuffer-maps, icicle-bind-completion-keys:
 ;;       Bound C-M-(v|V) to icicle-scroll-(forward|backward).
