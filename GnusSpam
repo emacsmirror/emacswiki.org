@@ -117,6 +117,8 @@ Above manual configurations didn't work for me. (Using GNU Emacs 22.2.1 (i486-pc
 
     find ~/Mail/gmail -not -name '.*' | while read FILE; do bogofilter -n <"$FILE"; done
 
+*WARNING!* Such mail hooks significantly slows down the opening and closing of the summary buffer. If you have hundreds of mails -- like me -- gnus becomes totally unuseable. Use with caution! (I myself ended up hooking bogofilter into procmail.)
+
 --- Volkan YAZICI
 
 ----

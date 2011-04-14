@@ -13,10 +13,11 @@ Emacs 21 users can either define a modified `zap-to-char' implementation, or pro
 The /modular/ customization would be to provide advice:
 
   (defadvice zap-to-char (after my-zap-to-char-advice (arg char) activate)
-    "Kill up to the ARG'th occurence of CHAR, and leave CHAR.
-  The CHAR is replaced and the point is put before CHAR."
+    "Kill up to the ARG'th occurence of CHAR, and leave CHAR. If
+  you are deleting forward, the CHAR is replaced and the point is
+  put before CHAR"
     (insert char)
-    (forward-char -1))
+    (if (< 0 arg) (forward-char -1)))
 
 As with `zap-to-char', the /advised/ `zap-to-char' has the same behaviors when the user gives a PrefixArgument.
 

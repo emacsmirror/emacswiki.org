@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 12 17:15:01 2011 (-0700)
+;; Last-Updated: Wed Apr 13 14:57:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1855
+;;     Update #: 1882
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -96,7 +96,8 @@
 ;;    `bmkp-add-tags', `bmkp-all-tags-jump',
 ;;    `bmkp-all-tags-jump-other-window', `bmkp-all-tags-regexp-jump',
 ;;    `bmkp-all-tags-regexp-jump-other-window',
-;;    `bmkp-autofile-add-tags', `bmkp-autofile-remove-tags',
+;;    `bmkp-autofile-add-tags', `bmkp-autofile-jump',
+;;    `bmkp-autofile-jump-other-window', `bmkp-autofile-remove-tags',
 ;;    `bmkp-autofile-set', `bmkp-autonamed-jump',
 ;;    `bmkp-autonamed-jump-other-window',
 ;;    `bmkp-autonamed-this-buffer-jump',
@@ -153,6 +154,7 @@
 ;;    `bmkp-file-this-dir-some-tags-jump-other-window',
 ;;    `bmkp-file-this-dir-some-tags-regexp-jump',
 ;;    `bmkp-file-this-dir-some-tags-regexp-jump-other-window',
+;;    `bmkp-find-file', `bmkp-find-file-other-window',
 ;;    `bmkp-find-file-all-tags',
 ;;    `bmkp-find-file-all-tags-other-window',
 ;;    `bmkp-find-file-all-tags-regexp',
@@ -6867,106 +6869,136 @@ Then you are prompted for the BOOKMARK (with completion)."
 
 ;;;###autoload
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-all-tags (tags) ; NOT BOUND by default
+  (defalias 'bmkp-autofile-jump 'bmkp-find-file)
+  (defun bmkp-find-file ()              ; `C-x j a'
+    "Visit a file or directory that has an autofile bookmark."
+    (interactive)
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff) (bmkp-get-autofile-bookmark ff))))
+      (find-file (read-file-name "Find file: " nil nil t nil pred)))))
+
+;;;###autoload
+(when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
+  (defalias 'bmkp-autofile-jump-other-window 'bmkp-find-file)
+  (defun bmkp-find-file-other-window () ; `C-x 4 j a'
+    "`bmkp-find-file', but in another window."
+    (interactive)
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff) (bmkp-get-autofile-bookmark ff))))
+      (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
+
+;;;###autoload
+(when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
+  (defun bmkp-find-file-all-tags (tags) ; `C-x j t a *'
     "Visit a file or directory that has all of the TAGS.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion.
 If you specify no tags, then every file that has some tags is a
 candidate."
     (interactive (list (bmkp-read-tags-completing)))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag))
+                                                         tags))))))
       (find-file (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-all-tags-other-window (tags) ; NOT BOUND by default
+  (defun bmkp-find-file-all-tags-other-window (tags) ; `C-x 4 j t a *'
     "`bmkp-find-file-all-tags', but in another window."
     (interactive (list (bmkp-read-tags-completing)))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag))
+                                                         tags))))))
       (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-all-tags-regexp (regexp) ; NOT BOUND by default
+  (defun bmkp-find-file-all-tags-regexp (regexp) ; `C-x j t a % *'
     "Visit a file or directory that has each tag matching REGEXP.
 You are prompted for the REGEXP."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-every
-                                   #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   btgs))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-every
+                                              #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                              btgs))))))
       (find-file (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-all-tags-regexp-other-window (regexp) ; NOT BOUND by default
+  (defun bmkp-find-file-all-tags-regexp-other-window (regexp) ; `C-x 4 j t a % *'
     "`bmkp-find-file-all-tags-regexp', but in another window."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-every
-                                   #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   btgs))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-every
+                                              #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                              btgs))))))
       (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-some-tags (tags) ; NOT BOUND by default
+  (defun bmkp-find-file-some-tags (tags) ; `C-x j t a +'
     "Visit a file or directory that has at least one of the TAGS.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion."
     (interactive (list (bmkp-read-tags-completing)))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))
       (find-file (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-some-tags-other-window (tags) ; NOT BOUND by default
+  (defun bmkp-find-file-some-tags-other-window (tags) ; `C-x 4 j t a +'
     "`bmkp-find-file-some-tags', but in another window."
     (interactive (list (bmkp-read-tags-completing)))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))
       (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-some-tags-regexp (regexp) ; NOT BOUND by default
+  (defun bmkp-find-file-some-tags-regexp (regexp)  ; `C-x j t a % +'
     "Visit a file or directory that has a tag matching REGEXP.
 You are prompted for the REGEXP."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-some
-                                   #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   btgs))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-some
+                                              #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                              btgs))))))
       (find-file (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
-  (defun bmkp-find-file-some-tags-regexp-other-window (regexp) ; NOT BOUND by default
+  (defun bmkp-find-file-some-tags-regexp-other-window (regexp) ; `C-x 4 j t a % +'
     "`bmkp-find-file-some-tags-regexp', but in another window."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let ((pred  #'(lambda (ff)
-                     (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                            (btgs  (and bmk (bmkp-get-tags bmk))))
-                       (and btgs  (bmkp-some
-                                   #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   btgs))))))
+    (let ((use-file-dialog  nil)
+          (pred             #'(lambda (ff)
+                                (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk (bmkp-get-tags bmk))))
+                                  (and btgs  (bmkp-some
+                                              #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                              btgs))))))
       (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
 
 ;;;###autoload

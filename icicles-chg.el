@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 12 19:49:04 2011 (-0700)
+;; Last-Updated: Wed Apr 13 10:18:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6381
+;;     Update #: 6383
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/04/13 dadams
+;;     Fixed autoload cookies for icicle-define-file-command commands added yesterday.
 ;; 2011/04/12 dadams
 ;;     Added: icicle-bookmark-save-marked-files(-as-project|-more|-persistently|-to-variable),
 ;;            icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-(un)tag-a-file.

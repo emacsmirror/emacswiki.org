@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 12 19:42:12 2011 (-0700)
+;; Last-Updated: Wed Apr 13 15:13:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13575
+;;     Update #: 13593
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/13 dadams
+;;     Added: bmkp-autofile-jump(-other-window) (aliases), bmkp-find-file(-other-window).
+;;     bmkp-find-file-(all|some)-tags(-regexp)(-other-window): Bind use-file-dialog to nil.
 ;; 2011/04/12
 ;;     Added: bmkp-bookmark-name-member, bmkp-names-same-bookmark-p, bmkp-sort-omit,
 ;;            bmkp-remove-omitted, bmkp-delete-bookmark-name-from-list, bmkp-bookmark-a-file (alias),
@@ -289,6 +292,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/13 dadams
+;;     bmkp-bmenu-tags-menu: Added: bmkp-(un)tag-a-file.
 ;; 2011/04/12
 ;;     Added: bmkp-propertize-bookmark-names-flag, bmkp-maybe-unpropertize-bookmark-names,
 ;;            bmkp-bmenu-get-marked-files.
@@ -370,6 +375,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/13 dadams
+;;     Added:
+;;       bmkp-find-file-menu (bmkp-find-file(-(all|some)-tags(-regexp)(-other-window)),
+;;       bmkp-jump-tags-menu (what was in main, plus bmkp-find-file-*-tags-regexp*),
+;;       bmkp-tags-menu (list all, rename, remove from all, (un)tag a file).
+;;     bmkp-jump(-other-window)-map:
+;;       Added bmkp-find-file(-other-window) to menu.
+;;       Bound keys for bmkp-find-file-(all|some)-tags(-regexp)(-other-window): C-x (4) j t a...
 ;; 2011/04/02 dadams
 ;;     Added bindings for (new) bmkp-autofile-set,
 ;;                              bmkp-file-this-dir-(all|some)-tags(-regexp)-jump(-other-window).

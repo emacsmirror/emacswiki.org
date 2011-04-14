@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 12 14:55:29 2011 (-0700)
+;; Last-Updated: Wed Apr 13 10:15:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21811
+;;     Update #: 21823
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3492,7 +3492,7 @@ all of the given input tags are completion candidates."
 ;;; except that the predicate is applied after matching the user's input
 ;;; (`icicle-must-pass-after-match-predicate').
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-all-tags "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-all-tags
   "Visit a file or directory that has all of the tags you enter.
 This is otherwise like `icicle-find-file'."
@@ -3521,7 +3521,7 @@ This is otherwise like `icicle-find-file'."
                     (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-all-tags-other-window "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-all-tags-other-window
   "`icicle-find-file-all-tags', but in another window."
   (lambda (file)                        ; Function to perform the action
@@ -3549,7 +3549,7 @@ This is otherwise like `icicle-find-file'."
                     (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command"))) ; First sexp
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-all-tags-regexp "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-all-tags-regexp
   "Visit a file or directory that has each tag matching a regexp you enter."
   (lambda (file)                        ; Function to perform the action
@@ -3580,7 +3580,7 @@ This is otherwise like `icicle-find-file'."
                      btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-all-tags-regexp-other-window
   "`icicle-find-file-all-tags-regexp', but in another window."
   (lambda (file)                        ; Function to perform the action
@@ -3611,7 +3611,7 @@ This is otherwise like `icicle-find-file'."
                      btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-some-tags "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-some-tags
   "Visit a file or directory that has at least one of the tags you enter.
 This is otherwise like `icicle-find-file'."
@@ -3640,7 +3640,7 @@ This is otherwise like `icicle-find-file'."
                     (and btgs  (bmkp-some  #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-some-tags-other-window "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-some-tags-other-window
   "`icicle-find-file-some-tags', but in another window."
   (lambda (file)                        ; Function to perform the action
@@ -3668,7 +3668,7 @@ This is otherwise like `icicle-find-file'."
                     (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command"))) ; First sexp
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-some-tags-regexp "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-some-tags-regexp
   "Visit a file or directory that has a tag matching a regexp you enter."
   (lambda (file)                        ; Function to perform the action
@@ -3699,7 +3699,7 @@ This is otherwise like `icicle-find-file'."
                      btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-some-tags-regexp-other-window
   "`icicle-find-file-some-tags-regexp', but in another window."
   (lambda (file)                        ; Function to perform the action

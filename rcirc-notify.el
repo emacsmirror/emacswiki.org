@@ -1,6 +1,6 @@
 ;;;; rcirc-notify.el -- libnotify popups
 ;; Copyright (c) 2008 Will Farrington
-;; Copyright (c) 2009 Alex Schroeder <alex@gnu.org>
+;; Copyright (c) 2009, 2011 Alex Schroeder <alex@gnu.org>
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -18,6 +18,9 @@
 ;; MA 02111-1307 USA
 ;;
 ;;;; Changelog:
+;; * 2011/04/13 - Support for Growl on Windows; support for
+;;                rcirc-keywords.
+;;
 ;; * 2011/01/31 - Fix two warnings -Stefan Kangas
 ;;
 ;; * 2009/10/17 - Added support for osascript which is a Mac OS X
@@ -53,15 +56,34 @@
 ;; * `my-rcirc-notify-timeout` controls the number of seconds
 ;;    in between notifications from the same nick.
 
+;; Grow For Windows
+;; Run something like this from eshell before you use rcirc-notify:
+;; /Programme/Growl\ for\ Windows/growlnotify.com /t:IRC \
+;; /ai:http://www.emacswiki.org/pics/static/CarbonEmacsPackageIcon.png \
+;; /a:Emacs /r:IRC /n:IRC foo
+
 (require 'rcirc)
 
-(defvar my-rcirc-notify-message "%s is calling your name."
-  "Format if message to display in libnotify popup.
-'%s' will expand to the nick that notified you.")
+(defvar my-rcirc-notify-message "%s mentioned you: %s"
+  "Format of the message to display in the popup.
+The first %s will expand to the nick that notified you,
+the second %s (if any) will expand to the message text itself.")
 
-(defvar my-rcirc-notify-message-private "%s sent a private message."
-  "Format if message to display in libnotify popup.
-'%s' will expand to the nick that sent the message.")
+(defvar my-rcirc-notify-keywords t
+  "Non-nil means matches of `rcirc-keywords' will result in notification.
+See `my-rcirc-notify-keyword' for the message format to use.")
+
+(defvar my-rcirc-notify-keyword "%s mentioned the keyword '%s': %s"
+  "Format of the message to display in the popup.
+The first %s will expand to the nick that mentioned the keyword,
+the second %s (if any) will expand to the keyword used,
+the third %s (if any) will expand to the message text itself.
+This only happens if `my-rcirc-notify-keywords' is non-nil.")
+
+(defvar my-rcirc-notify-message-private "%s sent a private message: %s"
+  "Format of the message to display in the popup.
+The first %s will expand to the nick that notified you,
+the second %s (if any) will expand to the message text itself.")
 
 (defvar my-rcirc-notify-nick-alist nil
   "An alist of nicks and the last time they tried to trigger a
@@ -79,8 +101,10 @@ same person.")
                     "notify-send" "-u" "normal" "-i" "gtk-dialog-info"
                     "-t" "8640000" "rcirc"
                     msg))
+    ((executable-find "growlnotify.com")
+     (start-process "page-me" "*debug*" "growlnotify.com" "/a:Emacs" "/n:IRC" msg))
     ((executable-find "growlnotify")
-     (start-process "page-me" nil "growlnotify" "-a" "Emacs" "-m" msg))
+     (start-process "page-me" "*debug*" "growlnotify" "-a" "Emacs" "-m" msg))
     ((executable-find "osascript")
      (apply 'start-process `("page-me" nil
 			     "osascript"
@@ -91,17 +115,23 @@ same person.")
 			     "-e" "end tell")))
     (t (error "No method available to page you."))))
 
-(defun my-rcirc-notify (sender)
+(defun my-rcirc-notify (sender &optional text)
   (when window-system
     ;; Set default dir to appease the notification gods
     (let ((default-directory "~/"))
-      (my-page-me (format my-rcirc-notify-message sender)))))
+      (my-page-me (format my-rcirc-notify-message sender text)))))
 
-(defun my-rcirc-notify-private (sender)
+(defun my-rcirc-notify-keyword (sender &optional keyword text)
   (when window-system
     ;; Set default dir to appease the notification gods
     (let ((default-directory "~/"))
-      (my-page-me (format my-rcirc-notify-message-private sender)))))
+      (my-page-me (format my-rcirc-notify-keyword sender keyword text)))))
+
+(defun my-rcirc-notify-private (sender &optional text)
+  (when window-system
+    ;; Set default dir to appease the notification gods
+    (let ((default-directory "~/"))
+      (my-page-me (format my-rcirc-notify-message-private sender text)))))
 
 (defun my-rcirc-notify-allowed (nick &optional delay)
   "Return non-nil if a notification should be made for NICK.
@@ -124,11 +154,18 @@ that can occur between two notifications.  The default is
   "Notify the current user when someone sends a message that
 matches the current nick."
   (interactive)
-  (when (and (string-match (rcirc-nick proc) text)
-             (not (string= (rcirc-nick proc) sender))
-             (not (string= (rcirc-server-name proc) sender))
-             (my-rcirc-notify-allowed sender))
-    (my-rcirc-notify sender)))
+  (when (and (not (string= (rcirc-nick proc) sender))
+	     (not (string= (rcirc-server-name proc) sender))
+	     (my-rcirc-notify-allowed sender))
+    (cond ((string-match (rcirc-nick proc) text)
+	   (my-rcirc-notify sender text))
+	  (my-rcirc-notify-keywords
+	   (let ((keyword (catch 'match
+			    (dolist (key rcirc-keywords)
+			      (when (string-match key text)
+				(throw 'match key))))))
+	     (when keyword
+	       (my-rcirc-notify-keyword sender keyword text)))))))
 
 (defun my-rcirc-notify-privmsg (proc sender response target text)
   "Notify the current user when someone sends a private message
@@ -138,8 +175,7 @@ to them."
              (not (string= sender (rcirc-nick proc)))
              (not (rcirc-channel-p target))
              (my-rcirc-notify-allowed sender))
-
-    (my-rcirc-notify-private sender)))
+    (my-rcirc-notify-private sender text)))
 
 (add-hook 'rcirc-print-hooks 'my-rcirc-notify-privmsg)
 (add-hook 'rcirc-print-hooks 'my-rcirc-notify-me)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Sat Apr  2 10:54:54 2011 (-0700)
+;; Last-Updated: Wed Apr 13 15:12:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 113
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -56,9 +56,10 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `bmkp-highlight-menu', `bmkp-jump-map', `bmkp-jump-menu',
-;;    `bmkp-options-menu', `bmkp-jump-other-window-map',
-;;    `bmkp-set-map'.
+;;    `bmkp-find-file-menu', `bmkp-highlight-menu', `bmkp-jump-map',
+;;    `bmkp-jump-menu', `bmkp-options-menu',
+;;    `bmkp-jump-other-window-map', `bmkp-jump-tags-menu',
+;;    `bmkp-set-map', `bmkp-tags-menu'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -246,6 +247,9 @@
 (define-key bmkp-jump-other-window-map "=b"   'bmkp-specific-buffers-jump-other-window) ; `C-x 4 j = b'
 (define-key bmkp-jump-map              "=f"   'bmkp-specific-files-jump) ; `C-x j = f'
 (define-key bmkp-jump-other-window-map "=f"   'bmkp-specific-files-jump-other-window) ; `C-x 4 j = f'
+(when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
+  (define-key bmkp-jump-map              "a"  'bmkp-find-file) ; `C-x j a'
+  (define-key bmkp-jump-other-window-map "a"  'bmkp-find-file-other-window)) ; `C-x 4 j a'
 (define-key bmkp-jump-map              "b"    'bmkp-non-file-jump) ; `C-x j b'
 (define-key bmkp-jump-other-window-map "b"    'bmkp-non-file-jump-other-window) ; `C-x 4 j b'
 (define-key bmkp-jump-map              "B"    'bmkp-bookmark-list-jump) ; `C-x j B'
@@ -283,6 +287,7 @@
 (define-key bmkp-jump-other-window-map "N"    'bmkp-jump-in-navlist-other-window) ; `C-x 4 j N'
 (define-key bmkp-jump-map              "r"    'bmkp-region-jump) ; `C-x j r'
 (define-key bmkp-jump-other-window-map "r"    'bmkp-region-jump-other-window) ; `C-x 4 j r'
+
 (define-key bmkp-jump-map              "t"    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t"    nil) ; For Emacs 20
 (define-key bmkp-jump-map              "t*"   'bmkp-all-tags-jump) ; `C-x j t *'
@@ -297,6 +302,20 @@
 (define-key bmkp-jump-map              "t%+"  'bmkp-some-tags-regexp-jump) ; `C-x j t % +'
 (define-key bmkp-jump-other-window-map "t%+"
   'bmkp-some-tags-regexp-jump-other-window) ; `C-x 4 j t % +'
+
+(when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
+  (define-key bmkp-jump-map              "ta*"  'bmkp-find-file-all-tags) ; `C-x j t a *'
+  (define-key bmkp-jump-other-window-map "ta*" 'bmkp-find-file-all-tags-other-window) ; `C-x 4 j t a *'
+  (define-key bmkp-jump-map              "ta+"  'bmkp-find-file-some-tags) ; `C-x j t a +'
+  (define-key bmkp-jump-other-window-map "ta+"
+    'bmkp-find-file-some-tags-other-window) ; `C-x 4 j t a +'
+  (define-key bmkp-jump-map              "ta%*" 'bmkp-find-file-all-tags-regexp) ; `C-x j t a % *'
+  (define-key bmkp-jump-other-window-map "ta%*"
+    'bmkp-find-file-all-tags-regexp-other-window) ; `C-x 4 j t a % *'
+  (define-key bmkp-jump-map              "ta%+" 'bmkp-find-file-some-tags-regexp) ; `C-x j t a % +'
+  (define-key bmkp-jump-other-window-map "ta%+"
+    'bmkp-find-file-some-tags-regexp-other-window)) ; `C-x 4 j t a % +'
+
 (define-key bmkp-jump-map              "tf"   nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "tf"   nil) ; For Emacs 20
 (define-key bmkp-jump-map              "tf*"  'bmkp-file-all-tags-jump) ; `C-x j t f *'
@@ -311,6 +330,7 @@
 (define-key bmkp-jump-map              "tf%+" 'bmkp-file-some-tags-regexp-jump) ; `C-x j t f % +'
 (define-key bmkp-jump-other-window-map "tf%+"
   'bmkp-file-some-tags-regexp-jump-other-window) ; `C-x 4 j t f % +'
+
 (define-key bmkp-jump-map              "t\C-f"   nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t\C-f"   nil) ; For Emacs 20
 (define-key bmkp-jump-map              "t\C-f*"  'bmkp-file-this-dir-all-tags-jump) ; `C-x j t C-f *'
@@ -329,6 +349,7 @@
   'bmkp-file-this-dir-some-tags-regexp-jump) ; `C-x j t C-f % +'
 (define-key bmkp-jump-other-window-map "t\C-f%+"
   'bmkp-file-this-dir-some-tags-regexp-jump-other-window) ; `C-x 4 j t C-f % +'
+
 (define-key bmkp-jump-map              "u"    'bmkp-url-jump) ; `C-x j u'
 (define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window) ; `C-x 4 j u'
 (define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump) ; `C-x j v'
@@ -405,8 +426,8 @@
     :help "Set a bookmark at point")
   'separator-set)
 (define-key-after menu-bar-bookmark-map [bmkp-autofile-set]
-  '(menu-item "Set and Autoname Bookmark for File..." bmkp-autofile-set
-    :help "Set and autoname a bookmark for a given file")
+  '(menu-item "Set Autofile Bookmark..." bmkp-autofile-set
+    :help "Set and automatically name a bookmark for a given file")
   'set)
 (define-key-after menu-bar-bookmark-map [bmkp-file-target-set]
   '(menu-item "Set Bookmark for File..." bmkp-file-target-set
@@ -430,6 +451,7 @@
     :visible (not (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
                    'noerror)))
   'bmkp-set-bookmark-file-bookmark)
+(define-key-after menu-bar-bookmark-map [separator-delete] '("--") 'bmkp-toggle-autoname-bookmark-set)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
   '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Delete the autonamed bookmark at point"
@@ -458,16 +480,16 @@
 
 (define-key-after menu-bar-bookmark-map [separator-0] '("--") 'rename)
 (define-key-after menu-bar-bookmark-map [edit]
-  '(menu-item "Bookmark List" bookmark-bmenu-list
+  '(menu-item "Show Bookmark List" bookmark-bmenu-list
     :help "Open the list of bookmarks in buffer `*Bookmark List*'")
   'separator-0)
 (define-key-after menu-bar-bookmark-map [bmkp-this-buffer-bmenu-list]
-  '(menu-item "Bookmark List for This Buffer" bmkp-this-buffer-bmenu-list
+  '(menu-item "Show Bookmark List for This Buffer" bmkp-this-buffer-bmenu-list
     :help "Open `*Bookmark List*' for the bookmarks in the current buffer (only)"
     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only)))
   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-navlist-bmenu-list]
-  '(menu-item "Bookmark List for Navlist" bmkp-navlist-bmenu-list
+  '(menu-item "Show Bookmark List for Navlist" bmkp-navlist-bmenu-list
     :help "Open `*Bookmark List*' for bookmarks in navlist (only)"
     :enable bmkp-nav-alist)
   'bmkp-this-buffer-bmenu-list)
@@ -524,7 +546,7 @@
 ;; `bmkp-highlight-menu' of `Bookmark' menu
 
 (when (featurep 'bookmark+-lit)
-  (defvar bmkp-highlight-menu (make-sparse-keymap "Highlight")
+  (defvar bmkp-highlight-menu (make-sparse-keymap)
     "`Highlight' submenu for menu-bar `Bookmark' menu.")
   (define-key menu-bar-bookmark-map [highlight] (cons "Highlight" bmkp-highlight-menu))
 
@@ -588,7 +610,7 @@
 
 ;; `bmkp-options-menu' of `Bookmark' menu
 
-(defvar bmkp-options-menu (make-sparse-keymap "Toggle Option")
+(defvar bmkp-options-menu (make-sparse-keymap)
   "`Toggle Option' submenu for menu-bar `Bookmark' menu.")
 (define-key menu-bar-bookmark-map [options] (cons "Toggle Option" bmkp-options-menu))
 
@@ -608,10 +630,30 @@
                              "Prompting for tags when setting a bookmark is %s"
                              "Prompt for tags when setting a bookmark interactively"))
 
+;; `bmkp-tags-menu' of `Bookmark' menu
+
+(defvar bmkp-tags-menu (make-sparse-keymap)
+  "`Tags' submenu for menu-bar `Bookmark' menu.")
+(define-key menu-bar-bookmark-map [tags] (cons "Tags" bmkp-tags-menu))
+
+(define-key bmkp-tags-menu [bmkp-list-all-tags]
+  '(menu-item "List All Tags" bmkp-list-all-tags :help "List all tags used for any bookmarks"))
+(define-key bmkp-tags-menu [bmkp-rename-tag]
+  '(menu-item "Rename Tag..." bmkp-rename-tag
+    :help "Rename a tag in all bookmarks"))
+(define-key bmkp-tags-menu [bmkp-remove-tags-from-all]
+  '(menu-item "Remove Some Tags from All..." bmkp-remove-tags-from-all
+    :help "Remove a set of tags from all bookmarks"))
+(define-key bmkp-tags-menu [bmkp-untag-a-file]
+  '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
+    :help "Remove some tags from autofile bookmark for a file"))
+(define-key bmkp-tags-menu [bmkp-tag-a-file]
+  '(menu-item "Tag a File (Add Some)..." bmkp-tag-a-file
+    :help "Add some tags to the autofile bookmark for a file"))
 
 ;; `bmkp-jump-menu' of `Bookmark' menu
 
-(defvar bmkp-jump-menu (make-sparse-keymap "Jump To")
+(defvar bmkp-jump-menu (make-sparse-keymap)
   "`Jump To' submenu for menu-bar `Bookmark' menu.")
 ;; Add jump menu to vanilla Emacs `Bookmarks' menu and remove the two jump commands already there.
 (define-key menu-bar-bookmark-map [jump] nil)
@@ -621,47 +663,6 @@
 ;; `Jump To': Add jump menu also to the `Bookmark+' menu, and remove the two jump commands there.
 (define-key bmkp-bmenu-menubar-menu [jump] (cons "Jump To" bmkp-jump-menu))
 
-(define-key bmkp-jump-menu [bmkp-file-this-dir-all-tags-regexp-jump-other-window]
-  '(menu-item "File in This Dir, All Tags Matching Regexp..."
-    bmkp-file-this-dir-all-tags-regexp-jump-other-window
-    :help "Jump to a file bookmark in this dir where each tag matches a regexp"))
-(define-key bmkp-jump-menu [bmkp-file-this-dir-some-tags-regexp-jump-other-window]
-  '(menu-item "File in This Dir, Any Tag Matching Regexp..."
-    bmkp-file-this-dir-some-tags-regexp-jump-other-window
-    :help "Jump to a file bookmark in this dir where at least one tag matches a regexp"))
-(define-key bmkp-jump-menu [bmkp-file-this-dir-all-tags-jump-other-window]
-  '(menu-item "File in This Dir, All Tags in Set..." bmkp-file-this-dir-all-tags-jump-other-window
-    :help "Jump to a file bookmark in this dir that has all of a set of tags that you enter"))
-(define-key bmkp-jump-menu [bmkp-file-this-dir-some-tags-jump-other-window]
-  '(menu-item "File in This Dir, Any Tag in Set..." bmkp-file-this-dir-some-tags-jump-other-window
-    :help "Jump to a file bookmark in this dir that has some of a set of tags that you enter"))
-(define-key bmkp-jump-menu [jump-sep3] '("--"))
-(define-key bmkp-jump-menu [bmkp-file-all-tags-regexp-jump-other-window]
-  '(menu-item "File, All Tags Matching Regexp..." bmkp-file-all-tags-regexp-jump-other-window
-    :help "Jump to a file or dir bookmark where each tag matches a regexp that you enter"))
-(define-key bmkp-jump-menu [bmkp-file-some-tags-regexp-jump-other-window]
-  '(menu-item "File, Any Tag Matching Regexp..." bmkp-file-some-tags-regexp-jump-other-window
-    :help "Jump to a file or dir bookmark where at least one tag matches a regexp that you enter"))
-(define-key bmkp-jump-menu [bmkp-file-all-tags-jump-other-window]
-  '(menu-item "File, All Tags in Set..." bmkp-file-all-tags-jump-other-window
-    :help "Jump to a file or dir bookmark that has all of a set of tags that you enter"))
-(define-key bmkp-jump-menu [bmkp-file-some-tags-jump-other-window]
-  '(menu-item "File, Any Tag in Set..." bmkp-file-some-tags-jump-other-window
-    :help "Jump to a file or dir bookmark that has some of a set of tags that you enter"))
-(define-key bmkp-jump-menu [jump-sep2] '("--"))
-(define-key bmkp-jump-menu [bmkp-all-tags-regexp-jump-other-window]
-  '(menu-item "All Tags Matching Regexp..." bmkp-all-tags-regexp-jump-other-window
-    :help "Jump to a bookmark that has each tag matching a regexp that you enter"))
-(define-key bmkp-jump-menu [bmkp-some-tags-regexp-jump-other-window]
-  '(menu-item "Any Tag Matching Regexp..." bmkp-some-tags-regexp-jump-other-window
-    :help "Jump to a bookmark that has at least one tag matching a regexp that you enter"))
-(define-key bmkp-jump-menu [bmkp-all-tags-jump-other-window]
-  '(menu-item "All Tags in Set..." bmkp-all-tags-jump-other-window
-    :help "Jump to a bookmark that has all of a set of tags that you enter"))
-(define-key bmkp-jump-menu [bmkp-some-tags-jump-other-window]
-  '(menu-item "Any Tag in Set..." bmkp-some-tags-jump-other-window
-    :help "Jump to a bookmark that has some of a set of tags that you enter"))
-(define-key bmkp-jump-menu [jump-sep1] '("--"))
 (define-key bmkp-jump-menu [bmkp-autonamed-this-buffer-jump]
   '(menu-item "Autonamed for This Buffer..." bmkp-autonamed-this-buffer-jump
     :help "Jump to an autonamed bookmark in this buffer"))
@@ -741,12 +742,89 @@
 (define-key bmkp-jump-menu [bmkp-jump-to-type-other-window]
   '(menu-item "Of Type..." bmkp-jump-to-type-other-window
     :help "Jump to a bookmark of a type that you specify"))
+
+(defvar bmkp-jump-tags-menu (make-sparse-keymap)
+  "`With Tags' submenu for `Jump To' submenu of `Bookmark' menu.")
+(define-key bmkp-jump-menu [bmkp-tags] (cons "With Tags" bmkp-jump-tags-menu))
+(define-key bmkp-jump-tags-menu [bmkp-file-this-dir-all-tags-regexp-jump-other-window]
+  '(menu-item "File in This Dir, All Tags Matching Regexp..."
+    bmkp-file-this-dir-all-tags-regexp-jump-other-window
+    :help "Jump to a file bookmark in this dir where each tag matches a regexp"))
+(define-key bmkp-jump-tags-menu [bmkp-file-this-dir-some-tags-regexp-jump-other-window]
+  '(menu-item "File in This Dir, Any Tag Matching Regexp..."
+    bmkp-file-this-dir-some-tags-regexp-jump-other-window
+    :help "Jump to a file bookmark in this dir where at least one tag matches a regexp"))
+(define-key bmkp-jump-tags-menu [bmkp-file-this-dir-all-tags-jump-other-window]
+  '(menu-item "File in This Dir, All Tags in Set..." bmkp-file-this-dir-all-tags-jump-other-window
+    :help "Jump to a file bookmark in this dir that has all of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-file-this-dir-some-tags-jump-other-window]
+  '(menu-item "File in This Dir, Any Tag in Set..." bmkp-file-this-dir-some-tags-jump-other-window
+    :help "Jump to a file bookmark in this dir that has some of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [jump-sep4] '("--"))
+(define-key bmkp-jump-tags-menu [bmkp-file-all-tags-regexp-jump-other-window]
+  '(menu-item "File, All Tags Matching Regexp..." bmkp-file-all-tags-regexp-jump-other-window
+    :help "Jump to a file or dir bookmark where each tag matches a regexp that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-file-some-tags-regexp-jump-other-window]
+  '(menu-item "File, Any Tag Matching Regexp..." bmkp-file-some-tags-regexp-jump-other-window
+    :help "Jump to a file or dir bookmark where at least one tag matches a regexp that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-file-all-tags-jump-other-window]
+  '(menu-item "File, All Tags in Set..." bmkp-file-all-tags-jump-other-window
+    :help "Jump to a file or dir bookmark that has all of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-file-some-tags-jump-other-window]
+  '(menu-item "File, Any Tag in Set..." bmkp-file-some-tags-jump-other-window
+    :help "Jump to a file or dir bookmark that has some of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [jump-sep3] '("--"))
+(define-key bmkp-jump-tags-menu [bmkp-find-file-all-tags-regexp-other-window]
+  '(menu-item "Autofile, All Tags Matching Regexp..." bmkp-find-file-all-tags-regexp-other-window
+    :help "Jump to a file or dir bookmark where each tag matches a regexp that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-find-file-some-tags-regexp-other-window]
+  '(menu-item "Autofile, Any Tag Matching Regexp..." bmkp-find-file-some-tags-regexp-other-window
+    :help "Jump to a file or dir bookmark where at least one tag matches a regexp that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-find-file-all-tags-other-window]
+  '(menu-item "Autofile, All Tags in Set..." bmkp-find-file-all-tags-other-window
+    :help "Jump to a file or dir bookmark that has all of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-find-file-some-tags-other-window]
+  '(menu-item "Autofile, Any Tag in Set..." bmkp-find-file-some-tags-other-window
+    :help "Jump to a file or dir bookmark that has some of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [jump-sep2] '("--"))
+(define-key bmkp-jump-tags-menu [bmkp-all-tags-regexp-jump-other-window]
+  '(menu-item "All Tags Matching Regexp..." bmkp-all-tags-regexp-jump-other-window
+    :help "Jump to a bookmark that has each tag matching a regexp that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-some-tags-regexp-jump-other-window]
+  '(menu-item "Any Tag Matching Regexp..." bmkp-some-tags-regexp-jump-other-window
+    :help "Jump to a bookmark that has at least one tag matching a regexp that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-all-tags-jump-other-window]
+  '(menu-item "All Tags in Set..." bmkp-all-tags-jump-other-window
+    :help "Jump to a bookmark that has all of a set of tags that you enter"))
+(define-key bmkp-jump-tags-menu [bmkp-some-tags-jump-other-window]
+  '(menu-item "Any Tag in Set..." bmkp-some-tags-jump-other-window
+    :help "Jump to a bookmark that has some of a set of tags that you enter"))
 (define-key bmkp-jump-menu [bookmark-jump-other-window]
   '(menu-item "Any in Other Window..." bookmark-jump-other-window
     :help "Jump to a bookmark of any type, in another window"))
 (define-key bmkp-jump-menu [bookmark-jump]
   '(menu-item "Any..." bookmark-jump :help "Jump to a bookmark of any type, in this window"))
 
+;; `bmkp-find-file-menu' submenu of `File' menu
+(defvar bmkp-find-file-menu (make-sparse-keymap)
+  "`Bookmarked File' submenu for menu-bar `File' menu.")
+(define-key menu-bar-file-menu [bmkp-find-file]
+  (list 'menu-item "Bookmarked File" bmkp-find-file-menu))
+(define-key bmkp-find-file-menu [bmkp-find-file-all-tags-regexp-other-window]
+  '(menu-item "All Tags Matching Regexp..." bmkp-find-file-all-tags-regexp-other-window
+    :help "Visit a file or dir where each tag matches a regexp that you enter"))
+(define-key bmkp-find-file-menu [bmkp-find-file-some-tags-regexp-other-window]
+  '(menu-item "Any Tag Matching Regexp..." bmkp-find-file-some-tags-regexp-other-window
+    :help "Jump to a file or dir bookmark where at least one tag matches a regexp that you enter"))
+(define-key bmkp-find-file-menu [bmkp-find-file-all-tags-other-window]
+  '(menu-item "All Tags in Set..." bmkp-find-file-all-tags-other-window
+    :help "Visit a file or dir that has all of a set of tags that you enter"))
+(define-key bmkp-find-file-menu [bmkp-find-file-some-tags-other-window]
+  '(menu-item "Any Tag in Set..." bmkp-find-file-some-tags-other-window
+    :help "Visit a file or dir that has some of a set of tags that you enter"))
+(define-key bmkp-find-file-menu [bmkp-find-file-other-window]
+  '(menu-item "File..." bmkp-find-file-other-window
+    :help "Visit a bookmarked file or directory: an autofile bookmark."))
 
 ;;;;;;;;;;;;;;;;;;;;;
 

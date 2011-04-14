@@ -101,94 +101,15 @@ w32-print.el.
 
 
 ----
-== Current Status and Bugs ==
+== Support, FAQs and bugs ==
 
-=== The bug database ===
+The bug tracker is at: https://bugs.launchpad.net/nxhtml. Please report bugs here; see <i>M-x nxhtml-report-bug</i> for more instructions.
 
-The preferred way to report bugs are now https://bugs.launchpad.net/nxhtml.
-See that page for current bug status.
-(You may also enter bugs below under Unsolved problems, but it is much better if you use the bug database.)
+There is a list of FAQs at https://answers.launchpad.net/nxhtml/+faqs
 
-If you want to report a bug please use <i>M-x nxhtml-report-bug</i> to get instructions.
+Questions that are not bugs can be asked https://answers.launchpad.net/nxhtml
 
-See also https://answers.launchpad.net/nxhtml
-
-Old solved bugs that was reported on Emacs Wiki are here: NxhtmlOldBugs
-
-=== Frequently Asked Questions ===
-
-There is now a FAQ section on Launchpad: https://answers.launchpad.net/nxhtml/+faqs
-
-
-----
-== Comments and Questions ==
-
-Please use the bug database if you can, see above, <i>because I seldom look here and will miss both questions and replies!</i>
-
-=== Solved problems ===
-==== Syntax colouring colours? ====
-[new] How is one supposed to customize the colours of syntax colouring? Yes, I know "M-x customize-group RET mumamo RET". But which fecking value? customize-face doesn't seem appropriate, since the current face is mumamo-somehting-background.
-
-[new]
-Syntax colours are part of Emacs, not nXhtml. If you want to customize them do
-
-  M-x customize-group RET font-lock-faces RET
-
-
-----
-=== Unsolved problems ===
-
-==== C indentation styles ====
-[new]
-How is one supposed to set the indentation width? The brace style?
-
-[new]
-Indentation: As usual in Emacs, but there are also some indentation specific to multi major modes. Do "M-x customize-group RET mumamo RET" to change them.
-
-[new]
-Brace style: I do not understand the question. Could you please rephrase it?
-
-[new]
-Sorry. This actually kind of refers to the "child" php-mode (in my case). When using php-mode alone, I can do
-<code>
-(c-set-style "bsd")
-</code>
-in my php-mode startup hook function to ensure braces are automagically put in the correct (%%*cough*%%) places, i.e.
-{{{
-    function foo()
-    {
-      ...
-    }
-}}}
-Trying to do this in the nxhtml-mode-hook causes an error. I guess I'm supposed to somehow set them in the "child" mode, but how, please?
-
-[new]
-I think it might work setting it in the major mode hook. Could you please test that?
-
-==== Chunks in chunks - where does it end? ====
-
-I have moved this to a bug report on Launchpad, please add any new comments to it there: https://bugs.launchpad.net/nxhtml/+bug/569742
-
-
-==== File extensions and major mode selection ====
-
-Downloading the zip and following the instructions works for me, except they seem to suggest that after you run autostart.el, every time you start emacs with an "example .html" extension, that would somehow load the file and set the right mode. This is simply not the case in my experience. However adding this at the end worked:
-
-{{{
-(load "nxhtml/autostart.el")
-(add-to-list 'auto-mode-alist '("\\.html$" . nxhtml-mode))
-(add-to-list 'auto-mode-alist '("\\.shtml$" . nxhtml-mode))
-(add-to-list 'auto-mode-alist '("\\.htm$" . nxhtml-mode))
-}}}
-
-I wish the instructions were a bit clearer..
-[new] You and me both :(
-
-[new]
-And I would like a bug report to understand where the problem is... ;-)
-
-[new]
-In recent Emacs 24, there appears to be a problem with the defadvice of directory-files in find-recursive.el. It makes all calls to directory-files (which has only 4 arguments) break with an incorrect number of arguments (5).
+Old solved bugs that were reported on Emacs Wiki are here: NxhtmlOldBugs. Please do not add any more bugs here.
 
 ----
 See also MultipleModes MuMaMo CategoryHypermedia HtmlMode
