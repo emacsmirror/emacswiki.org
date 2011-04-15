@@ -1,0 +1,44 @@
+Here is some code to comment/uncomment sexp. I bind my-toggle-comment-sexp to C-M-; in lisp mode and emacs-lisp-mode.
+
+{{{
+(defun my-comment-sexp ()
+  "comment sexp at point"
+  (interactive)
+  (comment-region (point) (save-excursion
+			    (forward-sexp)
+			    (point))))
+
+;; a question is asked here, so I'm sure this function is not written yet.
+;; http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/a84d621c26df9c10
+(defun my-uncomment-line ()
+  (uncomment-region (line-beginning-position) (line-end-position)))
+(require 'thingatpt)
+(defun sexp-at-point-p (pos)
+  (save-excursion
+    (goto-char pos)
+    ;; or call (sexp-at-point) which is in thingatpt.el
+    (condition-case nil
+	(progn (forward-sexp)
+	       t)
+      (error nil))))
+
+(defun my-uncomment-sexp ()
+  "uncommon sexp at point"
+  (interactive)
+  (my-uncomment-line)
+  (let ((begin (point)))
+    (while (not (sexp-at-point-p begin))
+      (forward-line 1)
+      (my-uncomment-line))
+    (goto-char begin)))
+
+(defun my-toggle-comment-sexp ()
+  (interactive)
+  (let ((beg (line-beginning-position))
+	(end (line-end-position)))
+    (funcall (if (save-excursion ;; check for already commented region
+		   (goto-char beg)
+		   (comment-forward (point-max))
+		   (<= end (point)))
+		 'my-uncomment-sexp 'my-comment-sexp))))
+}}}

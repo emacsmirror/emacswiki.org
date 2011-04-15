@@ -60,7 +60,7 @@
   :group 'convenience)
 
 (defcustom rebound-no-reposition-regexps '("^\\*.+\\*$")
-  "Rebound does not repositiona  buffer whose name matches a regexp in this list."
+  "Rebound does not reposition a buffer whose name matches a regexp in this list."
   :group 'rebound
   :type '(repeat regexp))
 
@@ -280,11 +280,10 @@ when repositioning should happen is provided by the variables
       (unless (rebound-exception-p win buf)
         ;; If not, check to see if there's point and window-start info for
         ;; displaying BUF in WIN. Reposition if so.
-        (let* ((win-data (assq win rebound-alist))
-               (buf-data (assq buf win-data)))
-          (when buf-data
-            (set-window-point win (nth 1 buf-data))
-            (set-window-start win (nth 2 buf-data))))))))
+        (let ((data (assq buf (assq win rebound-alist))))
+          (when data
+            (set-window-point win (nth 1 data))
+            (set-window-start win (nth 2 data))))))))
 
 ;; Function called to determine whether rebound should reposition a
 ;; buffer.  If it returns t, rebound does not reposition.
@@ -319,8 +318,8 @@ when repositioning should happen is provided by the variables
   (if (markerp m) 
       (marker-position m)))
 
-;; Check to see if temp buffers are disallowed for repositioning and, if so,
-;; whether BUF is a temp buffer.
+;; Check to see if BUF's name matches against disallowed names or disallowed
+;; regexps.
 (defun rebound-buffer-name-exception-p (buf)
   (let ((name (buffer-name buf)))
     (or (memq t (mapcar #'(lambda (x) (string= x name)) 

@@ -137,6 +137,24 @@ Please make this option with t if you want focus terminal window.
      '(term-default-fg-color "#dddd00"))       ;; foreground color (yellow)
 }}}
 
+* Context-dependent creation of a new term buffer
+: The plain old `term' command never creates a new term buffer, if one already exists. On the other hand, `multi-term' always creates a new one. Both behaviors are limiting when it comes to keybindings. For most of the time, when a user presses a button to get himself a terminal, he expects one he was working with before (otherwise he would probably close it earlier), but sometimes he wants a fresh new one. The following code either switches to the term buffer used last or creates a new one, if a term buffer is already selected.
+{{{
+    (defun last-term-buffer (l)
+      "Return most recently used term buffer."
+      (when l
+	(if (eq 'term-mode (with-current-buffer (car l) major-mode))
+	    (car l) (last-term-buffer (cdr l)))))
+
+    (defun get-term ()
+      "Switch to the term buffer last used, or create a new one if
+    none exists, or of the current buffer is already a term."
+      (interactive)
+      (let ((b (last-term-buffer (buffer-list))))
+	(if (or (not b) (eq 'term-mode major-mode))
+	    (multi-term)
+	  (switch-to-buffer b))))
+}}}
 ==Screenshot==
 
 * Multiple terminal buffer in Emacs:
@@ -209,3 +227,4 @@ Hi.  I'm wondering how I can get the ESC key to forward on an actual terminal es
 
 ----
 CategoryShell
+ 

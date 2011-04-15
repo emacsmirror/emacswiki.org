@@ -4,7 +4,6 @@ Emacs has several commands to delete whitespace.
 
 To make sure two words are separated by ''just one space'', use `M-SPC' (`just-one-space').
 
-
 == Join two words ==
 
 To ''join two words'' (or any non-space characters) together by deleting all whitespace between them, use any of the following:
@@ -103,6 +102,16 @@ To ''indent'' (or ''unindent'') a block of lines together rigidly (adding or rem
 ## Select all the lines to indent
 ## Ensure the TextCursor is at the beginning of the last line to indent.
 ## <code>C-u NUM C-x TAB</code> to indent <code>NUM</code> columns. A negative <code>NUM</code> (e.g., <code>C-- 4 C-x TAB</code>) un-indents, removing a rectangle of whitespace
+
+
+== Whitespace Aware `kill-line' ==
+
+This handles whitespace a little better when having indentation and you kill a line.
+
+    (defadvice kill-line (after kill-line-cleanup-whitespace activate compile)
+      "cleanup whitespace on kill-line"
+      (if (not (bolp))
+	  (delete-region (point) (progn (skip-chars-forward " \t") (point)))))
 
 
 == Delete adjacent whitespace ==

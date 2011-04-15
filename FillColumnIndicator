@@ -82,5 +82,9 @@ When running on a character terminal, Emacs outsources rendering to the terminal
 
 Note that on a character terminal, there are other packages you can use. WhiteSpace will optionally highlight lines that are longer than a specific value. It doesn't look as good as FillColumnIndicator, but pretty reasonable for a termainal. I think there are other packages that take a similar approach.
 
+[new:AlpAker:2011-04-15 01:13 UTC]
+
+I've uploaded a new version (0.30) that should work on (most) char terminals. --AA
+
 ----
 CategoryFilling 

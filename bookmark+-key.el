@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Wed Apr 13 15:12:18 2011 (-0700)
+;; Last-Updated: Thu Apr 14 08:35:08 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 207
+;;     Update #: 208
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -658,7 +658,7 @@
 ;; Add jump menu to vanilla Emacs `Bookmarks' menu and remove the two jump commands already there.
 (define-key menu-bar-bookmark-map [jump] nil)
 (define-key menu-bar-bookmark-map [jump-other] nil)
-(define-key menu-bar-bookmark-map [bmkp-jump] (cons "Jump To Bookmark" bmkp-jump-menu))
+(define-key menu-bar-bookmark-map [bmkp-jump] (cons "Jump To" bmkp-jump-menu))
 
 ;; `Jump To': Add jump menu also to the `Bookmark+' menu, and remove the two jump commands there.
 (define-key bmkp-bmenu-menubar-menu [jump] (cons "Jump To" bmkp-jump-menu))
