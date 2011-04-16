@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.30
+;; Version: 0.31
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -75,9 +75,9 @@
 ;; fci-rule-character even on graphical displays, set
 ;; `fci-always-use-textual-rule' to a non-nil value.
 
-;; The image formats used by fci-mode are XPM and XBM.  By default, it gives
-;; preference to XPM.  You can specify a particular format by setting
-;; `fci-rule-image-format' to either 'xpm or 'xbm.  
+;; The image formats used by fci-mode are XPM, PBM, and XBM.  By default, it
+;; tries to use use them in that order.  You can specify a particular format
+;; by setting `fci-rule-image-format' to either 'xpm, 'xpm, or 'xbm.
 
 ;; Other Options
 ;; =============
@@ -120,7 +120,7 @@
 ;;   implementation on some ports is incomplete; the v23 and v24 Mac OS X
 ;;   ports are examples.  On these systems XBM images are always drawn in the
 ;;   foreground color of the frame's default face, in which case one cannot
-;;   control the color of the rule.  Use XPM images instead.
+;;   control the color of the rule.  Use XPM or PBM images instead.
 
 ;; Known Issues
 ;; ============
@@ -182,9 +182,9 @@ function `fci-mode' is run."
  :tag "Fill-column shading color")
 
 ;; Sharp quoting the anonymous function here causes an error; that should be
-;; considered a bug in the widget library.  Also, we should really by using a
-;; :validate keyword instead of :match, but that seems not to work with
-;; defcustom widgets.
+;; considered a bug in the widget library.  Also, we should really be using
+;; :validate instead of :match, but that seems not to work with defcustom
+;; widgets.
 (defcustom fci-rule-width 2
   "Width, in pixels, of the fill-column rule on graphical displays.
 The value must be less than the default character width of the selected frame.
@@ -206,13 +206,21 @@ function `fci-mode' is run."
  :type '(choice (const :tag "Let fci-mode choose" nil)
                 (color :tag "Specify a color")))
 
-(defcustom fci-rule-image-format (if (memq 'xpm image-types) 'xpm 'xbm)
+(defcustom fci-rule-image-format 
+  (let ((formats (delq nil 
+                       (mapcar #'(lambda (x) (if (image-type-available-p x) x))
+                               image-types))))
+    (cond
+     ((memq 'xpm formats) 'xpm)
+     ((memq 'pbm formats) 'pbm)
+     (t 'xbm)))
   "Image format fci-mode uses for the fill-column rule on graphical displays.
 See the comments in the package file for more information on the
 choice of format."
   :tag "Fill-Column Rule Image Format"
   :group 'fill-column-indicator
   :type '(choice (symbol :tag "XPM" 'xpm)
+                 (symbol :tag "PBM" 'pbm)
                  (symbol :tag "XBM" 'xbm)))
 
 (defcustom fci-rule-character ?|
@@ -401,6 +409,8 @@ for tips on troubleshooting.)"
       rule)
      ((eq fci-rule-image-format 'xbm)
       (fci-make-xbm-rule fci-rule-width color rule))
+     ((eq fci-rule-image-format 'pbm)
+      (fci-make-pbm-rule fci-rule-width color rule))
      ((eq fci-rule-image-format 'xpm)
       (fci-make-xpm-rule fci-rule-width color rule))
      (t
@@ -412,28 +422,29 @@ for tips on troubleshooting.)"
                                           'background-mode)
                          'light))
         (grays (display-grayscale-p))
-        (numcolors (expt 2 (display-planes)))
+        (planes (display-planes))
         (color (display-color-p)))
     (cond 
      ((and light-bg grays)
       "#cccccc")
      ((and (not light-bg) grays)
       "#7f7f7f")
-     ((and color (> 15 numcolors))
+     ((and color (> 3 planes))
       "lightgray")
-     ((and color (> 7 numcolors))
+     ((and color (> 2 planes))
       "yellow")
      (light-bg
       "black")
      (t
       "white"))))
 
-;; Create a one-character string with the rule image as its display
-;; property.  We use the textual rule character for the underlying string
-;; (instead of a space) so that our failure mode is more graceful in case the
-;; image display fails.  In addition, this allows us to DTRT if someone running
-;; a daemon invokes the mode on a graphical display then subsequently
-;; displays the buffer on a termianl.
+;; The following three functions each crate a one-character string with the
+;; rule image as its display property.  We use the textual rule character for
+;; the underlying string (instead of a space) so that our failure mode is
+;; more graceful in case the image display fails.  In addition, this handles
+;; the case in which someone running a daemon invokes the mode on a graphical
+;; display then subsequently displays the buffer on a terminal.
+
 (defun fci-make-xpm-rule (width color rule)
   (let* ((ident (concat "/* XPM */\n"
                         "static char *rule[] = {\n"))
@@ -454,19 +465,41 @@ for tips on troubleshooting.)"
                              (make-string width ?1)
                              (make-string right ?0)
                              "\",\n"))
-         (pixels (mapconcat #'identity (make-vector height row-pixels) ""))
+         (raster (mapconcat #'identity (make-vector height row-pixels) ""))
          (end "};")
-         (data (concat ident img-spec color-spec pixels end)))
+         (data (concat ident img-spec color-spec raster end)))
     (propertize rule
                 'display
                 (list 'image :type 'xpm :data data :ascent 'center))))
+
+(defun fci-make-pbm-rule (width color rule)
+  (let* ((height (frame-char-height))
+         (sheight (number-to-string height))
+         (fcw (frame-char-width))
+         (delta (- fcw width))
+         (left (floor (/ delta 2.0)))
+         (right (ceiling (/ delta 2.0)))
+         (swidth (number-to-string fcw))
+         (ident "P1\n")
+         (dims (concat swidth " " sheight "\n"))
+         (left-pixels (mapconcat #'identity (make-vector left "0") " "))
+         (right-pixels (mapconcat #'identity (make-vector right "0") " "))
+         (rule-pixels (mapconcat #'identity (make-vector width "1") " "))
+         (row-pixels (concat left-pixels " " rule-pixels " " right-pixels))
+         (raster (mapconcat #'identity (make-vector height row-pixels) "\n"))
+         (data (concat ident dims raster)))
+    (propertize rule 
+                'display
+                (list 'image 
+                      :type 'pbm :data data :mask 'heuristic
+                      :foreground color :ascent 'center))))
 
 (defun fci-make-xbm-rule (width color rule)
   (let* ((fcw (frame-char-width))
          (img-width (+ fcw (- 8 (% fcw 8))))
          (height (frame-char-height))
          (row-pixels (make-bool-vector img-width nil))
-         (pixels (make-vector height row-pixels))
+         (raster (make-vector height row-pixels))
          (offset (ceiling (/ (- img-width width) 2.0)))
          (i 0))
     (while (< i width)
@@ -474,8 +507,10 @@ for tips on troubleshooting.)"
       (setq i (1+ i)))
     (propertize rule
                 'display
-                (list 'image :type 'xbm :data pixels :foreground color 
-                      :ascent 'center :height height :width img-width))))
+                (list 'image 
+                      :type 'xbm :data raster :foreground color 
+                      :mask 'heuristic :ascent 'center 
+                      :height height :width img-width))))
 
 ;;; Functions That Call Setting and Unsetting
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Apr 13 14:45:21 2011 (-0700)
+;; Last-Updated: Fri Apr 15 08:35:16 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 625
+;;     Update #: 664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -110,6 +110,7 @@
 ;;    `bmkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
 ;;    `bmkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
 ;;    `bmkp-bmenu-make-sequence-from-marked', `bmkp-bmenu-mark-all',
+;;    `bmkp-bmenu-mark-autofile-bookmarks',
 ;;    `bmkp-bmenu-mark-bookmark-file-bookmarks',
 ;;    `bmkp-bmenu-mark-bookmarks-satisfying',
 ;;    `bmkp-bmenu-mark-bookmarks-tagged-all',
@@ -140,6 +141,7 @@
 ;;    `bmkp-bmenu-search-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-set-tag-value',
 ;;    `bmkp-bmenu-set-tag-value-for-marked', `bmkp-bmenu-show-all',
+;;    `bmkp-bmenu-show-only-autofiles',
 ;;    `bmkp-bmenu-show-only-autonamed.',
 ;;    `bmkp-bmenu-show-only-bookmark-files',
 ;;    `bmkp-bmenu-show-only-desktops', `bmkp-bmenu-show-only-dired',
@@ -1106,11 +1108,11 @@ C-x C-up    ...\t- Previous highlighted bookmark in buffer
 Search-and-Replace Targets (in sort order)
 --------------------------
 
-\\[bmkp-bmenu-search-marked-bookmarks-regexp]\t\t- Regexp-search the marked file bookmarks
+M-s a C-s\t- Isearch the marked bookmarks (Emacs 23+)
+M-s a C-M-s\t- Regexp-isearch the marked bookmarks (Emacs 23+)
+\\[bmkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks
 \\[bmkp-bmenu-query-replace-marked-bookmarks-regexp]\t\t- Query-replace the marked file \
 bookmarks
-M-s a C-s\t- Isearch the marked bookmarks (Emacs 23+)
-M-s a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
 
 
 Mark/Unmark
@@ -1130,6 +1132,7 @@ Mark/Unmark
 \\[bmkp-bmenu-unmark-all]\t- Unmark all bookmarks (`C-u': interactive query)
 \\[bmkp-bmenu-toggle-marks]\t- Toggle marks: unmark the marked and mark the unmarked
 
+\\[bmkp-bmenu-mark-autofile-bookmarks]\t- Mark autofile bookmarks
 \\[bmkp-bmenu-mark-non-file-bookmarks]\t- Mark non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-mark-dired-bookmarks]\t- Mark Dired bookmarks
 \\[bmkp-bmenu-mark-file-bookmarks]\t- Mark file & directory bookmarks (`C-u': local only)
@@ -1248,6 +1251,7 @@ Hide/Show
 \\[bmkp-bmenu-show-all]\t- Show all bookmarks
 \\[bmkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
 \\[bmkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
+\\[bmkp-bmenu-show-only-autofiles]\t- Show only autofile bookmarks
 \\[bmkp-bmenu-show-only-autonamed]\t- Show only autonamed bookmarks
 \\[bmkp-bmenu-show-only-non-files]\t- Show only non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-show-only-dired]\t- Show only Dired bookmarks
@@ -1604,6 +1608,26 @@ confirmation."
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
 
 ;;;###autoload
+(defun bmkp-bmenu-show-only-autofiles (&optional arg) ; Bound to `A S' in bookmark list
+  "Display (only) the autofile bookmarks.
+This means bookmarks whose names are the same as their (non-directory)
+file names.  But with a prefix arg you are prompted for a prefix that
+each bookmark name must have."
+  (interactive "P")
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  (if (not arg)
+                                        'bmkp-autofile-alist-only
+                                      (let ((prefix  (read-string "Prefix for bookmark names: "
+                                                                  nil nil "")))      
+                                        `(lambda () (bmkp-autofile-alist-only ,prefix))))
+        bmkp-bmenu-title            "Autofile Bookmarks")
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only autofile bookmarks are shown")))
+
+;;;###autoload
 (defun bmkp-bmenu-show-only-autonamed () ; Bound to `# S' in bookmark list
   "Display (only) the autonamed bookmarks."
   (interactive)
@@ -1786,7 +1810,7 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
                                        bmkp-last-specific-file))))
 
 ;;;###autoload
-(defun bmkp-bmenu-show-only-urls ()     ; Bound to `M-u S' in bookmark list
+(defun bmkp-bmenu-show-only-urls ()     ; Bound to `M-u M-s' in bookmark list
   "Display (only) the URL bookmarks."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
@@ -2075,6 +2099,17 @@ The entire bookmark line is tested: bookmark name and possibly file name."
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
+(defun bmkp-bmenu-mark-autofile-bookmarks (&optional arg) ; Bound to `A M' in bookmark list
+  "Mark autofile bookmarks: those whose names are the same as their files.
+With a prefix arg you are prompted for a prefix that each bookmark
+name must have."
+  (interactive "P")
+  (if (not arg)
+      (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-autofile-bookmark-p)
+    (let ((prefix  (read-string "Prefix for bookmark names: " nil nil "")))
+      (bmkp-bmenu-mark-bookmarks-satisfying #'(lambda (bb) (bmkp-autofile-bookmark-p bb prefix))))))
+
+;;;###autoload
 (defun bmkp-bmenu-mark-bookmark-file-bookmarks () ; Bound to `X M' in bookmark list
   "Mark bookmark-file bookmarks."
   (interactive)
@@ -2155,7 +2190,7 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-last-specific-file-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-url-bookmarks () ; Bound to `M-u M' in bookmark list
+(defun bmkp-bmenu-mark-url-bookmarks () ; Bound to `M-u M-m' in bookmark list
   "Mark URL bookmarks."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-url-bookmark-p))
@@ -2414,7 +2449,7 @@ You can then mark some of them and use `bmkp-bmenu-unomit-marked' to
       (bmkp-isearch-bookmarks-regexp bookmarks)))) ; Defined in `bookmark+-1.el'.
 
 ;;;###autoload
-(defun bmkp-bmenu-search-marked-bookmarks-regexp (regexp) ; Bound to `M-a' in bookmark list
+(defun bmkp-bmenu-search-marked-bookmarks-regexp (regexp) ; Bound to `M-s a M-s' in bookmark list
   "Search the marked file bookmarks, in their current order, for REGEXP.
 Use `\\[tags-loop-continue]' to advance among the search hits.
 Marked directory and non-file bookmarks are ignored."
@@ -3615,7 +3650,11 @@ Marked bookmarks that have no associated file are ignored."
   (define-key bookmark-bmenu-mode-map "*m"                 'bookmark-bmenu-mark))
 (define-key bookmark-bmenu-mode-map "#"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "#S"                   'bmkp-bmenu-show-only-autonamed)
-(define-key bookmark-bmenu-mode-map "\M-a"                 'bmkp-bmenu-search-marked-bookmarks-regexp)
+;; `A' is `bookmark-bmenu-show-all-annotations' in vanilla Emacs.
+(define-key bookmark-bmenu-mode-map "\M-a"                 'bookmark-bmenu-show-all-annotations)
+(define-key bookmark-bmenu-mode-map "A"                    nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "AM"                   'bmkp-bmenu-mark-autofile-bookmarks)
+(define-key bookmark-bmenu-mode-map "AS"                   'bmkp-bmenu-show-only-autofiles)
 (define-key bookmark-bmenu-mode-map "B"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "BM"                   'bmkp-bmenu-mark-non-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "BS"                   'bmkp-bmenu-show-only-non-files)
@@ -3707,6 +3746,7 @@ Marked bookmarks that have no associated file are ignored."
 (when (> emacs-major-version 22)        ; Emacs 23+
  (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s")     'bmkp-bmenu-isearch-marked-bookmarks)
  (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s") 'bmkp-bmenu-isearch-marked-bookmarks-regexp))
+(define-key bookmark-bmenu-mode-map (kbd "M-s a M-s")      'bmkp-bmenu-search-marked-bookmarks-regexp)
 (define-key bookmark-bmenu-mode-map "T"                    nil) ; For Emacs20
 (define-key bookmark-bmenu-mode-map "T0"                   'bmkp-remove-all-tags)
 (define-key bookmark-bmenu-mode-map "T+"                   'bmkp-add-tags)
@@ -3734,8 +3774,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "t"                    'bmkp-bmenu-toggle-marks)
 (define-key bookmark-bmenu-mode-map "U"                    'bmkp-bmenu-unmark-all)
 (define-key bookmark-bmenu-mode-map "\M-u"                 nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "\M-uM"                'bmkp-bmenu-mark-url-bookmarks)
-(define-key bookmark-bmenu-mode-map "\M-uS"                'bmkp-bmenu-show-only-urls)
+(define-key bookmark-bmenu-mode-map "\M-u\M-m"             'bmkp-bmenu-mark-url-bookmarks)
+(define-key bookmark-bmenu-mode-map "\M-u\M-s"             'bmkp-bmenu-show-only-urls)
 (define-key bookmark-bmenu-mode-map "V"                    nil) ; For Emacs20
 (define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-lists)
 (define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-open-select)
@@ -3984,6 +4024,9 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-files]
   '(menu-item "Show Only Files" bmkp-bmenu-show-only-files
     :help "Display (only) the file and directory bookmarks"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autofiles]
+  '(menu-item "Show Only Autofiles" bmkp-bmenu-show-only-autofiles
+    :help "Display (only) the autofile bookmarks: those named the same as their files"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autonamed]
   '(menu-item "Show Only Autonamed" bmkp-bmenu-show-only-autonamed
     :help "Display (only) the autonamed bookmarks"))
@@ -4092,6 +4135,9 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-non-file-bookmarks]
   '(menu-item "Mark Non-Files (Buffers)" bmkp-bmenu-mark-non-file-bookmarks
     :help "Mark non-file bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-autofile-bookmarks]
+  '(menu-item "Mark Autofiles" bmkp-bmenu-mark-autofile-bookmarks
+    :help "Mark autofile bookmarks: those whose names are the same as their files"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-file-bookmarks]
   '(menu-item "Mark Files" bmkp-bmenu-mark-file-bookmarks :help "Mark file bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-unmark-all]

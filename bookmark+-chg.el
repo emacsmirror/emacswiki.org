@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr 13 15:13:43 2011 (-0700)
+;; Last-Updated: Fri Apr 15 08:46:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13593
+;;     Update #: 13608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/15 dadams
+;;     Added: bmkp-autofile-alist-only, bmkp-autofile-bookmark-p.
 ;; 2011/04/13 dadams
 ;;     Added: bmkp-autofile-jump(-other-window) (aliases), bmkp-find-file(-other-window).
 ;;     bmkp-find-file-(all|some)-tags(-regexp)(-other-window): Bind use-file-dialog to nil.
@@ -292,6 +294,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/15 dadams
+;;     Added: bmkp-bmenu-mark-autofile-bookmarks, bmkp-bmenu-show-only-autofiles.
+;;       And added them to menus.
+;;     bookmark-bmenu-mode-map:
+;;       Bind bmkp-bmenu-mark-autofile-bookmarks, bmkp-bmenu-show-only-autofiles to A M, A S.
+;;       Bind bookmark-bmenu-show-all-annotations to M-a, not A.
+;;       Bind bmkp-bmenu-search-marked-bookmarks-regexp to M-s a M-s, not M-a.
+;;       Bind *-mark-url-bookmarks, *-show-only-urls to M-u M-m, M-u M-s, not M-u M, M-u S.
+;;     bookmark-bmenu-mode: Updated help to reflect latest bindings.
 ;; 2011/04/13 dadams
 ;;     bmkp-bmenu-tags-menu: Added: bmkp-(un)tag-a-file.
 ;; 2011/04/12
@@ -375,6 +386,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/14 dadams
+;;     Renamed menu Jump To Bookmark to just Jump To, in menu-bar-bookmark-map.
 ;; 2011/04/13 dadams
 ;;     Added:
 ;;       bmkp-find-file-menu (bmkp-find-file(-(all|some)-tags(-regexp)(-other-window)),

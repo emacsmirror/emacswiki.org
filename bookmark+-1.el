@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr 13 14:57:49 2011 (-0700)
+;; Last-Updated: Fri Apr 15 08:08:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1882
+;;     Update #: 1906
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -265,6 +265,7 @@
 ;;    `bmkext-jump-woman', `bmkp-all-exif-data',
 ;;    `bmkp-all-tags-alist-only', `bmkp-all-tags-regexp-alist-only',
 ;;    `bmkp-alpha-cp', `bmkp-alpha-p', `bmkp-annotated-alist-only',
+;;    `bmkp-autofile-alist-only', `bmkp-autofile-bookmark-p',
 ;;    `bmkp-autoname-bookmark', `bmkp-autonamed-alist-only',
 ;;    `bmkp-autonamed-bookmark-for-buffer-p',
 ;;    `bmkp-autonamed-bookmark-p',
@@ -3243,6 +3244,20 @@ Non-nil optional arg MSGP means display a message about the deletion."
 ;;(@* "Bookmark Predicates")
 ;;  *** Bookmark Predicates ***
 
+(defun bmkp-autofile-bookmark-p (bookmark &optional prefix)
+  "Return non-nil if BOOKMARK is an autofile bookmark.
+That means that it is `bmkp-file-bookmark-p' and also its
+non-directory file name is the same as the bookmark name.
+BOOKMARK is a bookmark name or a bookmark record.
+
+Non-nil optional arg PREFIX means that the bookmark name is actually
+expected to be the file name prefixed by PREFIX (a string)."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (and (bmkp-file-bookmark-p bookmark)
+       (let ((fname  (file-name-nondirectory (bookmark-get-filename bookmark))))
+         (string= (if prefix (concat prefix fname) fname)
+                  (bookmark-name-from-full-record bookmark)))))
+
 (defun bmkp-bookmark-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a bookmark-file bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -3474,6 +3489,14 @@ A new list is returned (no side effects)."
                         (let ((annotation  (bookmark-get-annotation bmk)))
                           (and annotation (not (string-equal annotation "")))))
                       bookmark-alist))
+
+(defun bmkp-autofile-alist-only (&optional prefix)
+  "`bookmark-alist', filtered to retain only autofile bookmarks.
+With non-nil arg PREFIX, the bookmark names must all have that PREFIX."
+  (bookmark-maybe-load-default-file)
+  (if (not prefix)
+      (bmkp-remove-if-not #'bmkp-autofile-bookmark-p bookmark-alist)
+    (bmkp-remove-if-not #'(lambda (bb) (bmkp-autofile-bookmark-p bb prefix)) bookmark-alist)))
 
 (defun bmkp-autonamed-alist-only ()
   "`bookmark-alist', with only autonamed bookmarks (from any buffers).
@@ -4747,6 +4770,10 @@ Interactively, you are prompted for FILE.
 The bookmark name is the non-directory part of FILE, but with a prefix
 arg you are also prompted for a PREFIX string to prepend to the
 bookmark name.  The bookmarked position is the beginning of the file.
+
+Note that if you provide PREFIX then the bookmark will not satisfy
+`bmkp-autofile-bookmark-p' unless you provide the same PREFIX to that
+predicate.
 
 The bookmark's file name is FILE if absolute.  If relative then it is
 FILE expanded in DIR, if non-nil, or in the current directory

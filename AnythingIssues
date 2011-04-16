@@ -417,6 +417,22 @@ except the emacs commands part.
 
 -- ZhaoShenyang
 
+[new]
+
+The latest Git version(24054bf) of the 'anything-config.el' does not compile.
+I guess this is because the macro `anything-ff-human-size' refers to the variable `anything-ff-default-kbsize' without a backquote.
+<pre>
+2778c2778
+<     (size &optional (kbsize anything-ff-default-kbsize))
+---
+>     (size &optional (kbsize `anything-ff-default-kbsize))
+</pre>
+
+-- SeungcheolJung
+
+[new] Fixed thanks.
+
+--ThierryVolpiatto
 ----
 [[Anything]]
 

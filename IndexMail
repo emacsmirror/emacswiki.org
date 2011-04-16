@@ -122,4 +122,9 @@ Now you can create the index of your mails with `M-x gnus-namazu-create-index' a
 Mairix is a tool for searching words in locally stored mail. It is very fast and easy to set up. For more information on how to use Mairix with Gnus visit GnusMairix.
 
 ----
+== Indexing mail using mailindex ==
+
+A Lucene-based mail indexer written in Clojure.  Requires a separate long-running JVM process to index and search mail, but indexes NNML and IMAP mail in near-real-time with a relevance-ranked search: [https://github.com/marktriggs/mailindex https://github.com/marktriggs/mailindex]
+
+----
 CategoryGnus
