@@ -6,6 +6,12 @@ It is available as a Git repository :
 git clone git://gaffer.ptitcanardnoir.org/verbiste-el.git
 </code>
 
+I have made a different version which has (I think) a nicer display:
+
+http://kanis.fr/hg/lisp/ivan/verbiste.el
+
+http://kanis.fr/verbiste.jpg
+
 ----
 CategoryEducation
 CategoryExternalUtilities

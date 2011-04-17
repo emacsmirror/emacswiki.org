@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 15 08:46:29 2011 (-0700)
+;; Last-Updated: Sat Apr 16 18:28:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13608
+;;     Update #: 13633
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/16 dadams
+;;     Added: bmkp-edit-tags(-send|-mode(-map)), bmkp-return-buffer.
+;;     bookmark-(rename|relocate|send-edited-annotation), bmkp-update-autonamed-bookmark,
+;;       bmkp-(add|remove(-all)-tags:
+;;         Wrap with-current-buffer around bmkp-refresh-menu-list.
+;;     bookmark-(store|rename|write-file): Test emacs-major-version, not just (boundp 'print-circle).
+;;     bmkp-autofile-add-tags: Fix interactive args - forgot to include DIR arg (= nil).
 ;; 2011/04/15 dadams
 ;;     Added: bmkp-autofile-alist-only, bmkp-autofile-bookmark-p.
 ;; 2011/04/13 dadams
@@ -294,6 +301,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/16 dadams
+;;     Added: bmkp-edit-tags-send.  Bound it to T e in bookmark-bmenu-mode-map.
+;;     bookmark-bmenu-mode: Updated help text for tags editing.
+;;     bmkp-maybe-unpropertize-bookmark-names:
+;;       Test emacs-major-version, not just (boundp 'print-circle).
 ;; 2011/04/15 dadams
 ;;     Added: bmkp-bmenu-mark-autofile-bookmarks, bmkp-bmenu-show-only-autofiles.
 ;;       And added them to menus.
@@ -386,6 +398,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/16 dadams
+;;     Added: bmkp-tags-map.  Bound tag commands to prefix C-x p t.
 ;; 2011/04/14 dadams
 ;;     Renamed menu Jump To Bookmark to just Jump To, in menu-bar-bookmark-map.
 ;; 2011/04/13 dadams

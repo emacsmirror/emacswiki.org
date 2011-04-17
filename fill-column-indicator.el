@@ -260,7 +260,8 @@ Leaving this option set to the default value is recommended."
 
 ;;; Internal Variables
 
-;; Stores the value of fill-column for our use.  
+;; Stores the value of fill-column for our use.  (Some progmodes let-bind it
+;; during their filling routines, so we need to store the value.)
 (defvar fci-column nil)
 (make-variable-buffer-local 'fci-column)
 
@@ -279,13 +280,13 @@ Leaving this option set to the default value is recommended."
 (defconst fci-cursor-space (propertize " " 'cursor t))
 
 ;; Combined padding and rule for lines that end right at the fill column.
-(defconst fci-cursor-rule nil)
+(defvar fci-cursor-rule nil)
 
 ;; Records whether fci-mode created a new buffer-display-table.
 (defvar fci-made-display-table nil)
 (make-variable-buffer-local 'fci-made-display-table)
 
-;; Records whether fci-mode created a new buffer-display-table.
+;; Records a truncation glyph that we  need to restore.
 (defvar fci-prior-truncation-glyph nil)
 (make-variable-buffer-local 'fci-prior-truncation-glyph)
 
@@ -333,22 +334,21 @@ for tips on troubleshooting.)"
                     fci-cursor-rule (propertize fci-rule 'cursor t)))
              ((eq fci-style 'shading)
               (setq fci-put-overlays-function #'fci-put-overlays-shading)
-              ;; To handle char terminals.  We make this adjustment without
-              ;; checking the terminal type, as it's innocuous on graphical
-              ;; terminals and there's a remote chance someone using a daemon
-              ;; might invoke the mode on a graphical terminal then display
-              ;; the buffer on a character terminal.
-              (let (gc)
-                (if (not buffer-display-table)
-                    (setq buffer-display-table (make-display-table)
-                          fci-made-display-table t)
-                  (setq fci-prior-truncation-glyph (aref buffer-display-table 0)))
-                ;; If the user had the truncation glyph propertized, we're
-                ;; going to overwrite that. The glyph-code mechanism won't
-                ;; combine faces, and it doesn't seem worth it to go through
-                ;; the hassle of manually merging the faces attributes.
-                (setq gc (make-glyph-code (glyph-char (or fci-prior-truncation-glyph ?$))
-                                          'fci-shading))
+              ;; The rest of this is for char terminals.  But we make this
+              ;; adjustment without checking the terminal type, as it's
+              ;; innocuous on graphical terminals and there's a remote chance
+              ;; someone using a daemon might invoke the mode on a graphical
+              ;; terminal then display the buffer on a character terminal.
+              (if (not buffer-display-table)
+                  (setq buffer-display-table (make-display-table)
+                        fci-made-display-table t)
+                (setq fci-prior-truncation-glyph (aref buffer-display-table 0)))
+              ;; If the user had the truncation glyph propertized, we're
+              ;; going to overwrite that. The glyph-code mechanism won't
+              ;; combine faces, and it doesn't seem worth it to go through
+              ;; the hassle of manually merging the faces attributes.
+              (let* ((g (glyph-char (or fci-prior-truncation-glyph ?$)))
+                     (gc (make-glyph-code g 'fci-shading)))
                 (set-char-table-extra-slot buffer-display-table 0 gc)))
              (t
               (fci-mode -1)
@@ -363,15 +363,11 @@ for tips on troubleshooting.)"
 
         ;; Disabling
         (when (eq fci-style 'shading)
-          (cond 
-           (fci-made-display-table
-            (setq buffer-display-table nil
-                  fci-made-display-table nil))
-           (fci-prior-truncation-glyph
+          (if fci-made-display-table
+              (setq buffer-display-table nil
+                    fci-made-display-table nil)
             (set-char-table-extra-slot 0 fci-prior-truncation-glyph)
-            (setq fci-prior-truncation-glyph nil))
-           (t
-            (set-char-table-extra-slot 0 nil))))
+            (setq fci-prior-truncation-glyph nil)))
         (when (and fci-handle-line-move-visual
                    (boundp 'line-move-visual))
           (setq line-move-visual fci-saved-line-move-visual
@@ -393,8 +389,7 @@ for tips on troubleshooting.)"
                     (if (color-defined-p fci-rule-color)
                         fci-rule-color
                       (fci-mode -1)
-                      (error 
-                       "Value of `fci-rule-color' is not a recognized color"))
+                      (error "Value of `fci-rule-color' is not a recognized color"))
                   ;; Otherwise, choose an appropriate color.  
                   (fci-get-rule-color)))
          (rule (if (characterp fci-rule-character)
@@ -438,12 +433,52 @@ for tips on troubleshooting.)"
      (t
       "white"))))
 
-;; The following three functions each crate a one-character string with the
+;; The following three functions each create a one-character string with the
 ;; rule image as its display property.  We use the textual rule character for
 ;; the underlying string (instead of a space) so that our failure mode is
 ;; more graceful in case the image display fails.  In addition, this handles
 ;; the case in which someone running a daemon invokes the mode on a graphical
 ;; display then subsequently displays the buffer on a terminal.
+
+(defun fci-make-xbm-rule (width color rule)
+  (let* ((fcw (frame-char-width))
+         (img-width (+ fcw (- 8 (% fcw 8))))
+         (height (frame-char-height))
+         (row-pixels (make-bool-vector img-width nil))
+         (raster (make-vector height row-pixels))
+         (offset (ceiling (/ (- img-width width) 2.0)))
+         (i 0))
+    (while (< i width)
+      (aset row-pixels (+ i offset) t)
+      (setq i (1+ i)))
+    (propertize rule
+                'display
+                (list 'image 
+                      :type 'xbm :data raster :foreground color 
+                      :mask 'heuristic :ascent 'center 
+                      :height height :width img-width))))
+
+(defun fci-make-pbm-rule (width color rule)
+  (let* ((height (frame-char-height))
+         (sheight (number-to-string height))
+         (fcw (frame-char-width))
+         (delta (- fcw width))
+         (left (floor (/ delta 2.0)))
+         (right (ceiling (/ delta 2.0)))
+         (swidth (number-to-string fcw))
+         (ident "P1\n")
+         (dims (concat swidth " " sheight "\n"))
+         (left-pixels (mapconcat #'identity (make-vector left "0") " "))
+         (right-pixels (mapconcat #'identity (make-vector right "0") " "))
+         (rule-pixels (mapconcat #'identity (make-vector width "1") " "))
+         (row-pixels (concat left-pixels " " rule-pixels " " right-pixels))
+         (raster (mapconcat #'identity (make-vector height row-pixels) "\n"))
+         (data (concat ident dims raster)))
+    (propertize rule 
+                'display
+                (list 'image 
+                      :type 'pbm :data data :mask 'heuristic
+                      :foreground color :ascent 'center))))
 
 (defun fci-make-xpm-rule (width color rule)
   (let* ((ident (concat "/* XPM */\n"
@@ -471,46 +506,6 @@ for tips on troubleshooting.)"
     (propertize rule
                 'display
                 (list 'image :type 'xpm :data data :ascent 'center))))
-
-(defun fci-make-pbm-rule (width color rule)
-  (let* ((height (frame-char-height))
-         (sheight (number-to-string height))
-         (fcw (frame-char-width))
-         (delta (- fcw width))
-         (left (floor (/ delta 2.0)))
-         (right (ceiling (/ delta 2.0)))
-         (swidth (number-to-string fcw))
-         (ident "P1\n")
-         (dims (concat swidth " " sheight "\n"))
-         (left-pixels (mapconcat #'identity (make-vector left "0") " "))
-         (right-pixels (mapconcat #'identity (make-vector right "0") " "))
-         (rule-pixels (mapconcat #'identity (make-vector width "1") " "))
-         (row-pixels (concat left-pixels " " rule-pixels " " right-pixels))
-         (raster (mapconcat #'identity (make-vector height row-pixels) "\n"))
-         (data (concat ident dims raster)))
-    (propertize rule 
-                'display
-                (list 'image 
-                      :type 'pbm :data data :mask 'heuristic
-                      :foreground color :ascent 'center))))
-
-(defun fci-make-xbm-rule (width color rule)
-  (let* ((fcw (frame-char-width))
-         (img-width (+ fcw (- 8 (% fcw 8))))
-         (height (frame-char-height))
-         (row-pixels (make-bool-vector img-width nil))
-         (raster (make-vector height row-pixels))
-         (offset (ceiling (/ (- img-width width) 2.0)))
-         (i 0))
-    (while (< i width)
-      (aset row-pixels (+ i offset) t)
-      (setq i (1+ i)))
-    (propertize rule
-                'display
-                (list 'image 
-                      :type 'xbm :data raster :foreground color 
-                      :mask 'heuristic :ascent 'center 
-                      :height height :width img-width))))
 
 ;;; Functions That Call Setting and Unsetting
 

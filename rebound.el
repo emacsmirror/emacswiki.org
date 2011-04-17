@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.58
+;; Version: 0.59
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -322,8 +322,7 @@ when repositioning should happen is provided by the variables
 ;; regexps.
 (defun rebound-buffer-name-exception-p (buf)
   (let ((name (buffer-name buf)))
-    (or (memq t (mapcar #'(lambda (x) (string= x name)) 
-                        rebound-no-reposition-names))
+    (or (member name rebound-no-reposition-names)
         (memq t (mapcar #'(lambda (x) (string-match x name)) 
                         rebound-no-reposition-regexps)))))
 

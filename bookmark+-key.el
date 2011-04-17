@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Thu Apr 14 08:35:08 2011 (-0700)
+;; Last-Updated: Sat Apr 16 13:58:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 208
+;;     Update #: 227
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -59,7 +59,7 @@
 ;;    `bmkp-find-file-menu', `bmkp-highlight-menu', `bmkp-jump-map',
 ;;    `bmkp-jump-menu', `bmkp-options-menu',
 ;;    `bmkp-jump-other-window-map', `bmkp-jump-tags-menu',
-;;    `bmkp-set-map', `bmkp-tags-menu'.
+;;    `bmkp-set-map', `bmkp-tags-map', `bmkp-tags-menu'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -176,7 +176,7 @@
     (define-key bookmark-map [C-up]     'bmkp-previous-lighted-this-buffer-repeat)))
 
 
-;; `bmkp-set-map': prefix `C-x p'
+;; `bmkp-set-map': prefix `C-x p c'
 
 (defvar bmkp-set-map nil "Keymap containing bindings for bookmark set commands.")
 
@@ -218,6 +218,27 @@
                 (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set))
               (unless (lookup-key occur-mode-map "\C-c\C-\M-b")
                 (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
+
+
+;; `bmkp-tags-map': prefix `C-x p t'
+
+(defvar bmkp-tags-map nil "Keymap containing bindings for bookmark tag commands.")
+
+(define-prefix-command 'bmkp-tags-map)
+(define-key bookmark-map "t"  bmkp-tags-map) ; `C-x p t' for tags
+
+(define-key bmkp-tags-map "0"   'bmkp-remove-all-tags) ; `C-x p t 0'
+(define-key bmkp-tags-map "+"   nil) ; For Emacs 20
+(define-key bmkp-tags-map "+b"  'bmkp-add-tags) ; `C-x p t + b'
+(define-key bmkp-tags-map "-b"  'bmkp-remove-tags) ; `C-x p t - b'
+(define-key bmkp-tags-map "+a"  'bmkp-tag-a-file) ; `C-x p t + a'
+(define-key bmkp-tags-map "-a"  'bmkp-untag-a-file) ; `C-x p t - a'
+(define-key bmkp-tags-map "d"   'bmkp-remove-tags-from-all) ; `C-x p t d'
+(define-key bmkp-tags-map "e"   'bmkp-edit-tags) ; `C-x p t e'
+(define-key bmkp-tags-map "l"   'bmkp-list-all-tags) ; `C-x p t l'
+(define-key bmkp-tags-map "r"   'bmkp-rename-tag) ; `C-x p t r'
+(define-key bmkp-tags-map "v"   'bmkp-set-tag-value) ; `C-x p t v'
+(define-key bmkp-tags-map "V"   'bmkp-set-tag-value-for-navlist) ; `C-x p t V'
 
 
 ;; `bmkp-jump-map' and `bmkp-jump-other-window-map': prefixes `C-x j' and `C-x 4 j'

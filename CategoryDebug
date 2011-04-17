@@ -23,16 +23,16 @@ Debugging other programs using Emacs:
 ** GdbMode -- a debugger mode specialized for gdb
 ** PdbNotes -- additional setup info for python
 
-* There is a rewrite of GUD from scratch (https://github.com/rocky/emacs-dbgr/wiki). The debuggers supported include:
-** bashdb  --  Bash debugger (http://bashdb.sf.net)
+* There is a [https://github.com/rocky/emacs-dbgr/wiki/ rewrite of GUD] from scratch. The debuggers supported include:
+** [http://bashdb.sf.net bashdb]  --  Bash debugger
 ** gdb     --  can be run stand-alone or from an existing a comint "track-mode" shell
-** kshdb   --  Ksh debugger
+** [http://github.com/rocky/kshdb kshdb]   --  Ksh debugger
 ** perl    --  can be run stand-alone or from an existing a comint "track-mode" shell
-** pydb    --  Python debugger (but please use the newer pydbgr instead)
-** pydbgr  --  Python debugger (http://code.google.com/p/pydbgr/)
+** [http://bashdb.sourceforge.net/pydb/ pydb] --  Python debugger (but please use the newer pydbgr instead)
+** [http://code.google.com/p/pydbgr/ pydbgr] --  Python debugger
 ** rdebug  --  Ruby debugger ruby-debug 
-** remake  --  GNU make debugger (http://bashdb.sf.net/remake)
-** trepan  --  Ruby 1.9 YARV debugger (https://github.com/rocky/rb-trepanning/wiki)
-** trepanx --  Ruby debugger for Rubinius (https://github.com/rocky/rbx-trepanning/wiki)
-** zshdb   --  Zsh debugger 
+** [http://bashdb.sf.net/remake remake]  --  GNU make debugger
+** [https://github.com/rocky/rb-trepanning/wiki trepan]  --  Ruby 1.9 YARV debugger
+** [https://github.com/rocky/rbx-trepanning/wiki trepanx] --  Ruby debugger for Rubinius
+** [https://github.com/rocky/zshdb/wiki/ zshdb]  --  Zsh debugger 
 * VisualCDebugger -- interfacing with the Visual C++ debugger

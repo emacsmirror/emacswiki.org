@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr 14 17:10:03 2011 (-0700)
+;; Last-Updated: Sat Apr 16 16:27:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13764
+;;     Update #: 13810
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -355,8 +355,8 @@
 ;;       (or if there are no bookmarks for the buffer), you can choose
 ;;       from all bookmarks.
 ;;
-;;     - You can edit a bookmark: its name and file name/location, or
-;;       its defining internal Lisp record.
+;;     - You can edit a bookmark: its name and file name/location, its
+;;       tags, or its complete defining internal Lisp record.
 ;;
 ;;  * Multiple bookmark files.
 ;;
@@ -650,14 +650,21 @@
 ;;  later.  If you prefer, you can customize option
 ;;  `bmkp-prompt-for-tags-flag' to non-nil so that you are prompted to
 ;;  add tags immediately whenever you set (create) a bookmark.  There
-;;  are also some commands, such as `bmkp-tag-a-file' and
-;;  `bmkp-untag-a-file', that always prompt for tags to add or remove.
+;;  are also some commands, such as `bmkp-tag-a-file' (`C-x p t + a')
+;;  and `bmkp-untag-a-file' (`C-x p t - a'), that always prompt for
+;;  tags to add or remove.  (In general, the key `a' is used in key
+;;  sequences for autofile bookmarks.)
 ;;
 ;;  To make tags more useful, Bookmark+ provides lots of commands:
-;;  commands for adding or removing tags, for jumping to bookmarks
-;;  with particular sets of tags, and for marking or unmarking (in
-;;  buffer `*Bookmark List*') bookmarks that are tagged in various
-;;  ways.  When combined with other Bookmark+ commands (e.g. search,
+;;  commands for adding, removing and renaming tags; for jumping to
+;;  bookmarks with particular sets of tags; and for marking or
+;;  unmarking (in buffer `*Bookmark List*') bookmarks that are tagged
+;;  in various ways.  Most commands pertaining to tags are by default
+;;  on prefix key `C-x p t' - use `C-x p t C-h' to see.  In buffer
+;;  `*Bookmark List*', commands pertaining to tags are on prefix key
+;;  `T' - use `T C-h'.
+;;
+;;  When combined with other Bookmark+ commands (e.g. search,
 ;;  query-replace) that apply to the marked bookmarks in the
 ;;  `*Bookmark List*' window, you can really do quite a lot using
 ;;  bookmark tags.  Use your imagination!
@@ -679,9 +686,10 @@
 ;;  pair.
 ;;
 ;;  To add a value to a tag that has none, or to change the current
-;;  value of a tag, you use command `bmkp-set-tag-value', bound to `T
-;;  v' in the bookmark list.  You are prompted for the bookmark, the
-;;  tag, and the new value.
+;;  value of a tag, you use command `bmkp-set-tag-value', which is
+;;  bound to `T v' in the bookmark list and bound to `C-x p t v'
+;;  globally.  You are prompted for the bookmark, the tag, and the new
+;;  value.
 ;;
 ;;  A tag value can be a number, symbol, string, list, vector, and so
 ;;  on.  It can be as complex as you like.  It can be any Emacs-Lisp
@@ -804,6 +812,9 @@
 ;;  In that case, you are asked whether you want to save the changes
 ;;  anyway.  Remember that you can use `undo' to reverse particular
 ;;  changes or simply kill the edit buffer to abandon all changes.
+;;
+;;  In a similar way, you can use `T e' in the bookmark list or `C-x p
+;;  t e' elsewhere, to edit a bookmark's tags.
  
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
 ;;  ** Bookmark-List Views - Saving and Restoring State **
@@ -1150,7 +1161,7 @@
 ;;  ** Tagging Files **
 ;;
 ;;  Section (@> "Tags: Sets of Bookmarks") covers bookmark tags, which
-;;  are bersistent metadata that you define to help you organize
+;;  are persistent metadata that you define to help you organize
 ;;  bookmarks into meaningful sets.
 ;;
 ;;  Section (@> "Autofile Bookmarks") describes autofile bookmarks,
@@ -1164,11 +1175,12 @@
 ;;  automatically create and manipulate autofile bookmarks, that is,
 ;;  bookmarks that have the same name as the files they tag.
 ;;
-;;  Command `bmkp-tag-a-file' (aka `bmkp-autofile-add-tags') prompts
-;;  you for a set of tags and a file location, and creates or sets the
-;;  corresponding autofile bookmark.  Command `bmkp-untag-a-file' (aka
-;;  `bmkp-autofile-remove-tags') similarly lets you remove specified
-;;  tags from a file.
+;;  Command `bmkp-tag-a-file' (aka `bmkp-autofile-add-tags'), bound by
+;;  default to `C-x p t + a', prompts you for a set of tags and a file
+;;  location, and creates or sets the corresponding autofile bookmark.
+;;  Command `bmkp-untag-a-file' (aka `bmkp-autofile-remove-tags'),
+;;  bound by default to `C-x p t - a', similarly lets you remove
+;;  specified tags from a file.
 ;;
 ;;  If you also use library Icicles, then you can act on multiple
 ;;  files during the same command (a "multi-command").  You can thus
@@ -1368,12 +1380,18 @@
 ;;(@* "Tag Commands and Keys")
 ;;  *** Tag Commands and Keys ***
 ;;
-;;  There are lots of tag-related bookmark commands, and they are all
-;;  bound to keys in buffer `*Bookmark List*'.  How can you keep them
-;;  straight or remember the keys?
+;;  There are lots of tag-related bookmark commands, and most are
+;;  bound to keys in buffer `*Bookmark List*' as well as to other keys
+;;  outside it.  How can you keep the commands straight or remember
+;;  their keys?
 ;;
-;;  `C-h m' (or `?') is your friend, of course.  Beyond that, the
-;;  tag-related keys are organized as follows:
+;;  In the bookmark list display, tags-command keys begin with prefix
+;;  key `T'.  Elsewhere, they begin with prefix key `C-x p t' (or `C-x
+;;  j t', for jump commands - see (@> "Different Types of Jump Commands")).
+;;
+;;  `C-h m' (or `?') is your friend, of course.  Likewise `T C-h' and
+;;  `C-x p t C-h'.  Beyond that, the tag-related keys that are more
+;;  than two keystrokes are organized as follows:
 ;;
 ;;    They all have the prefix key `T'.
 ;;
@@ -1409,9 +1427,9 @@
 ;;  is the last (i.e., the only) one.
 ;;
 ;;  If you just hit `RET' immediately, specifying an empty set of
-;;  tags, then each of the commands does something different, but
-;;  reasonable.  For `T m *', for instance, an empty list of tags
-;;  means to mark (only) the bookmarks that have any tags at all.
+;;  tags, then each of the commands does something appropriate.  For
+;;  `T m *', for instance, an empty list of tags means to mark (only)
+;;  the bookmarks that have any tags at all.
 ;;
 ;;  Finally, for the marking/unmarking tags commands, a prefix
 ;;  argument flips the sense of the command, in this way:
@@ -1428,12 +1446,26 @@
 ;;
 ;;  You'll figure it out ;-).
 ;;
-;;  Remember that `C-h RET' shows you the tags that belong to the
-;;  current bookmark (under the cursor).  And `C-u C-h RET' shows you
-;;  the full internal form of the tags, that is, the name+value pairs.
+;;  Other important keys pertaining to tags (the keys in parentheses
+;;  work in any buffer, not just buffer `*Bookmark List*'):
 ;;
-;;  You can also sort bookmarks according to how they are tagged, even
-;;  in complex ways.  See (@> "Sorting Bookmarks").
+;;  * `C-h RET' (`C-x p ?') shows you the tags that belong to a
+;;    bookmark.  With a prefix argument it shows you the full internal
+;;    form of the tags, that is, the name+value pairs.
+;;
+;;  * `T e' (`C-x p t e') lets you edit a bookmark's tags.
+;;
+;;  * `T l' (`C-x p t l') lists all tags currently known to Emacs
+;;     (across all bookmarks).
+;;
+;;  * `T +' (`C-x p t + b') adds some tags to a bookmark.
+;;    `T -' (`C-x p t - b') removes some tags from a bookmark.
+;;    `T 0' (`C-x p t 0) removes all tags from a bookmark.
+;;    `T d' (`C-x p t d) removes a set of tags from all bookmarks.
+;;
+;;  In the bookmark list display you can also sort bookmarks according
+;;  to how they are tagged, even in complex ways.  See
+;;  (@> "Sorting Bookmarks").
 ;;
 ;;
 ;;(@* "Tags: Sets of Bookmarks")

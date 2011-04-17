@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 20
-;; Last-Updated: Tue Jan  4 08:23:04 2011 (-0800)
+;; Last-Updated: Sat Apr 16 09:45:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 77
+;;     Update #: 80
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-sort-menu+.el
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,6 +44,9 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/04/16 dadams
+;;     handle-delete-frame:
+;;       Fix for lexbind Emacs 24: replace named arg EVENT by (ad-get-arg 0).
 ;; 2005/11/05 dadams
 ;;     Renamed dired+ stuff to have diredp- prefix.
 ;; 2005/11/02 dadams
@@ -327,7 +330,7 @@ This command *must* be run in the Dired buffer!"
 (defadvice handle-delete-frame
   (before handle-delete-frame-advice activate)
   "Kill dialogue buffer before killing its frame."
-  (let* ((frame (posn-window (event-start event)))
+  (let* ((frame (posn-window (event-start (ad-get-arg 0))))
          (buf (car (buffer-list frame))))
     (when (and (buffer-name buf)
                (dired-sort-dialogue-buffer-p (buffer-name buf)))

@@ -162,7 +162,8 @@ matches the current nick."
 	  (my-rcirc-notify-keywords
 	   (let ((keyword (catch 'match
 			    (dolist (key rcirc-keywords)
-			      (when (string-match key text)
+			      (when (string-match (concat "\\<" key "\\>")
+						  text)
 				(throw 'match key))))))
 	     (when keyword
 	       (my-rcirc-notify-keyword sender keyword text)))))))

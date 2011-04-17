@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 16:03:02 2011 (-0800)
+;; Last-Updated: Sat Apr 16 09:54:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1367
+;;     Update #: 1371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -245,6 +245,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/04/16 dadams
+;;     iconify-frame: Fix for lexbind Emacs 24: replace named arg FRAME by (ad-get-arg 0).
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defgroup, defcustom, and cmd thumfr-stack-thumbnail-frames.
 ;; 2009/11/07 dadams
@@ -514,7 +516,7 @@ A smaller value uses display real estate better.")
 To iconify a frame in spite of this flag, use
 `\\[thumfr-really-iconify-frame]'."
   (if thumfr-thumbify-dont-iconify-flag
-      (thumfr-thumbify-frame frame)
+      (thumfr-thumbify-frame (ad-get-arg 0))
     ad-do-it))
 
 

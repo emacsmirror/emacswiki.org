@@ -554,6 +554,11 @@ My settings:  '(whitespace-style (quote (tabs spaces trailing lines-tail space-b
 
 : -- ViniciusJoseLatorre
 
+-----
+[new]
+Hi!  I am a big fan of whitespace.el; so much so, I have <code>(global-whitespace-mode 1)</code> in my .emacs file.  But I have been recently surprised by its behavior when I switch between major modes on a file: the whitespace highlighting goes away until I manually toggle whitespace-mode back on again.  I fixed it by <code>(add-hook 'after-change-major-mode-hook 'whitespace-turn-on-if-enabled)</code> in the spot in <code>whitespace.el</code> where it is already doing the same for the <code>find-file-hook</code> (and analogously removing the hook when global whitespace mode is being turned off).  I am just curious if you were deliberately not doing this for some reason.  Cheers!  --felix
+
+
 ------
 
 CategoryHomepage

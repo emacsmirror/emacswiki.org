@@ -75,6 +75,12 @@ Or you can use Lisp:auto-install.el (which you first have to install itself as d
    M-x auto-install-batch RET a n y t h i n g RET
 
 It would be great if it was installable with [[ELPA]] (as of 2011/01/25 I actually can install anything from [[ELPA]])
+= Getting Help =
+Anything have now his own mailing list at:
+
+[https://groups.google.com/group/emacs-anything?hl=en]
+
+It is visible also in gmane at gmane.emacs.anything
                 
 = Getting Started =
 

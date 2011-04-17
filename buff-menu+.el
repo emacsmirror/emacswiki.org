@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 14:46:32 2011 (-0800)
+;; Last-Updated: Sat Apr 16 15:59:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2646
+;;     Update #: 2654
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -141,6 +141,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/16 dadams
+;;     Buffer-menu-fontify-and-adjust-frame:
+;;       Use with-current-buffer, not save(-window)-excursion.  Thx to Alp Aker.
 ;; 2011/02/20 dadams
 ;;     list-buffers-noselect: Use only Emacs 22+ call to format-mode-line.
 ;;                            Use property font-lock-face, not face.
@@ -795,15 +798,13 @@ Click a column heading to sort by that field and update this option."
 
 (defun Buffer-menu-fontify-and-adjust-frame ()
   "Use for `buffer-menu-mode-hook'.  Fontify, fit and raise frame."
-  (save-window-excursion
-    (save-excursion
-      (pop-to-buffer "*Buffer List*")
-      (when (< emacs-major-version 21) (make-local-variable 'font-lock-defaults))
-      (setq font-lock-defaults  '(buffer-menu-font-lock-keywords t))
-      (turn-on-font-lock)
-      (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
-      (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
-      (raise-frame))))
+  (with-current-buffer (get-buffer-create "*Buffer List*")
+    (when (< emacs-major-version 21) (make-local-variable 'font-lock-defaults))
+    (setq font-lock-defaults  '(buffer-menu-font-lock-keywords t))
+    (turn-on-font-lock)
+    (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
+    (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
+    (raise-frame)))
 
 ;; Fontify buffer, then fit and raise its frame.
 (add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
@@ -1090,7 +1091,7 @@ Bindings in Buffer Menu mode:
       (let ((inhibit-read-only  t))
         (goto-char (point-min))
         (when (or (not (boundp 'Buffer-menu-use-header-line)) (not Buffer-menu-use-header-line))
-          (forward-line 2)) ; First two lines are title, unless use header line.
+          (forward-line 2))             ; First two lines are title, unless use header line.
         (while (not (eobp))
           (put-text-property (point) (save-excursion (end-of-line) (point))
                              'mouse-face 'highlight)

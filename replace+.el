@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 15:53:33 2011 (-0800)
+;; Last-Updated: Sat Apr 16 09:50:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1061
+;;     Update #: 1068
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/04/16 dadams
+;;     occur, occur-mode-mouse-goto:
+;;       Fix for lexbind Emacs 24: replace named arg REGEXP, EVENT by (ad-get-arg 0).
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies for non def* sexps, defadvice, and non-interactive fns.  Added for cmds.
 ;; 2010/01/12 dadams
@@ -841,7 +844,7 @@ the matching is case-sensitive."
 ;; Regexp is saved as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
 (when (>= emacs-major-version 21)
   (defadvice occur (before occur-save-regexp activate compile)
-    (setq occur-regexp  regexp)))        ; Save for highlighting.
+    (setq occur-regexp  (ad-get-arg 0)))) ; Save for highlighting.
 
 
 
@@ -869,9 +872,9 @@ the matching is case-sensitive."
 (defadvice occur-mode-mouse-goto (around occur-mode-mouse-goto-highlight activate compile)
   "Highlight visited line number in occur buffer.
 Alo highlight occur regexp in source buffer."
-  (with-current-buffer (window-buffer (posn-window (event-end event)))
+  (with-current-buffer (window-buffer (posn-window (event-end (ad-get-arg 0))))
     (save-excursion
-      (goto-char (posn-point (event-end event)))
+      (goto-char (posn-point (event-end (ad-get-arg 0))))
       (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
         (let ((bol  (save-excursion (beginning-of-line) (point))))
           (hlt-highlight-regexp-region bol

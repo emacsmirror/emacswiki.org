@@ -12,6 +12,7 @@ Here is some code to comment/uncomment sexp. I bind my-toggle-comment-sexp to C-
 ;; http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/a84d621c26df9c10
 (defun my-uncomment-line ()
   (uncomment-region (line-beginning-position) (line-end-position)))
+
 (require 'thingatpt)
 (defun sexp-at-point-p (pos)
   (save-excursion
@@ -25,13 +26,18 @@ Here is some code to comment/uncomment sexp. I bind my-toggle-comment-sexp to C-
 (defun my-uncomment-sexp ()
   "uncommon sexp at point"
   (interactive)
-  (my-uncomment-line)
-  (let ((begin (point)))
-    (while (not (sexp-at-point-p begin))
-      (forward-line 1)
-      (my-uncomment-line))
-    (goto-char begin)))
-
+  (let* ((beg (line-beginning-position))
+	 (end (save-excursion
+		(comment-forward (point-max))
+		(point))))
+    (save-restriction
+      (narrow-to-region beg end)
+      (my-uncomment-line)
+      (while (not (sexp-at-point-p beg))
+	(forward-line 1)
+	(my-uncomment-line))
+      (goto-char beg))))
+  
 (defun my-toggle-comment-sexp ()
   (interactive)
   (let ((beg (line-beginning-position))

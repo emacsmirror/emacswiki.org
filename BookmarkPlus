@@ -236,7 +236,7 @@ choosing from existing bookmarks for the same buffer.  This
 makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric prefix argument]] (or if there are no bookmarks for the buffer), you can choose from all bookmarks.
 
 
-* You can edit a bookmark (its name and file name/location), or its defining internal Lisp record.
+* You can ''edit'' a bookmark: its name and file name/location, its tags, or its complete defining internal Lisp record.
 
 
 
@@ -290,7 +290,7 @@ you focus on bookmarks.
 
 * Prefix '''`C-x p c'''' is for ''setting'' various kinds of bookmarks.
 
-* Prefixes '''`C-x j'''' and '''`C-x 4 j'''' (for other-window) are used for bookmark ''jump'' commands. Again, a dedicated prefix key
+* Prefixes '''`C-x j'''' and '''`C-x 4 j'''' (for other-window) are used for bookmark ''jump'' commands. Again, a dedicated [[prefix key]]
 helps you focus on one kind of action (jumping).
 
 All of these prefix keys correspond to prefix-map [[variable]]s, so
@@ -581,13 +581,17 @@ By default, you create bookmarks without tags and add tags to them
 later.  If you prefer, you can customize option
 '''`bmkp-prompt-for-tags-flag'''' to non-`nil' so that you are prompted to
 add tags immediately whenever you set (create) a bookmark.  There
-are also some commands, such as '''`bmkp-tag-a-file'''' and
-'''`bmkp-untag-a-file'''', that always prompt for tags to add or remove.
+are also some commands, such as '''`bmkp-tag-a-file''''  ('''`##C-x p t + a##'''')
+and
+'''`bmkp-untag-a-file'''' ('''`##C-x p t - a##''''), that always prompt for tags to add or remove.  (In general, the key `a' is used in key
+sequences for autofile bookmarks.)
 
 To make tags more useful, '''Bookmark+''' provides lots of commands: for
-adding or removing tags, for jumping to bookmarks with particular sets of tags, and for marking or unmarking  (in
+adding, removing, and renaming tags; for jumping to bookmarks with particular sets of tags; and for marking or unmarking  (in
 buffer `##*Bookmark List*##') bookmarks
-that are tagged in various ways.  When combined with other
+that are tagged in various ways.  Most commands pertaining to tags are by default on [[prefix key]] '''`##C-x p t##'''' --- use `##C-x p t C-h##' to see.  In buffer `##*Bookmark List*##', commands pertaining to tags are on prefix key '''`T'''' --- use `##T C-h##'.
+
+When combined with other
 '''Bookmark+''' commands (e.g. search, query-replace) that apply to the
 marked bookmarks in the `##*Bookmark List*##' window, you can really
 do quite a lot using bookmark tags.  Use your imagination! 
@@ -618,8 +622,8 @@ value to any tag.  This means that a tag can act just like an object
 ''attribute'' or property: it can be a name/value pair.
 
 To add a value to a tag that has none, or to change the current value of a tag, you use
-command '''`bmkp-set-tag-value'''', bound to '''`##T v##'''' in the bookmark
-list.  You are prompted for the bookmark, the tag, and the new
+command '''`bmkp-set-tag-value'''', which is bound to '''`##T v##'''' in the bookmark
+list and bound to '''`##C-x p t v##'''' globally.  You are prompted for the bookmark, the tag, and the new
 value.
 
 A tag value can be a number, [[symbol]], string, list, vector, and so
@@ -759,7 +763,7 @@ In that case, you are asked whether you want to save the changes
 anyway.  Remember that you can use `undo' to reverse particular
 changes or simply kill the edit buffer to abandon all changes.
 
-
+In a similar way, you can use '''`##T e##'''' in the bookmark list or '''`##C-x p t e##'''' elsewhere, to edit a bookmark's tags.
 
 
 
@@ -952,7 +956,7 @@ bound to '''`bmkp-find-file'''' and '''`bmkp-find-file-other-window'''',
 respectively (which are also known as '''`bmkp-autofile-jump'''' and
 '''`bmkp-autofile-jump-other-window'''').
 
-Similarly, you can use prefix key '''`##C-x j t a##'''' followed by the
+Similarly, you can use [[prefix key]] '''`##C-x j t a##'''' followed by the
 usual tags-command suffix keys (e.g. `##+##', `##% *##') to visit a file
 or directory (that is, jump to an autofile bookmark) that is
 tagged in a particular way.  See [[#TaggingFiles|Tagging Files]].  All of the
@@ -1168,7 +1172,7 @@ directly.
 == Tagging Files ==
 
 Section [[#BookmarkTagSets|Tags: Sets of Bookmarks]] covers bookmark tags, which
-are bersistent metadata that you define to help you organize
+are persistent metadata that you define to help you organize
 bookmarks into meaningful sets.
 
 Section [[#AutofileBookmarks|Autofile Bookmarks]] describes autofile bookmarks,
@@ -1182,10 +1186,10 @@ has a given set of tags.  '''Bookmark+''' provides file commands that
 automatically create and manipulate autofile bookmarks, that is,
 bookmarks that have the same name as the files they tag.
 
-Command '''`bmkp-tag-a-file'''' (aka '''`bmkp-autofile-add-tags'''') prompts
+Command '''`bmkp-tag-a-file'''' (aka '''`bmkp-autofile-add-tags''''), bound by default to '''`##C-x p t + a##'''', prompts
 you for a set of tags and a file location, and creates or sets the
 corresponding autofile bookmark.  Command '''`bmkp-untag-a-file'''' (aka
-'''`bmkp-autofile-remove-tags'''') similarly lets you remove specified
+'''`bmkp-autofile-remove-tags''''), bound by default to '''`##C-x p t - a##'''', similarly lets you remove specified
 tags from a file.
 
 If you also use library '''[[Icicles]]''', then you can act on multiple
@@ -1203,7 +1207,7 @@ directory bookmarks.  These commands have the prefix '''`bmkp-file-''''.
 As a special case, commands with the prefix '''`bmkp-file-this-dir-''''
 limit the choices to bookmarks for files and subdirectories of the
 ''current directory''.  By default, the commands across all
-directories are on prefix key '''`##C-x 4 j t f##'''' and those for the
+directories are on [[prefix key]] '''`##C-x 4 j t f##'''' and those for the
 current directory only are on prefix key '''`##C-x j t C-f##''''.  See
 [[#TypeSpecificJumpCommands|Different Types of Jump Commands]] for more about these
 commands.
@@ -1422,13 +1426,19 @@ information about the bookmark list, including the following:
 [:TagCommandsAndKeys]
 === Tag Commands and Keys ===
 
-There are lots of tag-related bookmark commands, and they are all
-bound to keys in buffer `##*Bookmark List*##'.  How can you keep them
-straight or remember the keys?  `##C-h m##' is your friend, of course.
-Beyond that, the tag-related keys are organized as follows:
+There are lots of tag-related bookmark commands, and most are
+bound to keys in buffer `##*Bookmark List*##' as well as to other keys
+outside it.  How can you keep the commands
+straight or remember their keys?
 
-They all have the prefix key '''`T''''.
+In the bookmark list display, tags-command keys begin with prefix
+key '''`T''''.  Elsewhere, they begin with prefix key '''`##C-x p t##'''' (or '''`##C-x j t##'''', for jump commands -- see [[#TypeSpecificJumpCommands|Different Types of Jump Commands]]).
 
+
+`##C-h m##' is your friend, of course.  Likewise '''`##T C-h##'''' and
+'''`##C-x p t C-h##''''. Beyond that, the tag-related keys  that are more than two keystrokes are organized as follows:
+
+* They all have the [[prefix key]] '''`T''''.
 * '''`m'''' means __m__ark
 * '''`u'''' means __u__nmark
 * '''`##>##'''' stands for the marked bookmarks
@@ -1459,7 +1469,7 @@ to enter the tag, and once again to indicate that it is the last (i.e., the only
 one.
 
 If you just hit `RET' immediately, specifying an empty set of tags, 
-then each of the commands does something different, but reasonable.  For `##T m *##',
+then each of the commands does something appropriate.  For `##T m *##',
 for instance, an empty list of tags means to mark (only) the bookmarks
 that have some tags (any at all).
 
@@ -1478,12 +1488,26 @@ In other words:
 
 You'll figure it out ;-).
 
-Remember that '''`C-h RET'''' shows you the tags that belong to the
-current bookmark (under the [[cursor]]).  And '''`C-u C-h RET'''' shows you
-the full internal form of the tags, that is, the name+value pairs.
+Other important keys pertaining to tags (the keys in parentheses
+work in any buffer, not just buffer `##*Bookmark List*##'):
 
-You can also sort bookmarks according to how they are tagged, even
-in complex ways.  See [[#SortingBookmarks]].
+* '''`##C-h RET##'''' ('''`##C-x p ?##'''') shows you the tags that belong to a
+  bookmark.  With a prefix argument it shows you the full internal
+  form of the tags, that is, the name+value pairs.
+
+* '''`##T e##'''' ('''`##C-x p t e##'''') lets you edit a bookmark's tags.
+
+* '''`##T l##'''' ('''`##C-x p t l##'''') lists all tags currently known to Emacs
+    (across all bookmarks).
+
+* Keys that add/remove tags:
+** '''`##T +##'''' ('''`##C-x p t + b##'''') adds some tags to a bookmark.
+** '''`##T -##'''' ('''`##C-x p t - b##'''') removes some tags from a bookmark.
+** '''`##T 0##'''' ('''`##C-x p t 0##''') removes all tags from a bookmark.
+** '''`##T d##'''' ('''`##C-x p t d##''') removes a set of tags from all bookmarks.
+
+In the bookmark list display you can also sort bookmarks according
+to how they are tagged, even in complex ways.  See [[#SortingBookmarks]].
 
 
 
@@ -2123,7 +2147,7 @@ Starting with Emacs 23.3 (Emacs fix for bug #6256), you can also
 use the mouse wheel to cycle: `C-x p' then just rotate the wheel.
 
 Again, you can bind any keys you want to these commands (e.g. `f2', `S-f2').  If you
-do not need to use a prefix key, then bind commands
+do not need to use a [[prefix key]], then bind commands
 `bmkp-next-bookmark-this-buffer' and
 `bmkp-previous-bookmark-this-buffer' (no ##-repeat##).
 
@@ -2851,7 +2875,7 @@ I think '''Bookmark+''' offers everything that ##bm.el## (VisibleBookmarks) offe
 
 * ''Highlighting'' -- See [[#HighlightingBookmarkLocations|Highlighting Bookmark Locations]]. I'm not sure what your question is.  It sounds like you might be looking for [[#HighlightingAutomatically|Highlighting Automatically]], which is essentially equivalent to persistent highlighting.  You can, for instance, auto-highlight only the autonamed (i.e. quick) bookmarks in the current buffer, then cycle among only those.  There are lots of possibilities.
 
-You can obviously bind short keys to the various commands.  All of the commands mentioned are on the keymap `bookmark-map', so you can alternatively just bind that map to some prefix key that is shorter than `C-x p' -- that way you bind all of the commands at once.
+You can obviously bind short keys to the various commands.  All of the commands mentioned are on the keymap `bookmark-map', so you can alternatively just bind that map to some [[prefix key]] that is shorter than `C-x p' -- that way you bind all of the commands at once.
 
 I don't understand your question about jumping and annotations. Please give me a recipe/scenario.  Jumping is always to a bookmark, not its annotation.  Maybe you are looking for option `bookmark-automatically-show-annotations'?  That's a standard option, respected also by '''Bookmark+'''.  If non-`nil', then any associated annotation is displayed, but not if `nil'.  '''Bookmark+''' behaves the same as vanilla Emacs wrt annotations and jumping.
 

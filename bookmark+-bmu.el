@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr 15 08:35:16 2011 (-0700)
+;; Last-Updated: Sat Apr 16 18:03:26 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 664
+;;     Update #: 693
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -102,7 +102,7 @@
 ;;    `bmkp-bmenu-describe-this+move-down',
 ;;    `bmkp-bmenu-describe-this+move-up',
 ;;    `bmkp-bmenu-describe-this-bookmark',`bmkp-bmenu-dired-marked',
-;;    `bmkp-bmenu-edit-bookmark',
+;;    `bmkp-bmenu-edit-bookmark', `bmkp-edit-tags-send',
 ;;    `bmkp-bmenu-filter-annotation-incrementally',
 ;;    `bmkp-bmenu-filter-bookmark-name-incrementally',
 ;;    `bmkp-bmenu-filter-file-name-incrementally',
@@ -1156,6 +1156,7 @@ Modify
 \\[bmkp-bmenu-edit-bookmark]\t- Rename and relocate this bookmark
 \\[bookmark-bmenu-rename]\t- Rename this bookmark
 \\[bookmark-bmenu-relocate]\t- Relocate this bookmark (change file)
+\\[bmkp-bmenu-edit-tags]\t- Edit this bookmark's tags
 \\[bookmark-bmenu-execute-deletions]\t- Delete (visible) bookmarks flagged `D'
 \\[bmkp-bmenu-delete-marked]\t- Delete (visible) bookmarks marked `>'
 
@@ -1169,6 +1170,7 @@ Tags
 \\[bmkp-remove-tags-from-all]\t- Remove some tags from all bookmarks
 \\[bmkp-rename-tag]\t- Rename a tag in all bookmarks
 \\[bmkp-list-all-tags]\t- List all tags used in any bookmarks (`C-u': show tag values)
+\\[bmkp-bmenu-edit-tags]\t- Edit this bookmark's tags
 \\[bmkp-bmenu-set-tag-value]\t- Set the value of a tag (as attribute)
 
 \\[bmkp-bmenu-add-tags-to-marked]\t- Add some tags to the marked bookmarks
@@ -2505,8 +2507,9 @@ you left off."
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only tagged bookmarks are shown")))
 
+;; Not bound, but `T 0' is bmkp-remove-all-tags'
 ;;;###autoload
-(defun bmkp-bmenu-remove-all-tags (&optional must-confirm-p) ; Not bound
+(defun bmkp-bmenu-remove-all-tags (&optional must-confirm-p)
   "Remove all tags from this bookmark.
 Interactively, you are required to confirm."
   (interactive "p")
@@ -3103,7 +3106,7 @@ property `bmkp-full-record' would make the state file unreadable.
 Do nothing in Emacs 21 or later or if
 `bmkp-propertize-bookmark-names-flag' is nil.  In these cases, just
 return the list."
-  (if (and (boundp 'print-circle)       ; Emacs 21+.
+  (if (and (> emacs-major-version 20)   ; Emacs 21+.  Cannot just use (boundp 'print-circle).
            bmkp-propertize-bookmark-names-flag)
       list
     (let ((new-list  (copy-sequence list)))
@@ -3180,6 +3183,16 @@ internal, Lisp form)."
         (if (not new-data)
             (message "No changes made")
           (bmkp-refresh-menu-list new-name))))))
+
+;;;###autoload
+(defun bmkp-bmenu-edit-tags ()          ; Bound to `T e' in bookmark list
+  "Edit the tags of the bookmark under the cursor.
+The edited value must be a list each of whose elements is either a
+string or a cons whose key is a string."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (bookmark-bmenu-ensure-position)
+  (bmkp-edit-tags (bookmark-bmenu-bookmark)))
 
 (defun bmkp-bmenu-propertize-item (bookmark start end)
   "Propertize buffer from START to END, indicating bookmark types.
@@ -3309,8 +3322,7 @@ the same name."
   (let ((full  (get-text-property 0 'bmkp-full-record name)))
     (while (and (not (eobp))
                 (not (if full
-                         (equal full (get-text-property 0 'bmkp-full-record
-                                                        (bookmark-bmenu-bookmark)))
+                         (equal full (get-text-property 0 'bmkp-full-record (bookmark-bmenu-bookmark)))
                        (equal name (bookmark-bmenu-bookmark)))))
       (forward-line 1)))
   (bookmark-bmenu-ensure-position))     ; Just in case we fall off the end.
@@ -3754,6 +3766,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "T>+"                  'bmkp-bmenu-add-tags-to-marked)
 (define-key bookmark-bmenu-mode-map "T>-"                  'bmkp-bmenu-remove-tags-from-marked)
 (define-key bookmark-bmenu-mode-map "Td"                   'bmkp-remove-tags-from-all)
+(define-key bookmark-bmenu-mode-map "Te"                   'bmkp-bmenu-edit-tags)
 (define-key bookmark-bmenu-mode-map "Tl"                   'bmkp-list-all-tags)
 (define-key bookmark-bmenu-mode-map "Tm*"                  'bmkp-bmenu-mark-bookmarks-tagged-all)
 (define-key bookmark-bmenu-mode-map "Tm%"                  'bmkp-bmenu-mark-bookmarks-tagged-regexp)
