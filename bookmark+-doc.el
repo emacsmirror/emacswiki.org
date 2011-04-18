@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 16 16:27:54 2011 (-0700)
+;; Last-Updated: Sun Apr 17 16:12:16 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13810
+;;     Update #: 13824
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -628,10 +628,11 @@
 ;;  of function, variable, etc. definitions in source files.  There is
 ;;  no relation between the two notions of "tag".
 ;;
-;;  A bookmark tag is a string that contains no newline characters.
-;;  You can add as many tags as you like to any bookmark, and multiple
-;;  bookmarks can have the same tag(s).  In fact, that's the whole
-;;  idea behind using them for organizing.
+;;  A bookmark tag is a string (or a cons whose car is a string - see
+;;  (@> "Bookmark Tags Can Have Values")).  You can add as many tags
+;;  as you like to any bookmark, and multiple bookmarks can have the
+;;  same tag(s).  In fact, that's the whole idea behind using them for
+;;  organizing.
 ;;
 ;;  This feature is unrelated to the fact that bookmarks record
 ;;  locations and are useful for navigating.  You can, if you want,
@@ -640,11 +641,11 @@
 ;;  the bookmarks as a way to visit them.
 ;;
 ;;  For example, if you use Dired+ (library `dired+.el'), then you can
-;;  use `M-b' (`diredp-do-bookmark') in Dired to create a bookmark for
-;;  each of the marked files in the Dired buffer.  Even if you never
-;;  use those bookmarks for navigating to the files, you can use them
-;;  with tags to organize the files and thus operate on subsets of
-;;  them.
+;;  use `M-b' (`diredp-do-bookmark') in Dired to create an autofile
+;;  bookmark for each of the marked files in the Dired buffer.  Even
+;;  if you never use those bookmarks for navigating to the files, you
+;;  can use them with tags to organize the files and thus operate on
+;;  subsets of them.
 ;;
 ;;  By default, you create bookmarks without tags and add tags to them
 ;;  later.  If you prefer, you can customize option
@@ -654,6 +655,14 @@
 ;;  and `bmkp-untag-a-file' (`C-x p t - a'), that always prompt for
 ;;  tags to add or remove.  (In general, the key `a' is used in key
 ;;  sequences for autofile bookmarks.)
+;;
+;;  When you are prompted to enter a tag, you type some text then hit
+;;  `RET'.  If you want to include a newline character in the tag
+;;  itself, use `C-q C-j' (`C-j' is the newline character).  You can
+;;  use `C-q' this way to enter any character.  If you do use complex
+;;  strings as tags then you might prefer to simply edit a bookmarks
+;;  tags in a separate buffer.  You can do that using `C-x p t e' (or
+;;  `T e' in the bookmark-list display).
 ;;
 ;;  To make tags more useful, Bookmark+ provides lots of commands:
 ;;  commands for adding, removing and renaming tags; for jumping to
@@ -1007,9 +1016,9 @@
 ;;  *** Bookmarking the Marked Files in Dired ***
 ;;
 ;;  If you use Dired+ (library `dired+.el'), then you can bookmark all
-;;  of the marked files in a Dired buffer at once, even if you
-;;  normally do not or cannot visit those files in Emacs.  These keys
-;;  are available in Dired:
+;;  of the marked files in a Dired buffer at once, as autofiles, even
+;;  if you normally do not or cannot visit those files in Emacs.
+;;  These keys are available in Dired:
 ;;
 ;;    `M-b'                   - Bookmark each marked file
 ;;    `C-M-S-b' (aka `C-M-B') - Bookmark each marked file in a
@@ -1018,9 +1027,9 @@
 ;;                              bookmark-file you specify, and create
 ;;                              a bookmark for that bookmark-file
 ;;
-;;  Each of these commands bookmarks each of the marked files.  By
-;;  default, the bookmark file used for the latter two commands is in
-;;  the current directory.
+;;  Each of these commands bookmarks each of the marked files as an
+;;  autofile.  By default, the bookmark file used for the latter two
+;;  commands is in the current directory.
 ;;
 ;;  If you use multiple `C-u' as a prefix arg for these commands, then
 ;;  you can bookmark all of the files in Dired, regardless of
@@ -1187,6 +1196,12 @@
 ;;  all at once tag a set of files the same way, or act on a set of
 ;;  files that are tagged similarly.
 ;;
+;;  If you also use library Dired+ (`dired+.el') then you can use
+;;  `C-+' to add tags to the marked files and `C--' to remove tags
+;;  from them.  You can use `C-M-+' and `C-M--' to do the same thing
+;;  for the current file.  You can also use items from the Dired menus
+;;  to do these things.
+;;
 ;;  Bookmark+ provides two kinds of command for visiting files
 ;;  associated with bookmarks that have tags.
 ;;
@@ -1338,10 +1353,11 @@
 ;;
 ;;  As a shortcut, in Dired (if you use library Dired+), `C-M-b'
 ;;  creates a bookmark-file bookmark.  The bookmark file that it
-;;  records contains bookmarks to each of the files that was marked in
-;;  Dired at the time it was created.  Jumping to that bookmark-file
-;;  bookmark makes those (marked) files available as bookmarks.  See
-;;  also (@> "Use Dired to Bookmark Files without Visiting Them").
+;;  records contains autofile bookmarks to each of the files that was
+;;  marked in Dired at the time it was created.  Jumping to that
+;;  bookmark-file bookmark makes those (marked) files available as
+;;  bookmarks.  See also
+;;  (@> "Use Dired to Bookmark Files without Visiting Them").
 ;;
 ;;  Note that the bookmark file in which a bookmark-file bookmark is
 ;;  recorded is not the same as the bookmark file recorded in that

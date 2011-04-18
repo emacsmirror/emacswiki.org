@@ -1,0 +1,14 @@
+I am SuSo, I use Emacs and I hate wikisystems
+
+My profile page is SuSo, but in my machine my login username is suso.  Therefore, when I publish something from yaoddmuse-mode, it is published by a non-existing emacswiki user named "suso", an this is not what I want.
+
+
+Item plus, which is the command for create a translation edition for a existing emacswiki page from yaoddmuse?
+All I can see is yaoddmuse-edit, but when I do this, what I am editing is the original page.
+If I create a new Spanish page from scratch, then there is no link between the original and the translated page.
+
+
+As I result I always have to waste time entering to this site with a web browser to fix things.
+
+
+

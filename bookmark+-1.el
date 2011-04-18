@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr 16 18:22:25 2011 (-0700)
+;; Last-Updated: Sun Apr 17 13:15:22 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1987
+;;     Update #: 1988
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2422,7 +2422,7 @@ The edited value must be a list each of whose elements is either a
 BOOKMARK is a bookmark name (a string) or a bookmark record."
   (interactive (list (bookmark-completing-read "Edit tags for bookmark" (bmkp-default-bookmark-name))))
   (setq bookmark  (bookmark-get-bookmark bookmark))
-  (let* ((btags    (mapcar 'bmkp-full-tag (bmkp-get-tags bookmark)))
+  (let* ((btags    (bmkp-get-tags bookmark))
          (bmkname  (bookmark-name-from-full-record bookmark))
          (edbuf    (format "*Edit Tags for Bookmark `%s'*" bmkname)))
     (setq bmkp-return-buffer  (current-buffer))

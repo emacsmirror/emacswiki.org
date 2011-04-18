@@ -1,0 +1,219 @@
+= Uso de modos genéricos para lenguajes oscuros =
+
+Traducción-resumen del original inglés GenericMode  --SuSo
+
+Si se pone lo siguiente en el fichero ##~/.emacs##, se añade un
+resaltado de sintaxis básico para todo tipo de ficheros:
+
+    (require 'generic-x)
+
+Con ello se agrega resaltado de sintaxis para ficheros batch, ini,
+command, registry, apache, samba, resource, fvwm, etc.  La lista
+completa se puede ver más abajo.
+
+Cuando se editan los ficheros init de programas oscuros, con
+frecuencia añado lo siguiente a la primera línea del fichero:
+
+    # -*- mode: default-generic -*-
+
+= Ejemplo simple =
+
+Supogamos que tenemos un pequeño lenguaje llamado foo; un fichero foo
+típico podría consistir en algo como esto:
+
+    !! esto es un comentario
+    account=foo; !! otro comentario
+    user=suso;
+    password=$3cre7;
+
+Si usamos define-generic-mode, podemos definir con facilidad un modo
+para dichos ficheros:
+
+    (require 'generic-x) ;; necesitamos poner esto
+
+    (define-generic-mode 
+      'foo-mode                         ;; nombre del modo
+      '("!!")                           ;; los comentarios comienzan con '!!'
+      '("account" "user" 
+        "password")                     ;; algunas palabras clave
+      '(("=" . 'font-lock-operator)     ;; '=' es un operador
+        (";" . 'font-lock-builtin))     ;; ';' es un elemento predefinido 
+      '("\\.foo$")                      ;; ficheros en los que se activa el modo 
+       nil                              ;; otras funciones que se llaman
+      "Modo para ficheros foo"          ;; cadena de documentación del modo
+    )
+
+(ejemplo tomado de http://emacs-fu.blogspot.com/2010/04/creating-custom-modes-easy-way-with.html)
+
+= Definición de nuevos modos genéricos =
+
+Para lenguajes muy simples, se puede usar el modo genérico para
+"generar" un ModoMayor nuevo propio.  El ejemplo siguiente se refiere
+a ficheros de mapas de teclas tal como los usa el programa
+##loadkeys(1)##.
+
+Primero, un ejemplo del lenguaje:
+
+    # esto sólo funciona para la consola
+    # permitir control tab
+    control keycode 15 = Macro
+    # el bloqueo de mayúsculas es la tecla compose
+    shift keycode 58 = Compose
+    # cedilla en 4
+    altgr keycode 5 = ccedilla
+    shift altgr keycode 5 = Ccedilla
+    # control up down left right home end
+    control keycode 103 = Meta_p
+    control keycode 108 = Meta_n
+    control keycode 105 = Meta_Control_b
+    control keycode 106 = Meta_Control_f
+    control keycode 102 = Meta_less
+    control keycode 107 = Meta_greater
+
+Y ahora el modo mayor.
+
+Primer intento.  Tiene las siguientes características:
+
+* Los comentarios se introducen con ##"#"##.
+* Se resaltan algunas palabras clave comunes.
+* Se activa con todos los ficheros cuya extensión sea ##".map"## y ##".keymap"##.
+
+    (define-generic-mode 'keymap-mode
+      '("#") 
+      '("control" "meta" "shift" "alt" "altgr" "compose" "keycode")
+      nil
+      '(".keymap\\'" ".map\\'")
+      nil)
+
+Segundo intento.  Características suplementarias:
+
+* Documentación.  Siempre es una buena idea.
+* Los números se resaltan con un rostro distinto.
+
+    (define-generic-mode 'keymap-mode
+      '("#")
+      '("control" "meta" "shift" "alt" "altgr" "compose" "keycode")
+      '(("[0-9]+" . 'font-lock-variable-name-face))
+      '(".keymap\\'" ".map\\'")
+      nil
+      "Modo mayor para la edición de ficheros keymap usados por loadkeys(1).")
+
+El uso del parámetro ##FONT-LOCK-LIST## es muy poderoso.  Permite
+resaltar cualquier ExpresiónRegular utilizando cualquier
+[[RostroTipográfico]].
+
+== Otro ejemplo ==
+
+Ahora vamos a definir un modo PL/SQL muy simple.  Naturalmente sería
+mejor personalizar el SqlMode, pero ponemos este ejemplo con la mera
+pretensión de ilustrar cómo hacer que ##"--"## sea un iniciador de
+comentario.  Para poder resaltar esto correctamente, usamos una
+expresión font-lock.  Para establecer `comment-start', usamos una
+función anónima (una expresión lambda, que no necesita comillas).
+
+    (define-generic-mode 'poor-man-plsql-mode
+      () 
+      '("if" "end" "else" "begin" "declare" "function" "procedure")
+      '(("\\(--.*\\)" 1 'font-lock-comment-face))
+      '("\\.pls\\'")
+      (list (lambda () (setq comment-start "--")))
+      "Modo mayor para resaltado muy simple de PL/SQL.")
+
+Hay más información acerca del resaltado tipográfico en
+FontLockKeywords.
+
+== Y otro ejemplo un poquito más largo ==
+
+    (define-generic-mode 'htaccess-mode
+      '(?#)
+      '(;; core
+        "AcceptPathInfo" "AccessFileName" "AddDefaultCharset" "AddOutputFilterByType"
+        "AllowEncodedSlashes" "AllowOverride" "AuthName" "AuthType"
+        "CGIMapExtension" "ContentDigest" "DefaultType" "DocumentRoot"
+        "EnableMMAP" "EnableSendfile" "ErrorDocument" "ErrorLog"
+        "FileETag" "ForceType" "HostnameLookups" "IdentityCheck"
+        "Include" "KeepAlive" "KeepAliveTimeout" "LimitInternalRecursion"
+        "LimitRequestBody" "LimitRequestFields" "LimitRequestFieldSize" "LimitRequestLine"
+        "LimitXMLRequestBody" "LogLevel" "MaxKeepAliveRequests" "NameVirtualHost"
+        "Options" "Require" "RLimitCPU" "RLimitMEM"
+        "RLimitNPROC" "Satisfy" "ScriptInterpreterSource" "ServerAdmin"
+        "ServerAlias" "ServerName" "ServerPath" "ServerRoot"
+        "ServerSignature" "ServerTokens" "SetHandler" "SetInputFilter"
+        "SetOutputFilter" "TimeOut" "UseCanonicalName"
+        ;; .htaccess tutorial
+        "AddHandler" "AuthUserFile" "AuthGroupFile"
+        ;; mod_rewrite
+        "RewriteBase" "RewriteCond" "RewriteEngine" "RewriteLock" "RewriteLog"
+        "RewriteLogLevel" "RewriteMap" "RewriteOptions" "RewriteRule"
+        ;; mod_alias
+        "Alias" "AliasMatch" "Redirect" "RedirectMatch" "RedirectPermanent"
+        "RedirectTemp" "ScriptAlias" "ScriptAliasMatch")
+      '(("%{\\([A-Z_]+\\)}" 1 font-lock-variable-name-face)
+        ("\\b[0-9][0-9][0-9]\\b" . font-lock-constant-face)
+        ("\\[.*\\]" . font-lock-type-face))
+      '(".htaccess\\'")
+      nil
+      "Modo genérico para ficheros .htaccess de Apache.")
+
+= Activación =
+
+Primero se comprueba si funciona, llamando al modo: ##M-x foo-mode##.
+Si funciona, se puede activar el ##foo-mode## para todos los ficheros
+cuyos nombres coincidan con cierto patrón (expresión regular).
+
+Tradicionalmente, se añadiría una entrada a `auto-mode-alist' para
+hacerlo.  Este es un ejemplo que activa un ficticio ##scala-mode##
+para todos los ficheros cuyos nombres finalicen en ##".scala"##:
+
+    (add-to-list 'auto-mode-alist '(""\\.scala\\'" . scala-mode))
+
+
+Pero con el uso de `define-generic-mode' ya conseguimos ese resultado.
+Su quinto argumento, ##AUTO-MODE-LIST##, permite especificar los
+patrones de nombres de ficheros que se quieren utilizar.  Por tanto,
+no hay necesidad de añadir patrones a `auto-mode-alist' de la manera
+indicada más arriba, si el modo nuevo se define usando
+`define-generic-mode'.
+
+= Modos genéricos predefinidos =
+
+Si se pone esto en el fichero ##~/.emacs##:
+
+    (require 'generic-x)
+
+el usuario tendrá entonces un montón de modos entre los que elegir.
+
+La lista depende del sistema operativo en uso.  Se pueden establecer
+las variables `generic-define-mswindows-modes' y
+`generic-define-unix-modes' antes de cargar ##generic-x##.  Con eso
+nos aseguramos que se tienen los valores predeterminados respectivos.
+Aquí está la lista, que además nos sirve para que aquellos que busquen
+estos modos encuentren esta página:
+
+: alias-generic-mode apache-conf-generic-mode apache-log-generic-mode
+astap-generic-mode bat-generic-mode default-generic-mode
+etc-fstab-generic-mode etc-passwd-generic-mode
+etc-services-generic-mode fvwm-generic-mode hosts-generic-mode
+ibis-generic-mode inetd-conf-generic-mode inf-generic-mode
+ini-generic-mode java-manifest-generic-mode
+java-properties-generic-mode javascript-generic-mode
+mailrc-generic-mode named-boot-generic-mode
+named-database-generic-mode rc-generic-mode reg-generic-mode
+resolve-conf-generic-mode rul-generic-mode samba-generic-mode
+show-tabs-generic-mode spice-generic-mode vrml-generic-mode
+x-resource-generic-mode
+
+
+= ¿Interfiere con paquetes que realizan un resaltado más complejo? =
+
+Sí, lo hace.  El modo genérico es como cualquier otro modo mayor.
+Quizás sea mucho más simple, pero ciertamente previene que otros modos
+mayores hagan resaltado de sintaxis.
+
+= ¿Alguien necesita algo más poderoso? =
+
+El siguiente paso en la escala de complejidad es el DerivedMode.
+
+----
+CategoryDotEmacs
+CategoryCode

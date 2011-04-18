@@ -18,6 +18,8 @@ hidden subdirectories of the selected Dired listings.
 ** Bookmark a ''project'': Bookmark the marked files and dirs and create a bookmark-file bookmark for them. "Jumping" to the bookmark-file bookmark opens the `##*Bookmark List*##' for those marked-file bookmarks (only).
 ** Customize file associations, to create bookmarks with appropriate handlers for additional types of files. 
 
+* If you use '''[[Bookmark+]]''', then you can add ''tags'' to the marked files or remove tags from them.  These are persistent tags in the "[[http://en.wikipedia.org/wiki/Delicious_(website)|delicious]]" sense.  In effect, an [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] is used for each file you tag.
+
 * Provides new mouse utility (extensions) -- you can select a region, then operate on its files. Alternative ways to select (mark) multiple files:
 ** drag a region, then choose '''Mark''' in the popup menu
 ** click, then Shift-click, as in Windows Explorer
@@ -62,7 +64,7 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 [[image:DrewsEmacsDiredThisFile]]
 
-(This screenshot is not quite up-to-date -- the menu now includes items '''Bookmark''' and '''Grep'''.)
+(This screenshot is not up-to-date -- the menu now includes items '''Bookmark''', '''Tag''', '''Untag''', and '''Grep'''.)
 
 [:w32-browser]
 == If You Use Emacs on MS Windows ==

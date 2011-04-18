@@ -1,9 +1,17 @@
-[[es:ModoDerivado]]
-Instead of writing a new mode from scratch, you should derive your new mode from an existing mode.  Deriving a new mode from fundamental mode (which does basically nothing) is better than writing a new mode from scratch.  (Unless you know what you are doing, of course.)
+[[en:DerivedMode]] 
 
-Here's an example of how to translate a very simple GenericMode code sample into a DerivedMode code sample.  This would be the way to go if you think that GenericMode is too limiting for your needs.
+En vez de escribir un nuevo modo desde cero, se podría derivar el modo
+nuevo de otro existente.  Derivar los modos nuevos a partir del
+Fundamental (que basicamente no hace nada) es mejor que escribirlo
+desde cero.  (A menos que se tenga una clara idea de lo que se está
+haciendo, por supuesto.)
 
-Old GenericMode code:
+Este es un ejemplo de cómo traducir una muestra de código muy simple
+de ModoGenérico en una muestra de código en un ModoDerivado.  Esta
+sería una vía si se piensa que el ModoGenérico es demasiado limitado
+para las necesidades que se tienen.
+
+Código original en ModoGenérico:
 
  (define-generic-mode `kk-mode
    ()
@@ -11,27 +19,28 @@ Old GenericMode code:
    '(("\\(--.*\\)" 1 'font-lock-comment-face))
    ()
    (list (lambda () (set (make-local-variable 'comment-start) "--")))
-   "Major mode to edit KK files.")
+   "Modo mayor para editar ficheros KK.")
 
-New DerivedMode code:
+Nuevo código para el ModoDerivado:
 
  (defvar kk-mode-font-lock-keywords
    '(("\\(--.*\\)" 1 'font-lock-comment-face)))
   
  (define-derived-mode kk-mode fundamental-mode "KK"
-   "Major mode to edit KK files."
+   "Modo mayor para editar ficheros KK."
    (set (make-local-variable 'font-lock-keywords)
         '(kk-mode-font-lock-keywords))
    (set (make-local-variable 'comment-start) "--"))
 
-If you are looking for an example for using a DerivedMode in released
-software, and you like to cook (with food as well as with code), see
-RicetteMode.
+Si se busca un ejemplo de uso de un ModoDerivado en software real y al
+lector le gusta cocinar (no sólo código, sino también comida), véase
+el RicetteMode.
 
-Another example of a simple mode defined by derivation is this
-simple procmail mode
+Otro ejemplo de un sencillo modo definido mediante derivación es este
+simple modo procmail
 [http://list-archive.xemacs.org/xemacs-design/200206/msg00103.html].
-Note that there is another ProcmailMode available via tiny tools.
+Se recuerda que, además, existe otro ProcmailMode disponible en las
+TinyTools.
 
   (define-derived-mode procmail-mode fundamental-mode "Procmail"
     "Major mode for editing procmail recipes."
@@ -56,9 +65,10 @@ Note that there is another ProcmailMode available via tiny tools.
 
   (add-to-list 'auto-mode-alist '(".procmailrc\\'" . procmail-mode))
 
-Another example is SimpleWikiMode.
+Otro ejemplo es el SimpleWikiMode.
 
-If you are are deriving your new mode from something other than fundamental-mode, you may want to add to that mode's set of existing keywords.
+Si se deriva el modo nuevo de otro que no sea el ModoFundamental, se
+querría añadirle el conjunto de palabras clave existentes en el modo.
 
     (defface c3-face-1 
       '((t (:foreground "#FF0000")))
@@ -67,10 +77,11 @@ If you are are deriving your new mode from something other than fundamental-mode
      ;;; c3-mode 
     (define-derived-mode c3-mode sgml-mode 
      "c3-mode" 
-     "A variant of SGML mode. Numbers appear in red."
+     "Variante del modo SGML.  Los números aparecen en rojo."
 
      (font-lock-add-keywords nil '(("[0-9]" . 'c3-face-1)))
     )
 
 ----
 CategoryCode
+

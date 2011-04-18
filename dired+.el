@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Mar 25 15:32:06 2011 (-0700)
+;; Last-Updated: Sun Apr 17 16:05:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3082
+;;     Update #: 3265
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -94,7 +94,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `diredp-bookmark', `diredp-byte-compile-this-file',
+;;    `diredp-bookmark-this-file', `diredp-byte-compile-this-file',
 ;;    `diredp-capitalize', `diredp-capitalize-this-file',
 ;;    `diredp-chgrp-this-file', `diredp-chmod-this-file',
 ;;    `diredp-chown-this-file', `diredp-compress-this-file',
@@ -102,9 +102,9 @@
 ;;    `diredp-dired-files', `diredp-dired-files-other-window',
 ;;    `diredp-dired-union', `diredp-dired-union-other-window',
 ;;    `diredp-do-bookmark', `diredp-do-bookmark-in-bookmark-file',
-;;    `diredp-do-grep', `diredp-downcase-this-file', `diredp-ediff',
-;;    `diredp-fileset', `diredp-find-a-file',
-;;    `diredp-find-a-file-other-frame',
+;;    `diredp-do-grep', `diredp-do-tag', `diredp-do-untag',
+;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
+;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
@@ -121,7 +121,8 @@
 ;;    `diredp-mouse-do-grep', `diredp-mouse-do-hardlink',
 ;;    `diredp-mouse-do-load', `diredp-mouse-do-print',
 ;;    `diredp-mouse-do-rename', `diredp-mouse-do-shell-command',
-;;    `diredp-mouse-do-symlink', `diredp-mouse-downcase',
+;;    `diredp-mouse-do-symlink', `diredp-mouse-do-tag',
+;;    `diredp-mouse-do-untag', `diredp-mouse-downcase',
 ;;    `diredp-mouse-ediff', `diredp-mouse-find-file',
 ;;    `diredp-mouse-find-file-other-frame',
 ;;    `diredp-mouse-find-file-reuse-dir-buffer',
@@ -133,21 +134,23 @@
 ;;    `diredp-relsymlink-this-file', `diredp-rename-this-file',
 ;;    `diredp-set-bookmark-file-bookmark-for-marked',
 ;;    `diredp-shell-command-this-file', `diredp-symlink-this-file',
-;;    `diredp-toggle-find-file-reuse-dir',
+;;    `diredp-tag-this-file', `diredp-toggle-find-file-reuse-dir',
 ;;    `diredp-toggle-marks-in-region', `diredp-unmark-region-files',
-;;    `diredp-upcase-this-file', `diredp-w32-drives',
-;;    `diredp-w32-drives-mode', `toggle-dired-find-file-reuse-dir'.
+;;    `diredp-untag-this-file', `diredp-upcase-this-file',
+;;    `diredp-w32-drives', `diredp-w32-drives-mode',
+;;    `toggle-dired-find-file-reuse-dir'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `diredp-all-files', `diredp-do-grep-1',
+;;    `diredp-bookmark', `diredp-all-files', `diredp-do-grep-1',
 ;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
 ;;    `diredp-dired-files-interactive-spec', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
-;;    `direp-read-bookmark-file-args', `diredp-this-file-marked-p',
-;;    `diredp-this-file-unmarked-p', `diredp-this-subdir'.
+;;    `diredp-read-bookmark-file-args', `diredp-tag',
+;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
+;;    `diredp-this-subdir', `diredp-untag'.
 ;;
 ;;  Variables defined here:
 ;;
@@ -218,6 +221,18 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/17 dadams
+;;     Added: diredp-(bookmark|(un)tag)-this-file, diredp(-mouse)(-do)-(un)tag.
+;;     diredp-mouse-3-menu: Added: diredp-mouse-do-(un)tag.
+;;     diredp-menu-bar-immediate-menu: Added diredp-(un)tag-this-file, diredp-bookmark-this-file.
+;;     diredp-menu-bar-operate-menu: Added diredp-do-(un)tag.
+;;     Bound diredp-do-tag to C-+, diredp-tag-this-file to C-M-+, diredp-do-untag to C--,
+;;           diredp-untag-this-file to C-M--, diredp-bookmark-this-file to C-B.
+;;     diredp-bookmark: Use bmkp-autofile-set, not bmkp-file-target-set, so get autofile.
+;;     diredp-read-bookmark-file-args, diredp(-mouse)-do-bookmark:
+;;       Default for prefix is now an empty string, not the directory.
+;;     diredp-mouse-do-bookmark: Removed optional second arg.
+;;     Corrected typo: direp-read-bookmark-file-args -> diredp-read-bookmark-file-args.
 ;; 2011/03/25 dadams
 ;;     diredp-bookmark: Fixed typo: bmkp-file-indirect-set -> bmkp-file-target-set.
 ;; 2011/02/11 dadams
@@ -278,7 +293,7 @@
 ;;       Use error-message-string to get failure msg.
 ;; 2010/07/11 dadams
 ;;     Added: diredp-set-bookmark-file-bookmark-for-marked (C-M-b), diredp-mouse-do-bookmark,
-;;            diredp-do-bookmark-in-bookmark-file (C-M-S-b), direp-read-bookmark-file-args.
+;;            diredp-do-bookmark-in-bookmark-file (C-M-S-b), diredp-read-bookmark-file-args.
 ;;     Added them to the operate menu.  Added diredp-do-bookmark to mouse-3 menu.
 ;; 2010/07/07 dadams
 ;;     dired-do-*: Updated doc strings for prefix arg treatment from dired-map-over-marks-check.
@@ -308,7 +323,7 @@
 ;; 2009/10/23 dadams
 ;;     diredp-font-lock-keywords-1: Override `l' and `t' matches in headings with default face.
 ;; 2009/10/13 dadams
-;;     Added: direp(-do)-bookmark.  Added to Multiple menu, and bound to M-b.
+;;     Added: diredp(-do)-bookmark.  Added to Multiple menu, and bound to M-b.
 ;; 2009/10/11 dadams
 ;;     diredp-menu-bar-immediate-menu: 
 ;;       Added items: image display items, dired-maybe-insert-subdir.
@@ -956,6 +971,15 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-immediate-menu [print]
   '(menu-item "Print..." diredp-print-this-file
     :help "Print file at cursor, supplying print command"))
+(when (require 'bookmark+ nil t)
+  (define-key diredp-menu-bar-immediate-menu [diredp-untag-this-file]
+    '(menu-item "Remove Tags..." diredp-untag-this-file
+      :help "Remove some tags from the file at cursor")))
+(when (require 'bookmark+ nil t)
+  (define-key diredp-menu-bar-immediate-menu [diredp-tag-this-file]
+    '(menu-item "Add Tags..." diredp-tag-this-file :help "Add some tags to the file at cursor")))
+(define-key diredp-menu-bar-immediate-menu [diredp-bookmark-this-file]
+  '(menu-item "Bookmark..." diredp-bookmark-this-file :help "Bookmark the file at cursor"))
 (when (fboundp 'mkhtml-dired-files)
   (define-key diredp-menu-bar-immediate-menu [mkhtml-dired-files]
     '(menu-item "Create HTML" mkhtml-dired-files
@@ -1102,6 +1126,14 @@ If HDR is non-nil, insert a header line with the directory name."
     :help "Compress/uncompress marked files"))
 (define-key diredp-menu-bar-operate-menu [print]
   '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
+(when (require 'bookmark+ nil t)
+  (define-key diredp-menu-bar-operate-menu [diredp-do-untag]
+    '(menu-item "Remove Tags..." diredp-do-untag
+      :help "Remove some tags from the marked or next N files")))
+(when (require 'bookmark+ nil t)
+  (define-key diredp-menu-bar-operate-menu [diredp-do-tag]
+    '(menu-item "Add Tags..." diredp-do-tag
+      :help "Add some tags to the marked or next N files")))
 (define-key diredp-menu-bar-operate-menu [diredp-do-bookmark-in-bookmark-file]
   '(menu-item "Bookmark in Bookmark File..." diredp-do-bookmark-in-bookmark-file
     :help "Bookmark the marked files in BOOKMARK-FILE and save BOOKMARK-FILE"))
@@ -1388,47 +1420,54 @@ If HDR is non-nil, insert a header line with the directory name."
 
 ;;; Non-menu Dired bindings.
 
+(define-key dired-mode-map [S-down-mouse-1] 'ignore) ; (normally `mouse-set-font')
 ;; `diredp-mouse-mark-region-files' provides Windows-Explorer behavior
 ;; for selecting (marking) files.
-(define-key dired-mode-map [S-down-mouse-1] 'ignore) ; (normally `mouse-set-font')
 (define-key dired-mode-map [S-mouse-1] 'diredp-mouse-mark-region-files)
 (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file-other-window)
 (define-key dired-mode-map [S-down-mouse-2] 'diredp-mouse-find-file)
 (define-key dired-mode-map [S-mouse-2] 'ignore)
 (define-key dired-mode-map [M-mouse-2] 'diredp-mouse-find-file-other-frame)
-(define-key dired-mode-map "\C-\M-o" 'dired-display-file) ; Was `C-o'.
+
+(define-key dired-mode-map "="       'diredp-ediff)
+;; This replaces the `dired-x.el' binding of `dired-mark-extension'.
+(define-key dired-mode-map "*."      'diredp-mark/unmark-extension)
 (define-key dired-mode-map [(control meta ?*)] 'diredp-marked-other-window)
-(define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)
+(define-key dired-mode-map [(control ?+)] 'diredp-do-tag) ; `C-+'
+(define-key dired-mode-map [(control ?-)] 'diredp-do-untag) ; `C--'
 (define-key dired-mode-map "\M-b"    'diredp-do-bookmark)
 (define-key dired-mode-map "\C-\M-b" 'diredp-set-bookmark-file-bookmark-for-marked)
 (define-key dired-mode-map [(control meta shift ?b)] 'diredp-do-bookmark-in-bookmark-file)
-(define-key dired-mode-map "\M-g" 'diredp-do-grep)
-(define-key dired-mode-map "U" 'dired-unmark-all-marks)
-(define-key dired-mode-map "=" 'diredp-ediff)
+(define-key dired-mode-map "\M-g"    'diredp-do-grep)
+(when (fboundp 'mkhtml-dired-files)
+  (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))
+(define-key dired-mode-map "U"       'dired-unmark-all-marks)
 (substitute-key-definition 'next-line 'dired-next-line
                            dired-mode-map (current-global-map))
 (substitute-key-definition 'previous-line 'dired-previous-line
                            dired-mode-map (current-global-map))
+
 ;; Commands for operating on the current line's file.  When possible,
 ;; these are lower-case versions of the upper-case commands for operating on
 ;; the marked files.  (Most of the other corresponding lower-case letters are already
 ;; defined and cannot be used here.)
-(define-key dired-mode-map "b" 'diredp-byte-compile-this-file)
-(define-key dired-mode-map "r" 'diredp-rename-this-file)
-(define-key dired-mode-map "y" 'diredp-relsymlink-this-file)
-(define-key dired-mode-map "z" 'diredp-compress-this-file)
-(define-key dired-mode-map "\r" 'dired-find-file)
-(when (fboundp 'mkhtml-dired-files)
-  (define-key dired-mode-map [?\M-h] 'mkhtml-dired-files))
-(define-key dired-mode-map [?\M-u] 'diredp-upcase-this-file)
-(define-key dired-mode-map [?\M-l] 'diredp-downcase-this-file)
-(define-key dired-mode-map [?\M-c] 'diredp-capitalize-this-file)
-(define-key dired-mode-map [?\M-m] 'diredp-chmod-this-file)
-(define-key dired-mode-map [?\M-p] 'diredp-print-this-file)
+(define-key dired-mode-map [(control meta ?+)] 'diredp-tag-this-file) ; `C-M-+'
+(define-key dired-mode-map [(control meta ?-)] 'diredp-untag-this-file) ; `C-M--'
+(define-key dired-mode-map "b"       'diredp-byte-compile-this-file)
+(define-key dired-mode-map [(control shift ?b)] 'diredp-bookmark-this-file) ; `C-B'
+(define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)
+(define-key dired-mode-map "\C-\M-o" 'dired-display-file) ; Was `C-o'.
+(define-key dired-mode-map "\r"      'dired-find-file) ; `RET'
+(define-key dired-mode-map "\M-u"    'diredp-upcase-this-file)
+(define-key dired-mode-map "\M-l"    'diredp-downcase-this-file)
+(define-key dired-mode-map "\M-c"    'diredp-capitalize-this-file)
+(define-key dired-mode-map "\M-m"    'diredp-chmod-this-file)
+(define-key dired-mode-map "\M-p"    'diredp-print-this-file)
+(define-key dired-mode-map "r"       'diredp-rename-this-file)
+(define-key dired-mode-map "y"       'diredp-relsymlink-this-file)
+(define-key dired-mode-map "z"       'diredp-compress-this-file)
 (substitute-key-definition 'kill-line 'diredp-delete-this-file
                            dired-mode-map (current-global-map))
-;; This replaces the `dired-x.el' binding of `dired-mark-extension'.
-(define-key dired-mode-map "*." 'diredp-mark/unmark-extension)
 
 ;; On Windows, bind some more keys.
 (when (featurep 'w32-browser)
@@ -1965,6 +2004,7 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
                                                      &optional arg)
   "Bookmark the marked files and create a bookmark-file bookmark for them.
 Jumping to the bookmark-file bookmark loads the set of file bookmarks.
+You need library `bookmark+.el' to use this command.
 
 Each bookmark name is PREFIX followed by the relative file name.
 Interactively, you are prompted for PREFIX.
@@ -2003,7 +2043,8 @@ BOOKMARK-FILE for the marked-file bookmarks, and a PREFIX string for
 each of the marked-file bookmarks.
 
 See also command `diredp-do-bookmark-in-bookmark-file'."
-  (interactive (direp-read-bookmark-file-args))
+  (interactive (diredp-read-bookmark-file-args))
+  (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (diredp-do-bookmark-in-bookmark-file bookmark-file prefix arg 'CREATE-BOOKMARK-FILE-BOOKMARK))
 
 ;;;###autoload
@@ -2013,6 +2054,8 @@ See also command `diredp-do-bookmark-in-bookmark-file'."
 You are prompted for BOOKMARK-FILE.  The default is `.emacs.bmk' in
 the current directory, but you can enter any file name, anywhere.
 
+You need library `bookmark+.el' to use this command.
+
 The marked files are bookmarked in file BOOKMARK-FILE, but this
 command does not make BOOKMARK-FILE the current bookmark file.  To
 make it current, use `\\[bmkp-switch-bookmark-file]' (`bmkp-switch-bookmark-file').
@@ -2020,6 +2063,7 @@ make it current, use `\\[bmkp-switch-bookmark-file]' (`bmkp-switch-bookmark-file
 Each bookmark name is PREFIX followed by the relative file name.
 Interactively, you are prompted for PREFIX.
 The bookmarked position is the beginning of the file.
+If you use library `bookmark+.el' then the bookmarks are autofiles.
 
 A prefix argument ARG specifies files to use instead of those marked.
  An integer means use the next ARG files (previous -ARG, if < 0).
@@ -2032,7 +2076,8 @@ See also command `diredp-set-bookmark-file-bookmark-for-marked'.
 
 Non-interactively, non-nil BFILE-BOOKMARKP means create a
 bookmark-file bookmark for BOOKMARK-FILE."
-  (interactive (direp-read-bookmark-file-args))
+  (interactive (diredp-read-bookmark-file-args))
+  (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (let ((bfile-exists-p  (file-readable-p bookmark-file)))
     (unless bfile-exists-p (bmkp-empty-file bookmark-file))
     (unless bmkp-current-bookmark-file (setq bmkp-current-bookmark-file  bookmark-default-file))
@@ -2048,7 +2093,7 @@ bookmark-file bookmark for BOOKMARK-FILE."
           (bmkp-switch-bookmark-file old-bmkp-current-bookmark-file 'NO-MSG))))
     (when bfile-bookmarkp (bmkp-set-bookmark-file-bookmark bookmark-file))))
 
-(defun direp-read-bookmark-file-args ()
+(defun diredp-read-bookmark-file-args ()
   "Read args for `diredp-do-bookmark-in-bookmark-file' and similar."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
@@ -2061,11 +2106,133 @@ bookmark-file bookmark for BOOKMARK-FILE."
                                      (list ".emacs.bmk" bookmark-default-file)
                                    ".emacs.bmk")))))
           bmk-file)
-        (read-string "Prefix for bookmark names: " nil nil
-                     (expand-file-name (if (consp dired-directory)
-                                           (car dired-directory)
-                                         dired-directory)))
+        (read-string "Prefix for bookmark names: " nil nil)
         current-prefix-arg))
+
+;;;###autoload
+(defun diredp-do-tag (tags &optional prefix arg) ; `C-+'
+  "Tag the marked (or the next prefix argument) files.
+You need library `bookmark+.el' to use this command.
+
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+TAGS is a list of strings.  PREFIX is as for `diredp-do-bookmark'.
+
+A prefix argument ARG specifies files to use instead of those marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories."
+  (interactive
+   (progn (unless (require 'bookmark+ nil t)
+            (error "This command requires library `bookmark+.el'"))
+          (unless (eq major-mode 'dired-mode)
+            (error "You must be in a Dired buffer to use this command"))
+          (list (bmkp-read-tags-completing)
+                (read-string "Prefix for bookmark name: ")
+                current-prefix-arg)))
+  (dired-map-over-marks-check #'(lambda () (diredp-tag tags prefix)) arg 'tag
+                              (diredp-fewer-than-2-files-p arg)))
+
+(defun diredp-tag (tags prefix)
+  "Add tags to the file or directory named on the current line.
+You need library `bookmark+.el' to use this function.
+The bookmark name is PREFIX followed by the relative file name.
+Return nil for success, file name of unsuccessful operation otherwise."
+  (bookmark-maybe-load-default-file)
+  (let ((file  (dired-get-file-for-visit))
+        failure)
+    (condition-case err
+        (bmkp-autofile-add-tags file tags nil prefix)
+      (error (setq failure  (error-message-string err))))
+    (if (not failure)
+	nil                             ; Return nil for success.
+      (dired-log failure)
+      (dired-make-relative file))))     ; Return file name for failure.
+
+;;;###autoload
+(defun diredp-mouse-do-tag (event)      ; Not bound
+  "In Dired, add some tags to this file."
+  (interactive "e")
+  (unless (require 'bookmark+ nil t)
+    (error "This command requires library `bookmark+.el'"))
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
+  (let ((mouse-pos         (event-start event))
+        (dired-no-confirm  t)
+        (prefix            (read-string "Prefix for bookmark name: ")))
+    (select-window (posn-window mouse-pos))
+    (goto-char (posn-point mouse-pos))
+    (dired-map-over-marks-check
+     #'(lambda () (diredp-tag (bmkp-read-tags-completing) prefix)) 1 'tag t))
+  (dired-previous-line 1))
+
+;;;###autoload
+(defun diredp-do-untag (tags &optional prefix arg) ; `C--'
+  "Remove some tags from the marked (or the next prefix arg) files.
+You need library `bookmark+.el' to use this command.
+
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+TAGS is a list of strings.  PREFIX is as for `diredp-do-bookmark'.
+
+A prefix argument ARG specifies files to use instead of those marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories."
+  (interactive
+   (progn (unless (require 'bookmark+ nil t)
+            (error "This command requires library `bookmark+.el'"))
+          (unless (eq major-mode 'dired-mode)
+            (error "You must be in a Dired buffer to use this command"))
+          (list (bmkp-read-tags-completing)
+                (read-string "Prefix for bookmark name: ")
+                current-prefix-arg)))
+  (dired-map-over-marks-check #'(lambda () (diredp-untag tags prefix)) arg 'untag
+                              (diredp-fewer-than-2-files-p arg)))
+
+(defun diredp-untag (tags prefix)
+  "Remove some tags from the file or directory named on the current line.
+You need library `bookmark+.el' to use this function.
+The bookmark name is PREFIX followed by the relative file name.
+Return nil for success, file name of unsuccessful operation otherwise."
+  (bookmark-maybe-load-default-file)
+  (let ((file  (dired-get-file-for-visit))
+        failure)
+    (condition-case err
+        (bmkp-autofile-remove-tags file tags nil prefix)
+      (error (setq failure  (error-message-string err))))
+    (if (not failure)
+	nil                             ; Return nil for success.
+      (dired-log failure)
+      (dired-make-relative file))))     ; Return file name for failure.
+
+;;;###autoload
+(defun diredp-mouse-do-untag (event)    ; Not bound
+  "In Dired, remove some tags from this file."
+  (interactive "e")
+  (unless (require 'bookmark+ nil t)
+    (error "This command requires library `bookmark+.el'"))
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
+  (let ((mouse-pos         (event-start event))
+        (dired-no-confirm  t)
+        (prefix            (read-string "Prefix for bookmark name: ")))
+    (select-window (posn-window mouse-pos))
+    (goto-char (posn-point mouse-pos))
+    (let* ((bmk               (bmkp-get-autofile-bookmark  (dired-get-filename) nil prefix))
+           (btgs              (and bmk (bmkp-get-tags bmk))))
+      (unless btgs (error "File has no tags to remove"))
+      (dired-map-over-marks-check
+       #'(lambda () (diredp-untag (bmkp-read-tags-completing btgs) prefix)) 1 'untag t)))
+  (dired-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-bookmark (prefix &optional arg) ; Bound to `M-b'
@@ -2073,6 +2240,7 @@ bookmark-file bookmark for BOOKMARK-FILE."
 Each bookmark name is PREFIX followed by the relative file name.
 Interactively, you are prompted for the PREFIX.
 The bookmarked position is the beginning of the file.
+If you use library `bookmark+.el' then the bookmark is an autofile.
 
 A prefix argument ARG specifies files to use instead of those marked.
  An integer means use the next ARG files (previous -ARG, if < 0).
@@ -2083,39 +2251,34 @@ A prefix argument ARG specifies files to use instead of those marked.
   (interactive
    (progn (unless (eq major-mode 'dired-mode)
             (error "You must be in a Dired buffer to use this command"))
-          (list (read-string "Prefix for bookmark name: " nil nil
-                             (expand-file-name (if (consp dired-directory)
-                                                   (car dired-directory)
-                                                 dired-directory)))
+          (list (read-string "Prefix for bookmark name: ")
                 current-prefix-arg)))
   (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
                               (diredp-fewer-than-2-files-p arg)))
 
 ;;;###autoload
-(defun diredp-mouse-do-bookmark (event &optional arg) ; Not bound
+(defun diredp-mouse-do-bookmark (event) ; Not bound
   "In Dired, bookmark this file."
-  (interactive "e\P")
+  (interactive "e")
   (let ((mouse-pos         (event-start event))
         (dired-no-confirm  t)
-        (prefix            (read-string "Prefix for bookmark name: " nil nil
-                                        (expand-file-name (if (consp dired-directory)
-                                                              (car dired-directory)
-                                                            dired-directory)))))
+        (prefix            (read-string "Prefix for bookmark name: ")))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark t))
+    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) nil 'bookmark t))
   (dired-previous-line 1))
 
 (defun diredp-bookmark (prefix)
   "Bookmark the file or directory named on the current line.
 The bookmark name is PREFIX followed by the relative file name.
-Return nil for success, file name of unsuccessful operation otherwise."
+Return nil for success, file name of unsuccessful operation otherwise.
+If you use library `bookmark+.el' then the bookmark is an autofile."
   (bookmark-maybe-load-default-file)
   (let ((file  (dired-get-file-for-visit))
         failure)
     (condition-case err
-        (if (fboundp 'bmkp-file-target-set)
-            (bmkp-file-target-set file)
+        (if (fboundp 'bmkp-autofile-set)
+            (bmkp-autofile-set file nil prefix)
           (let ((bookmark-make-record-function
                  (cond ((and (require 'image nil t) (require 'image-mode nil t)
                              (condition-case nil (image-type file) (error nil)))
@@ -2129,7 +2292,7 @@ Return nil for success, file name of unsuccessful operation otherwise."
       (error (setq failure  (error-message-string err))))
     (if (not failure)
 	nil                             ; Return nil for success.
-      (if (fboundp 'bmkp-file-target-set)
+      (if (fboundp 'bmkp-autofile-set)
           (dired-log failure)
         (dired-log "Failed to create bookmark for `%s':\n%s\n" file failure))
       (dired-make-relative file))))     ; Return file name for failure.
@@ -3119,6 +3282,39 @@ lower case."
   (dired-do-shell-command command 1))
 
 ;;;###autoload
+(defun diredp-bookmark-this-file (prefix) ; `C-B' (`C-S-b')
+  "In dired, bookmark the file on the cursor line."
+  (interactive (progn (unless (eq major-mode 'dired-mode)
+                        (error "You must be in a Dired buffer to use this command"))
+                      (list (read-string "Prefix for bookmark name: "))))
+  (diredp-do-bookmark prefix 1))
+
+;;;###autoload
+(defun diredp-tag-this-file (tags prefix) ; `C-M-+'
+  "In dired, add some tags to the file on the cursor line."
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (unless (eq major-mode 'dired-mode)
+                        (error "You must be in a Dired buffer to use this command"))
+                      (list (bmkp-read-tags-completing)
+                            (read-string "Prefix for bookmark name: "))))
+  (diredp-do-tag tags prefix 1))
+
+;;;###autoload
+(defun diredp-untag-this-file (tags prefix) ; `C-M--'
+  "In dired, remove some tags from the file on the cursor line."
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (unless (eq major-mode 'dired-mode)
+                        (error "You must be in a Dired buffer to use this command"))
+                      (let* ((pref  (read-string "Prefix for bookmark name: "))
+                             (bmk   (bmkp-get-autofile-bookmark  (dired-get-filename) nil pref))
+                             (btgs  (and bmk (bmkp-get-tags bmk))))
+                        (unless btgs (error "File has no tags to remove"))
+                        (list (bmkp-read-tags-completing btgs) pref))))
+  (diredp-do-untag tags prefix 1))
+
+;;;###autoload
 (defun diredp-byte-compile-this-file ()
   "In dired, byte compile the (Lisp source) file on the cursor line."
   (interactive) (dired-do-byte-compile 1))
@@ -3403,6 +3599,8 @@ With non-nil prefix arg, mark them instead."
                          '("--")        ; Separator.
 
                          '("Bookmark..." . diredp-mouse-do-bookmark)
+                         '("Tag..." . diredp-mouse-do-tag)
+                         '("Untag..." . diredp-mouse-do-untag)
                          '("Copy to..." . diredp-mouse-do-copy)
                          '("Rename to..." . diredp-mouse-do-rename)
                          '("Upcase" . diredp-mouse-upcase)
