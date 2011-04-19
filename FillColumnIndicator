@@ -44,7 +44,7 @@ I've just spotted a small problem. In order to use with EmacsAsDaemon one needs 
 
 [new:AlpAker:2011-04-15 22:59 UTC]
 
-As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   The only problematic case is when someone invokes the mode when using emacsclient on a char terminal and then subsequently visits the same buffer on a graphical terminal.  If that happens, the textual rule will be used on both displays.   --AA
+As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   The only problematic case is when someone invokes the mode when using emacsclient on a char terminal and then subsequently, while that buffer is still live, visits it using the same Emacs instance on a graphical terminal.  If that happens, the textual rule will be used on both displays.  (I imagine this sort of case arises with vanishing frequency, though.) --AA
 
 ===Problem using dabbrev-expand===
 [new]

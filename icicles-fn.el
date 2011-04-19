@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 10 17:06:50 2011 (-0700)
+;; Last-Updated: Mon Apr 18 08:44:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12220
+;;     Update #: 12234
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1875,50 +1875,105 @@ FACE."
   (unless (fboundp 'old-face-valid-attribute-values)
     (defalias 'old-face-valid-attribute-values (symbol-function 'face-valid-attribute-values)))
 
-  (defun icicle-face-valid-attribute-values (attribute &optional frame)
-    "Return valid values for face attribute ATTRIBUTE.
+  (if (fboundp 'window-system)          ; Emacs 23+
+      ;; Emacs 23+ `font-family-list' is strings, not conses of strings like older `x-font-family-list'.
+      (defun icicle-face-valid-attribute-values (attribute &optional frame)
+        "Return valid values for face attribute ATTRIBUTE.
 The optional argument FRAME is used to determine available fonts
 and colors.  If it is nil or not specified, the selected frame is
 used.  Value is an alist of (NAME . VALUE) if ATTRIBUTE expects a value
 out of a set of discrete values.  Value is `integerp' if ATTRIBUTE expects
 an integer value."
-    (let ((valid
-           (case attribute
-             (:family (if window-system
-                          (mapcar #'(lambda (x) (cons (car x) (car x)))
-                                  (if (fboundp 'font-family-list)
-                                      (font-family-list)
-                                    (x-font-family-list)))
-                        ;; Only one font on TTYs.
-                        (list (cons "default" "default"))))
-             ((:width :weight :slant :inverse-video)
-              (mapcar #'(lambda (x) (cons (symbol-name x) x))
-                      (internal-lisp-face-attribute-values attribute)))
-             ((:underline :overline :strike-through :box)
-              (if window-system
-                  (nconc (mapcar #'(lambda (x) (cons (symbol-name x) x))
-                                 (internal-lisp-face-attribute-values attribute))
-                         (mapcar #'(lambda (c) (cons c c))
-                                 (mapcar #'icicle-color-name-w-bg (x-defined-colors frame))))
+        (let ((valid
+               (case attribute
+                 (:family (if (window-system frame)
+                              (mapcar (lambda (x) (cons x x)) ; Just strings, so don't take car.
+                                      (font-family-list))
+                            ;; Only one font on TTYs.
+                            (list (cons "default" "default"))))
+                 (:foundry
+                  (list nil))
+                 (:width
+                  (mapcar #'(lambda (x) (cons (symbol-name (aref x 1)) (aref x 1)))
+                          font-width-table))
+                 (:weight
+                  (mapcar #'(lambda (x) (cons (symbol-name (aref x 1)) (aref x 1)))
+                          font-weight-table))
+                 (:slant
+                  (mapcar #'(lambda (x) (cons (symbol-name (aref x 1)) (aref x 1)))
+                          font-slant-table))
+                 (:inverse-video
+                  (mapcar #'(lambda (x) (cons (symbol-name x) x))
+                          (internal-lisp-face-attribute-values attribute)))
+                 ((:underline :overline :strike-through :box)
+                  (if (window-system frame)
+                      (nconc (mapcar #'(lambda (x) (cons (symbol-name x) x))
+                                     (internal-lisp-face-attribute-values attribute))
+                             (mapcar #'(lambda (c) (cons c c))
+                                     (mapcar #'icicle-color-name-w-bg (defined-colors frame))))
+                    (mapcar #'(lambda (x) (cons (symbol-name x) x))
+                            (internal-lisp-face-attribute-values attribute))))
+                 ((:foreground :background)
+                  (mapcar #'(lambda (c) (cons c c))
+                          (mapcar #'icicle-color-name-w-bg (defined-colors frame))))
+                 ((:height) 'integerp)
+                 (:stipple (and (memq (window-system frame) '(x ns)) ; No stipple on w32
+                                (mapcar #'list (apply #'nconc (mapcar (lambda (dir)
+                                                                        (and (file-readable-p dir)
+                                                                             (file-directory-p dir)
+                                                                             (directory-files dir)))
+                                                                      x-bitmap-file-path)))))
+                 (:inherit (cons '("none" . nil)
+                                 (mapcar #'(lambda (c) (cons (symbol-name c) c)) (face-list))))
+                 (t
+                  (error "Internal error")))))
+          (if (and (listp valid) (not (memq attribute '(:inherit))))
+              (nconc (list (cons "unspecified" 'unspecified)) valid)
+            valid)))
+    (defun icicle-face-valid-attribute-values (attribute &optional frame) ; Emacs 21-22.
+      "Return valid values for face attribute ATTRIBUTE.
+The optional argument FRAME is used to determine available fonts
+and colors.  If it is nil or not specified, the selected frame is
+used.  Value is an alist of (NAME . VALUE) if ATTRIBUTE expects a value
+out of a set of discrete values.  Value is `integerp' if ATTRIBUTE expects
+an integer value."
+      (let ((valid
+             (case attribute
+               (:family (if window-system
+                            (mapcar #'(lambda (x) (cons (car x) (car x)))
+                                    (if (fboundp 'font-family-list)
+                                        (font-family-list)
+                                      (x-font-family-list)))
+                          ;; Only one font on TTYs.
+                          (list (cons "default" "default"))))
+               ((:width :weight :slant :inverse-video)
                 (mapcar #'(lambda (x) (cons (symbol-name x) x))
-                        (internal-lisp-face-attribute-values attribute))))
-             ((:foreground :background)
-              (mapcar #'(lambda (c) (cons c c))
-                      (mapcar #'icicle-color-name-w-bg (x-defined-colors frame))))
-             ((:height) 'integerp)
-             (:stipple (and (memq window-system '(x w32 mac))
-                            (mapcar #'list (apply #'nconc (mapcar (lambda (dir)
-                                                                    (and (file-readable-p dir)
-                                                                         (file-directory-p dir)
-                                                                         (directory-files dir)))
-                                                                  x-bitmap-file-path)))))
-             (:inherit (cons '("none" . nil)
-                             (mapcar #'(lambda (c) (cons (symbol-name c) c)) (face-list))))
-             (t
-              (error "Internal error")))))
-      (if (and (listp valid) (not (memq attribute '(:inherit))))
-          (nconc (list (cons "unspecified" 'unspecified)) valid)
-        valid)))
+                        (internal-lisp-face-attribute-values attribute)))
+               ((:underline :overline :strike-through :box)
+                (if window-system
+                    (nconc (mapcar #'(lambda (x) (cons (symbol-name x) x))
+                                   (internal-lisp-face-attribute-values attribute))
+                           (mapcar #'(lambda (c) (cons c c))
+                                   (mapcar #'icicle-color-name-w-bg (x-defined-colors frame))))
+                  (mapcar #'(lambda (x) (cons (symbol-name x) x))
+                          (internal-lisp-face-attribute-values attribute))))
+               ((:foreground :background)
+                (mapcar #'(lambda (c) (cons c c))
+                        (mapcar #'icicle-color-name-w-bg (x-defined-colors frame))))
+               ((:height) 'integerp)
+               (:stipple (and (memq window-system '(x w32 mac))
+                              (mapcar #'list (apply #'nconc (mapcar (lambda (dir)
+                                                                      (and (file-readable-p dir)
+                                                                           (file-directory-p dir)
+                                                                           (directory-files dir)))
+                                                                    x-bitmap-file-path)))))
+               (:inherit (cons '("none" . nil)
+                               (mapcar #'(lambda (c) (cons (symbol-name c) c)) (face-list))))
+               (t
+                (error "Internal error")))))
+        (if (and (listp valid) (not (memq attribute '(:inherit))))
+            (nconc (list (cons "unspecified" 'unspecified)) valid)
+          valid))))
 
   (defun icicle-color-name-w-bg (color-name)
     "Return copy of string COLOR-NAME with its background of that color.

@@ -1,4 +1,4 @@
-Timestamp: Sat Jan 22 07:35:20 GMT 2011
+Timestamp: Mon Apr 18 09:29:47 BST 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -1717,6 +1717,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://stud4.tuwien.ac.at/~e0225855/pointback/pointback.html pointback.el] --- Restore window points when returning to buffers (by Markus Triska)
 
 [http://sugarshark.com/elisp/mylisp/pom.el pom.el] --- Utility functions for dealing with maven project.xml files (by Ole Arndt)
+
+[http://kanis.fr/hg/lisp/ivan/pomodoro.el pomodoro.el] --- Pomodoro Technique for emacs (by Ivan Kanis)
 
 [http://groups.google.com/groups?selm=ye4u2lhhkie.fsf%40alpha12.bocal.cs.univ-paris8.fr pong.el] --- Emacs implementation of pong (by Benjamin Drieu)
 

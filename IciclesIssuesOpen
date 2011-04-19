@@ -84,7 +84,9 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
-[new] I’m using Icicles r181 on GNU Emacs 24.0.50.1 (i386-mingw-nt6.1.7601).  When I run ‘M-x modify-face RET default RET’, it reads the name of the face, then throws up an error: <code>Wrong type argument: listp, "System"</code>.  This happens regardless of the actual face specified.  As far as I can tell, the problem is in ‘icicle-face-valid-attribute-values’ (icicles-fn.el:1879) where the function uses the return value from ‘font-family-list’ as a list of conses, whereas in fact it’s a list of strings.
+
+
+
 
 <pre>
 

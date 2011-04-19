@@ -457,6 +457,47 @@ Hi, guys!  I wrote an auto-complete-source to use Scite's API files. (For those 
 
 For me, it works fine on GNU Emacs 23.2/24.0.50 and auto-complete 1.2/1.3. 
 I'm a emacs newbie (<1 year). If someone would point out any error in my elisp code, I'd be very happy. --Bamanzi
+
+[new]
+Hi. I use autocomplete + eclim. I wrote an autocomplete source which uses eclim to retrieve completion candidates and then builds a yasnippet to expand on candidate selection. Hope someone finds it useful.
+<pre>
+(defvar ac-eclim-yas-mark 'nil)
+
+(defun ac-eclim-yas-candidates ()
+  (let (lista)
+    (with-no-warnings
+      (when eclim-auto-save (save-buffer))
+      (loop for c in (eclim/java-complete)
+	    do
+	    (if (not (equal (nth 0 c) "f"))
+		(push (nth 1 c) lista)
+	      (let ((texto (nth 2 c))
+		    aux)
+		(push (concat 
+		       (replace-regexp-in-string "^\\([^(]*(\\).*" "\\1" texto)
+		       (replace-regexp-in-string "[^ <]+\\(?:<[^>]+>\\)? \\([^ ,]+\\)\\(,?\\)" "${\\1}\\2"
+						 (replace-regexp-in-string "^[^(]*(\\([^)]*\\)).*$" "\\1"  texto))
+		       ")")
+		      lista)))))
+    lista))
+
+(defun yas/expand-eclim-snippet ()
+  (let ((snip (buffer-substring-no-properties ac-eclim-yas-mark (point))))
+    (delete-region ac-eclim-yas-mark (point))
+    (yas/expand-snippet snip)))
+
+(defun eclim-yas-init ()
+  (setq ac-eclim-yas-mark (point)))
+
+(ac-define-source eclim-yas
+  '((candidates . ac-eclim-yas-candidates)
+    (init . eclim-yas-init)
+    (requires . 0)
+    (prefix . c-dot)
+    (action . yas/expand-eclim-snippet)
+    (symbol . "f")))
+</pre>
+--Lucas Pandolfo
 ----
 CategoryCompletion
 

@@ -9,6 +9,27 @@ The package comes with gtags.el that integrates it seamlessly into Emacs.
 The gtags.el package doesn't cycle through gtags result.  Here's some code for doing it.
 CyclingGTagsResult
 
+=== GNU GLOBAL incremental update ===
+
+It's possible to use GNU GLOBAL incremental update feature in after-save-hook in order to keep synchronized the changes you made in source code and gtags database:
+
+
+  (defun gtags-root-dir ()
+    "Returns GTAGS root directory or nil if doesn't exist."
+    (with-temp-buffer
+      (if (zerop (call-process "global" nil t nil "-pr"))
+          (buffer-substring (point-min) (1- (point-max)))
+        nil)))
+
+  (defun gtags-update ()
+    "Make GTAGS incremental update"
+    (call-process "global" nil nil nil "-u"))
+
+  (defun gtags-update-hook ()
+    (when (gtags-root-dir)
+      (gtags-update)))
+
+  (add-hook 'after-save-hook #'gtags-update-hook)
 
 ===Alternative interface to GNU GLOBAL===
 
@@ -27,7 +48,7 @@ gtags.el in several ways:
 * the package can be downloaded from http://home.tiscali.de/mgidde/source/xgtags.el (link is dead; does anyone know another source than <http://www.mail-archive.com/help-global@gnu.org/msg00022/xgtags.el> or the newer one from <http://web.archive.org/web/20080117124425/http://home.tiscali.de/mgidde/source/xgtags.el>?)
 
 [new]
-while using xgtags.el, if you have spaces in the path for sources, you may want to consider to change xgtags--tag-regexp like
+while using xgtags.el, if you have spaces in the path for sources, you may want to consider to change xgtags--tag-regexp likecedet
 
 <code>
 (defconst xgtags--file-regexp "\\([^ \t]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\(.*\\.\\(cpp\\|hpp\\|h\\|c\\|idl\\)\\)[ \t]+\\(.+\\)$" "...")

@@ -1,0 +1,1 @@
+[http://www.instapaper.com Instapaper] is "a simple tool to save web pages for reading later". [https://bitbucket.org/jfm/emacs-instapaper instapaper.el] is a set of simple functions for saving URLs from emacs to Instapaper for reading later. It can get URLs from various sources (interactively, from point, or from w3m) to save. The instructions are in the header of the source.

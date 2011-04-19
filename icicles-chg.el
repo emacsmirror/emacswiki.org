@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 13 10:18:35 2011 (-0700)
+;; Last-Updated: Mon Apr 18 08:47:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6383
+;;     Update #: 6386
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -734,6 +734,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/04/18 dadams
+;;     icicle-face-valid-attribute-values: Added Emacs 23+ version.  Thx to Aankhen.
 ;; 2011/04/12 dadams
 ;;     Added defvars for icicle-dirs-done and icicle-files, for free vars.
 ;;       Bind *-files in icicle-dired-read-shell-command.  Bind *-dirs-done in icicle-files-within.

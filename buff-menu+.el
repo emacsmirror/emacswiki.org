@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Apr 16 15:59:41 2011 (-0700)
+;; Last-Updated: Mon Apr 18 09:35:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2654
+;;     Update #: 2662
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -141,6 +141,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/18 dadams
+;;     Buffer-menu-sort, Buffer-menu-revert-function, buffer-menu:
+;;       Use Buffer-menu-buffer-column, not hard-coded 4.  Thx to Alp Aker.
 ;; 2011/04/16 dadams
 ;;     Buffer-menu-fontify-and-adjust-frame:
 ;;       Use with-current-buffer, not save(-window)-excursion.  Thx to Alp Aker.
@@ -778,7 +781,7 @@ Click a column heading to sort by that field and update this option."
   (let ((opoint            (point))
         (eobp              (eobp))
         (ocol              (current-column))
-        (oline             (progn (move-to-column 4)
+        (oline             (progn (move-to-column Buffer-menu-buffer-column)
                                   (get-text-property (point) 'buffer)))
         (prop              (point-min))
         ;; Do not make undo records for the reversion.
@@ -848,7 +851,7 @@ Type `q' there to quit the buffer menu."
         (let ((buffer-read-only  nil))
           (goto-char (point-min))
           (unless Buffer-menu-use-header-line (forward-line 2)) ; Header.
-          (forward-char 4)
+          (forward-char Buffer-menu-buffer-column)
           (sort-columns nil (point) (save-excursion (goto-char (point-max))
                                                     (when (bolp) (backward-char 1))
                                                     (point)))))
@@ -1258,7 +1261,7 @@ Consecutive executions of the same COLUMN reverse the sort order."
       (save-excursion
         (Buffer-menu-beginning)
         (while (not (eobp))
-          (when (buffer-live-p (setq buf  (get-text-property (+ (point) 4) 'buffer)))
+          (when (buffer-live-p (setq buf  (get-text-property (+ (point) Buffer-menu-buffer-column) 'buffer)))
             (setq m1  (char-after)
                   m1  (if (memq m1 '(?> ?D)) m1)
                   m2  (char-after (+ (point) 2))
@@ -1271,7 +1274,7 @@ Consecutive executions of the same COLUMN reverse the sort order."
       (save-excursion
         (Buffer-menu-beginning)
         (while (not (eobp))
-          (when (setq buf  (assq (get-text-property (+ (point) 4) 'buffer) l))
+          (when (setq buf  (assq (get-text-property (+ (point) Buffer-menu-buffer-column) 'buffer) l))
             (setq m1  (cadr buf)
                   m2  (cadr (cdr buf)))
             (when m1

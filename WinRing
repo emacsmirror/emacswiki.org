@@ -61,6 +61,13 @@ Create or jump wrapper by IanYang:
               (winring-save-current-configuration)
               (winring-restore-configuration item)))))
 
+[new:IanYang:2011-04-18 11:06 UTC]
+
+Specify the name of the first configuration:
+
+        (flet ((winring-next-name nil "default"))
+          (winring-initialize))
+
 ----
 
 '''See Also:''' FrameConfiguration for info on switching between frame configurations (window-manager "windows").

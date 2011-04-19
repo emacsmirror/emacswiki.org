@@ -15,16 +15,16 @@ The package [[locales.el]] (by AlpAker) generalizes these abilities.  The primar
 All functions of the normal buffer menu remain available.  In addition, the buffer menu can be toggled between two modes.  In local mode, only buffers associated with the selected frame are shown.  In global mode, all buffers are shown, with the local buffers distinguished by an 'o' on their respectives lines.  Here are screenshots of the two modes:
 
 || [[image:LocalesLocalMode]] || [[image:LocalesGlobalMode]] ||
-|| Buffer menu in local mode, sorted by buffer size. || Buffer menu in global mode, sorted by buffer size.  Note the fourth `L' column indicating the buffers local to this frame. ||
+|| Buffer menu in local mode, sorted by buffer size.  Only buffers associated with this frame are shown. || Buffer menu in global mode, sorted by buffer size.  All buffers are shown; the buffers associated with this frame are distinguished by on `o' bit in the fourth `L' column. ||
 
 The buffer menu can be toggled between the two modes by typing ##a## .  In addition, the user can edit the local buffer list from within the buffer menu:
 
-* By typing ##+## a file can be marked as to be added to the local buffer list.
-* By typing ##-## a file can be marked as to be removed from the local buffer list.
+* By typing ##]## a file can be marked as to be added to the local buffer list.
+* By typing ##[## a file can be marked as to be removed from the local buffer list.
 
-As with other actions in the buffer menu, these changes take effect when buffer-menu-execute is called.  (NB: They are also executed when toggling between local and global modes.)  When a buffer is made non-local, it is removed from any windows on the current frame displaying it and replaced with another frame-local buffer.
+As with other actions in the buffer menu, these changes take effect when ##Buffer-menu-execute## is called. When a buffer is made non-local, it is removed from any windows on the current frame displaying it and replaced with another frame-local buffer.
 
-Whether the buffer menu opens in local or global mode can be controlled via the variable ##locales-open-in-global-mode##.  The character used to indicate frame-local buffers can be controlled via the variable ##locales-local-bit##. (In addition, the appearance of the buffer menu can be controlled by the same variables that control the default buffer menu.  See the documentation of the command ##locales-buffer-menu## for a list.)
+Whether the buffer menu opens in local or global mode can be controlled via the variable ##Buffer-menu-open-in-global-mode##.  The character used to indicate frame-local buffers can be controlled via the variable ##Buffer-menu-local-bit##. (In addition, the appearance of the buffer menu can be controlled by the same variables that control the default buffer menu.  
 
 ==New Functions outside the Buffer Menu==
 
@@ -37,19 +37,16 @@ Packages that associate buffers with a frame typically use a single criterion:  
 * If ##locales-include-displayed-buffers## is non-nil, then buffers that are merely displayed on a frame are considered to be local to the frame, even if they have not been selected.
 * If ##locales-include-scratch## is non-nil, then the scratch buffer is always added to the local buffer list. 
 * If the command that creates a new frame also creates new buffers, then one might want those buffers to count as local to the new frame.  If ##locales-include-new-buffers## is non-nil, then such buffers are added to the new frame's local buffer list, even if they have not been selected or displayed.  (NB: This applies only to buffers that are created *after* the new frame is created.)
-*   If ##locales-include-init-buffer## is non-nil, then the buffer that is current when the command creating a new frame is called (the init-buffer) will belong to the new frame.  If nil, it will not.  (NB: Other criteria take precedence over this variable.  If the init-buffer is selected after the new frame is created, then it will belong to the new frame.  Similarly, if ##locales-include displayed-buffers## is non-nil and the init-buffer is displayed in some window when the frame-creating command terminates, then the init-buffer will belong to the new frame.)
+*   If ##locales-include-init-buffer## is non-nil, then the buffer that is current when the command creating a new frame is called (the init-buffer) will belong to the new frame.  If nil, it will not.  
 
 ==Limitations==
 
-Locales does not presently work if you have ##pop-up-frames## set to non-nil.  Fixing that is on the todo list.
-
-Please also note: Locales is a relatively new package.  It's therefore likely to conflict with other extensions to the buffer-menu.  If you encounter any such problems, please send me a note so I can ensure compatibility.
+Locales is not presently compatible with BufferMenuPlus (although I am working on that).  It is compatible with `electric-buffer-list'.  (Note that other forms of buffer menu, such as ##bs-show##, use mechanisms that are entirely separate from those of the standard buffer menu. Locales does not affect them at all.)
 
 
 ==Installation==
 
 See the `Installation' section at the top of  [[locales.el]].
-
 
 == Discussion ==
 
