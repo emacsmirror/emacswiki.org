@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 20
-;; Last-Updated: Sat Apr 16 09:45:17 2011 (-0700)
+;; Last-Updated: Tue Apr 19 16:14:22 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 80
+;;     Update #: 89
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-sort-menu+.el
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,6 +44,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/04/19 dadams
+;;     Restore Dired+ bindings on prefix key T.
 ;; 2011/04/16 dadams
 ;;     handle-delete-frame:
 ;;       Fix for lexbind Emacs 24: replace named arg EVENT by (ad-get-arg 0).
@@ -86,9 +88,28 @@
 
 ;; Restore bindings set by `dired+.el'.
 ;; (They were changed by `dired-sort-menu.el'.)
+;; There should be a better way to do this, but probably there isn't.
+;;
+;; Replaces `T' binding for `dired-sort-menu-swap-config' in `dired-sort-menu.el'.
+;;
 (when (fboundp 'diredp-rename-this-file)
-  (define-key dired-mode-map "b" 'diredp-byte-compile-this-file)
-  (define-key dired-mode-map "r" 'diredp-rename-this-file))
+  (define-key dired-mode-map "b"       'diredp-byte-compile-this-file)
+  (define-key dired-mode-map "r"       'diredp-rename-this-file)
+  (define-key dired-mode-map "T"       nil)
+  (define-key dired-mode-map "T+"      'diredp-tag-this-file)
+  (define-key dired-mode-map "T-"      'diredp-untag-this-file)
+  (define-key dired-mode-map "T>+"     'diredp-do-tag)
+  (define-key dired-mode-map "T>-"     'diredp-do-untag)
+  (define-key dired-mode-map "Tm*"     'diredp-mark-files-tagged-all)
+  (define-key dired-mode-map "Tm%"     'diredp-mark-files-tagged-regexp)
+  (define-key dired-mode-map "Tm+"     'diredp-mark-files-tagged-some)
+  (define-key dired-mode-map "Tm~*"    'diredp-mark-files-tagged-not-all)
+  (define-key dired-mode-map "Tm~+"    'diredp-mark-files-tagged-none)
+  (define-key dired-mode-map "Tu*"     'diredp-unmark-files-tagged-all)
+  (define-key dired-mode-map "Tu%"     'diredp-unmark-files-tagged-regexp)
+  (define-key dired-mode-map "Tu+"     'diredp-unmark-files-tagged-some)
+  (define-key dired-mode-map "Tu~*"    'diredp-unmark-files-tagged-not-all)
+  (define-key dired-mode-map "Tu~+"    'diredp-unmark-files-tagged-none))
 
 ;; Use "|", not "r".
 (define-key dired-mode-map "|" 'dired-sort-menu-toggle-reverse)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Apr 16 18:03:26 2011 (-0700)
+;; Last-Updated: Tue Apr 19 13:02:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 693
+;;     Update #: 712
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -173,6 +173,7 @@
 ;;    `bmkp-bmenu-unmark-bookmarks-tagged-all',
 ;;    `bmkp-bmenu-unmark-bookmarks-tagged-none',
 ;;    `bmkp-bmenu-unmark-bookmarks-tagged-not-all',
+;;    `bmkp-bmenu-unmark-bookmarks-tagged-regexp',
 ;;    `bmkp-bmenu-unmark-bookmarks-tagged-some',
 ;;    `bmkp-bmenu-unomit-marked', `bmkp-bmenu-w32-open',
 ;;    `bmkp-bmenu-w32-open-select', `bmkp-bmenu-w32-open-with-mouse',
@@ -1178,7 +1179,6 @@ Tags
 
 \\[bmkp-bmenu-mark-bookmarks-tagged-regexp]\t- Mark bookmarks having at least one \
 tag that matches a regexp
-
 \\[bmkp-bmenu-mark-bookmarks-tagged-some]\t- Mark bookmarks having at least one tag \
 in a set    (OR)
 \\[bmkp-bmenu-mark-bookmarks-tagged-all]\t- Mark bookmarks having all of the tags \
@@ -1188,6 +1188,8 @@ in a set (NOT OR)
 \\[bmkp-bmenu-mark-bookmarks-tagged-not-all]\t- Mark bookmarks not having all of the \
 tags in a set (NOT AND)
 
+\\[bmkp-bmenu-unmark-bookmarks-tagged-regexp]\t- Unmark bookmarks having at least one \
+tag that matches a regexp
 \\[bmkp-bmenu-unmark-bookmarks-tagged-some]\t- Unmark bookmarks having at least one \
 tag in a set  (OR)
 \\[bmkp-bmenu-unmark-bookmarks-tagged-all]\t- Unmark bookmarks having all of the tags \
@@ -2605,7 +2607,7 @@ You can use completion to enter each tag."
 ;;;###autoload
 (defun bmkp-bmenu-mark-bookmarks-tagged-regexp (regexp &optional notp) ; `T m %' in bookmark list
   "Mark bookmarks any of whose tags match REGEXP.
-With a prefix arg, mark all that are tagged but with no tags that match."
+With a prefix arg, mark all that are tagged but have no matching tags."
   (interactive "sRegexp: \nP")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (save-excursion
@@ -2623,7 +2625,7 @@ With a prefix arg, mark all that are tagged but with no tags that match."
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-tagged-all (tags &optional nonep msgp) ; `T m *' in bookmark list
+(defun bmkp-bmenu-mark-bookmarks-tagged-all (tags &optional none-p msgp) ; `T m *' in bookmark list
   "Mark all visible bookmarks that are tagged with *each* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
 any tags at all (i.e., at least one tag).
@@ -2631,7 +2633,7 @@ any tags at all (i.e., at least one tag).
 With a prefix arg, mark all that are *not* tagged with *any* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'msg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep nil msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags none-p nil msgp))
 
 ;;;###autoload
 (defun bmkp-bmenu-mark-bookmarks-tagged-none (tags &optional allp msgp) ; `T m ~ +' in bookmark list
@@ -2670,25 +2672,46 @@ With a prefix arg, mark all that are tagged with *some* tag in TAGS."
   (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) nil msgp))
 
 ;;;###autoload
-(defun bmkp-bmenu-unmark-bookmarks-tagged-all (tags &optional nonep msgp) ; `T u *' in bookmark list
+(defun bmkp-bmenu-unmark-bookmarks-tagged-regexp (regexp &optional notp) ; `T u %' in bookmark list
+  "Unmark bookmarks any of whose tags match REGEXP.
+With a prefix arg, mark all that are tagged but have no matching tags."
+  (interactive "sRegexp: \nP")
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (save-excursion
+    (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+    (let ((count  0)
+          tags anyp)
+      (while (not (eobp))
+        (setq tags  (bmkp-get-tags (bookmark-bmenu-bookmark))
+              anyp  (and tags (bmkp-some (lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                         tags)))
+        (if (not (and tags (if notp (not anyp) anyp)))
+            (forward-line 1)
+          (bookmark-bmenu-unmark)
+          (setq count  (1+ count))))
+      (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
+
+;;;###autoload
+(defun bmkp-bmenu-unmark-bookmarks-tagged-all (tags &optional none-p msgp) ; `T u *' in bookmark list
   "Unmark all visible bookmarks that are tagged with *each* tag in TAGS.
-As a special case, if TAGS is empty, then mark the bookmarks that have
+As a special case, if TAGS is empty, then unmark the bookmarks that have
 any tags at all.
 
 With a prefix arg, unmark all that are *not* tagged with *any* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'msg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep 'unmark msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags none-p 'UNMARK msgp))
 
 ;;;###autoload
 (defun bmkp-bmenu-unmark-bookmarks-tagged-none (tags &optional allp msgp) ; `T u ~ +' in bookmark list
   "Unmark all visible bookmarks that are *not* tagged with *any* TAGS.
-With a prefix arg, unmark all that are tagged with *each* tag in TAGS.
-As a special case, if TAGS is empty, then mark the bookmarks that have
-no tags at all."
+As a special case, if TAGS is empty, then unmark the bookmarks that have
+no tags at all.
+
+With a prefix arg, unmark all that are tagged with *each* tag in TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'msg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) 'unmark msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) 'UNMARK msgp))
 
 ;;;###autoload
 (defun bmkp-bmenu-unmark-bookmarks-tagged-some (tags &optional somenotp msgp) ; `T u +' in bmk list
@@ -2699,19 +2722,20 @@ any tags at all.
 With a prefix arg, unmark all that are *not* tagged with *all* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'msg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp 'unmark msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp 'UNMARK msgp))
 
 ;;;###autoload
 (defun bmkp-bmenu-unmark-bookmarks-tagged-not-all (tags &optional somep msgp) ; `T u ~ *' in bmk list
-  "Unmark all visible bookmarks that are tagged with *some* tag in TAGS.
-As a special case, if TAGS is empty, then mark the bookmarks that have
+  "Unmark all visible bookmarks that are *not* tagged with *all* TAGS.
+As a special case, if TAGS is empty, then unmark the bookmarks that have
 no tags at all.
-With a prefix arg, unmark all that are *not* tagged with *all* TAGS."
+
+With a prefix arg, unmark all that are tagged with *some* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'msg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) 'unmark msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) 'UNMARK msgp))
 
-(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none (tags &optional nonep unmarkp msgp)
+(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none (tags &optional none-p unmarkp msgp)
   "Mark or unmark visible bookmarks tagged with all or none of TAGS.
 TAGS is a list of strings, the tag names.
 NONEP non-nil means mark/unmark bookmarks that have none of the TAGS.
@@ -2729,11 +2753,11 @@ those that have no tags at all."
         (while (not (eobp))
           (setq bmktags  (bmkp-get-tags (bookmark-bmenu-bookmark)))
           (if (not (if (null tags)
-                       (if nonep (not bmktags) bmktags)
+                       (if none-p (not bmktags) bmktags)
                      (and bmktags  (catch 'bmkp-b-mu-b-t-an
                                      (dolist (tag  tags)
                                        (setq presentp  (assoc-default tag bmktags nil t))
-                                       (unless (if nonep (not presentp) presentp)
+                                       (unless (if none-p (not presentp) presentp)
                                          (throw 'bmkp-b-mu-b-t-an nil)))
                                      t))))
               (forward-line 1)
@@ -3777,6 +3801,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Ts"                   'bmkp-define-tags-sort-command)
 (define-key bookmark-bmenu-mode-map "TS"                   'bmkp-bmenu-show-only-tagged)
 (define-key bookmark-bmenu-mode-map "Tu*"                  'bmkp-bmenu-unmark-bookmarks-tagged-all)
+(define-key bookmark-bmenu-mode-map "Tu%"                  'bmkp-bmenu-unmark-bookmarks-tagged-regexp)
 (define-key bookmark-bmenu-mode-map "Tu+"                  'bmkp-bmenu-unmark-bookmarks-tagged-some)
 (define-key bookmark-bmenu-mode-map "Tu~*"                'bmkp-bmenu-unmark-bookmarks-tagged-not-all)
 (define-key bookmark-bmenu-mode-map "Tu~+"                 'bmkp-bmenu-unmark-bookmarks-tagged-none)
@@ -4099,6 +4124,9 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-unmark-bookmarks-tagged-some]
   '(menu-item "Unmark If Tagged with Some..." bmkp-bmenu-unmark-bookmarks-tagged-some
     :help "Unmark all visible bookmarks that are tagged with *some* tag in a set you specify"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-unmark-bookmarks-tagged-regexp]
+  '(menu-item "Unmark If Tagged Matching Regexp..." bmkp-bmenu-unmark-bookmarks-tagged-regexp
+    :help "Unmark bookmarks any of whose tags match a regexp you enter"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-bookmarks-tagged-not-all]
   '(menu-item "Mark If Not Tagged with All..." bmkp-bmenu-mark-bookmarks-tagged-not-all
     :help "Mark all visible bookmarks that are *not* tagged with *all* tags you specify"))

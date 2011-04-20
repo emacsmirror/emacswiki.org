@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Apr 17 13:15:22 2011 (-0700)
+;; Last-Updated: Tue Apr 19 15:22:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1988
+;;     Update #: 1995
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4834,17 +4834,19 @@ that has the same name."
 (defun bmkp-make-record-for-target-file (file)
   "Return a function that creates a bookmark record for FILE.
 The bookmarked position will be the beginning of the file."
-  (let ((default-handler  (bmkp-default-handler-for-file file)))
+  ;; $$$$$$ Maybe need a way to bypass default handler, at least for autofiles.
+  ;;        Doesn't seem to make much sense to use a handler such as a shell cmd in this context. (?)
+  (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file file) (error nil))))
     (cond (default-handler              ; User default handler
-              (lambda () `((filename . ,file) (position . 0) (handler . ,default-handler))))
+              `(lambda () '((filename . ,file) (position . 0) (handler . ,default-handler))))
           ;; Non-user defaults.
           ((and (require 'image nil t) (require 'image-mode nil t) ; Image
                 (condition-case nil (image-type file) (error nil)))
            'image-bookmark-make-record)
           ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
-           (lambda () `((filename . ,file) (handler . bmkp-sound-jump))))
+           `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
           (t
-           (lambda () `((filename . ,file) (position . 0)))))))
+           `(lambda () '((filename . ,file) (position . 0)))))))
 
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
 (defun bmkp-autofile-set (file &optional dir prefix msgp) ; Bound to `C-x p c a'

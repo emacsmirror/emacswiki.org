@@ -1,6 +1,6 @@
 This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 
-: .:: ''v13.2'' :: ''part of GNU Emacs'' ::.
+: .:: ''v13.2.1'' :: ''part of GNU Emacs'' ::.
 
 : It runs on Emacs 24.
 
@@ -769,6 +769,12 @@ I have issues with the 'empty' marker. When am I writing a new source code, whit
 
 : Hi PraveenKumar,
 : This problem should be fixed by version 13.0. -- ViniciusJoseLatorre
+
+[new]
+
+:: Hi, ViniciusJoseLatorre!
+:: I downloaded and tried 13.2 and I don't see the above mentioned issue anymore. Thanks for fixing it.
+:: -- PraveenKumar
 
 ----
 

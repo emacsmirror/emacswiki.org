@@ -1,17 +1,14 @@
 I finally took the plunge and switched to emacs about a year ago ... 
 
-currently getting myself familiar with elisp so i can enhance my org-mode usage as a fancy todo manager :)
+currently getting myself familiar with elisp so i can enhance my org-mode usage as a fancy todo manager,
+and here is the initial version of that small add-on ... be gentle is my first lisp code and my first shot at extending emacs 
 
-
-
+https://github.com/gyordanov/smart-todo.el
+all it does it speeds up adding todos based on the current buffer path, with a easy way to set due date 
 
 
 [new:DrewAdams:2011-03-18 01:22 UTC]
 Welcome to the wiki. -- DrewAdams
-
-
-
-
 
 
 

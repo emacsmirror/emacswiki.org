@@ -107,6 +107,8 @@
 ;; 0.9.6: Use a seen hashtable to deal with circles through symlinks by attila.lendvai@gmail.com
 ;; 0.9.7: Fix wrong calls to message by Michael Heerdegen
 ;; 0.9.8: Fix 'symbol-calue' typo in non-exposed code path by Michael Heerdegen
+;; 0.9.9: Call message less frequent by attila.lendvai@gmail.com
+;; 0.9.10: match findr-skip-directory-regexp agaisnt the whole path by attila.lendvai@gmail.com
 
 (require 'cl)
 
@@ -126,8 +128,8 @@
 ;;    (setf result (concatenate 'string result "^" (regexp-quote el) "$")))
 ;;  result)
 
-(defcustom findr-skip-directory-regexp "^\\.backups$\\|^_darcs$\\|^\\.git$\\|^CVS$\\|^\\.svn$"
-  "A regexp that the directory names will be matched against and matching directories are skipped."
+(defcustom findr-skip-directory-regexp "\\/.backups$\\|/_darcs$\\|/\\.git$\\|/CVS$\\|/\\.svn$"
+  "A regexp filter to skip directory paths."
   :type 'string
   :group 'findr)
 
@@ -144,6 +146,15 @@
 (defun findr-propertize-string (string properties)
   (add-text-properties 0 (length string) properties string)
   string)
+
+(defmacro findr-with-infrequent-message (&rest body)
+  (let ((last-message-at (gensym "last-message-at")))
+    `(let ((,last-message-at 0))
+       (labels ((message* (message &rest args)
+                  (when (> (- (time-to-seconds) ,last-message-at) 0.5)
+                    (setq ,last-message-at (time-to-seconds))
+                    (apply 'message message args))))
+         ,@body))))
 
 (defun findr-propertize-prompt (string)
   (findr-propertize-string string '(read-only t intangible t)))
@@ -209,17 +220,18 @@
   "Search directory DIR breadth-first for files matching regexp NAME.
 If PROMPT-P is non-nil, or if called interactively, Prompts for visiting
 search result\(s\)."
-  (let ((*dirs* (findr-make-queue))
-        (seen-directories (make-hash-table :test 'equal))
-        *found-files*)
-    (labels ((findr-1 (dir)
-               (message "Searching %s ..." dir)
-               (let ((files (directory-files dir t "\\w")))
-                 (loop
+  (findr-with-infrequent-message
+    (let ((*dirs* (findr-make-queue))
+          (seen-directories (make-hash-table :test 'equal))
+          *found-files*)
+      (labels ((findr-1 (dir)
+                 (message* "Collecting in dir %s" dir)
+                 (let ((files (directory-files dir t "\\w")))
+                   (loop
                      for file in files
                      for fname = (file-relative-name file dir)
                      when (and (file-directory-p file)
-                               (not (string-match findr-skip-directory-regexp fname))
+                               (not (string-match findr-skip-directory-regexp file))
                                (not (gethash (file-truename file) seen-directories))
                                (or (not skip-symlinks)
                                    (not (file-symlink-p file))))
@@ -244,19 +256,19 @@ search result\(s\)."
                                  (file-truename file)
                                  file)
                              *found-files*))
-                     (message "%s" file)
+                     (message* "Collecting file %s" file)
                      (when (and prompt-p
                                 (y-or-n-p (format "Find file %s? " file)))
                        (find-file file)
                        (sit-for 0)	; redisplay hack
                        )))))
-      (unwind-protect
-           (progn
-             (findr-enqueue dir *dirs*)
-             (while (findr-queue-contents *dirs*)
-               (findr-1 (findr-dequeue *dirs*)))
-             (message "Searching... done."))
-        (return-from findr (nreverse *found-files*))))))
+        (unwind-protect
+             (progn
+               (findr-enqueue dir *dirs*)
+               (while (findr-queue-contents *dirs*)
+                 (findr-1 (findr-dequeue *dirs*)))
+               (message "Searching... done."))
+          (return-from findr (nreverse *found-files*)))))))
 
 (defun findr-query-replace (from to name dir)
   "Do `query-replace-regexp' of FROM with TO, on each file found by findr.

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 17 13:18:14 2011 (-0700)
+;; Last-Updated: Tue Apr 19 15:22:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13634
+;;     Update #: 13639
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/19 dadams
+;;     bmkp-make-record-for-target-file: Fixed backquotes on lambdas.
 ;; 2011/04/17 dadams
 ;;     bmkp-edit-tags: Do not apply bmkp-full-tag to the tags.
 ;; 2011/04/16 dadams
@@ -303,6 +305,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/19 dadams
+;;     Added: bmkp-bmenu-unmark-bookmarks-tagged-regexp.  Bound it to T u %.  Added it to menu.
 ;; 2011/04/16 dadams
 ;;     Added: bmkp-edit-tags-send.  Bound it to T e in bookmark-bmenu-mode-map.
 ;;     bookmark-bmenu-mode: Updated help text for tags editing.

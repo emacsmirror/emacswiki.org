@@ -1,12 +1,11 @@
 ;;; whitespace.el --- minor mode to visualize TAB, (HARD) SPACE, NEWLINE
 
-;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
-;;   Free Software Foundation, Inc.
+;; Copyright (C) 2000-2011  Free Software Foundation, Inc.
 
 ;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Keywords: data, wp
-;; Version: 13.2
+;; Version: 13.2.1
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is part of GNU Emacs.
@@ -312,6 +311,9 @@
 ;;
 ;; Acknowledgements
 ;; ----------------
+;;
+;; Thanks to felix (EmacsWiki) for keeping highlight when switching between
+;; major modes on a file.
 ;;
 ;; Thanks to David Reitter <david.reitter@gmail.com> for suggesting a
 ;; `whitespace-newline' initialization with low contrast relative to
@@ -1178,6 +1180,7 @@ See also `whitespace-style', `whitespace-newline' and
 		    'find-file-hook
 		  'find-file-hooks)
 		'whitespace-turn-on-if-enabled)
+      (add-hook 'after-change-major-mode-hook 'whitespace-turn-on-if-enabled)
       (dolist (buffer (buffer-list))	; adjust all local mode
 	(set-buffer buffer)
 	(unless whitespace-mode
@@ -1188,6 +1191,7 @@ See also `whitespace-style', `whitespace-newline' and
 		       'find-file-hook
 		     'find-file-hooks)
 		   'whitespace-turn-on-if-enabled)
+      (remove-hook 'after-change-major-mode-hook 'whitespace-turn-on-if-enabled)
       (dolist (buffer (buffer-list))	; adjust all local mode
 	(set-buffer buffer)
 	(unless whitespace-mode
@@ -1236,7 +1240,8 @@ See also `whitespace-newline' and `whitespace-display-mappings'."
   :global     t
   :group      'whitespace
   (let ((whitespace-style '(newline-mark newline)))
-    (global-whitespace-mode global-whitespace-newline-mode)
+    (global-whitespace-mode (if global-whitespace-newline-mode
+                                1 -1))
     ;; sync states (running a batch job)
     (setq global-whitespace-newline-mode global-whitespace-mode)))
 
@@ -2094,7 +2099,7 @@ can't split window to display whitespace toggle options"))
   "Scroll help window, if it exists.
 
 If UP is non-nil, scroll up; otherwise, scroll down."
-  (condition-case data-help
+  (condition-case nil
       (let ((buffer (get-buffer whitespace-help-buffer-name)))
 	(if buffer
 	    (with-selected-window (get-buffer-window buffer)
@@ -2542,7 +2547,7 @@ buffer."
     r))
 
 
-(defun whitespace-buffer-changed (beg end)
+(defun whitespace-buffer-changed (_beg _end)
   "Set `whitespace-buffer-changed' variable to t."
   (setq whitespace-buffer-changed t))
 
@@ -2728,5 +2733,4 @@ It should be added buffer-locally to `write-file-functions'."
 (run-hooks 'whitespace-load-hook)
 
 
-;; arch-tag: 1b1e2500-dbd4-4a26-8f7a-5a5edfd3c97e
 ;;; whitespace.el ends here

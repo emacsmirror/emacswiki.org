@@ -129,7 +129,7 @@ code.
 
 </pre>
 ; ([Self:action=history;id=whitespace.el history])  Download:whitespace.el  (WhiteSpace) : Minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
-: .:: ''v13.2'' :: ''part of GNU Emacs'' ::.
+: .:: ''v13.2.1'' :: ''part of GNU Emacs'' ::.
 : It runs on Emacs 24.
 : **Note 1:** //The source here in EmacsWiki was modified to run on Emacs 21, 22, 23 and 24.//
 : **Note 2:** //This package replaces// BlankMode.
@@ -147,7 +147,7 @@ code.
 [new]
 == Links for ebnf2ps package ==
 
-ABNF :: [http://en.wikipedia.org/wiki/ABNF Augmented BNF for Syntax Specifications: ABNF] :: [http://tools.ietf.org/html/rfc4234 RFC-4234]
+ABNF :: [http://en.wikipedia.org/wiki/ABNF Augmented BNF for Syntax Specifications: ABNF] :: [http://tools.ietf.org/html/rfc5234 RFC-5234]
 
 ISO EBNF :: [http://www.cl.cam.ac.uk/~mgk25/iso-ebnf.html International Standard of the ISO EBNF Notation] :: [http://www.cl.cam.ac.uk/~mgk25/iso-14977.pdf ISO-14977]
 
@@ -160,6 +160,8 @@ DTD :: [http://www.w3.org/TR/2004/REC-xml-20040204/ Extensible Markup Language (
 WSN :: [http://en.wikipedia.org/wiki/Wirth_Syntax_Notation Wirth Syntax Notation]
 
 BNF :: [http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form Backus Naur Form]
+
+[http://en.wikipedia.org/wiki/Syntax_diagram Syntax Diagram]
 
 
 [new]
@@ -557,6 +559,13 @@ My settings:  '(whitespace-style (quote (tabs spaces trailing lines-tail space-b
 -----
 [new]
 Hi!  I am a big fan of whitespace.el; so much so, I have <code>(global-whitespace-mode 1)</code> in my .emacs file.  But I have been recently surprised by its behavior when I switch between major modes on a file: the whitespace highlighting goes away until I manually toggle whitespace-mode back on again.  I fixed it by <code>(add-hook 'after-change-major-mode-hook 'whitespace-turn-on-if-enabled)</code> in the spot in <code>whitespace.el</code> where it is already doing the same for the <code>find-file-hook</code> (and analogously removing the hook when global whitespace mode is being turned off).  I am just curious if you were deliberately not doing this for some reason.  Cheers!  --felix
+
+[new]
+: Hi felix,
+
+: No, this behavior was a surprise to me too.
+
+: Thanks for your tiny patch. -- ViniciusJoseLatorre
 
 
 ------

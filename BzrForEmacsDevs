@@ -148,7 +148,7 @@ Some people don't like doing development work in ##trunk## at all, they prefer i
 
 (Those instructions are subject to the same caveats as given earlier when binding the ##trunk## branch.)
 
-This will create a directory ##quickfixes##, populated with the Emacs source tree, and bind it to upstream.  Creating ##quickfixes## should be much faster than the first ##bzr branch##, because this is all happening inside a shared repository.  In a Bazaar shared repository, all the branches share history, which means less spaced used and less time spent downloading history and file content; this makes Bazaar branches much more lightweight than CVS branches.
+This will create a directory ##quickfixes##, populated with the Emacs source tree, and bind it to upstream.  Creating ##quickfixes## should be much faster than the first ##bzr branch##, because this is all happening inside a shared repository.  In a Bazaar shared repository, all the branches share history, which means less space used and less time spent downloading history and file content; this makes Bazaar branches much more lightweight than CVS branches.
 
 However, it still takes time to check out the source tree for a new branch (which we just did), and bootstrapping a new tree takes an annoyingly long time.  That is why reusing the same branch for small changes makes sense.  After you have bootstrapped a branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle are each very fast, as long as you continue working in the same branch.
 
@@ -160,7 +160,7 @@ Once you have created and bootstrapped the ##quickfixes## branch, the routine wo
       bzr status                  # (optional) sanity check -- lists changed and unknown files
       bzr commit -m "Fix silly typo in README."
 
-Because ##trunk## is "bound" to upstream, this commit will automatically push the changes upstream.
+Because ##quickfixes## is "bound" to upstream, this commit will automatically push the changes upstream.
 
 [:InitializeBranch]
 [:FeatureBranch]

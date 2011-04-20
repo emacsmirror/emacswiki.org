@@ -104,5 +104,14 @@ Use flyspell-auto-correct-word.
 This is not working for me.  With flyspell-auto-correct-word I can go
 through all suggestions for correction, but I do not get an option to
 insert the word into my dictionary.
+
+[new]
+== Success in adding new words into the personal dictionary ==
+
+I used "M x ispell-region", and the words that ispell considered having incorrect spellings were highlighted.  The point moved to the first
+"mis-spelled" word.  By typing "i", I inserted the word into my personal dictionary.  Later I found that the personal dictionary was stored in the file $HOME/.aspell.en.pws in pure text format.  Although the word was added when I used "ispell" instead of "flyspell", but once added, flyspell also recognized the word as having a correct spelling. :-) This information came from the web page: http://www.delorie.com/gnu/docs/emacs/emacs_109.html .  Thanks!
+
+-- Namo Amitabha
+
 ----
 CategoryModes | CategorySpelling
