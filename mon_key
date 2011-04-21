@@ -1,6 +1,15 @@
+[:MON-CLONE]
+= :MON-CLONE =
+MON finally got git-ified!
+As of 2011-04-20 the .el files referenced below can be found in their most current form at:
+https://github.com/mon-key/mon-emacs
+You can clone MON with:
+
+ shell> git clone git://github.com/mon-key/mon-emacs.git
+ shell> git clone https://github.com/mon-key/mon-emacs.git
+
 [:MON-PACKAGES]
 = :MON-PACKAGES =
-
 Following is organized roughly according to the load order whilst trying to convey how MON contextualizes packages. For a more detailed outline w/re load order :SEE [[#MON-LOAD-ORDER]] below.
 
 [:MON-STARTUP-FILES]

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 18 08:44:49 2011 (-0700)
+;; Last-Updated: Wed Apr 20 15:42:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12234
+;;     Update #: 12239
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -327,6 +327,9 @@
   (defvar icicle-Completions-text-scale-decrease)) ; Defined in `icicles-opt.el' (for Emacs 23)
 
 (defvar filesets-data)                  ; Defined in `filesets.el'
+(defvar font-width-table)               ; Defined in C code.
+(defvar font-weight-table)              ; Defined in C code.
+(defvar font-slant-table)               ; Defined in C code.
 (defvar list-colors-sort)               ; Defined in `facemenu.el'
 (defvar shell-completion-execonly)      ; Defined in `shell.el'
 (defvar recentf-list)                   ; Defined in `recentf.el'
@@ -612,7 +615,7 @@ so it is called after completion-list buffer text is written."
                                          'font-lock-face 'completions-first-difference)))))))))))
 
 (when (or (> emacs-major-version 23)    ; Emacs 23.2+
-          (and (= emacs-major-version 23) (= emacs-minor-version 2)))
+          (and (= emacs-major-version 23) (>= emacs-minor-version 2)))
   (defun icicle-completion-setup-function ()
     "Set up for completion.  This goes in `completion-setup-hook'
 so it is called after completion-list buffer text is written."

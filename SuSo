@@ -6,9 +6,12 @@ GNU Emacs para proyectos de extensión dirigidos a usuarios finales.
 Para ello hace falta que toda la documentación, así como el propio
 sistema Info, también lo esté.
 
-He abierto una página en 
+Hemos abierto las siguientes páginas en 
 
+* http://emacs-es.manticore.es
 * http://gnu.manticore.es
+* http://emacs.manticore.es (inglés)
+* http://lisp.manticore.es
 
 para esos asuntos.
 
@@ -41,6 +44,34 @@ Welcome to the Wiki! Please feel free to create Spanish pages on this wiki as we
 
 [new]
 As for the -es suffix, feel free to create wiki pages using double square brackets ##[[like this]]##, for example you could use ##[[Introducción a Emacs Lisp]]## instead of ##EmacsLispIntro##. It's what I would do for German pages. Thanks for working on non-English pages! -- AlexSchroeder
+
+[new]
+Moved here from the [[suso]] page:
+
+: I am SuSo, I use Emacs and I hate wikisystems
+: My profile page is SuSo, but in my machine my login username is suso.  Therefore, when I publish something from yaoddmuse-mode, it is published by a non-existing emacswiki user named "suso", an this is not what I want.
+: Item plus, which is the command for create a translation edition for a existing emacswiki page from yaoddmuse?
+All I can see is yaoddmuse-edit, but when I do this, what I am editing is the original page.
+If I create a new Spanish page from scratch, then there is no link between the original and the translated page.
+: As I result I always have to waste time entering to this site with a web browser to fix things.
+
+I created a redirection from the _suso_ page to this page.
+
+I'm sure that yaoddmuse allows you to override the username to use when posting to the wiki. You just need to find the variable which will probably have a name like `yaoddmuse-username' or similar.
+
+I assume that yaoddmuse doesn't provide support for the translation links. But perhaps you can write it yourself? Here's the info you need:
+
+* post URL: http://www.emacswiki.org/cgi-bin/emacs
+* parameter *action*: "translate"
+* parameter *translation*: ISO language for the target page such as "es"
+* parameter *id*: the page name for the source page
+* parameter *target*: the page name to use for the translation
+
+Example: ##http://www.emacswiki.org/cgi-bin/emacs?action=translate;translation=de;id=SuSo;target=SuSo_auf_Deutsch##
+
+-- Alex
+
+
 
 ----
 CategoryHomepage

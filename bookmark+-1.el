@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 19 15:22:25 2011 (-0700)
+;; Last-Updated: Wed Apr 20 11:27:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1995
+;;     Update #: 1997
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3174,14 +3174,17 @@ Otherwise, return an alist of the full tags and set variable
   "Full cons entry for TAG.  If TAG is a cons, then TAG, else (list TAG)."
   (if (consp tag) tag (list tag)))
 
+;; `T 0' in bookmark list, `C-x p t 0' elsewhere.
 ;;;###autoload
-(defun bmkp-remove-all-tags (bookmark &optional msgp) ; `T 0' in bookmark list, `C-x p t 0' elsewhere.
+(defun bmkp-remove-all-tags (bookmark &optional msgp no-cache-update-p)
   "Remove all tags from BOOKMARK.
-Non-nil optional arg MSGP means display a message about the removal."
+Non-nil optional arg MSGP means display a message about the removal.
+Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
   (when (and msgp (null (bmkp-get-tags bookmark))) (error "Bookmark has no tags to remove"))
   (let ((nb-removed  (and (interactive-p) (length (bmkp-get-tags bookmark)))))
     (bookmark-prop-set bookmark 'tags ())
+    (unless no-cache-update-p (bmkp-tags-list)) ; Update the tags cache.
     (bmkp-maybe-save-bookmarks)
     (when (and msgp nb-removed) (message "%d tags removed" nb-removed)))
   (when (and (get-buffer "*Bookmark List*") (get-buffer-window (get-buffer "*Bookmark List*") 0))

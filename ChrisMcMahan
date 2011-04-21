@@ -2,7 +2,7 @@
 ===Geektools and Org-mode===
 [2011 04 08] I've discovered GeekTools for OS X
 
-I discovered Geektools this week. This program can take any textual output and place it directly onto your desktop, similar to the Samurize program I used for Windows.
+I discovered Geek tools this week. This program can take any textual output and place it directly onto your desktop, similar to the Samurize program I used for Windows.
 
 The first thing I though of was how to get my org-agenda to show on the desktop. With some help from others on the web, I've come up with the following configuration:
 
@@ -96,7 +96,7 @@ Old Makefile text
 Then run make from the vm distribution directory. Ensure the file
 vm-autoloads.el is built, and contains more than 3 or 4 lines.
 
-==EDB Database to store passwords and notes==
+===EDB Database to store passwords and notes===
 I've been using a straight file with the excellent epg package that allows me to encrypt the file on saving and decrypt on opening.
 
 Over the course of time, however, as the file grew, it became more and more apparent that I needed a better organization.

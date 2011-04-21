@@ -125,7 +125,48 @@ Instead of wrapping, how about just using defadvice?
    "First set SMTP account."
      (with-current-buffer smtpmail-text-buffer (change-smtp)))
 
+[new]
+How about using `gnus-posting-styles' for setting the SMTP server? All
+that's required is a special header field "X-SMTP-Server:", which
+names the SMTP server to use for sending. `smtpmail-via-smtp' will be
+avised to use a local version of `smtpmail-smtp-server'.
 
+  (eval-after-load "smtpmail"
+    '(progn
+      (defun smtpmail-get-and-delete-smtp-server-from-header ()
+        "Find header field X-SMTP-Server and if found return value as
+         string and delete header field. If a header field of this
+         name doesn't exist, return nil."
+        (save-excursion
+        (goto-char (point-min))
+        (save-match-data
+          (let ((smtp-server))
+            (loop until (or (eobp) (looking-at "^[ \t]*$"))
+              if (looking-at "X-SMTP-Server[ \t]*:[ \t]*\\(.*?\\)[ \t]*\n")
+              return (prog1 (match-string 1) (replace-match ""))
+              else
+              do (forward-line 1))))))
+  
+      (defadvice smtpmail-via-smtp (around set-smtp-server-from-header activate)
+        (let ((smtpmail-smtp-server (or (smtpmail-get-and-delete-smtp-server-from-header)
+                                      smtpmail-smtp-server)))
+        ad-do-it
+        ))))
+
+
+  (setq gnus-posting-styles
+        '(;
+          (".*"
+           )
+          ("^nnimap\\+imap\\.foo\\.bar:"
+           ("X-SMTP-Server" "smtp.foo.bar")
+           )
+          ))
+
+If a non-standard port is required, the above could easily be extended
+using a servername:port pattern.
+
+--- Marcus Harnisch
 
 ----
 CategoryGnus
