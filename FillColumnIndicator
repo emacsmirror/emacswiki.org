@@ -66,6 +66,48 @@ I've uploaded a new version (0.28) that fixes the bug.  -- AA
 
 The new version (0.28) works great, thanks for the quick fix!
 
+===Interesting Interaction With show-paren-mode===
+
+[new]
+
+First, awesome package, I've been looking for something like this for years! But, like a typical ungrateful user I'm going to immediately follow my thanks with a bug report!
+
+If I have just the following in my .emacs:
+
+<pre>
+(show-paren-mode t)
+(setq show-paren-style 'expression)
+
+;; So I can load fill-column-indicator
+(defconst elisp-directory (expand-file-name "~/.elisp/"))
+(add-to-list 'load-path elisp-directory)
+(require 'fill-column-indicator)
+</pre>
+
+Then open up a new file in <code>c-mode</code>.
+
+Add the following content to the file,
+
+<pre>
+int
+main ()
+{
+  /* Next line has some whitespace on it, the line after that is completely empty. */
+      
+
+}
+</pre>
+
+At this point we should have <code>{</code> to <code>}</code> highlighting on, and <code>fci-mode</code> off. Position the point at the character immediately after the closing <code>}</code> and hopefully we should see a highlighted block. Next turn on <code>fci-mode</code> and see how the highlighting changes.
+
+I have no idea how easy this would be to fix, and it's not a huge issue, just thought it was worth mentioning.
+
+[new:AlpAker:2011-04-21 18:52 UTC]
+
+Thanks for pointing this out.  The problem is caused by the way fci-mode pads out the end of lines to make the rule or shading appear at the fill column: it puts an overlay on newline characters with a before-string property that contains the necessary amount of padding.  Unfortunately, overlay before-strings don't inherit the face properties of the region they overlap, so the show-paren highlighting doesn't appear on the padding.
+
+This will probably be an issue with libraries other than paren.el, and I'm going to have to think about how to fix things in robust fashion.  In the meantime, here's a version with a workaround:  [[fill-column-indicator-paren-hack.el]].  I haven't tested it extensively, but hopefully it works.  (The wiki page has a different name, but you'll still want to save the file as "fill-column-indicator.el".  Also, it's probably a good idea to byte-compile it, for performance reasons.  Ignore the byte-compiler warnings about free variable assignments; that's a result of a hacky thing I did for speed.)  --AA
+
 ===From the (E-)Mailbag===
 
 [new]
@@ -91,6 +133,7 @@ Note that on a character terminal, there are other packages you can use. WhiteSp
 [new:AlpAker:2011-04-15 01:13 UTC]
 
 I've uploaded a new version (0.30) that should work on (most) char terminals. --AA
+
 
 ----
 CategoryFilling 

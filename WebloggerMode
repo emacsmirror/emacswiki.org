@@ -16,7 +16,7 @@ WebloggerMode requires Lisp:xml-rpc.el .
 
 =Download location=
 
-The current version (1.4.4, released on 2010-03-05) is available at https://launchpad.net/weblogger-el
+The current version (1.4.5, released on 2010-03-11) is available at https://launchpad.net/weblogger-el
 
 =Usage=
 From comments in the source, here are some docs:

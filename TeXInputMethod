@@ -1,0 +1,5 @@
+One of many available InputMethods for entering Unicode text, the TeX input method allows you to enter Unicode characters by typing in sequences reminiscent of those used for input by the typesetting language TeX. For example, typing \lambda inserts a λ.
+
+As would be expected, this input method may be invoked with M-x set-input-method and entering TeX
+
+A list of available sequences may be viewed with M-x describe-input-method

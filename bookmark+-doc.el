@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 17 16:12:16 2011 (-0700)
+;; Last-Updated: Thu Apr 21 10:02:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13824
+;;     Update #: 13832
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -660,18 +660,20 @@
 ;;  `RET'.  If you want to include a newline character in the tag
 ;;  itself, use `C-q C-j' (`C-j' is the newline character).  You can
 ;;  use `C-q' this way to enter any character.  If you do use complex
-;;  strings as tags then you might prefer to simply edit a bookmarks
+;;  strings as tags then you might prefer to simply edit a bookmark's
 ;;  tags in a separate buffer.  You can do that using `C-x p t e' (or
 ;;  `T e' in the bookmark-list display).
 ;;
-;;  To make tags more useful, Bookmark+ provides lots of commands:
-;;  commands for adding, removing and renaming tags; for jumping to
-;;  bookmarks with particular sets of tags; and for marking or
-;;  unmarking (in buffer `*Bookmark List*') bookmarks that are tagged
-;;  in various ways.  Most commands pertaining to tags are by default
-;;  on prefix key `C-x p t' - use `C-x p t C-h' to see.  In buffer
-;;  `*Bookmark List*', commands pertaining to tags are on prefix key
-;;  `T' - use `T C-h'.
+;;  To make tags more useful, Bookmark+ provides *lots* of commands:
+;;  commands for adding, removing, copying, pasting, and renaming
+;;  tags; commands for jumping to bookmarks with particular sets of
+;;  tags; and commands for marking or unmarking (in buffer `*Bookmark
+;;  List*') bookmarks that are tagged in various ways.
+;;
+;;  Most commands pertaining to tags are by default on prefix key `C-x
+;;  p t' - use `C-x p t C-h' to see them.  In buffer `*Bookmark
+;;  List*', commands pertaining to tags are on prefix key `T' - use `T
+;;  C-h' to see them.
 ;;
 ;;  When combined with other Bookmark+ commands (e.g. search,
 ;;  query-replace) that apply to the marked bookmarks in the

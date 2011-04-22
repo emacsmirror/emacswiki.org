@@ -589,14 +589,16 @@ When you are prompted to enter a tag, you type some text then hit
 `RET'.  If you want to include a newline character in the tag
 itself, use `C-q C-j' (`C-j' is the newline character).  You can
 use `C-q' this way to enter any character.  If you do use complex
-strings as tags then you might prefer to simply edit a bookmarks
+strings as tags then you might prefer to simply edit a bookmark's
 tags in a separate buffer.  You can do that using '''`##C-x p t e##'''' (or
 '''`##T e##'''' in the bookmark-list display).
 
-To make tags more useful, '''Bookmark+''' provides lots of commands: for
-adding, removing, and renaming tags; for jumping to bookmarks with particular sets of tags; and for marking or unmarking  (in
+To make tags more useful, '''Bookmark+''' provides ''lots'' of commands: for
+adding, removing, copying, pasting, and renaming tags; commands for jumping to bookmarks with particular sets of tags; and commands for marking or unmarking  (in
 buffer `##*Bookmark List*##') bookmarks
-that are tagged in various ways.  Most commands pertaining to tags are by default on [[prefix key]] '''`##C-x p t##'''' --- use `##C-x p t C-h##' to see.  In buffer `##*Bookmark List*##', commands pertaining to tags are on prefix key '''`T'''' --- use `##T C-h##'.
+that are tagged in various ways.
+
+Most commands pertaining to tags are by default on [[prefix key]] '''`##C-x p t##'''' --- use `##C-x p t C-h##' to see them.  In buffer `##*Bookmark List*##', commands pertaining to tags are on prefix key '''`T'''' --- use `##T C-h##' to see them.
 
 When combined with other
 '''Bookmark+''' commands (e.g. search, query-replace) that apply to the
@@ -2738,6 +2740,12 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 
 
 
+
+
+
+
+
+
 [:MenuScreenshots]
 == Menu Screenshots ==
 
@@ -2757,17 +2765,20 @@ It has actions for the individual bookmark you point to when you pop it up.
 
 The same menu is available on '''`C-mouse-3''''.
 
-:: [[image:BookmarkPlusMenuBarMenu]]
+; '''Bookmark+''': [[image:BookmarkPlusMenuBarMenu]]
 
-It has submenus '''Mark''', '''Omit''', '''Tags''', '''Highlight''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command''':
+It has submenus '''Icicles''' (if you use '''[[Icicles]]'''), '''Jump To''', '''Mark''', '''Omit''', '''Show''', '''Sort''', '''Tags''', '''Highlight''',  and '''Define Command'''.  The '''Jump To''' menu itself has a submenu '''With Tags'''.
 
+;; '''Icicles''': [[image:BookmarkPlusMenuBarMenuIcicles]]
+[:JumpToMenu]
+;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
+;;; '''With Tags''': [[image:BookmarkPlusMenuBarMenuWithTags]]
 ;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
 ;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
-;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
-;; '''Highlight''': [[image:BookmarkPlusMenuBarMenuHighlight]]
 ;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
 ;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
-;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
+;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
+;; '''Highlight''': [[image:BookmarkPlusMenuBarMenuHighlight]]
 ;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
 
@@ -2775,21 +2786,30 @@ It has submenus '''Mark''', '''Omit''', '''Tags''', '''Highlight''', '''Show''',
 [:VanillaBookmarksMenu]
 === Vanilla Bookmarks Menu ===
 
-The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the '''Edit''' [[menu bar]] menu.  '''Bookmark+''' modifies it by adding several items from the '''`Bookmark+'''' menu (in buffer `##*Bookmark List*##'), including the '''Jump To Bookmark''' submenu (called just '''Jump To''' in `##*Bookmark List*##').
+The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the '''Edit''' [[menu bar]] menu.  '''Bookmark+''' modifies it by adding several '''Bookmark+''' items and submenus.  
 
-:: [[image:BookmarkPlusBookmarkMenuBarMenu]]
-
-
-
-
-
-
-
+; '''Bookmarks''': [[image:BookmarkPlusBookmarkMenuBarMenu]]
+;; '''Icicles''': [[image:BookmarkPlusBookmarksIciclesMenu]]
+;; '''Jump To''': Same as '''Bookmark+''' [[#JumpToMenu|submenu]] '''Jump To'''
+;; '''Tags''': [[image:BookmarkPlusBookmarksTagsMenu]]
+;; '''Toggle Option''': [[image:BookmarkPlusBookmarksToggleOptionMenu]]
+;; '''Highlight''': [[image:BookmarkPlusBookmarksHighlightMenu]]
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+----
+----
 
 
 == Discussion ==

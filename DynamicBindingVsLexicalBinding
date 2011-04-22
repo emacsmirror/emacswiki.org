@@ -167,6 +167,9 @@ See the node `Scope' in the EmacsLispReference.
 
 == Moving towards lexical binding ==
 
+**Since April 1, 2011 (not an April fools joke), Emacs 24 has merged the lexical binding branch mentioned below.**
+The trunk code is moving along and becoming lexical-binding-tolerant.
+
 === Lexical binding branch of Emacs ===
 
 I have implemented lexical binding support in Emacs lisp.  It is available in the `<tt>lexbind</tt>' branch of the official  Emacs CVS repository.  I keep this branch synced with the CVS trunk on a regular basis, so it should be "mostly" up-to-date.

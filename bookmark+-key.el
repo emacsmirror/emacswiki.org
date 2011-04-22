@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Sat Apr 16 13:58:35 2011 (-0700)
+;; Last-Updated: Thu Apr 21 11:02:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 227
+;;     Update #: 233
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -227,18 +227,23 @@
 (define-prefix-command 'bmkp-tags-map)
 (define-key bookmark-map "t"  bmkp-tags-map) ; `C-x p t' for tags
 
-(define-key bmkp-tags-map "0"   'bmkp-remove-all-tags) ; `C-x p t 0'
-(define-key bmkp-tags-map "+"   nil) ; For Emacs 20
-(define-key bmkp-tags-map "+b"  'bmkp-add-tags) ; `C-x p t + b'
-(define-key bmkp-tags-map "-b"  'bmkp-remove-tags) ; `C-x p t - b'
-(define-key bmkp-tags-map "+a"  'bmkp-tag-a-file) ; `C-x p t + a'
-(define-key bmkp-tags-map "-a"  'bmkp-untag-a-file) ; `C-x p t - a'
-(define-key bmkp-tags-map "d"   'bmkp-remove-tags-from-all) ; `C-x p t d'
-(define-key bmkp-tags-map "e"   'bmkp-edit-tags) ; `C-x p t e'
-(define-key bmkp-tags-map "l"   'bmkp-list-all-tags) ; `C-x p t l'
-(define-key bmkp-tags-map "r"   'bmkp-rename-tag) ; `C-x p t r'
-(define-key bmkp-tags-map "v"   'bmkp-set-tag-value) ; `C-x p t v'
-(define-key bmkp-tags-map "V"   'bmkp-set-tag-value-for-navlist) ; `C-x p t V'
+(define-key bmkp-tags-map "0"    'bmkp-remove-all-tags) ; `C-x p t 0'
+(define-key bmkp-tags-map "+"    nil) ; For Emacs 20
+(define-key bmkp-tags-map "+b"   'bmkp-add-tags) ; `C-x p t + b'
+(define-key bmkp-tags-map "-b"   'bmkp-remove-tags) ; `C-x p t - b'
+(define-key bmkp-tags-map "+a"   'bmkp-tag-a-file) ; `C-x p t + a'
+(define-key bmkp-tags-map "-a"   'bmkp-untag-a-file) ; `C-x p t - a'
+(define-key bmkp-tags-map "c"    'bmkp-copy-tags) ; `C-x p t c'
+(define-key bmkp-tags-map "d"    'bmkp-remove-tags-from-all) ; `C-x p t d'
+(define-key bmkp-tags-map "e"    'bmkp-edit-tags) ; `C-x p t e'
+(define-key bmkp-tags-map "l"    'bmkp-list-all-tags) ; `C-x p t l'
+(define-key bmkp-tags-map "p"    'bmkp-paste-add-tags) ; `C-x p t p'
+(define-key bmkp-tags-map "q"    'bmkp-paste-replace-tags) ; `C-x p t q'
+(define-key bmkp-tags-map "r"    'bmkp-rename-tag) ; `C-x p t r'
+(define-key bmkp-tags-map "v"    'bmkp-set-tag-value) ; `C-x p t v'
+(define-key bmkp-tags-map "V"    'bmkp-set-tag-value-for-navlist) ; `C-x p t V'
+(define-key bmkp-tags-map "\M-w" 'bmkp-copy-tags) ; `C-x p t M-w'
+(define-key bmkp-tags-map "\C-y" 'bmkp-paste-add-tags) ; `C-x p t C-y'
 
 
 ;; `bmkp-jump-map' and `bmkp-jump-other-window-map': prefixes `C-x j' and `C-x 4 j'
@@ -564,11 +569,11 @@
   'load)
 
 
-;; `bmkp-highlight-menu' of `Bookmark' menu
+;; `bmkp-highlight-menu' of `Bookmarks' menu
 
 (when (featurep 'bookmark+-lit)
   (defvar bmkp-highlight-menu (make-sparse-keymap)
-    "`Highlight' submenu for menu-bar `Bookmark' menu.")
+    "`Highlight' submenu for menu-bar `Bookmarks' menu.")
   (define-key menu-bar-bookmark-map [highlight] (cons "Highlight" bmkp-highlight-menu))
 
   (define-key bmkp-highlight-menu [bmkp-unlight-bookmarks]
@@ -629,10 +634,10 @@
       :help "Set individual highlighting for a bookmark.")))
 
 
-;; `bmkp-options-menu' of `Bookmark' menu
+;; `bmkp-options-menu' of `Bookmarks' menu
 
 (defvar bmkp-options-menu (make-sparse-keymap)
-  "`Toggle Option' submenu for menu-bar `Bookmark' menu.")
+  "`Toggle Option' submenu for menu-bar `Bookmarks' menu.")
 (define-key menu-bar-bookmark-map [options] (cons "Toggle Option" bmkp-options-menu))
 
 (define-key bmkp-options-menu [bmkp-crosshairs-flag]
@@ -651,10 +656,10 @@
                              "Prompting for tags when setting a bookmark is %s"
                              "Prompt for tags when setting a bookmark interactively"))
 
-;; `bmkp-tags-menu' of `Bookmark' menu
+;; `bmkp-tags-menu' of `Bookmarks' menu
 
 (defvar bmkp-tags-menu (make-sparse-keymap)
-  "`Tags' submenu for menu-bar `Bookmark' menu.")
+  "`Tags' submenu for menu-bar `Bookmarks' menu.")
 (define-key menu-bar-bookmark-map [tags] (cons "Tags" bmkp-tags-menu))
 
 (define-key bmkp-tags-menu [bmkp-list-all-tags]
@@ -672,10 +677,10 @@
   '(menu-item "Tag a File (Add Some)..." bmkp-tag-a-file
     :help "Add some tags to the autofile bookmark for a file"))
 
-;; `bmkp-jump-menu' of `Bookmark' menu
+;; `bmkp-jump-menu' of `Bookmarks' menu
 
 (defvar bmkp-jump-menu (make-sparse-keymap)
-  "`Jump To' submenu for menu-bar `Bookmark' menu.")
+  "`Jump To' submenu for menu-bar `Bookmarks' menu.")
 ;; Add jump menu to vanilla Emacs `Bookmarks' menu and remove the two jump commands already there.
 (define-key menu-bar-bookmark-map [jump] nil)
 (define-key menu-bar-bookmark-map [jump-other] nil)
@@ -765,7 +770,7 @@
     :help "Jump to a bookmark of a type that you specify"))
 
 (defvar bmkp-jump-tags-menu (make-sparse-keymap)
-  "`With Tags' submenu for `Jump To' submenu of `Bookmark' menu.")
+  "`With Tags' submenu for `Jump To' submenu of `Bookmarks' menu.")
 (define-key bmkp-jump-menu [bmkp-tags] (cons "With Tags" bmkp-jump-tags-menu))
 (define-key bmkp-jump-tags-menu [bmkp-file-this-dir-all-tags-regexp-jump-other-window]
   '(menu-item "File in This Dir, All Tags Matching Regexp..."

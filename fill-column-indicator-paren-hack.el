@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.32
+;; Version: 0.33alpha
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -355,7 +355,9 @@ for tips on troubleshooting.)"
               (error "Unrecognized value of `fci-style'")))
             (add-hook 'after-change-functions 'fci-after-change-function nil t)
             (ad-enable-advice 'set-fill-column 'after 'fill-column-indicator)
+            (ad-enable-advice 'show-paren-function 'around 'fill-column-indicator)
             (ad-activate 'set-fill-column)
+            (ad-activate 'show-paren-function)
             ;; In case we were already in fci-mode and are resetting the
             ;; indicator, clear out any existing overlays.
             (fci-delete-overlays-buffer)
@@ -377,7 +379,9 @@ for tips on troubleshooting.)"
                 fci-saved-truncate-lines nil))
         (setq fci-column nil)
         (ad-disable-advice 'set-fill-column 'after 'fill-column-indicator)
+        (ad-disable-advice 'show-paren-function 'around 'fill-column-indicator)
         (ad-activate 'set-fill-column)
+        (ad-activate 'show-paren-function)
         (remove-hook 'after-change-functions 'fci-after-change-function t)
         (fci-delete-overlays-buffer)))
 
@@ -590,10 +594,51 @@ for tips on troubleshooting.)"
                          (concat fci-cursor-space
                                  (make-string (- fci-column (current-column) 1) 32))))
         (move-to-column fci-column)
-        (setq o (make-overlay (point) (match-end 0))))
+        (setq o (make-overlay (point) (match-end 0)))
+        ;; hook for paren-mode adjustment
+        (overlay-put o 'before-string ""))
       (overlay-put o 'face 'fci-shading)
       (overlay-put o 'category 'fci)
       (goto-char (match-end 0)))))  
+
+;;; Workaround for paren-mode.  Hack-ish.
+
+(defun fci-depropertize-before-string (o)
+  (remove-text-properties 0 
+                          (length (setq str (overlay-get o 'before-string))) 
+                          sp-props
+                          str))
+
+(defun fci-propertize-before-string (o)
+  (add-text-properties 0 
+                       (length (setq str (overlay-get o 'before-string))) 
+                       sp-props
+                       str))
+
+(defmacro fci-call-for-show-paren-adjust (adjuster)
+  `(progn
+    (setq sp-props (list 'face (overlay-get show-paren-overlay 'face)))
+    (mapc ,adjuster
+          (delq nil (mapcar #'(lambda (x) (and (eq (overlay-get x 'category) 'fci) x))
+                            (overlays-in (overlay-start show-paren-overlay)
+                                         (overlay-end show-paren-overlay)))))))
+
+(defun fci-unfix-before-strings ()
+  (fci-call-for-show-paren-adjust #'fci-depropertize-before-string))
+
+(defun fci-fix-before-strings ()
+  (fci-call-for-show-paren-adjust #'fci-propertize-before-string))
+
+(defadvice show-paren-function (around fill-column-indicator)
+  (let (str len sp-props)
+    (when (and show-paren-overlay
+               (overlay-start show-paren-overlay))
+      (with-current-buffer (overlay-buffer show-paren-overlay)
+        (fci-unfix-before-strings)))
+    ad-do-it
+    (when (and show-paren-overlay
+               (overlay-start show-paren-overlay))
+      (fci-fix-before-strings))))
 
 (provide 'fill-column-indicator)
 

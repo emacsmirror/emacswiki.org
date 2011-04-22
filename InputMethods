@@ -6,6 +6,11 @@ Input Methods allow you to enter characters that are not supported by your keybo
 
 Emacs should also work correctly with appropriate XIM input methods under X.
 
+Possibly the most convenient casual method for inputting unicode characters
+is the TeXInputMethod, which permits you to enter Unicode characters by typing a
+\ prefixed sequence reminiscent of TeX. For example, the greek character λ
+may be entered by typing \lambda.
+
 An obsolete way of entering accented characters is '''iso-accents-mode'''.
 These days, you should use the input-method `latin-1-prefix' instead.
 Both will make accent characters combine with the following characters, so

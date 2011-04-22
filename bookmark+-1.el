@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr 20 11:27:15 2011 (-0700)
+;; Last-Updated: Thu Apr 21 17:30:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1997
+;;     Update #: 2006
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -106,9 +106,10 @@
 ;;    `bmkp-bookmark-list-jump',
 ;;    `bmkp-choose-navlist-from-bookmark-list',
 ;;    `bmkp-choose-navlist-of-type', `bmkp-compilation-target-set',
-;;    `bmkp-compilation-target-set-all', `bmkp-crosshairs-highlight',
-;;    `bmkp-cycle', `bmkp-cycle-autonamed',
-;;    `bmkp-cycle-autonamed-other-window', `bmkp-cycle-bookmark-list',
+;;    `bmkp-compilation-target-set-all', `bmkp-copy-tags',
+;;    `bmkp-crosshairs-highlight', `bmkp-cycle',
+;;    `bmkp-cycle-autonamed', `bmkp-cycle-autonamed-other-window',
+;;    `bmkp-cycle-bookmark-list',
 ;;    `bmkp-cycle-bookmark-list-other-window', `bmkp-cycle-desktop',
 ;;    `bmkp-cycle-dired', `bmkp-cycle-dired-other-window',
 ;;    `bmkp-cycle-file', `bmkp-cycle-file-other-window',
@@ -204,6 +205,7 @@
 ;;    `bmkp-non-file-jump', `bmkp-non-file-jump-other-window',
 ;;    `bmkp-occur-create-autonamed-bookmarks',
 ;;    `bmkp-occur-target-set', `bmkp-occur-target-set-all',
+;;    `bmkp-paste-add-tags', `bmkp-paste-replace-tags',
 ;;    `bmkp-previous-bookmark', `bmkp-previous-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-this-buffer',
 ;;    `bmkp-previous-bookmark-this-buffer-repeat',
@@ -910,6 +912,9 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-w3m-history ()              "History for W3M bookmarks.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")
+
+(defvar bmkp-copied-tags ()
+  "List of tags copied from a bookmark, for pasting to other bookmarks.")
 
 (defvar bmkp-current-bookmark-file bookmark-default-file
   "Current bookmark file.
@@ -3326,6 +3331,49 @@ Non-nil optional arg MSGP means display a message about the deletion."
         (bmkp-tags-list)                ; Update the tags cache.
       (error "No such tag: `%s'" tag))
     (when msgp (message "Renamed"))))
+
+;;;###autoload
+(defun bmkp-copy-tags (bookmark &optional msgp) ; `C-x p t c',  `C-x p t M-w'
+  "Copy tags from BOOKMARK, so you can paste them to another bookmark.
+Note that you can copy from a BOOKMARK that has no tags or has an
+empty tags list.  In that case, the copied-tags list is empty, so if
+you paste it as a replacement then the recipient bookmark will end up
+with no tags.
+
+Non-nil optional arg MSGP means display a message about the number of
+tags copied."
+  (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
+  (let ((btags  (bmkp-get-tags bookmark)))
+    (setq bmkp-copied-tags  (copy-alist btags))
+    (when msgp (message "%d tags now available for pasting" (length btags)))))
+
+;;;###autoload
+(defun bmkp-paste-add-tags (bookmark &optional msgp no-cache-update-p) ; `C-x p t p',  ; `C-x p t C-y'
+  "Add tags to BOOKMARK that were previously copied from another bookmark.
+The tags are copied from `bmkp-copied-tags'.
+Non-nil MSGP means display a message about the addition.
+Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
+Return the number of tags added."
+  (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
+  (unless (listp bmkp-copied-tags)
+    (error "`bmkp-paste-add-tags': `bmkp-copied-tags' is not a list"))
+  (bmkp-add-tags bookmark bmkp-copied-tags msgp no-cache-update-p))
+
+;;;###autoload
+(defun bmkp-paste-replace-tags (bookmark &optional msgp no-cache-update-p) ; `C-x p t q'
+  "Replace tags for BOOKMARK with those copied from another bookmark.
+The tags are copied from `bmkp-copied-tags'.
+Any previously existing tags for BOOKMARK are lost.
+Non-nil MSGP means display a message about the addition.
+Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
+Return the number of tags."
+  (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
+  (unless (listp bmkp-copied-tags)
+    (error "`bmkp-paste-replace-tags': `bmkp-copied-tags' is not a list"))
+  (when (and (bmkp-get-tags bookmark) msgp)
+    (y-or-n-p "Existing tags will be lost - really replace them? "))
+  (bmkp-remove-all-tags bookmark msgp no-cache-update-p)
+  (bmkp-add-tags bookmark bmkp-copied-tags msgp no-cache-update-p))
 
 
 ;;(@* "Bookmark Predicates")

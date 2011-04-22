@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Apr 19 13:02:05 2011 (-0700)
+;; Last-Updated: Thu Apr 21 17:23:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 712
+;;     Update #: 740
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -94,7 +94,7 @@
 ;;
 ;;    `bmkp-bmenu-add-tags', `bmkp-bmenu-add-tags-to-marked',
 ;;    `bmkp-bmenu-change-sort-order',
-;;    `bmkp-bmenu-change-sort-order-repeat',
+;;    `bmkp-bmenu-change-sort-order-repeat', `bmkp-bmenu-copy-tags',
 ;;    `bmkp-bmenu-define-command',
 ;;    `bmkp-bmenu-define-full-snapshot-command',
 ;;    `bmkp-bmenu-define-jump-marked-command',
@@ -133,6 +133,10 @@
 ;;    `bmkp-bmenu-mark-w3m-bookmarks', `bmkp-bmenu-mouse-3-menu',
 ;;    `bmkp-bmenu-mode-status-help', `bmkp-bmenu-omit',
 ;;    `bmkp-bmenu-omit-marked', `bmkp-bmenu-omit/unomit-marked',
+;;    `bmkp-bmenu-paste-add-tags',
+;;    `bmkp-bmenu-paste-add-tags-to-marked',
+;;    `bmkp-bmenu-paste-replace-tags',
+;;    `bmkp-bmenu-paste-replace-tags-for-marked',
 ;;    `bmkp-bmenu-query-replace-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-quit', `bmkp-bmenu-refresh-menu-list',
 ;;    `bmkp-bmenu-regexp-mark', `bookmark-bmenu-relocate' (Emacs 20,
@@ -2578,7 +2582,6 @@ You can use completion to enter each tag, but you are not limited to
 choosing existing tags."
   (interactive (list (bmkp-read-tags-completing) 'msg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (when msgp (message "Adding tags..."))
   (let ((marked  (bmkp-marked-bookmarks-only)))
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Adding tags..."))
@@ -2797,6 +2800,54 @@ unmark those that have no tags at all."
             (setq count  (1+ count))))
         (when msgp
           (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))))
+
+;;;###autoload
+(defun bmkp-bmenu-copy-tags (&optional msgp) ; Only on `mouse-3' menu in bookmark list.
+  "Copy tags from this bookmark, so you can paste them to another bookmark."
+  (interactive (list 'MSG))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (bookmark-bmenu-ensure-position)
+  (bmkp-copy-tags (bookmark-bmenu-bookmark) msgp))
+
+;;;###autoload
+(defun bmkp-bmenu-paste-add-tags (&optional msgp) ; Only on `mouse-3' menu in bookmark list.
+  "Add tags to this bookmark that were copied from another bookmark."
+  (interactive (list 'MSG))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (bookmark-bmenu-ensure-position)
+  (bmkp-paste-add-tags (bookmark-bmenu-bookmark) msgp))
+
+;;;###autoload
+(defun bmkp-bmenu-paste-replace-tags (&optional msgp) ; Only on `mouse-3' menu.
+  "Replace tags for this bookmark with those copied from another bookmark."
+  (interactive (list 'MSG))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (bookmark-bmenu-ensure-position)
+  (bmkp-paste-replace-tags (bookmark-bmenu-bookmark) msgp))
+
+;;;###autoload
+(defun bmkp-bmenu-paste-add-tags-to-marked (&optional msgp) ; `T > p', `T > C-y'
+  "Add tags that were copied from another bookmark to the marked bookmarks."
+  (interactive (list 'MSG))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (let ((marked  (bmkp-marked-bookmarks-only)))
+    (unless marked (error "No marked bookmarks"))
+    (when msgp (message "Adding tags..."))
+    (dolist (bmk  marked) (bmkp-paste-add-tags bmk nil 'NO-CACHE-UPDATE))
+    (bmkp-tags-list)                    ; Update the tags cache (only once, at end).
+    (when msgp (message "Tags added: %S" bmkp-copied-tags))))
+
+;;;###autoload
+(defun bmkp-bmenu-paste-replace-tags-for-marked (&optional msgp) ; `T > q'
+  "Replace tags for the marked bookmarks with tags copied previously."
+  (interactive (list 'MSG))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (let ((marked  (bmkp-marked-bookmarks-only)))
+    (unless marked (error "No marked bookmarks"))
+    (when msgp (message "Replacing tags..."))
+    (dolist (bmk  marked) (bmkp-paste-replace-tags bmk nil 'NO-CACHE-UPDATE))
+    (bmkp-tags-list)                    ; Update the tags cache (only once, at end).
+    (when msgp (message "Replacement tags: %S" bmkp-copied-tags))))
 
 
 ;;(@* "General Menu-List (`-*bmenu-*') Commands and Functions")
@@ -3797,6 +3848,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Tm+"                  'bmkp-bmenu-mark-bookmarks-tagged-some)
 (define-key bookmark-bmenu-mode-map "Tm~*"                 'bmkp-bmenu-mark-bookmarks-tagged-not-all)
 (define-key bookmark-bmenu-mode-map "Tm~+"                 'bmkp-bmenu-mark-bookmarks-tagged-none)
+(define-key bookmark-bmenu-mode-map "T>p"                  'bmkp-bmenu-paste-add-tags-to-marked)
+(define-key bookmark-bmenu-mode-map "T>q"                  'bmkp-bmenu-paste-replace-tags-for-marked)
 (define-key bookmark-bmenu-mode-map "Tr"                   'bmkp-rename-tag)
 (define-key bookmark-bmenu-mode-map "Ts"                   'bmkp-define-tags-sort-command)
 (define-key bookmark-bmenu-mode-map "TS"                   'bmkp-bmenu-show-only-tagged)
@@ -3823,6 +3876,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "X"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "XM"                   'bmkp-bmenu-mark-bookmark-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "XS"                   'bmkp-bmenu-show-only-bookmark-files)
+(define-key bookmark-bmenu-mode-map "T>\C-y"               'bmkp-bmenu-paste-add-tags-to-marked)
 
 
 ;;; `Bookmark+' menu-bar menu in `*Bookmark List*'
@@ -3945,6 +3999,12 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-tags-menu [bmkp-bmenu-add-tags-to-marked]
   '(menu-item "Add Some Tags to Marked..." bmkp-bmenu-add-tags-to-marked
     :help "Add a set of tags to each of the marked bookmarks"))
+(define-key bmkp-bmenu-tags-menu [bmkp-bmenu-paste-replace-tags-for-marked]
+  '(menu-item "Paste Tags to Marked (Replace)..." bmkp-bmenu-paste-replace-tags-for-marked
+    :help "Replace tags for the marked bookmarks with tags copied previously"))
+(define-key bmkp-bmenu-tags-menu [bmkp-bmenu-paste-add-tags-to-marked]
+  '(menu-item "Paste Tags to Marked (Add)..." bmkp-bmenu-paste-add-tags-to-marked
+    :help "Add tags copied from another bookmark to the marked bookmarks"))
 (define-key bmkp-bmenu-tags-menu [bmkp-untag-a-file]
   '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
     :help "Remove some tags from autofile bookmark for a file"))
@@ -4265,6 +4325,9 @@ Marked bookmarks that have no associated file are ignored."
                                          '("Jump To" . bookmark-bmenu-this-window)
                                          '("Jump To in Other Window" . bookmark-bmenu-other-window)
                                          '("--") ; ----------------------------------------
+                                         '("Copy Tags" . bmkp-bmenu-copy-tags)
+                                         '("Paste Tags (Add)" . bmkp-bmenu-paste-add-tags)
+                                         '("Paste Tags (Replace)" . bmkp-bmenu-paste-replace-tags)
                                          '("Add Some Tags..." . bmkp-bmenu-add-tags)
                                          '("Remove Some Tags..." . bmkp-bmenu-remove-tags)
                                          '("Remove All Tags..." . bmkp-bmenu-remove-all-tags)

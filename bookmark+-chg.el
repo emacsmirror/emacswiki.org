@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 19 15:22:54 2011 (-0700)
+;; Last-Updated: Thu Apr 21 17:29:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13639
+;;     Update #: 13657
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/21 dadams
+;;     Added: bmkp-copied-tags, bmkp-copy-tags, bmkp-paste-add-tags, bmkp-paste-replace-tags..
+;; 2011/04/20 dadams
+;;     bmkp-remove-all-tags: Added optional arg no-cache-update-p.
 ;; 2011/04/19 dadams
 ;;     bmkp-make-record-for-target-file: Fixed backquotes on lambdas.
 ;; 2011/04/17 dadams
@@ -305,6 +309,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/21 dadams
+;;     Added:  bmkp-bmenu-copy-tags, bmkp-bmenu-paste-add-tags(-to-marked),
+;;             bmkp-bmenu-paste-replace-tags(-for-marked).
+;;     Bound and added to menus: bmkp-bmenu-paste-add-tags-to-marked,
+;;                               bmkp-bmenu-paste-replace-tags-for-marked.
+;;     Added to This Bookmark menu: bmkp-bmenu-copy-tags, bmkp-bmenu-paste(-add|replace)-tags.
 ;; 2011/04/19 dadams
 ;;     Added: bmkp-bmenu-unmark-bookmarks-tagged-regexp.  Bound it to T u %.  Added it to menu.
 ;; 2011/04/16 dadams
@@ -404,6 +414,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/21 dadams
+;;     Bound: bmkp-copy-tags, bmkp-paste-add-tags, bmkp-paste-replace-tags.
 ;; 2011/04/16 dadams
 ;;     Added: bmkp-tags-map.  Bound tag commands to prefix C-x p t.
 ;; 2011/04/14 dadams
