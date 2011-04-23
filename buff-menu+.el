@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Apr 18 09:35:38 2011 (-0700)
+;; Last-Updated: Fri Apr 22 09:30:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2662
+;;     Update #: 2670
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -141,6 +141,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/22 dadams
+;;     list-buffers-noselect: Removed (if buffer-list... around the dolist.
 ;; 2011/04/18 dadams
 ;;     Buffer-menu-sort, Buffer-menu-revert-function, buffer-menu:
 ;;       Use Buffer-menu-buffer-column, not hard-coded 4.  Thx to Alp Aker.
@@ -1421,80 +1423,78 @@ For more information, see the function `buffer-menu'."
 ;;;;           (insert (Buffer-menu-buffer+size "------" "----"))
 ;;;;           (insert "  ----" mode-end "----\n")
 ;;;;           (put-text-property 1 (point) 'intangible t))
-        (if buffer-list
-            (setq list  buffer-list)
-          ;; Collect info for every buffer we're interested in.
-          (dolist (buffer (or buffer-list (buffer-list (and Buffer-menu-use-frame-buffer-list
-                                                            (selected-frame)))))
-            (with-current-buffer buffer
-              (let ((name  (buffer-name))
-                    (file  buffer-file-name))
-                (unless (and (not buffer-list)
-                             (or
-                              ;; Don't mention internal buffers.
-                              (and (string= (substring name 0 1) " ") (null file))
-                              ;; Maybe don't mention buffers without files.
-                              (and files-only (not file))
-                              (string= name "*Buffer List*")))
-                  ;; Otherwise output info.
-                  (let (;; Need to record two values for time: numerical time value, for
-                        ;; sorting, and string time value, for display.
-                        (buffer-time  (and Buffer-menu-time-flag
-                                           (cons (or (float-time buffer-display-time) 0)
-                                                 (if buffer-display-time
-                                                     (format-time-string
-                                                      (if (eq 'short Buffer-menu-time-format)
-                                                          "%02H:%02M:%02S"
-                                                        "%_3a %_2l:%02M:%02S %_2p")
-                                                      buffer-display-time)
-                                                   (if (eq 'short Buffer-menu-time-format)
-                                                       "        "
-                                                     "               ")))))
-                        (mode         (concat (format-mode-line mode-name nil nil buffer)
-                                              (and mode-line-process
-                                                   (format-mode-line
-                                                    mode-line-process nil nil buffer))))
-                        (bits         (string (if (eq buffer old-buffer) ?. ?\ )
-                                              ;; Handle readonly status.  The output buffer
-                                              ;; is special cased to appear readonly; it is
-                                              ;; actually made so at a later date.
-                                              (if (or (eq buffer standard-output) buffer-read-only)
-                                                  ?%
-                                                ?\ )
-                                              ;; Identify modified buffers.
-                                              (if (buffer-modified-p) ?* ?\ )
-                                              ;; Space separator.
-                                              ?\ )))
-                    (unless file
-                      ;; No visited file.  Check local value of
-                      ;; list-buffers-directory and, for Info buffers,
-                      ;; Info-current-file.
-                      (cond ((and (boundp 'list-buffers-directory)
-                                  list-buffers-directory)
-                             (setq file  list-buffers-directory))
-                            ((eq major-mode 'Info-mode)
-                             (setq file  Info-current-file)
-                             (cond
-                               ((equal file "dir")
-                                (setq file  "*Info Directory*"))
-                               ((eq file 'apropos)
-                                (setq file  "*Info Apropos*"))
-                               ((eq file 'history)
-                                (setq file  "*Info History*"))
-                               ((eq file 'toc)
-                                (setq file  "*Info TOC*"))
-                               ((not (stringp file)) ; avoid errors
-                                (setq file  nil))
-                               (t
-                                (setq file  (concat "("
-                                                    (file-name-nondirectory file)
-                                                    ")"
-                                                    Info-current-node)))))))
-                    (push (list buffer bits name (buffer-size) buffer-time mode file)
-                          list))))))
-          ;; Preserve original list order (by reversing).
-          ;; Flip it if Buffer-menu-sort-column = -1.
-          (unless (eq -1 Buffer-menu-sort-column) (setq list  (nreverse list))))
+        ;; Collect info for every buffer we're interested in.
+        (dolist (buffer (or buffer-list (buffer-list (and Buffer-menu-use-frame-buffer-list
+                                                          (selected-frame)))))
+          (with-current-buffer buffer
+            (let ((name  (buffer-name))
+                  (file  buffer-file-name))
+              (unless (and (not buffer-list)
+                           (or
+                            ;; Don't mention internal buffers.
+                            (and (string= (substring name 0 1) " ") (null file))
+                            ;; Maybe don't mention buffers without files.
+                            (and files-only (not file))
+                            (string= name "*Buffer List*")))
+                ;; Otherwise output info.
+                (let (;; Need to record two values for time: numerical time value, for
+                      ;; sorting, and string time value, for display.
+                      (buffer-time  (and Buffer-menu-time-flag
+                                         (cons (or (float-time buffer-display-time) 0)
+                                               (if buffer-display-time
+                                                   (format-time-string
+                                                    (if (eq 'short Buffer-menu-time-format)
+                                                        "%02H:%02M:%02S"
+                                                      "%_3a %_2l:%02M:%02S %_2p")
+                                                    buffer-display-time)
+                                                 (if (eq 'short Buffer-menu-time-format)
+                                                     "        "
+                                                   "               ")))))
+                      (mode         (concat (format-mode-line mode-name nil nil buffer)
+                                            (and mode-line-process
+                                                 (format-mode-line
+                                                  mode-line-process nil nil buffer))))
+                      (bits         (string (if (eq buffer old-buffer) ?. ?\ )
+                                            ;; Handle readonly status.  The output buffer
+                                            ;; is special cased to appear readonly; it is
+                                            ;; actually made so at a later date.
+                                            (if (or (eq buffer standard-output) buffer-read-only)
+                                                ?%
+                                              ?\ )
+                                            ;; Identify modified buffers.
+                                            (if (buffer-modified-p) ?* ?\ )
+                                            ;; Space separator.
+                                            ?\ )))
+                  (unless file
+                    ;; No visited file.  Check local value of
+                    ;; list-buffers-directory and, for Info buffers,
+                    ;; Info-current-file.
+                    (cond ((and (boundp 'list-buffers-directory)
+                                list-buffers-directory)
+                           (setq file  list-buffers-directory))
+                          ((eq major-mode 'Info-mode)
+                           (setq file  Info-current-file)
+                           (cond
+                             ((equal file "dir")
+                              (setq file  "*Info Directory*"))
+                             ((eq file 'apropos)
+                              (setq file  "*Info Apropos*"))
+                             ((eq file 'history)
+                              (setq file  "*Info History*"))
+                             ((eq file 'toc)
+                              (setq file  "*Info TOC*"))
+                             ((not (stringp file)) ; avoid errors
+                              (setq file  nil))
+                             (t
+                              (setq file  (concat "("
+                                                  (file-name-nondirectory file)
+                                                  ")"
+                                                  Info-current-node)))))))
+                  (push (list buffer bits name (buffer-size) buffer-time mode file)
+                        list))))))
+        ;; Preserve original list order (by reversing).
+        ;; Flip it if Buffer-menu-sort-column = -1.
+        (unless (eq -1 Buffer-menu-sort-column) (setq list  (nreverse list)))
         ;; Place the buffers's info in the output buffer, sorted if necessary.
         (dolist (buffer (if (eq 1 (abs Buffer-menu-sort-column))
                             list

@@ -98,7 +98,7 @@ In the documentation of functions, mention every formal parameter, and write the
 Refer to other functions and variables that might be of interest --
 usually the variables that can be customized the result, or the hooks
 where the functions can be used, etc.  When referring to such other
-functions or variables, enclose their names like `this'.  Emacs will
+functions or variables, enclose their names like ##`this'##.  Emacs will
 then automatically link to these other symbols when the doc string is
 displayed.
 

@@ -1,4 +1,6 @@
-Winner Mode is a global minor mode.  When activated, it allows to "undo" (and "redo") changes in the window configuration with the key commands `C-x left' and `C-x right'.  In Emacs 22, these keybindings have been changed to `C-c left' and `C-c right'.
+Winner Mode is part of GNU Emacs since version 20.
+
+Winner Mode is a global minor mode.  When activated, it allows to "undo" (and "redo") changes in the window configuration with the key commands `C-c left' and `C-c right'.  In versions previous to Emacs 22, these keybindings used to be `C-x left' and `C-x right'.
 
 Activate it with `M-x winner-mode RET' or add the following to your ~/.emacs:
 
@@ -18,9 +20,6 @@ Winner Mode can create some (possibly) more convenient window movement bindings 
 The problem with (windmove-default-keybindings) is that they clash with the more common use on modern systems of S-right etc for selecting text. In Emacs this is turned on by CuaMode for example. Therefore it might be better to go with the alternative
 
   (windmove-default-keybindings 'meta)
-
-[new]
-winner.el comes with GNU Emacs, starting with version 20.
 
 [new]
 winner-mode in the latest (2011-04-02 at least) breaks highlighting of spelling errors using flyspell-mode.  Disabling winner-mode returns flyspell-mode functionality

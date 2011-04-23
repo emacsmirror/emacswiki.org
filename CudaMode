@@ -21,7 +21,7 @@
   ;; mode as the fallback for the constants we don't change here.
   ;; This needs to be done also at compile time since the language
   ;; constants are evaluated then.
-  (c-add-language 'cuda-mode 'c-mode))
+  (c-add-language 'cuda-mode 'c++-mode))
 
 ;; cuda has no boolean but a string and a vector type.
 (c-lang-defconst c-primitive-type-kwds

@@ -172,11 +172,11 @@ WORKFLOW	'In_the_Mail_Room'
 END_WORKFLOW
 }}}
 I have identified five rules for indenting WPDL code. The rules are as follows:
-* If we are at the beginning of the buffer, indent to column 0.
-* If we are currently at an ##END_## line, then de-indent relative to the previous line.
-* If we ''first'' see an ##END_## line before our current line, then we should indent our current line to the same indentation as the ##END_## line.
-* If we ''first'' see a "start line" like ##PARTICIPANT##, then we need to ''increase'' our indentation relative to that start line.
-* If none of the above apply, then do not indent at all.
+# If we are at the beginning of the buffer, indent to column 0.
+# If we are currently at an ##END_## line, then de-indent relative to the previous line.
+# If we ''first'' see an ##END_## line before our current line, then we should indent our current line to the same indentation as the ##END_## line.
+# If we ''first'' see a "start line" like ##PARTICIPANT##, then we need to ''increase'' our indentation relative to that start line.
+# If none of the above apply, then do not indent at all.
 
 The following WPDL code example, with comments, may clarify these ideas:
 {{{

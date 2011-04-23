@@ -17,3 +17,54 @@ Comment blocks (consisting of whole line comments) are considered boxes, so you 
 
 ==Discussion==
 [Lewang]  If you put your questions here, I'll try to address them.
+
+=== Cycle through styles ===
+Hi Le, thanks for the package.
+
+I find, though, quite inconvenient to mix the fill and commenting functionality.
+So I leave \M-q as suggested, but use \M-; to easy cycle through the styles I want. 
+
+With the following code \M-; ; ;  cycles through rebox-comment-syles 3 times:
+
+{{{
+
+(defvar rebox-comment-styles '(21 25 13 111)
+  "List of styles to use in cycling")
+(make-variable-buffer-local 'rebox-comment-styles)
+(global-set-key [(meta ?;)] 'rebox-comment-cycle)
+
+(defun rebox-comment-always (style)
+  (setq style (rebox-get-style-from-prefix-arg style :ask nil))
+  (if (use-region-p)
+      (progn
+        (rebox-region (region-beginning)
+                      (region-end)
+                      :style style
+                      :refill nil)
+        (deactivate-mark))
+    (rebox-comment :style style
+                   :refill nil)))
+
+(defun rebox-comment-cycle (&optional remove-comment)
+  "Sycle through `rebox-comment-styles' and apply each style to the current block.
+If bound to [\M-;], repeated invocation of [;] key cycles through
+the list of styles. Any other input exits the loop."
+  (interactive "P")
+  (let* ((comment-auto-fill-only-comments nil)
+           (styles rebox-comment-styles)
+           (ev last-command-event)
+           (com-char  (event-basic-type ev))
+           st)
+      (if (rebox-line-has-comment)
+          (setq styles (cons 111 styles))) ;; first call removes the comment box
+      (setq st (pop styles))
+      (rebox-comment-always st)
+      (while  (eq (event-basic-type (setq ev (read-event))) com-char)
+        (unless styles
+          (setq styles rebox-comment-styles))
+        (setq st (pop styles))
+        (rebox-comment-always st))
+      (push ev unread-command-events)
+      ))
+
+}}}
