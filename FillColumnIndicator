@@ -108,6 +108,10 @@ Thanks for pointing this out.  The problem is caused by the way fci-mode pads ou
 
 This will probably be an issue with libraries other than paren.el, and I'm going to have to think about how to fix things in robust fashion.  In the meantime, here's a version with a workaround:  [[fill-column-indicator-paren-hack.el]].  I haven't tested it extensively, but hopefully it works.  (The wiki page has a different name, but you'll still want to save the file as "fill-column-indicator.el".  Also, it's probably a good idea to byte-compile it, for performance reasons.  Ignore the byte-compiler warnings about free variable assignments; that's a result of a hacky thing I did for speed.)  --AA
 
+[new]
+
+I can't comment on the how much of a hack this is, my elisp isn't that great :) But this does seem to fix the problem for me so far. I'll switch to using this at work after the weekend and see how I get on.
+
 ===From the (E-)Mailbag===
 
 [new]

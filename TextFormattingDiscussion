@@ -1,30 +1,3 @@
-== Reverted changes ==
-
-At the risk of spending time explaining why I'm reverting DrewAdams's edits,[EmacsWiki:action=browse;diff=1;id=TextFormattingRules;diffrevision=117;revision=118] here I go.
-
-1) The suggestions on markup needs to be kept.
-
-2) The heading of "Basics" is more accurate than "Basic Markup" since the doesn't just explain markup, per se.
-
-3) The description of paragraphs is better split.
-
-4) You're missing a typo for "surrounded".
-
-5) Alternative markup isn't just for where basic markup doesn't work.
-
-6) The example for ##<code>## should actually use ##<code>##.
-
-7) The definition list is hard to read and confuses the syntax.
-
-8) The suggestion on 4 spaces needs to be kept.
-
-9) No sense mentioning ##<pre>## for code when ##{{{## works.
-
-10) The longer explanation on headings
-
-11) Prefix of image: should be emphasized, rather than monospaced.
-
-Cheers. -- AaronHawley
 
 == -> Requires Space ==
 

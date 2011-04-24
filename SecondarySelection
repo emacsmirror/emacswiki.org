@@ -22,12 +22,36 @@ You can also use the secondary selection as another way to do what you do with `
 # Kill the primary selection.
 
 [new]
-the above doesn't works on Linux (Ubuntu) because most meta mouse stuff is intercepted by X (Meta drag moves the window, for example) Is there a way to use secondary selection with Windows key instead of Meta key? -- Anon
+: the above doesn't works on Linux (Ubuntu) because most meta mouse stuff is intercepted by X (Meta drag moves the window, for example) Is there a way to use secondary selection with Windows key instead of Meta key? -- [[Anonymous]] (or should I say [[Anony Mouse]]?)
 
-  Initiating the mouse action before hitting meta seems to bypass the window manager and get to emacs. --Anon
+:: Initiating the mouse action before hitting meta seems to bypass the window manager and get to emacs. -- [[Anonymous]]
+
+[new:ShinTakezou:2011-04-23 09:47 UTC]
+:: I bind the moving of the window to Super+Mouse1 (Super being indeed the windows-logo key);  I replace many Alt+Something bindings for the desktop to Super+Something, preferring to use the Alt key for local (application specific) bindings. --  ShinTakezou
+
+[new:ShinTakezou:2011-04-23 09:47 UTC]
+: I had problems copy-pasting between emacs and other applications that expect the data is in the //clipboard//, so I've added
+##(setq x-select-enable-clipboard t)##
+to my .emacs file; I don't know if this is good or not, but it worked for me.  --  ShinTakezou
+
+[new:DrewAdams:2011-04-23 14:37 UTC]
+:: FWIW, I too use `t' for `x-select-enable-clipboard'. I also use `C-M-', not just `M-', for all of my secondary-selection bindings.  (But I am on Windows mostly now, not GNU/Linux.)  -- DrewAdams
 
 [new]
-Is the secondary selection in emacs speak the same thing as the secondary selection in X Windows speak? -- Anon
+: Is the secondary selection in emacs speak the same thing as the secondary selection in X Windows speak? -- [[Anonymous]]
+
+[new:DrewAdams:2011-04-23 14:43 UTC]
+:: I think so, to the extent that Emacs can faithfully reflect the latter. But someone might correct me. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
 
 [:secondary-sel.el]
 == Library secondary-sel.el - Secondary Selection Enhancements ==

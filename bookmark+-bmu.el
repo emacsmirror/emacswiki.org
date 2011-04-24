@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr 22 10:27:35 2011 (-0700)
+;; Last-Updated: Sat Apr 23 14:21:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 748
+;;     Update #: 765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2513,7 +2513,7 @@ you left off."
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only tagged bookmarks are shown")))
 
-;; Not bound, but `T 0' is bmkp-remove-all-tags'
+;; Not bound, but `T 0' is `bmkp-remove-all-tags'.
 ;;;###autoload
 (defun bmkp-bmenu-remove-all-tags (&optional must-confirm-p)
   "Remove all tags from this bookmark.
@@ -2548,9 +2548,8 @@ Interactively, you are required to confirm."
      (read (read-string "Value: "))
      'msg)))
 
-;; $$$$$$ NOT YET USED
 ;;;###autoload
-(defun bmkp-bmenu-set-tag-value-for-marked (tag value &optional msgp) ; Not bound
+(defun bmkp-bmenu-set-tag-value-for-marked (tag value &optional msgp) ; `T > v' in bookmark list
   "Set the value of TAG to VALUE, for each of the marked bookmarks.
 If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (interactive (list (bmkp-read-tag-completing) (read (read-string "Value: ")) 'msg))
@@ -3835,11 +3834,15 @@ Marked bookmarks that have no associated file are ignored."
  (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s") 'bmkp-bmenu-isearch-marked-bookmarks-regexp))
 (define-key bookmark-bmenu-mode-map (kbd "M-s a M-s")      'bmkp-bmenu-search-marked-bookmarks-regexp)
 (define-key bookmark-bmenu-mode-map "T"                    nil) ; For Emacs20
+(define-key bookmark-bmenu-mode-map "T>+"                  'bmkp-bmenu-add-tags-to-marked)
+(define-key bookmark-bmenu-mode-map "T>-"                  'bmkp-bmenu-remove-tags-from-marked)
+(define-key bookmark-bmenu-mode-map "T>p"                  'bmkp-bmenu-paste-add-tags-to-marked)
+(define-key bookmark-bmenu-mode-map "T>q"                  'bmkp-bmenu-paste-replace-tags-for-marked)
+(define-key bookmark-bmenu-mode-map "T>v"                  'bmkp-bmenu-set-tag-value-for-marked)
+(define-key bookmark-bmenu-mode-map "T>\C-y"               'bmkp-bmenu-paste-add-tags-to-marked)
 (define-key bookmark-bmenu-mode-map "T0"                   'bmkp-remove-all-tags)
 (define-key bookmark-bmenu-mode-map "T+"                   'bmkp-add-tags)
 (define-key bookmark-bmenu-mode-map "T-"                   'bmkp-remove-tags)
-(define-key bookmark-bmenu-mode-map "T>+"                  'bmkp-bmenu-add-tags-to-marked)
-(define-key bookmark-bmenu-mode-map "T>-"                  'bmkp-bmenu-remove-tags-from-marked)
 (define-key bookmark-bmenu-mode-map "Tc"                   'bmkp-bmenu-copy-tags)
 (define-key bookmark-bmenu-mode-map "Td"                   'bmkp-remove-tags-from-all)
 (define-key bookmark-bmenu-mode-map "Te"                   'bmkp-bmenu-edit-tags)
@@ -3850,9 +3853,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Tm~*"                 'bmkp-bmenu-mark-bookmarks-tagged-not-all)
 (define-key bookmark-bmenu-mode-map "Tm~+"                 'bmkp-bmenu-mark-bookmarks-tagged-none)
 (define-key bookmark-bmenu-mode-map "Tp"                   'bmkp-bmenu-paste-add-tags)
-(define-key bookmark-bmenu-mode-map "T>p"                  'bmkp-bmenu-paste-add-tags-to-marked)
 (define-key bookmark-bmenu-mode-map "Tq"                   'bmkp-bmenu-paste-replace-tags)
-(define-key bookmark-bmenu-mode-map "T>q"                  'bmkp-bmenu-paste-replace-tags-for-marked)
 (define-key bookmark-bmenu-mode-map "Tr"                   'bmkp-rename-tag)
 (define-key bookmark-bmenu-mode-map "Ts"                   'bmkp-define-tags-sort-command)
 (define-key bookmark-bmenu-mode-map "TS"                   'bmkp-bmenu-show-only-tagged)
@@ -3863,6 +3864,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Tu~+"                 'bmkp-bmenu-unmark-bookmarks-tagged-none)
 (define-key bookmark-bmenu-mode-map "Tv"                   'bmkp-bmenu-set-tag-value)
 (define-key bookmark-bmenu-mode-map "T\M-w"                'bmkp-bmenu-copy-tags)
+(define-key bookmark-bmenu-mode-map "T\C-y"                'bmkp-bmenu-paste-add-tags)
 (define-key bookmark-bmenu-mode-map "\M-l"                 'bmkp-toggle-saving-menu-list-state)
 (define-key bookmark-bmenu-mode-map "\M-~"                 'bmkp-toggle-saving-bookmark-file)
 (define-key bookmark-bmenu-mode-map "\M-t"            'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
@@ -3880,8 +3882,6 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "X"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "XM"                   'bmkp-bmenu-mark-bookmark-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "XS"                   'bmkp-bmenu-show-only-bookmark-files)
-(define-key bookmark-bmenu-mode-map "T\C-y"                'bmkp-bmenu-paste-add-tags)
-(define-key bookmark-bmenu-mode-map "T>\C-y"               'bmkp-bmenu-paste-add-tags-to-marked)
 
 
 ;;; `Bookmark+' menu-bar menu in `*Bookmark List*'
@@ -3992,9 +3992,18 @@ Marked bookmarks that have no associated file are ignored."
 
 (define-key bmkp-bmenu-tags-menu [bmkp-list-all-tags]
   '(menu-item "List All Tags" bmkp-list-all-tags :help "List all tags used for any bookmarks"))
+(define-key bmkp-bmenu-tags-menu [bmkp-untag-a-file]
+  '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
+    :help "Remove some tags from autofile bookmark for a file"))
+(define-key bmkp-bmenu-tags-menu [bmkp-tag-a-file]
+  '(menu-item "Tag a File (Add Some)..." bmkp-tag-a-file
+    :help "Add some tags to the autofile bookmark for a file"))
 (define-key bmkp-bmenu-tags-menu [bmkp-rename-tag]
   '(menu-item "Rename Tag..." bmkp-rename-tag
     :help "Rename a tag in all bookmarks, even those not showing"))
+(define-key bmkp-bmenu-tags-menu [bmkp-bmenu-set-tag-value-for-marked]
+  '(menu-item "Set Tag Value for Marked..." bmkp-bmenu-set-tag-value-for-marked
+    :help "Set the value of a tag, for each of the marked bookmarks"))
 (define-key bmkp-bmenu-tags-menu [bmkp-remove-tags-from-all]
   '(menu-item "Remove Some Tags from All..." bmkp-remove-tags-from-all
     :help "Remove a set of tags from all bookmarks"))
@@ -4010,12 +4019,6 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-tags-menu [bmkp-bmenu-paste-add-tags-to-marked]
   '(menu-item "Paste Tags to Marked (Add)..." bmkp-bmenu-paste-add-tags-to-marked
     :help "Add tags copied from another bookmark to the marked bookmarks"))
-(define-key bmkp-bmenu-tags-menu [bmkp-untag-a-file]
-  '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
-    :help "Remove some tags from autofile bookmark for a file"))
-(define-key bmkp-bmenu-tags-menu [bmkp-tag-a-file]
-  '(menu-item "Tag a File (Add Some)..." bmkp-tag-a-file
-    :help "Add some tags to the autofile bookmark for a file"))
 
 (defvar bmkp-bmenu-sort-menu (make-sparse-keymap "Sort")
     "`Sort' submenu for menu-bar `Bookmark+' menu.")
@@ -4336,6 +4339,7 @@ Marked bookmarks that have no associated file are ignored."
                                          '("Add Some Tags..." . bmkp-bmenu-add-tags)
                                          '("Remove Some Tags..." . bmkp-bmenu-remove-tags)
                                          '("Remove All Tags..." . bmkp-bmenu-remove-all-tags)
+                                         '("Rename..." . bmkp-rename-tag)
                                          '("Set Tag Value..." . bmkp-bmenu-set-tag-value)
                                          (and (featurep 'bookmark+-lit)
                                               '("--")) ; ----------------------------------------

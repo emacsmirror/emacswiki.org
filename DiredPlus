@@ -1,6 +1,8 @@
-Library <tt>[[dired+.el]]</tt> ('''[::Dired+]''') extends functionalities provided by standard GNU Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. The standard functions are all available, plus more.
+This page is about package '''[::Dired+]''' (library <tt>[[dired+.el]]</tt>), which extends functionalities provided by standard GNU Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. The standard functions are all available, plus many more.
 
-'''Dired+''' does this:
+== Dired+ Features ==
+
+Here are some of the things '''Dired+''' does:
 
 * Changes some key bindings and enhances some menus.
 * Adds many new commands. Enhances some existing commands.
@@ -64,7 +66,16 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 [[image:DrewsEmacsDiredThisFile]]
 
-(This screenshot is not up-to-date -- the menu now includes items '''Bookmark''', '''Tag''', '''Untag''', and '''Grep'''.)
+(This screenshot is not up-to-date -- the menu now includes items '''Bookmark''', '''Tag''', '''Untag''', and '''Grep'''. See [[#MenuScreenshots]] for more up-to-date menu screenshots.)
+
+
+
+
+
+
+
+
+
 
 [:w32-browser]
 == If You Use Emacs on MS Windows ==
@@ -84,9 +95,10 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 
 
-----
+=== See Also ==
 
-'''See also:'''
+See these wiki pages for related features.
+
 * [[Icicles - Dired Enhancements]] for these Dired enhancements:
 ** [[#SearchAndReplace|Search-and-replace]] on the marked files.
 ** [[#SaveFilesAsCandidates|Save marked file names]] as [[completion]] candidates for later reuse.
@@ -101,30 +113,120 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 * <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -- libraries by WuXiaochun that build on Dired Plus
 
+
+
+
+
+
+
+[:MenuScreenshots]
+== Menu Screenshots ==
+
+Here are screenshots of the various '''Dired+''' menus. Using the menus is a good way to learn some of the features (and their key bindings).
+
+
+[:Mouse3PopupMenus]
+=== `mouse-3' Popup Menus ===
+
+`mouse-3' pops up a menu, which can take two forms, depending on whether the [[region]] is active.  If so, the menu items act on the files and directories in the region.  If not, the menu items act on the file or directory you pointed to when you clicked `mouse-3'.
+
+
+; '''Region''': [[image:DiredPlusPopupRegionMenu]]
+
+; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
+
+The '''Region''' menu you get depends on whether and how you use library <tt>[[mouse3.el]]</tt> -- see '''[[Mouse3]]'''.  The '''Region''' menu shown here has lots of submenus.
+
+
+[:SubdirMenu]
+=== Subdir Menu ===
+
+If you use '''MenuBarPlus''' (library <tt>[[menu-bar+.el]]</tt>) then this menu is called '''Dir'''.
+
+; '''Subdir''': [[image:DiredPlusDirMenu]]
+
+If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
+
+;; '''Icicles''': [[image:DiredPlusDirIciclesMenu]]
+
+
+If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own submenus (not shown here):
+
+;; '''Sort By''': [[image:DiredPlusDirSortByMenu]]
+
+
+
+
+
+[:MarkMenu]
+=== Mark Menu ===
+
+; '''Mark''': [[image:DiredPlusMarkMenu]]
+
+The '''Mark''' menu has a '''Tagged''' submenu:
+
+;; '''Tagged''': [[image:DiredPlusMarkTaggedMenu]]
+
+
+
+[:RegexpMenu]
+=== Regexp Menu ===
+
+; '''Regexp''': [[image:DiredPlusRegexpMenu]]
+
+
+
+[:MultipleMenu]
+=== Operate Menu ===
+
+If you use '''MenuBarPlus''' then this menu is called '''Multiple'''.
+
+; '''Operate''': [[image:DiredPlusMultipleMenu]]
+
+If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
+
+;; '''Icicles''': [[image:DiredPlusMultipleIciclesMenu]]
+
+
+
+
+
+[:SingleMenu]
+=== Immediate Menu ===
+
+If you use '''MenuBarPlus''' then this menu is called '''Single'''.
+
+; '''Immediate''': [[image:DiredPlusSingleMenu]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
 ----
 
+[:Issues]
+== Issues (Bug Reports) ==
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''Bug reports:'''
 
 [new:Kiwon:2010-03-18 07:31 UTC]
 I found a bug of this useful extension. I'm using the latest dired+, Last-updated: Sun Jan 31 14:06:37 2010 (-0800). The font-lock for date and time invades the area for size of file. My settings for the test are very simple. -- KiwonUm

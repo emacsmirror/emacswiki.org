@@ -1,0 +1,109 @@
+First install emacs from here: http://emacsformacosx.com/
+
+Once you have it installed, run it and set options in the "Options" menu. Then save your options. This makes a file /Users/<user>/.emacs . Now open the .emacs file and add whatever options you need. 
+
+I believe I have explained most of the options below.
+
+
+<pre>
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(cua-mode t nil (cua-base))
+ '(debug-on-error t)
+ '(current-language-environment "UTF-8")
+ '(save-place t nil (saveplace))
+ '(show-paren-mode t)
+ '(inhibit-startup-screen t)
+ '(mac-command-key-is-meta t)
+ '(make-backup-files nil)
+ '(default-input-method "latin-1-prefix")
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+
+(setq default-input-method "MacOSX")
+
+(setq mac-command-modifier 'meta
+      mac-option-modifier nil
+      mac-allow-anti-aliasing t
+      mac-command-key-is-meta t)
+
+
+(add-to-list 'load-path "~/.emacs.d/colortheme")
+(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs-local")
+
+(mouse-wheel-mode 1)
+(require 'bar-cursor)
+(bar-cursor-mode 1)
+
+(require 'color-theme)
+(color-theme-initialize)
+(load-file "~/.emacs-local/color-theme-blackboard.el")
+(load-file "~/.emacs-local/color-theme-railscasts.el")
+;(color-theme-ld-dark)
+(color-theme-railscasts)
+;(color-theme-blackboard)
+
+(scroll-bar-mode 0)
+
+(tool-bar-mode 0)
+
+(global-set-key [(control tab)] 'bury-buffer)
+
+(setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
+(setq default-tab-width 4)
+
+; Rope Emacs useful commands, need to check this out sometime
+; rope-code-assist, M-/ ;-- Code completion
+; rope-rename, C-c r r ;-- Rename a variable, function, etc.
+
+;(require 'pymacs)
+;(pymacs-load "ropemacs" "rope-")
+;(setq ropemacs-enable-autoimport t)
+
+; AutoComplete
+
+(add-to-list 'load-path "~/.emacs.d/local/auto-complete-1.2")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/local/auto-complete-1.2/dict")
+(ac-config-default)
+
+
+;(require 'yasnippet)
+;(yas/initialize)
+
+
+;;;;; python tricks from http://jesselegg.com/archives/2010/02/25/emacs-python-programmers-part-1/
+;;; Electric Pairs
+(add-hook 'python-mode-hook
+     (lambda ()
+      (define-key python-mode-map "\"" 'electric-pair)
+      (define-key python-mode-map "\'" 'electric-pair)
+      (define-key python-mode-map "(" 'electric-pair)
+      (define-key python-mode-map "[" 'electric-pair)
+      (define-key python-mode-map "{" 'electric-pair)))
+(defun electric-pair ()
+  "Insert character pair without sournding spaces"
+  (interactive)
+  (let (parens-require-spaces)
+    (insert-pair)))
+
+;;; bind RET to py-newline-and-indent
+(add-hook 'python-mode-hook '(lambda () 
+     (define-key python-mode-map "\C-m" 'newline-and-indent)))
+
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+(setq-default py-indent-offset 4)
+
+;;;;;; ToDo : look at http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
+
+
+;; Scroll smoothly
+(setq scroll-step 1000)
+(setq scroll-conservatively 1000)
+
+</pre>

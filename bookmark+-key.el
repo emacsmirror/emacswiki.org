@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Thu Apr 21 11:02:43 2011 (-0700)
+;; Last-Updated: Sat Apr 23 14:23:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 233
+;;     Update #: 249
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -664,18 +664,32 @@
 
 (define-key bmkp-tags-menu [bmkp-list-all-tags]
   '(menu-item "List All Tags" bmkp-list-all-tags :help "List all tags used for any bookmarks"))
-(define-key bmkp-tags-menu [bmkp-rename-tag]
-  '(menu-item "Rename Tag..." bmkp-rename-tag
-    :help "Rename a tag in all bookmarks"))
-(define-key bmkp-tags-menu [bmkp-remove-tags-from-all]
-  '(menu-item "Remove Some Tags from All..." bmkp-remove-tags-from-all
-    :help "Remove a set of tags from all bookmarks"))
 (define-key bmkp-tags-menu [bmkp-untag-a-file]
   '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
     :help "Remove some tags from autofile bookmark for a file"))
 (define-key bmkp-tags-menu [bmkp-tag-a-file]
   '(menu-item "Tag a File (Add Some)..." bmkp-tag-a-file
     :help "Add some tags to the autofile bookmark for a file"))
+(define-key bmkp-tags-menu [bmkp-rename-tag]
+  '(menu-item "Rename Tag..." bmkp-rename-tag :help "Rename a tag in all bookmarks"))
+(define-key bmkp-tags-menu [bmkp-set-tag-value]
+  '(menu-item "Set Tag Value..." bmkp-set-tag-value :help "Set the tag value for a given bookmark"))
+(define-key bmkp-tags-menu [bmkp-remove-tags-from-all]
+  '(menu-item "Remove Some Tags from All..." bmkp-remove-tags-from-all
+    :help "Remove a set of tags from all bookmarks"))
+(define-key bmkp-tags-menu [bmkp-remove-tags]
+  '(menu-item "Remove Some Tags..." bmkp-remove-tags :help "Remove a set of tags from a bookmark"))
+(define-key bmkp-tags-menu [bmkp-add-tags]
+  '(menu-item "Add Some Tags..." bmkp-add-tags :help "Add a set of tags to a bookmark"))
+(define-key bmkp-tags-menu [bmkp-paste-replace-tags]
+  '(menu-item "Paste Tags (Replace)..." bmkp-paste-replace-tags
+    :help "Replace tags for a bookmark with tags copied from another"))
+(define-key bmkp-tags-menu [bmkp-paste-add-tags]
+  '(menu-item "Paste Tags (Add)..." bmkp-paste-add-tags
+    :help "Add tags to a bookmark that were previously copied from another"))
+(define-key bmkp-tags-menu [bmkp-copy-tags]
+  '(menu-item "Copy Tags" bmkp-copy-tags
+    :help "Copy the tags from a bookmark, so you can paste them to another"))
 
 ;; `bmkp-jump-menu' of `Bookmarks' menu
 

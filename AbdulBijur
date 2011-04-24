@@ -28,6 +28,9 @@ Also you need to add the some lines in your dotEmacs.
 
 I am forced to use windows at my office and hence the dot emacs that i use for a window machine is available here : AvallarkDotEmacsForWindows
 
+Using Mac OSX on international Keyboard layout is an immense task to get things working. Here is a working .emacs config to get most of the things working. AvallarkDotEmacsForMac
+
+
 ----
 CategoryHomepage
 

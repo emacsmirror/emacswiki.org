@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 22 10:28:43 2011 (-0700)
+;; Last-Updated: Sat Apr 23 14:40:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13662
+;;     Update #: 13677
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -309,6 +309,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/23 dadams
+;;     Bound bmkp-bmenu-set-tag-value-for-marked to T > v and added to bmkp-bmenu-tags-menu.
+;;     bmkp-bmenu-mouse-3-menu: Added bmkp-rename-tag.
 ;; 2011/04/22 dadams
 ;;     Bound *-copy-tags to T c, T M-w, *-paste(-add|replace)-tags to T p, T C-y, T q.
 ;; 2011/04/21 dadams
@@ -416,6 +419,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/23 dadams
+;;     bmkp-tags-menu:
+;;       Added bmkp-set-tag-value, bmkp-(add|remove|copy)-tags, bmkp-paste-(add|replace)-tags.
 ;; 2011/04/21 dadams
 ;;     Bound: bmkp-copy-tags, bmkp-paste-add-tags, bmkp-paste-replace-tags.
 ;; 2011/04/16 dadams

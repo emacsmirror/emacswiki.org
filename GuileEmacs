@@ -68,6 +68,8 @@ in the appropriate syntax in any language supported by Muesli, and I'm working o
 
 -- JohnSturdy
 
+Guile 2.0 is out. It supports emacs lisp and other languages. So is it so good now? Is it adopted in official next generation emacs plan?   -- mikeyao
+
 ----
 CategoryExtensionLanguage
 EmacsImplementations
