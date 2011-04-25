@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Sat Apr 23 14:23:29 2011 (-0700)
+;; Last-Updated: Sun Apr 24 16:27:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 249
+;;     Update #: 255
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -503,8 +503,12 @@
   '(menu-item "Rename Bookmark..." bookmark-rename
     :help "Rename the bookmark you choose by name" :enable bookmark-alist)
   'delete)
+(define-key-after menu-bar-bookmark-map [bmkp-purge-notags-autofiles]
+  '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
+    :help "Delete all autofile bookmarks that have no tags" :enable bookmark-alist)
+  'rename)
 
-(define-key-after menu-bar-bookmark-map [separator-0] '("--") 'rename)
+(define-key-after menu-bar-bookmark-map [separator-0] '("--") 'bmkp-purge-notags-autofiles)
 (define-key-after menu-bar-bookmark-map [edit]
   '(menu-item "Show Bookmark List" bookmark-bmenu-list
     :help "Open the list of bookmarks in buffer `*Bookmark List*'")
@@ -664,6 +668,9 @@
 
 (define-key bmkp-tags-menu [bmkp-list-all-tags]
   '(menu-item "List All Tags" bmkp-list-all-tags :help "List all tags used for any bookmarks"))
+(define-key bmkp-tags-menu [bmkp-purge-notags-autofiles]
+  '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
+    :help "Delete all autofile bookmarks that have no tags"))
 (define-key bmkp-tags-menu [bmkp-untag-a-file]
   '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
     :help "Remove some tags from autofile bookmark for a file"))

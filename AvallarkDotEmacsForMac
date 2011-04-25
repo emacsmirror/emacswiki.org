@@ -1,3 +1,5 @@
+This is a quick guide from AbdulBijur for emacs on a Mac, especially with Spanish/International Keyboard layout.
+
 First install emacs from here: http://emacsformacosx.com/
 
 Once you have it installed, run it and set options in the "Options" menu. Then save your options. This makes a file /Users/<user>/.emacs . Now open the .emacs file and add whatever options you need. 

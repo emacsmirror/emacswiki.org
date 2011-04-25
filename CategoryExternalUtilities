@@ -72,6 +72,7 @@ Command-line tools:
 * ExecuteExternalCommand -- call a shell command from emacs
 * EukleidesMode -- Full featured major mode to edit [http://eukleides.org eukleides] files
 * [[Sdcv]] -- A interface for *sdcv* (StarDict console version).
+* [[CheatFuMode]] -- cheat_fu mode
 
 Unclassified:
 

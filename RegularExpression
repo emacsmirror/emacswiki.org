@@ -97,7 +97,7 @@ one or more whitespace characters (tabs are whitespace characters).
 Enter <code>C-q SPC</code> to get a single space character.
 Or put the following in your InitFile to override this behaviour.
 
-                 (setq search-whitespace-regexp " ")
+                 (setq search-whitespace-regexp nil)
 
 * ##[^## ... ##]## matches all characters not in the list, even newlines.
 Put a newline in the list if you want it not to be matched.

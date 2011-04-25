@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Apr 23 13:40:49 2011 (-0700)
+;; Last-Updated: Sun Apr 24 16:31:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3835
+;;     Update #: 3839
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1038,6 +1038,7 @@ If HDR is non-nil, insert a header line with the directory name."
     :help "Print file at cursor, supplying print command"))
 
 (when (require 'bookmark+ nil t)
+  (define-key diredp-menu-bar-immediate-menu [separator-immediate-tags] '("--"))
   (define-key diredp-menu-bar-immediate-menu [diredp-set-tag-value-this-file]
     '(menu-item "Set Tag Value..." diredp-set-tag-value-this-file
       :help "Set the value (not the name) of a given tag for this file"))
@@ -1203,6 +1204,7 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
 
 (when (require 'bookmark+ nil t)
+  (define-key diredp-menu-bar-operate-menu [separator-operate-tags] '("--"))
   (define-key diredp-menu-bar-operate-menu [diredp-do-set-tag-value]
     '(menu-item "Set Tag Value..." diredp-do-set-tag-value
       :help "Set the value of a given tag for the marked or next N files"))

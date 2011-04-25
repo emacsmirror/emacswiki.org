@@ -443,14 +443,14 @@ I got tired of removing a character from a function name in order to see the doc
 </pre>
 
 [new]
-Hi, guys!  I wrote an auto-complete-source to use Scite's API files. (For those don't familiar with Scite, [[http://www.burgaud.com/scite-java-api/ this page]] has some description on its API completion. Scite itself lacks such detail info)
+Hi, guys!  I wrote an auto-complete-source to use Scite's API files, called AutoCompleteSciteAPI. (For those don't familiar with Scite, [[http://www.burgaud.com/scite-java-api/ this page]] has some description on its API completion. Scite itself lacks such detail info)
 
-[http://bamanzi.is-programmer.com/posts/24558]  (Sorry that it was written in Chinese. I'll wrote some English description some time later. Or you can read the comment in source :-))
+Blog article for it: [http://bamanzi.is-programmer.com/posts/24558]  (Sorry that it was written in Chinese. I'll wrote some English description some time later. Or you can read the comment in source :-))
 
-[[http://bamanzi.is-programmer.com/user_files/bamanzi/epics/auto-complete-scite-api.el auto-complete-scite-api.el]]
+Code: [http://code.google.com/p/bamanzi-misc/source/browse/trunk/_emacs.d/lisp/auto-complete-scite-api.el]
 
 For me, it works fine on GNU Emacs 23.2/24.0.50 and auto-complete 1.2/1.3. 
-I'm a emacs newbie (<1 year). If someone would point out any error in my elisp code, I'd be very happy. --Bamanzi
+I'm a emacs newbie (<1 year). If someone would point out any error in my elisp code, I'd be very happy. --BaManzi
 
 [new]
 Hi. I use autocomplete + eclim. I wrote an autocomplete source which uses eclim to retrieve completion candidates and then builds a yasnippet to expand on candidate selection. Hope someone finds it useful.

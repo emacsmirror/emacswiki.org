@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Apr 23 14:21:59 2011 (-0700)
+;; Last-Updated: Sun Apr 24 16:34:23 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 765
+;;     Update #: 766
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3992,6 +3992,9 @@ Marked bookmarks that have no associated file are ignored."
 
 (define-key bmkp-bmenu-tags-menu [bmkp-list-all-tags]
   '(menu-item "List All Tags" bmkp-list-all-tags :help "List all tags used for any bookmarks"))
+(define-key bmkp-bmenu-tags-menu [bmkp-purge-notags-autofiles]
+  '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
+    :help "Delete all autofile bookmarks that have no tags"))
 (define-key bmkp-bmenu-tags-menu [bmkp-untag-a-file]
   '(menu-item "Untag a File (Remove Some)..." bmkp-untag-a-file
     :help "Remove some tags from autofile bookmark for a file"))

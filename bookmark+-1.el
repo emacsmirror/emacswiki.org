@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Apr 21 17:30:18 2011 (-0700)
+;; Last-Updated: Sun Apr 24 16:58:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2006
+;;     Update #: 2053
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -211,12 +211,13 @@
 ;;    `bmkp-previous-bookmark-this-buffer-repeat',
 ;;    `bmkp-previous-bookmark-w32',
 ;;    `bmkp-previous-bookmark-w32-repeat',
-;;    `bmkp-read-bookmark-for-type', `bmkp-region-jump',
-;;    `bmkp-region-jump-other-window', `bmkp-remote-file-jump',
-;;    `bmkp-remote-file-jump-other-window', `bmkp-remove-all-tags',
-;;    `bmkp-remove-tags', `bmkp-remove-tags-from-all',
-;;    `bmkp-rename-tag', `bmkp-save-menu-list-state',
-;;    `bmkp-send-bug-report', `bmkp-set-autonamed-bookmark',
+;;    `bmkp-purge-notags-autofiles', `bmkp-read-bookmark-for-type',
+;;    `bmkp-region-jump', `bmkp-region-jump-other-window',
+;;    `bmkp-remote-file-jump', `bmkp-remote-file-jump-other-window',
+;;    `bmkp-remove-all-tags', `bmkp-remove-tags',
+;;    `bmkp-remove-tags-from-all', `bmkp-rename-tag',
+;;    `bmkp-save-menu-list-state', `bmkp-send-bug-report',
+;;    `bmkp-set-autonamed-bookmark',
 ;;    `bmkp-set-autonamed-bookmark-at-line',
 ;;    `bmkp-set-autonamed-regexp-buffer',
 ;;    `bmkp-set-autonamed-regexp-region',
@@ -1980,50 +1981,102 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
-;; 2. If BOOKMARK-NAME has property `bmkp-full-record' then use that to find the bookmark to delete.
-;; 3. Remove highlighting for the bookmark.
-;; 4. Added note about `S-delete' to doc string.
-;; 5. Use `bmkp-default-bookmark-name' as default when interactive.
+;; 1. Accept a bookmark or a bookmark name as arg.
+;; 2. Use `bmkp-default-bookmark-name' as default when interactive.
+;; 3. If it is a name and it  has property `bmkp-full-record' then use that to find the bookmark to delete.
+;; 4. Remove highlighting for the bookmark.
+;; 5. Doc string includes note about `S-delete' for Icicles.
 ;; 6. Update `bmkp-latest-bookmark-alist' and `bmkp-bmenu-omitted-bookmarks'.
 ;; 7. Increment `bookmark-alist-modification-count' even when using `batch' arg.
 ;;
 ;;;###autoload
-(defun bookmark-delete (bookmark-name &optional batch) ; Bound to `C-x p d'
-  "Delete the bookmark named BOOKMARK-NAME from the bookmark list.
-Removes only the first instance of a bookmark with that name.
-If there are other bookmarks with the same name, they are not deleted.
-Defaults to the \"current\" bookmark (that is, the one most recently
-used in this file), if it exists.  Optional second arg BATCH means do
-not update the bookmark list buffer (probably because we were called
-from there).
+(defun bookmark-delete (bookmark &optional batch) ; Bound to `C-x p d'
+  "Delete the BOOKMARK from the bookmark list.
+BOOKMARK is a bookmark name or a bookmark record.
+Interactively, default to the \"current\" bookmark (that is, the one
+most recently used in this file), if it exists.
 
-If BOOKMARK-NAME has property `bmkp-full-record' then that is used
-along with the name to find the first matching bookmark to delete.
+If BOOKMARK is a name and it has property `bmkp-full-record' then use
+that property along with the name to find the bookmark to delete.
+If it is a name without property `bmkp-full-record' then delete (only)
+the first bookmark in `bookmark-alist' with that name.
+
+Optional second arg BATCH means do not update the bookmark list buffer
+\(probably because we were called from there).
 
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate.  In this way, you can delete multiple bookmarks."
   (interactive
    (list (bookmark-completing-read "Delete bookmark" (bmkp-default-bookmark-name))))
-  (bookmark-maybe-historicize-string bookmark-name)
   ;; $$$$$$ Instead of loading unconditionally, maybe we should just try to delete conditionally?
   ;; IOW, why not (when bookmarks-already-loaded BODY) instead of `bookmark-maybe-load-default-file'?
   ;; If it gets called on a hook that gets run before ever loading, then should probably do nothing.
   ;; Leaving it as is for now (2011-04-06).
   (bookmark-maybe-load-default-file)
-  (let ((bmk  (bookmark-get-bookmark bookmark-name 'NOERROR)))
-    (when (fboundp 'bmkp-unlight-bookmark) (bmkp-unlight-bookmark bmk 'NOERROR))
-    (setq bookmark-alist                (delq bmk bookmark-alist)
-          bmkp-latest-bookmark-alist    (delq bmk bmkp-latest-bookmark-alist)
-          bmkp-bmenu-omitted-bookmarks  (bmkp-delete-bookmark-name-from-list
-                                         bookmark-name bmkp-bmenu-omitted-bookmarks)))
-  ;; Added by DB.  `bookmark-current-bookmark' should be nil if last occurrence was deleted.
-  (unless (bookmark-get-bookmark bookmark-current-bookmark 'noerror)
-    (setq bookmark-current-bookmark  nil))
-  ;; Do not rebuild the list when using `batch' arg
-  (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
-  (bmkp-maybe-save-bookmarks))
+  (let* ((bmk    (bookmark-get-bookmark bookmark 'NOERROR))
+         (bname  (and (bookmark-name-from-full-record bmk)))) ; BOOKMARK might have been a bookmark.
+    (when bname                         ; Do nothing if BOOKMARK does not represent a bookmark.
+      (bookmark-maybe-historicize-string bname)
+      (when (fboundp 'bmkp-unlight-bookmark) (bmkp-unlight-bookmark bmk 'NOERROR))
+      (setq bookmark-alist                (delq bmk bookmark-alist)
+            bmkp-latest-bookmark-alist    (delq bmk bmkp-latest-bookmark-alist)
+            bmkp-bmenu-omitted-bookmarks  (bmkp-delete-bookmark-name-from-list
+                                           bname bmkp-bmenu-omitted-bookmarks))
+      ;; Added by DB.  `bookmark-current-bookmark' should be nil if last occurrence was deleted.
+      (unless (bookmark-get-bookmark bookmark-current-bookmark 'noerror)
+        (setq bookmark-current-bookmark  nil))
+      ;; Do not rebuild the list when using `batch' arg
+      (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
+      (bmkp-maybe-save-bookmarks))))
+
+
+;;; ;; REPLACES ORIGINAL in `bookmark.el'.
+;;; ;;
+;;; ;; 1. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
+;;; ;; 2. If BOOKMARK-NAME has property `bmkp-full-record' then use that to find the bookmark to delete.
+;;; ;; 3. Remove highlighting for the bookmark.
+;;; ;; 4. Added note about `S-delete' to doc string.
+;;; ;; 5. Use `bmkp-default-bookmark-name' as default when interactive.
+;;; ;; 6. Update `bmkp-latest-bookmark-alist' and `bmkp-bmenu-omitted-bookmarks'.
+;;; ;; 7. Increment `bookmark-alist-modification-count' even when using `batch' arg.
+;;; ;;
+;;; $$$$$$$
+;;; (defun bookmark-delete (bookmark-name &optional batch) ; Bound to `C-x p d'
+;;;   "Delete the bookmark named BOOKMARK-NAME from the bookmark list.
+;;; Removes only the first instance of a bookmark with that name.
+;;; If there are other bookmarks with the same name, they are not deleted.
+;;; Defaults to the \"current\" bookmark (that is, the one most recently
+;;; used in this file), if it exists.  Optional second arg BATCH means do
+;;; not update the bookmark list buffer (probably because we were called
+;;; from there).
+
+;;; If BOOKMARK-NAME has property `bmkp-full-record' then that is used
+;;; along with the name to find the first matching bookmark to delete.
+
+;;; If you use Icicles, then you can use `S-delete' during completion of a
+;;; bookmark name to delete the bookmark named by the current completion
+;;; candidate.  In this way, you can delete multiple bookmarks."
+;;;   (interactive
+;;;    (list (bookmark-completing-read "Delete bookmark" (bmkp-default-bookmark-name))))
+;;;   (bookmark-maybe-historicize-string bookmark-name)
+;;;   ;; $$$$$$ Instead of loading unconditionally, maybe we should just try to delete conditionally?
+;;;   ;; IOW, why not (when bookmarks-already-loaded BODY) instead of `bookmark-maybe-load-default-file'?
+;;;   ;; If it gets called on a hook that gets run before ever loading, then should probably do nothing.
+;;;   ;; Leaving it as is for now (2011-04-06).
+;;;   (bookmark-maybe-load-default-file)
+;;;   (let ((bmk  (bookmark-get-bookmark bookmark-name 'NOERROR)))
+;;;     (when (fboundp 'bmkp-unlight-bookmark) (bmkp-unlight-bookmark bmk 'NOERROR))
+;;;     (setq bookmark-alist                (delq bmk bookmark-alist)
+;;;           bmkp-latest-bookmark-alist    (delq bmk bmkp-latest-bookmark-alist)
+;;;           bmkp-bmenu-omitted-bookmarks  (bmkp-delete-bookmark-name-from-list
+;;;                                          bookmark-name bmkp-bmenu-omitted-bookmarks)))
+;;;   ;; Added by DB.  `bookmark-current-bookmark' should be nil if last occurrence was deleted.
+;;;   (unless (bookmark-get-bookmark bookmark-current-bookmark 'noerror)
+;;;     (setq bookmark-current-bookmark  nil))
+;;;   ;; Do not rebuild the list when using `batch' arg
+;;;   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
+;;;   (bmkp-maybe-save-bookmarks))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3301,8 +3354,7 @@ This affects all bookmarks, even those not showing in bookmark list.
 TAGS is a list of strings.  The corresponding tags are removed.
 Non-nil optional arg MSGP means display a message about the deletion."
   (interactive
-   (if (not (y-or-n-p
-             "Delete the tags you specify from ALL bookmarks, even those not shown? "))
+   (if (not (y-or-n-p "Delete the tags you specify from ALL bookmarks? "))
        (error "Deletion cancelled")
      (list (bmkp-read-tags-completing nil t)  'MSG)))
   (dolist (bmk  (bookmark-all-names)) (bmkp-remove-tags bmk tags nil 'NO-CACHE-UPDATE))
@@ -4809,7 +4861,7 @@ If TRUTH is nil, return nil."
 ;;  *** Indirect Bookmarking Functions ***
 
 ;;;###autoload
-(defun bmkp-url-target-set (url &optional prefix-only-p name) ; `C-x p c u'
+(defun bmkp-url-target-set (url &optional prefix-only-p name/prefix) ; `C-x p c u'
   "Set a bookmark for a URL.  Return the bookmark.
 Interactively you are prompted for the URL.  Completion is available.
 Use `M-n' to pick up the url at point as the default.
@@ -4823,15 +4875,15 @@ bookmark name is the prefix followed by the URL."
            (read-file-name "URL: " nil (or (thing-at-point 'url) (url-get-url-at-point))))
          current-prefix-arg
          (if current-prefix-arg
-             (read-string "Prefix for bookmark name: " nil nil)
+             (read-string "Prefix for bookmark name: ")
            (bmkp-completing-read-lax "Bookmark name"))))
-  (unless name (setq name  ""))
+  (unless name/prefix (setq name/prefix  ""))
   (let ((bookmark-make-record-function  (if (eq major-mode 'w3m-mode)
                                             'bmkp-make-w3m-record
                                           (lambda () (bmkp-make-url-browse-record url))))
         bmk failure)
     (condition-case err
-        (setq bmk  (bookmark-store (if prefix-only-p (concat name url) name)
+        (setq bmk  (bookmark-store (if prefix-only-p (concat name/prefix url) name/prefix)
                                    (cdr (bookmark-make-record)) nil))
       (error (setq failure  err)))
     (if (not failure)
@@ -4864,7 +4916,7 @@ that has the same name."
                              (url-get-url-at-point)))
          current-prefix-arg
          (if current-prefix-arg
-             (read-string "Prefix for bookmark name: " nil nil)
+             (read-string "Prefix for bookmark name: ")
            (bmkp-completing-read-lax "Bookmark name"))
          'MSG))
   (unless name/prefix (setq name/prefix  ""))
@@ -4899,7 +4951,9 @@ The bookmarked position will be the beginning of the file."
           (t
            `(lambda () '((filename . ,file) (position . 0)))))))
 
+;;;###autoload
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
+;;;###autoload
 (defun bmkp-autofile-set (file &optional dir prefix msgp) ; Bound to `C-x p c a'
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
@@ -4933,7 +4987,7 @@ file names."
                              (thing-at-point 'url)
                              (url-get-url-at-point)))
          nil
-         (and current-prefix-arg (read-string "Prefix for bookmark name: " nil nil ""))
+         (and current-prefix-arg (read-string "Prefix for bookmark name: "))
          'MSG))
   (let* ((dir-to-use  (if (file-name-absolute-p file)
                          (file-name-directory file)
@@ -4976,7 +5030,9 @@ FILE, if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
               (throw 'bmkp-get-autofile-bookmark bmk))))) ; Return the bookmark.
       nil)))
 
+;;;###autoload
 (defalias 'bmkp-tag-a-file 'bmkp-autofile-add-tags) ; Bound to `C-x p t + a'
+;;;###autoload
 (defun bmkp-autofile-add-tags (file tags &optional dir prefix msgp no-cache-update-p)
   "Add TAGS to autofile bookmark for FILE.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
@@ -4997,11 +5053,13 @@ Return the number of tags added."
                              (url-get-url-at-point)))
          (bmkp-read-tags-completing)
          nil
-         (and current-prefix-arg (read-string "Prefix for bookmark name: " nil nil ""))
+         (and current-prefix-arg (read-string "Prefix for bookmark name: "))
          'msg))
   (bmkp-add-tags (bmkp-autofile-set file dir prefix) tags msgp no-cache-update-p))
   
+;;;###autoload
 (defalias 'bmkp-untag-a-file 'bmkp-autofile-remove-tags) ; Bound to `C-x p t - a'
+;;;###autoload
 (defun bmkp-autofile-remove-tags (file tags &optional dir prefix msgp no-cache-update-p)
   "Remove TAGS from autofile bookmark for FILE.
 Hit `RET' to enter each tag to be removed, then hit `RET' again after
@@ -5015,7 +5073,7 @@ Non-nil MSGP means display a message about the addition.
 Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags removed."
   (interactive
-   (let* ((pref  (and current-prefix-arg (read-string "Prefix for bookmark name: " nil nil "")))
+   (let* ((pref  (and current-prefix-arg (read-string "Prefix for bookmark name: ")))
           (tgs   (bmkp-read-tags-completing))
           (fil   (condition-case nil
                      (read-file-name
@@ -5043,6 +5101,22 @@ Return the number of tags removed."
                                (url-get-url-at-point)))))))
      (list fil tgs nil pref 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix) tags msgp no-cache-update-p))
+
+;;;###autoload
+(defun bmkp-purge-notags-autofiles (&optional prefix) ; Not bound
+  "Delete all autofile bookmarks that have no tags.
+With a prefix arg, you are prompted for a PREFIX for the bookmark name."
+  (interactive (if (not (y-or-n-p "Delete all autofile bookmarks that do not have tags? "))
+                   (error "Deletion cancelled")
+                 (list (and current-prefix-arg (read-string "Prefix for bookmark name: ")))))
+  (let ((bmks  (bmkp-autofile-alist-only prefix))
+        record tags)
+    ;; Needs Bookmark+ version of `bookmark-delete', which accepts a bookmark, not just its name.
+    (dolist (bmk  bmks)
+      (when (and (setq tags  (assq 'tags (bookmark-get-bookmark-record bmk)))
+                 (or (not tags) (null (cdr tags))))
+        (bookmark-delete bmk)))
+    (bmkp-tags-list)))                  ; Update the tags cache.
 
 ;; $$$$$$ Not used currently.
 (defun bmkp-replace-existing-bookmark (bookmark)
@@ -5124,7 +5198,7 @@ of the hit, followed by the line number of the hit."
           (if (not prefix)
               (call-interactively #'bookmark-set)
             (when (interactive-p)
-              (setq prefix  (read-string "Prefix for bookmark name: " nil nil)))
+              (setq prefix  (read-string "Prefix for bookmark name: ")))
             (unless (stringp prefix) (setq prefix  ""))
             (bookmark-set (format "%s%s, line %s" prefix (file-name-nondirectory file) line)
                           99 'INTERACTIVEP))))))
@@ -5151,7 +5225,7 @@ NOTE: You can use `C-x C-q' to make the buffer writable and then
 You are prompted for a PREFIX string to prepend to each bookmark name,
 the rest of which is the file name of the hit followed by its line
 number."
-    (interactive (list (read-string "Prefix for bookmark name: " nil nil) 'MSGP))
+    (interactive (list (read-string "Prefix for bookmark name: ") 'MSGP))
     (if (y-or-n-p "This will bookmark *EACH* hit in the buffer.  Continue? ")
         (let ((count  0))
           (save-excursion
@@ -5201,13 +5275,12 @@ You can use this only in `Occur' mode (commands such as `occur' and
                         (if (not prefix)
                             (call-interactively #'bookmark-set)
                           (when (interactive-p)
-                            (setq prefix  (read-string "Prefix for bookmark name: " nil nil)))
+                            (setq prefix  (read-string "Prefix for bookmark name: ")))
                           (unless (stringp prefix) (setq prefix  ""))
-                          (bookmark-set (format "%s%s, line %s" prefix buf line)
-                                        99 'INTERACTIVEP)))))))
+                          (bookmark-set (format "%s%s, line %s" prefix buf line) 99 'INTERACTIVEP)))))))
 
 (when (> emacs-major-version 21)
-  (defun bmkp-occur-target-set-all (prefix &optional msgp) ; `C-c C-M-b'
+  (defun bmkp-occur-target-set-all (&optional prefix msgp) ; `C-c C-M-b'
     "Set a bookmark for each hit of a `(multi-)occur' buffer.
 NOTE: You can use `C-x C-q' to make the buffer writable and then
       remove any hits that you do not want to bookmark.  Only the hits
@@ -5222,7 +5295,7 @@ You can use this only in `Occur' mode (commands such as `occur' and
 
 See also command `bmkp-occur-create-autonamed-bookmarks', which
 creates autonamed bookmarks to all `occur' and `multi-occur' hits."
-    (interactive (list (read-string "Prefix for bookmark name: " nil nil) 'MSGP))
+    (interactive (list (read-string "Prefix for bookmark name: ") 'MSGP))
     (if (y-or-n-p "This will bookmark *EACH* hit in the buffer.  Continue? ")
         (let ((count  0))
           (save-excursion
@@ -7032,7 +7105,6 @@ Then you are prompted for the BOOKMARK (with completion)."
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
 
-;;;###autoload
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
   (defalias 'bmkp-autofile-jump 'bmkp-find-file)
   (defun bmkp-find-file ()              ; `C-x j a'
@@ -7042,7 +7114,6 @@ Then you are prompted for the BOOKMARK (with completion)."
           (pred             #'(lambda (ff) (bmkp-get-autofile-bookmark ff))))
       (find-file (read-file-name "Find file: " nil nil t nil pred)))))
 
-;;;###autoload
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
   (defalias 'bmkp-autofile-jump-other-window 'bmkp-find-file)
   (defun bmkp-find-file-other-window () ; `C-x 4 j a'
@@ -7052,7 +7123,6 @@ Then you are prompted for the BOOKMARK (with completion)."
           (pred             #'(lambda (ff) (bmkp-get-autofile-bookmark ff))))
       (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
 
-;;;###autoload
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-all-tags (tags) ; `C-x j t a *'
     "Visit a file or directory that has all of the TAGS.
@@ -7069,7 +7139,6 @@ candidate."
                                                          tags))))))
       (find-file (read-file-name "Find file: " nil nil t nil pred)))))
 
-;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-all-tags-other-window (tags) ; `C-x 4 j t a *'
     "`bmkp-find-file-all-tags', but in another window."
@@ -7082,7 +7151,6 @@ candidate."
                                                          tags))))))
       (find-file-other-window (read-file-name "Find file: " nil nil t nil pred)))))
 
-;;;###autoload
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-all-tags-regexp (regexp) ; `C-x j t a % *'
     "Visit a file or directory that has each tag matching REGEXP.

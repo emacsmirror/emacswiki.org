@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 23 14:40:46 2011 (-0700)
+;; Last-Updated: Sun Apr 24 17:06:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13677
+;;     Update #: 13696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/24 dadams
+;;     Added: bmkp-purge-notags-autofiles.
+;;     bookmark-delete: Redefined to accept either bookmark or name as arg.
+;;     bmkp-(url|file|compilation|occur)-target-set(-all), bmkp-autofile-(set|(add|remove)-tags):
+;;       Removed optional args when read prefix.
+;;     bmkp-occur-target-set-all: Made PREFIX arg optional too.
+;;     Added some missing autoload cookies.  Removed some from non-def sexps.
 ;; 2011/04/21 dadams
 ;;     Added: bmkp-copied-tags, bmkp-copy-tags, bmkp-paste-add-tags, bmkp-paste-replace-tags..
 ;; 2011/04/20 dadams
@@ -309,6 +316,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/04/24 dadams
+;;     Added to Tags menu: Purge Autofiles with No Tags.
 ;; 2011/04/23 dadams
 ;;     Bound bmkp-bmenu-set-tag-value-for-marked to T > v and added to bmkp-bmenu-tags-menu.
 ;;     bmkp-bmenu-mouse-3-menu: Added bmkp-rename-tag.
@@ -419,6 +428,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/04/24 dadams
+;;     Added to Bookmarks menu and its Tags submenu: Purge Autofiles with No Tags.
 ;; 2011/04/23 dadams
 ;;     bmkp-tags-menu:
 ;;       Added bmkp-set-tag-value, bmkp-(add|remove|copy)-tags, bmkp-paste-(add|replace)-tags.

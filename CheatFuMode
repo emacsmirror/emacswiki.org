@@ -1,0 +1,37 @@
+This minor mode exists to provide [http://www.gnu.org/software/emacs Emacs] with an interface to [https://github.com/jpablobr/cheat_fu cheat_fu].
+
+== Features: ==
+
+Quickly jump between cheat_fu sheets for fast viewing and editing.
+
+
+== Key binding: ==
+
+<pre>
+"l" 'cheat_fu-list
+"s" 'cheat_fu-search
+"c" 'cheat_fu-convert
+"b" 'cheat_fu-buttonize-buffer
+</pre>
+
+== Installation: ==
+
+In your emacs config:
+
+<pre>
+    (add-to-list 'load-path "~/.emacs.d/load/path/cheat_fu.el")
+    (require 'cheat_fu)
+    (setq cheat_fu-root "/path/to/.cheat_fu_sheets/
+</pre>
+
+== TODO: ==
+
+Add support to the rest of functionalities that [cheat_fu](https://github.com/jpablobr/cheat_fu) provides.
+
+== Note on Patches/Pull Requests: ==
+
+Fork the project.
+Make your feature addition or bug fix.
+Send me a pull request. Bonus points for topic branches.
+
+-- Jose Pablo Barrantes <jpablobr>
