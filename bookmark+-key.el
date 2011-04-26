@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Apr 24 16:27:49 2011 (-0700)
+;; Last-Updated: Mon Apr 25 06:54:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 255
+;;     Update #: 256
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -695,7 +695,7 @@
   '(menu-item "Paste Tags (Add)..." bmkp-paste-add-tags
     :help "Add tags to a bookmark that were previously copied from another"))
 (define-key bmkp-tags-menu [bmkp-copy-tags]
-  '(menu-item "Copy Tags" bmkp-copy-tags
+  '(menu-item "Copy Tags..." bmkp-copy-tags
     :help "Copy the tags from a bookmark, so you can paste them to another"))
 
 ;; `bmkp-jump-menu' of `Bookmarks' menu

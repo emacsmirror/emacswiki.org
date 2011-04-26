@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Apr 24 16:31:43 2011 (-0700)
+;; Last-Updated: Mon Apr 25 17:28:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3839
+;;     Update #: 3858
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -102,15 +102,15 @@
 ;;    `diredp-chgrp-this-file', `diredp-chmod-this-file',
 ;;    `diredp-chown-this-file', `diredp-compress-this-file',
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
-;;    `diredp-delete-this-file', `diredp-dired-files',
-;;    `diredp-dired-files-other-window', `diredp-dired-union',
-;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
-;;    `diredp-do-bookmark-in-bookmark-file', `diredp-do-grep',
-;;    `diredp-do-paste-add-tags', `diredp-do-paste-replace-tags',
-;;    `diredp-do-remove-all-tags', `diredp-do-set-tag-value',
-;;    `diredp-do-tag', `diredp-do-untag', `diredp-downcase-this-file',
-;;    `diredp-ediff', `diredp-fileset', `diredp-find-a-file',
-;;    `diredp-find-a-file-other-frame',
+;;    `diredp-delete-this-file', `diredp-describe-file',
+;;    `diredp-dired-files', `diredp-dired-files-other-window',
+;;    `diredp-dired-union', `diredp-dired-union-other-window',
+;;    `diredp-do-bookmark', `diredp-do-bookmark-in-bookmark-file',
+;;    `diredp-do-grep', `diredp-do-paste-add-tags',
+;;    `diredp-do-paste-replace-tags', `diredp-do-remove-all-tags',
+;;    `diredp-do-set-tag-value', `diredp-do-tag', `diredp-do-untag',
+;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
+;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
@@ -124,14 +124,15 @@
 ;;    `diredp-mark-files-tagged-regexp', `diredp-mark-region-files',
 ;;    `diredp-mark/unmark-extension', `diredp-mouse-3-menu',
 ;;    `diredp-mouse-backup-diff', `diredp-mouse-copy-tags',
-;;    `diredp-mouse-diff', `diredp-mouse-do-bookmark',
-;;    `diredp-mouse-do-byte-compile', `diredp-mouse-do-chgrp',
-;;    `diredp-mouse-do-chmod', `diredp-mouse-do-chown',
-;;    `diredp-mouse-do-compress', `diredp-mouse-do-copy',
-;;    `diredp-mouse-do-delete', `diredp-mouse-do-grep',
-;;    `diredp-mouse-do-hardlink', `diredp-mouse-do-load',
-;;    `diredp-mouse-do-print', `diredp-mouse-do-remove-all-tags',
-;;    `diredp-mouse-do-rename', `diredp-mouse-do-set-tag-value',
+;;    `diredp-mouse-describe-file', `diredp-mouse-diff',
+;;    `diredp-mouse-do-bookmark', `diredp-mouse-do-byte-compile',
+;;    `diredp-mouse-do-chgrp', `diredp-mouse-do-chmod',
+;;    `diredp-mouse-do-chown', `diredp-mouse-do-compress',
+;;    `diredp-mouse-do-copy', `diredp-mouse-do-delete',
+;;    `diredp-mouse-do-grep', `diredp-mouse-do-hardlink',
+;;    `diredp-mouse-do-load', `diredp-mouse-do-print',
+;;    `diredp-mouse-do-remove-all-tags', `diredp-mouse-do-rename',
+;;    `diredp-mouse-do-set-tag-value',
 ;;    `diredp-mouse-do-shell-command', `diredp-mouse-do-symlink',
 ;;    `diredp-mouse-do-tag', `diredp-mouse-do-untag',
 ;;    `diredp-mouse-downcase', `diredp-mouse-ediff',
@@ -248,6 +249,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/25 dadams
+;;     Added (from files+.el): dired(-mouse)-describe-file. Bound to C-h (C-)RET, added to menus.
 ;; 2011/04/23 dadams
 ;;     Added, bound (T c, T M-w, T 0, T v, T p, T C-y, T q), and added to menus:
 ;;       diredp-copy-tags-this-file, diredp-mouse-copy-tags,
@@ -999,6 +1002,9 @@ If HDR is non-nil, insert a header line with the directory name."
 (defvar diredp-menu-bar-immediate-menu (make-sparse-keymap "Single"))
 (define-key dired-mode-map [menu-bar immediate]
   (cons "Single" diredp-menu-bar-immediate-menu))
+(define-key diredp-menu-bar-immediate-menu [diredp-describe-file]
+  '(menu-item "Describe" diredp-describe-file
+    :help "Describe the file or directory at cursor"))
 (when (fboundp 'image-dired-dired-display-external) ; Emacs 22+
   (define-key diredp-menu-bar-immediate-menu [image-dired-dired-display-external]
     '(menu-item "Display Image Externally" image-dired-dired-display-external
@@ -1059,9 +1065,9 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Remove some tags from the file at cursor (`C-u': remove all tags)"))
   (define-key diredp-menu-bar-immediate-menu [diredp-tag-this-file]
     '(menu-item "Add Tags..." diredp-tag-this-file :help "Add some tags to the file at cursor")))
-
 (define-key diredp-menu-bar-immediate-menu [diredp-bookmark-this-file]
   '(menu-item "Bookmark..." diredp-bookmark-this-file :help "Bookmark the file at cursor"))
+
 (when (fboundp 'mkhtml-dired-files)
   (define-key diredp-menu-bar-immediate-menu [mkhtml-dired-files]
     '(menu-item "Create HTML" mkhtml-dired-files
@@ -1598,6 +1604,8 @@ If HDR is non-nil, insert a header line with the directory name."
 
 ;; $$$$$$ (define-key dired-mode-map [(control meta ?+)] 'diredp-tag-this-file)
 ;; $$$$$$ (define-key dired-mode-map [(control meta ?-)] 'diredp-untag-this-file)
+(define-key dired-mode-map (kbd "C-h RET")        'diredp-describe-file)
+(define-key dired-mode-map (kbd "C-h C-<return>") 'diredp-describe-file)
 (define-key dired-mode-map "b"       'diredp-byte-compile-this-file) ; `b'
 (define-key dired-mode-map [(control shift ?b)] 'diredp-bookmark-this-file) ; `C-B'
 (define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame) ; `C-o'
@@ -4047,6 +4055,35 @@ You need library `bookmark+.el' to use this command."
   (dired-previous-line 1))
 
 ;;;###autoload
+(defun diredp-describe-file (&optional internal-form-p)
+  "In Dired, describe this file or directory.
+You need library `help-fns+.el' to use this command.
+If the file has an autofile bookmark and you use library `Bookmark+',
+then show also the bookmark information (tags etc.).  In this case, a
+prefix arg shows the internal form of the bookmark."
+  (interactive "P")
+  (unless (fboundp 'describe-file)
+    (error "This command needs `describe-file' from library `help-fns+.el'"))
+  (describe-file (dired-get-filename nil t) internal-form-p))
+
+;;;###autoload
+(defun diredp-mouse-describe-file (event &optional internal-form-p)
+  "Describe the clicked file.
+You need library `help-fns+.el' to use this command.
+If the file has an autofile bookmark and you use library `Bookmark+',
+then show also the bookmark information (tags etc.).  In this case, a
+prefix arg shows the internal form of the bookmark."
+  (interactive "e\nP")
+  (unless (fboundp 'describe-file)
+    (error "This command needs `describe-file' from library `help-fns+.el'"))
+  (let (file)
+    (save-excursion
+      (set-buffer (window-buffer (posn-window (event-end event))))
+      (goto-char (posn-point (event-end event)))
+      (setq file (dired-get-filename nil t)))
+    (describe-file file internal-form-p)))
+
+;;;###autoload
 (defun diredp-byte-compile-this-file ()
   "In Dired, byte compile the (Lisp source) file on the cursor line."
   (interactive) (dired-do-byte-compile 1))
@@ -4350,6 +4387,7 @@ With non-nil prefix arg, mark them instead."
                          '("Change Mode..." . diredp-mouse-do-chmod)
                          '("Change Group..." . diredp-mouse-do-chgrp)
                          '("Change Owner..." . diredp-mouse-do-chown)
+                         '("Describe" . diredp-mouse-describe-file)
                          )
                       '("" (""))))))    ; No menu: not on a file line.
             (when diredp-file-line-overlay

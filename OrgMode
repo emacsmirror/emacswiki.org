@@ -66,6 +66,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * mobileorg is a FREE (open-source) iPhone and iPod Touch application for storing, searching, viewing and editing your Org-mode files. Its home page is at http://mobileorg.ncogni.to/ and its EmacsWiki page is at http://www.emacswiki.org/emacs/mobileorg
 * OrgOutlook lets you integrate with Microsoft Outlook
 * Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
+* Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface
 
 == Texts on using org-mode ==
 

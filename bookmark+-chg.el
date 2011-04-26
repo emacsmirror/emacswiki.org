@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 24 17:06:18 2011 (-0700)
+;; Last-Updated: Mon Apr 25 15:26:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13696
+;;     Update #: 13704
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/04/25 dadams
+;;     bmkp-bookmark-description: Added optional arg NO-IMAGE.
+;;     bmkp-url-target-set: Protect url-get-url-at-point with fboundp.
+;;     bmkp-(file-target|autofile)-set, bmkp-autofile-(add|remove)-tags:
+;;       Added buffer-file-name as a default possibility.  Removed URL functions for that purpose.
 ;; 2011/04/24 dadams
 ;;     Added: bmkp-purge-notags-autofiles.
 ;;     bookmark-delete: Redefined to accept either bookmark or name as arg.

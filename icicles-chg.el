@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 20 15:44:50 2011 (-0700)
+;; Last-Updated: Mon Apr 25 19:48:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6388
+;;     Update #: 6396
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/04/25 dadams
+;;     Commands defined with icicle-define-file-command and using icicle-file-bindings:
+;;       Remove binding for icicle-candidate-help-fn - done in icicles-mac.el now.
 ;; 2011/04/13 dadams
 ;;     Fixed autoload cookies for icicle-define-file-command commands added yesterday.
 ;; 2011/04/12 dadams
@@ -2191,6 +2194,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2011/04/25 dadams
+;;     icicle-file-bindings: Bind icicle-candidate-help-fn to icicle-describe-file w/ curr pref arg.
 ;; 2011/04/12 dadams
 ;;     icicle-buffer-bindings, icicle-file-bindings: Added optional POST-BINDINGS arg.
 ;; 2011/04/02 dadams
@@ -2300,6 +2305,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/04/25 dadams
+;;     icicle-describe-file: Sync'd with help-fns+.el - include autofile bookmark info.
+;;     icicle-help-on-candidate(-symbol): Add current-prefix-arg to call to icicle-describe-file.
 ;; 2011/04/02 dadams
 ;;     icicle-search-define-replacement: Use (new) icicle-scan-fn-or-regexp, not scan-fn-or-regexp.
 ;; 2011/03/29 dadams

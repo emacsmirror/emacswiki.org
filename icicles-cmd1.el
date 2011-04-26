@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 13 10:15:28 2011 (-0700)
+;; Last-Updated: Mon Apr 25 18:01:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21823
+;;     Update #: 21850
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3447,14 +3447,7 @@ Candidate help shows information about:
   (lambda (file) (bmkp-autofile-add-tags file tags nil nil 'MSG))
   "File to tag: " nil nil nil nil nil   ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
-   ((tags  (bmkp-read-tags-completing))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (if bmk
-                                         (if current-prefix-arg
-                                             (bmkp-describe-bookmark-internals bmk)
-                                           (bmkp-describe-bookmark bmk))
-                                       (icicle-describe-file ff)))))))
+   ((tags  (bmkp-read-tags-completing))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command"))) ; First sexp
 
 ;;;###autoload (autoload 'icicle-untag-a-file "icicles-cmd1.el")
@@ -3468,12 +3461,7 @@ all of the given input tags are completion candidates."
     (bmkp-autofile-remove-tags file tags nil nil 'MSG))
   "File to untag: " nil nil t nil nil   ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
-   ((tags  (bmkp-read-tags-completing)) ; Pre bindings
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+   ((tags  (bmkp-read-tags-completing))) ; Pre bindings
    ((icicle-must-pass-after-match-predicate ; Post bindings
      #'(lambda (ff)
          ;; Expand relative file name, using directory from minibuffer.
@@ -3505,17 +3493,12 @@ This is otherwise like `icicle-find-file'."
       (funcall fn file 'WILDCARDS)))
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
-   ((init-pref-arg  current-prefix-arg)
+   ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (tags           (bmkp-read-tags-completing))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (tags                      (bmkp-read-tags-completing))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
-   ((icicle-must-pass-after-match-predicate
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+   ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                          (btgs  (and bmk (bmkp-get-tags bmk))))
                     (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))))
@@ -3534,15 +3517,10 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (tags           (bmkp-read-tags-completing))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (tags                      (bmkp-read-tags-completing))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                          (btgs  (and bmk (bmkp-get-tags bmk))))
@@ -3562,22 +3540,15 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (regexp         (read-string "Regexp for tags: "))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (regexp                    (read-string "Regexp for tags: "))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff)
        (let* ((bmk   (bmkp-get-autofile-bookmark ff))
               (btgs  (and bmk (bmkp-get-tags bmk))))
-         (and btgs  (bmkp-every
-                     #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                     btgs)))))))
+         (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows "icicles-cmd1.el")
@@ -3593,22 +3564,15 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (regexp         (read-string "Regexp for tags: "))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (regexp                    (read-string "Regexp for tags: "))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff)
        (let* ((bmk   (bmkp-get-autofile-bookmark ff))
               (btgs  (and bmk (bmkp-get-tags bmk))))
-         (and btgs  (bmkp-every
-                     #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                     btgs)))))))
+         (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-some-tags "icicles-cmd1.el")
@@ -3625,15 +3589,10 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg)
+    (tags           (bmkp-read-tags-completing))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (tags                      (bmkp-read-tags-completing))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate
      (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                          (btgs  (and bmk (bmkp-get-tags bmk))))
@@ -3653,15 +3612,10 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (tags           (bmkp-read-tags-completing))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (tags                      (bmkp-read-tags-completing))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                          (btgs  (and bmk (bmkp-get-tags bmk))))
@@ -3681,22 +3635,15 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (regexp         (read-string "Regexp for tags: "))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (regexp                    (read-string "Regexp for tags: "))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff)
        (let* ((bmk   (bmkp-get-autofile-bookmark ff))
               (btgs  (and bmk (bmkp-get-tags bmk))))
-         (and btgs  (bmkp-some
-                     #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                     btgs)))))))
+         (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd1.el")
@@ -3712,22 +3659,15 @@ This is otherwise like `icicle-find-file'."
   "Find file: " nil nil t nil nil
   (icicle-file-bindings                 ; Bindings
    ((init-pref-arg  current-prefix-arg) ; Pre bindings
+    (regexp         (read-string "Regexp for tags: "))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
-    (regexp                    (read-string "Regexp for tags: "))
-    (icicle-candidate-help-fn  #'(lambda (ff)
-                                   (let ((bmk  (bmkp-get-autofile-bookmark ff)))
-                                     (and bmk (if current-prefix-arg
-                                                  (bmkp-describe-bookmark-internals bmk)
-                                                (bmkp-describe-bookmark bmk)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
    ((icicle-must-pass-after-match-predicate ; Post bindings
      (lambda (ff)
        (let* ((bmk   (bmkp-get-autofile-bookmark ff))
               (btgs  (and bmk (bmkp-get-tags bmk))))
-         (and btgs  (bmkp-some
-                     #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                     btgs)))))))
+         (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) btgs)))))))
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-bookmark "icicles-cmd1.el")

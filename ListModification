@@ -76,6 +76,21 @@ both list1 and list2 remain unchanged:
 The gamma cell is shared between all three lists.
 There is no more reference to the beta cell and it will eventually be garbage collected.
 
+== remove ==
+
+To delete elements of a list without modifying the original list, use `remove' instead of `delete'.  It returns a copy of the original list with elements elided.  See the source code of `remove' and see it is implemented using `copy-sequence' and `delete'.
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+ 
+ ELISP> (setq list2 (remove 'beta list1))
+ (alpha gamma)
+ 
+ ELISP> (setq list3 (remove 'alpha list1))
+ (beta gamma)
+
+The same pattern applies for `delq' and `remq' as for `delete' and `remove' except they use `eq' for comparisons instead of `equal'.
+
 == add-to-list ==
 
 `add-to-list' works by side-effect (ie. not FunctionalProgramming).

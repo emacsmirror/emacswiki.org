@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 09:20:29 2011 (-0800)
+;; Last-Updated: Mon Apr 25 10:34:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 563
+;;     Update #: 582
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -24,19 +24,24 @@
 ;;
 ;;    Enhancements of standard library `files.el'.
 ;;
+;;  Commands defined here:
+;;
+;;    `dired-describe-listed-directory',
+;;    `dired-mouse-describe-listed-directory',
+;;
 ;;
 ;;  ***** NOTE: The following functions defined in `files.el' have been
 ;;              REDEFINED HERE:
 ;;
+;;  `display-buffer-other-frame' - Use `read-buffer'.
+;;                                 Do not select the buffer.
 ;;  `find-file-read-args' - In Dired, use file at cursor as default.
 ;;  `insert-directory' - Add file count in Dired for each dir listed.
+;;  `switch-to-buffer-other-frame'  - Use `read-buffer'.
+;;                                    Return the buffer switched to.
 ;;  `switch-to-buffer-other-window' -
 ;;     Use `read-buffer'.
 ;;     Raise frame of selected window (for non-nil `pop-up-frames').
-;;  `switch-to-buffer-other-frame'  - Use `read-buffer'.
-;;                                    Return the buffer switched to.
-;;  `display-buffer-other-frame' - Use `read-buffer'.
-;;                                 Do not select the buffer.
 ;;
 ;;  Load this library after loading the standard library `files.el'.
 ;;  However, if you use MS Windows, MS-DOS, or MacOS, then you will
@@ -54,6 +59,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/25 dadams
+;;     Removed: describe-file, dired(-mouse)-describe-file.
+;;     dired-list-directory: raise error if describe-file not defined.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defmacro and commands.
 ;; 2010/09/29 dadams
@@ -675,13 +683,14 @@ and `..'."
 (defun dired-describe-listed-directory ()
   "In Dired, describe the current listed directory."
   (interactive)
+  (unless (fboundp 'describe-file)
+    (error "This command needs `describe-file' from library `help-fns+.el'"))
   (let ((dirname (save-excursion
                    (forward-line -1)
                    (skip-syntax-forward " ")
                    (buffer-substring
                     (point)
-                    (save-excursion (end-of-line) (1- (point))))))) ; Up to colon.
-    
+                    (save-excursion (end-of-line) (1- (point))))))) ; Up to colon.    
     (describe-file dirname)))
 
 ;;;###autoload
@@ -693,68 +702,8 @@ and `..'."
     (goto-char (posn-point (event-end event)))
     (dired-describe-listed-directory)))
 
-;;;###autoload
-(defun dired-describe-file ()
-  "In Dired, describe this file or directory."
-  (interactive)
-  (describe-file (dired-get-filename nil t)))
 
-;;;###autoload
-(defun dired-mouse-describe-file (event)
-  "Describe the clicked file."
-  (interactive "e")
-  (let (file)
-    (save-excursion
-      (set-buffer (window-buffer (posn-window (event-end event))))
-      (goto-char (posn-point (event-end event)))
-      (setq file (dired-get-filename nil t)))
-    (describe-file file)))
 
-;; This is the same definition as in `help-fns+.el' and `help+20.el'.
-;;;###autoload
-(defun describe-file (filename)
-  "Describe the file named FILENAME.
-If FILENAME is nil, describe the current directory."
-  (interactive "FDescribe file: ")
-  (unless filename (setq filename default-directory))
-  (help-setup-xref (list #'describe-file filename) (interactive-p))
-  (let ((attrs (file-attributes filename)))
-    (unless attrs (error(format "Cannot open file `%s'" filename)))
-    (let* ((type            (nth 0 attrs))
-           (numlinks        (nth 1 attrs))
-           (uid             (nth 2 attrs))
-           (gid             (nth 3 attrs))
-           (last-access     (nth 4 attrs))
-           (last-mod        (nth 5 attrs))
-           (last-status-chg (nth 6 attrs))
-           (size            (nth 7 attrs))
-           (permissions     (nth 8 attrs))
-           ;; Skip 9: t iff file's gid would change if file were deleted
-           ;; and recreated.
-           (inode           (nth 10 attrs))
-           (device          (nth 11 attrs))
-           (help-text
-            (concat
-             (format "Properties of `%s':\n\n" filename)
-             (format "Type:                       %s\n"
-                     (cond ((eq t type) "Directory")
-                           ((stringp type) (format "Symbolic link to `%s'" type))
-                           (t "Normal file")))
-             (format "Permissions:                %s\n" permissions)
-             (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
-             (format-time-string
-              "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
-             (format-time-string
-              "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
-             (format-time-string
-              "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
-             (format "Number of links:            %d\n" numlinks)
-             (format "User ID (UID):              %s\n" uid)
-             (format "Group ID (GID):             %s\n" gid)
-             (format "Inode:                      %S\n" inode)
-             (format "Device number:              %s\n" device))))
-      (with-output-to-temp-buffer "*Help*" (princ help-text))
-      help-text)))                      ; Return displayed text.
 
 
 

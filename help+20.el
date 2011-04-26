@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Thu Mar 31 07:38:18 2011 (-0700)
+;; Last-Updated: Mon Apr 25 17:41:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2104
+;;     Update #: 2111
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/25 dadams
+;;     describe-file: Incorporate autofile bookmark description.  Added optional arg.
 ;; 2011/03/31 dadams
 ;;     help-var-(matches|inherits)-type-p: Wrap string-match with save-match-data.
 ;; 2011/01/04 dadams
@@ -885,13 +887,18 @@ before you call this function."
     (nreverse new)))
 
 ;;;###autoload
-(defun describe-file (filename)
+(defun describe-file (filename &optional internal-form-p)
   "Describe the file named FILENAME.
-If FILENAME is nil, describe the current directory."
-  (interactive "FDescribe file: ")
+If FILENAME is nil, describe current directory (`default-directory').
+If FILENAME is the name of an autofile bookmark and you use library
+`Bookmark+', then show also the bookmark information (tags etc.).  In
+this case, a prefix arg shows the internal form of the bookmark."
+  (interactive "FDescribe file: \nP")
   (unless filename (setq filename default-directory))
-  (help-setup-xref (list #'describe-file filename) (interactive-p))
-  (let ((attrs (file-attributes filename)))
+  (help-setup-xref `(describe-file ,filename ,internal-form-p) (interactive-p))
+  (let ((attrs  (file-attributes filename))
+        ;; Functions `bmkp-*' are defined in `bookmark+.el'.
+        (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
     (unless attrs (error(format "Cannot open file `%s'" filename)))
     (let* ((type            (nth 0 attrs))
            (numlinks        (nth 1 attrs))
@@ -902,14 +909,13 @@ If FILENAME is nil, describe the current directory."
            (last-status-chg (nth 6 attrs))
            (size            (nth 7 attrs))
            (permissions     (nth 8 attrs))
-           ;; Skip 9: t iff file's gid would change if file were deleted
-           ;; and recreated.
+           ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
            (inode           (nth 10 attrs))
            (device          (nth 11 attrs))
            (help-text
             (concat
-             (format "Properties of `%s':\n\n" filename)
-             (format "Type:                       %s\n"
+             (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
+             (format "File Type:                       %s\n"
                      (cond ((eq t type) "Directory")
                            ((stringp type) (format "Symbolic link to `%s'" type))
                            (t "Normal file")))
@@ -926,7 +932,16 @@ If FILENAME is nil, describe the current directory."
              (format "Group ID (GID):             %s\n" gid)
              (format "Inode:                      %S\n" inode)
              (format "Device number:              %s\n" device))))
-      (with-output-to-temp-buffer "*Help*" (princ help-text))
+      (with-output-to-temp-buffer "*Help*"
+        (when bmk
+          (if internal-form-p
+              (let* ((bname     (bookmark-name-from-full-record bmk))
+                     (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s"
+                                        bname   (make-string (+ 11 (length bname)) ?-)
+                                        (pp-to-string bmk))))
+                (princ bmk-defn) (terpri) (terpri))
+            (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
+        (princ help-text))
       help-text)))                      ; Return displayed text.
 
 ;;;###autoload

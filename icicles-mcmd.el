@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 16:54:56 2011 (-0700)
+;; Last-Updated: Mon Apr 25 19:31:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16862
+;;     Update #: 16878
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4234,8 +4234,7 @@ Optional arg CAND non-nil means it is the candidate to act on."
                ;; (icicle-last-completion-candidate  icicle-last-completion-candidate) ; $$$$$$
                ;; (icicle-completion-candidates  icicle-completion-candidates)         ; $$$$$$
                )
-           (when icicle-completion-candidates
-             (funcall fn-var icicle-last-completion-candidate)))
+           (when icicle-completion-candidates (funcall fn-var icicle-last-completion-candidate)))
          (when (or icicle-use-candidates-only-once-flag
                    (and altp icicle-use-candidates-only-once-alt-p))
            (icicle-remove-candidate-display-others 'all))
@@ -4726,7 +4725,8 @@ You can use this command only from the minibuffer or *Completions*
            ;; If buffer or file, describe its properties.  Otherwise, create symbol and get its help.
            (cond ((and (bufferp (get-buffer transformed-cand))
                        (with-current-buffer transformed-cand (describe-mode) t)))
-                 ((file-exists-p transformed-cand) (icicle-describe-file transformed-cand))
+                 ((file-exists-p transformed-cand) (icicle-describe-file transformed-cand
+                                                                         current-prefix-arg))
                  (t (icicle-help-on-candidate-symbol (intern transformed-cand))))))
     ;;$$$ (icicle-raise-Completions-frame)
 
@@ -4760,26 +4760,33 @@ You can use this command only from the minibuffer or *Completions*
          (setq symb  (symbol-name symb)) ; Convert symbol to string, and try some more.
          (cond ((and (bufferp (get-buffer symb))
                      (with-current-buffer (get-buffer symb) (describe-mode) t)))
-               ((file-exists-p symb) (icicle-describe-file symb))
+               ((file-exists-p symb) (icicle-describe-file symb current-prefix-arg))
                (t (icicle-msg-maybe-in-minibuffer "No help"))))))
 
 ;; This is the same as `describe-file' in `help-fns+.el', but we avoid requiring that library.
 ;; This is a top-level command, but we put it here to avoid library require cycles.
 (if (and (not (fboundp 'icicle-describe-file)) (fboundp 'describe-file))
     (defalias 'icicle-describe-file (symbol-function 'describe-file))
-  (defun icicle-describe-file (filename) ; Suggestion: bind to `C-h M-f'.
+  (defun icicle-describe-file (filename &optional internal-form-p) ; Suggestion: bind to `C-h M-f'.
     "Describe the file named FILENAME.
-If FILENAME is nil, describe the current directory.
+If FILENAME is nil, describe current directory (`default-directory').
 
-Starting with Emacs 22, if the file is an image file and you have
-command-line tool `exiftool' installed and in your `$PATH' or
-`exec-path', then EXIF data (metadata) about the image is included.
-See standard Emacs library `image-dired.el' for more information about
-`exiftool'."
-    (interactive "FDescribe file: ")
+Starting with Emacs 22, if the file is an image file then:
+ * Show a thumbnail of the image as well.
+ * If you have command-line tool `exiftool' installed and in your
+   `$PATH' or `exec-path', then show EXIF data (metadata) about the
+   image.  See standard Emacs library `image-dired.el' for more
+   information about `exiftool'.
+
+If FILENAME is the name of an autofile bookmark and you use library
+`Bookmark+', then show also the bookmark information (tags etc.).  In
+this case, a prefix arg shows the internal form of the bookmark."
+    (interactive "FDescribe file: \nP")
     (unless filename (setq filename default-directory))
-    (help-setup-xref (list #'icicle-describe-file filename) (interactive-p))
-    (let ((attrs (file-attributes filename)))
+    (help-setup-xref `(icicle-describe-file ,filename ,internal-form-p) (interactive-p))
+    (let ((attrs (file-attributes filename))
+          ;; Functions `bmkp-*' are defined in `bookmark+.el'.
+          (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
       (unless attrs (error(format "Cannot open file `%s'" filename)))
       (let* ((type            (nth 0 attrs))
              (numlinks        (nth 1 attrs))
@@ -4830,7 +4837,7 @@ See standard Emacs library `image-dired.el' for more information about
                                      (error nil))))
              (help-text
               (concat
-               (format "Properties of `%s':\n\n" filename)
+               (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
                (format "File Type:                       %s\n"
                        (cond ((eq t type) "Directory")
                              ((stringp type) (format "Symbolic link to `%s'" type))
@@ -4849,14 +4856,22 @@ See standard Emacs library `image-dired.el' for more information about
                (format "Inode:                      %S\n" inode)
                (format "Device number:              %s\n" device)
                image-info)))
-        (with-output-to-temp-buffer "*Help*" (princ help-text))
-        (when thumb-string
-          (with-current-buffer "*Help*"
-            (save-excursion
-              (goto-char (point-min))
-              (let ((buffer-read-only  nil))
-                (when (re-search-forward "Device number:.+\n" nil t) (insert thumb-string))))))
-        help-text))))                   ; Return displayed text.
+        (with-output-to-temp-buffer "*Help*"
+          (when bmk (if internal-form-p
+              (let* ((bname     (bookmark-name-from-full-record bmk))
+                     (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s"
+                                        bname   (make-string (+ 11 (length bname)) ?-)
+                                        (pp-to-string bmk))))
+                (princ bmk-defn) (terpri) (terpri))
+            (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
+        (princ help-text))
+      (when thumb-string
+        (with-current-buffer "*Help*"
+          (save-excursion
+            (goto-char (point-min))
+            (let ((buffer-read-only  nil))
+              (when (re-search-forward "Device number:.+\n" nil t) (insert thumb-string))))))
+      help-text))))                   ; Return displayed text.
 
 ;; This is the same as `help-all-exif-data' in `help-fns+.el', but we avoid requiring that library.
 (defun icicle-all-exif-data (file)

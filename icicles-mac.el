@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  9 16:24:06 2011 (-0700)
+;; Last-Updated: Mon Apr 25 19:42:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 573
+;;     Update #: 576
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -260,6 +260,8 @@ created after the others."
     (icicle-transform-function                   'icicle-remove-dups-if-extras)
     (icicle-sort-comparer                        (or icicle-file-sort icicle-sort-comparer))
     (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
+    (icicle-candidate-help-fn                    (lambda (cand)
+                                                   (icicle-describe-file cand current-prefix-arg)))
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
     (icicle-all-candidates-list-alt-action-fn

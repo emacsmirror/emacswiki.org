@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Apr 24 16:58:34 2011 (-0700)
+;; Last-Updated: Mon Apr 25 15:27:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2053
+;;     Update #: 2077
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1452,7 +1452,7 @@ Non-nil VISITS means record it as the `visits' entry."
          (fcrs     (when regionp (bmkp-end-position-pre-context beg end)))
          (ecrs     (when regionp (bmkp-end-position-post-context end))))
     `(,@(unless no-file
-                `((filename . ,(cond ((buffer-file-name (current-buffer))
+                `((filename . ,(cond ((buffer-file-name)
                                       (bookmark-buffer-file-name))
                                      (dired-p  nil)
                                      (t        bmkp-non-file-filename)))))
@@ -4871,8 +4871,10 @@ you are prompted only for a bookmark-name prefix.  In that case, the
 bookmark name is the prefix followed by the URL."
   (interactive
    (list (if (require 'ffap nil t)
-             (ffap-read-file-or-url "URL: " (or (thing-at-point 'url) (url-get-url-at-point)))
-           (read-file-name "URL: " nil (or (thing-at-point 'url) (url-get-url-at-point))))
+             (ffap-read-file-or-url "URL: " (or (thing-at-point 'url)  (and (fboundp 'url-get-url-at-point)
+                                                                           (url-get-url-at-point))))
+           (read-file-name "URL: " nil (or (thing-at-point 'url)  (and (fboundp 'url-get-url-at-point)
+                                                                       (url-get-url-at-point)))))
          current-prefix-arg
          (if current-prefix-arg
              (read-string "Prefix for bookmark name: ")
@@ -4896,7 +4898,8 @@ bookmark name is the prefix followed by the URL."
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file.
 Interactively you are prompted for FILE.  Completion is available.
-Use `M-n' to pick up the file name at point as the default.
+Use `M-n' to pick up the file name at point, or if none the visited
+file, as the default.
 
 You are also prompted for the bookmark name.  But with a prefix arg,
 you are prompted only for a bookmark-name prefix.  In that case, the
@@ -4912,8 +4915,7 @@ that has the same name."
                                  (run-hook-with-args-until-success 'file-name-at-point-functions)
                                (ffap-guesser))
                              (thing-at-point 'filename)
-                             (thing-at-point 'url)
-                             (url-get-url-at-point)))
+                             (buffer-file-name)))
          current-prefix-arg
          (if current-prefix-arg
              (read-string "Prefix for bookmark name: ")
@@ -4957,7 +4959,9 @@ The bookmarked position will be the beginning of the file."
 (defun bmkp-autofile-set (file &optional dir prefix msgp) ; Bound to `C-x p c a'
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
-Interactively, you are prompted for FILE.
+Interactively, you are prompted for FILE.  Use `M-n' to pick up the
+file name at point, or if none the visited file, as the default.
+
 The bookmark name is the non-directory part of FILE, but with a prefix
 arg you are also prompted for a PREFIX string to prepend to the
 bookmark name.  The bookmarked position is the beginning of the file.
@@ -4984,8 +4988,7 @@ file names."
                                  (run-hook-with-args-until-success 'file-name-at-point-functions)
                                (ffap-guesser))
                              (thing-at-point 'filename)
-                             (thing-at-point 'url)
-                             (url-get-url-at-point)))
+                             (buffer-file-name)))
          nil
          (and current-prefix-arg (read-string "Prefix for bookmark name: "))
          'MSG))
@@ -5035,9 +5038,13 @@ FILE, if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
 ;;;###autoload
 (defun bmkp-autofile-add-tags (file tags &optional dir prefix msgp no-cache-update-p)
   "Add TAGS to autofile bookmark for FILE.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag.  Completion is lax: you are
-not limited to existing tags.
+Interactively, you are prompted for FILE and then TAGS.
+When prompted for FILE you can use `M-n' to pick up the file name at
+point, or if none the visited file, as the default.
+
+When prompted for tags, hit `RET' to enter each tag, then hit `RET'
+again after the last tag.  You can use completion to enter each tag.
+Completion is lax: you are not limited to existing tags.
 
 TAGS is a list of strings. DIR, PREFIX are as for `bmkp-autofile-set'.
 Non-nil MSGP means display a message about the addition.
@@ -5049,8 +5056,7 @@ Return the number of tags added."
                                  (run-hook-with-args-until-success 'file-name-at-point-functions)
                                (ffap-guesser))
                              (thing-at-point 'filename)
-                             (thing-at-point 'url)
-                             (url-get-url-at-point)))
+                             (buffer-file-name)))
          (bmkp-read-tags-completing)
          nil
          (and current-prefix-arg (read-string "Prefix for bookmark name: "))
@@ -5062,11 +5068,16 @@ Return the number of tags added."
 ;;;###autoload
 (defun bmkp-autofile-remove-tags (file tags &optional dir prefix msgp no-cache-update-p)
   "Remove TAGS from autofile bookmark for FILE.
-Hit `RET' to enter each tag to be removed, then hit `RET' again after
-the last tag.  You can use completion to enter each tag.
-
+Interactively, you are prompted for TAGS and then FILE.
 With Emacs 22 and later, only files with at least one of the given
 tags are candidates.
+
+When prompted for tags, hit `RET' to enter each tag to be removed,
+then hit `RET' again after the last tag.  You can use completion to
+enter each tag.
+
+When prompted for FILE you can use `M-n' to pick up the file name at
+point, or if none the visited file, as the default.
 
 TAGS is a list of strings. DIR, PREFIX are as for `bmkp-autofile-set'.
 Non-nil MSGP means display a message about the addition.
@@ -5082,8 +5093,7 @@ Return the number of tags removed."
                               (run-hook-with-args-until-success 'file-name-at-point-functions)
                             (ffap-guesser))
                           (thing-at-point 'filename)
-                          (thing-at-point 'url)
-                          (url-get-url-at-point))
+                          (buffer-file-name))
                       t nil
                       (lambda (ff)      ; PREDICATE - only for Emacs 22+.
                         (let* ((bmk   (bmkp-get-autofile-bookmark ff nil pref))
@@ -5097,8 +5107,7 @@ Return the number of tags removed."
                            "File: " nil
                            (or (ffap-guesser)
                                (thing-at-point 'filename)
-                               (thing-at-point 'url)
-                               (url-get-url-at-point)))))))
+                               (buffer-file-name)))))))
      (list fil tgs nil pref 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix) tags msgp no-cache-update-p))
 
@@ -5318,7 +5327,14 @@ creates autonamed bookmarks to all `occur' and `multi-occur' hits."
 (defun bmkp-describe-bookmark (bookmark &optional defn)
   "Describe BOOKMARK.
 With a prefix argument, show the internal definition of the bookmark.
-BOOKMARK is a bookmark name or a bookmark record."
+BOOKMARK is a bookmark name or a bookmark record.
+
+Starting with Emacs 22, if the file is an image file then:
+* Show a thumbnail of the image as well.
+* If you have command-line tool `exiftool' installed and in your
+  `$PATH' or `exec-path', then show EXIF data (metadata) about the
+  image.  See standard Emacs library `image-dired.el' for more
+  information about `exiftool'"
   (interactive (list (bookmark-completing-read
                       "Describe bookmark"
                       (or (and (fboundp 'bmkp-default-lighted) (bmkp-default-lighted))
@@ -5356,15 +5372,16 @@ BOOKMARK is a bookmark name or a bookmark record."
               (replace-match image-string)))))
       help-text)))
 
-(defun bmkp-bookmark-description (bookmark)
+(defun bmkp-bookmark-description (bookmark &optional no-image)
   "Help-text description of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
-
-Starting with Emacs 22, if the file is an image file and you have
-command-line tool `exiftool' installed and in your `$PATH' or
-`exec-path', then EXIF data (metadata) about the image is included.
-See standard Emacs library `image-dired.el' for more information about
-`exiftool'."
+Starting with Emacs 22 and unless optional arg NO-IMAGE is non-nil, if
+the file is an image file then the description includes the following:
+* A placeholder for a thumbnail image: \"@#%&()_IMAGE-HERE_()&%#@\"
+* EXIF data (metadata) about the image, provided you have command-line
+  tool `exiftool' installed and in your `$PATH' or `exec-path'.  See
+  standard Emacs library `image-dired.el' for more information about
+  `exiftool'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (let ((bname            (bookmark-name-from-full-record bookmark))
         (buf              (bmkp-get-buffer-name bookmark))
@@ -5452,7 +5469,8 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
              (and created (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
              (and tags    (format "Tags:\t\t\t%S\n" tags))
              (and annot   (format "\nAnnotation:\n%s" annot))
-             (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+             (and (not no-image)
+                  (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
                   (if (fboundp 'string-match-p)
                       (string-match-p (image-file-name-regexp) file)
                     (save-match-data
@@ -5461,7 +5479,8 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                   (require 'image-dired nil t)
                   (image-dired-get-thumbnail-image file)
                   (concat "\n@#%&()_IMAGE-HERE_()&%#@" file "\n"))
-             (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+             (and (not no-image)
+                  (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
                   (if (fboundp 'string-match-p)
                       (string-match-p (image-file-name-regexp) file)
                     (save-match-data

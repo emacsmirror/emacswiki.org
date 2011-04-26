@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Thu Mar 31 07:42:11 2011 (-0700)
+;; Last-Updated: Mon Apr 25 17:42:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 483
+;;     Update #: 499
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -72,6 +72,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/25 dadams
+;;     describe-file: Incorporate autofile bookmark description.  Added optional arg.
 ;; 2011/03/31 dadams
 ;;     help-var-(matches|inherits)-type-p: Wrap string-match with save-match-data.
 ;; 2011/03/17 dadams
@@ -1068,19 +1070,26 @@ before you call this function."
     (nreverse new)))
 
 ;;;###autoload
-(defun describe-file (filename)
+(defun describe-file (filename &optional internal-form-p)
   "Describe the file named FILENAME.
-If FILENAME is nil, describe the current directory.
+If FILENAME is nil, describe current directory (`default-directory').
 
-Starting with Emacs 22, if the file is an image file and you have
-command-line tool `exiftool' installed and in your `$PATH' or
-`exec-path', then EXIF data (metadata) about the image is included.
-See standard Emacs library `image-dired.el' for more information about
-`exiftool'."
-  (interactive "FDescribe file: ")
+Starting with Emacs 22, if the file is an image file then:
+ * Show a thumbnail of the image as well.
+ * If you have command-line tool `exiftool' installed and in your
+   `$PATH' or `exec-path', then show EXIF data (metadata) about the
+   image.  See standard Emacs library `image-dired.el' for more
+   information about `exiftool'.
+
+If FILENAME is the name of an autofile bookmark and you use library
+`Bookmark+', then show also the bookmark information (tags etc.).  In
+this case, a prefix arg shows the internal form of the bookmark."
+  (interactive "FDescribe file: \nP")
   (unless filename (setq filename default-directory))
-  (help-setup-xref (list #'describe-file filename) (interactive-p))
-  (let ((attrs (file-attributes filename)))
+  (help-setup-xref `(describe-file ,filename ,internal-form-p) (interactive-p))
+  (let ((attrs  (file-attributes filename))
+        ;; Functions `bmkp-*' are defined in `bookmark+.el'.
+        (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
     (unless attrs (error(format "Cannot open file `%s'" filename)))
     (let* ((type            (nth 0 attrs))
            (numlinks        (nth 1 attrs))
@@ -1105,16 +1114,16 @@ See standard Emacs library `image-dired.el' for more information about
                                  (apply #'propertize "XXXX"
                                         `(display ,(append (image-dired-get-thumbnail-image filename)
                                                            '(:margin 10))
-                                          rear-nonsticky (display)
-                                          mouse-face highlight
-                                          follow-link t
-                                          help-echo "`mouse-2' or `RET': Show full image"
-                                          keymap
-                                          (keymap
-                                           (mouse-2 . (lambda (e) (interactive "e")
-                                                              (find-file ,filename)))
-                                           (13 . (lambda () (interactive)
-                                                         (find-file ,filename))))))))
+                                                  rear-nonsticky (display)
+                                                  mouse-face highlight
+                                                  follow-link t
+                                                  help-echo "`mouse-2' or `RET': Show full image"
+                                                  keymap
+                                                  (keymap
+                                                   (mouse-2 . (lambda (e) (interactive "e")
+                                                                      (find-file ,filename)))
+                                                   (13 . (lambda () (interactive)
+                                                                 (find-file ,filename))))))))
            (image-info      (and (require 'image-dired nil t)
                                  (fboundp 'image-file-name-regexp)
                                  (if (fboundp 'string-match-p)
@@ -1131,7 +1140,7 @@ See standard Emacs library `image-dired.el' for more information about
                                    (error nil))))
            (help-text
             (concat
-             (format "Properties of `%s':\n\n" filename)
+             (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
              (format "File Type:                       %s\n"
                      (cond ((eq t type) "Directory")
                            ((stringp type) (format "Symbolic link to `%s'" type))
@@ -1150,7 +1159,16 @@ See standard Emacs library `image-dired.el' for more information about
              (format "Inode:                      %S\n" inode)
              (format "Device number:              %s\n" device)
              image-info)))
-      (with-output-to-temp-buffer "*Help*" (princ help-text))
+      (with-output-to-temp-buffer "*Help*"
+        (when bmk
+          (if internal-form-p
+              (let* ((bname     (bookmark-name-from-full-record bmk))
+                     (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s"
+                                        bname   (make-string (+ 11 (length bname)) ?-)
+                                        (pp-to-string bmk))))
+                (princ bmk-defn) (terpri) (terpri))
+            (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
+        (princ help-text))
       (when thumb-string
         (with-current-buffer "*Help*"
           (save-excursion

@@ -215,6 +215,27 @@ impossible to limit the line length to 80 chars.
 -- PeterD
 
 
+John; yes, it looks like just commenting a few parts out doesn't work.  I've looked at it a bit more, and wrote a simple version of that function from scratch, which so far seems to work pretty well:
+
+ ;;load cperl, then work around indent issue
+ (load-library "cperl-mode")
+ (defun cperl-backward-to-start-of-continued-exp (lim)
+   (goto-char (1+ lim))
+   (forward-sexp)
+   (beginning-of-line)
+   (skip-chars-forward " \t")
+ )
+
+Peter; it looks like the more args you put on a line, the farther it indents; i.e. 
+
+	$img_ebox->signal_connect (
+		'button-press-event', 
+		sub {
+			my $bt = $_[1]->button;
+			$mnu->popup(undef,undef,undef,undef,$bt, 0) if $bt == 3;
+		});
+
+--SteveSanbeg
 
 ----
 CategoryIndentation
