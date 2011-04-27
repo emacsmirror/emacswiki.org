@@ -1,4 +1,4 @@
-This is the technique i've used to allow multiple shells making changes to ShellMode. With this i
+This is the technique i've used to allow multiple shells making changes to ShellMode. For a different approach see ShellCurrentDirectory. With this i
 can have a shell for each directory i work in and have a history for
 all the commands related to work done in that directory.
 

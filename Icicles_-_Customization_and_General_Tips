@@ -41,9 +41,13 @@ to turn ''Icicle'' mode off, then on again.
 
 
 
+
+
+
+
 === Icicles User Options and Faces ===
 
-There are several user options (user [[variable]]s) and [[face]]s that '''Icicles''' defines, and you can also
+There are many user options (user [[variable]]s) and several [[face]]s that '''Icicles''' defines, and you can also
 use various standard Emacs user options, including IcompleteMode options,
 that control various aspects of completion.
 
@@ -57,6 +61,38 @@ Here are screenshots of the '''Icicles''' and '''Customize''' submenus of the Em
 
 
 [[image:DrewsEmacsIciclesOptionsCustomizeMenu]]
+
+
+
+
+
+
+
+One thing that can be important to understand is that if you
+customize an option, and if the default value of that option
+changes later in a more recent Icicles version, then your
+customization will preclude your taking advantage of any new
+features represented by that default option value.
+
+This is important particularly for complex options such as
+'''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.  Taking that option as an
+example, if '''Icicles''' later adds more commands with default key
+bindings then you will not see those bindings if you have a
+customized value of `icicle-top-level-key-bindings'.  There is
+nothing wrong with that; I just want you to be aware of it.
+
+In general, it can be a good idea to look at the latest change-log
+entry for ##icicles-opt.el## in <tt>[[icicles-chg.el]]</tt>, to see what changes
+have been made.  If you then want to take advantage of some
+change, you can use `M-x customize option' and visually compare
+your customized value with the new default value in
+<tt>[[icicles-opt.el]]</tt>, then edit your customized value as you like.
+
+
+
+
+
+
 
 ----
 [:icicle-mode-hook]

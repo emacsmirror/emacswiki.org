@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  9 17:13:59 2011 (-0700)
+;; Last-Updated: Tue Apr 26 15:06:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22857
+;;     Update #: 22858
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,7 +18,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `cl', `cus-edit', `cus-face',
+;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `bookmark+-mac', `cl', `cus-edit', `cus-face',
 ;;   `cus-load', `cus-start', `custom', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
 ;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
@@ -269,7 +271,7 @@
 ;;    `icicle-save-string-to-variable', `icicle-search',
 ;;    `icicle-search-all-tags-bookmark',
 ;;    `icicle-search-all-tags-regexp-bookmark',
-;;    `icicle-search-bookmark',
+;;    `icicle-search-autofile-bookmark', `icicle-search-bookmark',
 ;;    `icicle-search-bookmark-list-bookmark',
 ;;    `icicle-search-bookmark-list-marked',
 ;;    `icicle-search-bookmarks-together', `icicle-search-buffer',

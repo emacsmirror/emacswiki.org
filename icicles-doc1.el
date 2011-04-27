@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 31 08:39:51 2011 (-0700)
+;; Last-Updated: Tue Apr 26 16:29:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25854
+;;     Update #: 25880
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -323,7 +323,7 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Setting a Bookmark and Jumping to a Bookmark")
 ;;    (@file :file-name "icicles-doc2.el" :to "Jumping to a Bookmark")
 ;;    (@file :file-name "icicles-doc2.el" :to "Searching Bookmarked Objects")
-;;  (@file :file-name "icicles-doc2.el" :to "Icicles Tags Enhancements")
+;;  (@file :file-name "icicles-doc2.el" :to "Icicles Enhancements for Emacs Tags")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-find-tag': Find Tags in All Tags Tables")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-find-first-tag': Find First Tag in Current Table")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-tags-search': Search and Replace Using Tags")
@@ -4458,9 +4458,18 @@
 ;;
 ;;  Here are some of the Icicles tripping commands:
 ;;
+;;  * Trips among tagged files (delicious-style tagging - requires
+;;    library `bookmark+.el').
+;;    (Use prefix key `C-x 4 j' for other-window commands.)
+;;    `icicle-find-file-all-tags'                (`C-x j t a *')
+;;    `icicle-find-file-all-tags-regexp'         (`C-x j t a % *')
+;;    `icicle-find-file-some-tags'               (`C-x j t a +')
+;;    `icicle-find-file-some-tags-regexp'        (`C-x j t a % +')
+;;
 ;;  * `icicle-bookmark-other-window' - (`C-- C-x r m')
 ;;    Trip among bookmarks of all types.  (Also bound to `C-x 4 j j'
 ;;    if library `bookmark+.el' is used.)
+;;
 ;;  * Type-specific bookmark trips (requires library `bookmark+.el').
 ;;    (Use prefix key `C-x 4 j' for other-window commands.)
 ;;    `icicle-bookmark-non-file'                 (`C-x j b')
@@ -4488,6 +4497,7 @@
 ;;    `icicle-bookmark-this-buffer'              (`C-x j .')
 ;;    `icicle-bookmark-specific-buffers'         (`C-x j = b')
 ;;    `icicle-bookmark-specific-files'           (`C-x j = f')
+;;
 ;;  * `icicle-buffer' (`C-x b')        - Trip among buffers
 ;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits
 ;;  * `icicle-dired'                   - Trip among directories
@@ -4567,7 +4577,7 @@
 ;;    about `icicle-find-file', `icicle-find-file-absolute',
 ;;    `icicle-find-file-in-tags-table', `icicle-locate-file', and
 ;;    `icicle-recent-file'.
-;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Tags Enhancements")
+;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Enhancements for Emacs Tags")
 ;;    for information about `icicle-find-first-tag' and
 ;;    `icicle-find-tag'.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Bookmark Enhancements")
@@ -5912,6 +5922,10 @@
 ;;    Dired buffer that contains only the matching files.  You are
 ;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
 ;;
+;;  In many cases for Icicles multi-commands that read a file name,
+;;  you can use `M-n' to pick up the file name at point, or if none
+;;  then the name of the file you are currently visiting.
+;;
 ;;  Note: Whether a command supports file-name globbing wildcards such
 ;;  as `*' is independent of whether it uses `read-file-name' or
 ;;  `completing-read'.  It is the command itself that offers such
@@ -6022,9 +6036,9 @@
 ;;
 ;;  Commands `icicle-find-file-in-tags-table' and
 ;;  `icicle-find-file-in-tags-table-other-window' let you visit files
-;;  that are listed in the current tags table.  You can think of these
-;;  potential completion candidates as all of the files in a project
-;;  defined by the tags table.
+;;  that are listed in the current Emacs tags table.  You can think of
+;;  these potential completion candidates as all of the files in a
+;;  project defined by the tags table.
 ;;
 ;;  You can use `icicle-recent-file' to open any file that you have
 ;;  visited recently, perhaps in a previous Emacs session.
@@ -6466,6 +6480,10 @@
 ;;    `C-M->' (save current candidates)
 ;;
 ;;  * (@> "Dealing With Large Candidate Sets")
+;;
+;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Bookmark Enhancements")
+;;    for information about using autofile bookmarks, which are
+;;    another form of persistent file names
  
 ;;(@* "Dealing With Large Candidate Sets")
 ;;

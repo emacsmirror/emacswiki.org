@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  9 17:10:31 2011 (-0700)
+;; Last-Updated: Tue Apr 26 15:09:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2644
+;;     Update #: 2664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,7 @@
 ;;    (+)`icicle-regexp-list', `icicle-save-string-to-variable',
 ;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
+;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-bookmark',
 ;;    (+)`icicle-search-bookmark-list-bookmark',
 ;;    `icicle-search-bookmark-list-marked',
@@ -3030,18 +3031,35 @@ the resulting regexp is usable for `icicle-search'." ; Doc string
 ;;;###autoload (autoload 'icicle-search-bookmark "icicles-cmd2.el")
 (icicle-define-command icicle-search-bookmark ; Command name
   "Search bookmarked text.
-If you use library `bookmark+.el', and a bookmark specifies a nonempty
-region, then search only the text in that region.
-
 See also `icicle-search-bookmarks-together', which searches bookmarks
 together instead of one at a time.
 
-1. Enter a context regexp, to define the possible search-hit contexts.
-2. Choose a bookmark using completion.  It is opened.
+1. Enter a context regexp (using `RET'), to define the possible
+   search-hit contexts.
+2. Choose a bookmark using completion.  It is opened/visited/handled.
 3. (Optional) Type some text to be matched in the search contexts.
 4. Navigate to matches (search hits) using `C-next' etc.
 5. Finish with that bookmark using `RET' (stay) or `C-g' (skip).
-6. (Optional) Repeat steps 2-5 for other bookmarks." ; Doc string
+6. (Optional) Repeat steps 2-5 for other bookmarks.
+
+If you use library `bookmark+.el' then:
+
+a. If a bookmark specifies a nonempty region, then search only the text
+  in that region.
+
+b. The candidate bookmarks are those in the current `*Bookmark List*'
+  display (list `bmkp-sorted-alist', to be precise).  This means that
+  you can limit the candidates to bookmarks of a certain type (e.g.,
+  only autofiles, using `A S'), bookmarks with certain tags (e.g.,
+  those with tags matching a regexp using `T m %' followed by `>'),
+  and so on.
+
+\(b) provides you with a great deal of flexibility.  However, for your
+convenience, if you use `bookmark+.el' then Icicles also provides some
+special-purpose commands for searching the content of bookmarks of
+various types.  For example, `icicle-search-autofile-bookmark'
+searches autofiles.  And you can define your own such commands using
+macro `icicle-define-search-bookmark-command'." ; Doc string
   icicle-search-bookmark-action         ; Action function
   prompt icicle-candidates-alist nil (not icicle-show-multi-completion-flag) ; `completing-read' args
   nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
@@ -3301,6 +3319,7 @@ command")))
 ;; The following sexps macro-expand to define these commands:
 ;;  `icicle-search-all-tags-bookmark'
 ;;  `icicle-search-all-tags-regexp-bookmark'
+;;  `icicle-search-autofile-bookmark'
 ;;  `icicle-search-bookmark-list-bookmark'
 ;;  `icicle-search-desktop-bookmark'
 ;;  `icicle-search-dired-bookmark'
@@ -3322,6 +3341,7 @@ command")))
 
 (icicle-define-search-bookmark-command "all-tags" nil (bmkp-read-tags-completing))
 (icicle-define-search-bookmark-command "all-tags-regexp" nil (bmkp-read-tags-completing))
+(icicle-define-search-bookmark-command "autofile")
 (icicle-define-search-bookmark-command "bookmark-list")
 (icicle-define-search-bookmark-command "desktop")
 (icicle-define-search-bookmark-command "dired")

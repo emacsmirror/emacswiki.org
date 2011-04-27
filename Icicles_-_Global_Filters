@@ -58,7 +58,9 @@ Variables `icicle-must-pass-predicate' and
 `icicle-must-pass-after-match-predicate' act the same: they filter
 display candidates.  The former filters before the current user
 input is matched.  The latter filters after matching -- it is
-applied only to candidates that match.  Neither is like the
+applied only to candidates that match.
+
+Neither is like the
 ##PREDICATE## argument to `completing-read' in that they do not act on
 full candidates (e.g. alist entries) -- they apply only to display
 candidates (strings).
@@ -70,6 +72,21 @@ only the candidate name (it does not make any use of the full
 candidate) then it can sometimes be more efficient to pass `nil' as
 the ##PREDICATE## and use `icicle-must-pass-after-match-predicate'
 instead.
+
+Here's a gotcha to keep in mind if you use
+'''`icicle-must-pass-predicate'''' or
+'''`icicle-must-pass-after-match-predicate'''' with (non-absolute)
+file-name candidates: Since the candidate file names have no
+directory part, in many cases you will want to test the candidate
+expanded relative to the directory shown in the minibuffer.  One
+way to do this is as follows:
+
+    (setq file  (expand-file-name file
+                 (icicle-file-name-directory-w-default
+                   (icicle-input-from-minibuffer))))
+
+This gotcha is nothing new -- the same applies for standard Emacs function
+`read-file-name', but it is still worth pointing out.
 
 Variable `icicle-extra-candidates' is not really a "filter".  It
 does not ''restrict'' the set of possible candidates -- rather, it

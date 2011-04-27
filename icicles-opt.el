@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  5 14:26:42 2011 (-0700)
+;; Last-Updated: Tue Apr 26 08:06:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4258
+;;     Update #: 4272
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3224,6 +3224,32 @@ toggle Icicle mode off and then back on."
 
     ;; These are available only if you use library `bookmark+.el'.
     ;;
+    (bmkp-tag-a-file
+     icicle-tag-a-file   (fboundp 'bmkp-tag-a-file))                           ; `C-x p t + a'
+    (bmkp-untag-a-file
+     icicle-untag-a-file (fboundp 'bmkp-untag-a-file))                         ; `C-x p t - a'
+    (bmkp-find-file-all-tags
+     icicle-find-file-all-tags (fboundp 'bmkp-find-file-all-tags))             ; `C-x j t a *'
+    (bmkp-find-file-all-tags-other-window
+     icicle-find-file-all-tags-other-window
+     (fboundp 'bmkp-find-file-all-tags))                                       ; `C-x 4 j t a *'
+    (bmkp-find-file-all-tags-regexp
+     icicle-find-file-all-tags-regexp
+     (fboundp 'bmkp-find-file-all-tags-regexp))                                ; `C-x j t a % *'
+    (bmkp-find-file-all-tags-regexp-other-window
+     icicle-find-file-all-tags-regexp-other-window
+     (fboundp 'bmkp-find-file-all-tags-regexp-other-window))                   ; `C-x 4 j t a % *'
+    (bmkp-find-file-some-tags
+     icicle-find-file-some-tags (fboundp 'bmkp-find-file-some-tags))           ; `C-x j t a +'
+    (bmkp-find-file-some-tags-other-window
+     icicle-find-file-some-tags-other-window
+     (fboundp 'bmkp-find-file-some-tags-other-window))                         ; `C-x 4 j t a +'
+    (bmkp-find-file-some-tags-regexp
+     icicle-find-file-some-tags-regexp
+     (fboundp 'bmkp-find-file-some-tags-regexp))                               ; `C-x j t a % +'
+    (bmkp-find-file-some-tags-regexp-other-window
+     icicle-find-file-some-tags-regexp-other-window
+     (fboundp 'bmkp-find-file-some-tags-regexp-other-window))                  ; `C-x 4 j t a % +'
     ;;   (Other-window means nothing for a bookmark list or a desktop.)
     (bmkp-bookmark-list-jump
      icicle-bookmark-bookmark-list (fboundp 'bmkp-bookmark-list-jump))         ; `C-x j B'

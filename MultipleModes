@@ -1,5 +1,9 @@
 Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
+= multi-web-mode.el =
+
+Auto select major mode for HTML files when point is moving around. Check updates at [https://github.com/fgallina/multi-web-mode github]. Written by FabianGallina.
+
 = mumamo.el =
 
 MuMaMo (short for multiple major modes) needs Emacs 22 or later. It is distributed as part of [NxhtmlMode nXhtml] and can mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP. It can also support NxmlMode (however this works best with Emacs 23).

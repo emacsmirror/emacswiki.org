@@ -19,6 +19,12 @@ One of the main '''Bookmark+''' enhancements is support for new bookmark
 types.  '''Icicles''' provides type-specific bookmark commands and
 bookmark-candidate filtering.
 
+In addition, when you [[completion|complete]] the names of some kinds of objects,
+you can use '''`C-x m'''' to choose objects of that type.  For example,
+when you use `icicle-dired' (`C-x d') to complete a directory
+name, you can use `C-x m' to choose among your [[Dired]] bookmarks.
+See [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].
+
 Regardless of the bookmark type, another '''Bookmark+''' feature that
 '''Icicles''' takes advantage of is the fact that a bookmark (any
 bookmark) can save not only a single position but a ''[[region]]'', that
@@ -28,17 +34,23 @@ is activated (if [[option]] '''`bmkp-use-region'''' is non-`nil').
 
 These are the main '''Icicles''' bookmarking features:
 
+* Tagging files (a la [[http://delicious.com|delicious]]) and jumping to tagged files
 * Bookmarking the region and selecting a bookmarked region
 * Setting a bookmark and jumping to a bookmark
 * Searching the text of a bookmark's buffer or region
 
-Each is described in more detail below.
+Each is described in a little more detail below.  More generally,
+however, the '''Bookmark+''' doc is your friend.  See these sections of
+the '''Bookmark+''' doc:
 
-In addition, when you [[completion|complete]] the names of some kinds of objects,
-you can use '''`C-x m'''' to choose objects of that type.  For example,
-when you use `icicle-dired' (`C-x d') to complete a directory
-name, you can use `C-x m' to choose among your Dired bookmarks.
-See [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].
+* [[BookmarkPlus#BookmarkTags|Bookmark Tags]]
+* [[BookmarkPlus#AutofileBookmarks|Autofile Bookmarks]]
+* [[BookmarkPlus#TagCommandsAndKeys|Tag Commands and Keys]]
+* [[BookmarkPlus#BookmarkTagSets|Tags: Sets of Bookmarks]]
+* [[BookmarkPlus#TagsAsAttributes|Bookmark Tags Can Have Values]]
+
+
+
 
 
 
@@ -145,7 +157,7 @@ indicate the bookmark type.  The faces used are those defined by
 If option  '''`<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'''' is non-`nil', then
 each completion candidate is a [[multi-completion]], with up to three
 parts: the bookmark ''name'', the bookmark ''file or buffer'' name, and
-any ([[http://delicious.com|del.icio.us]]-style) ''tags'' the bookmark has.  You can toggle
+any ([[http://delicious.com|delicious]]-style) ''tags'' the bookmark has.  You can toggle
 option `icicle-show-multi-completion-flag' (for the next command)
 using '''`M-m'''' during completion.
 
@@ -202,13 +214,16 @@ candidates to bookmarks of a specific ''type'' using these keys:
 * '''`C-M-f'''' -- '''<u>f</u>'''ile bookmarks
 * '''`C-M-F'''' -- local-'''<u>F</u>'''ile bookmarks
 * '''`C-M-g'''' -- '''<u>g</u>'''nus bookmarks
-* '''`C-M-i'''' -- '''<u>i</u>'''nfo bookmarks
+* '''`C-M-I'''' -- '''<u>I</u>'''nfo bookmarks
 * '''`C-M-K'''' -- des'''<u>K</u>'''top bookmarks
 * '''`C-M-m'''' -- '''<u>m</u>'''an' pages
 * '''`C-M-r'''' -- bookmarks with '''<u>r</u>'''egions
 * '''`C-M-u'''' -- '''<u>u</u>'''rl bookmarks
 * '''`C-M-w'''' -- '''<u>w</u>'''3m bookmarks
 * '''`##C-M-@##'''' -- remote-file bookmarks
+* '''`##C-M-= b##'''' -- bookmarks for a specific '''<u>b</u>'''uffer
+* '''`##C-M-= f##'''' -- bookmarks for a specific '''<u>f</u>'''ile
+* '''`##C-M-= .##'''' -- bookmarks for the current buffer ('''`##.##'''' as in UNIX "here": current location)
 
 In addition, there are individual ''jump'' commands for bookmarks of
 each of each type, and these commands are bound by default to keys
@@ -277,7 +292,9 @@ commands, you can use the following '''Icicles''' search commands that
 are specific to bookmarks:
 
 * '''`icicle-search-bookmark''''
+* '''`icicle-search-autofile-bookmark''''
 * '''`icicle-search-bookmark-list-bookmark''''
+* '''`icicle-search-desktop-bookmark''''
 * '''`icicle-search-dired-bookmark''''
 * '''`icicle-search-file-bookmark''''
 * '''`icicle-search-gnus-bookmark''''
@@ -287,14 +304,37 @@ are specific to bookmarks:
 * '''`icicle-search-non-file-bookmark''''
 * '''`icicle-search-region-bookmark''''
 * '''`icicle-search-remote-file-bookmark''''
+* '''`icicle-search-specific-buffers-bookmark''''
+* '''`icicle-search-specific-files-bookmark''''
+* '''`icicle-search-this-buffer-bookmark''''
 * '''`icicle-search-url-bookmark''''
+* '''`icicle-search-w3m-bookmark''''
+* '''`icicle-search-all-tags-bookmark''''
+* '''`icicle-search-all-tags-regexp-bookmark''''
+* '''`icicle-search-some-tags-bookmark''''
+* '''`icicle-search-some-tags-regexp-bookmark''''
 
-All of these except `icicle-search-bookmark' act only on bookmarks
-of a specific type.  But all of them act the same way.  They are
-multi-commands, so you can use them to search multiple bookmarks.
+`icicle-search-bookmark' is a general command; the others are each
+specific to a certain kind of bookmark candidate, and they need
+library '''[[Bookmark+]]'''.  The last four let you search bookmarks
+that have a certain set of tags.
+
+All of these commands act the same way.  They are
+[[multi-command]]s, so you can use them to search multiple bookmarks.
 But unlike `icicle-search-bookmarks-together' (`##C-u C-c `##'), you
 do not first choose all of the bookmarks and then search them
 together.  Instead, you search them ''one at a time''.
+
+`icicle-search-bookmark' is flexible, letting you specify any set
+of bookmarks to use as candidates.  The candidates are the
+bookmarks last shown in the `##*Bookmark List*##' display (list
+`bmkp-sorted-alist', to be precise).
+
+You can use the '''Bookmark+''' features of `##*Bookmark List*##' to limit
+the candidates to bookmarks of a certain type (e.g., only
+autofiles, using `##A S##'), bookmarks with certain tags (e.g., only
+those with tags matching a [[regexp]] using `##T m %##' followed by `##>##'), and so on.  Whatever set of bookmarks are shown (or were last
+shown) in `##*Bookmark List*##' are the bookmarks to be searched.
 
 
 '''See Also:'''

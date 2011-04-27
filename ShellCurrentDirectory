@@ -1,3 +1,5 @@
-This package allows you to create a new shell based on the buffer directory.
+This package allows you to create a multiple shells based on the directory of the current buffer.
 
-Get it from http://github.com/metaperl/emacs.
+Get it from https://github.com/metaperl/shell-current-directory
+
+or via EDAN: https://github.com/metaperl/edan

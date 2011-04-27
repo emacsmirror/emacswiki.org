@@ -99,3 +99,24 @@ which solved my problem.
 
 -- Jeff
 
+----
+
+Even with (setq sr-speedbar-skip-other-window-p t) in .emacs file, the behavior of delete-other-windows is still weird in current  version of sr-speedbar.el. In detail, suppose 2 windows opened, in either of them ^ X 1, there is still chance to select the SPEEDBAR window to be active, which is not usually the user want -- the user want the original window be selected. After some experiment, I come up with following elisp code to further advice delete-other-windows not to select the SPEEDBAR window.
+
+{{{
+(defadvice delete-other-windows (after my-sr-speedbar-delete-other-window-advice activate)
+  "Check whether we are in speedbar, if it is, jump to next window."
+  (let ()
+	(when (and (sr-speedbar-window-exist-p sr-speedbar-window)
+               (eq sr-speedbar-window (selected-window)))
+      (other-window 1)
+	)))
+(ad-enable-advice 'delete-other-windows 'after 'my-sr-speedbar-delete-other-window-advice)
+(ad-activate 'delete-other-windows)
+}}}
+
+just place them after the elisp lines you use to load sr-speedbar.
+
+-- liyu1981
+
+

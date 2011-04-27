@@ -270,6 +270,11 @@ use them, just retrieve them from this variable with `##C-M-<##'.
 * LocateFilesAnywhere for other, '''''non'''''-persistent ways to locate files.
 
 
+* [[Icicles - Bookmark Enhancements]] for information about using autofile bookmarks, which are another form of persistent file names
+
+
+
+
 ----
 
 

@@ -36,6 +36,11 @@ Dired buffer that contains ''only'' the matching files.  You are
 prompted for the Dired buffer name.  See [[Icicles - More About Multi-Commands#AlternativeActions|Alternative Actions]].
 
 
+In many cases for '''Icicles''' multi-commands that read a file name,
+you can use '''`M-n'''' to pick up the file name at [[point]], or if none
+then the name of the file you are currently visiting.
+
+
 '''Note:''' Whether a command supports file-name ''globbing wildcards''
 such as `##*##' is independent of whether it uses `read-file-name' or
 `completing-read'.  It is the command itself that offers such
@@ -45,6 +50,11 @@ the commands mentioned in this section) let you use globbing wildcards.  Remembe
 its special wildcards, has nothing to do with regexp completion
 matching. See [[Icicles - Special Characters in Input Patterns]] for more
 information about file-name globbing.
+
+
+
+
+
 
 
 
@@ -84,6 +94,10 @@ is sufficient to use either `foo' or `/some/path/to/my/foo'.
 
 
 
+
+
+
+
 [:completing-read]
 [:absolute file-name completion]
 === Function `completing-read' ===
@@ -101,6 +115,10 @@ portion.  This means that you can match against ''any part'' of the
 full name, including any ''directory'' components.  The directory
 portions of the candidate file names need not be the same -- you
 can thus complete against a set of files in ''multiple'' directories.
+
+
+
+
 
 
 
@@ -150,7 +168,7 @@ using face `icicle-special-candidate'.
 
 Commands '''`icicle-find-file-in-tags-table'''' and
 '''`icicle-find-file-in-tags-table-other-window'''' let you visit files
-that are listed in the current [[TagsFile|tags table]].  You can think of these
+that are listed in the current Emacs [[TagsFile|tags table]].  You can think of these
 potential completion candidates as all of the files in a ''project
 defined by the tags table''.
 

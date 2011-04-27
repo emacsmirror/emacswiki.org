@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 25 18:01:12 2011 (-0700)
+;; Last-Updated: Tue Apr 26 07:52:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21850
+;;     Update #: 21879
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3436,14 +3436,20 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
       (icicle-bookmark-cleanup))))
 
 ;;;###autoload (autoload 'icicle-tag-a-file "icicles-cmd1.el")
-(icicle-define-file-command icicle-tag-a-file ; Command
+(icicle-define-file-command icicle-tag-a-file ; `C-x p t + a'
   "Tag a file (an autofile bookmark) with one or more tags.
-You are prompted for the tags to add.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file.
+
 The tags are added to an autofile bookmark for the same file name and
 directory.  If the bookmark does not yet exist it is created.
-Candidate help shows information about:
- The file's autofile bookmark, if it already exists, or
- The file itself, if not."
+Candidate help shows information about the file's autofile bookmark if
+it already exists, or the file itself if not."
   (lambda (file) (bmkp-autofile-add-tags file tags nil nil 'MSG))
   "File to tag: " nil nil nil nil nil   ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
@@ -3451,9 +3457,16 @@ Candidate help shows information about:
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command"))) ; First sexp
 
 ;;;###autoload (autoload 'icicle-untag-a-file "icicles-cmd1.el")
-(icicle-define-file-command icicle-untag-a-file ; Command
+(icicle-define-file-command icicle-untag-a-file ; `C-x p t - a'
   "Remove one or more tags from a file (an autofile bookmark).
-You are prompted for the tags to remove.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file.
+
 The tags are removed from an autofile bookmark for the same file name
 and directory.  During file-name completion, only files tagged with
 all of the given input tags are completion candidates."
@@ -3481,9 +3494,16 @@ all of the given input tags are completion candidates."
 ;;; (`icicle-must-pass-after-match-predicate').
 
 ;;;###autoload (autoload 'icicle-find-file-all-tags "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-all-tags
+(icicle-define-file-command icicle-find-file-all-tags ; `C-x j t a *'
   "Visit a file or directory that has all of the tags you enter.
-This is otherwise like `icicle-find-file'."
+This is otherwise like `icicle-find-file'.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
@@ -3505,7 +3525,7 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-all-tags-other-window "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-all-tags-other-window
+(icicle-define-file-command icicle-find-file-all-tags-other-window ; `C-x 4 j t a *'
   "`icicle-find-file-all-tags', but in another window."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
@@ -3528,8 +3548,10 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command"))) ; First sexp
 
 ;;;###autoload (autoload 'icicle-find-file-all-tags-regexp "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-all-tags-regexp
-  "Visit a file or directory that has each tag matching a regexp you enter."
+(icicle-define-file-command icicle-find-file-all-tags-regexp ; `C-x j t a % *'
+  "Visit a file or directory that has each tag matching a regexp you enter.
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
@@ -3552,7 +3574,7 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-all-tags-regexp-other-window
+(icicle-define-file-command icicle-find-file-all-tags-regexp-other-window ; `C-x 4 j t a % *'
   "`icicle-find-file-all-tags-regexp', but in another window."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
@@ -3576,9 +3598,16 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-some-tags "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-some-tags
+(icicle-define-file-command icicle-find-file-some-tags ; `C-x j t a +'
   "Visit a file or directory that has at least one of the tags you enter.
-This is otherwise like `icicle-find-file'."
+This is otherwise like `icicle-find-file'.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
@@ -3600,7 +3629,7 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-some-tags-other-window "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-some-tags-other-window
+(icicle-define-file-command icicle-find-file-some-tags-other-window ; `C-x 4 j t a +'
   "`icicle-find-file-some-tags', but in another window."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
@@ -3623,8 +3652,10 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command"))) ; First sexp
 
 ;;;###autoload (autoload 'icicle-find-file-some-tags-regexp "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-some-tags-regexp
-  "Visit a file or directory that has a tag matching a regexp you enter."
+(icicle-define-file-command icicle-find-file-some-tags-regexp ; `C-x j t a % +'
+  "Visit a file or directory that has a tag matching a regexp you enter.
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
@@ -3647,7 +3678,7 @@ This is otherwise like `icicle-find-file'."
   (unless (featurep 'bookmark+) (error "You need library Bookmark+ for this command")))
 
 ;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd1.el")
-(icicle-define-file-command icicle-find-file-some-tags-regexp-other-window
+(icicle-define-file-command icicle-find-file-some-tags-regexp-other-window ; `C-x 4 j t a % +'
   "`icicle-find-file-some-tags-regexp', but in another window."
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)

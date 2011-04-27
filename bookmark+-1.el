@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr 25 15:27:17 2011 (-0700)
+;; Last-Updated: Tue Apr 26 07:34:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2077
+;;     Update #: 2084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3592,10 +3592,9 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Return non-nil if BOOKMARK's filename is the current (absolute) file name.
 BOOKMARK is a bookmark name or a bookmark record."
   (let ((bmk-file   (bookmark-get-filename bookmark))
-        (this-file  (or (buffer-file-name)
-                        (and (eq major-mode 'dired-mode)  (if (consp dired-directory)
-                                                              (car dired-directory)
-                                                            dired-directory)))))
+        (this-file  (or (buffer-file-name)  (and (eq major-mode 'dired-mode)  (if (consp dired-directory)
+                                                                                  (car dired-directory)
+                                                                                dired-directory)))))
     (and bmk-file (equal bmk-file this-file))))
 
 (defun bmkp-last-specific-buffer-p (bookmark)
@@ -4898,8 +4897,8 @@ bookmark name is the prefix followed by the URL."
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file.
 Interactively you are prompted for FILE.  Completion is available.
-Use `M-n' to pick up the file name at point, or if none the visited
-file, as the default.
+You can use `M-n' to pick up the file name at point, or if none then
+the visited file.
 
 You are also prompted for the bookmark name.  But with a prefix arg,
 you are prompted only for a bookmark-name prefix.  In that case, the
@@ -4959,8 +4958,8 @@ The bookmarked position will be the beginning of the file."
 (defun bmkp-autofile-set (file &optional dir prefix msgp) ; Bound to `C-x p c a'
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
-Interactively, you are prompted for FILE.  Use `M-n' to pick up the
-file name at point, or if none the visited file, as the default.
+Interactively, you are prompted for FILE.  You can use `M-n' to pick
+up the file name at point, or if none then the visited file.
 
 The bookmark name is the non-directory part of FILE, but with a prefix
 arg you are also prompted for a PREFIX string to prepend to the
@@ -5040,7 +5039,7 @@ FILE, if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
   "Add TAGS to autofile bookmark for FILE.
 Interactively, you are prompted for FILE and then TAGS.
 When prompted for FILE you can use `M-n' to pick up the file name at
-point, or if none the visited file, as the default.
+point, or if none then the visited file.
 
 When prompted for tags, hit `RET' to enter each tag, then hit `RET'
 again after the last tag.  You can use completion to enter each tag.
@@ -5077,7 +5076,7 @@ then hit `RET' again after the last tag.  You can use completion to
 enter each tag.
 
 When prompted for FILE you can use `M-n' to pick up the file name at
-point, or if none the visited file, as the default.
+point, or if none then the visited file.
 
 TAGS is a list of strings. DIR, PREFIX are as for `bmkp-autofile-set'.
 Non-nil MSGP means display a message about the addition.

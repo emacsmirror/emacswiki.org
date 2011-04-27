@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 25 19:48:41 2011 (-0700)
+;; Last-Updated: Tue Apr 26 15:26:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6396
+;;     Update #: 6404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -389,6 +389,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/04/26 dadams
+;;     Added: icicle-search-autofile-bookmark.
 ;; 2011/04/12 dadams
 ;;     Added: icicle-search-bookmark-list-marked, icicle-named-colors.
 ;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
@@ -4482,6 +4484,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/04/26 dadams
+;;     icicle-top-level-key-bindings:
+;;       Added icicle-(un)tag-a-file, icicle-find-file-(all|some)-tags-*.
+;;       If you have customized it, re-customize it from scratch or you will miss the new bindings.
 ;; 2011/04/02 dadams
 ;;     NOTE: IF you customized icicle-top-level-key-bindings and you use Bookmark+, then you will want
 ;;           to REMOVE THAT CUSTOMIZATION AND CUSTOMIZE AGAIN.  Otherwise, you will miss Icicles

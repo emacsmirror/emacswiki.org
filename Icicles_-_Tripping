@@ -73,8 +73,12 @@ navigate.
 [:icicle-dired]
 [:icicle-find-file]
 [:icicle-find-file-absolute]
+[:icicle-find-file-all-tags]
+[:icicle-find-file-all-tags-regexp]
 [:icicle-find-file-in-tags-table]
 [:icicle-find-file-read-only]
+[:icicle-find-file-some-tags]
+[:icicle-find-file-some-tags-regexp]
 [:icicle-find-first-tag]
 [:icicle-find-tag]
 [:icicle-goto-global-marker]
@@ -116,6 +120,15 @@ navigate.
 [:icicle-select-window]
 
 Here are some of the '''Icicles''' tripping commands:
+
+* Trips among tagged files ([[http://delicious.com|delicious]]-style tagging -- requires library '''[[Bookmark+]]''').
+(Use prefix key `C-x 4 j' for other-window commands.)
+
+** '''`icicle-find-file-all-tags''''  ('''`##C-x j t a *##'''') -- Bookmarks that have all of a given set of tags
+** '''`icicle-find-file-all-tags-regexp''''     ('''`##C-x j t a % *##'''') -- Bookmarks all of whose tags match a [[regexp]]
+** '''`icicle-find-file-some-tags''''    ('''`##C-x j t a +##'''') -- Bookmarks that have at least one of a given set of tags
+** '''`icicle-find-file-some-tags-regexp''''   ('''`##C-x j t a % +##'''') -- Bookmarks that have at least one tag that matches a regexp
+
 
 * '''`icicle-bookmark-other-window'''' ('''`C-- C-x r m'''') -- Trip among [[bookmark]]s of all types.  (Also bound to '''`C-x 4 j j'''' if library <tt>[[bookmark+.el]]</tt> is used.)
 
