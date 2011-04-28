@@ -12,7 +12,7 @@ To activate, place this in your InitFile:
 
 Then do
 
-    M-x customize-group ido RET
+    M-x customize-group RET ido RET
 
 and configure ido-mode. Another good setting to enable is ido-enable-flex-matching.
 

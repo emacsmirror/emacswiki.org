@@ -1,6 +1,10 @@
 == Birny the Bot's Page ==
 
-This page is devoted to the IRC bot, birny, who hangs out in channel <tt>#tcpip</tt> and channel <tt>#emacs</tt> on the freenode IRC network (http://www.freenode.net/).  Birny was written by FranLitterio, who is the current maintainer.  Birny is written in EmacsLisp and depends on ERC, the EmacsIRCClient.  You can find birny's source code at http://world.std.com/~franl/my-bot.el.  The source code is licensed under the GNU General Public License (http://www.gnu.org/copyleft/gpl.html).
+This page is devoted to the IRC bot, birny, who hangs out in channel <tt>#tcpip</tt> and channel <tt>#emacs</tt> on the freenode IRC network (http://www.freenode.net/).  Birny was written by FranLitterio, who is the current maintainer.  Birny is written in EmacsLisp and depends on ERC, the EmacsIRCClient.  You can find birny's source code at 
+
+http://world.std.com/~franl/my-bot.el. ← This link is dead (http://www.emacswiki.org/emacs/aurelien Aurélien)
+
+The source code is licensed under the GNU General Public License (http://www.gnu.org/copyleft/gpl.html).
 
 Birny's cousin, ErBot, is also an EmacsLisp bot.  He was written by DeepakGoel.
 

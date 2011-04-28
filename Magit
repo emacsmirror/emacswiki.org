@@ -1,8 +1,8 @@
 Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame. Recently PhilJackson, of no particular fame, took over as maintainer.
 
-* Get it from: http://philjackson.github.com/magit/
-* Bugs to project page on github: http://github.com/philjackson/magit/issues
-* Manual: http://philjackson.github.com/magit/magit.html
+* Get it from: http://magit.github.com/magit/
+* Bugs to project page on github: http://github.com/magit/magit/issues
+* Manual: http://magit.github.com/magit/magit.html
 
 [new:RodrigoWanderley:dt jun  30 21:25:37 CEST 2008]
 Had to change magit-escape-for-shell to:

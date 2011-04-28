@@ -36,6 +36,10 @@ Now, from the ##Folder## buffer, use the command ##wl-folder-prefetch-current-en
 
 == Speed ==
 
+=== I am annoyed by emacs freezing whenever I use wl to send an email ===
+
+If you configured Wanderlust to use a 'smarthost' then, instead, configure a MTA (e.g., exim4) to talk to the smarthost. Then configure Wanderlust to use the local MTA: in your ##.wl## file, set ##wl-smtp-posting-server## to ##nil## and ##wl-local-domain## to ##gmail.com## (or whatever domain name is appropriate given the MTA configuration...).
+
 === When I update, Wanderlust is slow and spends a long time with the message "Updating marks..." ===
 
 If you only use Wanderlust to access a mailbox, you can set

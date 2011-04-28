@@ -13,9 +13,9 @@ To toggle graphical indication of the fill column in a buffer, use the command #
 
 The style of indication is controlled by the variable ##fci-style##.  The recognized values are ##'shading## and ##'rule## (the default value is ##'shading##).  Buffer-local values are supported.
 
-As of version 0.30, fci-mode should work on both graphical and character terminals.  Note that rule style will work differently on graphical and character terminals.  On the former, the rule is drawn using bitmap images; on the latter, it is drawn using textual characters (by default, it uses "|").
+The rule indicator can be customized by pixel width and color; the shading indicator can be customized by foreground and background color.  For these and other options, see the headers in the package file.
 
-For further customization options, as well as advice on troubleshooting, see the comments in the package file.
+As of version 0.30, fci-mode should work on both graphical and character terminals.  Note that rule style will work differently on graphical and character terminals.  On the former, the rule is drawn using bitmap images; on the latter, it is drawn using textual characters (by default, it uses "|").
 
 == See also ==
 
@@ -44,7 +44,7 @@ I've just spotted a small problem. In order to use with EmacsAsDaemon one needs 
 
 [new:AlpAker:2011-04-15 22:59 UTC]
 
-As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   The only problematic case is when someone invokes the mode when using emacsclient on a char terminal and then subsequently, while that buffer is still live, visits it using the same Emacs instance on a graphical terminal.  If that happens, the textual rule will be used on both displays.  (I imagine this sort of case arises with vanishing frequency, though.) --AA
+As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   --AA
 
 ===Problem using dabbrev-expand===
 [new]
@@ -111,6 +111,10 @@ This will probably be an issue with libraries other than paren.el, and I'm going
 [new]
 
 I can't comment on the how much of a hack this is, my elisp isn't that great :) But this does seem to fix the problem for me so far. I'll switch to using this at work after the weekend and see how I get on.
+
+[new:AlpAker:2011-04-27 23:50 UTC]
+
+(A few days later).  So far, every way I can think of to make the fill-column padding automatically pick up parenthesis highlighting will break support for character terminals.  So I've cleaned up the earlier hack and made it, for now, the Official Way We Do Things.   (Btw, you might want to look at [[mic-paren.el]], which I've found to be faster and more robust than paren.el.)
 
 ===From the (E-)Mailbag===
 
