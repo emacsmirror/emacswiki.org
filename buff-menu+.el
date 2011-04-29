@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Apr 22 09:30:17 2011 (-0700)
+;; Last-Updated: Thu Apr 28 08:50:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2670
+;;     Update #: 2693
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -141,6 +141,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/04/28 dadams
+;;     Buffer-menu-fontify-and-adjust-frame:
+;;       Fix bug introduced 2011-04-16: Do frame operations inside save-window-excursion.
 ;; 2011/04/22 dadams
 ;;     list-buffers-noselect: Removed (if buffer-list... around the dolist.
 ;; 2011/04/18 dadams
@@ -807,9 +810,12 @@ Click a column heading to sort by that field and update this option."
     (when (< emacs-major-version 21) (make-local-variable 'font-lock-defaults))
     (setq font-lock-defaults  '(buffer-menu-font-lock-keywords t))
     (turn-on-font-lock)
-    (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
-    (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
-    (raise-frame)))
+    (when (get-buffer-window (current-buffer) 'visible)
+      (save-window-excursion
+        (select-window (get-buffer-window (current-buffer) 'visible))
+        (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
+        (raise-frame)))
+    (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
 
 ;; Fontify buffer, then fit and raise its frame.
 (add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
@@ -1187,8 +1193,7 @@ Buffers can be so marked using commands `\\<Buffer-menu-mode-map>\
           (if (and buf (buffer-name buf))
               (progn (delete-char 1) (insert ? ))
             (delete-region (point) (progn (forward-line 1) (point)))
-            (unless (bobp)
-              (forward-char -1))))))))
+            (unless (bobp) (forward-char -1))))))))
 
 
 
@@ -1259,34 +1264,29 @@ Consecutive executions of the same COLUMN reverse the sort order."
     (if (equal Buffer-menu-sort-column column)
         (setq Buffer-menu-sort-column  (- column))
       (setq Buffer-menu-sort-column  column))
-    (let (buffer-read-only l buf m1 m2)
+    (let (buffer-read-only lll buf m1 m2)
       (save-excursion
         (Buffer-menu-beginning)
         (while (not (eobp))
-          (when (buffer-live-p (setq buf  (get-text-property (+ (point) Buffer-menu-buffer-column) 'buffer)))
+          (when (buffer-live-p
+                 (setq buf  (get-text-property (+ (point) Buffer-menu-buffer-column) 'buffer)))
             (setq m1  (char-after)
-                  m1  (if (memq m1 '(?> ?D)) m1)
+                  m1  (and (memq m1 '(?> ?D)) m1)
                   m2  (char-after (+ (point) 2))
-                  m2  (if (eq m2 ?S) m2))
-            (if (or m1 m2)
-                (push (list buf m1 m2) l)))
+                  m2  (and (eq m2 ?S) m2))
+            (when (or m1 m2) (push (list buf m1 m2) lll)))
           (forward-line)))
       (Buffer-menu-revert-function nil nil)
       (setq buffer-read-only  t)
       (save-excursion
         (Buffer-menu-beginning)
         (while (not (eobp))
-          (when (setq buf  (assq (get-text-property (+ (point) Buffer-menu-buffer-column) 'buffer) l))
+          (when (setq buf  (assq (get-text-property (+ (point) Buffer-menu-buffer-column) 'buffer)
+                                 lll))
             (setq m1  (cadr buf)
                   m2  (cadr (cdr buf)))
-            (when m1
-              (delete-char 1)
-              (insert m1)
-              (backward-char 1))
-            (when m2
-              (forward-char 2)
-              (delete-char 1)
-              (insert m2)))
+            (when m1 (delete-char 1) (insert m1) (backward-char 1))
+            (when m2 (forward-char 2) (delete-char 1) (insert m2)))
           (forward-line))))
     (message "Buffers are now sorted %s%s."
              (case (abs column)
@@ -1417,7 +1417,7 @@ For more information, see the function `buffer-menu'."
           ;; with two args (since ?\u is interpreted as ?u).
           (let ((underline  (eval-when-compile (if (> emacs-major-version 21) ?\u2014 ?-))))
             (insert header (apply 'string
-                                  (mapcar (lambda (c) (if (memq c '(?\n ?\ )) c underline))
+                                  (mapcar (lambda (ch) (if (memq ch '(?\n ?\ )) ch underline))
                                           header)))))
 ;;;;           (insert header (propertize "---" 'face 'fixed-pitch) " ")
 ;;;;           (insert (Buffer-menu-buffer+size "------" "----"))
@@ -1669,9 +1669,7 @@ or `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-execute]'."
   (forward-char 1)
   (if (looking-at " [-M]")              ;header lines
       (ding)
-    (let ((buffer-read-only  nil))
-      (delete-char 1)
-      (insert ?S)))
+    (let ((buffer-read-only  nil)) (delete-char 1) (insert ?S)))
   (beginning-of-line))
 
 ;;;###autoload
@@ -1685,9 +1683,7 @@ or `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-execute]'."
   (beginning-of-line)
   (if (looking-at " [-M]")              ;header lines
       (ding)
-    (let ((buffer-read-only  nil))
-      (delete-char 1)
-      (insert ?D)))
+    (let ((buffer-read-only  nil))  (delete-char 1) (insert ?D)))
   (beginning-of-line))
 
 ;;;###autoload
@@ -1730,9 +1726,7 @@ Buffers can be marked via commands `\\<Buffer-menu-mode-map>\
           (set-buffer (Buffer-menu-buffer t))
           (save-buffer)
           (setq modp  (buffer-modified-p)))
-        (let ((buffer-read-only  nil))
-          (delete-char -1)
-          (insert (if modp ?* ? ))))))
+        (let ((buffer-read-only  nil))  (delete-char -1) (insert (if modp ?* ? ))))))
   (save-excursion
     (Buffer-menu-beginning)
     (let ((buff-menu-buffer  (current-buffer))

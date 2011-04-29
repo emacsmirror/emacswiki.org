@@ -59,4 +59,10 @@ Is there any way to restore the behaviour mentioned in the changelog of having i
 
 Is there also a way to add or remove tracking of particular paren types?  I'm not so interested in having {} coloured but very keen on having () highlighted.
 ----
+[new]
+I am seeing the following behaviour:
+Rainbow-delimiters works fine, as long as I call it specifically using M-x rainbow-delimiters-mode. If its called by hook when entering clojure mode it highlights [] correctly but ignores () until after I type a delimiter of some kind. It then correctly highlights everything after the point where I inserted the new delimiter. Any () before that point stay black. 
+
+Also any nesting deeper than 12 levels doesn't get coloured. Is this expected behaviour? Could it be made to cycle indefinitely through the colours?
+----
 CategoryFaces CategoryModes ParenthesesAppearance

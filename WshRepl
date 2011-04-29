@@ -1,4 +1,4 @@
-wsh-repl is a Windows Scripting Host REPL.  Right now it is very alpha quality software.
+wsh-repl is a Windows Scripting Host REPL (Read-Eval-Print Loop, see http://en.wikipedia.org/wiki/REPL).  Right now it is very alpha quality software.
 
 Right now it offers VERY simple functionality, giving you a console into the windows scripting host from Emacs.  However, this can be used to script windows actions from within Emacs.
 
@@ -37,5 +37,6 @@ or
   REPL.getPrompt = function() { return "I AM GENIE!" };
 
 
+----
 
-
+CategoryRepl

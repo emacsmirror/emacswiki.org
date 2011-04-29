@@ -1,12 +1,60 @@
-It seems that I am the only Emacs user unlucky enough to be working on a VB project.  Well, VB.NET actually. That's not quite so evil.  I'm gradually adding support for VB.NET syntax to the aging visual-basic-mode.  Most VB.NET code should be parsed correctly now.  I don't know if it will still work with old VBA code, but this doesn't really matter as the name has changed to vbnet-mode.
-Offers of help will be gratefully accepted, I can be reached at timseal at gmail dot com.
+Download Lisp:vbnet-mode.el
 
-The code is at Lisp:vbnet-mode.el
- I will put comments in to make the changes more obvious soon.  
+= Intro =
 
------
+vbnet-mode.el is a mode for editing VB.NET.  It is based off of the venerable visual-basic-mode.el, originally created by Fred White in the mid 90's to handle "classic" VB code.  VB.NET is sufficiently different from "classic" VB that a distinct major mode is appropriate.
 
-2011-Feb-26
+
+= Installation instructions = 
+
+ Put vbnet-mode.el somewhere in your load path, optionally compile
+ it, and add the following to your .emacs file:
+
+   (autoload 'vbnet-mode "vbnet-mode" "Mode for editing VB.NET code." t)
+   (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|vb\\)$" .
+                                 vbnet-mode)) auto-mode-alist))
+
+ And optionally, add something like this to your .emacs file as well:
+
+   (defun my-vbnet-mode-fn ()
+     "My hook for VB.NET mode"
+     (interactive)
+     ;; This is an example only.
+     ;; These statements are not required to use VB.NET, but
+     ;; you might like them.
+     (turn-on-font-lock)
+     (turn-on-auto-revert-mode)
+     (setq indent-tabs-mode nil)
+     (require 'flymake)
+     (flymake-mode 1)
+     ...other mode-setup code here...
+   )
+   (add-hook 'vbnet-mode-hook 'my-vbnet-mode-fn)
+
+
+= Versions =
+
+=== 1.5c ===
+
+2011-April-06
+DinoChiesa
+
+Another update.  v1.5c. 
+
+Summary: 
+* imenu now works; jump to Class, Namespace, Structure, Property, Sub, Function, etc. 
+* corrected flymake integration
+* fixed indentation for .NET attributes eg, <DllImport>
+* fixed indentation of Subs/Functions with line continuations within the declaration.
+* New interactive fn, `vbnet-close-current-block', to insert the "End Class" or whatever is pending. 
+* New interactive fns, `vbnet-moveto-{beginning,end}-of-defun'
+
+
+
+
+=== older v1.5 ===
+
+2011-Feb-26 
 DinoChiesa
 
 I've just updated vbnet-mode.el to v1.5.  
@@ -34,47 +82,17 @@ here's a screen shot.
 
 http://imgur.com/OlY0e.png
 
-----
-
-2011-April-06
-DinoChiesa
-
-Another update.  v1.5c. 
-
-Summary: 
-* imenu now works; jump to Class, Namespace, Structure, Property, Sub, Function, etc. 
-* corrected flymake integration
-* fixed indentation for .NET attributes eg, <DllImport>
-* fixed indentation of Subs/Functions with line continuations within the declaration.
-* New interactive fn, `vbnet-close-current-block', to insert the "End Class" or whatever is pending. 
-* New interactive fns, `vbnet-moveto-{beginning,end}-of-defun'
 
 
-Installation instructions
+== Prior History ==
 
- Put vbnet-mode.el somewhere in your load path, optionally compile
- it, and add the following to your .emacs file:
+It seems that I am the only Emacs user unlucky enough to be working on a VB project.  Well, VB.NET actually. That's not quite so evil.  I'm gradually adding support for VB.NET syntax to the aging visual-basic-mode.  Most VB.NET code should be parsed correctly now.  I don't know if it will still work with old VBA code, but this doesn't really matter as the name has changed to vbnet-mode.
+Offers of help will be gratefully accepted, I can be reached at timseal at gmail dot com.
 
-   (autoload 'vbnet-mode "vbnet-mode" "Mode for editing VB.NET code." t)
-   (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|vb\\)$" .
-                                 vbnet-mode)) auto-mode-alist))
+The code is at Lisp:vbnet-mode.el
+ I will put comments in to make the changes more obvious soon.  
 
- And optionally, add something like this to your .emacs file as well:
 
-   (defun my-vbnet-mode-fn ()
-     "My hook for VB.NET mode"
-     (interactive)
-     ;; This is an example only.
-     ;; These statements are not required to use VB.NET, but
-     ;; you might like them.
-     (turn-on-font-lock)
-     (turn-on-auto-revert-mode)
-     (setq indent-tabs-mode nil)
-     (require 'flymake)
-     (flymake-mode 1)
-     ...other mode-setup code here...
-   )
-   (add-hook 'vbnet-mode-hook 'my-vbnet-mode-fn)
 
 ----
 
