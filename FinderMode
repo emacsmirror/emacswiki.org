@@ -1,8 +1,14 @@
 <code>C-h p</code> (or <code>M-x finder-by-keyword</code>) gives you a <code>finder-mode</code> buffer with lisp libraries shown under keyword categories, so you can look at say all the "games" related things.  Read more in Manual:finder-by-keyword.
 
-The libraries listed are only those which come with Emacs, not "site-lisp" or personal extras.  Advanced users can try <code>finder-compile-keywords</code> to make a new <code>finder-inf.el</code> with everything in your LoadPath.
+Selecting a library shows its commentary with FinderCommentary (which can be used directly too, and on anything in your LoadPath).
 
-Selecting a library shows its commentary with FinderCommentary (which can also be used directly too, and on anything in your LoadPath).
+The libraries listed come from <code>finder-inf.el</code>.  Normally it's only things supplied with Emacs, not `site-lisp' or personal extras.  Advanced users can try <code>finder-compile-keywords</code> to make a new <code>finder-inf.el</code> with everything in your LoadPath.
 
+
+'''See Also:'''
+* <tt>[[finder+.el]]</tt> -- extensions to standard library ##finder.el##: multiple commentary buffers, font-locking, syntax table
+* [http://user42.tuxfamily.org/finder-site-lisp-el/index.html finder-site-lisp-el] -- keep <code>finder-inf.el</code> updated on Debian
+
+ 
 ----
 CategoryDocumentation CategoryHelp

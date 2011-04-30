@@ -34,19 +34,68 @@ I believe I have explained most of the options below.
 
 (add-to-list 'load-path "~/.emacs.d/colortheme")
 (add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/erc")
 (add-to-list 'load-path "~/.emacs-local")
 
 (mouse-wheel-mode 1)
 (require 'bar-cursor)
 (bar-cursor-mode 1)
 
+;; Ruby - Electric Pairs
+(add-to-list 'load-path "~/.emacs-local/plugins/ruby")
+
+;; Inf ruby and other stuff - very cool get from here: http://svn.joyent.com/opensource/dtrace/ruby/ruby-1.8.5/misc/
+;; get all of it and copy to a directory in the load path. for me .emacs-local/plugins/ruby
+(autoload 'ruby-mode "ruby-mode"
+      "Mode for editing ruby source files" t)
+    (setq auto-mode-alist
+          (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
+    (setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
+    				     interpreter-mode-alist))
+
+(autoload 'run-ruby "inf-ruby"
+      "Run an inferior Ruby process")
+    (autoload 'inf-ruby-keys "inf-ruby"
+      "Set local key defs for inf-ruby in ruby-mode")
+    (add-hook 'ruby-mode-hook
+          '(lambda ()
+             (inf-ruby-keys)
+    ))
+
+(add-hook 'ruby-mode-hook (lambda () (local-set-key "\r" 'newline-and-indent)))
+
+(require 'ruby-electric)
+(add-hook 'ruby-mode-hook (lambda () (ruby-electric-mode t)))
+
+;; Rinari - super Ruby Mode.
+
+;; Interactively Do Things (highly recommended, but not strictly required)
+(require 'ido)
+(ido-mode t)
+
+;; Rinari
+(add-to-list 'load-path "~/.emacs-local/plugins/ruby/rinari")
+(require 'rinari)
+
+
+
+;; ERC 
+
+(require 'erc)
+
+;; Color Themes
+
 (require 'color-theme)
 (color-theme-initialize)
 (load-file "~/.emacs-local/color-theme-blackboard.el")
 (load-file "~/.emacs-local/color-theme-railscasts.el")
+(load-file "~/.emacs-local/color-theme-solarized.el")
+(load-file "~/.emacs-local/color-theme-sanityinc-solarized.el")
 ;(color-theme-ld-dark)
-(color-theme-railscasts)
+;(color-theme-railscasts)
 ;(color-theme-blackboard)
+(color-theme-sanityinc-solarized-dark)
+
 
 (scroll-bar-mode 0)
 
@@ -73,8 +122,8 @@ I believe I have explained most of the options below.
 (ac-config-default)
 
 
-;(require 'yasnippet)
-;(yas/initialize)
+(require 'yasnippet)
+(yas/initialize)
 
 
 ;;;;; python tricks from http://jesselegg.com/archives/2010/02/25/emacs-python-programmers-part-1/
@@ -107,5 +156,4 @@ I believe I have explained most of the options below.
 ;; Scroll smoothly
 (setq scroll-step 1000)
 (setq scroll-conservatively 1000)
-
 </pre>

@@ -75,6 +75,13 @@ I ran into the same problem.  I don't know why completion-ignored-extensions doe
 
 This has the larger effect of making autocomplete ignore all files and directories beginning with a dot ("."), which may or may not be desired.  The default value of completion-regexp-list is nil.
 
+[new]
+For help setting up Emacs to be used as Subversion's graphical merge tool via
+{{{
+ediff-merge-files-with-ancestor
+}}}
+please see the following blog post: http://bit.ly/m9ozZr
+
 ----
 CategoryVersionControl
 

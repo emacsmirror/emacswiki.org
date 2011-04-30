@@ -1,0 +1,16 @@
+<code>M-x unload-feature</code> will unload a elisp package.  It can be used to free up some memory, or occasionally to undo some add-on behaviour.  See [[Manual:Unloading]] for more.
+
+Quite how well unloading works in practice can be a bit variable.  A plain mode or set of a few commands is normally fine, anything fancy might not be setup to completely undo itself.
+
+== Lisp Authors ==
+
+A package can make a function <code>FEATURE-unload-function</code> to hook into the unloading, to take special action needed on unload.  Here's some things not otherwise done by <code>unload-feature</code>,
+
+* If you're a minor mode then turn it off in all buffers, since presumably when unloaded it won't do any good.
+
+* Remove any <code>defadvice</code> with <code>ad-remove-advice</code> plus <code>ad-activate</code> (see AdvisingFunctions), as presumably it's no longer wanted (and might even be harmful).
+
+For Emacs 21 which doesn't have the <code>-unload-function</code> mechanism, the alternative to removing <code>defadvice</code> is to defang the additions with a check of <code>boundp</code> or <code>featurep</code> or something so that if the rest of the package is unloaded they don't error out when left behind.
+
+----
+CategoryCode

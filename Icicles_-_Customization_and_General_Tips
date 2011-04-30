@@ -1376,10 +1376,16 @@ of `vc-directory-exclusion-list'.
 ==== Options icicle-buffer-sort, icicle-file-sort ====
 
 User option '''`icicle-buffer-sort'''' is a predicate used to sort
-buffer-name candidates in '''Icicles''' buffer commands, such as `icicle-buffer' and `icicle-insert-buffer'.  One possible
-value is `##icicle-buffer-sort-*...*-last##', which sorts names of
-internal buffers, which begin with `*', after other buffer
-names.  Option '''`icicle-file-sort'''' acts similarly for file-name completion.
+buffer-name candidates in '''Icicles''' buffer commands, such as `icicle-buffer' and `icicle-insert-buffer'.  Option '''`icicle-file-sort'''' acts similarly for file-name completion.
+The default value of `icicle-buffer-sort'
+is `##icicle-buffer-sort-*...*-last##', which sorts names of
+buffers that begin with `*' after other buffer names.  These options
+affect only the initial sort order used for buffer and file
+names, respectively, that is, the order used first in an Emacs
+session.  The values are also put first in the list of possible
+sort orders for cycling (via '''`##C-,##'''').
+
+
 
 ----
 [:icicle-buffer-configs]

@@ -22,10 +22,6 @@ to get the shortcuts for edit, preview and save to work. Thanks! -- ThomasAlexan
 [[HowToEdit]] page updated. On firefox, you use Alt-Shift-e.  -- [[sylecn]]
 
 
-== Performance Problems? ==
-
-I get the impression that something has impacted the performance.  Just getting this page open for editing too 45 sec, and for a code page in the Elisp area it can take several minutes.  This is new.  Maybe it's just today; dunno. Preview is as quick as ever, however.  -- DrewAdams
-
 
 
 
@@ -141,6 +137,19 @@ FYI -- It just happened to me again.  (I won't bother to signal it again, though
 [new:DrewAdams:2010-07-20 20:58 UTC]
 And again. -- DrewAdams
 
+
+[new:DrewAdams:2011-04-29 14:56 UTC]
+This is happening to me very often now -- in fact, most of the time when I click a link on the wiki.  -- DrewAdams
+
+[new:DrewAdams:2011-04-29 17:41 UTC]
+Actually, it is quite variable.  When it happens it happens a lot.  Right now it's not happening.  I wonder if it doesn't happen perhaps because of some extra load on the Apache server at certain times?  -- DrewAdams
+
+
+[new:DrewAdams:2011-04-29 17:42 UTC]
+Wow.  A soon as I wrote that it happened again. -- DrewAdams
+
+[new:AlexSchroeder:2011-04-29 20:30 UTC]
+Yeah, I can confirm this. In the last few days, the server has been acting up strangely. I wonder what's going on. I didn't change my config, so I'm assuming something beyond my control, though. – AlexSchroeder
 
 == Conflict from my own edit 25 minutes ago? ==
 

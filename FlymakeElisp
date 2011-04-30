@@ -48,8 +48,7 @@ If you don't want to create external command, use it.
 
 <pre>
 (defun flymake-elisp-init ()
-  (if (string-match "^ " (buffer-name))
-      nil
+  (unless (string-match "^ " (buffer-name))
     (let* ((temp-file   (flymake-init-create-temp-buffer-copy
                          'flymake-create-temp-inplace))
            (local-file  (file-relative-name
@@ -77,6 +76,7 @@ If you don't want to create external command, use it.
 (add-hook 'emacs-lisp-mode-hook
           ;; workaround for (eq buffer-file-name nil)
           (function (lambda () (if buffer-file-name (flymake-mode)))))
+)
 </pre>
 
 That's all.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 15:06:56 2011 (-0700)
+;; Last-Updated: Fri Apr 29 15:22:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22858
+;;     Update #: 22863
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1041,11 +1041,12 @@
 ;;    `icicle-anychar-regexp', `icicle-apply-nomsg',
 ;;    `icicle-apropos-complete-match-fn', `icicle-bookmark-history',
 ;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history', `icicle-candidate-action-fn',
-;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
-;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
-;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
-;;    `icicle-char-property-value-history',
+;;    `icicle-buffer-config-history',
+;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
+;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
+;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
+;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
+;;    `icicle-candidates-alist', `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -1082,10 +1083,10 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p', `icicle-file-menu-map',
-;;    `icicle-files', `icicle-filtered-default-value',
-;;    `icicle-font-name-history', `icicle-frame-alist',
-;;    `icicle-frame-name-history', `icicle-frames-menu-map',
-;;    `icicle-function-name-history',
+;;    `icicle-files', `icicle-file-sort-first-time-p',
+;;    `icicle-filtered-default-value', `icicle-font-name-history',
+;;    `icicle-frame-alist', `icicle-frame-name-history',
+;;    `icicle-frames-menu-map', `icicle-function-name-history',
 ;;    `icicle-fundoc-last-initial-cand-set',
 ;;    `icicle-general-help-string',
 ;;    `icicle-get-alist-candidate-function',
@@ -1116,13 +1117,14 @@
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-named-colors',
 ;;    `icicle-nb-candidates-before-truncation',
-;;    `icicle-nb-of-other-cycle-candidates',
+;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
 ;;    `icicle-old-read-file-name-fn', `icicle-options-menu-map',
 ;;    `icicle-orig-buff', `icicle-orig-buff-key-complete',
 ;;    `icicle-orig-extra-cands', `icicle-orig-font',
 ;;    `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-orig-must-pass-after-match-pred',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
 ;;    `icicle-orig-pt-explore', `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',

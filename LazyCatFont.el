@@ -7,9 +7,9 @@
   "The default font size.")
 
 ;; 英文字体
-(set-frame-font (format "%s-%s" (eval emacs-english-font) (eval emacs-font-size)))
+(set-frame-font (format "%s-%s" emacs-english-font emacs-font-size))
 ;; 中文字体
 (set-fontset-font (frame-parameter nil 'font)
-                  'unicode (eval emacs-cjk-font))
+                  'unicode emacs-cjk-font)
 
 (provide 'LazyCatFont)

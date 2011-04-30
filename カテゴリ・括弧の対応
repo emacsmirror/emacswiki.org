@@ -1,0 +1,17 @@
+Click on the header to find all parenthesis related pages. In Emacs-jargon, parentheses are often called "parens".
+
+* ShowParenMode -- highlight matching parentheses
+* NavigatingParentheses -- navigating between paretheses
+* DebuggingParentheses -- find "unbalanced parentheses" errors in files
+* ParenthesisMatching -- how to turn two characters into matching parentheses and bounce between matching parenthesis.
+* ParenthesesAppearance -- changing the appearance of parentheses (like color)
+* AutoPairs -- insert parentheses in pairs. See also BalancedEl.
+* [[joseph-autopair.el]] -- insert parentheses or other things you defined  in pairs.
+* ParEdit -- Structured editing of [[sexp]]s
+* ElectricDotAndDash -- experimental stuff, providing another way of entering parentheses.
+* UniversialCloseParen -- tries to insert the "correct" type of close paren.
+* EmacsVersor -- Structured editing and navigation of sexps and other units
+* ElectricPair -- Structured editing with parentheses
+* <tt>[[parenthesis.el]]</tt> -- Structured editing with parentheses
+
+See `skeleton-pair-insert-maybe' as an example for how useful Emacs' handling of parentheses can be. SelectivePairInsert can also be useful with pairs of parens, quoting characters and string pairs in general. 

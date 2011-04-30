@@ -34,6 +34,9 @@ put the following on the first line of the buffer
 
   -*- ispell-dictionary: "english" -*-
 
+Here are some things extending <code>ispell.el</code>,
+
+* [http://user42.tuxfamily.org/ispell-stopwords/index.html ispell-stopwords.el] -- use Perl POD <code>=for stopwords</code> per-file words list
 
 == Making sure your personal dictionaries get used ==
 

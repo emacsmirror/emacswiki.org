@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 16:16:13 2011 (-0700)
+;; Last-Updated: Fri Apr 29 16:41:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27649
+;;     Update #: 27685
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5183,12 +5183,16 @@
 ;;    of `vc-directory-exclusion-list'.
 ;;
 ;;  * User option `icicle-buffer-sort' is a predicate used to sort
-;;    buffer-name candidates in Icicles buffer commands, such as
-;;    `icicle-buffer' and `icicle-insert-buffer'.  One possible value
-;;    is `icicle-buffer-sort-*...*-last', which sorts names of
-;;    internal buffers, which begin with `*', after other buffer
-;;    names.  Option `icicle-file-sort' acts similarly for file-name
-;;    completion.
+;;    buffer-name candidates in Icicles buffer commands such as
+;;    `icicle-buffer' and `icicle-insert-buffer'.  Option
+;;    `icicle-file-sort' acts similarly for file-name completion.  The
+;;    default value of `icicle-buffer-sort' is
+;;    `icicle-buffer-sort-*...*-last', which sorts names of buffers
+;;    that begin with `*' after other buffer names.  These options
+;;    affect only the initial sort order used for buffer and file
+;;    names, respectively, that is, the order used first in an Emacs
+;;    session.  The values are also put first in the list of possible
+;;    sort orders for cycling.
 ;;
 ;;  * User option `icicle-buffer-configs' is a list of named
 ;;    configurations of options `icicle-buffer-match-regexp',
@@ -8445,7 +8449,7 @@
 ;;  `icicle-must-pass-predicate'.  They are applied after your current
 ;;  input filters the candidates.
 ;;
-;;  If you, as a programmer, write a command, and you want to expose
+;;  If you as a programmer write a command, and you want to expose
 ;;  global filters to users of the command, you should:
 ;;
 ;;  1. Create corresponding user options that can be customized.
@@ -8455,28 +8459,39 @@
 ;;  to define a command (recommended), then you can simply pass the
 ;;  filter-variable bindings as part of the BINDINGS argument.
 ;;
-;;  For example, here is the core definition of `icicle-buffer':
+;;  For convenience you can use macros `icicle-buffer-bindings' and
+;;  `icicle-file-bindings' to provide bindings that are appropriate
+;;  for buffer-name and file-name completion, respectively.  For
+;;  example, macro `icicle-buffer-bindings' expands to include these
+;;  bindings, among others:
+;;
+;;   (icicle-must-match-regexp             icicle-buffer-match-regexp)
+;;   (icicle-must-not-match-regexp      icicle-buffer-no-match-regexp)
+;;   (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
+;;   (icicle-require-match-flag      icicle-buffer-require-match-flag)
+;;   (icicle-extra-candidates                    icicle-buffer-extras)
+;;   (icicle-ignore-space-prefix-flag
+;;                             icicle-buffer-ignore-space-prefix-flag)
+;;   (icicle-delete-candidate-object            'icicle-kill-a-buffer)
+;;
+;;  As an example of using this macro, here is the core definition of
+;;  `icicle-buffer':
 ;;
 ;;   (icicle-define-command
 ;;    icicle-buffer                          ; Command name
 ;;    "Switch to a different buffer."        ; Doc string
 ;;    switch-to-buffer                       ; Action function
-;;    "Switch to buffer: "                   ; completing-read args
+;;    "Switch to buffer: "                   ; `completing-read' args
 ;;    (mapcar (lambda (buf) (list (buffer-name buf))) (buffer-list))
 ;;    nil nil nil 'buffer-name-history
 ;;    (icicle-default-buffer-names) nil
 ;;    ;; Filter bindings
-;;    ((icicle-must-match-regexp      icicle-buffer-match-regexp)
-;;     (icicle-must-not-match-regexp  icicle-buffer-no-match-regexp)
-;;     (icicle-must-pass-predicate    icicle-buffer-predicate)
-;;     (icicle-extra-candidates       icicle-buffer-extras)
-;;     (icicle-sort-comparer          icicle-buffer-sort)))
+;;    (icicle-buffer-bindings))       ; Macro provides buffer bindings
 ;;
-;;  If you define a command that uses completion, but you don't use
+;;  If you define a command that uses completion, but you do not use
 ;;  `icicle-define-command' or `icicle-define-file-command', then you
-;;  can just bind such variables around a call to `completing-read' or
-;;  `read-file-name'.  Command `icicle-complete-keys' presents an
-;;  example of this, binding `icicle-buffer-no-match-regexp'.
+;;  can just bind appropriate variables individually around a call to
+;;  `completing-read' or `read-file-name'.
 ;;
 ;;  Another way that users can apply predicates to completion
 ;;  candidates is to use `M-&' while completing.  These predicates

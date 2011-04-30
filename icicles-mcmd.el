@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 25 19:31:32 2011 (-0700)
+;; Last-Updated: Fri Apr 29 10:38:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16878
+;;     Update #: 16886
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1953,9 +1953,8 @@ It also provides some of the Emacs-Lisp key bindings during expression
 editing."
              icicle-highlight-historical-candidates-flag
              icicle-transform-function
-             (and icicle-sort-comparer (car (rassoc icicle-sort-comparer icicle-sort-orders-alist)))
-             (and icicle-alternative-sort-comparer (car (rassoc icicle-sort-comparer
-                                                                icicle-sort-orders-alist)))
+             (icicle-current-sort-order nil)
+             (icicle-current-sort-order 'ALTERNATIVE)
              (not case-fold-search)
              (string= icicle-dot-string icicle-anychar-regexp)
              icicle-regexp-quote-flag

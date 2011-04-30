@@ -85,6 +85,7 @@ then
         $0 stop
     fi
     $0 start
+    exit $?
 fi
 
 echo "Usage: /etc/init.d/emacsd {start|stop|restart|force-reload}"

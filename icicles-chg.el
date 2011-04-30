@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 15:26:02 2011 (-0700)
+;; Last-Updated: Fri Apr 29 16:20:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6404
+;;     Update #: 6438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/04/29 dadams
+;;     icicle-execute-extended-command(-1), icicle-command-abbrev(-action|-command),
+;;       icicle-execute-named-keyboard-macro, icicle-increment-(option|variable),
+;;       icicle-doremi-increment-variable+:
+;;         Renamed: orig-must-pass-after-match-predicate to icicle-orig-must-pass-after-match-pred,
+;;                  new-last-cmd to icicle-new-last-cmd.
 ;; 2011/04/25 dadams
 ;;     Commands defined with icicle-define-file-command and using icicle-file-bindings:
 ;;       Remove binding for icicle-candidate-help-fn - done in icicles-mac.el now.
@@ -389,6 +395,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/04/29 dadams
+;;     icicle-choose-candidate-of-type: Rewrote buffer bindings based on icicle-buffer-bindings.
 ;; 2011/04/26 dadams
 ;;     Added: icicle-search-autofile-bookmark.
 ;; 2011/04/12 dadams
@@ -2196,6 +2204,18 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; NOTE: If you byte-compile Icicles (recommended), then WHENEVER `icicles-mac.el' is updated, you
+;;       must load `icicles-mac.el' (not just `icicles-mac.elc'), then compile it, then RECOMPILE *ALL*
+;;       of the other Icicles source files as well.  This is normal for Lisp: code that depends on
+;;       macros needs to be byte-compiled anew after loading the updated macros.
+;;
+;; 2011/04/29 dadams
+;;     icicle-buffer-bindings, icicle-file-bindings:
+;;       Do not bind icicle-sort-comparer.  Instead, set it the first time
+;;         (per icicle-(buffer|file)-sort-first-time-p).
+;;       No side effects to icicle-sort-orders-alist.
+;;       If icicle-(buffer|file)-sort is non-nil then put it at the beginning.
+;;       Use old backquote syntax for post-bindings - needed because of vanilla Emacs 20 bug.
 ;; 2011/04/25 dadams
 ;;     icicle-file-bindings: Bind icicle-candidate-help-fn to icicle-describe-file w/ curr pref arg.
 ;; 2011/04/12 dadams
@@ -2307,6 +2327,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/04/29 dadams
+;;     icicle-help-string-completion: Corrected current values shown for sort comparers.
 ;; 2011/04/25 dadams
 ;;     icicle-describe-file: Sync'd with help-fns+.el - include autofile bookmark info.
 ;;     icicle-help-on-candidate(-symbol): Add current-prefix-arg to call to icicle-describe-file.
@@ -5053,6 +5075,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/04/29 dadams
+;;     Added: icicle-buffer-sort-first-time-p, icicle-file-sort-first-time-p, icicle-new-last-cmd,
+;;              icicle-orig-must-pass-after-match-pred.
 ;; 2011/04/02 dadams
 ;;     Added: icicle-bufflist, icicle-pref-arg, icicle-scan-fn-or-regexp.
 ;;     Moved to icicles-cmd2.el:

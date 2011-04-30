@@ -28,8 +28,8 @@ vc-git.el also includes support for git blame, in the vc-annotate command (C-x v
 
 Magit is another interface to git:
 
-* Get it from: http://philjackson.github.com/magit
-* Manual: http://philjackson.github.com/magit/magit.html
+* Get it from: http://magit.github.com/magit
+* Manual: http://magit.github.com/magit/magit.html
 
 Egg (Emacs got Git) is a clone (fork) of Magit.
 

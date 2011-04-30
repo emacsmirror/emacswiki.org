@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 25 19:42:44 2011 (-0700)
+;; Last-Updated: Fri Apr 29 14:40:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 576
+;;     Update #: 634
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -203,8 +203,7 @@ created after the others."
     (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
     (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
     (icicle-transform-function                   'icicle-remove-dups-if-extras)
-    (icicle-sort-comparer                        (or icicle-buffer-sort icicle-sort-comparer))
-    (icicle-sort-orders-alist
+    (icicle--temp-orders
      (append (list
               '("by last access")       ; Renamed from "turned OFF'.
               '("*...* last" . icicle-buffer-sort-*...*-last)
@@ -213,7 +212,19 @@ created after the others."
               (and (fboundp 'icicle-mode-line-name-less-p)
                '("by mode-line mode name" . icicle-mode-line-name-less-p))
               '("by file/process name" . icicle-buffer-file/process-name-less-p))
-      (delete '("turned OFF") icicle-sort-orders-alist)))
+      (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
+    ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
+    (icicle-sort-orders-alist
+     (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
+              (setq icicle-sort-comparer           icicle-buffer-sort
+                    icicle-buffer-sort-first-time-p  nil))
+            (if icicle-buffer-sort
+                (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
+                  (if already-there
+                      (cons already-there (setq icicle--temp-orders
+                                                (delete already-there icicle--temp-orders)))
+                    (cons `("by `icicle-buffer-sort'" . ,icicle-buffer-sort) icicle--temp-orders)))
+              icicle--temp-orders)))
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
     (icicle-all-candidates-list-alt-action-fn
@@ -230,7 +241,7 @@ created after the others."
                (t
                 (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
        (buffer-list)))
-    ,@post-bindings))
+    (,@ post-bindings)))                ; Emacs 20 bug requires us to use obsolete backquote syntax here.
 
 ;;;###autoload
 (defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
@@ -258,7 +269,19 @@ created after the others."
     (icicle-require-match-flag                   icicle-file-require-match-flag)
     (icicle-extra-candidates                     icicle-file-extras)
     (icicle-transform-function                   'icicle-remove-dups-if-extras)
-    (icicle-sort-comparer                        (or icicle-file-sort icicle-sort-comparer))
+    ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
+    (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
+    (icicle-sort-orders-alist
+     (progn (when (and icicle-file-sort-first-time-p icicle-file-sort)
+              (setq icicle-sort-comparer           icicle-file-sort
+                    icicle-file-sort-first-time-p  nil))
+            (if icicle-file-sort
+                (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
+                  (if already-there
+                      (cons already-there (setq icicle--temp-orders
+                                                (delete already-there icicle--temp-orders)))
+                    (cons `("by `icicle-file-sort'" . ,icicle-file-sort) icicle--temp-orders)))
+              icicle--temp-orders)))
     (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
     (icicle-candidate-help-fn                    (lambda (cand)
                                                    (icicle-describe-file cand current-prefix-arg)))
@@ -267,7 +290,7 @@ created after the others."
     (icicle-all-candidates-list-alt-action-fn
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
     (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
-    ,@post-bindings))
+    (,@ post-bindings)))                ; Emacs 20 bug requires us to use obsolete backquote syntax here.
 
 ;;;###autoload
 (defmacro icicle-define-command

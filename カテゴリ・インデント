@@ -1,4 +1,4 @@
-Click on the title to list all pages related to [::インデント] questions.
+タイトルをクリックして、[::インデント]の質問に関連するすべてのページを記載してください
 
 : "The power of Emacs comes at a cost." -- kensanata on #emacs
 
@@ -18,7 +18,7 @@ Most people seem to be concerned about the following, though:
 *  GuessOffset / GuessOffset -- guess the offset used in existing files and use it
 *  ReformatBuffer / ReformatBuffer -- marking the whole buffer and reindenting it
 ** CodeBeautifying / CodeBeautifying -- how to wrap comments after reindenting the buffer
-*  TabCompletion / TabCompletion -- How to indent and get completion too
+*  [[インデント・タブ補完]] / TabCompletion -- How to indent and get completion too
 
 関連:
 
@@ -34,17 +34,18 @@ Most people seem to be concerned about the following, though:
 * KaiGrossjohann's indentation tutorial: http://www.xemacs.org/Links/tutorials_toc.html or http://cvs.sourceforge.net/viewcvs.py/xemacs/xemacsweb/Links/Attic/tutorials_toc.html
 * EricPement has a document that explains TABs in Emacs: http://www.pement.org/emacs_tabs.htm
 
-Aligning columns of text:
+テキストの列揃え:
 
-* CategoryAlignment -- several ways to align text, with respect to assignment, whitespace, or regexp-provided delimiters.
+* [[インデント・桁揃え]]CategoryAlignment -- several ways to align text, with respect to assignment, whitespace, or regexp-provided delimiters.
 
 * AlignColumn -- align text columns, where the columns are separated by whitespace
 * AlignLet -- align values in Lisp <code>let</code> forms
 
-Indentation implementation details:
+インデント実装の詳細:
 
 * TabStopList -- the fallback usually used when no other indentation seems to work
 
 Unrelated (but homonymous):
 
-* [[タブバーモード]] / TabBarMode -- add a tab-bar to emacs giving each buffer its own tab
+Emacsにをタブバーを追加する
+* [[タブバーモード]] / TabBarMode -- Emacsにタブバーを追加する

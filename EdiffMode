@@ -275,6 +275,14 @@ Don’t compare large files (> 10M) using ediff-files (or ediff) or you will rec
 
 --MateuszKopij
 
+[new]
+For a wrapper script and some instructions on setting up subversion to use Emacs' 
+{{{
+ediff-merge-files-with-ancestor
+}}}
+as the interactive conflict resolution tool please see my blog post at: http://bit.ly/m9ozZr
+--IzaakBeekman
+
 ----
 
 See EdiffOnWThirtyTwo

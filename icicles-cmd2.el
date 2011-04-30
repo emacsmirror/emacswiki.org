@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 15:09:30 2011 (-0700)
+;; Last-Updated: Fri Apr 29 15:38:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2664
+;;     Update #: 2679
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4735,31 +4735,44 @@ filtering:
   (let ((icicle-orig-window  (selected-window))) ; For alternative actions.
     (case type
       (buffer
-       (let ((completion-ignore-case          (or (and (boundp 'read-buffer-completion-ignore-case)
-                                                       read-buffer-completion-ignore-case)
-                                                  completion-ignore-case))
-             (icicle-must-match-regexp        icicle-buffer-match-regexp)
-             (icicle-must-not-match-regexp    icicle-buffer-no-match-regexp)
-             (icicle-must-pass-predicate      icicle-buffer-predicate)
-             (icicle-extra-candidates         icicle-buffer-extras)
-             (icicle-transform-function       'icicle-remove-dups-if-extras)
-             (icicle-sort-comparer            (or icicle-buffer-sort icicle-sort-comparer))
-             (icicle-sort-orders-alist
-              (append (list '("by last access") ; Renamed from "turned OFF'.
-                            '("*...* last" . icicle-buffer-sort-*...*-last)
-                            '("by buffer size" . icicle-buffer-smaller-p)
-                            '("by major mode name" . icicle-major-mode-name-less-p)
-                            (and (fboundp 'icicle-mode-line-name-less-p)
-                                 '("by mode-line mode name" . icicle-mode-line-name-less-p))
-                            '("by file/process name" . icicle-buffer-file/process-name-less-p))
-                      (delete '("turned OFF") icicle-sort-orders-alist)))
-             (icicle-candidate-alt-action-fn
-              (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-             (icicle-all-candidates-list-alt-action-fn
-              (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-             (icicle-delete-candidate-object  'icicle-kill-a-buffer) ; `S-delete' kills buffer.
-             (icicle-require-match-flag        icicle-buffer-require-match-flag)
-             (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag))
+       (let* ((completion-ignore-case
+               (or (and (boundp 'read-buffer-completion-ignore-case)
+                        read-buffer-completion-ignore-case)
+                   completion-ignore-case))
+              (icicle-must-match-regexp                icicle-buffer-match-regexp)
+              (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
+              (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
+              (icicle-require-match-flag               icicle-buffer-require-match-flag)
+              (icicle-extra-candidates                 icicle-buffer-extras)
+              (icicle-ignore-space-prefix-flag         icicle-buffer-ignore-space-prefix-flag)
+              (icicle-delete-candidate-object          'icicle-kill-a-buffer) ; `S-delete' kills buf
+              (icicle-transform-function               'icicle-remove-dups-if-extras)
+              (icicle--temp-orders
+               (append (list '("by last access") ; Renamed from "turned OFF'.
+                             '("*...* last" . icicle-buffer-sort-*...*-last)
+                             '("by buffer size" . icicle-buffer-smaller-p)
+                             '("by major mode name" . icicle-major-mode-name-less-p)
+                             (and (fboundp 'icicle-mode-line-name-less-p)
+                                  '("by mode-line mode name" . icicle-mode-line-name-less-p))
+                             '("by file/process name" . icicle-buffer-file/process-name-less-p))
+                       (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
+              ;; Put `icicle-buffer-sort' first.  If already in list, move it, else add it, to start.
+              (icicle-sort-orders-alist
+               (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
+                        (setq icicle-sort-comparer             icicle-buffer-sort
+                              icicle-buffer-sort-first-time-p  nil))
+                      (if icicle-buffer-sort
+                          (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
+                            (if already-there
+                                (cons already-there (setq icicle--temp-orders
+                                                          (delete already-there icicle--temp-orders)))
+                              (cons `("by `icicle-buffer-sort'" . ,icicle-buffer-sort)
+                                    icicle--temp-orders)))
+                        icicle--temp-orders)))
+              (icicle-candidate-alt-action-fn
+               (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+              (icicle-all-candidates-list-alt-action-fn
+               (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer"))))
          (get-buffer-create
           (completing-read "Which (buffer): " (mapcar #'(lambda (buf) (list (buffer-name buf)))
                                                       (buffer-list))

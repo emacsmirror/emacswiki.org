@@ -8,7 +8,7 @@ The information in `load-history' differs between different versions of Emacs.  
 
 == Library loadhist.el ==
 
-Standard library `<code>loadhist.el</code>' uses the information in `load-history' to let you unload a feature that was added when you loaded its library (command `unload-feature'). 
+Standard library `<code>loadhist.el</code>' uses the information in `load-history' to let you UnloadFeature things that were added in a library.
 
 It also provides functions that let you know which library loaded a given function (`feature-symbols'), the features required by a given library (`file-requires'), the (loaded) libraries that require a given library (`file-dependents'), and the features provided by a given library (`file-provides').
 

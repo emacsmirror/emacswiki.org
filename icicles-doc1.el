@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 16:29:27 2011 (-0700)
+;; Last-Updated: Fri Apr 29 16:29:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25880
+;;     Update #: 25894
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3462,6 +3462,18 @@
 ;;  to toggle the removal of duplicate candidates.  A few commands,
 ;;  for which sorting is inappropriate, prevent you from sorting.
 ;;
+;;  The available sort orders for `C-,' are those defined by user
+;;  option `icicle-sort-orders-alist' - see
+;;  (@> "Defining New Sort Orders"), below.  However, some commands
+;;  adjust this list of possibilities by adding command-relevant sort
+;;  orders or removing some that might be inappropriate.
+;;
+;;  The sort order generally remains as you last set it, for
+;;  subsequent commands.  However, if the last order you set is
+;;  inappropriate for the current command then sorting is turned off.
+;;  You can then use `C-,' to choose a sort order appropriate for the
+;;  current command.
+;;
 ;;(@* "Changing the Sort Order")
 ;;  ** Changing the Sort Order **
 ;;
@@ -3503,13 +3515,13 @@
 ;;  alternative sort order to "turned OFF", then this is a quick way
 ;;  to toggle sorting on and off.
 ;;
-;;  Commands that read buffer names with completion can use another
-;;  sort-function user option, `icicle-buffer-sort'.  It has the same
-;;  meaning as `icicle-sort-comparer', but it applies only to those
-;;  commands.  It is provided so that you can customize it separately.
-;;  You can also define buffer configurations that are used for
-;;  completion: named sets of buffers, sort functions, and other
-;;  parameters that control completion of buffer names.
+;;  The first time during a session that you use a command that
+;;  completes a buffer name or a file name, sorting changes to (that
+;;  is, `icicle-sort-comparer' is set to) whatever is specified by
+;;  user option `icicle-buffer-sort' or `icicle-file-sort',
+;;  respectively, provided the option is non-nil.  This gives you a
+;;  way to privilege a particular sorting method for each of these
+;;  kinds of completion.
 ;;
 ;;(@* "Defining New Sort Orders")
 ;;  ** Defining New Sort Orders **

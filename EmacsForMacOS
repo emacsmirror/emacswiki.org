@@ -315,7 +315,7 @@ $ mv nextstep/Emacs.app /Applications
 <pre>
 (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
 </pre>
-
+[http://arswiki.org/projects/dotnetutil/ticket/1527 Мне на кризис наплевать, вылез в топе гоу бухать]
 Source: http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
 My recommendation for other how-to questions [http://www.mac-how.net Mac How]
 ------

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 08:06:34 2011 (-0700)
+;; Last-Updated: Fri Apr 29 10:53:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4272
+;;     Update #: 4273
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -771,9 +771,7 @@ You probably do not want to set this globally, but you can."
 (defcustom icicle-buffer-sort 'icicle-buffer-sort-*...*-last
   "*A sort function for buffer names, or nil.
 Examples of sort functions are `icicle-buffer-sort-*...*-last' and
-`string<'.  If nil, then buffer names are not sorted.  Option
-`icicle-sort-comparer' is bound to `icicle-buffer-sort' by command
-`icicle-buffer'."
+`string<'.  If nil, then buffer names are not sorted."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Buffers :group 'Icicles-Completions-Display)
 

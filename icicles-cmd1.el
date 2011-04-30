@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 26 07:52:12 2011 (-0700)
+;; Last-Updated: Fri Apr 29 15:25:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21879
+;;     Update #: 21912
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2484,18 +2484,18 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
    (last-command                            last-command) ; Save and restore the last command.
    (use-file-dialog                         nil) ; `mouse-2' in *Completions* won't use dialog box.
    (alt-fn                                  nil)
-   (orig-must-pass-after-match-predicate    icicle-must-pass-after-match-predicate)
+   (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate  #'(lambda (c) (commandp (intern c))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))
-   new-last-cmd)                        ; Set in `icicle-execute-extended-command-1'.
+   icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
   nil  nil
-  (setq this-command  new-last-cmd))    ; Final code: this will update `last-command'.
+  (setq this-command  icicle-new-last-cmd)) ; Final code: this will update `last-command'.
 
 ;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
-;;                 `new-last-cmd' and `orig-must-pass-after-match-predicate' are bound in
+;;                 `icicle-new-last-cmd' and `icicle-orig-must-pass-after-match-pred' are bound in
 ;;                 `icicle-execute-extended-command'.
 (defun icicle-execute-extended-command-1 (cmd-name)
   "Action function to execute command or named keyboard macro CMD-NAME."
@@ -2551,7 +2551,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
            (run-hooks 'pre-command-hook)
            (let ((enable-recursive-minibuffers            t)
                  ;; Restore this before we invoke command, since it might use completion.
-                 (icicle-must-pass-after-match-predicate  orig-must-pass-after-match-predicate)
+                 (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred)
                  ;; Bind, don't set `this-command'.  When you use `C-next', `this-command' needs
                  ;; to be `cmd' during the `C-RET' part, but `last-command' must not be `cmd'
                  ;; during the `next' part.
@@ -2559,7 +2559,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
              (call-interactively cmd 'record-it))))
     ;; After `M-x' `last-command' must be the command finally entered with `RET' or, if you end
     ;; with `C-g', the last command entered with `C-RET'.
-    (setq new-last-cmd  cmd)))
+    (setq icicle-new-last-cmd  cmd)))
 
 ;; Inspired by Emacs partial completion and by library `exec-abbrev-cmd.el' (Tassilo Horn
 ;; <tassilo@member.fsf.org>).  The idea of command abbreviation is combined here with normal
@@ -2608,7 +2608,7 @@ need match only a prefix.  For example, nil means that abbreviation
                                                 (unless (member abv ipc) (push abv ipc)))))
    (use-file-dialog                         nil) ; `mouse-2' in *Completions* won't use dialog box.
    (alt-fn                                  nil)
-   (orig-must-pass-after-match-predicate    icicle-must-pass-after-match-predicate)
+   (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate  #'(lambda (c) (commandp (intern c))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
@@ -2639,7 +2639,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
          (icicle-proxy-candidates                   icicle-proxy-candidates)
          ;; Restore this before we invoke command, since it might use completion.
          ;; Free var `orig-must-pass...' is bound in `icicle-command-abbrev'.
-         (icicle-must-pass-after-match-predicate    orig-must-pass-after-match-predicate)
+         (icicle-must-pass-after-match-predicate    icicle-orig-must-pass-after-match-pred)
          ;; Rebind alternative action functions to nil, so we don't override command we call.
          (icicle-candidate-alt-action-fn            nil)
          (icicle-all-candidates-list-alt-action-fn  nil))
@@ -2698,9 +2698,9 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))
    (icicle-add-proxy-candidates-flag  nil) ; No abbrevs - just commands here.
    (last-command                      last-command) ; Save and restore the last command.
-   new-last-cmd)                        ; Set in `icicle-execute-extended-command-1'.
+   icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
   nil nil
-  (setq this-command  new-last-cmd)     ; Final code: this will update `last-command'.
+  (setq this-command  icicle-new-last-cmd) ; Final code: this will update `last-command'.
   'NON-INTERACTIVE)                     ; This is not a real command.
 
 (defun icicle-command-abbrev-record (abbrev command)
@@ -2721,9 +2721,9 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
               (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
             ""))
   obarray nil t nil 'icicle-kmacro-history nil nil
-  ((last-command                          last-command) ; Save and restore the last command.
-   (alt-fn                                nil)
-   (orig-must-pass-after-match-predicate  icicle-must-pass-after-match-predicate)
+  ((last-command                            last-command) ; Save and restore the last command.
+   (alt-fn                                  nil)
+   (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate
     #'(lambda (fn) (setq fn  (intern fn)) (and (commandp fn) (arrayp (symbol-function fn)))))
    (icicle-candidate-alt-action-fn      ; Bindings
@@ -2973,14 +2973,14 @@ This command needs library `doremi.el'." ; Doc string
   (lambda (opt)                         ; Action function
     (let ((sym                                     (intern opt))
           ;; Restore this before we read number, since that might use completion.
-          (icicle-must-pass-after-match-predicate  orig-must-pass-after-match-predicate))
+          (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
       (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") t)
       (message "`%s' is now %s" opt (eval sym))))
   "Increment value of option: " obarray nil 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
-  ((enable-recursive-minibuffers          t) ; Bindings
-   (alt-fn                                nil)
-   (orig-must-pass-after-match-predicate  icicle-must-pass-after-match-predicate)
+  ((enable-recursive-minibuffers            t) ; Bindings
+   (alt-fn                                  nil)
+   (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate
     #'(lambda (s) (memq (get (intern s) 'custom-type) '(number integer float))))
    (icicle-candidate-alt-action-fn
@@ -2999,15 +2999,15 @@ This command needs library `doremi.el'." ; Doc string
   (lambda (var)                         ; Action function
     (let ((sym                                     (intern var))
           ;; Restore this before we read number, since that might use completion.
-          (icicle-must-pass-after-match-predicate  orig-must-pass-after-match-predicate))
+          (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
       (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") prefix-arg)
       (message "`%s' is now %s" var (eval sym))))
   "Increment value of variable: " obarray nil 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
-  ((enable-recursive-minibuffers          t) ; Bindings
-   (prefix-arg                            current-prefix-arg)
-   (alt-fn                                nil)
-   (orig-must-pass-after-match-predicate  icicle-must-pass-after-match-predicate)
+  ((enable-recursive-minibuffers            t) ; Bindings
+   (prefix-arg                              current-prefix-arg)
+   (alt-fn                                  nil)
+   (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate
     (if prefix-arg
         #'(lambda (s) (memq (get (intern s) 'custom-type) '(number integer float)))
@@ -3030,19 +3030,19 @@ Interactively, you can choose VARIABLE using completion.
 With a prefix arg, only user options are available to choose from.
 Raises an error if VARIABLE's value is not a number."
   (interactive
-   (let ((symb                                    (or (and (fboundp 'symbol-nearest-point)
-                                                           (symbol-nearest-point))
-                                                      (and (symbolp (variable-at-point))
-                                                           (variable-at-point))))
-         (enable-recursive-minibuffers            t)
-         (orig-must-pass-after-match-predicate    icicle-must-pass-after-match-predicate)
-         (icicle-must-pass-after-match-predicate  (if current-prefix-arg
-                                                      #'(lambda (s) (user-variable-p (intern s)))
-                                                    #'(lambda (s) (boundp (intern s))))))
+   (let ((symb                                      (or (and (fboundp 'symbol-nearest-point)
+                                                             (symbol-nearest-point))
+                                                        (and (symbolp (variable-at-point))
+                                                             (variable-at-point))))
+         (enable-recursive-minibuffers              t)
+         (icicle-orig-must-pass-after-match-pred    icicle-must-pass-after-match-predicate)
+         (icicle-must-pass-after-match-predicate    (if current-prefix-arg
+                                                        #'(lambda (s) (user-variable-p (intern s)))
+                                                      #'(lambda (s) (boundp (intern s))))))
      (list (intern (completing-read "Increment variable: " obarray nil t nil nil
                                     (and symb (symbol-name symb)) t))
            ;; Restore this before we read number, since that might use completion.
-           (let ((icicle-must-pass-after-match-predicate  orig-must-pass-after-match-predicate))
+           (let ((icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
              (icicle-read-number "Increment (amount): "))
            current-prefix-arg)))
   (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))
@@ -5527,7 +5527,10 @@ the behavior."                          ; Doc string
    (icicle-must-match-regexp                icicle-buffer-match-regexp)
    (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
    (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
+   (icicle-require-match-flag               icicle-buffer-require-match-flag)
    (icicle-extra-candidates                 icicle-buffer-extras)
+   (icicle-ignore-space-prefix-flag         icicle-buffer-ignore-space-prefix-flag)
+   (icicle-delete-candidate-object          'icicle-kill-a-buffer) ; `S-delete' kills current buf
    (icicle-transform-function               'icicle-remove-dups-if-extras)
    (icicle-sort-comparer                    (or icicle-buffer-sort icicle-sort-comparer))
    (icicle-sort-orders-alist
@@ -5543,9 +5546,6 @@ the behavior."                          ; Doc string
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-delete-candidate-object        'icicle-kill-a-buffer) ; `S-delete' kills current buffer.
-   (icicle-require-match-flag             icicle-buffer-require-match-flag)
-   (icicle-ignore-space-prefix-flag       icicle-buffer-ignore-space-prefix-flag)
    (icicle-use-candidates-only-once-flag  t))
   nil nil                               ; First code, undo code
   (prog1 (setq buf-names  (nreverse (delete "" buf-names))) ; Last code - return the list of buffers

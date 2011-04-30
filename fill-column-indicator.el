@@ -84,20 +84,20 @@
 
 ;; When `truncate-lines' is nil, the effect of drawing a fill-column
 ;; indicator is very odd looking. Indeed, in a window with continuation
-;; lines, it makes little sense to indicate the position fill column relative
-;; to the window edge (think about what it would mean to talk about "the"
-;; location of the fill column in that case).  For this reason, fci-mode sets
-;; truncate-lines to t in buffers in which it is enabled and restores it to
-;; its previous value when disabled.  You can turn off this feature by
-;; setting `fci-handle-truncate-lines' to nil.
+;; lines, it makes little sense to indicate the position of the fill column
+;; relative to the window edge (think about what it would mean to talk about
+;; "the" location of the fill column in that case).  For this reason,
+;; fci-mode sets truncate-lines to t in buffers in which it is enabled and
+;; restores it to its previous value when disabled.  You can turn off this
+;; feature by setting `fci-handle-truncate-lines' to nil.
 
 ;; If `line-move-visual' is t, then vertical navigation can behave oddly in
-;; several edge cases while fci-mode is enabled (this is due to a bug in C
-;; code).  By default fci-mode locally sets line-move-visual to nil when
-;; enabled and restores it when disabled.  This can be suppressed by setting
-;; `fci-handle-line-move-visual' to nil.  (But you shouldn't want to do
-;; this.  There's no reason to use line-move-visual if truncate-lines is t,
-;; and it doesn't make sense to use something like fci-mode when
+;; several edge cases while fci-mode is enabled (I think this is due to a bug
+;; in pos_visible_p).  Accordingly, fci-mode locally sets line-move-visual to
+;; nil when enabled and restores it when disabled.  This can be suppressed by
+;; setting `fci-handle-line-move-visual' to nil.  (But you shouldn't want to
+;; do this.  There's no reason to use line-move-visual if truncate-lines is
+;; t, and it doesn't make sense to use something like fci-mode when
 ;; truncate-lines is nil.)
 
 ;; Troubleshooting
@@ -105,8 +105,8 @@
 
 ;; o If the fill-column indication is misaligned on some lines but otherwise
 ;;   looks normal, then you're most likely not displaying the buffer contents
-;;   with a monospaced font.  Check whether one of the lines in question has
-;;   a non-ascii character that's wider or shorter than the normal character
+;;   with a monospaced font.  Check whether the lines in question contain
+;;   non-ascii characters that are wider or shorter than the normal character
 ;;   width.  Also, be aware that certain font-lock themes set some faces so
 ;;   that they look monospaced but aren't quite so.
 
@@ -338,85 +338,85 @@ for tips on troubleshooting.)"
 
   nil nil nil
 
-      (if fci-mode
-          ;; Enabling
-          (progn
-            (unless fci-buffer-initialized
-              (when (and fci-handle-line-move-visual
-                         (boundp 'line-move-visual))
-                (setq fci-saved-line-move-visual line-move-visual)
-                (set (make-local-variable 'line-move-visual) nil))
-              (when fci-handle-truncate-lines
-                (setq fci-saved-truncate-lines truncate-lines)
-                (set (make-local-variable 'truncate-lines) t)))
-            (setq fci-column fill-column)
-            (cond 
-             ((eq fci-style 'rule)
-              (setq fci-put-overlays-function #'fci-put-overlays-rule
-                    fci-rule (fci-make-rule)
-                    fci-cursor-rule (propertize fci-rule 'cursor t)))
-             ((eq fci-style 'shading)
-              (setq fci-put-overlays-function #'fci-put-overlays-shading)
-              ;; The rest of this is for char terminals.  But we make the
-              ;; adjustment without checking the terminal type, as it's
-              ;; innocuous on graphical terminals and there's a remote chance
-              ;; someone using a daemon might invoke the mode on a graphical
-              ;; terminal then display the buffer on a character terminal.
-              (unless fci-buffer-initialized
-                (if (not buffer-display-table)
-                    (setq buffer-display-table (make-display-table)
-                          fci-made-display-table t)
-                  (setq fci-prior-truncation-glyph (aref buffer-display-table 0)))
-                ;; If the user had the truncation glyph propertized, we're
-                ;; going to overwrite that. The glyph-code mechanism won't
-                ;; combine faces, and it doesn't seem worth it to go through
-                ;; the hassle of manually merging the faces attributes.
-                (let* ((g (glyph-char (or fci-prior-truncation-glyph ?$)))
-                       (gc (make-glyph-code g 'fci-shading)))
-                  (set-char-table-extra-slot buffer-display-table 0 gc))))
-             (t
-              (fci-mode -1)
-              (error "Unrecognized value of `fci-style'")))
-            (add-hook 'after-change-functions #'fci-after-change-function nil t)
-            (add-hook 'post-command-hook #'fci-correct-for-hscroll nil t)
-            (add-hook 'change-major-mode-hook #'(lambda () (fci-mode -1)) nil t)
-            (ad-enable-advice 'set-fill-column 'after 'fill-column-indicator)
-            (ad-enable-advice 'show-paren-function 'around 'fill-column-indicator)
-            (ad-enable-advice 'mic-paren-highlight 'around 'fill-column-indicator)
-            (dolist (fn fci-advised-functions)
-              (ad-activate fn))
-            ;; In case we were already in fci-mode and are resetting the
-            ;; indicator, clear out any existing overlays.
-            (when fci-buffer-initialized
-              (fci-delete-overlays-buffer))
-            (fci-put-overlays-buffer)
-            (setq fci-buffer-initialized t))
-
-        ;; Disabling
-        (when (eq fci-style 'shading)
-          (if fci-made-display-table
-              (setq buffer-display-table nil
-                    fci-made-display-table nil)
-            (set-char-table-extra-slot buffer-display-table 0 fci-prior-truncation-glyph)
-            (setq fci-prior-truncation-glyph nil)))
-        (when (and fci-handle-line-move-visual
-                   (boundp 'line-move-visual))
-          (setq line-move-visual fci-saved-line-move-visual
-                fci-saved-line-move-visual nil))
-        (when fci-handle-truncate-lines
-          (setq truncate-lines fci-saved-truncate-lines
-                fci-saved-truncate-lines nil))
-        (setq fci-column nil)
-        (ad-disable-advice 'set-fill-column 'after 'fill-column-indicator)
-        (ad-disable-advice 'show-paren-function 'around 'fill-column-indicator)
-        (ad-disable-advice 'mic-paren-highlight 'around 'fill-column-indicator)
+  (if fci-mode
+      ;; Enabling
+      (progn
+        (unless fci-buffer-initialized
+          (when (and fci-handle-line-move-visual
+                     (boundp 'line-move-visual))
+            (setq fci-saved-line-move-visual line-move-visual)
+            (set (make-local-variable 'line-move-visual) nil))
+          (when fci-handle-truncate-lines
+            (setq fci-saved-truncate-lines truncate-lines)
+            (set (make-local-variable 'truncate-lines) t)))
+        (setq fci-column fill-column)
+        (cond 
+         ((eq fci-style 'rule)
+          (setq fci-put-overlays-function #'fci-put-overlays-rule
+                fci-rule (fci-make-rule)
+                fci-cursor-rule (propertize fci-rule 'cursor t)))
+         ((eq fci-style 'shading)
+          (setq fci-put-overlays-function #'fci-put-overlays-shading)
+          ;; The rest of this is for char terminals.  But we make the
+          ;; adjustment without checking the terminal type, as it's
+          ;; innocuous on graphical terminals and there's a remote chance
+          ;; someone using a daemon might invoke the mode on a graphical
+          ;; terminal then display the buffer on a character terminal.
+          (unless fci-buffer-initialized
+            (if (not buffer-display-table)
+                (setq buffer-display-table (make-display-table)
+                      fci-made-display-table t)
+              (setq fci-prior-truncation-glyph (aref buffer-display-table 0)))
+            ;; If the user had the truncation glyph propertized, we're
+            ;; going to overwrite that. The glyph-code mechanism won't
+            ;; combine faces, and it doesn't seem worth it to go through
+            ;; the hassle of manually merging the faces attributes.
+            (let* ((g (glyph-char (or fci-prior-truncation-glyph ?$)))
+                   (gc (make-glyph-code g 'fci-shading)))
+              (set-char-table-extra-slot buffer-display-table 0 gc))))
+         (t
+          (fci-mode -1)
+          (error "Unrecognized value of `fci-style'")))
+        (add-hook 'after-change-functions #'fci-after-change-function nil t)
+        (add-hook 'post-command-hook #'fci-correct-for-hscroll nil t)
+        (add-hook 'change-major-mode-hook #'(lambda () (fci-mode -1)) nil t)
+        (ad-enable-advice 'set-fill-column 'after 'fill-column-indicator)
+        (ad-enable-advice 'show-paren-function 'around 'fill-column-indicator)
+        (ad-enable-advice 'mic-paren-highlight 'around 'fill-column-indicator)
         (dolist (fn fci-advised-functions)
           (ad-activate fn))
-        (remove-hook 'after-change-functions #'fci-after-change-function t)
-        (remove-hook 'post-command-hook #'fci-correct-for-hscroll t)
-        (remove-hook 'change-major-mode-hook #'(lambda () (fci-mode -1)) t)
-        (fci-delete-overlays-buffer)
-        (setq fci-buffer-initialized nil)))
+        ;; In case we were already in fci-mode and are resetting the
+        ;; indicator, clear out any existing overlays.
+        (when fci-buffer-initialized
+          (fci-delete-overlays-buffer))
+        (fci-put-overlays-buffer)
+        (setq fci-buffer-initialized t))
+
+    ;; Disabling
+    (when (eq fci-style 'shading)
+      (if fci-made-display-table
+          (setq buffer-display-table nil
+                fci-made-display-table nil)
+        (set-char-table-extra-slot buffer-display-table 0 fci-prior-truncation-glyph)
+        (setq fci-prior-truncation-glyph nil)))
+    (when (and fci-handle-line-move-visual
+               (boundp 'line-move-visual))
+      (setq line-move-visual fci-saved-line-move-visual
+            fci-saved-line-move-visual nil))
+    (when fci-handle-truncate-lines
+      (setq truncate-lines fci-saved-truncate-lines
+            fci-saved-truncate-lines nil))
+    (setq fci-column nil)
+    (ad-disable-advice 'set-fill-column 'after 'fill-column-indicator)
+    (ad-disable-advice 'show-paren-function 'around 'fill-column-indicator)
+    (ad-disable-advice 'mic-paren-highlight 'around 'fill-column-indicator)
+    (dolist (fn fci-advised-functions)
+      (ad-activate fn))
+    (remove-hook 'after-change-functions #'fci-after-change-function t)
+    (remove-hook 'post-command-hook #'fci-correct-for-hscroll t)
+    (remove-hook 'change-major-mode-hook #'(lambda () (fci-mode -1)) t)
+    (fci-delete-overlays-buffer)
+    (setq fci-buffer-initialized nil)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Rule Initialization
@@ -515,7 +515,7 @@ for tips on troubleshooting.)"
 
 (defun fci-make-xpm-rule (rule-width color char)
   (let* ((identifier (concat "/* XPM */\n"
-                        "static char *rule[] = {\n"))
+                             "static char *rule[] = {\n"))
          (img-width (frame-char-width))
          (margin (/ (- img-width rule-width) 2.0))
          (left (floor margin))
@@ -544,22 +544,22 @@ for tips on troubleshooting.)"
 ;;; ---------------------------------------------------------------------
 
 (defun fci-put-overlays-rule (start end)
- (goto-char start)
- (let (o)
-   (while (search-forward "\n" end t)
-     (goto-char (match-beginning 0))
-     (setq o (make-overlay (match-beginning 0)
-                           (match-end 0)))
-     (overlay-put o 'category 'fci)
-     (if (< (current-column) fci-column)
-       (overlay-put o 
-                    'before-string
-                    (concat fci-cursor-space
-                            (make-string (- fci-column 1  (current-column)) 32)
-                            fci-rule))
-       (if (= (current-column) fci-column)
-              (overlay-put o 'before-string fci-cursor-rule)))
-     (goto-char (match-end 0)))))
+  (goto-char start)
+  (let (o)
+    (while (search-forward "\n" end t)
+      (goto-char (match-beginning 0))
+      (setq o (make-overlay (match-beginning 0)
+                            (match-end 0)))
+      (overlay-put o 'category 'fci)
+      (if (< (current-column) fci-column)
+          (overlay-put o 
+                       'before-string
+                       (concat fci-cursor-space
+                               (make-string (- fci-column 1  (current-column)) 32)
+                               fci-rule))
+        (if (= (current-column) fci-column)
+            (overlay-put o 'before-string fci-cursor-rule)))
+      (goto-char (match-end 0)))))
 
 (defun fci-put-overlays-shading (start end) 
   (goto-char start)
@@ -584,9 +584,9 @@ for tips on troubleshooting.)"
     (goto-char end)))
 
 (defun fci-delete-overlays-region (start end)
- (mapc #'(lambda (x) (if (eq (overlay-get x 'category) 'fci)
-                         (delete-overlay x)))
-       (overlays-in start end)))
+  (mapc #'(lambda (x) (if (eq (overlay-get x 'category) 'fci)
+                          (delete-overlay x)))
+        (overlays-in start end)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Entry Points to Drawing/Undrawing
@@ -609,15 +609,15 @@ for tips on troubleshooting.)"
 ;; but incurs the overhead of multiple extra lisp function calls.)
 (defun fci-after-change-function (start end unused)
   (fci-sanitize-actions
-      ;; Make sure our bounds span at least whole lines.
-      (goto-char start)
-      (setq start (line-beginning-position 0))
-      (goto-char end)
-      (setq end (line-beginning-position 2))
-      ;; Clear any existing overlays.
-      (fci-delete-overlays-region start end)
-      ;; Then set the fill-column indicator in that region.
-      (funcall fci-put-overlays-function start end)))
+   ;; Make sure our bounds span at least whole lines.
+   (goto-char start)
+   (setq start (line-beginning-position 0))
+   (goto-char end)
+   (setq end (line-beginning-position 2))
+   ;; Clear any existing overlays.
+   (fci-delete-overlays-region start end)
+   ;; Then set the fill-column indicator in that region.
+   (funcall fci-put-overlays-function start end)))
 
 (defun fci-put-overlays-buffer ()
   (overlay-recenter (point-max))
@@ -640,7 +640,7 @@ for tips on troubleshooting.)"
 ;;; ---------------------------------------------------------------------
 
 ;;; Workaround for the "feature" that cursor overlay properties are ignored
-;;; if the position they specify for cursor position is out of sight due to
+;;; if the position they specify for the cursor is out of sight due to
 ;;; horizontal scrolling. 
 
 (defun fci-correct-for-hscroll ()
@@ -682,11 +682,11 @@ for tips on troubleshooting.)"
 (defsubst fci-call-for-paren-adjust (adjuster o)
   (setq fci-paren-props (list 'face (overlay-get o 'face)))
   (mapc adjuster (delq nil 
-                        (mapcar #'(lambda (x) (and (eq (overlay-get x 'category) 
-                                                       'fci) 
-                                                   x))
-                                (overlays-in (overlay-start o)
-                                             (overlay-end o))))))
+                       (mapcar #'(lambda (x) (and (eq (overlay-get x 'category) 
+                                                      'fci) 
+                                                  x))
+                               (overlays-in (overlay-start o)
+                                            (overlay-end o))))))
 
 (defsubst fci-unfix-before-strings (o)
   (when (and o (overlay-start o))

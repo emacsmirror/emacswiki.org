@@ -11,11 +11,11 @@ Put the package file in your load path and put ##(require 'fill-column-indicator
 
 To toggle graphical indication of the fill column in a buffer, use the command ##fci-mode##.  
 
-The style of indication is controlled by the variable ##fci-style##.  The recognized values are ##'shading## and ##'rule## (the default value is ##'shading##).  Buffer-local values are supported.
+The style of indication is controlled by the variable ##fci-style##.  The recognized values are ##'shading## and ##'rule## (the default value is ##'shading##).  Buffer-local values are supported, so one can use different styles in different buffers.
 
-The rule indicator can be customized by pixel width and color; the shading indicator can be customized by foreground and background color.  For these and other options, see the headers in the package file.
+The rule can be customized by width and color; the shading can be customized by foreground and background color.  For details on these and other options, see the headers in the package file.
 
-As of version 0.30, fci-mode should work on both graphical and character terminals.  Note that rule style will work differently on graphical and character terminals.  On the former, the rule is drawn using bitmap images; on the latter, it is drawn using textual characters (by default, it uses "|").
+As of version 0.30, fci-mode should work on both graphical and character terminals.  Note that rule style will work differently in the two cases.  On graphical terminals, the rule is drawn using bitmap images; on character terminals, it is drawn using characters (by default, it uses "|", i.e., ascii 124).
 
 == See also ==
 
@@ -40,11 +40,11 @@ I've just spotted a small problem. In order to use with EmacsAsDaemon one needs 
 
 [new:AlpAker:2011-04-05 00:17 UTC]
 
-[Some ensuing back and forth edited out.]  After playing around with EmacsAsDaemon and emacsclient for a while, I think you're right:  The best thing to do is not throw any kind of error when Emacs is running as a daemon, and instead depend on the user to figure out when they can invoke fci-mode and when they can't.  Thanks for pointing out the problem. --AA
+[Some ensuing back and forth edited out.]  After playing around with emacsclient for a while, I think you're right:  The best thing to do is not throw any kind of error when Emacs is running as a daemon, and instead depend on the user to figure out when they can invoke fci-mode and when they can't.  Thanks for pointing out the problem. --AA
 
 [new:AlpAker:2011-04-15 22:59 UTC]
 
-As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   --AA
+As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   (One problematic edge case remains:  If you invoke the mode while on a character terminal then visit the same buffer on a graphical terminal using the same Emacs instance, the textual rule will be displayed on both.  I haven't decided on the best way to detect and handle this case.  The reverse scenario--opening on a graphical terminal then visiting on character terminal--shouldn't be a problem.  I imagine these cases arise quite infrequently.) --AA
 
 ===Problem using dabbrev-expand===
 [new]
@@ -104,9 +104,9 @@ I have no idea how easy this would be to fix, and it's not a huge issue, just th
 
 [new:AlpAker:2011-04-21 18:52 UTC]
 
-Thanks for pointing this out.  The problem is caused by the way fci-mode pads out the end of lines to make the rule or shading appear at the fill column: it puts an overlay on newline characters with a before-string property that contains the necessary amount of padding.  Unfortunately, overlay before-strings don't inherit the face properties of the region they overlap, so the show-paren highlighting doesn't appear on the padding.
+Thanks for pointing this out.  The problem is caused by the way fci-mode pads out the end of lines to make the rule or shading appear at the fill column: it puts an overlay on newline characters with a before-string property that contains the necessary amount of padding.  Unfortunately, the face attributes of overlay before-strings aren't merged with those of other overlays that cover the same region, so the show-paren highlighting doesn't appear on the padding.
 
-This will probably be an issue with libraries other than paren.el, and I'm going to have to think about how to fix things in robust fashion.  In the meantime, here's a version with a workaround:  [[fill-column-indicator-paren-hack.el]].  I haven't tested it extensively, but hopefully it works.  (The wiki page has a different name, but you'll still want to save the file as "fill-column-indicator.el".  Also, it's probably a good idea to byte-compile it, for performance reasons.  Ignore the byte-compiler warnings about free variable assignments; that's a result of a hacky thing I did for speed.)  --AA
+This will probably be an issue with libraries other than paren.el, and I'm going to have to think about how to fix things in robust fashion.  In the meantime, here's a version with a workaround: [link removed; this code is now part of the main version].  --AA
 
 [new]
 
@@ -114,7 +114,7 @@ I can't comment on the how much of a hack this is, my elisp isn't that great :) 
 
 [new:AlpAker:2011-04-27 23:50 UTC]
 
-(A few days later).  So far, every way I can think of to make the fill-column padding automatically pick up parenthesis highlighting will break support for character terminals.  So I've cleaned up the earlier hack and made it, for now, the Official Way We Do Things.   (Btw, you might want to look at [[mic-paren.el]], which I've found to be faster and more robust than paren.el.)
+(A few days later).  So far, every way I can think of to make the fill-column padding automatically pick up parenthesis highlighting will break support for character terminals.  So I've cleaned up the earlier hack and made it, for now, the Official Way We Do Things.   (Btw, you might want to have a look at [[mic-paren.el]], which is an improvement on paren.el in just about every respect.) --AA
 
 ===From the (E-)Mailbag===
 

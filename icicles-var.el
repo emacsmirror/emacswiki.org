@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  2 17:11:36 2011 (-0700)
+;; Last-Updated: Fri Apr 29 15:24:57 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1458
+;;     Update #: 1473
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -38,7 +38,8 @@
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
 ;;    `icicle-bookmark-history', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history', `icicle-bufflist',
+;;    `icicle-buffer-config-history',
+;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
 ;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
@@ -70,6 +71,7 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p',
+;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
 ;;    `icicle-function-name-history',
@@ -99,10 +101,11 @@
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate',
 ;;    `icicle-nb-candidates-before-truncation',
-;;    `icicle-nb-of-other-cycle-candidates',
+;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
 ;;    `icicle-old-read-file-name-fn', `icicle-orig-buff',
+;;    `icicle-orig-must-pass-after-match-pred',
 ;;    `icicle-orig-pt-explore', `icicle-orig-window',
 ;;    `icicle-orig-win-explore', `icicle-other-window',
 ;;    `icicle-plist-last-initial-cand-set',
@@ -249,6 +252,9 @@ An empty list and the singleton list `(all)', where `all' is a symbol,
 are equivalent and stand for the set of all bookmarks (of any type).")
 
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
+
+(defvar icicle-buffer-sort-first-time-p t
+  "Non-nil means buffer-name completion has not yet been used.")
 
 (defvar icicle-bufflist nil
   "List of buffers defined by macro `icicle-buffer-bindings'.")
@@ -476,6 +482,9 @@ can be costly.")
 (defvar icicle-fancy-cands-internal-p nil
   "Same as `icicle-fancy-candidates-p', but for internal use only.
 Do not set or bind this.  This is bound only by `completing-read'.")
+
+(defvar icicle-file-sort-first-time-p t
+  "Non-nil means file-name completion has not yet been used.")
 
 (defvar icicle-filtered-default-value nil
   "Minibuffer default value, after filtering with `icicle-filter-wo-input'.")
@@ -1026,6 +1035,10 @@ See also `icicle-must-pass-after-match-predicate'.")
   "Number of other candidates available for cycling.
 This is for use by other libraries, in particular, `icomplete+.el'.")
 
+(defvar icicle-new-last-cmd nil
+  "Copy of current command being executed.
+Used by, e.g., `icicle-execute-extended-command'.")
+
 (defvar icicle-next-apropos-complete-cycles-p nil
   "Whether the next apropos-completion command should cycle.")
 
@@ -1039,6 +1052,9 @@ For versions of Emacs before 22, this is `read-file-name'.")
 
 (defvar icicle-orig-buff nil
   "Current buffer when you invoked an Icicles multi-command.")
+
+(defvar icicle-orig-must-pass-after-match-pred nil
+  "Saved value of `icicle-must-pass-after-match-predicate'.")
 
 (defvar icicle-orig-pt-explore nil
   "Point when you invoked `icicle-explore'.")

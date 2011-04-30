@@ -15,6 +15,12 @@ ask for it with `lexical-let', you don't get keyword arguments unless
 you define your function with `defun*' and so on.  See the Info node
 (cl)Common Lisp Compatibility.
 
+Here are some things extending <code>cl.el</code>,
+
+* ArrayExtension -- for <code>cl-array.el</code> multi-dimensional arrays
+* struct+.el / defstruct+.el -- enhancing <code>defstruct</code> (gone?)
+* [http://user42.tuxfamily.org/cl-loop-aplist/index.html cl-loop-aplist.el] -- <code>loop</code> over alists and plists
+
 [new]
 Packages distributed within GNU Emacs don't use cl at runtime (on account of its size, and potential future namespace clashes), only via byte-compiled macros (see the introduction to the cl manual on this).  That doesn't mean you must avoid cl altogether if you aspire to get code into Emacs, indeed major packages like CcMode and [[Gnus]] happily use cl; just ensure it's only through macro forms (such as `push', `setf', `defun*', `loop').  The easiest way to do that is
 
