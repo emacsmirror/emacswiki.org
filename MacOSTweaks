@@ -123,6 +123,14 @@ This is how add stuff to the PATH variable, a must if you try to use Emacs for T
      '("/usr/local/bin" 
  "/usr/local/teTeX/bin/powerpc-apple-darwin-current")))
 
+Or to get self-compiled/alternative python to work when Emacs.app is launched from Finder, you might need to insert stuff to PATH and exec-path, instead of appending it:
+
+ ; Set PATH and exec-path to load python first                     
+ (setenv "PATH"
+   (concat "/Library/Frameworks/Python.framework/Version/2.7/bin:"
+     (getenv "PATH")))
+ (setq exec-path
+    (cons "/Library/Frameworks/Python.framework/Versions/2.7/bin" exec-path))
 
 Alternatively, you can set up the path for all applications launched from the Finder by editing <code>~/.MacOSX/environment.plist</code> [http://developer.apple.com/qa/qa2001/qa1067.html]
 [http://www.astro.washington.edu/users/rowen/AquaEnvVar.html], or using the RCEnvironment preferences pane [http://www.rubicode.com/Software/RCEnvironment/].

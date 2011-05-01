@@ -161,6 +161,23 @@ As with the previous version, you need to be using erc-match.el. The advantage
 to this one is that it does not need to start an external process, but it only
 works with recent versions of Emacs. Take your pick.
 
+== Yet another option (Emacs 24) ==
+
+<pre>
+(require 'notifications)
+(defun erc-global-notify (match-type nick message)
+  "Notify when a message is recieved."
+  (notifications-notify
+   :title nick
+   :body message
+   :app-icon "/usr/share/notify-osd/icons/gnome/scalable/status/notification-message-im.svg"
+   :urgency 'low))
+
+(add-hook 'erc-text-matched-hook 'erc-global-notify)
+</pre>
+
+As of Emacs24 it looks like we have built in support for notification -> DBUS.  I use this on Ubuntu, so if you're on a different distro you may want to adjust the image location
+
 == Notes ==
 
 [new]

@@ -187,7 +187,7 @@ For instance:
 
 '''[::rudybot]'''
 
-[[offby1]] runs this bot in the channel. Its sole useful feature is using http://tinyurl.com to convert long URLs to short ones.  Other features, only arguably useful, include entertaining its author; spewing random quotes (mostly from jordanb) on demand; a "seen" feature similar to birny's; and a Scheme evaluator (handy for confusing Lisp novices who are unclear about the difference between Emacs Lisp and Scheme).
+[[offby1]] runs this bot in the channel. Its sole useful feature is using http://tinyurl.com to convert long URLs to short ones.  Other features, only arguably useful, include entertaining its author; spewing random quotes (mostly from jordanb) on demand; a "seen" feature similar to birny's; and a Scheme evaluator (handy for confusing Lisp novices who are unclear about the difference between Emacs Lisp and Scheme).  Its source lives at https://github.com/offby1/rudybot.
 
 == Former Bots ==
 

@@ -1,0 +1,75 @@
+[[fr:Patrons]]
+This page is about emacs packages that does templates or auto-insertions of predefined text. For example, features that lets you automatically insert code templates, such as copyright notice header, HTML header or DTD, timestamps, Java class templates, function syntax skeletons, POV-ray scene files, etc.
+
+== Full Featured Generic Template Systems ==
+
+There are several packages with full featured template systems. A full featured template system will allow you to jump thru fields (e.g. pressing tab to go thru function parameter slots), let parts of the template be variables (such as timestamp in header file), context sensitive expansion (such as not expanding when in inside code comment or string), or let your template contain arbitrary lisp code that eval upon expansion.
+
+Overall, emacs templates packages can be divided into those whose syntax for defining templates is based on plain text, or those based on elisp macro.
+
+=== Plain Text Based Template Systems ===
+
+* MsfAbbrev -- loads mode-specific abbreviations from a directory tree. Comes with a lot templates for various languages.
+
+* TemplatesMode -- Primarily designed for the insertion of whole file. Create templates for certain file names (eg. README) or extensions (eg. html) and add markers to it. Also contains commands for comment decoration and for file header automatic update.
+
+* ElseMode -- templates available for Ada, C, Python, Emacs Lisp, Java, C++ (last two should be used as a starting point only - they are very early stage); the example definitions look hairy but powerful: You define *a cascade of markers and templates*, eg. a template of an if statement that contains a marker for the else part.  This else part can then be expanded in turn.  This cascading of template seems to be the forte. 
+
+* SnippetMode -- based on TextMate's snippets feature. First released in 2005. Functionality similar to MsfAbbrev.
+
+* SmartSnippet -- improvement of SnippetMode. Obsoleted by YaSnippetMode.
+
+* [[Yasnippet]] -- Full featured improvement and rewrite of SnippetMode.
+
+* SemanticRecoder -- Part of CollectionOfEmacsDevelopmentEnvironmentTools with GoogleTemplates like syntax.  Created for language agnostic code generation applications.
+
+=== Elisp Macro Based Template Systems ===
+
+* SkeletonMode -- Bundled with Emacs 22 with full doc. See <code>(info "(autotype)Top")</code>
+
+* expand.el -- comes with Emacs; seems like *a super-charged abbrev-mode* that allows templates that take arguments.
+
+* TempoMode -- Bundled with Emacs 22. No info doc included. (tempo.el)
+
+* TempoSnippets -- brings the look of Snippet to TempoMode
+
+* Dmacro [ftp://ftp.sgi.com/other/dmacro] has not changed since 1996, but still useful as ever.
+
+== Others ==
+
+=== Language Specific Ad Hoc Templates ===
+
+There are also emacs templates packages written by various people over the years, not based on the above generic template system but are written ad hoc for specific languages.
+
+* JavaTemplate
+* CppTemplate 
+* CmodeTemplates
+* CommonLispTemplates
+* PerlTemplates
+
+Here are other packages that do things similar to templates.
+
+* AutomaticFileHeaders -- Automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
+
+* AutoInsertMode (comes with Emacs; inserts text based on file extension when a new file is opened)
+* CopyrightUpdate (comes with Emacs; creates or updates copyright information in a file)
+* LoremIpsum Insert dummy text.
+
+=== Abbreviated Word Expansion ===
+
+The simplest template-like feature expansion of abbreviations. For example, you can define “elisp” and have it automatically expand to “Emacs Lisp”, or “fsf” expand to “Free Software Foundation”.
+
+* AbbrevMode, part of emacs since 1980s. Designed for simple expansion of abbreviated words. See <code>(info "(emacs)Abbrevs")</code>
+
+* clipper.el [http://web.archive.org/web/20041215035943/http://www.peerfear.org/el/clipper.el] if you have to insert the same plain pieces of text over and over again (the GPL license, for example).
+
+== Discussions ==
+
+I find SkeletonMode hard to read and write for longer templates; TempoMode seems to be much easier to use. -- AlexSchroeder
+
+I think lisp code based template system is of limited use. They mostly seem early efforts at template. Further, when templates gets complex to a point, best is to simply code elisp. Text based one is the way to go, since it requires no lisp knowldege, so its users can be much broader. In particular, i think recent developement borrowed from TextMate, namely Snippet.el created in 2005, is good. Some info indicates that author of Snippet is no longer maintaining it. Since YaSnippetMode is a rewrite with more features, i think that is the best choice. It has full website support and forum and is active. -- [[Xah Lee]]
+
+[new]
+How does TempoMode differ from MsfAbbrev ? Hum well, I see the
+differences but how does it compare in a day-to-day usage ? -- XavierMaillard
+

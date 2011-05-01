@@ -1,0 +1,48 @@
+This page is about Emacs regions and the different operations and commands for manipulating the region.
+
+Click on the heading above to list '''all''' pages related to ''regions''.
+
+== Standard Region ==
+
+The text between [[point]] and [[mark]] is the [[region]].  The [[active region]] is essentially what some other programs call the "selection".  The [[SecondarySelection|secondary selection]] is similar to the region, but it is more persistent. 
+
+* BasicNarrowing -- Isolates the region, so you can limit operations to region text.  See also [[Narrowing]].
+* CopyAndPaste -- Alternatives to default KillingAndYanking for copying, killing, and yanking.
+* CopyWithoutSelection -- Simply copy current line, current word and current paragraph to the kill-ring without select to each line, each word or each paragraph 
+* CopyingWholeLines -- Different ways of copying an entire line to the kill-ring.
+* CuaMode -- Use key bindings compatible with the Common User Access (CUA) system
+* DeleteSelectionMode -- Replaces the region with what you type. Backspace (DEL) deletes the region.
+* KillingAndYanking -- The default Emacs behavior for copying, killing (cutting), and yanking (pasting).
+* PcSelectionMode -- Treats the region like MS Windows and Motif.
+* RectangleCommands -- Operate on the column of text between point and mark.
+** RectangleMark -- Highlights rectangular areas instead of a continuous stretches of text.
+** RectangleAdd -- Adds the numbers in a rectangle.
+* ShiftSelectMode -- Expand regions with Shift and a navigation command.
+* TransientMarkMode -- Highlights the region whenever it is active (you can activate it using `C-x C-x').
+
+== Region Extensions ==
+
+* ApplyFunctionOnMultipleRegions -- Applies a function to several regions at the same time.
+* AnchoredTranspose -- Transposes a phrase around an anchor phrase. In other words it swaps 2 regions.
+* [[Anything|anything-show-kill-ring]] -- Narrow `kill-ring' using multiple patterns.
+* AutoMark -- Push a mark after selected commands
+* [[Bookmark+]] -- ''Name'' regions and make them ''persistent''. Revisit bookmark to visit and activate region.
+* ChangingCursorDynamically -- Find the region easily by making the [[cursor]] more visible when Emacs is idle.
+* EevMode -- `M-x eev' saves region to a temporary script. Later you can execute the script.
+* FastNav -- Set mark quickly at the next/previous nth occurence of a character while [[point]] is kept.
+* HideRegion -- Hide and show multiple regions.
+* HighlightTemporarily -- Highlight a region (includes marker pens etc.).
+* [[Icicles]] -- Persistent, multiple regions as [[bookmark]]s. Select a bookmarked region, search one, etc. -- [[Icicles - Bookmark Enhancements]]
+* [[IndirectBuffers#IndirectRegion]] -- Edit a region of text in a different mode.
+* MarkLines -- Keyboard emulation of triple-click line selection. (Incompatible with CuaMode.)
+* ModeLinePosition -- Show the size of the region in the mode-line, whenever the region is active (TransientMarkMode).
+* [[Mouse+]] -- Highlight the [[yank]] position while you press `mouse-2', so you hit the right spot.
+* MoveLine, MoveRegion, MoveText -- Move lines or region.
+* MultipleNarrowings -- Use `##C-x n x x x...##' to cycle a ring of narrowings (buffer restrictions).
+* SelectiveUndo -- Undo changes within the region.
+* [[Subedit]] -- Edit part of a buffer in a new buffer.
+* SwapRegions -- Swap two regions.
+* <tt>[[trans-regions.el]]</tt> -- Transpose regions.
+* VisibleMark -- Make the mark position visible
+
+See also CategoryEditing.

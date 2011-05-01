@@ -1,0 +1,21 @@
+An outline view hides parts of a buffer to better display the underlying structure.
+
+Related: CategoryHideStuff
+
+Emacs provides several outline features, some come bundled,
+some must be downloaded.
+
+* OutlineMode: hides blocks of text in a hierarchy
+* HideShow: hides block definitions in languages such as C/C++
+* OrgMode: the outliner that does everything (PIM, task management, publishing, and more)
+* AllOut
+* FoldingMode
+* KoutlineMode
+* FoldIngo:  A minor folding mode with mouse/menu/face support.
+* CategorizingInformationManager -- provides ee-outline to operate on outlines
+* FoldDwim: a unified user interface for the folding methods of OutlineMode, HideShow, FoldingMode, AUCTeX folding, and NxmlMode.
+* TaggingMode -- add tags to your file, then filter the blocks shown using tags
+* HtmlOutline -- shows how to use NxmlMode to fold <ol> based outlines in html.
+
+There is also ooutline and noutline which all refer to
+some version of `outline', so they are not worth mentioning.

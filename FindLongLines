@@ -87,6 +87,7 @@ when the line gets too long.
 * DevelockMode also supports fontification of long lines.  But it doesn't work for every mode.
 * [[Highlight80Plus]] -- highlights the offending line, char or chars
 * lineker.el -- highlights, let you move to long lines, see EightyColumnRule.
+* whitespace-mode, which is a part of Emacs 23, has the ##lines## and ##lines-tail## styles to highlight long lines.  See WhiteSpace.
 
 ----
 CategoryEditing

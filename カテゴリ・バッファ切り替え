@@ -1,0 +1,38 @@
+This page is about different libraries and ways to ''switch buffers''. As always, you can click the title heading to list all pages related to buffer switching.
+
+* SwitchingBuffers -- Start here for a discussion comparing the various packages.
+
+The following are specific tricks and packages for buffer switching.
+
+* ListBuffers -- List buffers (default behavior for `C-x C-b')
+* BufferMenu -- "Dired for buffers"
+* IbufferMode -- BufferMenu extension/alternative
+* BufferMenuPlus -- BufferMenu extension/alternative
+* ElectricBufferList -- BufferMenu alternative
+* BufferSelection -- BufferMenu alternative
+* IswitchBuffers -- choose buffer without a menu (name-based)
+* InteractivelyDoThings -- the ido package changes buffer switching
+  and file finding
+* [[Icicles]] -- switch among buffers -- both ''cycling'' and ''[[Completion]]'' are available. Perform actions on selected buffers or sets of buffers.
+* LustyExplorer -- Dynamic filesystem explorer and buffer switcher
+* DoReMi -- use arrow keys and/or mouse wheel with `doremi-buffers' (`C-x t b') to ''cycle'' among buffers 
+* SwBuff -- another way to cycle among buffers
+* [[BufferRing]] -- simpler MTorus like rings
+* PointStack -- go back to places in buffers that you've marked
+* RecreateScratchBuffer -- when ##*scratch*## disappears
+* [[Anything]] -- can be used to switch to a buffer, too.
+* [[ControlTABbufferCycling]] -- emulates application switching on Windows for buffers in Emacs
+* CategorizingInformationManager -- provides ee-buffers for buffer switching
+* CycleBuffer -- switch to next/previous significant buffer with a single keystroke
+* BufferQuickSwitcher -- Another way to switch buffers
+* TabBarMode -- buffer tabs in Emacs 21
+* EasyBufferSwitch -- A combination of number indexed switch and cycle switch
+* [[Lisp:contentswitch.el]] -- switch buffers by their content
+* [[Lisp:jump-or-exec.el]] -- Jump to a buffer matched by buffer-name, or call function when not found. This is enlighted by [[http://sawfish.wikia.com/wiki/Jump-or-exec jump-or-exec from sawfish]].
+* [[cOpenRelational]] -- keeping in touch between header file and source file for C or C++
+* FindHeaderFile -- open C/C++ header file on current line
+* [[MTorus]] -- provides navigation on a discrete 2-torus of buffers
+* [[iflipb]] -- interactively flip between recently visited buffers
+* [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
+* SwitchFiles -- Intelligently switch to a different file, keeping a path as you go.
+* [[Rebound]] --   Enable each window to remember and return to its value of point in each buffer it has displayed.
