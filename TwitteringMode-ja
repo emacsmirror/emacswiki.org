@@ -3,7 +3,7 @@
 
 twittering-mode.elはEmacsで動作するTwitterクライアントです。
 
-このマニュアルでは、twittering-mode-1.0.0 について解説します。
+このマニュアルでは、twittering-mode-2.0.0 について解説します。
 
 [[image:TwitteringModeScreenshot]]
 
@@ -117,6 +117,8 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 
 ; `C-c C-t': 現在のハッシュタグをセットする。(`twittering-set-current-hashtag')
 ; `C-c C-l': 「λかわいいよλ」とツイートする。(`twittering-update-lambda')
+; `C-<mouse-3>': カーソル下のツイートをkill-ringにpushする。(`twittering-push-tweet-onto-kill-ring')
+; `U': カーソル下のツイートのURLをkill-ringにpushする。(`twittering-push-uri-onto-kill-ring')
 
 == キーバインド(Editモード) ==
 

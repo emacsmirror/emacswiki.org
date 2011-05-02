@@ -119,6 +119,8 @@ If you open a new timeline, a new buffer is generated.
 
 ; `C-c C-t': Set the current hashtag. (`twittering-set-current-hashtag')
 ; `C-c C-l': Post the message "λかわいいよλ"("Lambda is cute, lambda."). (`twittering-update-lambda')
+; `C-<mouse-3>': Push the current tweet to kill-ring. (`twittering-push-tweet-onto-kill-ring')
+; `U': Push the URL of the current tweet to kill-ring. (`twittering-push-uri-onto-kill-ring')
 
 == Key-bindings on Edit mode ==
 

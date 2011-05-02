@@ -259,5 +259,7 @@ Uses face `show-ws-trailing-whitespace'."
 
 (provide 'show-wspace)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; show-wspace.el ends here
+

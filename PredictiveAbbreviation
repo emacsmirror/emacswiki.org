@@ -9,6 +9,9 @@ buffers.
 
 Lisp:pabbrev.el
 
+== Update for Emacs 2.4 ==
+Hey, if you are using it, `make-local-hook' will be void. Just comment the lines in pabbrev.el. Ref: [http://code.google.com/p/emacs-evernote-mode/issues/detail?id=3].
+
 == Customizations ==
 Normally hitting ##TAB## a second time after a completion will take you to a suggestions buffer where you can select from alternate completions.  This bit of elisp hackery will instead use a pop-up list via auto-competion mode.  Make sure this is executed **after** ##pabbrev## is loaded.
 <pre>
