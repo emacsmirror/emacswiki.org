@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Apr 28 08:50:52 2011 (-0700)
+;; Last-Updated: Mon May  2 12:53:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2693
+;;     Update #: 2716
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -129,7 +129,7 @@
 ;;
 ;;  NOTE:
 ;;
-;;  1. This file must be saved with encoding UTF-8 or equivalent,
+;;  1. This file MUST be saved with encoding UTF-8 or equivalent,
 ;;     because it contains an em-dash character.
 ;;
 ;;  2. If you byte-compile this using a version of Emacs prior to 23,
@@ -141,6 +141,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/05/02 dadams
+;;     buffer-menu-font-lock-keywords, Buffer-menu(-mouse)-execute, list-buffers-noselect,
+;;       Buffer-menu-mouse-unmark:
+;;         Accommodate frame-bufs.el.
 ;; 2011/04/28 dadams
 ;;     Buffer-menu-fontify-and-adjust-frame:
 ;;       Fix bug introduced 2011-04-16: Do frame operations inside save-window-excursion.
@@ -390,6 +394,8 @@
 (defvar Buffer-menu-time-format)
 (defvar Buffer-menu-use-frame-buffer-list)
 (defvar Buffer-menu-use-header-line)
+(defvar frame-bufs-mode)                ; Defined in `frame-bufs.el'
+(defvar frame-bufs-full-list)           ; Defined in `frame-bufs.el'
 (defvar header-line-format)
 (defvar Info-current-file)
 (defvar Info-current-node)
@@ -492,53 +498,61 @@ Update `buffer-menu-font-lock-keywords' accordingly."
 
   (defun buffer-menu-font-lock-keywords ()
     "Returns the list of font lock keywords for the buffer menu."
-    (list
-     (list "^\\(CRM.*\\)" 1 'buffer-menu-headings) ; CRM
-     (list "^....\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)"
-           (list 1 'buffer-menu-buffer-name)) ; Default buffer name
-     (cond (Buffer-menu-mode-flag       ; Directory buffer name
-            (list "^....\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+[a-zA-Z :0-9]*[ \t]+Dired"
-                  1 'buffer-menu-directory-buffer t t))
-           (Buffer-menu-file-flag
-            (list "^....\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+[^/\n]+[ \t\n]\
-\\(\\([~]\\|\\([a-zA-Z]:\\)\\)?/.*/\\)$"
-                  1 'buffer-menu-directory-buffer t t))
-           ;; We can't show that it's a directory, because we have no way of knowing that
-           (t (list "")))
-     (list "^....\\(\\*.*[^ \t\n][[*]\\(<[0-9]+>\\)?\\)[ \t]+" ; Star buffer name (e.g. *scratch*)
-           1 'buffer-menu-star-buffer t t)
-     ;; Time & Mode
-     (cond ((and Buffer-menu-time-flag Buffer-menu-mode-flag (eq 'short Buffer-menu-time-format))
-            (list "^.*[ \t][0-9]+[ \t]+\\([0-2][0-9]:[0-5][0-9]:[0-5][0-9]\\)?\\([^\n]+\\)"
-                  (list 1 'buffer-menu-time t t) (list 2 'buffer-menu-mode t t)))
-           ((and Buffer-menu-time-flag Buffer-menu-mode-flag)
-            (list "^.*[ \t][0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^\n]+\\)"
-                  (list 1 'buffer-menu-time t t) (list 3 'buffer-menu-mode t t)))
-           (Buffer-menu-time-flag
-            (if (eq 'short Buffer-menu-time-format)
-                (list "^.*[ \t][0-9]+[ \t]+\\([0-2][0-9]:[0-5][0-9]:[0-5][0-9]\\)?"
-                      (list 1 'buffer-menu-time t t))
-              (list "^.*[ \t][0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?" (list 1 'buffer-menu-time t t))))
-           (Buffer-menu-mode-flag
-            (list "^.*[ \t][0-9]+[ \t]+\\([^/\n]+\\)" 1 'buffer-menu-mode t t))
-           (t ""))
-     (list "^.*[ \t]\\([0-9]+\\)\\(  \\|[\n]\\)" 1 'buffer-menu-size t t) ; Size
-     (if Buffer-menu-file-flag
-         (list "^.*[ \t][0-9]+[ \t]+[^/\n]+[ \t\n]\
+    (let* ((frame-bufs-p       (and (boundp 'frame-bufs-mode) frame-bufs-mode))
+           (bit-column-header  (if frame-bufs-p "CRM[ F].*" "CRM.*"))
+           (bits               (if frame-bufs-p "....." "...."))
+           (shortbits          (if frame-bufs-p "...." "...")))
+      (list
+       (list (concat "^\\(" bit-column-header "\\)") 1 'buffer-menu-headings) ; CRM or CRMF
+       (list (concat "^" bits
+                     "\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)")
+             (list 1 'buffer-menu-buffer-name)) ; Default buffer name
+       (cond (Buffer-menu-mode-flag     ; Directory buffer name
+              (list (concat "^" bits "\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+[a-zA-Z :0-9]*[ \t]+Dired")
+                    1 'buffer-menu-directory-buffer t t))
+             (Buffer-menu-file-flag
+              (list (concat "^" bits "\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+[^/\n]+[ \t\n]\
+\\(\\([~]\\|\\([a-zA-Z]:\\)\\)?/.*/\\)$")
+                    1 'buffer-menu-directory-buffer t t))
+             ;; We can't show that it's a directory, because we have no way of knowing that
+             (t (list "")))
+       (list (concat "^" bits
+                     "\\(\\*.*[^ \t\n][[*]\\(<[0-9]+>\\)?\\)[ \t]+") ; Star buffer (e.g. *scratch*)
+             1 'buffer-menu-star-buffer t t)
+       ;; Time & Mode
+       (cond ((and Buffer-menu-time-flag Buffer-menu-mode-flag (eq 'short Buffer-menu-time-format))
+              (list "^.*[ \t][0-9]+[ \t]+\\([0-2][0-9]:[0-5][0-9]:[0-5][0-9]\\)?\\([^\n]+\\)"
+                    (list 1 'buffer-menu-time t t) (list 2 'buffer-menu-mode t t)))
+             ((and Buffer-menu-time-flag Buffer-menu-mode-flag)
+              (list "^.*[ \t][0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^\n]+\\)"
+                    (list 1 'buffer-menu-time t t) (list 3 'buffer-menu-mode t t)))
+             (Buffer-menu-time-flag
+              (if (eq 'short Buffer-menu-time-format)
+                  (list "^.*[ \t][0-9]+[ \t]+\\([0-2][0-9]:[0-5][0-9]:[0-5][0-9]\\)?"
+                        (list 1 'buffer-menu-time t t))
+                (list "^.*[ \t][0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?" (list 1 'buffer-menu-time t t))))
+             (Buffer-menu-mode-flag
+              (list "^.*[ \t][0-9]+[ \t]+\\([^/\n]+\\)" 1 'buffer-menu-mode t t))
+             (t ""))
+       (list "^.*[ \t]\\([0-9]+\\)\\(  \\|[\n]\\)" 1 'buffer-menu-size t t) ; Size
+       (if Buffer-menu-file-flag
+           (list "^.*[ \t][0-9]+[ \t]+[^/\n]+[ \t\n]\
 \\(\\(\\([~]\\|\\([a-zA-Z]:\\)\\)*/.*\\)\\|([^ \t]+).*\\)$" ; File name of Info file + node
-               1 'buffer-menu-file-name t t)
-       "")
-     (list "^\\([.]\\)" 1 'buffer-menu-current-buffer t t) ; Current buffer mark (.)
-     (list "^\\(>\\)" 1 'buffer-menu-view-mark t t) ; To view mark (>)
-     (list "^>...\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)"
-           (list 1 'buffer-menu-marked-buffer 'prepend t)) ; Buffer name when marked (>)
-     (list "^D...\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)"
-           (list 1 'buffer-menu-flagged-buffer t t)) ; Buffer name when flagged (D)
-     (list "^\\(D\\)" 1 'buffer-menu-delete-mark t t) ; Deletion flag (D)
-     (list "^..\\(S\\)" 1 'buffer-menu-save-mark t t) ; Save flag (S)
-     (list "^..\\([*]\\)" 1 'buffer-menu-modified-mark t t) ; Buffer-modified-p (*)
-     (list "^.\\(%\\)" 1 'buffer-menu-read-only-mark t t) ; Read-only-p (%)
-     ))
+                 1 'buffer-menu-file-name t t)
+         "")
+       (list "^\\([.]\\)" 1 'buffer-menu-current-buffer t t) ; Current buffer mark (.)
+       (list "^\\(>\\)" 1 'buffer-menu-view-mark t t) ; To view mark (>)
+       (list (concat "^>" shortbits
+                     "\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)")
+             (list 1 'buffer-menu-marked-buffer 'prepend t)) ; Buffer name when marked (>)
+       (list (concat "^D" shortbits
+                     "\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)")
+             (list 1 'buffer-menu-flagged-buffer t t)) ; Buffer name when flagged (D)
+       (list "^\\(D\\)" 1 'buffer-menu-delete-mark t t) ; Deletion flag (D)
+       (list "^..\\(S\\)" 1 'buffer-menu-save-mark t t) ; Save flag (S)
+       (list "^..\\([*]\\)" 1 'buffer-menu-modified-mark t t) ; Buffer-modified-p (*)
+       (list "^.\\(%\\)" 1 'buffer-menu-read-only-mark t t) ; Read-only-p (%)
+       )))
 
   (defcustom Buffer-menu-time-format 'short
     "*Format for Time column of buffer menu."
@@ -1159,13 +1173,15 @@ You can mark a buffer for deletion (`D') using command `\\<Buffer-menu-mode-map>
 ;; REPLACES ORIGINAL in `buff-menu.el':
 ;; 1. Deletes frame when kills buffer.
 ;; 2. Compatible with Emacs prior to Emacs 22 also.
+;; 3. Accommodate `frame-bufs.el'.
 ;;
 ;;;###autoload
 (defun Buffer-menu-execute ()
   "Save or delete buffers marked `S' (\"save\") or `D' (\"delete\").
 Buffers can be so marked using commands `\\<Buffer-menu-mode-map>\
 \\[Buffer-menu-save]' and `\\[Buffer-menu-delete]', respectively."
-  (interactive)
+  (interactive)  
+  (when (and (boundp 'frame-bufs-mode) frame-bufs-mode) (frame-bufs-buffer-menu-execute))
   (save-excursion
     (Buffer-menu-beginning)
     (while (if (> emacs-major-version 21)
@@ -1334,11 +1350,12 @@ see `Buffer-menu-use-frame-buffer-list'"))
 
 ;; REPLACES ORIGINAL in `buff-menu.el'
 ;;
-;; Compute longest buffer name + size combination, and use when indenting file name.
-;; Add sort buttons for CRM and Time also.
-;; The test for column 1 (CRM) to determine whether to sort is =1, not null.
-;; Sort direction depends on sign of `Buffer-menu-sort-column'.
-;; Go to beginning of buffer if `desired-point' is not defined.
+;; 1. Compute longest buffer name + size combination, and use when indenting file name.
+;; 2. Add sort buttons for CRM and Time also.
+;; 3. The test for column 1 (CRM) to determine whether to sort is =1, not null.
+;; 4. Sort direction depends on sign of `Buffer-menu-sort-column'.
+;; 5. Go to beginning of buffer if `desired-point' is not defined.
+;; 6. Accommodate `frame-bufs.el'.
 ;;
 (when (> emacs-major-version 21)
   (defun list-buffers-noselect (&optional files-only buffer-list)
@@ -1368,8 +1385,11 @@ For more information, see the function `buffer-menu'."
            (mode-end         (if Buffer-menu-mode-flag
                                  (make-string (- Buffer-menu-mode-width 4) ?\ )
                                ""))
+           (frame-bufs-p     (and (boundp 'frame-bufs-mode) frame-bufs-mode))
            (header
-            (concat (Buffer-menu-make-sort-button "CRM" 1) " "
+            (concat (Buffer-menu-make-sort-button
+                     (concat "CRM" (if frame-bufs-p (if frame-bufs-full-list "F" " ") "")) 1)
+                    " "
                     (Buffer-menu-buffer+size (Buffer-menu-make-sort-button "Buffer" 2)
                                              (Buffer-menu-make-sort-button "Size" 3))
                     "  "
@@ -1400,7 +1420,7 @@ For more information, see the function `buffer-menu'."
             (put-text-property (match-beginning 0) (1- pos) 'mouse-face 'highlight header)))
         ;; REMOVED:
         ;; Try to better align the one-char headers.
-        ;; (put-text-property 0 3 'face 'fixed-pitch header)
+        ;; (put-text-property 0 (if frame-bufs-p 4 3) 'face 'fixed-pitch header)
         ;; Add a "dummy" leading space to align the beginning of the header
         ;; line with the beginning of the text (rather than with the left
         ;; scrollbar or the left fringe). --Stef
@@ -1417,15 +1437,18 @@ For more information, see the function `buffer-menu'."
           ;; with two args (since ?\u is interpreted as ?u).
           (let ((underline  (eval-when-compile (if (> emacs-major-version 21) ?\u2014 ?-))))
             (insert header (apply 'string
-                                  (mapcar (lambda (ch) (if (memq ch '(?\n ?\ )) ch underline))
+                                  (mapcar (lambda (ch) (if (memq ch '(?\n ?\  )) ch underline))
                                           header)))))
 ;;;;           (insert header (propertize "---" 'face 'fixed-pitch) " ")
 ;;;;           (insert (Buffer-menu-buffer+size "------" "----"))
 ;;;;           (insert "  ----" mode-end "----\n")
 ;;;;           (put-text-property 1 (point) 'intangible t))
         ;; Collect info for every buffer we're interested in.
-        (dolist (buffer (or buffer-list (buffer-list (and Buffer-menu-use-frame-buffer-list
-                                                          (selected-frame)))))
+        (dolist (buffer  (or buffer-list
+                             (and frame-bufs-p  (frame-bufs-buffer-list (selected-frame)
+                                                                        frame-bufs-full-list))
+                             (buffer-list (and Buffer-menu-use-frame-buffer-list
+                                               (selected-frame)))))
           (with-current-buffer buffer
             (let ((name  (buffer-name))
                   (file  buffer-file-name))
@@ -1439,59 +1462,53 @@ For more information, see the function `buffer-menu'."
                 ;; Otherwise output info.
                 (let (;; Need to record two values for time: numerical time value, for
                       ;; sorting, and string time value, for display.
-                      (buffer-time  (and Buffer-menu-time-flag
-                                         (cons (or (float-time buffer-display-time) 0)
-                                               (if buffer-display-time
-                                                   (format-time-string
-                                                    (if (eq 'short Buffer-menu-time-format)
-                                                        "%02H:%02M:%02S"
-                                                      "%_3a %_2l:%02M:%02S %_2p")
-                                                    buffer-display-time)
-                                                 (if (eq 'short Buffer-menu-time-format)
-                                                     "        "
-                                                   "               ")))))
-                      (mode         (concat (format-mode-line mode-name nil nil buffer)
-                                            (and mode-line-process
-                                                 (format-mode-line
-                                                  mode-line-process nil nil buffer))))
-                      (bits         (string (if (eq buffer old-buffer) ?. ?\ )
-                                            ;; Handle readonly status.  The output buffer
-                                            ;; is special cased to appear readonly; it is
-                                            ;; actually made so at a later date.
-                                            (if (or (eq buffer standard-output) buffer-read-only)
-                                                ?%
-                                              ?\ )
-                                            ;; Identify modified buffers.
-                                            (if (buffer-modified-p) ?* ?\ )
-                                            ;; Space separator.
-                                            ?\ )))
+                      (buffer-time (and Buffer-menu-time-flag
+                                        (cons (or (float-time buffer-display-time) 0)
+                                              (if buffer-display-time
+                                                  (format-time-string
+                                                   (if (eq 'short Buffer-menu-time-format)
+                                                       "%02H:%02M:%02S"
+                                                     "%_3a %_2l:%02M:%02S %_2p")
+                                                   buffer-display-time)
+                                                (if (eq 'short Buffer-menu-time-format)
+                                                    "        "
+                                                  "               ")))))
+                      (mode (concat (format-mode-line mode-name nil nil buffer)
+                                    (and mode-line-process
+                                         (format-mode-line
+                                          mode-line-process nil nil buffer))))
+                      (bits (concat (if (eq buffer old-buffer) "." " ")
+                                    ;; Make output buffer appear read-only, even though it is not
+                                    ;; (yet).  Actually make it read-only later.
+                                    (if (or (eq buffer standard-output) buffer-read-only) 
+                                        "%" 
+                                      " ")
+                                    (if (buffer-modified-p) "*" " ") ; Modified mark.
+                                    (if frame-bufs-p ; Frame-bufs info.
+                                        (frame-bufs-bit-info buffer)
+                                      "")
+                                    " "))) ; Space separator.
                   (unless file
-                    ;; No visited file.  Check local value of
-                    ;; list-buffers-directory and, for Info buffers,
-                    ;; Info-current-file.
-                    (cond ((and (boundp 'list-buffers-directory)
-                                list-buffers-directory)
+                    ;; No visited file.  Check local value of `list-buffers-directory' and,
+                    ;; for Info buffers, `Info-current-file'.
+                    (cond ((and (boundp 'list-buffers-directory) list-buffers-directory)
                            (setq file  list-buffers-directory))
                           ((eq major-mode 'Info-mode)
                            (setq file  Info-current-file)
-                           (cond
-                             ((equal file "dir")
-                              (setq file  "*Info Directory*"))
-                             ((eq file 'apropos)
-                              (setq file  "*Info Apropos*"))
-                             ((eq file 'history)
-                              (setq file  "*Info History*"))
-                             ((eq file 'toc)
-                              (setq file  "*Info TOC*"))
-                             ((not (stringp file)) ; avoid errors
-                              (setq file  nil))
-                             (t
-                              (setq file  (concat "("
-                                                  (file-name-nondirectory file)
-                                                  ")"
-                                                  Info-current-node)))))))
-                  (push (list buffer bits name (buffer-size) buffer-time mode file)
-                        list))))))
+                           (cond ((equal file "dir")
+                                  (setq file  "*Info Directory*"))
+                                 ((eq file 'apropos)
+                                  (setq file  "*Info Apropos*"))
+                                 ((eq file 'history)
+                                  (setq file  "*Info History*"))
+                                 ((eq file 'toc)
+                                  (setq file  "*Info TOC*"))
+                                 ((not (stringp file)) ; avoid errors
+                                  (setq file  nil))
+                                 (t
+                                  (setq file  (concat "(" (file-name-nondirectory file) ")"
+                                                      Info-current-node)))))))
+                  (push (list buffer bits name (buffer-size) buffer-time mode file) list))))))
         ;; Preserve original list order (by reversing).
         ;; Flip it if Buffer-menu-sort-column = -1.
         (unless (eq -1 Buffer-menu-sort-column) (setq list  (nreverse list)))
@@ -1639,7 +1656,8 @@ For more information, see the function `buffer-menu'."
 (defun Buffer-menu-mouse-unmark (event)
   "Cancel all requested operations on buffer."
   (interactive "e")
-  (let (buffer)
+  (let ((frame-bufs-p  (and (boundp 'frame-bufs) frame-bufs-mode))
+        buffer)
     (save-excursion
       (set-buffer (window-buffer (posn-window (event-end event))))
       (save-excursion
@@ -1652,9 +1670,12 @@ For more information, see the function `buffer-menu'."
         (ding)
       (let* ((mod               (buffer-modified-p buffer))
              (readonly          (save-excursion (set-buffer buffer) buffer-read-only))
-             (buffer-read-only  nil))
-        (delete-char 3)
-        (insert (if readonly (if mod " *%" "  %") (if mod " * " "   ")))))
+             (buffer-read-only  nil)
+             (local-info        (if frame-bufs-p
+                                    (frame-bufs-bit-info buffer)
+                                  "")))
+        (delete-char (if frame-bufs-p 4 3))
+        (insert (concat (if readonly (if mod " *%" "  %") (if mod " * " "   ")) local-info))))
     (beginning-of-line)))
 
 ;;;###autoload
@@ -1716,6 +1737,7 @@ Buffers can be marked via commands `\\<Buffer-menu-mode-map>\
 `\\<Buffer-menu-mode-map>\\[Buffer-menu-mouse-delete]')."
   (interactive "e")
   (select-window (posn-window (event-end event)))
+  (when (and (boundp 'frame-bufs-mode) frame-bufs-mode) (frame-bufs-buffer-menu-execute))
   (save-excursion
     (Buffer-menu-beginning)
     (while (if (> emacs-major-version 21)

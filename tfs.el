@@ -1,11 +1,11 @@
 ;;; tfs.el --- MS Team Foundation Server commands for Emacs.
 
-;; Copyright 2009 Dino Chiesa
-;; Time-stamp: <2009-August-02 23:50:04>
+;; Author     : Dino Chiesa <dpchiesa@hotmail.com>
+;; Version    : 0.2.6
+;; X-URL      : http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=tfs.el
+;; Last saved : <2011-May-02 15:32:49>
 ;;
-;; Author: dinoch <dpchiesa@hotmail.com>
-;; Version: 0.2.4
-;; X-URL: http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=tfs.el
+;; Copyright 2009-2010 Dino Chiesa
 
 ;; Microsoft Public License (Ms-PL)
 ;;
@@ -83,7 +83,7 @@
 ;;        (setq tfs/login (getenv "TFSLOGIN"))
 ;;   3. also in your .emacs file:
 ;;        set local or global key bindings for tfs commands.  like so:
-;; 
+;;
 ;;        (global-set-key  "\C-xvo" 'tfs/checkout)
 ;;        (global-set-key  "\C-xvi" 'tfs/checkin)
 ;;        (global-set-key  "\C-xvp" 'tfs/properties)
@@ -97,7 +97,7 @@
 ;;        (global-set-key  "\C-xvs" 'tfs/status)
 ;;        (global-set-key  "\C-xva" 'tfs/annotate)
 ;;        (global-set-key  "\C-xvw" 'tfs/workitem)
-;; 
+;;
 ;;
 
 
@@ -118,161 +118,161 @@
 ;; -------------------------------------------------------
 ;; tfs/checkout
 ;; performs a TFS checkout on the file being visited by the current buffer.
-(defun tfs/checkout()
-  "perform a tf checkout (edit) on the file being visited by the current buffer.  Checkout happens only if the file is non-writable now."
+(defun tfs/checkout ()
+  "Performs a tf checkout (edit) on the file being visited by the current buffer.  Checkout happens only if the file is non-writable now. In other words checkout will fail if the local file is currently writable."
   (interactive)
   (if buffer-file-name
       (if (not (file-writable-p buffer-file-name))
-          (let ((command (list tfs/tf-exe "checkout" buffer-file-name tfs/login ) )
-                (exitcode nil)
-                (shortname (file-name-nondirectory buffer-file-name))
-                )
-            (tfs/append-to-message-buffer (concat "checkout " shortname "\n"))
+          (let* ((exitcode nil)
+                 (shortname (file-name-nondirectory buffer-file-name))
+                 (command (list tfs/tf-exe "checkout" shortname)))
+            (tfs/append-to-message-buffer (concat "checkout " shortname ": "
+                                                  (prin1-to-string command) "\n"))
             (setq exitcode (apply 'call-process
                                   (car command)
                                   nil
                                   tfs/buffer-name
                                   nil
-                                  (cdr command)))
+                                  (append (cdr command) (list tfs/login))))
             (if (equal exitcode 0)
-                ;; get the checked-out version
+                (let ((is-flymake-enabled
+                       (and (fboundp 'flymake-mode)
+                            flymake-mode)))
+                  ;; disable
+                  (if is-flymake-enabled
+                      (flymake-mode-off))
+
+                ;; get the checked-out version - read from the disk file
                 (revert-buffer t t)
-              (error "Checkout of %s was unsuccessful (%S)" buffer-file-name exitcode)))
-        )
-    (error "tfs/checkout: No file")
-    )
-  )
+
+                  (if is-flymake-enabled
+                      (flymake-mode-on)))
+
+              (error "Checkout of %s was unsuccessful (%S)" buffer-file-name exitcode))))
+    (error "tfs/checkout: No file")))
 
 
 
 ;; -------------------------------------------------------
 ;; tfs/checkin
 ;; performs a TFS checkin on the file being visited by the current buffer.
-(defun tfs/checkin()
-  "perform a tf checkin on the file being visited by the current buffer.  Checkin happens only if the file is writable now."
+(defun tfs/checkin ()
+  "perform a tf checkin on the file being visited by the current buffer.  Checkin happens only if the file is writable now.  This function allows you to specify a checkin comment.  It checks in only the current file being visited - pending changes for any other files will not be checked in."
   (interactive)
   (if buffer-file-name
       (if (file-writable-p buffer-file-name)
-          (let* (
-                 (exitcode nil)
+          (let* ((exitcode nil)
                  (shortname (file-name-nondirectory buffer-file-name))
                  (comment (read-string (format "Comment for %s: " shortname) nil nil nil))
                  (command (list tfs/tf-exe "checkin" (format "/comment:%s" comment)
-                                buffer-file-name tfs/login ) )
-                 )
-            (tfs/append-to-message-buffer (concat "checkin " shortname "\n"))
+                                buffer-file-name)))
+            (tfs/append-to-message-buffer (concat "checkin " shortname ": "
+                                                  (prin1-to-string command) "\n"))
             (setq exitcode (apply 'call-process
                                   (car command)
                                   nil
                                   tfs/buffer-name
                                   nil
-                                  (cdr command)))
+                                  (append (cdr command) (list tfs/login))))
             (if (equal exitcode 0)
                 ;; revert to the (now) readonly version
                 (revert-buffer t t)
               (error "Checkin of %s was unsuccessful (%S)" buffer-file-name exitcode)))
-    
-        (error "Cannot checkin %s : the file is not writable" buffer-file-name )
-        )
-    (error "tfs/checkin: No file")
-    )
-  )
+
+        (error "Cannot checkin %s : the file is not writable" buffer-file-name))
+    (error "tfs/checkin: No file")))
 
 
 
 ;; -------------------------------------------------------
 ;; tfs/rename
 ;; performs a TFS rename on the file being visited by the current buffer.
-(defun tfs/rename()
-  "perform a tf rename on the file being visited by the current buffer."
+(defun tfs/rename ()
+  "perform a tf rename on the file being visited by the current buffer.  If successful, it also renames the buffer to the new name.
+"
   (interactive)
   (if buffer-file-name
       (let* (
              (exitcode nil)
              (shortname (file-name-nondirectory buffer-file-name))
              (newname (read-string (format "New name for %s: " shortname) nil nil nil))
-             (command (list tfs/tf-exe "rename" shortname newname tfs/login ))
-             )
-        (tfs/append-to-message-buffer (concat "rename " shortname " " newname "\n"))
+             (command (list tfs/tf-exe "rename" shortname newname)))
+        (tfs/append-to-message-buffer (concat "rename " shortname " " newname ": "
+                                                  (prin1-to-string command) "\n"))
         (setq exitcode (apply 'call-process
                               (car command)
                               nil
                               tfs/buffer-name
                               nil
-                              (cdr command)))
+                              (append (cdr command) (list tfs/login))))
         (if (equal exitcode 0)
-            nil
+            (set-visited-file-name newname)
           (error "Rename of %s was unsuccessful (%S)" buffer-file-name exitcode)))
-    
-    (error "tfs/rename: No file")
-    )
-  )
+
+    (error "tfs/rename: No file")))
 
 
 
 ;; -------------------------------------------------------
 ;; tfs/add
 ;; performs a TFS add on a file
-(defun tfs/add()
+(defun tfs/add ()
   "perform a tf add on the file being visited by the current buffer."
   (interactive)
   (if buffer-file-name
-      (let* (
-             (shortname (file-name-nondirectory buffer-file-name))
-             (command  (list tfs/tf-exe "add" shortname  tfs/login ))
-             (exitcode nil)
-             )
+      (let* ((shortname (file-name-nondirectory buffer-file-name))
+             (command (list tfs/tf-exe "add" shortname))
+             (exitcode nil))
 
-        (tfs/append-to-message-buffer (concat "add " shortname "\n"))
+        (tfs/append-to-message-buffer (concat "add " shortname ": "
+                                                  (prin1-to-string command) "\n"))
         (setq exitcode (apply 'call-process
                               (car command)
                               nil
                               tfs/buffer-name
                               nil
-                              (cdr command)))
+                              (append (cdr command) (list tfs/login))))
         (if (equal exitcode 0)
-            nil
+            ;; TODO: make this conditional on a verbose setting
+            ;; After using this package for a while, the Add is sort of
+            ;; opaque. Hard to know when it's done.  It's nice to get
+            ;; a confirmation message. The warm and fuzzy factor.
+            (message (format "Successful add of %s" buffer-file-name))
           (error "Add of %s was unsuccessful (%S)" buffer-file-name exitcode)))
-    
-    (error "tfs/add: No file")
-    )
-  )
+
+    (error "tfs/add: No file")))
 
 
 
 
 ;; -------------------------------------------------------
 ;; tfs/delete
-;; performs a TFS delete on a file
-(defun tfs/delete()
-  "perform a tf delete on the file being visited by the current buffer."
+;; performs a TFS delete on a file.
+(defun tfs/delete ()
+  "perform a tf delete on the file being visited by the current buffer. Kills the buffer if the delete is successful."
   (interactive)
   (if buffer-file-name
       (let ((command)
             (exitcode nil)
-            (shortname (file-name-nondirectory buffer-file-name))
-            )
+            (shortname (file-name-nondirectory buffer-file-name)))
 
         (if (y-or-n-p (concat "Really delete " shortname  "? "))
             (progn
-              (setq command  (list tfs/tf-exe
+              (setq command (list tfs/tf-exe
                                    "delete"
-                                   shortname  tfs/login ) )
-              (tfs/append-to-message-buffer (concat "delete " shortname "\n"))
+                                   shortname))
+              (tfs/append-to-message-buffer (concat "delete " shortname ": "
+                                                  (prin1-to-string command) "\n"))
               (setq exitcode (apply 'call-process
                                     (car command)
                                     nil
                                     tfs/buffer-name
                                     nil
-                                    (cdr command)))
+                                  (append (cdr command) (list tfs/login))))
               (if (equal exitcode 0)
-                  nil
-                (error "Add of %s was unsuccessful (%S)" buffer-file-name exitcode)))
-          )
-        )
-    (error "tfs/delete: No file")
-    )
-  )
+                  (kill-buffer)
+                (error "Delete of %s was unsuccessful (%S)" buffer-file-name exitcode)))))
+    (error "tfs/delete: No file")))
 
 
 
@@ -280,115 +280,101 @@
 ;; -------------------------------------------------------
 ;; tfs/get
 ;; performs a TFS get: retrieve a readonly copy of the specified file.
-;; 
-(defun tfs/get()
+;;
+(defun tfs/get ()
   "perform a tf get on the specified file. Happens only when the file is not writable. "
   (interactive)
   (if buffer-file-name
-      (let ((command (list tfs/tf-exe "get" buffer-file-name tfs/login ) )
+      (let ((command (list tfs/tf-exe "get" buffer-file-name))
             (exitcode nil)
-            (shortname (file-name-nondirectory buffer-file-name))
-            )
+            (shortname (file-name-nondirectory buffer-file-name)))
         (if (not (file-writable-p buffer-file-name))
             (progn
               ;;(tfs/prep-message-buffer)
-              (tfs/append-to-message-buffer (concat "get " shortname "\n"))
+              (tfs/append-to-message-buffer (concat "get " shortname ": "
+                                                  (prin1-to-string command) "\n"))
               (setq exitcode (apply 'call-process
                                     (car command)
                                     nil
                                     tfs/buffer-name
                                     nil
-                                    (cdr command)))
+                                    (append (cdr command) (list tfs/login))))
               (if (equal exitcode 0)
                   ;; get the latest version
                   (revert-buffer t t)
-                (error "Get of %s was unsuccessful (%S)" buffer-file-name exitcode))
-              )
+                (error "Get of %s was unsuccessful (%S)" buffer-file-name exitcode)))
 
-          (error "Will not get %s : the file is writable." shortname)
-          )
-        )
-    (error "tfs/get: No file")
-    )
-  )
+          (error "Will not get %s : the file is writable." shortname)))
+    (error "tfs/get: No file")))
 
 
 ;; -------------------------------------------------------
 ;; tfs/undo
 ;; performs a TFS undo: discards pending changes for the specified file. Happens only when writable.
-(defun tfs/undo()
+(defun tfs/undo ()
   "perform a tf undo on the specified file. Happens only when the file is writable. Confirms before discarding edits."
   (interactive)
   (if buffer-file-name
-      (let ((command (list tfs/tf-exe "undo" buffer-file-name tfs/login ) )
+      (let ((command (list tfs/tf-exe "undo" buffer-file-name))
             (exitcode nil)
-            (shortname (file-name-nondirectory buffer-file-name))
-            ) 
+            (shortname (file-name-nondirectory buffer-file-name)))
         (if (file-writable-p buffer-file-name)
             (if (y-or-n-p (concat "Discard current changes for " shortname  "? "))
                 (progn
-                  (tfs/append-to-message-buffer (concat "undo " shortname "\n"))
+                  (tfs/append-to-message-buffer (concat "undo " shortname ": "
+                                                  (prin1-to-string command) "\n"))
                   (setq exitcode (apply 'call-process
                                         (car command)
                                         nil
                                         tfs/buffer-name
                                         nil
-                                        (cdr command)))
+                                        (append (cdr command) (list tfs/login))))
                   (if (equal exitcode 0)
                       ;; get the checked-out (reverted) version
                       (revert-buffer t t)
-                    (error "undo on %s was unsuccessful (%S)" buffer-file-name exitcode)
-                    )
-                  )
-              )
-          (error "cannot undo %s : the file is not writable" shortname)
-          )
-        )
-    (error "tfs/undo: No file")
-    )
-  )
- 
+                    (error "undo on %s was unsuccessful (%S)"
+                           buffer-file-name exitcode))))
+          (error "cannot undo %s : the file is not writable" shortname)))
+    (error "tfs/undo: No file")))
+
 
 
 ;; -------------------------------------------------------
 ;; tfs/history
 ;; performs a TFS history: retrieve and display the TFS history of specified file
-(defun tfs/history()
+(defun tfs/history ()
   "perform a tf history on the specified file."
   (interactive)
   (if buffer-file-name
-      (let* ((command (list tfs/tf-exe "history" "/format:detailed" buffer-file-name tfs/login ) )
+      (let* ((command (list tfs/tf-exe "history" "/format:detailed"
+                            buffer-file-name))
              (exitcode nil)
-             (history-bufname (concat "*TFS-history* " buffer-file-name ))
+             (history-bufname (concat "*TFS-history* " buffer-file-name))
              (shortname (file-name-nondirectory buffer-file-name))
-             (buffer  (get-buffer-create history-bufname))
-             )
-        (save-excursion (set-buffer buffer) (erase-buffer) )
-        (tfs/append-to-message-buffer (concat "history " shortname "\n"))
+             (buffer (get-buffer-create history-bufname)))
+        (save-excursion (set-buffer buffer) (erase-buffer))
+        (tfs/append-to-message-buffer (concat "history " shortname ": "
+                                                  (prin1-to-string command) "\n"))
         (setq exitcode (apply 'call-process
                               (car command)
                               nil
                               history-bufname
                               nil
-                              (cdr command)))
+                                  (append (cdr command) (list tfs/login))))
         (if (equal exitcode 0)
             (display-buffer history-bufname t)
-          (error "tf history of %s was unsuccessful (%S)" shortname exitcode))
-        )
-    (error "tfs/history: No file")
-    )
-  ) 
+          (error "tf history of %s was unsuccessful (%S)" shortname exitcode)))
+    (error "tfs/history: No file")))
 
 
 ;; -------------------------------------------------------
 ;; tfs/properties
 ;; gets information on the file being visited by the current buffer.
 ;; displays that information in a new temp buffer.
-(defun tfs/properties()
-  "does a tf properties: gets TFS properties of the current file. "
+(defun tfs/properties ()
+  "Performs a tf properties: gets TFS properties of the current file. "
   (interactive)
-  (tfs/action "properties" nil)
-  )
+  (tfs/action "properties" nil))
 
 
 
@@ -399,111 +385,99 @@
 ;; diff, properties, etc
 ;; displays that information in a new temp buffer.
 (defun tfs/action (verb retcode)
-  "does a tf \"action\": gets a tf query for the current file. "
+  "Performs a tf \"action\": gets a tf query for the current file. "
   (interactive)
   (if buffer-file-name
-      (let* ((command (list tfs/tf-exe verb buffer-file-name tfs/login ) )
+      (let* ((command (list tfs/tf-exe verb buffer-file-name))
              (exitcode nil)
-             (info-bufname (concat "*TFS-" verb "* " buffer-file-name ))
+             (info-bufname (concat "*TFS-" verb "* " buffer-file-name))
              (buffer (get-buffer-create info-bufname))
-             (shortname (file-name-nondirectory buffer-file-name))
-             )
-        (save-excursion (set-buffer buffer) (erase-buffer) )
-        (tfs/append-to-message-buffer (concat verb  shortname "\n"))
+             (shortname (file-name-nondirectory buffer-file-name)))
+        (save-excursion (set-buffer buffer) (erase-buffer))
+        (tfs/append-to-message-buffer (concat verb  shortname ": "
+                                                  (prin1-to-string command) "\n"))
         (setq exitcode (apply 'call-process
                               (car command)
                               nil
                               info-bufname
                               nil
-                              (cdr command)))
-        
+                              (append (cdr command) (list tfs/login))))
+
         (if (or (equal exitcode 0) (not (numberp retcode)) (equal exitcode retcode))
             (display-buffer info-bufname t)
-          (error (concat "Get TFS " verb " for %s was unsuccessful (%S)") buffer-file-name exitcode))
-        )
-    (error "tfs/%s: No file" verb)
-    )
-  ) 
+          (error (concat "Get TFS " verb " for %s was unsuccessful (%S)")
+                 buffer-file-name exitcode)))
+    (error "tfs/%s: No file" verb)))
 
 
 
 ;; -------------------------------------------------------
 ;; tfs/annotate
-(defun tfs/annotate()
+(defun tfs/annotate ()
   "Gets line-by-line annotation for the file being visited by the current buffer. Displays that information in the annotation viewer. This requires the TFPT.exe tool.  See 'tfs/tfpt-exe'."
   (interactive)
   (if (file-exists-p tfs/tfpt-exe)
       (if buffer-file-name
-          (let* (
-                 (exitcode nil)
+          (let* ((exitcode nil)
                  (shortname (file-name-nondirectory buffer-file-name))
-                 (command (list tfs/tfpt-exe "annotate" "/noprompt" shortname tfs/login ) )
-                 (annotation-bufname  (concat "*TFS annotation* " shortname ))
-                 (buffer (get-buffer-create annotation-bufname))
-                 )
-            (save-excursion (set-buffer buffer) (erase-buffer) )
+                 (command (list tfs/tfpt-exe "annotate" "/noprompt"
+                                shortname))
+                 (annotation-bufname (concat "*TFS annotation* " shortname))
+                 (buffer (get-buffer-create annotation-bufname)))
+            (save-excursion (set-buffer buffer) (erase-buffer))
             (message "computing...")
             ;;(message (apply 'concat command))
-            (tfs/append-to-message-buffer (concat "annotate " shortname "\n"))
+            (tfs/append-to-message-buffer (concat "annotate " shortname ": "
+                                                  (prin1-to-string command) "\n"))
             (setq exitcode (apply 'call-process
                                   (car command)
                                   nil
                                   annotation-bufname
                                   nil
-                                  (cdr command)))
-        
+                                  (append (cdr command) (list tfs/login))))
+
             (if (equal exitcode 0)
                 (progn
                   (display-buffer annotation-bufname t)
-                  (beginning-of-buffer-other-window 0)
-                  )
-              
-              (error "Get TFS properties for %s was unsuccessful (%S)" buffer-file-name exitcode))
-            )
-        (error "tfs/annotate: No file")
-        )
-    (error "%s does not exist. (have you set tfs/tfpt-exe?)"  tfs/tfpt-exe)
-    )
-  ) 
+                  (beginning-of-buffer-other-window 0))
 
-  
+              (error "Get TFS properties for %s was unsuccessful (%S)"
+                     buffer-file-name exitcode)))
+        (error "tfs/annotate: No file"))
+    (error "%s does not exist. (have you set tfs/tfpt-exe?)"  tfs/tfpt-exe)))
+
+
 ;; -------------------------------------------------------
 ;; tfs/thinginfo
 (defun tfs/thinginfo (exe thing)
   "Gets info on a workitem or changeset. This requires the TFPT.exe tool.  See 'tfs/tfpt-exe'."
-  (interactive)
   (if (file-exists-p exe)
-          (let* (
-                 (exitcode nil)
+          (let* ((exitcode nil)
                  (guess (thing-at-point 'word))
-                 (item-number (read-string (concat thing ": ")  guess nil nil ))
-                 (command (list exe thing item-number tfs/login ) )
-                 (bufname  (concat "*TFS " thing "* " item-number ))
-                 (buffer (get-buffer-create bufname))
-                 )
-            (save-excursion (set-buffer buffer) (erase-buffer) )
+                 (item-number (read-string (concat thing ": ")  guess nil nil))
+                 (command (list exe thing item-number))
+                 (bufname (concat "*TFS " thing "* " item-number))
+                 (buffer (get-buffer-create bufname)))
+            (save-excursion (set-buffer buffer) (erase-buffer))
             ;;(message (apply 'concat command))
-            (tfs/append-to-message-buffer (concat thing " " item-number "\n"))
+            (tfs/append-to-message-buffer (concat thing " " item-number ": "
+                                                  (prin1-to-string command) "\n"))
             (setq exitcode (apply 'call-process
                                   (car command)
                                   nil
                                   bufname
                                   nil
-                                  (cdr command)))
-        
+                                  (append (cdr command) (list tfs/login))))
+
             (if (equal exitcode 0)
                 (progn
                   (display-buffer bufname t)
-                  (beginning-of-buffer-other-window 0)
-                  )
-              
-              (error (concat "Get TFS " thing "%s was unsuccessful (%S)" item-number exitcode))
-            )
-            )
-            
-    (error "%s does not exist. (have you set tfs/tfpt-exe or tfs/tf-exe?)"  exe)
-    ) 
-  ) 
+                  (beginning-of-buffer-other-window 0))
+
+              (error (concat "Get TFS " thing "%s was unsuccessful (%S)"
+                             item-number exitcode))))
+
+    (error "%s does not exist. (have you set tfs/tfpt-exe or tfs/tf-exe?)"  exe)))
 
 
 ;; -------------------------------------------------------
@@ -511,79 +485,70 @@
 (defun tfs/workitem ()
   "Gets info on a workitem. This requires the TFPT.exe tool.  See 'tfs/tfpt-exe'."
   (interactive)
-  (tfs/thinginfo  tfs/tfpt-exe "workitem")
-  )
+  (tfs/thinginfo  tfs/tfpt-exe "workitem"))
 
 ;; -------------------------------------------------------
-;; tfs/workitem
+;; tfs/changeset
 (defun tfs/changeset ()
   "Gets info on a changeset. This requires the TFPT.exe tool.  See 'tfs/tfpt-exe'."
   (interactive)
-  (tfs/thinginfo tfs/tf-exe "changeset")
-  )
+  (tfs/thinginfo tfs/tf-exe "changeset"))
 
 
 ;; -------------------------------------------------------
 ;; tfs/diff
 ;; diff on the file being visited by the current buffer.
 (defun tfs/diff()
-  "does a tf diff on the current file. "
+  "Performs a tf diff on the current file. "
   (interactive)
-  (tfs/action "diff" 100)
-  )
+  (tfs/action "diff" 100))
 
 
 
 ;; -------------------------------------------------------
 ;; tfs/status
-;; tf status. 
-(defun tfs/status()
-  "does a tf status. Displays the result in a buffer."
+;; tf status.
+(defun tfs/status ()
+  "Performs a tf status. Displays the result in a buffer."
   (interactive)
-  (let* (
-         (command (list tfs/tf-exe "status" tfs/login ) )
+  (let* ((command (list tfs/tf-exe "status"))
          (exitcode nil)
          (status-bufname  "*TFS-status*")
-         (buffer (get-buffer-create status-bufname))
-         )
-    (save-excursion (set-buffer buffer) (erase-buffer) )
-    (tfs/append-to-message-buffer "status\n")
+         (buffer (get-buffer-create status-bufname)))
+    (save-excursion (set-buffer buffer) (erase-buffer))
+    (tfs/append-to-message-buffer (concat "status" ": "
+                                                  (prin1-to-string command) "\n"))
     (setq exitcode (apply 'call-process
                           (car command)
                           nil
                           status-bufname
                           nil
-                          (cdr command)))
-        
-    (if (equal exitcode 0) 
+                                  (append (cdr command) (list tfs/login))))
+
+    (if (equal exitcode 0)
         (display-buffer status-bufname t)
-      (error "Get TFS status was unsuccessful (%S)" exitcode))
-    )
-  ) 
+      (error "Get TFS status was unsuccessful (%S)" exitcode))))
 
 
-;; scrolls the TFS Messages buffer to the end, before appending content 
-(defun tfs/prep-message-buffer()
+(defun tfs/prep-message-buffer ()
+  "scrolls the TFS Messages buffer to the end. Intended to be used by the tfs.el module internally, before appending content to the messages buffer."
+
   (let ((buf (current-buffer))
         (tfsbuffer (get-buffer-create tfs/buffer-name)))
     (set-buffer tfsbuffer)
     (goto-char (point-max))
-    (set-buffer buf)
-    )
-  )
+    (set-buffer buf)))
 
-;; append text to the TFS Messages buffer
-(defun tfs/append-to-message-buffer(text)
+
+(defun tfs/append-to-message-buffer (text)
+  "Append text to the TFS Messages buffer.  Intended for internal use only."
   (let ((buf (current-buffer))
         (tfsbuffer (get-buffer-create tfs/buffer-name)))
     (set-buffer tfsbuffer)
     (goto-char (point-max))
     (insert text)
-    (set-buffer buf)
-    )
-  )
+    (set-buffer buf)))
 
 
 (provide 'tfs)
-
 

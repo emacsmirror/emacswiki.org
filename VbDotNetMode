@@ -34,6 +34,16 @@ vbnet-mode.el is a mode for editing VB.NET.  It is based off of the venerable vi
 
 = Versions =
 
+=== 1.6 ===
+
+2011-May-02
+DinoChiesa
+
+Summary of changes for v1.6:
+* slight tweak to compile integration - now you can explicitly specify the compile command in comments
+* small bugfixes
+
+
 === 1.5c ===
 
 2011-April-06

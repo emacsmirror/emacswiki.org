@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.33
+;; Version: 0.34
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -158,7 +158,8 @@
 (defgroup fill-column-indicator nil
  "Graphically indicate the fill-column."
  :tag "Fill-Column Indicator"
- :group 'convenience)
+ :group 'convenience
+ :group 'fill)
 
 (defcustom fci-style 'shading
   "How fci-mode should indicate the fill-column.
@@ -380,11 +381,9 @@ for tips on troubleshooting.)"
         (add-hook 'after-change-functions #'fci-after-change-function nil t)
         (add-hook 'post-command-hook #'fci-correct-for-hscroll nil t)
         (add-hook 'change-major-mode-hook #'(lambda () (fci-mode -1)) nil t)
-        (ad-enable-advice 'set-fill-column 'after 'fill-column-indicator)
-        (ad-enable-advice 'show-paren-function 'around 'fill-column-indicator)
-        (ad-enable-advice 'mic-paren-highlight 'around 'fill-column-indicator)
+        (ad-enable-regexp "fill-column-indicator")
         (dolist (fn fci-advised-functions)
-          (ad-activate fn))
+          (ad-activate fn t))
         ;; In case we were already in fci-mode and are resetting the
         ;; indicator, clear out any existing overlays.
         (when fci-buffer-initialized
@@ -407,9 +406,7 @@ for tips on troubleshooting.)"
       (setq truncate-lines fci-saved-truncate-lines
             fci-saved-truncate-lines nil))
     (setq fci-column nil)
-    (ad-disable-advice 'set-fill-column 'after 'fill-column-indicator)
-    (ad-disable-advice 'show-paren-function 'around 'fill-column-indicator)
-    (ad-disable-advice 'mic-paren-highlight 'around 'fill-column-indicator)
+    (ad-disable-regexp "fill-column-indicator")
     (dolist (fn fci-advised-functions)
       (ad-activate fn))
     (remove-hook 'after-change-functions #'fci-after-change-function t)
@@ -456,7 +453,7 @@ for tips on troubleshooting.)"
         (grays (display-grayscale-p))
         (planes (display-planes))
         (color (display-color-p)))
-    (cond 
+    (cond
      ((and light-bg grays)
       "#cccccc")
      ((and (not light-bg) grays)
@@ -563,7 +560,7 @@ for tips on troubleshooting.)"
 
 (defun fci-put-overlays-shading (start end) 
   (goto-char start)
-  (let (o o2)
+  (let (o)
     (while (search-forward "\n" end t)
       (goto-char (match-beginning 0))
       (if (< (current-column) fci-column)
@@ -653,7 +650,7 @@ for tips on troubleshooting.)"
   ;; in other cases.  
   (if (and (< 0 (window-hscroll))
            auto-hscroll-mode
-           (< (current-column) (window-hscroll)))
+           (<= (current-column) (window-hscroll)))
       ;; Fix me:  Rather than setting hscroll to 0, this should reproduce the
       ;; relevant part of the auto-hscrolling algorithm.  Most people won't
       ;; notice the difference in behavior.

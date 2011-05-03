@@ -22,5 +22,20 @@ It can be found at [http://www.mulgasoft.com/emacsplus Emacs+].  (The Eclipse Ma
 
 It is available as free software under the Eclipse Public License - v 1.0.
 
+== Eclipse Public License ==
+
+Calling Emacs+ free software is a terrible lie! - There is no source code available.
+
+According to the author whom I contacted about this issue this is not by accident, but by design.
+-- Anonymous
+
+[new:AlexSchroeder:2011-05-03 07:31 UTC]
+The plugin uses the Eclipse Public License (EPL). According to the [http://www.gnu.org/licenses/license-list.html GNU license list], it "is similar to the Common Public License, and our comments on the CPL apply equally to the EPL. The only change is that the EPL removes the broader patent retaliation language regarding patent infringement suits specifically against Contributors to the EPL'd program." The Common Public License "is a free software license. Unfortunately, its weak copyleft and choice of law clause make it incompatible with the GNU GPL."
+
+Thus, no matter what the author says, the license says that it is free software and not "a terrible lie".
+
+Furthermore, if the plugin is distributed without source code, then it must inform "licensees how to obtain it in a reasonable manner on or through a medium customarily used for software exchange" according to section 3 a iv. If you really want to force the issue, you could contact the Eclipse Foundation or post on the community forum.
+-- Alex
+    
 ----
 CategoryRelated

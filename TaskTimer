@@ -1,0 +1,10 @@
+== Introduction ==
+
+Many issue tracking systems have some form of time tracking. Wanting to be accurate (that's the purpose, right?) after searching for an existing solution and finding none (probably missed it) <code>task-timer</code> was created. It is ultra simple code that allows you to simply time one task. Others are free to update and make this more useful. The use is simple:
+
+# Start the task timer <code>(task-timer-begin)</code>... typical binding is <code>C-ctb</code>
+# Get the task timer status (time since you started) <code>(task-timer-status)</code>... typical binding is <code>C-cts</code>
+
+The bindings were chosen to fit in with [[tea-time]] which is a count-down type timer. There is no stopping of a task timer. Simply call <code>task-timer-begin</code> and the start time will be updated. The code runs nothing in the background, it simply sets a variable containing the time the task began then on the status call does the simple date math and reports the time elapsed.
+
+Lisp:task-timer.el

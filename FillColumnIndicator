@@ -3,7 +3,7 @@ Many modern editors and IDEs can graphically indicate the location of the fill c
 The two different styles of fill-column indication look like this:
 
 || [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
-|| "Shading" style || "Rule" style ||
+|| Shading style || Rule style ||
 
 == Installation and Usage ==
 

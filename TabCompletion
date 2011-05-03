@@ -50,7 +50,14 @@ Note the use of "##\\_>##" instead of "##\\>##": this allows to tab-expand symbo
 Note: to enable tab completion in the `eval-expression` minibuffer, I just bind the tab key to `hippie-expand` in the `read-expression-map`.
 {{{
 (define-key read-expression-map [(tab)] 'hippie-expand)
-(define-key read-expression-map [(shift tab)] 'unexpand)
+}}}
+Note: and since I like to undo the expansion before the end of an expansion cycle, I like to define unexpand as well:
+{{{
+(defun hippie-unexpand ()
+  (interactive)
+  (hippie-expand 0))
+
+(define-key read-expression-map [(shift tab)] 'hippie-unexpand)
 }}}
 
 

@@ -6,11 +6,11 @@
 ;;            : T.K.Anderson
 ;;            : Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : April 1996
-;; Modified   : April 2011
-;; Version    : 1.5c
+;; Modified   : May 2011
+;; Version    : 1.6
 ;; Keywords   : languages, basic, VB, VBNET
 ;; X-URL      : http://code.google.com/p/vbnetmode/
-;; Last-saved : <2011-April-05 11:58:58>
+;; Last-saved : <2011-May-02 12:48:13>
 
 ;; Copyright (C) 1996 Fred White <fwhite@alum.mit.edu>
 ;; Copyright (C) 1998 Free Software Foundation, Inc.
@@ -137,7 +137,7 @@
 ;;  Flymake Integration
 ;;  ----------------------------
 ;;
-;;  You can use flymake with vb.net code to automatically check the
+;;  You can use flymake with vb.net mode to automatically check the
 ;;  syntax of your vb.net code, and highlight errors.  To do so, add a
 ;;  comment line like this to each .vb file that you use flymake with:
 ;;
@@ -156,7 +156,7 @@
 ;;
 ;;    2. vbnet-mode generally looks for the marker line in the first N
 ;;       lines of the file, where N is set in
-;;       `vbnet-flymake-cmd-line-limit'.  See the documentation on that
+;;       `vbnet-cmd-line-limit'.  See the documentation on that
 ;;       variable for more information.
 ;;
 ;;    3. the command SHOULD NOT include the name of the source file
@@ -175,11 +175,11 @@
 ;;  delete.
 ;;
 ;;  vbnet-mode also fiddles with some other flymake things.  In
-;;  particular it: adds vb to the flymake "allowed filename masks"; adds
+;;  particular it: adds .vb to the flymake "allowed filename masks"; adds
 ;;  parsing for vbc error messages; redefines the process sentinel to
 ;;  not treat non-zero exit status as an error (because vbc.exe returns
 ;;  non-zero status when syntax errors are present); and adds advice to
-;;  the parsing logic. This all should be pretty benign for all other
+;;  the error parsing logic. This all should be pretty benign for all other
 ;;  flymake buffers.  But it might not be.
 ;;
 ;;  You can explicitly turn the flymake integration for VB.NET off by
@@ -206,7 +206,17 @@
 ;;  Compile Integration
 ;;  ----------------------------
 ;;
-;;  VBnet-mode now installs an error regexp for vbc.exe into
+;;  vbnet-mode binds the function `vbnet-invoke-compile-interactively'
+;;  to "\C-x\C-e" .  This function attempts to intellgently guess the
+;;  format of the compile command to use for a buffer.  It looks in the
+;;  comments at the head of the buffer for a line that begins with
+;;  compile: .  If found, vbnet-mode suggests the text that follows as
+;;  the compilation command when running `compile' .  If such a line is
+;;  not found, vbnet-mode falls back to a msbuild or nmake command.
+;;  See the documentation on `vbnet-cmd-line-limit' for further
+;;  information.
+;;
+;;  vbnet-mode now installs an error regexp for vbc.exe into
 ;;  `compilation-error-regexp-alist-alist', which allows `next-error'
 ;;  and `previous-error' (defined in compile.el) to navigate to the next
 ;;  and previous compile errors in the vb buffer.
@@ -338,7 +348,7 @@
 ;;      specifies the flymake command to use.  For example, specify
 ;;      flymake-command: c:\.net3.5\vbc.exe /t:module /nologo
 ;;      in the comment at the top of the file, to tell flymake to use
-;;      that command. For info, see the var `vbnet-flymake-cmd-line-limit'.
+;;      that command. For info, see the var `vbnet-cmd-line-limit'.
 ;;
 ;; 1.5b DPC changes February 2011
 ;;
@@ -502,38 +512,66 @@ only if flymake is loaded."
   "*Whether to allow single line if"
   :type 'boolean :group 'vbnet)
 
-(defcustom vbnet-flymake-cmd-line-limit 18
+(defcustom vbnet-cmd-line-limit 18
   "The number of lines at the top of the file to look in, to find
-the command \"stub\" that flymake will use to check the syntax for the
-current buffer.  The command \"stub\" string is prefixed with
-\"flymake-command:\".  For example,
-
-  flymake-command: DOTNETDIR\vbc.exe /target:netmodule /r:foo.dll
-
-Be sure to specify the proper path for your vbc.exe. This line
-should appear in a comment inside the VB.NET buffer. The string
-should not include the name of the file for the buffer being
-checked.  vbnet-mode appends the name of the source file to
-compile, to this \"stub\" before passing the command to flymake
-to run it.
-
-If the buffer depends on external libraries, then you will want
-to include /R arguments to that vbc.exe command.
-
-To repeat, this variable sets the number of lines to search.  It
-is an integer. Do not set this variable to the flymake command
-string.
+the command that vbnet-mode will use to compile the current
+buffer, or the command \"stub\" that vbnet-mode will use to
+check the syntax of the current buffer via flymake.
 
 If the value of this variable is zero, then vbnet-mode looks
-everywhere in the file.  If the value is positive, then vbnet
-looks only in the first N lines. If negative, then only in the
-final N lines.
+everywhere in the file.  If the value is positive, then only in
+the first N lines. If negative, then only in the final N lines.
 
-If the string flymake-command: is present in the given set of
-lines, vbnet-mode will take anything after flymake-command: as
-the command to run for a flymake check.  Be sure to make it a
-legal command, or flymake will report an error and disable
-itself.
+The line should appear in a comment inside the C# buffer.
+
+
+Compile
+--------
+
+In the case of compile, the compile command must be prefixed with
+\"compile:\".  For example,
+
+ // compile: csc.exe /r:Hallo.dll Arfie.cs
+
+
+This command will be suggested as the compile command when the
+user invokes `compile' for the first time.
+
+
+Flymake
+--------
+
+In the case of flymake, the command \"stub\" string must be
+prefixed with \"flymake-command:\".  For example,
+
+  // flymake-command: DOTNETDIR\csc.exe /target:netmodule /r:foo.dll
+
+In the case of flymake-command, the string should NOT
+include the name of the file for the buffer being checked.
+vbnet-mode appends the name of the source file to compile, to
+this command \"stub\" before passing the command to flymake to
+run it.
+
+If for some reason the command is invalid or illegal, flymake
+will report an error and disable itself.
+
+
+In all cases
+------------
+
+Be sure to specify the proper path for your csc.exe, whatever
+version that might be, or no path if you want to use the system
+PATH search.
+
+If the buffer depends on external libraries, then you will want
+to include /R arguments to that csc.exe command.
+
+To be clear, this variable sets the number of lines to search for
+the command.  This cariable is an integer.
+
+If the marker string (either \"compile:\" or \"flymake-command:\"
+is present in the given set of lines, vbnet-mode will take
+anything after the marker string as the command to run.
 
 "
   :type 'integer   :group 'vbnet)
@@ -805,7 +843,8 @@ alist. Leaves point after the \"End Namespace\", if it exists.
                     (re-search-forward (vbnet-regexp (cadr pair)) nil t))))))
 
          (t
-          (setq done t))))
+          ;; not done yet...
+          (setq done nil))))
 
       (if (and (not done)
                (not suppress-next))
@@ -2602,6 +2641,86 @@ direct vbc.exe build for syntax checking purposes.")
 
 
 
+(defun vbnet-split-string-respecting-quotes (s)
+  "splits a string into tokens, respecting double quotes
+For example, the string 'This is \"a string\"' will be split into 3 tokens.
+
+More pertinently, the string
+   'csc /t:module /R:\"c:\abba dabba\dooo\Foo.dll\"'
+
+...will be split into 3 tokens.
+
+This fn also removes quotes from the tokens that have them. This is for
+compatibility with flymake and the process-start fn.
+
+"
+  (let ((local-s s)
+        (my-re-1 "[^ \"]+\"[^\"]+\"\\|[^ \"]+")
+        (my-re-2 "\\([^ \"]+\\)\"\\([^\"]+\\)\"")
+        (tokens))
+    (while (string-match my-re-1 local-s)
+      (let ((token (match-string 0 local-s))
+            (remainder (substring local-s (match-end 0))))
+        (if (string-match my-re-2 token)
+            (setq token (concat (match-string 1 token) (match-string 2 token))))
+        (message "token: %s" token)
+        (setq tokens (append tokens (list token)))
+        (setq local-s remainder)))
+  tokens))
+
+
+(defun vbnet-get-value-from-comments (marker-string line-limit)
+  "gets a string from the header comments in the current buffer.
+
+This is used to extract the flymake command and the compile
+command from the comments.
+
+It looks for \"marker-string:\" and returns the string that
+follows it, or returns nil if that string is not found.
+
+eg, when marker-string is \"flymake-command\", and the following
+string is found at the top of the buffer:
+
+     flymake-command: vbc.exe /r:Hallo.dll
+
+...then this command will return the string
+
+     \"vbc.exe /r:Hallo.dll\"
+
+"
+
+  (let (start search-limit found)
+    ;; determine what lines to look in
+    (save-excursion
+      (save-restriction
+        (widen)
+        (cond ((> line-limit 0)
+               (goto-char (setq start (point-min)))
+               (forward-line line-limit)
+               (setq search-limit (point)))
+              ((< line-limit 0)
+               (goto-char (setq search-limit (point-max)))
+               (forward-line line-limit)
+               (setq start (point)))
+              (t                        ;0 => no limit (use with care!)
+               (setq start (point-min))
+               (setq search-limit (point-max))))))
+
+    ;; look in those lines
+    (save-excursion
+      (save-restriction
+        (widen)
+        (let ((re-string
+               (concat "\\b" marker-string "[ \t]*:[ \t]*\\(.+\\)$")))
+          (if (and start
+                   (< (goto-char start) search-limit)
+                   (re-search-forward re-string search-limit 'move))
+
+              (buffer-substring-no-properties
+               (match-beginning 1)
+               (match-end 1))))))))
+
+
 
 (defun vbnet-flymake-get-cmdline (source base-dir)
   "Gets the cmd line for running a flymake session in a VB.NET buffer.
@@ -2622,7 +2741,7 @@ In general, you should use a target type of \"module\" (eg,
 /t:module) to allow vbnet-flymake to clean up the products of the
 build.
 
-See `vbnet-flymake-cmd-line-limit' for a way to restrict where vbnet-mode
+See `vbnet-cmd-line-limit' for a way to restrict where vbnet-mode
 will search for the command.
 
 If this string is not found, then this fn will fallback to a
@@ -2630,40 +2749,11 @@ generated vbc.exe command.
 
 "
   (let ((explicitly-specified-command
-         (let ((line-limit vbnet-flymake-cmd-line-limit)
-               start search-limit found)
-           ;; determine what lines to look in
-           (save-excursion
-             (save-restriction
-               (widen)
-               (cond ((> line-limit 0)
-                      (goto-char (setq start (point-min)))
-                      (forward-line line-limit)
-                      (setq search-limit (point)))
-                     ((< line-limit 0)
-                      (goto-char (setq search-limit (point-max)))
-                      (forward-line line-limit)
-                      (setq start (point)))
-                     (t                        ;0 => no limit (use with care!)
-                      (setq start (point-min))
-                      (setq search-limit (point-max))))))
-
-           ;; look in those lines
-           (save-excursion
-             (save-restriction
-               (widen)
-               (if (and start
-                        (< (goto-char start) search-limit)
-                        (re-search-forward "\\bflymake-command[ \t]*:[ \t]*\\(.+\\)$" search-limit 'move))
-
-                   (buffer-substring-no-properties
-                    (match-beginning 1)
-                    (match-end 1))))))))
-
+         (vbnet-get-value-from-comments "flymake-command" vbnet-cmd-line-limit)))
     (cond
      (explicitly-specified-command
       ;; the marker string was found in the buffer
-      (let ((tokens (split-string explicitly-specified-command "[ \t]" t)))
+      (let ((tokens (vbnet-split-string-respecting-quotes explicitly-specified-command)))
         ;; implicitly append the name of the temporary source file
         (list (car tokens) (append (cdr tokens) (list flymake-temp-source-file-name)))))
 
@@ -2807,7 +2897,7 @@ once, after flymake has loaded.
 
   ;; 4. define some advice for the error parsing
   (defadvice flymake-parse-line (around
-                                 flymake-for-csharp-parse-line-patch
+                                 flymake-for-vbnet-parse-line-patch
                                  activate compile)
     ;; This advice will run in all buffers.  Let's may sure we
     ;; actually execute the important stiff only when a VB buffer is active.
@@ -2847,6 +2937,72 @@ once, after flymake has loaded.
 
 ;; ========================================================================
 ;; compile integration
+
+
+(defun vbnet-guess-compile-command ()
+  "set `compile-command' intelligently depending on the
+current buffer, or the contents of the current directory.
+"
+  (interactive)
+  (set (make-local-variable 'compile-command)
+
+       (cond
+        ((or (file-expand-wildcards "*.csproj" t)
+             (file-expand-wildcards "*.vcproj" t)
+             (file-expand-wildcards "*.vbproj" t)
+             (file-expand-wildcards "*.shfbproj" t)
+             (file-expand-wildcards "*.sln" t))
+         "msbuild ")
+
+        ;; sometimes, not sure why, the buffer-file-name is
+        ;; not set.  Can use it only if set.
+        (buffer-file-name
+         (let ((filename (file-name-nondirectory buffer-file-name)))
+           (cond
+
+            ;; editing a vb file - check for an explicitly-specified command
+            ((string-equal (substring buffer-file-name -3) ".vb")
+             (let ((explicit-compile-command
+                    (vbnet-get-value-from-comments "compile" vbnet-cmd-line-limit)))
+               (or explicit-compile-command
+                   (concat "nmake " ;; assume a makefile exists
+                           (file-name-sans-extension filename)
+                           ".exe"))))
+
+            ;; something else - do a typical .exe build
+            (t
+             (concat "nmake "
+                     (file-name-sans-extension filename)
+                     ".exe")))))
+        (t
+         ;; punt
+         "nmake "))))
+
+
+(defun vbnet-invoke-compile-interactively ()
+  "fn to wrap the `compile' function.  This simply
+checks to see if `compile-command' has been previously set, and
+if not, invokes `vbnet-guess-compile-command' to set the value.
+Then it invokes the `compile' function, interactively.
+
+The effect is to guess the compile command only once, per buffer.
+
+I tried doing this with advice attached to the `compile'
+function, but because of the interactive nature of the fn, it
+didn't work the way I wanted it to. So this fn should be bound to
+the key sequence the user likes for invoking compile, like ctrl-c
+ctrl-e.
+
+"
+  (interactive)
+  (cond
+   ((not (boundp 'vbnet-local-compile-command-has-been-set))
+    (vbnet-guess-compile-command)
+    (set (make-local-variable 'vbnet-local-compile-command-has-been-set) t)))
+  ;; local compile command has now been set
+  (call-interactively 'compile))
+
+
 
 (eval-after-load "compile"
   '(progn
@@ -2942,7 +3098,6 @@ Here's a summary of the key bindings:
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'vbnet-indent-line)
 
-
   ;; These vars are defined in lisp.el - not sure if
   ;; this is helpful. See the documentation on
   ;; `vbnet-moveto-beginning-of-defun' for why.
@@ -2955,6 +3110,10 @@ Here's a summary of the key bindings:
   ;;(make-local-variable 'vbnet-associated-files)
   ;; doing this here means we need not check to see if it is bound later.
   (add-hook 'find-file-hooks 'vbnet-load-associated-files)
+
+  ;; compile
+  (local-set-key "\C-x\C-e"  'vbnet-invoke-compile-interactively)
+
 
   (run-hooks 'vbnet-mode-hook)
 
@@ -2989,11 +3148,10 @@ Here's a summary of the key bindings:
        (if vbnet-want-flymake-fixup
            (vbnet-flymake-install))))
 
-  )
 
+  )
 
 
 (provide 'vbnet-mode)
 
 ;;; vbnet-mode.el ends here
-
