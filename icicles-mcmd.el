@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 10:38:35 2011 (-0700)
+;; Last-Updated: Tue May  3 09:38:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16886
+;;     Update #: 16900
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -134,6 +134,7 @@
 ;;    `icicle-next-prefix-candidate-alt-action',
 ;;    `icicle-next-S-TAB-completion-method',
 ;;    `icicle-next-TAB-completion-method', `icicle-other-history',
+;;    `icicle-plus-saved-sort',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
 ;;    `icicle-prefix-word-complete',
@@ -178,6 +179,7 @@
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
+;;    `icicle-toggle-highlight-saved-candidates',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-incremental-completion',
@@ -207,6 +209,7 @@
 ;;    `toggle-icicle-dot', `toggle-icicle-expand-to-common-match',
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
+;;    `toggle-icicle-highlight-saved-candidates',
 ;;    `toggle-icicle-ignored-extensions',
 ;;    `toggle-icicle-ignored-space-prefix',
 ;;    `toggle-icicle-incremental-completion',
@@ -1673,6 +1676,20 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
     (icicle-msg-maybe-in-minibuffer
      (format "Sort order is %s%s"
              (icicle-current-sort-order nil) (if icicle-reverse-sort-p ", REVERSED" "")))))
+
+;;;###autoload
+(defun icicle-plus-saved-sort ()        ; Bound to `C-M-+' during completion.
+  "Sort candidates by combining their current order with the saved order."
+  (interactive)
+  (let ((icicle-sort-comparer  'icicle-merge-saved-order-less-p)
+        (cands                 (copy-sequence icicle-completion-candidates)))
+    (setq icicle-completion-candidates
+          (if (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+              (icicle-strip-ignored-files-and-sort cands)
+            (icicle-maybe-sort-maybe-truncate cands))))
+  (when (get-buffer-window "*Completions*" 0) (icicle-display-candidates-in-Completions))
+  (when (interactive-p) (icicle-msg-maybe-in-minibuffer "Added in the saved sort order")))
+
  
 ;;(@* "Other commands to be used mainly in the minibuffer")
 
@@ -1771,6 +1788,7 @@ These are the main Icicles actions and their minibuffer key bindings:
 
  * Toggle/cycle Icicles options on the fly.  Key:   \tCurrently:
      Highlighting of past inputs             \\[icicle-toggle-highlight-historical-candidates]\t%S
+     Highlighting of saved candidates        \\[icicle-toggle-highlight-saved-candidates]\t%S
      Removal of duplicate candidates         \\[icicle-toggle-transforming]\t%S
      Sort order                              \\[icicle-change-sort-order]\t%s
      Alternative sort order                  \\[icicle-dispatch-M-comma]\t%s
@@ -1952,6 +1970,7 @@ the result in the echo area or a popup buffer, *Pp Eval Output*.
 It also provides some of the Emacs-Lisp key bindings during expression
 editing."
              icicle-highlight-historical-candidates-flag
+             icicle-highlight-saved-candidates-flag
              icicle-transform-function
              (icicle-current-sort-order nil)
              (icicle-current-sort-order 'ALTERNATIVE)
@@ -6860,13 +6879,28 @@ duration of `icicle-buffer'."
   "Toggle `icicle-highlight-historical-candidates-flag'.
 Bound to `C-pause' in the minibuffer."
   (interactive)
-  (setq icicle-highlight-historical-candidates-flag
-        (not icicle-highlight-historical-candidates-flag))
+  (setq icicle-highlight-historical-candidates-flag  (not icicle-highlight-historical-candidates-flag))
   (icicle-complete-again-update)
   (icicle-msg-maybe-in-minibuffer
    (if icicle-highlight-historical-candidates-flag
        "Highlighting previously used inputs in *Completions* is now ON"
      "Highlighting previously used inputs in *Completions* is now OFF")))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;;###autoload
+(defalias 'toggle-icicle-highlight-saved-candidates
+    'icicle-toggle-highlight-saved-candidates)
+;;;###autoload
+(defun icicle-toggle-highlight-saved-candidates () ; Bound to `S-pause' in minibuffer.
+  "Toggle `icicle-highlight-saved-candidates-flag'.
+Bound to `S-pause' in the minibuffer."
+  (interactive)
+  (setq icicle-highlight-saved-candidates-flag  (not icicle-highlight-saved-candidates-flag))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer
+   (if icicle-highlight-saved-candidates-flag
+       "Highlighting saved candidates in *Completions* is now ON"
+     "Highlighting saved candidates in *Completions* is now OFF")))
 
 ;;;###autoload
 (defun icicle-dispatch-C-. ()           ; Bound to `C-.' in minibuffer.

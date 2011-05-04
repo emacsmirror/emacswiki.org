@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 15:24:57 2011 (-0700)
+;; Last-Updated: Tue May  3 09:28:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1473
+;;     Update #: 1474
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -826,6 +826,8 @@ input prompt is prefixed by `+'.
   `icicle-toggle-highlight-all-current' - Toggle max search highlight
   `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
+  `icicle-toggle-highlight-saved-candidates'
+                                       - Toggle highlighting saved
   `icicle-toggle-ignored-extensions'   - Toggle ignored files
   `icicle-toggle-ignored-space-prefix' - Toggle ignoring space prefix
   `icicle-toggle-incremental-completion' - Toggle apropos icompletion

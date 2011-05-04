@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 20 15:42:17 2011 (-0700)
+;; Last-Updated: Tue May  3 09:38:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12239
+;;     Update #: 12245
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -124,6 +124,7 @@
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
 ;;    `icicle-mctized-full-candidate',
+;;    `icicle-merge-saved-order-less-p',
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
@@ -135,7 +136,7 @@
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
 ;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
 ;;    `icicle-place-cursor', `icicle-place-overlay',
-;;    `icicle-prefix-any-candidates-p',
+;;    `icicle-position', `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-keys-first-p',
 ;;    `icicle-proxy-candidate-first-p', `icicle-put-at-head',
@@ -2707,7 +2708,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                  (put-text-property (match-beginning 0) (point) 'face faces))))))
 
                        ;; Highlight candidate if it has been saved.
-                       (when icicle-saved-completion-candidates
+                       (when (and icicle-highlight-saved-candidates-flag
+                                  icicle-saved-completion-candidates)
                          (let ((candidate  (icicle-current-completion-in-Completions)))
                            (when (member candidate icicle-saved-completion-candidates)
                              (let ((ov  (make-overlay beg end (current-buffer))))
@@ -4244,6 +4246,15 @@ occurrences."
         (setq tail  (cdr tail)))))       ; Remove matching singleton.
   elts)
 
+(defun icicle-position (item list)
+  "Zero-based position of first occurrence of ITEM in LIST, else nil."
+  (let ((index  0))
+    (catch 'icicle-position
+      (dolist (xx list)
+        (when (equal xx item) (throw 'icicle-position index))
+        (setq index  (1+ index)))
+      nil)))
+
 (defun icicle-remove-if (pred xs)
   "A copy of list XS with no elements that satisfy predicate PRED."
   (let ((result  ()))
@@ -5710,6 +5721,19 @@ This resets variable `icicle-current-TAB-method' when needed."
 ;;(@* "Icicles functions - sort functions")
 
 ;;; Icicles functions - sort functions -------------------------------
+
+(defun icicle-merge-saved-order-less-p (s1 s2)
+  "String S1 has a lower index than S2 in current and saved candidates list."
+  (let ((cs1  (icicle-position s1 icicle-completion-candidates))
+        (cs2  (icicle-position s2 icicle-completion-candidates))
+        (ss1  (icicle-position s1 icicle-saved-completion-candidates))
+        (ss2  (icicle-position s2 icicle-saved-completion-candidates))
+        len)
+    (unless cs1 (error "`%s' is not currently a candidate" s1))
+    (unless cs2 (error "`%s' is not currently a candidate" s2))
+    (unless ss1 (setq ss1  (setq len  (length icicle-saved-completion-candidates))))
+    (unless ss2 (setq ss2  (or len (length icicle-saved-completion-candidates))))
+    (< (+ cs1 ss1) (+ cs2 ss2))))
 
 (defun icicle-historical-alphabetic-p (s1 s2)
   "Non-nil means S1 is a past input and S2 is not or S1 < S2 (alphabet).

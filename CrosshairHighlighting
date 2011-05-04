@@ -19,7 +19,6 @@ Easy installation using AutoInstall: `M-x auto-install-batch col-highlight' -- [
 * HighlightCurrentLine  for ways to highlight the current line.
 * HighlightCurrentColumn for ways to highlight the current column.
 * ChangingCursorDynamically for a way to change the cursor type when Emacs is idle, making it more visible.
-* Lisp:hl-needed.el is despite its name rather similar to crosshairs. Please see the file for details.
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 10:53:07 2011 (-0700)
+;; Last-Updated: Tue May  3 09:28:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4273
+;;     Update #: 4279
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -104,8 +104,9 @@
 ;;    `icicle-highlight-input-completion-failure-delay',
 ;;    `icicle-highlight-input-completion-failure-threshold',
 ;;    `icicle-highlight-input-initial-whitespace-flag',
-;;    `icicle-highlight-lighter-flag', `icicle-ignored-directories',
-;;    `icicle-ignore-space-prefix-flag',
+;;    `icicle-highlight-lighter-flag',
+;;    `icicle-highlight-saved-candidates-flag',
+;;    `icicle-ignored-directories', `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
@@ -393,6 +394,8 @@
       menu-item
       "Toggle/Cycle/Change"
       (keymap
+       (highlighting-past menu-item "Toggle Highlighting Saved Candidates"
+        icicle-toggle-highlight-saved-candidates)
        (highlighting-past menu-item "Toggle Highlighting Past Inputs"
         icicle-toggle-highlight-historical-candidates)
        (removing-dups menu-item "Toggle Duplicate Removal" icicle-toggle-transforming)
@@ -1651,6 +1654,14 @@ completion failure, then only that highlighting is shown."
 See the Icicles doc, section `Nutshell View of Icicles', subsection
 `Completion Status Indicators' for more information."
   :type 'boolean :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-highlight-saved-candidates-flag t ; Toggle with `S-pause'.
+  "*Non-nil means highlight *Completions* candidates that have been saved.
+This is done using face `icicle-saved-candidate'.
+You save candidates using, for example, `C-M->'.  You can toggle this
+option from the minibuffer at any time using `S-pause'."
+  :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-ignored-directories (and (boundp 'vc-directory-exclusion-list)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  7 08:50:58 2011 (-0700)
+;; Last-Updated: Tue May  3 09:27:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7429
+;;     Update #: 7438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,7 +18,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `cl', `cus-edit', `cus-face',
+;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `bookmark+-mac', `cl', `cus-edit', `cus-face',
 ;;   `cus-load', `cus-start', `custom', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
 ;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
@@ -431,6 +433,8 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-highlight-all-current'  - Toggle max search highlight
 `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
+`icicle-toggle-highlight-saved-candidates'
+                                       - Toggle highlighting saved
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
 `icicle-toggle-incremental-completion' - Toggle apropos icompletion
@@ -699,6 +703,8 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-highlight-all-current'  - Toggle max search highlight
 `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
+`icicle-toggle-highlight-saved-candidates'
+                                       - Toggle highlighting saved
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
 `icicle-toggle-incremental-completion' - Toggle apropos icompletion
@@ -1172,6 +1178,10 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-toggle-angle-brackets]
              '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets
                :visible icicle-mode :help "Toggle option `icicle-key-descriptions-use-<>-flag'"))
+           (define-key icicle-options-menu-map [icicle-toggle-highlight-saved-candidates]
+             '(menu-item "Toggle Highlighting Saved Candidates"
+               icicle-toggle-highlight-saved-candidates :visible icicle-mode :keys "S-pause"
+               :help "Toggle option `icicle-highlight-saved-candidates-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-highlight-historical-candidates]
              '(menu-item "Toggle Highlighting Past Inputs"
                icicle-toggle-highlight-historical-candidates :visible icicle-mode :keys "C-pause"
@@ -1328,6 +1338,10 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-toggle-angle-brackets]
              '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets
                :help "Toggle option `icicle-key-descriptions-use-<>-flag'"))
+           (define-key icicle-menu-map [icicle-toggle-highlight-saved-candidates]
+             '(menu-item "Toggle Highlighting Saved Candidates"
+               icicle-toggle-highlight-saved-candidates :keys "S-pause"
+               :help "Toggle option `icicle-highlight-saved-candidates-flag'"))
            (define-key icicle-menu-map [icicle-toggle-highlight-historical-candidates]
              '(menu-item "Toggle Highlighting Past Inputs"
                icicle-toggle-highlight-historical-candidates :keys "C-pause"
@@ -3198,6 +3212,7 @@ complete)"))
   (define-key map [(meta ?h)]                'icicle-history) ; `M-h'
   (define-key map [(meta pause)]             'icicle-keep-only-past-inputs) ; `M-pause'
   (define-key map [(control pause)]     'icicle-toggle-highlight-historical-candidates) ; `C-pause'
+  (define-key map [(shift pause)]            'icicle-toggle-highlight-saved-candidates) ; `S-pause'
   (define-key map [(control meta pause)]     'icicle-other-history) ; `C-M-pause'
   (define-key map [(control insert)]         'icicle-switch-to-Completions-buf) ; `C-insert'
   (define-key map [insert]                   'icicle-save/unsave-candidate) ; `insert'
@@ -3272,6 +3287,7 @@ complete)"))
   (define-key map [(meta ?g)]                'icicle-toggle-C-for-actions) ; `M-g'
   (define-key map [(meta ?,)]                'icicle-dispatch-M-comma) ; `M-,'
   (define-key map [(control meta ?,)]        'icicle-toggle-alternative-sorting) ; `C-M-,'
+  (define-key map [(control meta ?+)]        'icicle-plus-saved-sort) ; `C-M-+'
   (define-key map [(meta ?+)]                'icicle-widen-candidates) ; `M-+'
   (define-key map [(meta ?*)]                'icicle-narrow-candidates) ; `M-*'
   (define-key map [(meta ?&)]                'icicle-narrow-candidates-with-predicate) ; `M-&'
@@ -3454,6 +3470,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map [(meta ?h)]                nil)
   (define-key map [(meta pause)]             nil)
   (define-key map [(control pause)]          nil)
+  (define-key map [(shift pause)]            nil)
   (define-key map [(control meta pause)]     nil)
   (define-key map [(control insert)]         nil)
   (define-key map [insert]                   nil)
@@ -3521,6 +3538,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map [(meta ?g)]                nil)
   (define-key map [(meta ?,)]                nil)
   (define-key map [(control meta ?,)]        nil)
+  (define-key map [(control meta ?+)]        nil)
   (define-key map [(meta ?+)]                nil)
   (define-key map [(meta ?*)]                nil)
   (define-key map [(meta ?&)]                nil)

@@ -275,12 +275,51 @@ User option '''`icicle-input-string'''' is a [[regexp]] string that is
 inserted in the minibuffer when you use '''`C-=''''.  See 
 [[Icicles - Inserting a Regexp from a Variable or Register]].
 
-----
-[:icicle-current-candidate-highlight] [:icicle-complete-input] [:icicle-match-highlight-minibuffer] [:icicle-match-highlight-Completions] [:icicle-common-match-highlight-Completions] [:icicle-saved-candidate]
-==== Faces icicle-current-candidate-highlight, icicle-complete-input, icicle-match-highlight-minibuffer, icicle-match-highlight-Completions, icicle-common-match-highlight-Completions, icicle-saved-candidate ====
 
-In buffer `*Completions*', face '''`icicle-saved-candidate''''
-highlights candidates that have been saved, face '''`icicle-current-candidate-highlight'''' highlights the current
+
+
+----
+[:icicle-historical-candidate]
+[:icicle-highlight-historical-candidates-flag]
+==== Option icicle-highlight-historical-candidates-flag, Face icicle-historical-candidate ====
+
+In buffer `*Completions*', face '''`icicle-historical-candidate'''' is used to highlight
+completion candidates that you have used (entered with `RET')
+previously.  This highlighting is controlled by user option
+'''`icicle-highlight-historical-candidates-flag''''.  You can ''toggle''
+this option from the minibuffer at any time using '''`C-pause''''.
+See [[Icicles - History Enhancements]].
+
+
+
+
+
+----
+[:icicle-saved-candidate]
+[:icicle-highlight-saved-candidates-flag]
+==== Option icicle-highlight-saved-candidates-flag, Face icicle-saved-candidate ====
+
+In buffer `*Completions*', face '''`icicle-saved-candidate'''' is used
+to highlight completion candidates that you have saved (e.g.,
+using `##C-M->##').  This highlighting is controlled by user option
+'''`icicle-highlight-saved-candidates-flag''''.  You can ''toggle'' this
+option from the minibuffer at any time using '''`S-pause''''.
+See [[Icicles - Candidate Sets#SavingAndRetrieving|Saving and Retrieving Completion Candidates]].  
+
+
+
+
+
+
+----
+[:icicle-current-candidate-highlight]
+[:icicle-complete-input]
+[:icicle-match-highlight-minibuffer]
+[:icicle-match-highlight-Completions]
+[:icicle-common-match-highlight-Completions]
+==== Faces icicle-current-candidate-highlight, icicle-complete-input, icicle-match-highlight-minibuffer, icicle-match-highlight-Completions, icicle-common-match-highlight-Completions ====
+
+In buffer `*Completions*', face '''`icicle-current-candidate-highlight'''' highlights the current
 completion candidate, and, provided user option `<tt>[[#icicle-expand-input-to-common-match-flag]]</tt>' is non-`nil', face '''`icicle-common-match-highlight-Completions'''' highlights the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all completions.  Faces '''`icicle-match-highlight-Completions''''  and '''`icicle-match-highlight-minibuffer'''' 
 highlight whatever your input matches, in buffer `*Completions*' and in the minibuffer, respectively.  In the minibuffer, face '''`icicle-complete-input'''' highlights your input when it is complete.  You can customize these, as well as the other '''Icicles''' faces.
 
@@ -852,21 +891,6 @@ If you need to override this override behavior for some command,
 use `icicle-minibuffer-setup-hook' and `minibuffer-exit-hook' to
 temporarily set and reset the internal variable
 `icicle-completions-format-internal'.
-
-
-
-
-----
-[:icicle-historical-candidate]
-[:icicle-highlight-historical-candidates-flag]
-==== Option icicle-highlight-historical-candidates-flag, Face icicle-historical-candidate ====
-
-Face '''`icicle-historical-candidate'''' is used to highlight
-completion candidates that you have used (entered with `RET')
-previously.  This highlighting is controlled by user option
-'''`icicle-highlight-historical-candidates-flag''''.  You can ''toggle''
-this option from the minibuffer at any time using '''`C-pause''''.
-See [[Icicles - History Enhancements]].
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 14:40:52 2011 (-0700)
+;; Last-Updated: Tue May  3 15:18:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 634
+;;     Update #: 664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -177,120 +177,235 @@ Optional arg DONT-SAVE non-nil means do not call
       ,(unless dont-save `(customize-save-variable ',alist-var ,alist-var))
       (message "Added to `%s': `%S'" ',alist-var new-item))))
 
-;;;###autoload
-(defmacro icicle-buffer-bindings (&optional pre-bindings post-bindings)
-  "Bindings to use in multi-command definitions for buffer names.
+(if (> emacs-major-version 20)
+    (defmacro icicle-buffer-bindings (&optional pre-bindings post-bindings)
+      "Bindings to use in multi-command definitions for buffer names.
 PRE-BINDINGS is a list of additional bindings, which are created
 before the others.  POST-BINDINGS is similar, but the bindings are
 created after the others."
-  `(,@pre-bindings
-    (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
-                                                      read-buffer-completion-ignore-case)
-                                                  completion-ignore-case))
-    (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
-                                                  icicle-buffers-ido-like-flag))
-    (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
-                                                  icicle-buffers-ido-like-flag))
-    (icicle-default-value                        (if (and icicle-buffers-ido-like-flag
-                                                          icicle-default-value)
-                                                     icicle-buffers-ido-like-flag
-                                                   icicle-default-value))
-    (icicle-must-match-regexp                    icicle-buffer-match-regexp)
-    (icicle-must-not-match-regexp                icicle-buffer-no-match-regexp)
-    (icicle-must-pass-after-match-predicate      icicle-buffer-predicate)
-    (icicle-require-match-flag                   icicle-buffer-require-match-flag)
-    (icicle-extra-candidates                     icicle-buffer-extras)
-    (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
-    (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
-    (icicle-transform-function                   'icicle-remove-dups-if-extras)
-    (icicle--temp-orders
-     (append (list
-              '("by last access")       ; Renamed from "turned OFF'.
-              '("*...* last" . icicle-buffer-sort-*...*-last)
-              '("by buffer size" . icicle-buffer-smaller-p)
-              '("by major mode name" . icicle-major-mode-name-less-p)
-              (and (fboundp 'icicle-mode-line-name-less-p)
-               '("by mode-line mode name" . icicle-mode-line-name-less-p))
-              '("by file/process name" . icicle-buffer-file/process-name-less-p))
-      (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
-    ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
-    (icicle-sort-orders-alist
-     (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
-              (setq icicle-sort-comparer           icicle-buffer-sort
-                    icicle-buffer-sort-first-time-p  nil))
-            (if icicle-buffer-sort
-                (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
-                  (if already-there
-                      (cons already-there (setq icicle--temp-orders
-                                                (delete already-there icicle--temp-orders)))
-                    (cons `("by `icicle-buffer-sort'" . ,icicle-buffer-sort) icicle--temp-orders)))
-              icicle--temp-orders)))
-    (icicle-candidate-alt-action-fn
-     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-    (icicle-all-candidates-list-alt-action-fn
-     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-    (icicle-bufflist
-     (if current-prefix-arg
-         (cond ((zerop (prefix-numeric-value current-prefix-arg))
-                (let ((this-mode  major-mode))
-                  (icicle-remove-if-not (lambda (bf)
-                                          (with-current-buffer bf (eq major-mode this-mode)))
-                                        (buffer-list))))
-               ((< (prefix-numeric-value current-prefix-arg) 0)
-                (cdr (assq 'buffer-list (frame-parameters))))
-               (t
-                (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
-       (buffer-list)))
-    (,@ post-bindings)))                ; Emacs 20 bug requires us to use obsolete backquote syntax here.
+      `(,@pre-bindings
+        (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
+                                                          read-buffer-completion-ignore-case)
+                                                      completion-ignore-case))
+        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
+                                                      icicle-buffers-ido-like-flag))
+        (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
+                                                      icicle-buffers-ido-like-flag))
+        (icicle-default-value                        (if (and icicle-buffers-ido-like-flag
+                                                              icicle-default-value)
+                                                         icicle-buffers-ido-like-flag
+                                                       icicle-default-value))
+        (icicle-must-match-regexp                    icicle-buffer-match-regexp)
+        (icicle-must-not-match-regexp                icicle-buffer-no-match-regexp)
+        (icicle-must-pass-after-match-predicate      icicle-buffer-predicate)
+        (icicle-require-match-flag                   icicle-buffer-require-match-flag)
+        (icicle-extra-candidates                     icicle-buffer-extras)
+        (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
+        (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
+        (icicle-transform-function                   'icicle-remove-dups-if-extras)
+        (icicle--temp-orders
+         (append (list
+                  '("by last access")   ; Renamed from "turned OFF'.
+                  '("*...* last" . icicle-buffer-sort-*...*-last)
+                  '("by buffer size" . icicle-buffer-smaller-p)
+                  '("by major mode name" . icicle-major-mode-name-less-p)
+                  (and (fboundp 'icicle-mode-line-name-less-p)
+                   '("by mode-line mode name" . icicle-mode-line-name-less-p))
+                  '("by file/process name" . icicle-buffer-file/process-name-less-p))
+          (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
+        ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
+        (icicle-sort-orders-alist
+         (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
+                  (setq icicle-sort-comparer           icicle-buffer-sort
+                        icicle-buffer-sort-first-time-p  nil))
+                (if icicle-buffer-sort
+                    (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
+                      (if already-there
+                          (cons already-there (setq icicle--temp-orders
+                                                    (delete already-there icicle--temp-orders)))
+                        (cons `("by `icicle-buffer-sort'" . ,icicle-buffer-sort) icicle--temp-orders)))
+                  icicle--temp-orders)))
+        (icicle-candidate-alt-action-fn
+         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+        (icicle-all-candidates-list-alt-action-fn
+         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+        (icicle-bufflist
+         (if current-prefix-arg
+             (cond ((zerop (prefix-numeric-value current-prefix-arg))
+                    (let ((this-mode  major-mode))
+                      (icicle-remove-if-not (lambda (bf)
+                                              (with-current-buffer bf (eq major-mode this-mode)))
+                                            (buffer-list))))
+                   ((< (prefix-numeric-value current-prefix-arg) 0)
+                    (cdr (assq 'buffer-list (frame-parameters))))
+                   (t
+                    (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
+           (buffer-list)))
+        ,@post-bindings))
 
-;;;###autoload
-(defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
-  "Bindings to use in multi-command definitions for file names.
+  ;; Emacs 20 has a bug that makes us use the obsolete backquote syntax instead of ,@post-bindings.
+  (defmacro icicle-buffer-bindings (&optional pre-bindings post-bindings)
+    "Bindings to use in multi-command definitions for buffer names.
 PRE-BINDINGS is a list of additional bindings, which are created
 before the others.  POST-BINDINGS is similar, but the bindings are
 created after the others."
-  `(,@pre-bindings
-    (completion-ignore-case
-     (or (and (boundp 'read-file-name-completion-ignore-case) read-file-name-completion-ignore-case)
-      completion-ignore-case))
-    (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
-                                                  icicle-files-ido-like-flag))
-    (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
-                                                  icicle-files-ido-like-flag))
-    (icicle-default-value                        (if (and icicle-files-ido-like-flag
-                                                          icicle-default-value)
-                                                     icicle-files-ido-like-flag
-                                                   ;;  Get default via `M-n', but do not insert it.
-                                                   (and (memq icicle-default-value '(t nil))
-                                                        icicle-default-value)))
-    (icicle-must-match-regexp                    icicle-file-match-regexp)
-    (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
-    (icicle-must-pass-after-match-predicate      icicle-file-predicate)
-    (icicle-require-match-flag                   icicle-file-require-match-flag)
-    (icicle-extra-candidates                     icicle-file-extras)
-    (icicle-transform-function                   'icicle-remove-dups-if-extras)
-    ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
-    (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
-    (icicle-sort-orders-alist
-     (progn (when (and icicle-file-sort-first-time-p icicle-file-sort)
-              (setq icicle-sort-comparer           icicle-file-sort
-                    icicle-file-sort-first-time-p  nil))
-            (if icicle-file-sort
-                (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
-                  (if already-there
-                      (cons already-there (setq icicle--temp-orders
-                                                (delete already-there icicle--temp-orders)))
-                    (cons `("by `icicle-file-sort'" . ,icicle-file-sort) icicle--temp-orders)))
-              icicle--temp-orders)))
-    (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
-    (icicle-candidate-help-fn                    (lambda (cand)
-                                                   (icicle-describe-file cand current-prefix-arg)))
-    (icicle-candidate-alt-action-fn
-     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-    (icicle-all-candidates-list-alt-action-fn
-     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-    (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
-    (,@ post-bindings)))                ; Emacs 20 bug requires us to use obsolete backquote syntax here.
+    (` ((,@ pre-bindings)
+        (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
+                                                              read-buffer-completion-ignore-case)
+                                                         completion-ignore-case))
+        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
+                                                         icicle-buffers-ido-like-flag))
+        (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
+                                                         icicle-buffers-ido-like-flag))
+        (icicle-default-value                        (if (and icicle-buffers-ido-like-flag
+                                                              icicle-default-value)
+                                                         icicle-buffers-ido-like-flag
+                                                       icicle-default-value))
+        (icicle-must-match-regexp                    icicle-buffer-match-regexp)
+        (icicle-must-not-match-regexp                icicle-buffer-no-match-regexp)
+        (icicle-must-pass-after-match-predicate      icicle-buffer-predicate)
+        (icicle-require-match-flag                   icicle-buffer-require-match-flag)
+        (icicle-extra-candidates                     icicle-buffer-extras)
+        (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
+        (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
+        (icicle-transform-function                   'icicle-remove-dups-if-extras)
+        (icicle--temp-orders
+         (append (list
+                  '("by last access")   ; Renamed from "turned OFF'.
+                  '("*...* last" . icicle-buffer-sort-*...*-last)
+                  '("by buffer size" . icicle-buffer-smaller-p)
+                  '("by major mode name" . icicle-major-mode-name-less-p)
+                  (and (fboundp 'icicle-mode-line-name-less-p)
+                       '("by mode-line mode name" . icicle-mode-line-name-less-p))
+                  '("by file/process name" . icicle-buffer-file/process-name-less-p))
+                 (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
+        ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
+        (icicle-sort-orders-alist
+         (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
+                  (setq icicle-sort-comparer           icicle-buffer-sort
+                        icicle-buffer-sort-first-time-p  nil))
+                (if icicle-buffer-sort
+                    (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
+                      (if already-there
+                          (cons already-there (setq icicle--temp-orders
+                                                    (delete already-there icicle--temp-orders)))
+                        (cons (` ("by `icicle-buffer-sort'" . (, icicle-buffer-sort))) icicle--temp-orders)))
+                  icicle--temp-orders)))
+        (icicle-candidate-alt-action-fn
+         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+        (icicle-all-candidates-list-alt-action-fn
+         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+        (icicle-bufflist
+         (if current-prefix-arg
+             (cond ((zerop (prefix-numeric-value current-prefix-arg))
+                    (let ((this-mode  major-mode))
+                      (icicle-remove-if-not (lambda (bf)
+                                              (with-current-buffer bf (eq major-mode this-mode)))
+                                            (buffer-list))))
+                   ((< (prefix-numeric-value current-prefix-arg) 0)
+                    (cdr (assq 'buffer-list (frame-parameters))))
+                   (t
+                    (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
+           (buffer-list)))
+        (,@ post-bindings)))))          ; Emacs 20 bug requires us to use obsolete backquote syntax here.
+
+(if (> emacs-major-version 20)
+    (defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
+      "Bindings to use in multi-command definitions for file names.
+PRE-BINDINGS is a list of additional bindings, which are created
+before the others.  POST-BINDINGS is similar, but the bindings are
+created after the others."
+      `(,@pre-bindings
+        (completion-ignore-case
+         (or (and (boundp 'read-file-name-completion-ignore-case) read-file-name-completion-ignore-case)
+          completion-ignore-case))
+        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
+                                                      icicle-files-ido-like-flag))
+        (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
+                                                      icicle-files-ido-like-flag))
+        (icicle-default-value                        (if (and icicle-files-ido-like-flag
+                                                              icicle-default-value)
+                                                         icicle-files-ido-like-flag
+                                                       ;;  Get default via `M-n', but do not insert it.
+                                                       (and (memq icicle-default-value '(t nil))
+                                                            icicle-default-value)))
+        (icicle-must-match-regexp                    icicle-file-match-regexp)
+        (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
+        (icicle-must-pass-after-match-predicate      icicle-file-predicate)
+        (icicle-require-match-flag                   icicle-file-require-match-flag)
+        (icicle-extra-candidates                     icicle-file-extras)
+        (icicle-transform-function                   'icicle-remove-dups-if-extras)
+        ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
+        (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
+        (icicle-sort-orders-alist
+         (progn (when (and icicle-file-sort-first-time-p icicle-file-sort)
+                  (setq icicle-sort-comparer           icicle-file-sort
+                        icicle-file-sort-first-time-p  nil))
+                (if icicle-file-sort
+                    (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
+                      (if already-there
+                          (cons already-there (setq icicle--temp-orders
+                                                    (delete already-there icicle--temp-orders)))
+                        (cons `("by `icicle-file-sort'" . ,icicle-file-sort) icicle--temp-orders)))
+                  icicle--temp-orders)))
+        (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
+        (icicle-candidate-help-fn                    (lambda (cand)
+                                                       (icicle-describe-file cand current-prefix-arg)))
+        (icicle-candidate-alt-action-fn
+         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+        (icicle-all-candidates-list-alt-action-fn
+         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+        (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
+        ,@post-bindings))
+
+  ;; Emacs 20 has a bug that makes us use the obsolete backquote syntax instead of ,@post-bindings.
+  (defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
+    "Bindings to use in multi-command definitions for file names.
+PRE-BINDINGS is a list of additional bindings, which are created
+before the others.  POST-BINDINGS is similar, but the bindings are
+created after the others."
+    (` ((,@ pre-bindings)
+        (completion-ignore-case
+         (or (and (boundp 'read-file-name-completion-ignore-case) read-file-name-completion-ignore-case)
+             completion-ignore-case))
+        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
+                                                         icicle-files-ido-like-flag))
+        (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
+                                                         icicle-files-ido-like-flag))
+        (icicle-default-value                        (if (and icicle-files-ido-like-flag
+                                                              icicle-default-value)
+                                                         icicle-files-ido-like-flag
+                                                       ;;  Get default via `M-n', but do not insert it.
+                                                       (and (memq icicle-default-value '(t nil))
+                                                            icicle-default-value)))
+        (icicle-must-match-regexp                    icicle-file-match-regexp)
+        (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
+        (icicle-must-pass-after-match-predicate      icicle-file-predicate)
+        (icicle-require-match-flag                   icicle-file-require-match-flag)
+        (icicle-extra-candidates                     icicle-file-extras)
+        (icicle-transform-function                   'icicle-remove-dups-if-extras)
+        ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
+        (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
+        (icicle-sort-orders-alist
+         (progn (when (and icicle-file-sort-first-time-p icicle-file-sort)
+                  (setq icicle-sort-comparer           icicle-file-sort
+                        icicle-file-sort-first-time-p  nil))
+                (if icicle-file-sort
+                    (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
+                      (if already-there
+                          (cons already-there (setq icicle--temp-orders
+                                                    (delete already-there icicle--temp-orders)))
+                        (cons (` ("by `icicle-file-sort'" . (, icicle-file-sort))) icicle--temp-orders)))
+                  icicle--temp-orders)))
+        (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
+        (icicle-candidate-help-fn                    (lambda (cand)
+                                                       (icicle-describe-file cand current-prefix-arg)))
+        (icicle-candidate-alt-action-fn
+         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+        (icicle-all-candidates-list-alt-action-fn
+         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+        (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
+        (,@ post-bindings)))))          ; Emacs 20 bug requires us to use obsolete backquote syntax here.
 
 ;;;###autoload
 (defmacro icicle-define-command

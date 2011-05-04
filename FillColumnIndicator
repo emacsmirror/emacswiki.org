@@ -5,17 +5,45 @@ The two different styles of fill-column indication look like this:
 || [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
 || Shading style || Rule style ||
 
-== Installation and Usage ==
+== Installation and Activation ==
 
 Put the package file in your load path and put ##(require 'fill-column-indicator)## in your .emacs.
 
 To toggle graphical indication of the fill column in a buffer, use the command ##fci-mode##.  
 
-The style of indication is controlled by the variable ##fci-style##.  The recognized values are ##'shading## and ##'rule## (the default value is ##'shading##).  Buffer-local values are supported, so one can use different styles in different buffers.
+== Customization ==
 
-The rule can be customized by width and color; the shading can be customized by foreground and background color.  For details on these and other options, see the headers in the package file.
+<b>Specifying Rule or Shading.</b> By default, ##fci-mode## uses shading to indicate the fill column.  The style of indication is controlled by the variable ##fci-style##; the recognized values are ##shading## and ##rule##.  To use a rule instead of shading, put:
 
-As of version 0.30, fci-mode should work on both graphical and character terminals.  Note that rule style will work differently in the two cases.  On graphical terminals, the rule is drawn using bitmap images; on character terminals, it is drawn using characters (by default, it uses "|", i.e., ascii 124).
+  (setq fci-style 'rule)
+
+in your ##.emacs##.  Buffer-local values are supported, so one can use different styles in different buffers.
+
+<b>Customizing Shading.</b> The appearance of the shading is controlled by the face ##fci-shading##, whose attributes can be set like those of any face.  To change the background of the shading, for example, adding the following code to your init file will set the backround color of the shading to light gray:
+
+  (set-face-background 'fci-shading "light gray")
+
+When customizing colors, it may be helpful to use ##M-x list-colors-display## to see a list of defined [http://www.gnu.org/software/emacs/elisp/html_node/Color-Names.html color names].
+
+<b>Customizing the Rule.</b> The appearance of the rule is controlled by the variables ##fci-rule-width## and ##fci-rule-color##.  By default, the rule is 2 pixels wide.  The default value of ##fci-rule-color## is nil, which means that ##fci-mode## will try to select an appropriate color automatically.  To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
+
+  (setq fci-rule-width 1)
+  (setq fci-rule-color "darkblue")
+
+<b>Images vs. Characters for Rule Style</b>.  If bitmap images aren't available (e.g., when running on a character terminal), ##fci-mode## draws the fill-column rule using characters.  By default it uses `|' (i.e., ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
+
+== Further Customization Examples==
+
+To turn on fci-mode automatically for certain kinds of files, add ##'fci-mode## to the appropriate mode hook.  For example, to turn it on automatically when visiting a file with C code, put: 
+
+  (add-hook 'c-mode-hook 'fci-mode)
+
+in your ##.emacs##.
+
+To enable fci-mode as a global minor mode, add the following code to your init file:
+
+  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode t)))
+  (global-fci-mode t)
 
 == See also ==
 

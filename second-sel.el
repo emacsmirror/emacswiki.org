@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2011, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 13:53:11 2011 (-0800)
+;; Last-Updated: Tue May  3 11:50:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 255
+;;     Update #: 258
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/05/03 dadams
+;;     mouse-secondary-save-then-kill: Better error message.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies (for defcustom and commands).
 ;; 2010/04/22 dadams
@@ -479,7 +481,7 @@ If you do this twice in the same position, it kills the selection."
                      (overlay-buffer mouse-secondary-overlay))
                 (if mouse-secondary-start
                     (marker-buffer mouse-secondary-start))))
-        (error "Wrong buffer"))
+        (error "`mouse-secondary-save-then-kill': wrong buffer - no secondary sel here"))
     (with-current-buffer (window-buffer (posn-window posn))
       (if (> (mod mouse-secondary-click-count 3) 0)
           (if (not (and (eq last-command 'mouse-secondary-save-then-kill)

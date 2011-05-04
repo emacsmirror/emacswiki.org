@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 16:20:37 2011 (-0700)
+;; Last-Updated: Tue May  3 15:28:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6438
+;;     Update #: 6468
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -32,6 +32,13 @@
 ;;  documentation, and they do not have change logs.  Initially,
 ;;  everything was in one library, `icicles.el', so its change log is
 ;;  the oldest.
+;;
+;; ****************************************************************************************************
+;; NOTE: If you byte-compile Icicles (recommended), then WHENEVER `icicles-mac.el' is updated, you
+;;       must load `icicles-mac.el' (not just `icicles-mac.elc'), then compile it, then RECOMPILE *ALL*
+;;       of the other Icicles source files as well.  This is normal for Lisp: code that depends on
+;;       macros needs to be byte-compiled anew after loading the updated macros.
+;; ****************************************************************************************************
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -747,6 +754,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/05/03 dadams
+;;     Added: icicle-position, icicle-merge-saved-order-less-p.
+;;     icicle-display-candidates-in-Completions: Respect icicle-highlight-saved-candidates-flag.
 ;; 2011/04/20 dadams
 ;;     icicle-completion-setup-function: Last version is for Emacs 23.3 also. Thx to Michael Heerdegen.
 ;; 2011/04/18 dadams
@@ -2204,11 +2214,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; ****************************************************************************************************
 ;; NOTE: If you byte-compile Icicles (recommended), then WHENEVER `icicles-mac.el' is updated, you
 ;;       must load `icicles-mac.el' (not just `icicles-mac.elc'), then compile it, then RECOMPILE *ALL*
 ;;       of the other Icicles source files as well.  This is normal for Lisp: code that depends on
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
+;; ****************************************************************************************************
 ;;
+;; 2011/05/03 dadams
+;;     icicle-buffer-bindings, icicle-file-bindings:
+;;       Had to revert definition for Emacs > 20, but keep it for Emacs 20.  Thx to Michael Heerdegen.
 ;; 2011/04/29 dadams
 ;;     icicle-buffer-bindings, icicle-file-bindings:
 ;;       Do not bind icicle-sort-comparer.  Instead, set it the first time
@@ -2327,6 +2342,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/05/03 dadams
+;;     Added: icicle-plus-saved-sort, icicle-toggle-highlight-saved-candidates.
+;;     icicle-help-string-completion: Mention icicle-toggle-highlight-saved-candidates.
 ;; 2011/04/29 dadams
 ;;     icicle-help-string-completion: Corrected current values shown for sort comparers.
 ;; 2011/04/25 dadams
@@ -3515,6 +3533,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/05/03 dadams
+;;     icicle-define-icicle-maps: Add icicle-toggle-highlight-saved-candidates to menus.
+;;     icicle-(bind|restore)-completion-keys: Bind icicle-plus-saved-sort to C-M-+.
+;;                                            Bind icicle-toggle-highlight-saved-candidates to S-pause.
+;;     icicle-mode doc string: Mention icicle-toggle-highlight-saved-candidates.
 ;; 2011/04/12 dadams
 ;;     icicle-define-icicle-maps: Added Icicles submenu for Bookmark+ menu.
 ;;     icicle-(bind|restore)-other-keymap-keys:
@@ -4506,6 +4529,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/05/03 dadams
+;;     Added: icicle-highlight-saved-candidates-flag.
+;;     icicle-Completions-toggle-submenu: Added icicle-toggle-highlight-saved-candidates to menu.
 ;; 2011/04/26 dadams
 ;;     icicle-top-level-key-bindings:
 ;;       Added icicle-(un)tag-a-file, icicle-find-file-(all|some)-tags-*.
@@ -5075,6 +5101,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/05/03 dadams
+;;     icicle-general-help-string: Mention icicle-toggle-highlight-saved-candidates.
 ;; 2011/04/29 dadams
 ;;     Added: icicle-buffer-sort-first-time-p, icicle-file-sort-first-time-p, icicle-new-last-cmd,
 ;;              icicle-orig-must-pass-after-match-pred.

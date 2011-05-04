@@ -896,6 +896,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-M-`##'''' -- `icicle-toggle-literal-replacement' (search)
 * '''`##C-$##'''' -- `icicle-toggle-transforming': removal of duplicates
 * '''`C-pause'''' -- `icicle-toggle-highlight-historical-candidates'
+* '''`S-pause'''' -- `icicle-toggle-highlight-saved-candidates'
 * '''`M-g''''     -- `icicle-toggle-C-for-actions'
 * '''`M-q'''' -- `icicle-toggle-search-whole-word' (search)
 * '''`##M-(##'''' -- `icicle-next-S-TAB-completion-method'

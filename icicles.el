@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 15:22:47 2011 (-0700)
+;; Last-Updated: Tue May  3 09:29:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22863
+;;     Update #: 22869
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -325,6 +325,7 @@
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
+;;    `icicle-toggle-highlight-saved-candidates',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-incremental-completion',
@@ -350,6 +351,7 @@
 ;;    `toggle-icicle-fuzzy-completion',
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
+;;    `toggle-icicle-highlight-saved-candidates',
 ;;    `toggle-icicle-ignored-extensions',
 ;;    `toggle-icicle-ignored-space-prefix',
 ;;    `toggle-icicle-incremental-completion',
@@ -472,6 +474,7 @@
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
 ;;    `icicle-next-S-TAB-completion-method', `icicle-other-history',
+;;    `icicle-plus-saved-sort',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
 ;;    `icicle-prefix-word-complete',
@@ -513,6 +516,7 @@
 ;;    `icicle-toggle-expand-to-common-match',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
+;;    `icicle-toggle-highlight-saved-candidates',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-incremental-completion',
@@ -639,8 +643,9 @@
 ;;    `icicle-highlight-input-completion-failure-delay',
 ;;    `icicle-highlight-input-completion-failure-threshold',
 ;;    `icicle-highlight-input-initial-whitespace-flag',
-;;    `icicle-highlight-lighter-flag', `icicle-ignored-directories',
-;;    `icicle-ignore-space-prefix-flag',
+;;    `icicle-highlight-lighter-flag',
+;;    `icicle-highlight-saved-candidates-flag',
+;;    `icicle-ignored-directories', `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
@@ -906,6 +911,7 @@
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
 ;;    `icicle-mctized-full-candidate',
+;;    `icicle-merge-saved-order-less-p',
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
@@ -924,7 +930,7 @@
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
 ;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
 ;;    `icicle-place-cursor', `icicle-place-overlay',
-;;    `icicle-prefix-any-candidates-p',
+;;    `icicle-position', `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
 ;;    `icicle-prefix-keys-first-p', `icicle-proxy-candidate-first-p',

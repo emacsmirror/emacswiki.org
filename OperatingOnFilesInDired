@@ -1,9 +1,22 @@
 On W32, the shell can do the right thing with every file, because
 extensions are registered with the explorer.  See MsShellExecute.
 
-
 When a file is 'right-clicked' from explorer, some of the available actions are 'verbs'.  The default verb is displayed in Bold face (in the right-click menu), and will be executed by default (from a double-click).  WThirtyTwoShellExecute exposes all of these verbs to the emacs user whether visiting the file, or while in Dired.
 
 
 On Unix systems, the shell usually cannot do that.  On Unix systems
-therefore, we must use something like TrivialMode or a RunAssoc instead.
+therefore, we must use something like TrivialMode, OpenWith or RunAssoc instead.
+
+
+
+
+== Dired+ with W32 Browser ==
+
+If you use [[DiredPlus#w32-browser|Dired+]] with <tt>[[w32-browser.el]]</tt> you can take advantage of MS Windows file associations in [[Dired]].  Just use `C-RET' to "open" a file using its file-association '''Open''' operation.  Use `M-RET' to open Windows Explorer to that file or folder.
+
+
+
+
+
+----
+CategoryDirectories

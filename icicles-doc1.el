@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 16:29:58 2011 (-0700)
+;; Last-Updated: Tue May  3 10:52:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25894
+;;     Update #: 25963
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3713,6 +3713,91 @@
 ;;  case are `icicle-sort-' followed by the sort-order names (with
 ;;  hyphens substituted for spaces) - for example,
 ;;  `icicle-sort-by-directories-last' and `icicle-sort-turned-OFF'.
+;;
+;;(@* "Adding a Saved Sort Order")
+;;  ** Adding a Saved Sort Order **
+;;
+;;  There are many predefined sort orders (see
+;;  (@> "Different Sorts for Different Sorts of Uses")), and you can
+;;  define your own new sort orders (see
+;;  (@> "Defining New Sort Orders")).  This section is about a unique
+;;  Icicles feature that lets you combine any number of sort orders
+;;  interactively, melding them together.
+;;
+;;  You do this as follows:
+;;
+;;  1. Start with a given sort order (use `C-u C-,' to choose one).
+;;
+;;  2. Save the set of candidates you are interested in, using `C-M->'
+;;     (see (@> "Saving and Retrieving Completion Candidates")).  This
+;;     saves the candidates in their current order at the time of the
+;;     save: the saved order.
+;;
+;;  3. Choose a different sort order (e.g., use `C-u C-,').
+;;
+;;  4. Use `C-M-+' (`icicle-plus-saved-sort') to combine the two sort
+;;     orders, that is, the (new) current order and the saved order.
+;;
+;;  What `icicle-plus-saved-sort' does is sum, for each completion
+;;  candidate, its ranks (indexes) in the two sort orders, and then
+;;  reorder candidates based on the summed ranks.
+;;
+;;  For example, if a given candidate is the 4th candidate in the
+;;  current list of candidates, and it is the 7th candidate in the
+;;  saved list of candidates, then its combined sort rank is 4 + 7 =
+;;  11.  With a score of 11 it sorts after a candidate whose score is,
+;;  for example, 6, and before a candidate whose score is, for
+;;  example, 13.
+;;
+;;  The candidates are reordered according to the combined sort
+;;  orders, forming a new current order.
+;;
+;;  When you use `C-M-+' it does not matter what order the saved
+;;  candidates are in or what order you used to sort the current
+;;  candidates.  (But you will generally want to use the same set of
+;;  candidates.)  In particular, after using `C-M-+' the candidates
+;;  are typically in an order that corresponds to no predefined sort -
+;;  that's OK.
+;;
+;;  You can use `C-M-+' again if you like, to add in the saved sort
+;;  order again with the new current order.  This gives the saved
+;;  order more weight than the original current sort order.  Continued
+;;  repetition of `C-M-+' gives the saved sort order more and more
+;;  weight.  Eventually a fixed point is reached: `C-M-+' produces no
+;;  further change in the order.
+;;
+;;  For example, consider `icicle-read-color'.  With user option
+;;  `icicle-WYSIWYG-Completions-flag' non-nil (e.g. a string) it lets
+;;  you see the effect of `C-M-+' in a striking, graphical way.
+;;  However, to see the effect you will first want to use `S-pause'
+;;  (`icicle-toggle-highlight-saved-candidates') to turn off
+;;  highlighting of the saved candidates, since that highlighting
+;;  obscures the color highlighting.
+;;
+;;  Sorting by color hue shows essentially a single rainbow of
+;;  candidates in `*Completions*': pinks, followed by magentas,
+;;  purples, blues, cyans, greens, yellows, browns, reds, and grays.
+;;  Sorting by color brightness shows a single value gamut, the
+;;  brightest colors followed by dimmer and dimmer colors, down to the
+;;  dimmest (black).
+;;
+;;  Try `M-x icicle-read-color', sorting (`C-u C-,') first by hue.
+;;  Save the completion candidates (`C-M->').  Now sort by brightness
+;;  (`C-u C-,' again).  Now use `C-M-+' to add/merge the two sort
+;;  orders.  You now see essentially a series of rainbows, from
+;;  brighter to dimmer and dimmer.
+;;
+;;  Use `C-M-+' again, to give hue more prominence in the merged sort
+;;  order.  And again.  Keep hitting `C-M-+' until there is no more
+;;  apparent change in the sort order - at this point you are back to
+;;  a pure hue sort.
+;;
+;;  You can also at any time save the candidates again, saving the
+;;  latest order as the new sort order.  Then you can reorder the
+;;  current candidates using a different sort order (`C-,').  And then
+;;  use `C-M-+' again to merge in the newly saved order.  You can play
+;;  this way ad infinitem.
+;;
 ;;
 ;;  See Also:
 ;;

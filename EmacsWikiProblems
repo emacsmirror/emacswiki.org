@@ -21,6 +21,9 @@ to get the shortcuts for edit, preview and save to work. Thanks! -- ThomasAlexan
 [new]
 [[HowToEdit]] page updated. On firefox, you use Alt-Shift-e.  -- [[sylecn]]
 
+[new]
+Thanks. For me the problem was an old version of firemacs. -- ThomasAlexanderGerds
+
 
 
 
@@ -150,6 +153,13 @@ Wow.  A soon as I wrote that it happened again. -- DrewAdams
 
 [new:AlexSchroeder:2011-04-29 20:30 UTC]
 Yeah, I can confirm this. In the last few days, the server has been acting up strangely. I wonder what's going on. I didn't change my config, so I'm assuming something beyond my control, though. – AlexSchroeder
+
+
+[new:DrewAdams:2011-05-03 17:51 UTC]
+In case it helps and is related, I sometimes also get timeouts ("could not connect to server") -- DrewAdams
+
+
+
 
 == Conflict from my own edit 25 minutes ago? ==
 

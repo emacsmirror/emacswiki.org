@@ -5,34 +5,34 @@ This page is about different libraries and ways to ''switch buffers''. As always
 The following are specific tricks and packages for buffer switching.
 
 * ListBuffers -- List buffers (default behavior for `C-x C-b')
-* BufferMenu -- "Dired for buffers"
-* IbufferMode -- BufferMenu extension/alternative
-* BufferMenuPlus -- BufferMenu extension/alternative
-* ElectricBufferList -- BufferMenu alternative
-* BufferSelection -- BufferMenu alternative
+* BufferMenu -- Like [[Dired]], but for buffers -- same thing as %%ListBuffers%%, but lets you also act on the buffers
+* BufferMenuPlus -- %%BufferMenu%% and %%ListBuffers%% enhancements
+* FrameBufs -- %%BufferMenu%% and %%ListBuffers%% enhancements for frame-relative buffer lists
+* IbufferMode -- %%BufferMenu%% alternative
+* ElectricBufferList -- %%BufferMenu%% alternative
+* BufferSelection -- %%BufferMenu%% alternative
+* [[Icicles]] -- switch among buffers -- cycling and enhanced [[completion]].  Perform actions on selected buffers or sets of buffers.
 * IswitchBuffers -- choose buffer without a menu (name-based)
-* InteractivelyDoThings -- the ido package changes buffer switching
-  and file finding
-* [[Icicles]] -- switch among buffers -- both ''cycling'' and ''[[Completion]]'' are available. Perform actions on selected buffers or sets of buffers.
-* LustyExplorer -- Dynamic filesystem explorer and buffer switcher
-* DoReMi -- use arrow keys and/or mouse wheel with `doremi-buffers' (`C-x t b') to ''cycle'' among buffers 
+* InteractivelyDoThings -- Same as %%IswitchBuffers%%, for buffers, but also affects file access 
+* DoReMi -- `doremi-buffers' (`C-x t b'): cycle among buffers 
+using arrow keys and/or mouse wheel
 * SwBuff -- another way to cycle among buffers
-* [[BufferRing]] -- simpler MTorus like rings
+* CycleBuffer -- switch to next/previous significant buffer
+* [[Rebound]] --   Enable each window to remember and return to its value of point in each buffer it has displayed.
 * PointStack -- go back to places in buffers that you've marked
 * RecreateScratchBuffer -- when ##*scratch*## disappears
-* [[Anything]] -- can be used to switch to a buffer, too.
-* [[ControlTABbufferCycling]] -- emulates application switching on Windows for buffers in Emacs
-* CategorizingInformationManager -- provides ee-buffers for buffer switching
-* CycleBuffer -- switch to next/previous significant buffer with a single keystroke
+* LustyExplorer -- Dynamic filesystem explorer and buffer switcher
+* [[Anything]] -- can be used to switch to a buffer
+* [[ControlTABbufferCycling]] -- emulates application switching on MS Windows for buffers in Emacs
+* CategorizingInformationManager -- `ee-buffers' for buffer switching
 * BufferQuickSwitcher -- Another way to switch buffers
-* TabBarMode -- buffer tabs in Emacs 21
-* EasyBufferSwitch -- A combination of number indexed switch and cycle switch
+* EasyBufferSwitch -- A combination of number-indexed switch and cycle switch
 * [[Lisp:contentswitch.el]] -- switch buffers by their content
-* [[Lisp:jump-or-exec.el]] -- Jump to a buffer matched by buffer-name, or call function when not found. This is enlighted by [[http://sawfish.wikia.com/wiki/Jump-or-exec jump-or-exec from sawfish]].
+* [[Lisp:jump-or-exec.el]] -- Jump to a buffer matched by buffer name, or call function when not found. See also [[http://sawfish.wikia.com/wiki/Jump-or-exec jump-or-exec from sawfish]].
 * [[cOpenRelational]] -- keeping in touch between header file and source file for C or C++
 * FindHeaderFile -- open C/C++ header file on current line
 * [[MTorus]] -- provides navigation on a discrete 2-torus of buffers
+* [[BufferRing]] -- simpler MTorus like rings
 * [[iflipb]] -- interactively flip between recently visited buffers
+* TabBarMode -- buffer tabs
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
-* SwitchFiles -- Intelligently switch to a different file, keeping a path as you go.
-* [[Rebound]] --   Enable each window to remember and return to its value of point in each buffer it has displayed.

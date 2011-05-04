@@ -36,6 +36,12 @@ Thus, no matter what the author says, the license says that it is free software 
 
 Furthermore, if the plugin is distributed without source code, then it must inform "licensees how to obtain it in a reasonable manner on or through a medium customarily used for software exchange" according to section 3 a iv. If you really want to force the issue, you could contact the Eclipse Foundation or post on the community forum.
 -- Alex
+
+This interpretation was exactly the way I read it, as I am no lawyer, I was not quite sure, if I missinterpreted it.
+
+If this is the right interpretation of the EPL let me restate my proposition:
+
+Emacsplus is EPL is a terrible lie!
     
 ----
 CategoryRelated

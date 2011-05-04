@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 16:41:11 2011 (-0700)
+;; Last-Updated: Tue May  3 11:04:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27685
+;;     Update #: 27698
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4422,8 +4422,22 @@
 ;;    inserted in the minibuffer when you use `C-='.  See
 ;;    (@file :file-name "icicles-doc1.el" :to "Inserting a Regexp from a Variable or Register").
 ;;
-;;  * In buffer `*Completions*', face `icicle-saved-candidate'
-;;    highlights candidates that have been saved, face
+;;  * In buffer `*Completions*', face `icicle-historical-candidate' is
+;;    used to highlight completion candidates that you have used
+;;    (entered with `RET') previously.  This highlighting is
+;;    controlled by user option
+;;    `icicle-highlight-historical-candidates-flag'.  You can toggle
+;;    this option from the minibuffer at any time using `C-pause'.
+;;    See (@file :file-name "icicles-doc1.el" :to "History Enhancements").
+;;
+;;  * In buffer `*Completions*', face `icicle-saved-candidate' is used
+;;    to highlight completion candidates that you have saved (e.g.,
+;;    using `C-M->').  This highlighting is controlled by user option
+;;    `icicle-highlight-saved-candidates-flag'.  You can toggle this
+;;    option from the minibuffer at any time using `S-pause'.
+;;    See (@file :file-name "icicles-doc1.el" :to "Saving and Retrieving Completion Candidates").
+;;
+;;  * In buffer `*Completions*', face
 ;;    `icicle-current-candidate-highlight' highlights the current
 ;;    completion candidate, and, provided user option
 ;;    `icicle-expand-input-to-common-match-flag' is non-nil, face
@@ -4808,13 +4822,6 @@
 ;;    use `icicle-minibuffer-setup-hook' and `minibuffer-exit-hook' to
 ;;    temporarily set and reset the internal variable
 ;;    `icicle-completions-format-internal'.
-;;
-;;  * Face `icicle-historical-candidate' is used to highlight
-;;    completion candidates that you have used (entered with `RET')
-;;    previously.  This highlighting is controlled by user option
-;;    `icicle-highlight-historical-candidates-flag'.  You can toggle
-;;    this option from the minibuffer at any time using `C-pause'.
-;;    See (@file :file-name "icicles-doc1.el" :to "History Enhancements").
 ;;
 ;;  * If option `icicle-menu-items-to-history-flag' is non-nil (the
 ;;    default), then commands that you invoke using the menu-bar menu
@@ -6426,6 +6433,7 @@
 ;;    `C-M-`'   - `icicle-toggle-literal-replacement' (search)
 ;;    `C-$'     - `icicle-toggle-transforming' (removal of duplicates)
 ;;    `C-pause' - `icicle-toggle-highlight-historical-candidates'
+;;    `S-pause' - `icicle-toggle-highlight-saved-candidates'
 ;;    `M-g'     - `icicle-toggle-C-for-actions'
 ;;    `M-q'     - `icicle-toggle-search-whole-word' (search)
 ;;    `M-('     - `icicle-next-S-TAB-completion-method'

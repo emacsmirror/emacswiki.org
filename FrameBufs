@@ -6,11 +6,11 @@ Put the package file in your load path and put
 
   (require 'frame-bufs)
 
-in your ##.emacs##.  To enable frame-bufs, use the command ##frame-bufs-mode##.
+in your ##.emacs##.  To enable frame-bufs, use the command ##frame-bufs-mode##, or put ##(frame-bufs-mode t)## in your ##.emacs##.
 
 == Features Overview ==
 
-When frame-bufs-mode is enabled, it keeps a record of which buffers are associated with each frame.  According  to the most basic criterion, a buffer becomes associated with a frame if it is selected on a frame.  (Note then, that a buffer can be associated with more than one frame.)  We say that a buffer associated with a frame is "local" to that frame.
+When frame-bufs-mode is enabled, it keeps a record of which buffers are associated with each frame.  A buffer becomes associated with a frame if it is selected in one of that frame's windows.  We say that a buffer associated with a frame is "local" to that frame.  (Note, then, that a buffer can be local to more than one frame.) 
 
 The buffer menu initially lists all buffers (we call this "full-list mode").  By typing ##F## the buffer menu can be toggled between showing all buffers and showing only those buffers associated with the selected frame (when the buffer menu is in the latter state we say it is in "local-list mode").  In full-list mode there is an additional column after the initial ##CRM## bit columns, the ##F## column.  Frame-local buffers are indicated with an `o' in this column.  In local-list mode, the fourth column is suppressed.  Here are screenshots of the buffer menu in the two different modes:
 
@@ -30,11 +30,11 @@ As with save and delete commands in the buffer menu, these requested changes are
 
 As mentioned above, a buffer is automatically added to a frame's local list if it is selected in one of that frame's windows, and the local buffer list can be manually edited from within the buffer menu.  Finer-grained control over which buffers are automatically added to the local buffer list is provided by the following variables:
 
-* If ##locales-include-displayed-buffers## is non-nil, then buffers that are merely displayed on a frame become local to the frame, even if they have not been selected.  (The default value is nil.)
-* If a buffer's name is a member of ##locales-always-include-names##, then that buffer is added to every frame's local list.  (The default value is ##("*scratch*)##.)
-* If the command that creates a new frame also creates new buffers, then one might want those buffers to count as local to the new frame.  (For example, when one calls ##gnus## and thereby creates a new frame, it might be desirable to have the auxiliary buffers created by ##gnus## count as local to the Gnus frame, even if those buffers haven't been selected.)  If ##locales-include-new-buffers## is non-nil, then such buffers are added to the new frame's local buffer list, even if they have not been selected or displayed.  (The default value is nil.)
-*  If ##locales-include-init-buffer## is non-nil, then the buffer that is current when the command creating a new frame is called (the "init-buffer") will belong to the new frame.  If nil, it will not.   (The default value is nil.)
-* If ##locales-new-frames-inherit## is non-nil, then the local buffer list of a newly created frame will initially include all those buffers that belong to the local buffer list of its "parent" frame, i.e., the frame that was selected when the command that creates the new frame was run.  (The default value is nil.)
+* If ##frame-bufs-include-displayed-buffers## is non-nil, then buffers that are merely displayed on a frame become local to the frame, even if they have not been selected.  (The default value is nil.)
+* If a buffer's name is a member of ##frame-bufs-always-include-names##, then that buffer is added to every frame's local list.  (The default value is ##("*scratch*)##.)
+* If the command that creates a new frame also creates new buffers, then one might want those buffers to count as local to the new frame.  (For example, when one calls ##gnus## and thereby creates a new frame, it might be desirable to have the auxiliary buffers created by ##gnus## count as local to the Gnus frame, even if those buffers haven't been selected.)  If ##frame-bufs-include-new-buffers## is non-nil, then such buffers are added to the new frame's local buffer list, even if they have not been selected or displayed.  (The default value is nil.)
+*  If ##frame-bufs-include-init-buffer## is non-nil, then the buffer that is current when the command creating a new frame is called (the "init-buffer") will belong to the new frame.  If nil, it will not.   (The default value is nil.)
+* If ##frame-bufs-new-frames-inherit## is non-nil, then the local buffer list of a newly created frame will initially include all those buffers that belong to the local buffer list of its "parent" frame, i.e., the frame that was selected when the command that creates the new frame was run.  (The default value is nil.)
 
 == Other Commands and Features ==
 
@@ -52,5 +52,9 @@ Frame-bufs also provides three other commands that are available everywhere, not
 
 Frame-bufs is compatible with BufferMenuPlus.  It does not affect the operation of ##electric-buffer-list##.
 
-Frame-bufs does not alter the ##buffer-list## or ##buried-buffer-list## frame parameters or change the results of calls to the function ##buffer-list##, with one excpetion: If the buffer menu is automatically displayed on new frame (as it is, e.g., when ##pop-up-frames## is non-nil), then the frame used to display the buffer menu has its ##buffer-list## and ##buried-buffer-list## parameters set to those of the frame from which the buffer-menu command is called.
+Frame-bufs does not alter the ##buffer-list## or ##buried-buffer-list## frame parameters or change the results of calls to the function ##buffer-list##, with one exception: If the buffer menu is automatically displayed on new frame (as it is, e.g., when ##pop-up-frames## is non-nil), then the frame used to display the buffer menu has its ##buffer-list## and ##buried-buffer-list## parameters set to those of the frame from which the buffer-menu command is called.
   
+
+----
+CategoryFrames
+CategoryBufferSwitching
