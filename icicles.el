@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 09:29:06 2011 (-0700)
+;; Last-Updated: Wed May  4 14:46:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22869
+;;     Update #: 22873
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1206,7 +1206,7 @@
 ;;  ***** NOTE: The following functions defined in `lisp.el' have
 ;;              been REDEFINED in Icicles:
 ;;
-;;  `lisp-complete-symbol' - Selects *Completions* window even if on
+;;  `lisp-complete-symbol' - Selects `*Completions*' window even if on
 ;;                           another frame.
 ;;
 ;;
@@ -1223,7 +1223,7 @@
 ;;     Don't exit minibuffer after `lisp-complete-symbol' completion.
 ;;  `completion-setup-function' - 1. Put faces on inserted string(s).
 ;;                                2. Help on help.
-;;  `switch-to-completions' - Always selects *Completions* window.
+;;  `switch-to-completions' - Always selects `*Completions*' window.
 ;;
 ;;  `next-history-element' (advised only) -
 ;;     Depending on `icicle-default-value', select minibuffer

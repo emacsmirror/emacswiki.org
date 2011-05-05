@@ -5,6 +5,13 @@ The two different styles of fill-column indication look like this:
 || [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
 || Shading style || Rule style ||
 
+(Curious about the color scheme?  The settings are described on [http://www.emacswiki.org/emacs/AlpAker my homepage].)
+
+
+== Acquiring ==
+
+You can download the package from the link in the above introductory paragraph.  There's also a [http://github.com/alpaker/Fill-Column-Indicator GitHub] repository for the package.
+
 == Installation and Activation ==
 
 Put the package file in your load path and put ##(require 'fill-column-indicator)## in your .emacs.
@@ -143,6 +150,13 @@ I can't comment on the how much of a hack this is, my elisp isn't that great :) 
 [new:AlpAker:2011-04-27 23:50 UTC]
 
 (A few days later).  So far, every way I can think of to make the fill-column padding automatically pick up parenthesis highlighting will break support for character terminals.  So I've cleaned up the earlier hack and made it, for now, the Official Way We Do Things.   (Btw, you might want to have a look at [[mic-paren.el]], which is an improvement on paren.el in just about every respect.) --AA
+
+[new]
+fci-mode also causes the highlighting of the current line by hl-line-mode to be slightly broken. The highlighting between the last character and the fci column marker is lost. Probably has the same cause as the above problem. Maybe just removing the font property for the current line if hl-line-mode is active would fix this.
+
+[new:AlpAker:2011-05-04 14:53 UTC]
+
+Unfortunately, it's not quite that easy.  I've put a new version (0.36) that's partially compatible with hl-line-mode.  It won't work with global-hl-line-mode, or if you have hl-line-sticky-flag set to non-nil.  I'll have a comprehensive fix in the near-ish future (I'm a little swamped with work at the moment).  The current version, at least, is robust enough to handle simultaneous use of hl-lines-mode and the various kinds of paren highlighting. -- AA
 
 ===From the (E-)Mailbag===
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 15:25:45 2011 (-0700)
+;; Last-Updated: Wed May  4 14:27:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21912
+;;     Update #: 21930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -37,7 +37,7 @@
 ;;  large to upload to Emacs Wiki).
 ;;
 ;;  For commands to be used mainly in the minibuffer or buffer
-;;  *Completions*, see `icicles-mcmd.el'.
+;;  `*Completions*', see `icicles-mcmd.el'.
 ;;
 ;;  For Icicles documentation, see `icicles-doc1.el' and
 ;;  `icicles-doc2.el'.
@@ -280,7 +280,7 @@
 ;;  ***** NOTE: The following functions defined in `lisp.el' have
 ;;              been REDEFINED in Icicles:
 ;;
-;;  `lisp-complete-symbol' - Selects *Completions* window even if on
+;;  `lisp-complete-symbol' - Selects `*Completions*' window even if on
 ;;                           another frame.
 ;;
 ;;
@@ -1433,7 +1433,7 @@ control completion behaviour using `bbdb-completion-type'."
 ;; REPLACE ORIGINAL `lisp-complete-symbol' (< Emacs 23.2),
 ;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Select *Completions* window even if on another frame.
+;; Select `*Completions*' window even if on another frame.
 ;;
 (unless (fboundp 'old-lisp-complete-symbol)
   (defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
@@ -1507,7 +1507,7 @@ considered."
 ;; REPLACE ORIGINAL `lisp-completion-at-point' (>= Emacs 23.2),
 ;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Select *Completions* window even if on another frame.
+;; Select `*Completions*' window even if on another frame.
 ;;
 (when (fboundp 'completion-at-point)    ; Emacs 23.2+.
   (unless (fboundp 'old-lisp-completion-at-point)
@@ -1573,7 +1573,7 @@ with `RET' (in Emacs 22 or later).  This gives you the completion
 behavior of `customize-face' in vanilla Emacs.  The advantage is that
 the default value is the list of all faces under the cursor.  The
 disadvantage is that face candidates are not WYSIWYG in buffer
-*Completions*.
+`*Completions*'.
 
 This is an Icicles command - see command `icicle-mode'."
   (interactive
@@ -2482,7 +2482,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
   obarray nil t nil 'extended-command-history nil nil
   (;; Bindings
    (last-command                            last-command) ; Save and restore the last command.
-   (use-file-dialog                         nil) ; `mouse-2' in *Completions* won't use dialog box.
+   (use-file-dialog                         nil) ; `mouse-2' in `*Completions*' won't use dialog box.
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate  #'(lambda (c) (commandp (intern c))))
@@ -2606,7 +2606,7 @@ need match only a prefix.  For example, nil means that abbreviation
                                               (dolist (entry  icicle-command-abbrev-alist  ipc)
                                                 (setq abv  (symbol-name (cadr entry)))
                                                 (unless (member abv ipc) (push abv ipc)))))
-   (use-file-dialog                         nil) ; `mouse-2' in *Completions* won't use dialog box.
+   (use-file-dialog                         nil) ; `mouse-2' in `*Completions*' won't use dialog box.
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate  #'(lambda (c) (commandp (intern c))))
@@ -2690,7 +2690,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
             ""))
   icicle-commands-for-abbrev nil t nil 'extended-command-history nil nil
   (;; Bindings
-   (use-file-dialog                   nil) ; `mouse-2' in *Completions* shouldn't use file dialog.
+   (use-file-dialog                   nil) ; `mouse-2' in `*Completions*' shouldn't use file dialog.
    (alt-fn                            nil)
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
@@ -3719,8 +3719,8 @@ If you also use library `bookmark+.el', then:
  * You can use `C-,' to sort bookmarks in many different ways,
    according to their properties.
 
- * In *Completions*, the candidate bookmarks are highlighted according
-   to their type.  You can customize the highlighting faces used:
+ * In `*Completions*', the candidate bookmarks are highlighted
+   according to their type.  You can customize the highlighting faces:
 
   `bmkp-bad-bookmark'              - possibly bad bookmark
   `bmkp-bookmark-list'             - bookmark list
@@ -3738,8 +3738,8 @@ If you also use library `bookmark+.el', then:
   `bmkp-sequence'                  - sequence bookmark
   `bmkp-url'                       - URL
 
- * In *Completions*, if option `icicle-show-multi-completion-flag' is
-   non-nil, then each completion candidate is a multi-completion:
+ * In `*Completions*', if option `icicle-show-multi-completion-flag'
+   is non-nil, then each completion candidate is a multi-completion:
 
     a. the bookmark name
     b. the bookmark file or buffer name
@@ -4733,7 +4733,7 @@ see all tags as candidates to visit.
 By default:
 
 * Tags from all tags files are candidates.
-* The source file name is shown after a tag, in buffer *Completions*.
+* In `*Completions*', the source file name is shown after each tag.
 
 A prefix argument changes this default behavior, as follows:
 
@@ -5114,7 +5114,7 @@ Otherwise, use only windows from the selected frame."
 ;;;###autoload
 (defun icicle-delete-window (bufferp)   ; Bound to `C-x 0' in Icicle mode.
   "`delete-window' or prompt for buffer and delete all its windows.
-When called from the minibuffer, remove the *Completions* window.
+When called from the minibuffer, remove the `*Completions*' window.
 
 Otherwise:
  With no prefix argument, delete the selected window.
@@ -5203,7 +5203,7 @@ the behavior."                          ; Doc string
             (if (fboundp 'kill-buffer-and-its-windows)
                 (kill-buffer-and-its-windows buf) ; Defined in `misc-cmds.el'.
               (kill-buffer buf))
-            ;; Update the set of completions, then update *Completions*.
+            ;; Update the set of completions, then update `*Completions*'.
             (setq minibuffer-completion-table  (mapcar #'(lambda (buf) (list (buffer-name buf)))
                                                        (buffer-list)))
             (icicle-complete-again-update))

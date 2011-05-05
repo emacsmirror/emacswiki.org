@@ -6,13 +6,40 @@ The following are libraries I've authored, all of which concern, in one way or a
 
 * [[FillColumnIndicator]].  A minor mode that indicates the location of the fill column, either by shading the area of the window to the right of the fill column or by drawing a thin line down the editing window at the location of the fill column.
 
+----
+
+A few people have asked (apropos of the screenshots on the FillColumnIndicator page) what my font-lock settings are.  The basic scheme is this:
+
+<pre>
+
+(let ((faces
+       '((font-lock-comment-face :foreground "#4d7a70" :slant italic)
+         (font-lock-constant-face :foreground "#6b7875")
+         (font-lock-string-face :foreground "#7a633d")
+         (font-lock-type-face :foreground "grey50")
+         (font-lock-warning-face :foreground "#cd5c5c")
+         (font-lock-preprocessor-face :foreground "#596766" :weight bold)
+         (font-lock-doc-face :foreground "#707f75" :slant italic)
+         (font-lock-keyword-face :foreground "#665d9c" :weight bold)
+         (font-lock-builtin-face :foreground "gray50" :weight bold)
+         (font-lock-function-name-face :foreground "#2e5fa2" :weight bold)
+         (font-lock-variable-name-face :foreground "#6f5057" :weight bold)
+         (mode-line  :background "#bedefe"))))
+  (dolist (face faces)
+    (apply 'set-face-attribute (car face) nil (cdr face))))
+
+</pre>
+
+----
 
 [new:DrewAdams:2011-05-02 20:56 UTC]
 Welcome to the wiki. -- DrewAdams
 
 [new:AlpAker:2011-05-03 04:10 UTC]
 
-Thanks!
+Thanks! -- AA
+
+
 
 
 

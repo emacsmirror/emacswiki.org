@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 09:38:54 2011 (-0700)
+;; Last-Updated: Wed May  4 13:57:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12245
+;;     Update #: 12266
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -517,7 +517,7 @@ the following is true:
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
 ;; Don't print the help lines here.  Do that in `icicle-display-completion-list' instead.
-;; That's so we can fit the *Completions* window to the buffer, including the help lines.
+;; That's so we can fit the `*Completions*' window to the buffer, including the help lines.
 ;;
 (unless (fboundp 'old-completion-setup-function)
   (defalias 'old-completion-setup-function (symbol-function 'completion-setup-function)))
@@ -533,7 +533,7 @@ so it is called after completion-list buffer text is written."
              (dir-of-input   (and minibuffer-completing-file-name
                                   (icicle-file-name-directory mbuf-contents))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
-        ;; completion command, then set `default-directory' so it will be copied into *Completions*.
+        ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
                    (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
@@ -569,7 +569,7 @@ so it is called after completion-list buffer text is written."
                                   (icicle-file-name-directory mbuf-contents)))
              common-string-length)
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
-        ;; completion command, then set `default-directory' so it will be copied into *Completions*.
+        ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
                    (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
@@ -628,7 +628,7 @@ so it is called after completion-list buffer text is written."
              (dir-of-input   (and minibuffer-completing-file-name
                                   (icicle-file-name-directory mbuf-contents))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
-        ;; completion command, then set `default-directory' so it will be copied into *Completions*.
+        ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
                    (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
@@ -638,7 +638,7 @@ so it is called after completion-list buffer text is written."
           (set (make-local-variable 'completion-reference-buffer) mainbuf))))))
 
 (defun icicle-insert-Completions-help-string ()
-  "Add or remove help in *Completions*.
+  "Add or remove help in `*Completions*'.
 This is controlled by `icicle-show-Completions-help-flag'.  If that
 option is nil, remove help; else, add it."
   (if icicle-show-Completions-help-flag
@@ -750,7 +750,7 @@ lax: a match is not required."
 ;; Allows for completion candidates that are lists of strings.
 ;; Allows for reading and returning completion candidates that are strings with properties.
 ;; Adds completion status indicator to minibuffer and mode-line lighter.
-;; Removes *Completions* window.
+;; Removes `*Completions*' window.
 ;;
 ;; We use HIST-m@%=!$+&^*z instead of HIST, to avoid name capture by `minibuffer-history-variable's
 ;; value.  If we didn't need to be Emacs 20-compatible, then we could employ
@@ -809,7 +809,7 @@ multi-completion.  The strings are joined pairwise with
 `icicle-list-join-string' to form the completion candidate seen by the
 user, which is terminated by `icicle-list-end-string'.  You can use
 variable `icicle-candidate-properties-alist' to control the appearance
-of multi-completions in buffer *Completions*.  You can use variables
+of multi-completions in buffer `*Completions*'.  You can use variables
 `icicle-list-use-nth-parts' and `icicle-list-nth-parts-join-string' to
 control the minibuffer behavior of multi-completions.  See the Icicles
 documentation for more information.
@@ -939,7 +939,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
                               prompt collection predicate require-match initial-input
                               hist-m@%=!$+&^*z def inherit-input-method)))
              (icicle-unpropertize result))))
-    ;; HACK.  Without this, when REQUIRE-MATCH is non-nil, *Completions* window
+    ;; HACK.  Without this, when REQUIRE-MATCH is non-nil, `*Completions*' window
     ;; does not disappear.
     (when require-match (icicle-remove-Completions-window))
     result))
@@ -1049,7 +1049,7 @@ these Icicles variables:
   `icicle-must-not-match-regexp'
   `icicle-must-pass-predicate'
 
-Directory names are highlighted in *Completions* using face
+Directory names are highlighted in `*Completions*' using face
 `icicle-special-candidate'.
 
 If option `icicle-require-match-flag' is non-nil, it overrides the
@@ -1195,7 +1195,7 @@ and `read-file-name-function'."
          (setq result  (catch 'icicle-read-top
                          (funcall (or icicle-old-read-file-name-fn 'read-file-name) prompt dir
                                   default-filename require-match initial-input))))))
-    ;; HACK.  Without this, when REQUIRE-MATCH is non-nil, *Completions* window
+    ;; HACK.  Without this, when REQUIRE-MATCH is non-nil, `*Completions*' window
     ;; does not disappear.
     (when require-match (icicle-remove-Completions-window))
     result))
@@ -1638,7 +1638,7 @@ Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
 ;; REPLACE ORIGINAL `read-face-name' in `faces.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Show face names in *Completions* with the faces they name.
+;; Show face names in `*Completions*' with the faces they name.
 ;;
 (unless (fboundp 'old-read-face-name)
   (defalias 'old-read-face-name (symbol-function 'read-face-name)))
@@ -1870,7 +1870,7 @@ FACE."
 ;; REPLACE ORIGINAL `face-valid-attribute-values' in `faces.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Show color names in *Completions* with the (background) colors they name.
+;; Show color names in `*Completions*' with the (background) colors they name.
 ;; This is really so that commands such as `modify-face' take advantage of colored candidates.
 ;; We don't bother to try the same thing for Emacs 20, but the fix (directly to `modify-face') is
 ;; similar and trivial.
@@ -2332,7 +2332,7 @@ add options and arguments etc.
 
 In addition to file-name candidates, the following are combined to
 produce extra completion candidates (which are indicated using face
-`icicle-extra-candidates' in buffer *Completions*):
+`icicle-extra-candidates' in buffer `*Completions*'):
 
 * If you use Dired X, then the rules defined by user option
   `dired-guess-shell-alist-user' and variable
@@ -2472,7 +2472,7 @@ This is a menu filter function which ignores the MENU argument."
 ;;; Icicles functions - completion display (not cycling) -------------
 
 (defun icicle-display-candidates-in-Completions (&optional reverse-p no-display-p)
-  "Refresh the current set of completion candidates in *Completions*.
+  "Refresh the current set of completion candidates in `*Completions*'.
 REVERSE-P non-nil means display the candidates in reverse order.
 NO-DISPLAY-P non-nil means do not display the candidates; just
   recompute them.  If the value is `no-msg', then do not show a
@@ -2817,7 +2817,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 ;; REPLACE ORIGINAL `display-completion-list' (built-in function),
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; 1. Does not remove text properties from candidates when it displays them in *Completions*.
+;; 1. Does not remove text properties from candidates when it displays them in `*Completions*'.
 ;; 2. Adjusts number of columns and their widths to window size.
 ;; 3. The optional second arg is ignored.  In vanilla Emacs < 23, this is a string
 ;;    representing a common prefix, and faces `completions-first-difference' and
@@ -2927,7 +2927,7 @@ The optional second arg is ignored."
               ((and enable-multibyte-characters (not (multibyte-string-p string)))
                (setq string  (string-make-multibyte string))))
         ;; Insert candidate (and annotation).  Mouse-face candidate, except for any newline as final
-        ;; char.  This is so that candidates are visually separate in *Completions*.  Instead,
+        ;; char.  This is so that candidates are visually separate in `*Completions*'.  Instead,
         ;; however, put property `icicle-keep-newline' on any final \n in the candidate, so
         ;; `icicle-mouse-choose-completion' and `icicle-current-completion-in-Completions' can put
         ;; the newline back as part of the candidate.
@@ -3534,10 +3534,10 @@ current candidate is shown in the mode line."
 
              (icicle-insert-cand-in-minibuffer icicle-last-completion-candidate regexp-p)
 
-             ;; Highlight current completion candidate, if *Completions* is displayed.
+             ;; Highlight current completion candidate, if `*Completions*' is displayed.
              (when (get-buffer-window "*Completions*" 0)
 
-               ;; Refresh *Completions*, updating it to reflect the current candidates.
+               ;; Refresh `*Completions*', updating it to reflect the current candidates.
                (unless (or (and (symbolp this-command)
                                 (get this-command 'icicle-apropos-cycling-command)
                                 (or (and (symbolp last-command)
@@ -3687,10 +3687,10 @@ a sequence of user-visible actions."
 
 (defun icicle-recompute-candidates (nth candidates-fn saved-last-input)
   "Recompute `icicle-completion-candidates', if needed.
-If buffer *Completions* is already displayed, it is updated.
+If buffer `*Completions*' is already displayed, it is updated.
 This does nothing, unless the user changed the minibuffer input or the
 completion type has changed (from apropos to prefix or vice versa).
-NTH < 0 means candidate order is reversed in *Completions*.
+NTH < 0 means candidate order is reversed in `*Completions*'.
 Argument CANDIDATES-FN is a function that recomputes the candidates.
 SAVED-LAST-INPUT is the last input, as in `icicle-last-input'."
   (unless (and icicle-last-completion-command
@@ -3727,7 +3727,7 @@ SAVED-LAST-INPUT is the last input, as in `icicle-last-input'."
           (condition-case nil
               (funcall candidates-fn icicle-current-input)
             (error icicle-completion-candidates))) ; No change if completion error.
-    (when (get-buffer-window "*Completions*" 0) ; Update *Completions* display or remove it.
+    (when (get-buffer-window "*Completions*" 0) ; Update `*Completions*' display or remove it.
       (if icicle-completion-candidates
           (icicle-display-candidates-in-Completions (not (wholenump nth)))
         (save-selected-window (icicle-remove-Completions-window))))))
@@ -3828,7 +3828,7 @@ the code."
         (setq icicle-current-raw-input  icicle-current-input)
         ;; Save it for `C-l', unless it is "".  Drop old entries when too big.
         (icicle-save-raw-input))
-       ;; Forget last raw input, so it is not highlighted in *Completions*.
+       ;; Forget last raw input, so it is not highlighted in `*Completions*'.
        ;; Do NOT do this if we are cycling.
        ((not icicle-cycling-p)
         (setq icicle-current-raw-input  "")))))
@@ -3916,7 +3916,7 @@ Optional argument DONT-ACTIVATE-P means do not activate the mark."
                  (not dont-activate-p)))))
 
 (defun icicle-highlight-candidate-in-Completions ()
-  "Highlight the current candidate in *Completions*."
+  "Highlight the current candidate in `*Completions*'."
   (let ((compl-win  (get-buffer-window "*Completions*" 0))
         curr-cand-pos)
     (when compl-win
@@ -3963,15 +3963,15 @@ If `icicle-transform-function' is nil, return CANDIDATES.
 
 Note that this transformation is applied before completion candidates
 are made available to the user, in particular, before they are
-displayed in *Completions*.  Its use is thus quite different from that
-of `icicle-transform-sole-candidate'."
+displayed in `*Completions*'.  Its use is thus quite different from
+that of `icicle-transform-sole-candidate'."
   (if icicle-transform-function  (funcall icicle-transform-function candidates)  candidates))
 
 (defun icicle-transform-multi-completion (candidate)
   "Transform display CANDIDATE according to `icicle-list-use-nth-parts'.
 If CANDIDATE is not a multi-completion, return CANDIDATE unchanged.
 Return the possibly transformed candidate."
-  (if icicle-list-use-nth-parts
+  (if (and icicle-list-use-nth-parts (not (equal "" candidate)))
       (let ((parts  (split-string candidate icicle-list-join-string)))  (icicle-join-nth-parts parts))
     candidate))
 
@@ -4292,7 +4292,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
                                          icicle-completion-candidates))))
 
 (defun icicle-scroll-or-update-Completions (msg)
-  "Scroll *Completions* if this command was repeated; else update it."
+  "Scroll `*Completions*' if this command was repeated; else update it."
   (if (get-buffer-window "*Completions*" 0)
       (if (eq last-command this-command)
           ;; User repeated the command.  Scroll window around.
@@ -4306,7 +4306,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
 
 ;; $$ No longer used.
 (defun icicle-display-Completions ()
-  "Display *Completions* buffer."
+  "Display `*Completions*' buffer."
   (let ((completions  (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
                                        icicle-ignore-space-prefix-flag)))
     (when (> (length icicle-completion-candidates) icicle-incremental-completion-threshold)
@@ -4594,7 +4594,7 @@ unless it exists."
         (overlay-put icicle-complete-input-overlay 'face 'icicle-complete-input)))))
 
 (defun icicle-call-then-update-Completions (fn &rest args)
-  "Call FN with ARGS, then update *Completions* with input matches."
+  "Call FN with ARGS, then update `*Completions*' with input matches."
   (save-match-data
     (apply fn args)
     ;;$$$ (let ((tramp-completion-mode  t))    ; Fool Tramp into thinking it is in completion mode.
@@ -4607,13 +4607,13 @@ unless it exists."
         (save-selected-window (icicle-remove-Completions-window))
       ;; `icicle-highlight-input-noncompletion' return value saves call to `icicle-file-remote-p'.
       (let ((remote-test  (icicle-highlight-input-noncompletion)))
-        ;; If ALL of the following are true, then update *Completions* (complete again):
+        ;; If ALL of the following are true, then update `*Completions*' (complete again):
         ;;   * incremental completion,
         ;;   * `icicle-highlight-input-noncompletion' determined that it's a remote or local file
         ;;        or we're not completing file names
         ;;        or user said not to test for remote file names
         ;;        or we check now and it's not a remote file,
-        ;;   * *Completions* is already displayed or `icicle-incremental-completion-p' is not t,
+        ;;   * `*Completions*' is already displayed or `icicle-incremental-completion-p' is not t,
         ;;   * there are not too many candidates or we have waited the full delay.
         (when (and icicle-incremental-completion-p
                    (or (memq remote-test '(file-local-p file-remote-p))
@@ -4986,15 +4986,15 @@ Character FROM is affected (possibly deleted).  Character TO is not."
     (error "Command `%s' must be called from the minibuffer" this-command)))
 
 (defun icicle-barf-if-outside-Completions ()
-  "Raise an error if `this-command' is called outside buffer *Completions*."
+  "Raise error if `this-command' is called outside buffer `*Completions*'."
   (unless (eq (current-buffer) (get-buffer "*Completions*"))
-    (error "Command `%s' must be called from *Completions* buffer" this-command)))
+    (error "Command `%s' must be called from `*Completions*' buffer" this-command)))
 
 (defun icicle-barf-if-outside-Completions-and-minibuffer ()
-  "Error if `this-command' called outside *Completions* and minibuffer."
+  "Error if `this-command' called outside `*Completions*' and minibuffer."
   (unless (or (eq (current-buffer) (window-buffer (minibuffer-window)))
               (eq (current-buffer) (get-buffer "*Completions*")))
-    (error "Command `%s' must be called from *Completions* buffer or the minibuffer" this-command)))
+    (error "`%s' must be called from `*Completions*' or the minibuffer" this-command)))
 
 (defun icicle-command-abbrev-save ()
   "Save `icicle-command-abbrev-alist'.  Used on `kill-emacs-hook'."
@@ -5034,7 +5034,7 @@ Similar to `expand-file-name', except:
     (replace-regexp-in-string (make-string 5 7) "//" (expand-file-name escaped-input escaped-dir))))
 
 (defun icicle-start-of-candidates-in-Completions ()
-  "Return buffer position of the first candidate in *Completions*."
+  "Return buffer position of the first candidate in `*Completions*'."
   (save-excursion
     (goto-char (point-min))
     (forward-line (if icicle-show-Completions-help-flag 2 1))
@@ -5180,7 +5180,7 @@ Comparison respects `case-fold-search'."
 
 (defun icicle-get-alist-candidate (string &optional no-error-p)
   "Return full completion candidate that corresponds to displayed STRING.
-STRING is the name of the candidate, as shown in *Completions*.
+STRING is the name of the candidate, as shown in `*Completions*'.
 Non-nil optional argument NO-ERROR-P means display a message and
 return nil instead of raising an error if STRING is ambiguous.
 If the value of NO-ERROR-P is `no-error-no-msg', then show no message
@@ -5513,7 +5513,7 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
         ;; Make the two `*-join-string' variables the same, so past inputs are recognized.
         ;; Do not use " " as the value, because color names such as "white smoke" would be
         ;; split, and "smoke" would not be recognized as a color name when trying to list
-        ;; candidates in *Completions*.
+        ;; candidates in `*Completions*'.
         icicle-list-nth-parts-join-string  ": "
         icicle-list-join-string            ": "
         icicle-list-end-string             ""
@@ -5742,7 +5742,7 @@ S1 `icicle-case-string-less-p' S2.  S1 and S2 must be strings.
 
 When used as a comparison function for completion candidates, this
 makes candidates matching previous inputs available first (at the top
-of buffer *Completions*).  Candidates are effectively in two groups,
+of buffer `*Completions*').  Candidates are effectively in two groups,
 each of which is sorted alphabetically separately: matching previous
 inputs, followed by matching candidates that have not yet been used."
   ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
@@ -6209,9 +6209,9 @@ in \"...\".
 
 When used as a comparison function for completion candidates, this
 makes prefix keys that match your input available first (at the top of
-buffer *Completions*).  Candidates are effectively in two groups, each
-of which is sorted alphabetically separately: prefix keys, followed by
-non-prefix keys.  Letter case is ignored.
+buffer `*Completions*').  Candidates are effectively in two groups,
+each of which is sorted alphabetically separately: prefix keys,
+followed by non-prefix keys.  Letter case is ignored.
 
 The special key representation \"..\" is, however, less than all other
 keys, including prefix keys."
@@ -6233,9 +6233,9 @@ For this function, a local key is highlighted as a special candidate.
 
 When used as a comparison function for completion candidates, this
 makes local keys that match your input available first (at the top of
-buffer *Completions*).  Candidates are effectively in two groups, each
-of which is sorted alphabetically separately: local keys, followed by
-non-prefix keys.  Letter case is ignored.
+buffer `*Completions*').  Candidates are effectively in two groups,
+each of which is sorted alphabetically separately: local keys,
+followed by non-prefix keys.  Letter case is ignored.
 
 The special key representation \"..\" is, however, less than all other
 keys, including local keys."

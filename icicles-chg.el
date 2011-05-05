@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 15:28:04 2011 (-0700)
+;; Last-Updated: Wed May  4 14:33:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6468
+;;     Update #: 6474
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/04 dadams
+;;     icicle-search-read-context-regexp: Changed prompt to make clear that we search within contexts.
+;;     icicle-search-define-candidates: Remove any region highlighting, so we can see search hits.
 ;; 2011/04/29 dadams
 ;;     icicle-choose-candidate-of-type: Rewrote buffer bindings based on icicle-buffer-bindings.
 ;; 2011/04/26 dadams
@@ -754,6 +757,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/05/04 dadams
+;;     icicle-transform-multi-completion: If cand is "" just return it.  (Emacs 20 split-string bug.)
 ;; 2011/05/03 dadams
 ;;     Added: icicle-position, icicle-merge-saved-order-less-p.
 ;;     icicle-display-candidates-in-Completions: Respect icicle-highlight-saved-candidates-flag.
@@ -2342,6 +2347,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/05/04 dadams
+;;     icicle-transform-sole-candidate: Do nothing if for some reason icicle-current-input is nil.
 ;; 2011/05/03 dadams
 ;;     Added: icicle-plus-saved-sort, icicle-toggle-highlight-saved-candidates.
 ;;     icicle-help-string-completion: Mention icicle-toggle-highlight-saved-candidates.

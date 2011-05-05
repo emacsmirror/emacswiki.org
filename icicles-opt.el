@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 09:28:12 2011 (-0700)
+;; Last-Updated: Wed May  4 11:07:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4279
+;;     Update #: 4308
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -435,7 +435,7 @@
         icicle-cycle-image-file-thumbnail)
        (proxy-candidates menu-item "Toggle Including Proxy Candidates"
         icicle-toggle-proxy-candidates)
-       (WYSIWYG menu-item "Toggle WYSIWYG for *Completions*" icicle-toggle-WYSIWYG-Completions)
+       (WYSIWYG menu-item "Toggle WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions)
        (angle-brackets menu-item "Toggle Using Angle Brackets" icicle-toggle-angle-brackets)
        (ignored-files menu-item "Toggle Ignored File Extensions  (`C-.')"
         icicle-toggle-ignored-extensions)
@@ -503,12 +503,13 @@ right thing\"."
 ;;;###autoload
 (defcustom icicle-add-proxy-candidates-flag nil ; Toggle with `C-M-_'.
   "*Non-nil means to include proxy candidates whenever possible.
-A proxy candidate is a special candidate (shown in *Completions* using
-face `icicle-special-candidate') whose name is a placeholder for the
-real candidate.  The proxy candidate typically stands for some value
-obtained from the cursor position or by some action such as clicking
-the mouse.  Example candidates include a color or file name, named by
-proxy candidates such as `*copied foreground*' or `*file at point*'.
+A proxy candidate is a special candidate (shown in `*Completions*'
+using face `icicle-special-candidate') whose name is a placeholder for
+the real candidate.  The proxy candidate typically stands for some
+value obtained from the cursor position or by some action such as
+clicking the mouse.  Example candidates include a color or file name,
+named by proxy candidates such as `*copied foreground*' or `*file at
+point*'.
 
 You can toggle this option at any time from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-proxy-candidates]'.  However, for \
@@ -791,7 +792,7 @@ Specifically, those commands then bind these options to t:
 ;;;###autoload
 (defcustom icicle-candidate-width-factor 80
   "*Percentage of widest candidate width to use for calculating columns.
-The number of columns of candidates displayed in *Completions* is no
+The number of columns of candidates displayed in `*Completions*' is no
 more than the window width divided by this percentage of the maximum
 candidate width.
 
@@ -979,18 +980,18 @@ This is the history that you access using \\<minibuffer-local-completion-map>\
 
 ;;;###autoload
 (defcustom icicle-Completions-display-min-input-chars 0
-  "**Completions* window is removed if fewer chars than this are input.
+  "*`*Completions*' window is removed if fewer chars than this are input.
 You might want to set this to, say 1 or 2, to avoid display of a large
 set of candidates during incremental completion.  The default value of
-0 causes this option to have no effect: *Completions* is never removed
-based only on the number of input characters."
+0 causes this option to have no effect: `*Completions*' is never
+removed based only on the number of input characters."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-completions-format (if (boundp 'completions-format) ; Defined in Emacs 23+.
                                          completions-format
                                        'horizontal)  
-  "*Layout of completion candidates in buffer *Completions*.
+  "*Layout of completion candidates in buffer `*Completions*'.
 `vertical' means display down columns first, then to the right.
 `horizontal' or nil means display across rows first, then down.
 
@@ -1004,10 +1005,10 @@ multi-completions is always horizontal."
 
 ;;;###autoload
 (defcustom icicle-Completions-frame-at-right-flag t
-  "*Non-nil means move *Completions* frame to right edge of display.
+  "*Non-nil means move `*Completions*' frame to right edge of display.
 This is done by `icicle-candidate-action'.
-It only happens if *Completions* is alone in its frame.
-This can be useful to make *Completions* more visible."
+It only happens if `*Completions*' is alone in its frame.
+This can be useful to make `*Completions*' more visible."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1115,9 +1116,9 @@ See also options `icicle-candidate-width-factor' and
 
 ;;;###autoload
 (defcustom icicle-Completions-window-max-height 30
-  "*Maximum height of *Completions* window, in lines.
+  "*Maximum height of `*Completions*' window, in lines.
 The window is fit to the buffer size, with this as maximum height.
-Not used if *Completions* is a special buffer with its own frame.
+Not used if `*Completions*' is a special buffer with its own frame.
 Not used in Emacs releases prior to 21."
   :type 'integer :group 'Icicles-Completions-Display)
 
@@ -1522,7 +1523,7 @@ a prefix argument, that command also saves the cache persistently."
 ;;;###autoload
 (defcustom icicle-help-in-mode-line-flag t
   "*Non-nil means show help in the mode-line for individual completions.
-If buffer *Completions* is displayed, then use its mode-line.
+If buffer `*Completions*' is displayed, then use its mode-line.
 Otherwise, use the mode-line of the current buffer.
 
 The help is shown when you cycle among completion candidates and when
@@ -1533,7 +1534,7 @@ Face `icicle-mode-line-help' is used for the help."
 
 ;;;###autoload
 (defcustom icicle-hide-common-match-in-Completions-flag nil
-  "*Non-nil means hide the common match for your input in *Completions*.
+  "*Non-nil means hide the common match for your input, in `*Completions*'.
 The common match is elided using ellipsis (`...').
 You can use `C-M-.' during completion to toggle this option.
 
@@ -1543,7 +1544,7 @@ You can use `C-M-.' during completion to toggle this option.
 
 ;;;###autoload
 (defcustom icicle-highlight-historical-candidates-flag t ; Toggle with `C-pause'.
-  "*Non-nil means highlight *Completions* candidates that have been used.
+  "*Non-nil means highlight `*Completions*' candidates that have been used.
 This is done using face `icicle-historical-candidate'.
 Historical candidates are those that you have entered (using `RET' or
 `S-RET') previously.  You can toggle this option from the minibuffer
@@ -1657,7 +1658,7 @@ See the Icicles doc, section `Nutshell View of Icicles', subsection
 
 ;;;###autoload
 (defcustom icicle-highlight-saved-candidates-flag t ; Toggle with `S-pause'.
-  "*Non-nil means highlight *Completions* candidates that have been saved.
+  "*Non-nil means highlight `*Completions*' candidates that have been saved.
 This is done using face `icicle-saved-candidate'.
 You save candidates using, for example, `C-M->'.  You can toggle this
 option from the minibuffer at any time using `S-pause'."
@@ -1700,7 +1701,7 @@ You can cycle the value during completion using `C-x t'."
 
 ;;;###autoload
 (defcustom icicle-incremental-completion-delay 0.7
-  "*Number of seconds to wait before updating *Completions* incrementally.
+  "*Number of seconds to wait before updating `*Completions*' incrementally.
 There is no wait if the number of completion candidates is less than
 or equal to `icicle-incremental-completion-threshold'.
 See also `icicle-incremental-completion-flag'."
@@ -1708,10 +1709,10 @@ See also `icicle-incremental-completion-flag'."
 
 ;;;###autoload
 (defcustom icicle-incremental-completion-flag t ; Toggle with `C-#'.
-  "*Non-nil means update *Completions* buffer incrementally, as you type.
-nil means do not update *Completions* buffer incrementally, as you type.
-t means do nothing if *Completions* is not already displayed.
-Non-nil and non-t means display *Completions* and update it.
+  "*Non-nil means update `*Completions*' buffer incrementally, as you type.
+nil means do not update `*Completions*' incrementally, as you type.
+t means do nothing if `*Completions*' is not already displayed.
+Non-nil and non-t means display `*Completions*' and update it.
 You can toggle this between t and nil from the minibuffer at any time
 using `C-#'.
 
@@ -1722,9 +1723,9 @@ remote-file syntax.
 See also `icicle-incremental-completion-delay' and
 `icicle-incremental-completion-threshold'."
   :type '(choice
-          (const :tag "Do not update *Completions* incrementally"                nil)
-          (const :tag "Update *Completions* incrementally if already displayed"  t)
-          (other :tag "Update *Completions* incrementally always"                always))
+          (const :tag "Do not update `*Completions*' incrementally"                nil)
+          (const :tag "Update `*Completions*' incrementally if already displayed"  t)
+          (other :tag "Update `*Completions*' incrementally always"                always))
   :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1770,7 +1771,7 @@ Typically, this is a regexp or a portion of a regexp."
 
 ;;;###autoload
 (defcustom icicle-inter-candidates-min-spaces 1
-  "*Minimum number of spaces between candidates displayed in *Completions*.
+  "*Min number of spaces between candidates displayed in `*Completions*'.
 If you use Do Re Mi (library `doremi.el'), then you can modify this
 option incrementally during completion, seeing the effect as it
 changes.  Use `\\<minibuffer-local-completion-map>\
@@ -1884,7 +1885,7 @@ This option is used only if you have library `levenshtein.el'."
 When a completion candidate is a list of strings, they are joined
 pairwise using `icicle-list-join-string', and `icicle-list-end-string'
 is appended to the joined strings.  The result is what is displayed as
-a completion candidate in buffer *Completions*, and that is what is
+a completion candidate in buffer `*Completions*', and that is what is
 matched by your minibuffer input.
 
 The purpose of `icicle-list-end-string' is to allow some separation
@@ -1929,12 +1930,12 @@ The default value is \"^G\^J\", that is, control-g followed by
 control-j (newline):
  1) ^G does not normally occur in doc strings
  2) a newline visually separates the multiple component strings, which
-    helps readability in buffer *Completions*
+    helps readability in buffer `*Completions*'
  3) you can type the value using `C-q C-g C-q C-j'.
 
 For readability (in Emacs 22 and later), the default value has a
 `display' property that makes it appear as simply a newline in
-*Completions* - the `^G' is hidden.  you can also make the default
+`*Completions*' - the `^G' is hidden.  you can also make the default
 value appear this way in your minibuffer input also, by using \
 `\\<minibuffer-local-completion-map>\\[icicle-insert-list-join-string].'
 
@@ -2269,7 +2270,7 @@ different keyboards."
   ;;       '([backtab])
   ;;     '([S-tab] [S-iso-lefttab]))
   "*Key sequences to use for `icicle-move-to-previous-completion'.
-In buffer *Completions*, this moves backward among candidates.
+In buffer `*Completions*', this moves backward among candidates.
 
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -2561,19 +2562,19 @@ See `icicle-guess-commands-in-path'."
 (if (and (fboundp 'defvaralias) (boundp 'completion-show-help))
     (defvaralias 'icicle-show-Completions-help-flag 'completion-show-help)
   (defcustom icicle-show-Completions-help-flag t
-    "*Non-nil means display help lines at the top of buffer *Completions*."
+    "*Non-nil means display help lines at the top of buffer `*Completions*'."
     :type 'boolean :group 'Icicles-Completions-Display))
 
 ;;;###autoload
 (defcustom icicle-show-Completions-initially-flag nil
-  "*Non-nil means to show buffer *Completions* even without user input.
-nil means that *Completions* is shown upon demand, via `TAB' or
+  "*Non-nil means to show buffer `*Completions*' even without user input.
+nil means that `*Completions*' is shown upon demand, via `TAB' or
 `S-TAB'.
 
 For an alternative but similar behavior to using non-nil for
 `icicle-show-Completions-initially-flag', you can set option
 `icicle-incremental-completion-flag' to a value that is neither nil
-nor t.  That displays buffer *Completions* as soon as you type or
+nor t.  That displays buffer `*Completions*' as soon as you type or
 delete input, but not initially."
   :type 'boolean :group 'Icicles-Completions-Display)
 
@@ -2608,7 +2609,7 @@ command)."
   "*Predicate or predicates for sorting (comparing) two items.
 Used in particular to sort completion candidates.  In that case, this
 determines the order of candidates when cycling and their order in
-buffer *Completions*.
+buffer `*Completions*'.
 
 When `icicle-cycle-into-subdirs-flag' is non-nil, you might want to
 use a function such as `icicle-dirs-last-p' for this option, to
@@ -2796,7 +2797,7 @@ Each alist element has the form (SORT-ORDER . COMPARER):
 ;;;###autoload
 (defcustom icicle-special-candidate-regexp nil
   "*Regexp to match special completion candidates, or nil to do nothing.
-The candidates are highlighted in buffer *Completions* using face
+The candidates are highlighted in buffer `*Completions*' using face
 `icicle-special-candidate'."
   :type '(choice (const :tag "None" nil) regexp) :group 'Icicles-Completions-Display)
 
@@ -3776,7 +3777,7 @@ this to `M-SPC', for instance, in `minibuffer-local-completion-map',
 
 ;;;###autoload
 (defcustom icicle-WYSIWYG-Completions-flag "MMMM"
-  "*Non-nil means show candidates in *Completions* using WYSIWYG.
+  "*Non-nil means show candidates in `*Completions*' using WYSIWYG.
 This has an effect only for completion of faces and colors.
 
 The particular non-nil value determines the appearance:

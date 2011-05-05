@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 24 15:31:43 2011 (-0800)
+;; Last-Updated: Wed May  4 11:11:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 522
+;;     Update #: 528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -307,14 +307,14 @@ Don't forget to mention your Emacs and Icicles library versions."))
 (defface icicle-candidate-part
     '((((background dark)) (:background "#451700143197")) ; a very dark magenta
       (t (:background "#EF84FFEAF427"))) ; A light green.
-  "*Face used to highlight part(s) of a candidate in *Completions*."
+  "*Face used to highlight part(s) of a candidate in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-common-match-highlight-Completions
     '((((background dark)) (:foreground "#2017A71F2017")) ; a dark green
       (t (:foreground "magenta3")))
-  "*Face used to highlight candidates common match, in *Completions*."
+  "*Face used to highlight candidates common match, in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
@@ -338,28 +338,28 @@ Not used for versions of Emacs before version 21."
 (defface icicle-Completions-instruction-1
   '((((background dark)) (:foreground "#AC4AAC4A0000")) ; a dark yellow
     (t (:foreground "Blue")))
-  "*Face used to highlight first line of *Completions* buffer."
+  "*Face used to highlight first line of `*Completions*' buffer."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-Completions-instruction-2
     '((((background dark)) (:foreground "#0000D53CD53C")) ; a dark cyan
       (t (:foreground "Red")))
-  "*Face used to highlight second line of *Completions* buffer."
+  "*Face used to highlight second line of `*Completions*' buffer."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-current-candidate-highlight
   '((((background dark)) (:background "#69D40A460000")) ; a red brown
     (t (:background "CadetBlue1")))
-  "*Face used to highlight the current candidate, in *Completions*."
+  "*Face used to highlight the current candidate, in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-extra-candidate
     '((((background dark)) (:background "#4517305D0000")) ; a dark brown
       (t (:background "#C847D8FEFFFF"))) ; a light blue
-  "*Face used to highlight *Completions* candidates that are extra.
+  "*Face used to highlight `*Completions*' candidates that are extra.
 This means that they belong to list `icicle-extra-candidates'."
   :group 'Icicles-Completions-Display :group 'faces)
 
@@ -367,7 +367,7 @@ This means that they belong to list `icicle-extra-candidates'."
 (defface icicle-historical-candidate
   '((((background dark)) (:foreground "#DBD599DF0000")) ; a dark orange
     (t (:foreground "Blue")))
-  "*Face used to highlight *Completions* candidates that have been used."
+  "*Face used to highlight `*Completions*' candidates that have been used."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
@@ -388,7 +388,7 @@ This means that they belong to list `icicle-extra-candidates'."
 (defface icicle-match-highlight-Completions
     '((((background dark)) (:foreground "#1F1FA21CA21C")) ; a very dark cyan
       (t (:foreground "Red3")))
-  "*Face used to highlight root that was completed, in *Completions*."
+  "*Face used to highlight root that was completed, in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
@@ -437,7 +437,7 @@ Not used for versions of Emacs before version 21."
 (defface icicle-saved-candidate
     '((((background dark)) (:background "gray20"))   ; a dark gray
       (t (:background "gray80"))) ; a light gray
-  "*Face used to highlight *Completions* candidates that have been saved."
+  "*Face used to highlight `*Completions*' candidates that have been saved."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
@@ -652,7 +652,7 @@ This highlighting is done during Icicles searching."
 (defface icicle-special-candidate
     '((((background dark)) (:background "#176900004E0A")) ; a dark blue
       (t (:background "#EF47FFFFC847")))   ; A light yellow.
-  "*Face used to highlight *Completions* candidates that are special.
+  "*Face used to highlight `*Completions*' candidates that are special.
 The meaning of special is that their names match
 `icicle-special-candidate-regexp'."
   :group 'Icicles-Completions-Display :group 'faces)

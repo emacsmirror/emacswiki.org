@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 10:52:51 2011 (-0700)
+;; Last-Updated: Wed May  4 08:11:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25963
+;;     Update #: 25971
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1184,8 +1184,10 @@
 ;;  the text you are reading now, do this in that buffer:
 ;;
 ;;    C-c `
-;;    Find (regexp): . * r e c u r s i v e . *  RET - Search for the
-;;    regexp `.*recursive.*'.
+;;
+;;    Search within contexts (regexp): . * r e c u r s i v e . *  RET
+;;
+;;    Search within contexts defined by the regexp `.*recursive.*'.
 ;;
 ;;    Choose an occurrence: S-TAB - Show the search hits, in buffer
 ;;    `*Completions*' (optional).
@@ -1202,8 +1204,10 @@
 ;;
 ;;
 ;;    C-c `
-;;    Find (regexp): M-p RET - Search again for `.*recursive.*'
-;;    (input history).
+;;
+;;    Search within contexts (regexp): M-p RET
+;;
+;;    Search again within `.*recursive.*' (`M-p' uses input history).
 ;;
 ;;    S-TAB e d i t C-next ... - Search for the substring `edit'
 ;;    within all search hits for `.*recursive.*'.  Cycle among the
@@ -1247,8 +1251,10 @@
 ;;  any number of file names, using completion.
 ;;
 ;;    C-- C-c `
-;;    Find (regexp): . * r e c u r s i v e . *  RET - Search for the
-;;    regexp `.*recursive.*'.
+;;
+;;    Search within contexts (regexp): . * r e c u r s i v e . *  RET
+;;
+;;    Search within contexts defined by the regexp `.*recursive.*'.
 ;;
 ;;    Choose file (`RET' when done): i c i TAB - Choose among file
 ;;    candidates that begin with `ici' (shown in `*Completions*').

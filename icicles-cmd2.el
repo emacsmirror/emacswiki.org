@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 29 15:38:27 2011 (-0700)
+;; Last-Updated: Wed May  4 14:33:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2679
+;;     Update #: 2704
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -38,7 +38,7 @@
 ;;  be too large to upload to Emacs Wiki).
 ;;
 ;;  For commands to be used mainly in the minibuffer or buffer
-;;  *Completions*, see `icicles-mcmd.el'.
+;;  `*Completions*', see `icicles-mcmd.el'.
 ;;
 ;;  For Icicles documentation, see `icicles-doc1.el' and
 ;;  `icicles-doc2.el'.
@@ -750,7 +750,7 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
            (let ((completion  (icicle-transform-multi-completion
                                (car icicle-completion-candidates))))
              (select-window (active-minibuffer-window))
-             (with-current-buffer (window-buffer) ; Need if *Completions* redirected to minibuffer.
+             (with-current-buffer (window-buffer) ; Need if `*Completions*' redirected to minibuffer.
                (goto-char (icicle-minibuffer-prompt-end))
                (icicle-clear-minibuffer)
                (insert (if (and (icicle-file-name-input-p) insert-default-directory
@@ -761,7 +761,7 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
                        completion))))
           (t                            ; No candidates left
            (select-window (active-minibuffer-window))
-           (with-current-buffer (window-buffer) ; Needed if *Completions* redirected to minibuffer.
+           (with-current-buffer (window-buffer) ; Needed if `*Completions*' redirected to minibuffer.
              (goto-char (icicle-minibuffer-prompt-end))
              (icicle-clear-minibuffer)))))
   (select-window (active-minibuffer-window)))
@@ -1327,7 +1327,7 @@ Remember that you can use \\<minibuffer-local-completion-map>\
       (setq icicle-doc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "Find doc with regexp: ") ; Bindings
+  ((prompt                             "Find doc using regexp: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-list-use-nth-parts          '(1))
    (icicle-transform-function          'icicle-remove-duplicates) ; Duplicates are due to `fset's.
@@ -2038,7 +2038,7 @@ search buffer, unless it is unique.
 Instead, choose search hits to visit using any of the candidate-action
 keys: `C-RET', `C-mouse-2', `C-down', `C-up', `C-next', `C-prior',
 `C-end', and `C-home'.  All but the first two of these cycle among the
-search hits.  The current candidate in *Completions* corresponds to
+search hits.  The current candidate in `*Completions*' corresponds to
 the current location visited (it is not off by one, as is usually the
 case in Icicles).
 
@@ -2086,10 +2086,10 @@ Search and Replace
 ------------------
 
 You can replace the current search match by using any of the
-alternative action keys: `C-S-RET', `C-S-mouse-2' (in *Completions*),
-`C-S-down', `C-S-up', `C-S-next', `C-S-prior', `C-S-end', and
-`C-S-home'.  You can use `M-|' to replace all matches at once.  (And
-remember that you can activate the region to limit the
+alternative action keys: `C-S-RET', `C-S-mouse-2' (in
+`*Completions*'), `C-S-down', `C-S-up', `C-S-next', `C-S-prior',
+`C-S-end', and `C-S-home'.  You can use `M-|' to replace all matches
+at once.  (And remember that you can activate the region to limit the
 search-and-replace space.)
 
 
@@ -2267,8 +2267,9 @@ This command is intended for use only in Icicle mode."
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (setq icicle-search-context-regexp  (and (stringp scan-fn-or-regexp) scan-fn-or-regexp))
-  (let ((icicle-candidate-action-fn         (or icicle-candidate-action-fn 'icicle-search-action))
-        (icicle-candidate-help-fn           'icicle-search-help)
+  (let ((icicle-candidate-action-fn                  (or icicle-candidate-action-fn
+                                                         'icicle-search-action))
+        (icicle-candidate-help-fn                    'icicle-search-help)
         (icicle-all-candidates-list-alt-action-fn
          (or icicle-all-candidates-list-alt-action-fn 'icicle-search-replace-all-search-hits))
         (icicle-candidate-alt-action-fn
@@ -2287,7 +2288,7 @@ This command is intended for use only in Icicle mode."
 
         ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would inhibit
         ;; sorting, because we would be depending on the alist order.
-        ;;    (icicle-inhibit-sort-p              t)
+        ;;    (icicle-inhibit-sort-p          t)
 
         (icicle-no-match-hook               icicle-no-match-hook)
         (completion-ignore-case             case-fold-search)
@@ -2318,7 +2319,7 @@ The arguments are for use by `completing-read' to read the regexp.
  The REQUIRE-MATCH arg to `completing-read' is nil.
  A default prompt is used if PROMPT is nil."
   (setq hist    (or hist 'regexp-history)
-        prompt  (or prompt "Find (regexp): "))
+        prompt  (or prompt "Search within contexts (regexp): "))
   (let* ((icicle-candidate-action-fn  nil)
          (icicle-candidate-help-fn    nil)
          (regexp                      (icicle-completing-read-history
@@ -2414,7 +2415,7 @@ The arguments are the same as for `icicle-search'."
          (dolist (file  where)
            (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                               scan-fn-or-regexp args)))
-        ((consp where)                ; Search all bookmarked regions.
+        ((consp where)                  ; Search all bookmarked regions.
          (unless (require 'bookmark+ nil t) (error "This requires library `bookmark+.el'"))
          (let ((non-existent-buffers  ())
                buf+beg buf beg end)
@@ -2435,7 +2436,8 @@ The arguments are the same as for `icicle-search'."
          (icicle-search-define-candidates-1 nil beg end scan-fn-or-regexp args)))
   (unless icicle-candidates-alist  (if (functionp scan-fn-or-regexp)
                                        (error "No search hits")
-                                     (error "No search hits for `%s'" scan-fn-or-regexp))))
+                                     (error "No search hits for `%s'" scan-fn-or-regexp)))
+  (setq mark-active  nil))              ; Remove any region highlighting, so we can see search hits.
 
 (defun icicle-search-define-candidates-1 (buffer beg end scan-fn-or-regexp args)
   "Helper function for `icicle-search-define-candidates'.
@@ -2628,7 +2630,7 @@ STRING is a search-hit string.  It is matched by the initial regexp
    If `icicle-search-replace-whole-candidate-flag' is non-nil, replace
    the entire STRING occurrence.  Otherwise, replace only the part
    that matches the current input.
-4. Highlight the current candidate in *Completions*.
+4. Highlight the current candidate in `*Completions*'.
 
    Note: The replacement can be nearly anything allowed as a
    replacement by `query-replace-regexp', including Lisp-evaluation
@@ -4442,7 +4444,7 @@ named, an object of type `stringp' is not.  The value of variable
 `emacs-version' is one such string that you can act on.
 
 Anything types and Anything actions are highlighted when used as
-candidates in *Completions*, using face `icicle-special-candidate'.
+candidates in `*Completions*', using face `icicle-special-candidate'.
 
 Be aware that the action function you choose must accommodate the
 object you choose as its only an argument.  Also, completion of the
@@ -5072,7 +5074,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                       (icicle-msg-maybe-in-minibuffer "Numeric argument"))
                     (when (eq 'negative-argument binding)
                       (icicle-msg-maybe-in-minibuffer "Negative argument"))
-                    (setq last-nonmenu-event  1) ; So *Completions* mouse-click info is ignored.
+                    (setq last-nonmenu-event  1) ; So `*Completions*' mouse-click info is ignored.
                     (condition-case try-command ; Bind so vanilla context when invoke chosen cmd.
                         (let ((icicle-candidate-action-fn              nil)
                               (icicle-completing-keys-p                nil)

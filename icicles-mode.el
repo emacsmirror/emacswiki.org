@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 09:27:48 2011 (-0700)
+;; Last-Updated: Wed May  4 11:10:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7438
+;;     Update #: 7447
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -247,7 +247,7 @@ use either \\[customize] or command `icy-mode' (aka `icicle-mode')."
 (defvar icicle-mode-map nil
   "Keymap for Icicle mode.  These are top-level key bindings.
 See also `icicle-define-minibuffer-maps' for minibuffer bindings and
-bindings in *Completions*.")
+bindings in `*Completions*'.")
  
 ;;(@* "Icicle mode command")
 
@@ -345,7 +345,7 @@ In many cases there are also `other-window' versions.
 `icicle-doremi-increment-swank-timeout+' - +/- swank completion msec
 `icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
-`icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
+`icicle-doremi-zoom-Completions+'      - +/- `*Completions*' text size
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
 `icicle-face-list'                     - Choose a list of face names
@@ -429,7 +429,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
-`icicle-toggle-hiding-common-match'    - Toggle match in *Completions*
+`icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
 `icicle-toggle-highlight-all-current'  - Toggle max search highlight
 `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
@@ -448,7 +448,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-show-multi-completion'  - Toggle multi-completions
 `icicle-toggle-sorting'                - Toggle sorting of completions
 `icicle-toggle-transforming'           - Toggle duplicate removal
-`icicle-toggle-WYSIWYG-Completions'    - Toggle WYSIWYG *Completions*
+`icicle-toggle-WYSIWYG-Completions'   - Toggle WYSIWYG `*Completions*'
 `icicle-vardoc'                        - Show variable description
 `icicle-where-is'                      - `where-is' multi-command
 `icicle-yank-maybe-completing'         - `yank' maybe using completion
@@ -617,7 +617,7 @@ In many cases there are also `other-window' versions.
 `icicle-doremi-increment-swank-timeout+' - +/- swank completion msec
 `icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
-`icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
+`icicle-doremi-zoom-Completions+'      - +/- `*Completions*' text size
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
 `icicle-face-list'                     - Choose a list of face names
@@ -699,7 +699,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
-`icicle-toggle-hiding-common-match'    - Toggle match in *Completions*
+`icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
 `icicle-toggle-highlight-all-current'  - Toggle max search highlight
 `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
@@ -718,7 +718,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-show-multi-completion'  - Toggle multi-completions
 `icicle-toggle-sorting'                - Toggle sorting of completions
 `icicle-toggle-transforming'           - Toggle duplicate removal
-`icicle-toggle-WYSIWYG-Completions'    - Toggle WYSIWYG *Completions*
+`icicle-toggle-WYSIWYG-Completions'   - Toggle WYSIWYG `*Completions*'
 `icicle-vardoc'                        - Show variable description
 `icicle-where-is'                      - `where-is' multi-command
 `icicle-yank-maybe-completing'         - `yank' maybe using completion
@@ -1207,7 +1207,7 @@ Used on `pre-command-hook'."
                :visible icicle-mode :keys "M-~"
                :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-WYSIWYG-Completions]
-             '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions
+             '(menu-item "Toggle WYSIWYG For `*Completions*'" icicle-toggle-WYSIWYG-Completions
                :visible icicle-mode :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
            (define-key icicle-options-menu-map [icicle-next-TAB-completion-method]
              '(menu-item "Next `TAB' Completion Method"
@@ -1237,7 +1237,7 @@ Used on `pre-command-hook'."
                                               (active-minibuffer-window))))
              (when (fboundp 'text-scale-increase) ; Emacs 23+.
                (define-key icicle-options-menu-map [icicle-doremi-zoom-Completions+]
-                 '(menu-item "*Completions* Zoom Factor - Do Re Mi"
+                 '(menu-item "`*Completions*' Zoom Factor - Do Re Mi"
                    icicle-doremi-zoom-Completions+
                    :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                    :keys "C-x -" :help "Zoom text in `*Completions*' incrementally")))
@@ -1283,7 +1283,7 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"
                :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
            (define-key icicle-menu-map [icicle-toggle-WYSIWYG-Completions]
-             '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions
+             '(menu-item "Toggle WYSIWYG For `*Completions*'" icicle-toggle-WYSIWYG-Completions
                :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
            (define-key icicle-menu-map [icicle-next-TAB-completion-method]
              '(menu-item "Next `TAB' Completion Method" icicle-next-TAB-completion-method
@@ -1368,7 +1368,7 @@ Used on `pre-command-hook'."
            (when (fboundp 'doremi)
              (when (fboundp 'text-scale-increase) ; Emacs 23+.
                (define-key icicle-menu-map [icicle-doremi-zoom-Completions+]
-                 '(menu-item "*Completions* Zoom Factor - Do Re Mi"
+                 '(menu-item "`*Completions*' Zoom Factor - Do Re Mi"
                    icicle-doremi-zoom-Completions+
                    :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x -"
                    :help "Zoom text in `*Completions*' incrementally")))
@@ -2296,7 +2296,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
   (setq this-command  last-command))
 
 (defun icicle-define-minibuffer-maps (turn-on-p)
-  "Define keymaps for the minibuffer and buffer *Completions*."
+  "Define keymaps for the minibuffer and buffer `*Completions*'."
   (cond
     (turn-on-p                          ; TURN IT ON ********************************
 
@@ -2633,7 +2633,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          [(control backspace)] 'icicle-up-directory)
        (define-key minibuffer-local-filename-must-match-map "\C-c+" 'icicle-make-directory))
 
-     ;; `completion-list-mode-map': map for *Completions* buffer.
+     ;; `completion-list-mode-map': map for `*Completions*' buffer.
      ;; Abort on `C-g' or `q'.  Switch to minibuffer on `C-insert'.  Do not allow normal input.
      (let ((map  completion-list-mode-map))
        (define-key map [(control ??)]     'icicle-minibuffer-help) ; `C-?'
@@ -2868,7 +2868,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key minibuffer-local-filename-must-match-map [(control backspace)] nil)
        (define-key minibuffer-local-filename-must-match-map "\C-c+"               nil))
 
-     ;; `completion-list-mode-map': map for *Completions* buffer.
+     ;; `completion-list-mode-map': map for `*Completions*' buffer.
      (let ((map  completion-list-mode-map))
        (define-key map [(control ?g)]       nil)
        (define-key map "q"                  nil)
@@ -3926,7 +3926,7 @@ if `icicle-change-region-background-flag' is non-nil."
 
 ;; This is used only in Emacs 22+, but we define it always anyway.
 (defun icicle-undo-std-completion-faces ()
-  "Get rid of standard completion-root highlighting in *Completions*."
+  "Get rid of standard completion-root highlighting in `*Completions*'."
   ;; Do this because the standard Emacs 22 highlighting can interfere with
   ;; apropos-completion highlighting.
   (when (fboundp 'face-spec-reset-face)

@@ -110,5 +110,30 @@ depending on network status."
 
 -- Øyvind Stegard
 
+== NetworkManager 0.9 ==
+
+With Network Manager 0.9 arriving, the *nm-states were renumbered* (refer to http://projects.gnome.org/NetworkManager//developers/migrating-to-09/spec.html#type-NM_STATE and http://projects.gnome.org/NetworkManager//developers/spec-08.html#type-NM_STATE).
+
+The following adapted functions work fine for me:
+
+{{{
+(defun gnus-nm-state-dbus-signal-handler (nmstate)
+  "Handles NetworkManager signals and runs appropriate hooks."
+  (when (and (fboundp 'gnus-alive-p) (gnus-alive-p))
+    (cond
+     ((or (= 20 nmstate) (= 10 nmstate)
+          (= 50 nmstate) (= 60 nmstate))
+      (run-hooks 'gnus-nm-disconnected-hook))
+     ((= 70 nmstate)
+      (run-hooks 'gnus-nm-connected-hook)))))
+
+(defun nm-is-connected()
+  (equal 70 (dbus-get-property
+            :system "org.freedesktop.NetworkManager" "/org/freedesktop/NetworkManager"
+            "org.freedesktop.NetworkManager" "State")))
+}}}
+
+-- Jonas Hörsch
+
 ----
 CategoryGnus

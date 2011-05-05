@@ -1,4 +1,4 @@
-Timestamp: Mon Apr 18 09:29:47 BST 2011
+Timestamp: Wed May  4 07:22:55 BST 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -769,6 +769,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://relativity.yi.org/el/fileutils.el fileutils.el] --- unix utils as emacs functions (by Kevin A. Burton)
 
 [http://gnufans.net/~deego/emacspub/lisp-mine/filewatch filewatch.el] --- watches files for you, and does stuff if they get modified. (by Deepak Goel)
+
+[http://www.emacswiki.org/emacs/FillColumnIndicator fill-column-indicator.el] --- graphically indicate the fill column (by Alp Aker )
 
 [http://www.wonderworks.com/download/filladapt.el filladapt.el] --- adaptively set fill-prefix and overload filling functions (by Kyle Jones)
 

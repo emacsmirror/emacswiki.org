@@ -893,10 +893,10 @@ See [[Icicles - Multi-Commands]] for more information about '''Icicles''' multi-
 [:IciclesSearch]
 == Icicles Search ==
 
-'''Icicles''' provides a unique way of searching incrementally.  Command `icicle-search' ('''`##C-c `##'''') is a multi-command. In this case, the completion candidates are the buffer occurrences that match a regexp that you input.  `C-RET' visits a search-hit candidate, and `C-next' visits a candidate and prepares to visit the next in succession. If you visit file <tt>[[icicles-doc1.el]]</tt>, which contains the text you are reading now, do this in that buffer:
+'''Icicles''' provides a unique way of searching incrementally.  Command `icicle-search' ('''`##C-c `##'''') is a multi-command. In this case, the completion candidates are the buffer occurrences that match a [[regexp]] that you input.  `C-RET' visits a search-hit candidate, and `C-next' visits a candidate and prepares to visit the next in succession. If you visit file <tt>[[icicles-doc1.el]]</tt>, which contains the text you are reading now, do this in that buffer:
 
-: '''##C-c `##''' -> ##Find (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u>## RET##
-:: Search for the regexp `##.*recursive.*##'. 
+: '''##C-c `##''' -> ##Search within contexts (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u>## RET##
+:: Search within contexts defined by the regexp `##.*recursive.*##'. 
 : ##Choose an occurrence: S-TAB##
 :: Show the search hits, in buffer `*Completions*' (optional).
 : ##C-next## ...
@@ -910,8 +910,8 @@ See [[Icicles - Multi-Commands]] for more information about '''Icicles''' multi-
 <pre>
    
 </pre>    
-: '''##C-c `##''' -> ##Find (regexp): M-p RET##
-:: Search again for `##.*recursive.*##' (input history).
+: '''##C-c `##''' -> ##Search within contexts (regexp): M-p RET##
+:: Search again within `##.*recursive.*##' (`M-p' uses input history).
 : ##S-TAB ##<u>'''##e d i t##'''</u> ##C-next## ...
 :: Search for the substring `edit' within all search hits for  `##.*recursive.*##'. Cycle among the matches. The substring `edit' is highlighted ''inside'' the (differently) highlighted `##.*recursive.*##' hits. Whatever you type filters the initial set of hits.
 
@@ -940,8 +940,8 @@ Now try the same thing, but first select some text. The search is confined to th
 
 Now try the same thing (without a region), but use a negative [[prefix argument]] such as `C--' with `##C-c `##'. This time, after you input the regexp to search for, you are prompted for ''one or more files'' to search. This too is multi-command input: you can input any number of file names, using completion.
 
-: '''##C-- C-c `##''' -> ##Find (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u> ##RET##
-:: Search for the regexp `##.*recursive.*##'.
+: '''##C-- C-c `##''' -> ##Search within contexts (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u> ##RET##
+:: Search within contexts defined by the regexp `##.*recursive.*##'.
 : ##Choose file (`RET' when done):## <u>'''##i c i##'''</u> ##TAB##
 :: Choose among candidates that begin with ##ici## (shown in `*Completions*').
 : '''##C-!##'''

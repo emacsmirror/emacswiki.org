@@ -21,6 +21,8 @@ Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
 
 [http://github.com/brianjcj/auto-complete-clang Clang source for Auto Complete]
 
+[https://github.com/mikeandmore/auto-complete-clang Another Clang source for auto Complete]
+
 [http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ Another clang autocompletion source]
 
 Other extensions are found in [[AutoCompleteSources]].

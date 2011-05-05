@@ -1,17 +1,29 @@
-The '''TECO''' editor, developed at MIT and DEC, and its macro system would become the substrate for TecoEmacs.  The acronym TECO stands for "text (formerly "tape") editor and corrector".
+The '''TECO''' editor, developed at MIT and DEC by DanMurphy, and its macro system would become the substrate for TecoEmacs.  The acronym TECO stands for "text (formerly "tape") editor and corrector".
 
 There is a teco interpreter written in elisp.  The v7 version is here: Lisp:teco.el. (thanks to - MarkTKennedy)
 See TecoInterpreterInElisp for more details. 
 
 You can find an interpreter for several os there:
 
-* http://almy.us/teco.html
+* [http://almy.us/teco.html|Text Editor and COrrector] by Tom Almy
 
 and an online copy of the pocket guide there:
 
 * http://zane.brouhaha.com/~healyzh/teco/TecoPocketGuide.html
 
-=TECO-MODE Discussion===
+An article by DanMurphy on the history of TECO, ''The Beginnings of TECO'' was published on 2009-10-31 and is available from a Web site on TENEX:
+
+* http://tenex.opost.com/
+
+See also:
+
+* WikiPedia:Text_Editor_and_Corrector
+
+* Wiki:TecoEditor
+
+* [http://linuxfinances.info/info/teco.html The Original "One True Editor"]
+
+==TECO-MODE Discussion==
 
 Would there happen to be a teco-mode somewhere?  I frequently edit 
 scripts written in a teco dialect called delta.
