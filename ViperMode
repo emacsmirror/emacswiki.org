@@ -132,6 +132,22 @@ From a [http://www.reddit.com/r/programming/comments/8lfx7/what_emacs_commands_d
     (define-key dired-mode-map "k" 'dired-previous-line)
     (define-key dired-mode-map "K" 'dired-do-kill-lines)
 
+From a [http://stackoverflow.com/questions/5611356/editable-dired-aka-wdired-and-viper-mode Stackoverflow post]:
+
+        ;; A way to activate and deactivate vi-state when toggling the wdired-mode
+        (eval-after-load "wdired"
+          '(progn
+             (eval-after-load "viper"
+               '(progn
+                  (defadvice wdired-change-to-wdired-mode (after viper activate)
+                    (unless (eq viper-current-state 'emacs-state)
+                      (viper-change-state 'vi-state)))
+                  (defadvice wdired-finish-edit (after viper activate)
+                    (unless (eq viper-current-state 'emacs-state)
+                      (viper-change-state-to-vi)) ; back to normal state
+                    (viper-modify-major-mode    ; back to dired map
+                     'dired-mode 'vi-state dired-mode-map)))))
+
 === vi Tutorial for Viper ===
 
 There is now a Viper/vi tutorial included in [NxhtmlMode nXhtml]. You find it in ##nxml/util/viper-tut.el##.

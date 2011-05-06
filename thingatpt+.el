@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 16:01:47 2011 (-0800)
+;; Last-Updated: Thu May  5 17:47:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1013
+;;     Update #: 1020
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/05/05 dadams
+;;     (put 'list 'bounds-of-thing-at-point nil)  See Emacs bug #8628.
+;;     (put 'list 'thing-at-point 'list-at-point) - not really needed, though.
 ;; 2011/01/20 dadams
 ;;     *list-*-point: Improved doc strings.
 ;; 2011/01/04 dadams
@@ -529,6 +532,7 @@ Note that these last three functions return strings, not symbols."
 ;; 1. Added optional arg UP.
 ;; 2. Better, consistent behavior.
 ;;
+(put 'list 'thing-at-point 'list-at-point)
 (defun list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.
 If inside a list, return the enclosing list.
@@ -538,9 +542,17 @@ UP (default: 0) is the number of list levels to go up to start with.
 Note: If point is inside a string that is inside a list:
  This can sometimes return nil.
  This can sometimes return an incorrect list value if the string or
- nearby strings have contain parens.
+ nearby strings contain parens.
  (These are limitations of function `up-list'.)"
   (list-at/nearest-point 'sexp-at-point up))
+
+
+;; REPLACE ORIGINAL defined in `thingatpt.el'.
+;;
+;; Let the regular `bounds-of-thing-at-point' do its job.  See Emacs bug #8628.
+;;
+(put 'list 'bounds-of-thing-at-point nil)
+
 
 (defun unquoted-list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.

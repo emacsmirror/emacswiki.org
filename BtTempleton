@@ -1,7 +1,3 @@
-[::bpt] on the EmacsChannel
-
-E-mail: (reverse-string "gro.senut@tpb") or (eval (cons 'concat (reverse (split-string "gro.senut@tpb" ""))))
-
 I use Emacs.
 
 Alternative list-closing function for ParEdit:

@@ -52,7 +52,7 @@ A place for haiku of a decidedly Emacs bent.
  seven (*ELISP*) syllables here
  bad *EMACS* haiku
  
-     -- BrianTempleton
+     -- BtTempleton
 
  (defun undos (buf)
    "DOS newlines are pathetic."

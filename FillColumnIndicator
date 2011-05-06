@@ -5,13 +5,6 @@ The two different styles of fill-column indication look like this:
 || [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
 || Shading style || Rule style ||
 
-(Curious about the color scheme?  The settings are described on [http://www.emacswiki.org/emacs/AlpAker my homepage].)
-
-
-== Acquiring ==
-
-You can download the package from the link in the above introductory paragraph.  There's also a [http://github.com/alpaker/Fill-Column-Indicator GitHub] repository for the package.
-
 == Installation and Activation ==
 
 Put the package file in your load path and put ##(require 'fill-column-indicator)## in your .emacs.
@@ -26,7 +19,7 @@ To toggle graphical indication of the fill column in a buffer, use the command #
 
 in your ##.emacs##.  Buffer-local values are supported, so one can use different styles in different buffers.
 
-<b>Customizing Shading.</b> The appearance of the shading is controlled by the face ##fci-shading##, whose attributes can be set like those of any face.  To change the background of the shading, for example, adding the following code to your init file will set the backround color of the shading to light gray:
+<b>Customizing Shading.</b> The appearance of the shading is controlled by the face ##fci-shading##, whose attributes can be set like those of any face.  Adding the following code to your init file, for example, will set the backround color of the shading to light gray:
 
   (set-face-background 'fci-shading "light gray")
 
@@ -51,6 +44,12 @@ To enable fci-mode as a global minor mode, add the following code to your init f
 
   (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode t)))
   (global-fci-mode t)
+
+== Miscellany ==
+
+There's a [http://github.com/alpaker/Fill-Column-Indicator GitHub] repository for the package, which might provide a more convenient way of ensuring one has the latest version.  (The Emacs Wiki RSS feeds aren't entirely reliable.)
+
+Curious about the color scheme in the screenshots above?  The settings are described on [http://www.emacswiki.org/emacs/AlpAker my homepage].
 
 == See also ==
 
@@ -166,23 +165,8 @@ I want the fill-column indicator to be appear at column 80, but it only appears 
 
 [new:AlpAker:2011-04-05 00:17 UTC]
 
-Fci-mode uses the whatever value you have ##fill-column## set to.  As 70 is the default, you probably haven't set ##fill-column## to your desired value.  You can use the command ##set-fill-column## to change the value of ##fill-column## in a buffer, or put ##(setq-default fill-column 80)## in your .emacs to set it globally. --AA
+Fci-mode uses whatever value you have ##fill-column## set to.  As 70 is the default, you probably haven't set ##fill-column## to your desired value.  You can use the command ##set-fill-column## to change the value of ##fill-column## in a buffer, or put ##(setq-default fill-column 80)## in your .emacs to set it globally. --AA
 
-[new]
-
-How can I get the package to work properly on a character terminal?
-
-[new:AlpAker:2011-04-05 00:17 UTC]
-
-When running on a character terminal, Emacs outsources rendering to the terminal emulator; as a result, certain display features aren't supported.  These latter include the overlay properties fci-mode depends on.  The bottom line is that it will only work on window-system displays. --AA
-
-[new:JasonMcBrayer:2011-04-05 12:24 UTC]
-
-Note that on a character terminal, there are other packages you can use. WhiteSpace will optionally highlight lines that are longer than a specific value. It doesn't look as good as FillColumnIndicator, but pretty reasonable for a termainal. I think there are other packages that take a similar approach.
-
-[new:AlpAker:2011-04-15 01:13 UTC]
-
-I've uploaded a new version (0.30) that should work on (most) char terminals. --AA
 
 
 ----

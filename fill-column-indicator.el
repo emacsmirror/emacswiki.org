@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.36
+;; Version: 0.37
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -504,11 +504,11 @@ for tips on troubleshooting.)"
          (right (ceiling margin))
          (identifier "P1\n")
          (dimens (concat img-width-str " " img-height-str "\n"))
-         (left-pixels (mapconcat #'identity (make-vector left "0") " "))
-         (rule-pixels (mapconcat #'identity (make-vector rule-width "1") " "))
-         (right-pixels (mapconcat #'identity (make-vector right "0") " "))
+         (left-pixels (mapconcat #'identity (make-list left "0") " "))
+         (rule-pixels (mapconcat #'identity (make-list rule-width "1") " "))
+         (right-pixels (mapconcat #'identity (make-list right "0") " "))
          (row-pixels (concat left-pixels " " rule-pixels " " right-pixels))
-         (raster (mapconcat #'identity (make-vector img-height row-pixels) "\n"))
+         (raster (mapconcat #'identity (make-list img-height row-pixels) "\n"))
          (data (concat identifier dimens raster)))
     (propertize str 'display (list 'image 
                                     :type 'pbm :data data :mask 'heuristic
@@ -534,7 +534,7 @@ for tips on troubleshooting.)"
                              (make-string rule-width ?1)
                              (make-string right ?0)
                              "\",\n"))
-         (raster (mapconcat #'identity (make-vector img-height row-pixels) ""))
+         (raster (mapconcat #'identity (make-list img-height row-pixels) ""))
          (end "};")
          (data (concat identifier dimens color-spec raster end)))
     (propertize str 'display (list 'image 
@@ -682,7 +682,7 @@ for tips on troubleshooting.)"
   (when (and sup (overlay-start sup)) 
     (with-current-buffer (overlay-buffer sup)
       (mapc #'fci-activate-string (fci-get-overlays-region (overlay-start sup)
-                                                    (overlay-end sup))))))
+                                                           (overlay-end sup))))))
 
 (defsubst fci-archive-before-strings (sup)
   (when (and sup (overlay-start sup)) 

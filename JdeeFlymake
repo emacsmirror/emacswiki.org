@@ -1,4 +1,5 @@
 ----
+*NOTE: 2011-05-06* The SVN trunk version of JDEE includes flymake integration using the eclipse compiler (based on SurajAcharua's implementation).
 
 *NOTE: 7/19/2007* Since [http://sourceforge.net/project/showfiles.php?group_id=128803 Jikes] is not being actively developed to keep up with Java (last version is from 2004, so it doesn't support any of the new features introduced in Java 5) this add-on has also be frozen. 
 

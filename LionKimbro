@@ -7,7 +7,7 @@ http://taoriver.net/~lion/
 Ah, finally I understand your 'image in buffer' question. You want to put an image inline into a buffer, and be able to save the buffer as a text or other kind of file that preserves and understands the image. Sounds like a nifty idea to me, I've not heard of such a thing before in emacs. Reminds me of resource forks in the Mac, or streams in NTFS. I think it could be implemented the same way even. --ShaeErisson
   ''Yep! That's it!'' -- LionKimbro
 
-Regarding "image in buffer" saving, there is some support for implementing this in Emacs, although no actual implementation is provided (afaict). `write-region-annotate-functions' is a list of functions that store [[text property|text properties]] as annotations to the file being saved; functions in `after-insert-file-functions', similarly, extract annotations and restore the text properties. There is no provided implementation (not sure if they've been used at all, actually), but since image data is stored in the `display' text property, it seems that this would be the proper way to add this functionality. --BrianTempleton
+Regarding "image in buffer" saving, there is some support for implementing this in Emacs, although no actual implementation is provided (afaict). `write-region-annotate-functions' is a list of functions that store [[text property|text properties]] as annotations to the file being saved; functions in `after-insert-file-functions', similarly, extract annotations and restore the text properties. There is no provided implementation (not sure if they've been used at all, actually), but since image data is stored in the `display' text property, it seems that this would be the proper way to add this functionality. --BtTempleton
 
 ----
 CategoryHomepage

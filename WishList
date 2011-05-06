@@ -291,7 +291,7 @@ These are wishes about Emacs lisp or generally extending Emacs.
 * And while I am at it: proper tail call reduction. Sometimes it is
   more straight-forward to use recursion instead of a loop. --
   OliverScholz (who is currently struggling with exactly this)
-* I wish Emacs had Common Lisp #'format -- BrianTempleton
+* I wish Emacs had Common Lisp #'format -- BtTempleton
 
 * I wish Emacs could tell me about (generate a list of) un-bound simple keychords, instead of hunting for them using C-h k.
 ** 1. Which key sequences are unbound depends on what the current major mode is.

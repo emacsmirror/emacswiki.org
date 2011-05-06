@@ -9,6 +9,10 @@ The Java Development Environment for Emacs ([::JDEE]) is an integrated developme
 
 The current state of the project is gaining momentum after a few years of atrophy.  Once development is back on track, documentation here and on the project web site will be updated.
 
+* The last version prior to the move to sourceforge (2.3.5.1) is very old and has lots of known bugs.
+* The most recent release since the move (2.4.0.1) is a large improvement, but is still very old. It works fine with Emacs 22.2.1, CEDET-1.0pre6, and ECB-2.40.
+* If you want to use JDEE with emacs versions >=23, you are best to build from the SVN trunk. Patches are gladly accepted to help move things along.
+
 [new]
 == Features ==
 === Core ===
@@ -63,19 +67,7 @@ Link to your success stories here!
 == Current status ==
 
 [new]
-Since the release of Emacs 22 there has not been any official release of JDEE that works from scratch.
-Paul Kinnucan, the heroe maintainer of JDEE, has not had as much time with JDEE as he would have needed.
-However it now looks as JDEE will start to move forward again.
-If you are interested please see the JDEE mailing list, especially 2007 December in the
-[http://news.gmane.org/gmane.emacs.jdee JDEE mailing list archive].
-
-[new]
-August 2009: latest version 2.3.5.1 is very old and has lots of known bugs. Use the 2.4.0 from branch inside the Subversion repository at: [https://jdee.svn.sourceforge.net/svnroot/jdee https://jdee.svn.sourceforge.net/svnroot/jdee]. It works fine with Emacs 22.2.1, CEDET-1.0pre6, and ECB-2.40. To build 2.4.0 you need to install [http://ant-contrib.sourceforge.net ant-contrib] and set cedet and elib paths in ~/.jdee-config.properties if are different that default.
-
-[new]
 Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
-
-I see there are some discussions on their mailing list, but don't see changes to the [http://jdee.svn.sourceforge.net/viewvc/jdee/branches/2.4.0/jde/lisp/ChangeLog?view=log ChangeLog]. Is this project still active? I really dislike eclipse.
 
 jde depends: cedet, elib. 
 <pre>
@@ -113,7 +105,7 @@ For jde itself, add these to .emacs, change the dirs to fit your install of cour
 (setq jde-doc-dir "~/d/jdk-6-doc/")
 </pre>
 
-I don't know much about it myself. Since this project is last active in Dec 2007. I guess there are more problems waiting.
+I don't know much about it myself. I guess there are more problems waiting.
 
 [new]
 '''How to load JDE in Emacs >=23.2 (after CEDET integration into Emacs trunk)''':
@@ -306,6 +298,8 @@ The website says: "Nearly all the JDEE problems that I have seen are caused by f
 [new]
 I'm happy to see that somebody is investigating the current status of JDE!
 Thanks, DanielClemente. -- AlexSchroeder
+
+JDEE development continues (slowly) on the trunk of the sourceforge repository (http://jdee.svn.sourceforge.net/viewvc/jdee/trunk/jdee/), you are more likely to find something that works with current emacs there. Please submit patches to the sourceforge jdee mailing list to help move things forward. -- LenTrigg
 
 *Stupid Question Time* Really, I am not as helpless as this message is going to make me sound. I just upgraded to 23.1.50.1 (Ubuntu 9.4 incase that makes any difference) and have been beating my head against getting JDEE to install. I have CEDET 1.0pre7 (from cvs), elib 1.0 (built on the local system with 23), and I even got ecb to work (2.41 (or 2.40...the internal version numbers are not consistent with the messages) from cvs) by commenting out the jde. 
 

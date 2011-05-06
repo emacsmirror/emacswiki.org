@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 15:20:44 2011 (-0800)
+;; Last-Updated: Thu May  5 17:50:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2612
+;;     Update #: 2624
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -410,8 +410,8 @@
 ;;   (global-set-key [(shift control ?n)]  ; Emacs 21 or later
 ;;                   'hlt-next-highlight)
 ;;
-;;  You might also want to bind `hlt-choose-default-face', which you
-;;  can use to change the current default highlighting face.
+;;  You might also want to bind command `hlt-choose-default-face',
+;;  which you can use to change the current default highlighting face.
 ;;
 ;;(@* "Relation to Hi-Lock Mode")
 ;;  ** Relation to Hi-Lock Mode **
@@ -457,6 +457,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/05/05 dadams
+;;     icicle-delete-if(-not) -> icicle-remove-if(-not).  Former are obsolete.
+;;     hlt-hide-default-face, hlt-next-highlight: Use also memq, not just eq, to test for face.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps and non-interactive functions.
 ;;     Added some missing autoload cookies for commands.
@@ -637,8 +640,9 @@
                                                           ;; read-face-name
 (require 'menu-bar+ nil t) ;; (no error if not found): menu-bar-edit-region-menu
 ;; (require 'icicles nil t)   ;; (no error if not found): icicle-define-command,
-                              ;; icicle-delete-if, icicle-delete-if-not,
-                              ;; icicle-make-face-candidate, icicle-read-string-completing.
+                              ;; icicle-face-name-history, icicle-make-face-candidate, 
+                              ;; icicle-read-string-completing, icicle-remove-if,
+                              ;; icicle-remove-if-not. 
 
 ;; Quiet the byte-compiler for Emacs 20
 (defvar hi-lock-mode)
@@ -1381,7 +1385,9 @@ START and END are the limits of the area to act on. They default to
             (when (and (not (eq hlt-use-overlays-flag 'only))
                        (or hlt-act-on-any-face-flag
                            (eq face (get-text-property (point) 'hlt-highlight)))
-                       (eq face (get-text-property (point) 'face)))
+                       ;; $$$$$$ (eq face (get-text-property (point) 'face)))
+                       (let ((pt-faces  (get-text-property (point) 'face)))
+                         (if (consp pt-faces) (memq face pt-faces) (eq face pt-faces))))
               (put-text-property zone-beg zone-end 'invisible
                                  (hlt-add-listifying
                                   (get-text-property zone-beg 'invisible)
@@ -1462,7 +1468,9 @@ When called non-interactively:
                    (not (eq hlt-use-overlays-flag 'only))
                    (or hlt-act-on-any-face-flag
                        (eq face (get-text-property (point) 'hlt-highlight)))
-                   (eq face (get-text-property (point) 'face)))
+                   ;; $$$$$$ (eq face (get-text-property (point) 'face)))
+                   (let ((pt-faces  (get-text-property (point) 'face)))
+                     (if (consp pt-faces) (memq face pt-faces) (eq face pt-faces))))
           (setq face-found  face)))
       (unless (or (and (eq face face-found) (not (eq (point) orig-point))) no-error-p)
         (goto-char orig-point)
@@ -1554,7 +1562,7 @@ returned."
     (lambda (name) (push name face-names)) ; Action function
     "Choose face (`RET' when done): "   ; `completing-read' args
     (mapcar #'icicle-make-face-candidate
-            (icicle-delete-if-not (lambda (x) (memq x buffer-invisibility-spec))
+            (icicle-remove-if-not (lambda (x) (memq x buffer-invisibility-spec))
                                   (if hlt-act-on-any-face-flag
                                       (face-list)
                                     (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
@@ -1575,7 +1583,7 @@ returned."
     (lambda (name) (push name face-names)) ; Action function
     "Choose face (`RET' when done): "   ; `completing-read' args
     (mapcar #'icicle-make-face-candidate
-            (icicle-delete-if (lambda (x) (memq x buffer-invisibility-spec))
+            (icicle-remove-if (lambda (x) (memq x buffer-invisibility-spec))
                               (if hlt-act-on-any-face-flag
                                   (face-list)
                                 (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
@@ -1650,7 +1658,7 @@ cycling, these keys with prefix `C-' act on the current face name:
 `C-prior' - Choose, then move to previous apropos-completion candidate
 `C-!'     - Choose *all* matching face names"
     (interactive
-     (list (let ((fs  (icicle-delete-if-not
+     (list (let ((fs  (icicle-remove-if-not
                        (lambda (x) (memq x buffer-invisibility-spec))
                        (if hlt-act-on-any-face-flag
                            (face-list)

@@ -619,7 +619,7 @@ h4x0r.el (Charles Sebold), bash-quotes.el (TerryPatcher), many of Noah
 Friedman's libraries (like flame.el), and of course, the entire ERC
 and emacs.  It is a result of collaborative design :), with many
 people's thoughts going into it: resolve (DamienElmes), bpt
-(BrianTempleton), forcer (JorgenSchaefer), kensanata (AlexSchroeder),
+(BtTempleton), forcer (JorgenSchaefer), kensanata (AlexSchroeder),
 LawrenceMitchell, Grant Bowman, MarioLang, TerryPatcher,
 LuisFernandes, tintin and many other #emacsers.  
 

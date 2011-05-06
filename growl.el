@@ -1,8 +1,8 @@
 ;;; growl.el --- Growl notifications
 
-;; Copyright (C) 2006 Brian Templeton
+;; Copyright (C) 2006 BT Templeton
 
-;; Author: Brian Templeton <bpt@tunes.org>
+;; Author: BT Templeton <bpt@tunes.org>
 ;; Keywords: growl notification mac osx
 
 ;; This file is not part of GNU Emacs.
