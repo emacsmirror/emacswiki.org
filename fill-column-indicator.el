@@ -422,6 +422,69 @@ for tips on troubleshooting.)"
 ;;; Rule Initialization
 ;;; ---------------------------------------------------------------------
 
+;; The following three functions each create a string with a rule bitmap as
+;; its display property.
+
+(defun fci-make-xbm-rule (rule-width color str)
+  (let* ((fcw (frame-char-width))
+         (img-width (+ fcw (- 8 (% fcw 8))))
+         (img-height (frame-char-height))
+         (row-pixels (make-bool-vector img-width nil))
+         (raster (make-vector img-height row-pixels))
+         (left-margin (floor (/ (- fcw rule-width) 2.0)))
+         (i 0))
+    (while (< i rule-width)
+      (aset row-pixels (+ i left-margin) t)
+      (setq i (1+ i)))
+    (propertize str 'display (list 'image 
+                                    :type 'xbm :data raster :foreground color
+                                    :mask 'heuristic :ascent 'center 
+                                    :height img-height :width img-width))))
+
+(defun fci-make-pbm-rule (rule-width color str)
+  (let* ((img-height (frame-char-height))
+         (img-height-str (number-to-string img-height))
+         (img-width (frame-char-width))
+         (img-width-str (number-to-string img-width))
+         (margin (/ (- img-width rule-width) 2.0))
+         (left (floor margin))
+         (right (ceiling margin))
+         (identifier "P1\n") 
+         (dimens (concat img-width-str " " img-height-str "\n"))
+         (left-pixels (mapconcat #'identity (make-list left "0") " "))
+         (rule-pixels (mapconcat #'identity (make-list rule-width "1") " "))
+         (right-pixels (mapconcat #'identity (make-list right "0") " "))
+         (row-pixels (concat left-pixels " " rule-pixels " " right-pixels))
+         (raster (mapconcat #'identity (make-list img-height row-pixels) "\n"))
+         (data (concat identifier dimens raster)))
+    (propertize str 'display (list 'image 
+                                    :type 'pbm :data data :mask 'heuristic
+                                    :foreground color :ascent 'center))))
+
+(defun fci-make-xpm-rule (rule-width color str)
+  (let* ((img-height  (frame-char-height))
+         (img-height-str (number-to-string img-height))
+         (img-width (frame-char-width))
+         (img-width-str (number-to-string img-width))
+         (margin (/ (- img-width rule-width) 2.0))
+         (left (floor margin))
+         (right (ceiling margin))
+         (left-str (number-to-string left))
+         (right-str (number-to-string right))
+         (identifier "/* XPM */\nstatic char *rule[] = {\n")
+         (dimens (concat "\"" img-width-str " " img-height-str " 2 1\",\n"))
+         (color-spec (concat "\"1 c " color "\",\n \"0 c None\",\n"))
+         (row-pixels (concat "\"" 
+                             (make-string left ?0)
+                             (make-string rule-width ?1)
+                             (make-string right ?0)
+                             "\",\n"))
+         (raster (mapconcat #'identity (make-list img-height row-pixels) ""))
+         (end "};")
+         (data (concat identifier dimens color-spec raster end)))
+    (propertize str 'display (list 'image 
+                                    :type 'xpm :data data :ascent 'center))))
+
 (defun fci-make-rule ()
   (let* ((color (if fci-rule-color
                     ;; User specified a color.  Check that it's valid.
@@ -431,6 +494,8 @@ for tips on troubleshooting.)"
                       (error "Value of `fci-rule-color' is not a recognized color"))
                   ;; Otherwise, choose an appropriate color.  
                   (fci-get-rule-color)))
+         ;; Check that rule character is valid.  If so, propertize it so that
+         ;; it doesn't pick up weight or slant from font lock.
          (rule-str (if (characterp fci-rule-character)
                        (propertize (char-to-string fci-rule-character)
                                    'face
@@ -438,9 +503,16 @@ for tips on troubleshooting.)"
                      (fci-mode -1)
                      (error "Value of `fci-rule-character' must be a character"))))
     (cond
+     ;; Use the textual rule.
      ((or (not (display-images-p))
           fci-always-use-textual-rule)
       rule-str)
+     ;; Use the graphical rule in next three cases.  Note that when we
+     ;; display the bitmap we use the textual rule character for the
+     ;; underlying string so that our failure mode is more graceful in case
+     ;; the image display fails.  In addition, this handles the case in which
+     ;; someone running a daemon invokes the mode on a graphical display then
+     ;; subsequently displays the buffer on a terminal.
      ((eq fci-rule-image-format 'xbm)
       (fci-make-xbm-rule fci-rule-width color rule-str))
      ((eq fci-rule-image-format 'pbm)
@@ -470,82 +542,12 @@ for tips on troubleshooting.)"
      (t
       "white"))))
 
-;; The following three functions each create a string with the rule image as
-;; its display property.  When we call these we use the textual rule
-;; character for the underlying string (instead of a space) so that our
-;; failure mode is more graceful in case the image display fails.  In
-;; addition, this handles the case in which someone running a daemon invokes
-;; the mode on a graphical display then subsequently displays the buffer on a
-;; terminal.
-
-(defun fci-make-xbm-rule (rule-width color str)
-  (let* ((fcw (frame-char-width))
-         (img-width (+ fcw (- 8 (% fcw 8))))
-         (img-height (frame-char-height))
-         (row-pixels (make-bool-vector img-width nil))
-         (raster (make-vector img-height row-pixels))
-         (offset (floor (/ (- fcw rule-width) 2.0)))
-         (i 0))
-    (while (< i rule-width)
-      (aset row-pixels (+ i offset) t)
-      (setq i (1+ i)))
-    (propertize str 'display (list 'image 
-                                    :type 'xbm :data raster :foreground color
-                                    :mask 'heuristic :ascent 'center 
-                                    :height img-height :width img-width))))
-
-(defun fci-make-pbm-rule (rule-width color str)
-  (let* ((img-height (frame-char-height))
-         (img-height-str (number-to-string img-height))
-         (img-width (frame-char-width))
-         (img-width-str (number-to-string img-width))
-         (margin (/ (- img-width rule-width) 2.0))
-         (left (floor margin))
-         (right (ceiling margin))
-         (identifier "P1\n")
-         (dimens (concat img-width-str " " img-height-str "\n"))
-         (left-pixels (mapconcat #'identity (make-list left "0") " "))
-         (rule-pixels (mapconcat #'identity (make-list rule-width "1") " "))
-         (right-pixels (mapconcat #'identity (make-list right "0") " "))
-         (row-pixels (concat left-pixels " " rule-pixels " " right-pixels))
-         (raster (mapconcat #'identity (make-list img-height row-pixels) "\n"))
-         (data (concat identifier dimens raster)))
-    (propertize str 'display (list 'image 
-                                    :type 'pbm :data data :mask 'heuristic
-                                    :foreground color :ascent 'center))))
-
-(defun fci-make-xpm-rule (rule-width color str)
-  (let* ((identifier (concat "/* XPM */\n"
-                             "static char *rule[] = {\n"))
-         (img-width (frame-char-width))
-         (margin (/ (- img-width rule-width) 2.0))
-         (left (floor margin))
-         (right (ceiling margin))
-         (img-height  (frame-char-height))
-         (img-width-str (number-to-string img-width))
-         (left-str (number-to-string left))
-         (right-str (number-to-string right))
-         (img-height-str (number-to-string img-height))
-         (dimens (concat "\"" img-width-str " " img-height-str " 2 1\",\n"))
-         (color-spec (concat "\"1 c " color "\",\n"
-                             "\"0 c None\",\n"))
-         (row-pixels (concat "\"" 
-                             (make-string left ?0)
-                             (make-string rule-width ?1)
-                             (make-string right ?0)
-                             "\",\n"))
-         (raster (mapconcat #'identity (make-list img-height row-pixels) ""))
-         (end "};")
-         (data (concat identifier dimens color-spec raster end)))
-    (propertize str 'display (list 'image 
-                                    :type 'xpm :data data :ascent 'center))))
-
 ;;; ---------------------------------------------------------------------
 ;;; Core Drawing/Undrawing Functions
 ;;; ---------------------------------------------------------------------
 
 (defun fci-delete-overlays-region (start end)
-  (mapc #'(lambda (x) (if (overlay-get x 'fci)
+  (mapc #'(lambda (x) (if (eq (overlay-get x 'category) 'fci) 
                           (delete-overlay x)))
         (overlays-in start end)))
 
@@ -553,9 +555,8 @@ for tips on troubleshooting.)"
   (goto-char start)
   (let (o)
     (while (search-forward "\n" end t)
-      (setq o (make-overlay (match-beginning 0)
-                            (match-end 0)))
-      (overlay-put o 'fci t)
+      (setq o (make-overlay (match-beginning 0) (match-end 0)))
+      (overlay-put o 'category 'fci)
       (goto-char (match-beginning 0))
       (if (< (current-column) fci-column)
           (overlay-put o 
@@ -581,11 +582,11 @@ for tips on troubleshooting.)"
                                  (make-string (- fci-column (current-column) 1) 32))))
         (move-to-column fci-column)
         (setq o (make-overlay (point) (match-end 0)))
-        ;; Empty string here is just to give the paren-mode and mic-paren
-        ;; adjustment something to operate on.
+        ;; Empty string here is just to give the paren highlighting
+        ;; adjustments something to operate on.
         (overlay-put o 'before-string ""))
       (overlay-put o 'face 'fci-shading) 
-      (overlay-put o 'fci t)
+      (overlay-put o 'category 'fci)
       (goto-char (match-end 0)))))
 
 ;;; ---------------------------------------------------------------------
@@ -639,55 +640,58 @@ for tips on troubleshooting.)"
 ;;; Workarounds 
 ;;; ---------------------------------------------------------------------
 
-;;; Workaround for the "feature" that cursor overlay properties are ignored
+;;; Workaround for the fact that cursor overlay properties are ignored
 ;;; if the position they specify for the cursor is out of sight due to
 ;;; horizontal scrolling. 
 
 (defun fci-correct-for-hscroll ()
-  ;; We could get the same result by ommitting the first conjunct of the
-  ;; `and' form.  But calling window-hscroll is cheap, calling current-column
-  ;; is (in this context) expensive, and the former will return 0 in the
-  ;; overwhelming majority of calls to this function.  As a result, inserting
-  ;; the extra test causes the function to bail quickly most of the time,
-  ;; speeding up modal case performance without greatly impairing performance
-  ;; in other cases.  
+  ;; We could get the same result by omitting the first conjunct of the `and'
+  ;; form.  But window-hscroll is much cheaper than current-column, and the
+  ;; former will return 0 in the overwhelming majority of calls to this
+  ;; function.  Inserting the extra test causes the function to bail quickly
+  ;; most of the time, speeding up modal case performance without greatly
+  ;; impairing performance in other cases. (Desirable since this is put in
+  ;; post-command-hook.)
   (if (and (< 0 (window-hscroll))
            auto-hscroll-mode
            (<= (current-column) (window-hscroll)))
       ;; Fix me:  Rather than setting hscroll to 0, this should reproduce the
       ;; relevant part of the auto-hscrolling algorithm.  Most people won't
-      ;; notice the difference in behavior.
+      ;; notice the difference in behavior, though.
       (set-window-hscroll (selected-window) 0)))
 
 ;;; Compatibility with paren.el, mic-paren.el, hl-line.el
 
-(defun fci-deactivate-string (o)
+;; Quiet the compiler.
+(defvar fci-other-olay nil)
+
+(defun fci-archive-string (o)
   (when (overlay-get o 'before-string)
     (overlay-put o 'fci-saved-str (overlay-get o 'before-string)) 
     (overlay-put o 'before-string nil)) 
-  (overlay-put o 'fci-superiors (cons sup (overlay-get o 'fci-superiors))))
+  (overlay-put o 'fci-defer-to (cons fci-other-olay (overlay-get o 'fci-defer-to))))
 
-(defun fci-activate-string (o) 
-  (overlay-put o 'fci-superiors (delq sup (overlay-get o 'fci-superiors)))
-  (unless (overlay-get o 'fci-superiors)
-    (overlay-put o 'before-string (or (overlay-get o 'before-string)
-                                      (overlay-get o 'fci-saved-str)))
+(defun fci-restore-string (o) 
+  (overlay-put o 'fci-defer-to (delq fci-other-olay (overlay-get o 'fci-defer-to)))
+  (unless (or (overlay-get o 'fci-defer-to)
+              (overlay-get o 'before-string))
+    (overlay-put o 'before-string (overlay-get o 'fci-saved-str))
     (overlay-put o 'fci-saved-str nil)))  
 
 (defsubst fci-get-overlays-region (start end)
-  (delq nil (mapcar #'(lambda (x) (if (overlay-get x 'fci) x))
+  (delq nil (mapcar #'(lambda (x) (if (eq (overlay-get x 'category) 'fci) x))
                     (overlays-in start end))))
 
-(defsubst fci-restore-before-strings (sup)
-  (when (and sup (overlay-start sup)) 
-    (with-current-buffer (overlay-buffer sup)
-      (mapc #'fci-activate-string (fci-get-overlays-region (overlay-start sup)
-                                                           (overlay-end sup))))))
+(defsubst fci-restore-before-strings (fci-other-olay)
+  (when (and fci-other-olay (overlay-start fci-other-olay)) 
+    (with-current-buffer (overlay-buffer fci-other-olay)
+      (mapc #'fci-restore-string (fci-get-overlays-region (overlay-start fci-other-olay)
+                                                          (overlay-end fci-other-olay))))))
 
-(defsubst fci-archive-before-strings (sup)
-  (when (and sup (overlay-start sup)) 
-    (mapc #'fci-deactivate-string (fci-get-overlays-region (overlay-start sup) 
-                                                           (overlay-end sup)))))
+(defsubst fci-archive-before-strings (fci-other-olay)
+  (when (and fci-other-olay (overlay-start fci-other-olay)) 
+    (mapc #'fci-archive-string (fci-get-overlays-region (overlay-start fci-other-olay) 
+                                                        (overlay-end fci-other-olay)))))
  
 (defadvice show-paren-function (around fill-column-indicator)
   (if (eq show-paren-style 'parenthesis) 
@@ -704,7 +708,7 @@ for tips on troubleshooting.)"
         ad-do-it
         (fci-archive-before-strings (aref mic-paren-overlays 0))
         (fci-archive-before-strings (aref mic-paren-overlays 2)))
-    ad-do-it)) 
+    ad-do-it))
 
 (defadvice hl-line-highlight (around fill-column-indicator)
   (fci-restore-before-strings hl-line-overlay)

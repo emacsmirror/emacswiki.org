@@ -1,4 +1,4 @@
-Frame-bufs is intended as a convenience for those who like to organize their workflow in Emacs by using specific frames for different projects. It extends Emacs’s buffer menu so that it understands a distinction between those buffers that are associated with a given a frame and those that are not. The buffer menu can be toggled between a list of all buffers and a list of only those buffers that are associated with the selected frame. The criteria governing which buffers are automatically associated with a frame can be customized through various options.  In addition, buffers can manually added to and removed from the list of buffers associated with a frame. The package interacts properly with ##other-buffer## and respects changes in buffer ordering made by ##bury-buffer##. 
+Frame-bufs is intended as a convenience for those who like to organize their workflow in Emacs by using specific frames for different projects. It extends Emacs’s buffer menu so that it understands a distinction between those buffers that are associated with a given frame and those that are not. The buffer menu can be toggled between a list of all buffers and a list of only those buffers associated with the selected frame. The criteria governing which buffers are associated with a frame can be customized through various options.  In addition, buffers can be manually added to and removed from the list of buffers associated with a frame. The package interacts properly with ##other-buffer## and respects changes in buffer ordering made by ##bury-buffer##. 
 
 == Installation ==
 
@@ -10,7 +10,7 @@ in your ##.emacs##.  To enable frame-bufs, use the command ##frame-bufs-mode##, 
 
 == Features Overview ==
 
-When frame-bufs-mode is enabled, it keeps a record of which buffers are associated with each frame.  In the typical case, a buffer becomes associated with a frame if it is selected in one of that frame's windows.  Note, then, that a buffer can be associated with more than one frame.  (We sometimes speak of a buffer that's associated with a frame as "frame-associated," and refer to the list of buffers associated with a given frame as that frame's "associated-buffer list."   Frame-bufs does not alter the `buffer-list' or `buried-buffer-list' frame parameters of any frame; it keeps its own record of the buffers
+When frame-bufs-mode is enabled, it keeps a record of which buffers are associated with each frame.  In the typical case, a buffer becomes associated with a frame if it is selected in one of that frame's windows.  Note, then, that a buffer can be associated with more than one frame.  We sometimes speak of a buffer that's associated with a frame as "frame-associated," and refer to the list of buffers associated with a given frame as that frame's "associated-buffer list."   (Frame-bufs does not alter the `buffer-list' or `buried-buffer-list' frame parameters of any frame; it keeps its own record of the buffers
 associated with each frame.)
   
 The buffer menu initially lists all buffers (we call this "full-list mode").  By typing ##F## the buffer menu can be toggled between showing all buffers and showing only those buffers associated with the selected frame (when the buffer menu is in the latter state we say it is in "frame-list mode").  In full-list mode there is an additional column after the initial ##CRM## bit columns, the ##F## column.   Buffers associated with the selected frame are indicated with an `o' in this column.  In frame-list mode, the fourth column is suppressed.  Here are screenshots of the buffer menu in the two different modes:
@@ -51,7 +51,7 @@ Frame-bufs also provides three other commands that are available everywhere, not
 
 == Compatibility and Other Considerations ==
 
-Frame-bufs is compatible with BufferMenuPlus.  It does not affect the operation of ##electric-buffer-list##.
+Frame-bufs is compatible with BufferMenuPlus.  It does not affect the operation of ##electric-buffer-list##, ##bs-show##, or other buffer listing commands.
 
 ----
 

@@ -1,0 +1,14 @@
+Wiki-nav mode is a minor mode for navigating files via &#91;&#91;wiki-style&#93;&#93; double-bracketed links.
+
+It is not related to EmacsWikiMode and similar tools for building a personal Wiki.  Instead,
+wiki-nav mode is designed to help you navigate around in the files you already have.
+
+It provides functionality similar to LinkdMode.  Wiki-nav mode uses a different syntax than LinkdMode, is simpler and less sophisticated.
+
+Wiki-nav is distributed with ButtonLockMode:
+
+https://github.com/rolandwalker/button-lock
+
+----
+CategoryModes
+CategoryHypermedia

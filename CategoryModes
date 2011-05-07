@@ -32,6 +32,7 @@ Other pages (could this please be split in major and minor modes?):
 * BlankMode -- minor mode to visualize blanks (SPACE, HARD SPACE and TAB)
 * BrowseUrl
 * BugzillaMode -- a mode for editing bugzilla dump files
+* ButtonLockMode -- clickable text defined by regular expression, controlled by font-lock
 * CelsscMode -- a mode for editing celestia catalog files
 * CddbMode -- a mode for CD database files
 * [EmacsWiki:cheezburger Cheezburger] -- mode for viewing I Can Has Cheezburger
@@ -134,6 +135,7 @@ Other pages (could this please be split in major and minor modes?):
 * WebgenMode -- minor mode for [http://webgen.rubyforge.org/ webgen]
 * WhiteSpace -- minor mode to visualize (HARD) SPACE, TAB and NEWLINE
 * WikiMode
+* WikiNavMode --simple file navigation using &91;&91;WikiStrings&93;&93;
 * WikipediaMode
 * WikipediaAlternative -- an alternative (to the previous) mode for Wikipedia
 * WikitextMode -- for editing Wikispaces' articles

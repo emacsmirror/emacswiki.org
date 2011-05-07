@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu May  5 17:47:07 2011 (-0700)
+;; Last-Updated: Fri May  6 16:33:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1020
+;;     Update #: 1029
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,6 +72,14 @@
 ;;      `forward-symbol', `forward-thing', `forward-whitespace'
 ;;
 ;;
+;;  NOTE: in Emacs releases prior to Emacs 23 you will sometimes get
+;;  incorrect results.  This is because most functions are based on
+;;  function `thingatpt+.el', and the version of that function defined
+;;  here just reuses the vanilla Emacs definition to do the work.  The
+;;  only change to that function by `thingatpt+.el' is to add optional
+;;  arg SYNTAX-TABLE.
+;;
+;;
 ;;  This file should be loaded after loading the standard GNU file
 ;;  `thingatpt.el'.  So, in your `~/.emacs' file, do this:
 ;;  (eval-after-load "thingatpt" '(require 'thingatpt+))
@@ -84,6 +92,7 @@
 ;; 2011/05/05 dadams
 ;;     (put 'list 'bounds-of-thing-at-point nil)  See Emacs bug #8628.
 ;;     (put 'list 'thing-at-point 'list-at-point) - not really needed, though.
+;;     bounds-of-thing-at-point: Mention in doc string that pre-Emacs 23 is buggy.
 ;; 2011/01/20 dadams
 ;;     *list-*-point: Improved doc strings.
 ;; 2011/01/04 dadams
@@ -207,8 +216,6 @@ Some functions might ignore or override this setting temporarily."
 ;; REPLACES ORIGINAL in `thingatpt.el'.
 ;; Added optional argument SYNTAX-TABLE.
 ;;
-;; Note: in Emacs releases prior to Emacs 23 this can give incorrect results.
-;;
 ;; NOTE: All of the other functions here are based on this function.
 ;;
 (defun bounds-of-thing-at-point (thing &optional syntax-table)
@@ -218,7 +225,14 @@ Return nil if no such THING is found.
 THING is an entity for which there is a either a corresponding
 `forward-'THING operation, or corresponding `beginning-of-'THING and
 `end-of-'THING operations, eg. `word', `sentence', `defun'.
-SYNTAX-TABLE is a syntax table to use."
+SYNTAX-TABLE is a syntax table to use.
+
+NOTE: in Emacs releases prior to Emacs 23 this can give incorrect
+results.  This definition from `thingatpt+.el' just reuses the vanilla
+Emacs definition to do the work.  The only change by `thingatpt+.el'
+is to add optional arg SYNTAX-TABLE.  And since this function is the
+basis of many thing-at-point functions most can give incorrect
+results prior to Emacs 23."
   (if syntax-table
       (let ((buffer-syntax (syntax-table)))
         (unwind-protect

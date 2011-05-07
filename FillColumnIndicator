@@ -47,9 +47,9 @@ To enable fci-mode as a global minor mode, add the following code to your init f
 
 == Miscellany ==
 
-There's a [http://github.com/alpaker/Fill-Column-Indicator GitHub] repository for the package, which might provide a more convenient way of ensuring one has the latest version.  (The Emacs Wiki RSS feeds aren't entirely reliable.)
+There's a [http://github.com/alpaker/Fill-Column-Indicator GitHub] repository for the package, which might provide a more convenient way of ensuring one has the latest version.  (I haven't found the Emacs Wiki RSS feeds to be entirely reliable.)
 
-Curious about the color scheme in the screenshots above?  The settings are described on [http://www.emacswiki.org/emacs/AlpAker my homepage].
+If you're curious about the color scheme in the screenshots above, the settings are described on [http://www.emacswiki.org/emacs/AlpAker my homepage].
 
 == See also ==
 

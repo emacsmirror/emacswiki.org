@@ -222,7 +222,7 @@ This solution won't support opening Emacs via "sudo" because the "open" command 
 
 A better alternative on the previous open command is
  
- alias aquamacs='open -a /Applications/Aquamacs\ Emacs.app/'
+ alias aquamacs='open -b org.gnu.Aquamacs'
 
 This allows emacs to open files which have a file-association to a different application.
 
@@ -239,7 +239,7 @@ Put the following function in ~/.bashrc; then `amacs file.txt` will behave more 
      open -a /Applications/Aquamacs\ Emacs.app "$@"
  }
 
-
+Note also that the 'open' command returns immediately.  This makes it a poor option for the EDITOR shell variable and other use cases that expect the command to be synchronous and not return until you've finished editing.  For these purposes, it can be useful to use the direct alias as shown for sudo.  The direct version will open a new Aquamacs instance, and the command will not terminate until that instance of Aquamacs terminates.
 
 == Opening Files In Same Frame, but keep Apple-N functionality the same ==
 

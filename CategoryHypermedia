@@ -49,6 +49,8 @@ Examples:
 * SpartanWiki --- a really spartan personal wiki
 * OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
 * [[N3Mode]] --- Emacs major mode for Notation 3 RDF
+* WikiNavMode --- navigate files via &#91;&#91;wiki-style&#93;&#93; double-bracketed links
+* ButtonLockMode --- define clickable text based on regular expressions
 
 ----
 [new] We need to organize this page and clean it up a little. It is

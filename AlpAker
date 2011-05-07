@@ -1,30 +1,29 @@
-The following are libraries I've authored, all of which concern, in one way or another, usability and human interface issues.
+The following packages all concern, in one way or another, usability and human interface issues.
 
-* [[FrameBufs]].  Frame-bufs-mode is intended as a convenience for those who like to organize their workflow in Emacs by using specific frames for different projects.  It extends Emacs's buffer menu so that it understands a distinction between those buffers that are associated with a given a frame and those that are not. The buffer menu can be toggled between a list of all buffers and a list of only those buffers that are associated with the selected frame.  Buffers can be manually added to and removed from the local buffer list. In addition, the criteria governing which buffers are automatically added to the local buffer list can be customized through various options.  The package interacts properly with <tt>other-buffer</tt> and respects changes in buffer ordering made by <tt>bury-buffer</tt>.
+* [[FrameBufs]] is intended as a convenience for those who like to organize their workflow in Emacs by using specific frames for different projects. It extends Emacs’s buffer menu so that it understands a distinction between those buffers that are associated with a given frame and those that are not. The buffer menu can be toggled between a list of all buffers and a list of only those buffers associated with the selected frame. The criteria governing which buffers are associated with a frame can be customized through various options.  In addition, buffers can be manually added to and removed from the list of buffers associated with a frame. The package interacts properly with ##other-buffer## and respects changes in buffer ordering made by ##bury-buffer##. 
 
-* [[Rebound]].  Rebound mode changes how Emacs selects point when displaying a buffer in a window.  While it is enabled, each window keeps a record of the last value of point in every buffer that has been displayed in it.  When a window is switched back to a buffer it has displayed before, point and window-start are set to the values they had when that buffer was last displayed in the window.  
+* [[Rebound]] changes how Emacs selects point when displaying a buffer in a window.  While it is enabled, each window keeps a record of the last value of point in every buffer that has been displayed in it.  When a window is switched back to a buffer it has displayed before, point and window-start are reset to the values they had when that buffer was last displayed in that window.  
 
-* [[FillColumnIndicator]].  A minor mode that indicates the location of the fill column, either by shading the area of the window to the right of the fill column or by drawing a thin line down the editing window at the location of the fill column.
+* [[FillColumnIndicator]] is a minor mode that indicates the location of the fill column, either by shading the area of the window to the right of the fill column or by drawing a thin line down the editing window at the location of the fill column.
 
 ----
 
-A few people have asked (apropos of the screenshots on the FillColumnIndicator page) what my font-lock settings are.  The basic scheme is this:
+A few people have asked (apropos of the screenshots on the FillColumnIndicator page) what my font-lock settings are.  The basic scheme is:
 
 <pre>
 
-(let ((faces
-       '((font-lock-comment-face :foreground "#4d7a70" :slant italic)
-         (font-lock-constant-face :foreground "#6b7875")
-         (font-lock-string-face :foreground "#7a633d")
-         (font-lock-type-face :foreground "grey50")
-         (font-lock-warning-face :foreground "#cd5c5c")
-         (font-lock-preprocessor-face :foreground "#596766" :weight bold)
-         (font-lock-doc-face :foreground "#707f75" :slant italic)
-         (font-lock-keyword-face :foreground "#665d9c" :weight bold)
-         (font-lock-builtin-face :foreground "gray50" :weight bold)
-         (font-lock-function-name-face :foreground "#2e5fa2" :weight bold)
-         (font-lock-variable-name-face :foreground "#6f5057" :weight bold)
-         (mode-line  :background "#bedefe"))))
+(let ((faces '((font-lock-comment-face :foreground "#4d7a70" :slant italic)
+               (font-lock-constant-face :foreground "#6b7875")
+               (font-lock-string-face :foreground "#7a633d")
+               (font-lock-type-face :foreground "grey50")
+               (font-lock-warning-face :foreground "#cd5c5c")
+               (font-lock-preprocessor-face :foreground "#596766" :weight bold)
+               (font-lock-doc-face :foreground "#707f75" :slant italic)
+               (font-lock-keyword-face :foreground "#665d9c" :weight bold)
+               (font-lock-builtin-face :foreground "gray50" :weight bold)
+               (font-lock-function-name-face :foreground "#2e5fa2" :weight bold)
+               (font-lock-variable-name-face :foreground "#6f5057" :weight bold)
+               (mode-line  :background "#bedefe" :box (:line-width 2 :color "gray85")))))
   (dolist (face faces)
     (apply 'set-face-attribute (car face) nil (cdr face))))
 
