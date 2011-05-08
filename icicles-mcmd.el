@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 14:37:44 2011 (-0700)
+;; Last-Updated: Fri May  6 15:25:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16943
+;;     Update #: 16946
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -182,6 +182,7 @@
 ;;    `icicle-toggle-highlight-saved-candidates',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
+;;    `icicle-toggle-ignoring-comments',
 ;;    `icicle-toggle-incremental-completion',
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
@@ -1290,6 +1291,19 @@ Bound to `M-_' in the minibuffer."
 ;;;   (cond (icicle-searching-p (icicle-toggle-search-replace-whole))
 ;;;         (icicle-inhibit-sort-p (message "Cannot sort candidates now"))
 ;;;         (t (call-interactively #'icicle-change-sort-order))))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;;###autoload
+(defalias 'toggle-icicle-ignoring-comments 'icicle-toggle-ignoring-comments)
+;;;###autoload
+(defun icicle-toggle-ignoring-comments () ; Bound to `C-M-;' in minibuffer.
+  "Toggle the value of option `icicle-ignore-comments-flag'.
+Bound to `C-M-;' in the minibuffer."
+  (interactive)
+  (setq icicle-ignore-comments-flag  (not icicle-ignore-comments-flag))
+  (icicle-msg-maybe-in-minibuffer (if icicle-ignore-comments-flag
+                                      "Ignoring comments is now ON"
+                                    "Ignoring comments is now OFF")))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
@@ -6977,7 +6991,7 @@ Bound to `C-`' in the minibuffer."
                                     "Escaping of regexp special characters is now OFF")))
 
 ;;;###autoload
-(defun icicle-regexp-quote-input (beg end) ; Bound to `C-M-;' in minibuffer.
+(defun icicle-regexp-quote-input (beg end) ; Bound to `M-%' in minibuffer.
   "Regexp quote current input or its active region, then apropos-complete.
 Use this if you want to literally match all of what is currently in
 the minibuffer or selected text there, but you also want to use that
@@ -6986,7 +7000,7 @@ literal text as part of a regexp for apropos completion.
 This turns off `icicle-expand-input-to-common-match-flag'.
 You can toggle that option using `C-;'.
 
-Bound to `C-M-;' in the minibuffer."
+Bound to `M-%' in the minibuffer."
   (interactive (if (and mark-active (mark))
                    (list (region-beginning) (region-end))
                  (list (point-max) (point-max))))

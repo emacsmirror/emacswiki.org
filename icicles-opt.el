@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 11:07:55 2011 (-0700)
+;; Last-Updated: Fri May  6 15:23:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4308
+;;     Update #: 4310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -106,7 +106,8 @@
 ;;    `icicle-highlight-input-initial-whitespace-flag',
 ;;    `icicle-highlight-lighter-flag',
 ;;    `icicle-highlight-saved-candidates-flag',
-;;    `icicle-ignored-directories', `icicle-ignore-space-prefix-flag',
+;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
+;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
@@ -1663,6 +1664,12 @@ This is done using face `icicle-saved-candidate'.
 You save candidates using, for example, `C-M->'.  You can toggle this
 option from the minibuffer at any time using `S-pause'."
   :type 'boolean :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-ignore-comments-flag t
+  "Non-nil means `icicle-with-comments-hidden' hides comments.
+You can toggle this option using `C-M-;' in the minibuffer."
+  :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
 (defcustom icicle-ignored-directories (and (boundp 'vc-directory-exclusion-list)

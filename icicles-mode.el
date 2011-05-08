@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 11:10:19 2011 (-0700)
+;; Last-Updated: Fri May  6 15:33:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7447
+;;     Update #: 7458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -437,6 +437,7 @@ In many cases there are also `other-window' versions.
                                        - Toggle highlighting saved
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
+`icicle-toggle-ignoring-comments'      - Toggle ignoring comments
 `icicle-toggle-incremental-completion' - Toggle apropos icompletion
 `icicle-toggle-option'                 - Toggle binary user option
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
@@ -707,6 +708,7 @@ In many cases there are also `other-window' versions.
                                        - Toggle highlighting saved
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
+`icicle-toggle-ignoring-comments'      - Toggle ignoring comments
 `icicle-toggle-incremental-completion' - Toggle apropos icompletion
 `icicle-toggle-option'                 - Toggle binary user option
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
@@ -1163,6 +1165,10 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Longest Common Match"
                icicle-toggle-expand-to-common-match :visible icicle-mode :keys "C-;"
                :help "Toggle option `icicle-expand-input-to-common-match-flag'"))
+           (define-key icicle-options-menu-map [icicle-toggle-ignoring-comments]
+             '(menu-item "Toggle Ignoring Comments" icicle-toggle-ignoring-comments
+               :visible icicle-mode :keys "C-M-;"
+               :help "Toggle option `icicle-ignore-comments-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-ignored-space-prefix]
              '(menu-item "Toggle Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
                :visible icicle-mode :keys "M-_"
@@ -1325,6 +1331,9 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-toggle-expand-to-common-match]
              '(menu-item "Toggle Longest Common Match" icicle-toggle-expand-to-common-match
                :keys "C-;" :help "Toggle option `icicle-expand-input-to-common-match-flag'"))
+           (define-key icicle-menu-map [icicle-toggle-ignoring-comments]
+             '(menu-item "Toggle Ignoring Comments" icicle-toggle-ignoring-comments
+               :keys "C-M-;" :help "Toggle option `icicle-ignore-comments-flag'"))
            (define-key icicle-menu-map [icicle-toggle-ignored-space-prefix]
              '(menu-item "Toggle Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
                :keys "M-_" :help "Toggle option `icicle-ignore-space-prefix-flag'"))
@@ -2324,7 +2333,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            :enable (with-current-buffer (window-buffer (minibuffer-window))
                      (not (zerop (buffer-size))))
            :help "Regexp-quote current input or its active region, then apropos-complete"
-           :keys "C-M-;"))
+           :keys "M-%"))
        (define-key map [menu-bar minibuf separator-set2] '("--"))
        (define-key map [menu-bar minibuf icicle-clear-current-history]
          '(menu-item "Clear History Entries" icicle-clear-current-history
@@ -2419,7 +2428,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
              :enable (with-current-buffer (window-buffer (minibuffer-window))
                        (not (zerop (buffer-size))))
              :help "Regexp-quote current input or its active region, then apropos-complete"
-             :keys "C-M-;"))
+             :keys "M-%"))
          (define-key map [menu-bar minibuf separator-set2] '("--"))
          (define-key map [menu-bar minibuf icicle-clear-current-history]
            '(menu-item "Clear History Entries" icicle-clear-current-history
@@ -2514,7 +2523,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
              :enable (with-current-buffer (window-buffer (minibuffer-window))
                        (not (zerop (buffer-size))))
              :help "Regexp-quote current input or its active region, then apropos-complete"
-             :keys "C-M-;"))
+             :keys "M-%"))
          (define-key map [menu-bar minibuf separator-set2] '("--"))
          (define-key map [menu-bar minibuf icicle-clear-current-history]
            '(menu-item "Clear History Entries" icicle-clear-current-history
@@ -2958,7 +2967,7 @@ MAP is `minibuffer-local-completion-map',
       '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
         :enable (with-current-buffer (window-buffer (minibuffer-window)) (not (zerop (buffer-size))))
         :help "Regexp-quote current input or its active region, then apropos-complete"
-        :keys "C-M-;"))
+        :keys "M-%"))
     (define-key map [menu-bar minibuf separator-set2] '("--"))
     (define-key map [menu-bar minibuf icicle-clear-current-history]
       '(menu-item "Clear History Entries" icicle-clear-current-history
@@ -3260,14 +3269,15 @@ complete)"))
   (define-key map [(control meta ?\))]       'icicle-candidate-set-save-selected) ; `C-M-)'
   (define-key map [(control meta ?<)]        'icicle-candidate-set-retrieve) ; `C-M-<'
   (define-key map [(control meta ?})]        'icicle-candidate-set-save-to-variable) ; `C-M-}'
-  (define-key map [(control meta ?{)]       'icicle-candidate-set-retrieve-from-variable) ; `C-M-{'
+  (define-key map [(control meta ?{)]        'icicle-candidate-set-retrieve-from-variable) ; `C-M-{'
   (define-key map [(control ?})]             'icicle-candidate-set-save-persistently) ; `C-}'
   (define-key map [(control ?{)]             'icicle-candidate-set-retrieve-persistent) ; `C-{'
   (define-key map [(control ?%)]             'icicle-candidate-set-swap) ; `C-%'
+  (define-key map [(meta ?%)]                'icicle-regexp-quote-input) ; `M-%'
   (define-key map [(control ?:)]             'icicle-candidate-set-define) ; `C-:'
   (define-key map [(control meta ?j)]        'icicle-insert-list-join-string) ; `C-M-j'
   (define-key map [(control ?,)]             'icicle-change-sort-order) ; `C-,'
-  (define-key map [(control meta ?\;)]       'icicle-regexp-quote-input) ; `C-M-;'
+  (define-key map [(control meta ?\;)]       'icicle-toggle-ignoring-comments) ; `C-M-;'
   (define-key map [(control ?`)]             'icicle-toggle-regexp-quote) ; `C-`'
   (define-key map [(control meta ?\.)]       'icicle-toggle-dot) ; `C-M-.'
   (define-key map [(control meta ?`)]        'icicle-toggle-literal-replacement) ; `C-M-`'
@@ -3514,6 +3524,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map [(control ?})]             nil)
   (define-key map [(control ?{)]             nil)
   (define-key map [(control ?%)]             nil)
+  (define-key map [(meta ?%)]                nil)
   (define-key map [(control ?:)]             nil)
   (define-key map [(control meta ?j)]        nil)
   (define-key map [(control ?,)]             nil)

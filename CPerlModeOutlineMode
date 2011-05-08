@@ -201,3 +201,17 @@ the code visible.  When done, leave it visible, or use 'M-o c' to hide it again.
 Again, see the documentation for outline-minor-mode to learn all of the power of
 this mode.  Suffice it to say that it makes navigating around in a large source
 file, or working with two separate areas of a large file, simple and easy.
+
+===Known Issues===
+
+1. PDE mode: 
+
+If you run PerlDevelopEnvironment, then you must wrap <code>cperl-mode-hook</code> into <code>eval-after-load</code>. Otherwise it will not take effect after pde-load.el is loaded.
+
+<pre>
+
+
+(eval-after-load 'pde-load
+  '(add-hook 'cperl-mode-hook (lambda ()
+                                (outline-minor-mode 1))))
+</pre>

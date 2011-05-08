@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 14:46:30 2011 (-0700)
+;; Last-Updated: Fri May  6 15:53:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22873
+;;     Update #: 22883
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -103,7 +103,8 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-maybe-cached-action', `icicle-with-selected-window'.
+;;    `icicle-maybe-cached-action', `icicle-with-comments-hidden',
+;;    `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
@@ -242,7 +243,8 @@
 ;;    `icicle-goto-marker', `icicle-goto-marker-or-set-mark-command',
 ;;    `icicle-grep-saved-file-candidates',
 ;;    `icicle-gud-gdb-complete-command', `icicle-handle-switch-frame',
-;;    `icicle-ido-like-mode', `icicle-imenu', `icicle-imenu-command',
+;;    `icicle-hide/show-comments', `icicle-ido-like-mode',
+;;    `icicle-imenu', `icicle-imenu-command',
 ;;    `icicle-imenu-non-interactive-function',
 ;;    `icicle-increment-option', `icicle-increment-variable',
 ;;    `icicle-Info-goto-node', `icicle-Info-goto-node-cmd',
@@ -292,7 +294,7 @@
 ;;    `icicle-search-some-tags-regexp-bookmark',
 ;;    `icicle-search-specific-buffers-bookmark',
 ;;    `icicle-search-specific-files-bookmark',
-;;    `icicle-search-text-property',
+;;    `icicle-search-text-property', `icicle-search-thing',
 ;;    `icicle-search-this-buffer-bookmark',
 ;;    `icicle-search-url-bookmark', `icicle-search-w3m-bookmark',
 ;;    `icicle-search-word', `icicle-select-bookmarked-region',
@@ -328,6 +330,7 @@
 ;;    `icicle-toggle-highlight-saved-candidates',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
+;;    `icicle-toggle-ignoring-comments',
 ;;    `icicle-toggle-incremental-completion',
 ;;    `icicle-toggle-literal-replacement', `icicle-toggle-option',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
@@ -519,6 +522,7 @@
 ;;    `icicle-toggle-highlight-saved-candidates',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
+;;    `icicle-toggle-ignoring-comments',
 ;;    `icicle-toggle-incremental-completion',
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
@@ -645,7 +649,8 @@
 ;;    `icicle-highlight-input-initial-whitespace-flag',
 ;;    `icicle-highlight-lighter-flag',
 ;;    `icicle-highlight-saved-candidates-flag',
-;;    `icicle-ignored-directories', `icicle-ignore-space-prefix-flag',
+;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
+;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
@@ -805,8 +810,8 @@
 ;;    `icicle-custom-type', `icicle-dabbrev--abbrev-at-point',
 ;;    `icicle-default-buffer-names',
 ;;    `icicle-define-crm-completion-map', ,
-;;    `icicle-define-cycling-keys', `icicle-define-icicle-maps',
-;;    `icicle-define-minibuffer-maps',
+;;    `icicle-define-cycling-keys', `icicle-defined-thing-p',
+;;    `icicle-define-icicle-maps', `icicle-define-minibuffer-maps',
 ;;    `icicle-delete-backward-char-dots',
 ;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
 ;;    `icicle-delete-count', `icicle-delete-current-candidate-object',
@@ -924,7 +929,7 @@
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate',
 ;;    `icicle-next-single-char-property-change',
-;;    `icicle-non-whitespace-string-p',
+;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
 ;;    `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
@@ -991,7 +996,8 @@
 ;;    `icicle-search-replace-cand-in-alist',
 ;;    `icicle-search-replace-cand-in-mct',
 ;;    `icicle-search-replace-fixed-case-p',
-;;    `icicle-search-replace-match', `icicle-search-where-arg',
+;;    `icicle-search-replace-match', `icicle-search-thing-args',
+;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-select-minibuffer-contents' `icicle-set-calling-cmd',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-set-difference', `icicle-set-intersection',

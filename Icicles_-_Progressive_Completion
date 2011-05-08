@@ -174,7 +174,7 @@ special characters, if any, escaped.  If you need to match such
 substrings at particular locations in the target completion
 candidate, then progressive completion won't do the job -- it
 matches its component regexps independently.  You can regexp-quote
-(escape) parts or all of your input using '''`##C-M-;##''''
+(escape) parts or all of your input using '''`##M-%##''''
 (`icicle-regexp-quote-input').
 See [[Icicles - Special Characters in Input Patterns#Escaping|Escaping Special Characters]].
 

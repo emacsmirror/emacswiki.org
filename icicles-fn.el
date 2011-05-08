@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 13:57:31 2011 (-0700)
+;; Last-Updated: Sat May  7 10:44:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12266
+;;     Update #: 12287
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3579,6 +3579,7 @@ REGEXP-P non-nil means use regexp matching to highlight root."
       (when indx (put-text-property indx (match-end 0) 'face 'icicle-match-highlight-minibuffer
                                     icicle-last-completion-candidate))))
 
+  (goto-char (icicle-minibuffer-prompt-end)) ; Need for Emacs 22+, or can get `Text read-only' error.
   ;; Insert candidate in minibuffer, and place cursor.
   (insert (if (and (icicle-file-name-input-p) insert-default-directory
                    (or (not (member icicle-last-completion-candidate icicle-extra-candidates))

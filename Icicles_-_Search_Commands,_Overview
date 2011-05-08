@@ -81,7 +81,7 @@ to search ''sentences'', "##\\(.+\n\\)+##" to search ''paragraphs'', or
 
 `##\f##' is the form-feed, or page-separator, character.  You input
 `##\f##', `##\t##', and `##\n##' using `C-q l', `C-q TAB', and `C-j',
-respectively.  See [[Icicles - Dots, Dots, Dots]] for information about
+respectively.  See [[Icicles - Dot, Dot, Dot]] for information about
 ''multi-line dot'' ('''`##.##''''), which matches also newline.
 
 Again, you can use [[progressive completion]] (`##M-*##' or `S-SPC') to match several
@@ -112,15 +112,69 @@ Here is a screenshot that shows some of the highlighting features of `icicle-sea
 
 There are several '''Icicles''' search commands, some of which are bound to keys in ''Icicle'' mode:
 
+[:icicle-occur]
+[:icicle-search]
+[:icicle-search-buffer]
+[:icicle-search-buff-menu-marked]
+[:icicle-search-ibuffer-marked]
+[:icicle-search-dired-marked]
+[:icicle-search-file]
+[:icicle-search-bookmarks-together]
+[:icicle-search-all-tags-bookmark]
+[:icicle-search-all-tags-regexp-bookmark]
+[:icicle-search-autofile-bookmark]
+[:icicle-search-bookmark-list-bookmark]
+[:icicle-search-desktop-bookmark]
+[:icicle-search-dired-bookmark]
+[:icicle-search-file-bookmark]
+[:icicle-search-gnus-bookmark]
+[:icicle-search-info-bookmark]
+[:icicle-search-local-file-bookmark]
+[:icicle-search-man-bookmark]
+[:icicle-search-non-file-bookmark]
+[:icicle-search-region-bookmark]
+[:icicle-search-remote-file-bookmark]
+[:icicle-search-some-tags-bookmark]
+[:icicle-search-some-tags-regexp-bookmark]
+[:icicle-search-specific-buffers-bookmark]
+[:icicle-search-specific-files-bookmark]
+[:icicle-search-this-buffer-bookmark]
+[:icicle-search-url-bookmark]
+[:icicle-search-w3m-bookmark]
+[:icicle-search-word]
+[:icicle-search-keywords]
+[:icicle-search-compilation-search]
+[:icicle-search-text-property]
+[:icicle-search-overlay-property]
+[:icicle-search-char-property]
+[:icicle-search-thing]
+[:icicle-search-pages]
+[:icicle-search-paragraphs]
+[:icicle-search-sentences]
+[:icicle-imenu]
+[:icicle-imenu-command]
+[:icicle-imenu-non-interactive-function]
+[:icicle-comint-command]
+
 * '''`##C-c '##'''' -- '''`icicle-occur'''' -- An `occur' with [[Icicles - Icompletion|icompletion]].
 * '''`##C-c `##'''' -- '''`icicle-search'''' -- Seach buffer areas that match a regexp.
 * '''`icicle-search-buffer''''  ('''`C-1'''') -- Search selected buffers.
+* '''`icicle-search-buff-menu-marked'''' -- Search BufferMenu marked buffers.
+* '''`icicle-search-ibuffer-marked''''   -- Search [[Ibuffer]] marked buffers.
+* '''`icicle-search-dired-marked'''' -- Search [[Dired]] marked files.
 * '''`icicle-search-file'''' ('''`C--'''') -- Search selected files.
 * '''`icicle-search-bookmarks-together'''' ('''`C-u''''), '''`icicle-search-bookmark'''' -- Search bookmarks.
-* '''`##C-c $##'''' -- '''`icicle-search-word'''' -- Search for a whole word.
+* `icicle-search-*-bookmark' -- Search bookmarks of a given type (several commands).
+* '''`##C-c $##'''' -- '''`icicle-search-word'''' -- Whole words as search contexts.
 * '''`##C-c ^##'''' -- '''`icicle-search-keywords'''' -- Search with regexp keywords.
 * '''`##C-c `##'''' -- '''`icicle-compilation-search'''' -- Search compilation hits (e.g. `grep' hits).
-* '''`##C-c "##'''' -- '''`icicle-search-char-property'''' -- Search for a given character-property value.
+* '''`##C-c "##'''' -- '''`icicle-search-text-property'''' -- Search text having a given text property value.
+* '''`icicle-search-overlay-property'''' -- Search text having a given overlay property value.
+* '''`icicle-search-char-property'''' -- Search text having a given text or overlay property value.
+* '''`icicle-search-thing'''' -- Search ThingAtPoint things as contexts, optionally ignoring comments.
+* '''`icicle-search-pages'''' -- Search Emacs pages (##^L##/form-feed delimited) as contexts.
+* '''`icicle-search-paragraphs'''' -- Search Emacs paragraphs as contexts.
+* '''`icicle-search-sentences'''' -- Search sentences as contexts.
 * '''`##C-c =##'''' -- '''`icicle-imenu'''' -- Navigate among [[ImenuMode|Imenu]] entries.
 * '''`icicle-imenu-command'''' -- Navigate among Emacs command definitions.
 * '''`icicle-imenu-non-interactive-function'''' -- Navigate among Emacs ''non''-interactive function definitions.
@@ -449,6 +503,13 @@ the next complete search.
 multi-commands that browse, such as '''Icicles''' search.  It means that you can
 use `next' and so on instead of `C-next' and so on to navigate
 among search hits.  See [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]
+
+* Non-`nil' option '''`<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>'''' 
+means that `icicle-search-thing' ignores comments; that is, it hides them
+temporarily when it scans the region or buffer for things of the given type
+as candidates.  This prevents it, for example, from presenting as a candidate a
+[[sexp]] or [[list]] that is commented out.  You can
+toggle this option anytime using '''`##C-M-;##'''' in the minibuffer.
 
 * '''`icicle-search-hook'''': Functions run after searching and moving
   to a match, whether by `RET' or `C-RET' (or `C-next' or

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri May  6 16:33:17 2011 (-0700)
+;; Last-Updated: Sat May  7 13:03:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1029
+;;     Update #: 1061
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,7 +42,8 @@
 ;;    `list-nearest-point', `list-nearest-point-as-string',
 ;;    `non-nil-symbol-name-at-point',
 ;;    `non-nil-symbol-name-nearest-point',
-;;    `non-nil-symbol-nearest-point', `number-nearest-point',
+;;    `non-nil-symbol-nearest-point', `number-at-point-decimal',
+;;    `number-at-point-hex', `number-nearest-point',
 ;;    `region-or-word-at-point', `region-or-word-nearest-point',
 ;;    `sentence-nearest-point', `sexp-nearest-point',
 ;;    `symbol-at-point-with-bounds', `symbol-name-nearest-point',
@@ -89,6 +90,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/05/07
+;;     Added: number-at-point-(decimal|hex) and aliases.
+;;     Put (bounds-of-)thing-at-point properties: (hex-|decimal-)number-at-point.
 ;; 2011/05/05 dadams
 ;;     (put 'list 'bounds-of-thing-at-point nil)  See Emacs bug #8628.
 ;;     (put 'list 'thing-at-point 'list-at-point) - not really needed, though.
@@ -545,8 +549,10 @@ Note that these last three functions return strings, not symbols."
 ;;
 ;; 1. Added optional arg UP.
 ;; 2. Better, consistent behavior.
+;; 3. Let the regular `bounds-of-thing-at-point' do its job.
 ;;
 (put 'list 'thing-at-point 'list-at-point)
+(put 'list 'bounds-of-thing-at-point nil) ;   See Emacs bug #8628.
 (defun list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.
 If inside a list, return the enclosing list.
@@ -559,14 +565,6 @@ Note: If point is inside a string that is inside a list:
  nearby strings contain parens.
  (These are limitations of function `up-list'.)"
   (list-at/nearest-point 'sexp-at-point up))
-
-
-;; REPLACE ORIGINAL defined in `thingatpt.el'.
-;;
-;; Let the regular `bounds-of-thing-at-point' do its job.  See Emacs bug #8628.
-;;
-(put 'list 'bounds-of-thing-at-point nil)
-
 
 (defun unquoted-list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.
@@ -741,6 +739,48 @@ prompt for the function or variable to find, instead."
                 (fn (find-function fn))
                 (t (call-interactively 'find-function))))
       (quit (pop-mark)))))
+
+
+;;; `number-at-point' returns the char value when point is on char syntax.
+;;; E.g., when on ?A it returns 65 (not nil); when on ?\A-\^@ it returns 4194304.
+;;; So we add these functions, which do what you would normally expect.
+
+(put 'decimal-number 'thing-at-point 'number-at-point-decimal)
+(put 'decimal-number 'bounds-of-thing-at-point
+     (lambda () (and (number-at-point-decimal) (bounds-of-thing-at-point 'sexp))))
+
+(defalias 'decimal-number-at-point 'number-at-point-decimal)
+(defun number-at-point-decimal ()
+  "Return the number represented by the decimal numeral at point.
+Return nil if none is found."
+  (let ((strg  (thing-at-point 'sexp)))
+    (and (stringp strg)        
+         (if (fboundp 'string-match-p)
+             (string-match-p "\\`[0-9]+\\'" strg)
+           (string-match "\\`[0-9]+\\'" strg))
+         (string-to-number strg))))
+
+
+(put 'hex-number 'thing-at-point 'number-at-point-hex)
+(put 'hex-number 'bounds-of-thing-at-point
+     (lambda () (and (number-at-point-hex) (bounds-of-thing-at-point 'sexp))))
+
+(defalias 'hex-number-at-point 'number-at-point-hex)
+(defun number-at-point-hex ()
+  "Return the number represented by the hex numeral at point.
+Return nil if none is found."
+  (let ((strg  (thing-at-point 'sexp)))
+    (and (stringp strg)
+         (if (fboundp 'string-match-p)
+             (string-match-p "\\`[0-9a-fA-F]+\\'" strg)
+           (string-match "\\`[0-9a-fA-F]+\\'" strg))
+         (string-to-number strg 16))))
+
+
+;; Make these work for vanilla `number' too.
+(put 'number 'thing-at-point 'number-at-point)
+(put 'number 'bounds-of-thing-at-point
+     (lambda () (and (number-at-point) (bounds-of-thing-at-point 'sexp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

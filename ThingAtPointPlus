@@ -80,6 +80,10 @@ See also: ThingAtPointCommands, for commands such as `mark-enclosing-sexp', to '
 
 * `word-nearest-point', `sentence-nearest-point', `sexp-nearest-point', `number-nearest-point'
 
+* `number-at-point-decimal', `number-at-point-hex' -- These return `nil', as you would expect, when point is not on a numeral.  
+
+'''Gotcha:''' Vanilla `number-at-point' returns the char value, not `nil', when point is on a char: when on ##?A## it returns 65; when on ##?\A-\^@## it returns 4194304.  See [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8634|Emacs bug 8634].
+
 See also: ThingAtPointCommands, for commands such as `mark-enclosing-sexp', to ''select'' successively larger sexps surroundig point.
 
 

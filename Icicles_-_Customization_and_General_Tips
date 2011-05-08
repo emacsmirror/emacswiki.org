@@ -1262,6 +1262,23 @@ interprets '''`##\##'''' specially in the replacement text, as in
 literally.  The default value is `nil'.  You can use '''`##M-`##'''' to
 ''toggle'' this at any time during '''Icicles''' search.   See [[Icicles - Search-And-Replace]].
 
+
+----
+[:icicle-ignore-comments-flag]
+==== Option icicle-ignore-comments-flag ====
+
+Non-`nil' option '''`icicle-ignore-comments-flag'''' means that
+`icicle-search-thing' ignores comments; that is, it hides them
+temporarily when it scans the [[region]] or buffer for things of the
+given type as candidates.  This prevents it, for example, from
+presenting as a candidate a [[sexp]] or [[list]] that is commented out.
+You can toggle this option anytime using '''`##C-M-;##'''' in the
+minibuffer.
+
+
+
+
+
 ----
 [:icicle-search-hook]
 ==== Option icicle-search-hook ====

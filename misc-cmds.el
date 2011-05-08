@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Sat May  7 01:23:10 2011 (-0700)
+;; Last-Updated: Sat May  7 02:13:26 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2915
+;;     Update #: 2917
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1079,7 +1079,8 @@ because it needs `comment-search-forward'."
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
     (unless (<= start end) (setq start  (prog1 end (setq end  start))))
-    (let ((bufmodp  (buffer-modified-p))
+    (let ((bufmodp           (buffer-modified-p))
+          (buffer-read-only  nil)
           cbeg cend)
       (unwind-protect
            (save-excursion

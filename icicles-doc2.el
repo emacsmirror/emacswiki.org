@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 11:04:27 2011 (-0700)
+;; Last-Updated: Sat May  7 13:13:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27698
+;;     Update #: 27728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -385,7 +385,7 @@
 ;;
 ;;  `\f' is the form-feed, or page-separator, character.  You input
 ;;  `\f', `\t', and `\n' using `C-q l', `C-q TAB', and `C-j',
-;;  respectively.  See (@> "Dots, Dots, Dots") for information about
+;;  respectively.  See (@> "Dot, Dot, Dot") for information about
 ;;  multi-line dot (`.'), which matches also newline.
 ;;
 ;;  Again, you can use progressive completion (`M-*' or `S-SPC') to
@@ -407,18 +407,31 @@
 ;;  There are several Icicles search commands, some of which are bound
 ;;  to keys in Icicle mode:
 ;;
-;;  `C-c '',  `icicle-occur' - An `occur' with icompletion.
-;;  `C-c `'   `icicle-search' - Seach buffer areas that match regexp.
-;;            `icicle-search-buffer' (`C-1')- Search selected buffers.
-;;            `icicle-search-file' (`C--') - Search selected files.
+;;  `C-c '',  `icicle-occur'             - An `occur' with icompletion
+;;  `C-c `'   `icicle-search'   - Seach buffer areas that match regexp
+;;            `icicle-search-buffer' (`C-1') - Search selected buffers
+;;            `icicle-search-buff-menu-marked' - BufferMenu marked
+;;            `icicle-search-ibuffer-marked'   - Search Ibuffer marked
+;;            `icicle-search-dired-marked' - Search Dired marked files
+;;            `icicle-search-file' (`C--')     - Search selected files
 ;;            `icicle-search-bookmarks-together' (`C-u'),
-;;            `icicle-search-bookmark' - Search bookmarks.
-;;  `C-c $'   `icicle-search-word' - Search for a whole word.
-;;  `C-c ^'   `icicle-search-keywords' - Search with regexp keywords.
-;;  `C-c `'   `icicle-compilation-search' - Search compilation hits
-;;                                          (e.g `grep' hits).
+;;              `icicle-search-bookmark'            - Search bookmarks
+;;            `icicle-search-*-bookmark'   - Bookmarks of a given type
+;;  `C-c $'   `icicle-search-word'           - Whole words as contexts
+;;  `C-c ^'   `icicle-search-keywords'   - Search with regexp keywords
+;;  `C-c `'   `icicle-compilation-search'    - Search compilation hits
+;;                                             (e.g `grep' hits)
 ;;  `C-c "'   ["] `icicle-search-text-property' -
-;;               Search for a given text property value.
+;;                            Search text having a given text property
+;;            `icicle-search-overlay-property' -
+;;                         Search text having a given overlay property
+;;            `icicle-search-char-property' -
+;;                    Search text having a given text/overlay property
+;;            `icicle-search-thing'     - Search thing-at-point things
+;;                                        optionally ignoring comments
+;;            `icicle-search-pages'               - Search Emacs pages
+;;            `icicle-search-paragraphs'     - Search Emacs paragraphs
+;;            `icicle-search-sentences' - Search sentences as contexts
 ;;  `C-c ='   `icicle-imenu' - Navigate among Imenu entries.
 ;;            `icicle-imenu-command' -
 ;;               Navigate among Emacs command definitions.
@@ -802,6 +815,14 @@
 ;;    `next' and so on instead of `C-next' and so on to navigate among
 ;;    search hits.  See
 ;;    (@file :file-name "icicles-doc1.el" :to "Option `icicle-use-C-for-actions-flag'").
+;;
+;;  * Non-nil option `icicle-ignore-comments-flag' means that
+;;    `icicle-search-thing' ignores comments; that is, it hides them
+;;    temporarily when it scans the region or buffer for things of the
+;;    given type as candidates.  This prevents it, for example, from
+;;    presenting as a candidate a sexp or list that is commented out.
+;;    You can toggle this option anytime using `C-M-;' in the
+;;    minibuffer.
 ;;
 ;;  * `icicle-search-hook': Functions run after searching and moving
 ;;    to a match, whether by `RET' or `C-RET' (or `C-next' or
@@ -5089,6 +5110,14 @@
 ;;    literally.  The default value is nil.  You can use `C-M-`' to
 ;;    toggle this at any time during Icicles search.
 ;;
+;;  * Non-nil option `icicle-ignore-comments-flag' means that
+;;    `icicle-search-thing' ignores comments; that is, it hides them
+;;    temporarily when it scans the region or buffer for things of the
+;;    given type as candidates.  This prevents it, for example, from
+;;    presenting as a candidate a sexp or list that is commented out.
+;;    You can toggle this option anytime using `C-M-;' in the
+;;    minibuffer.
+;;
 ;;  * User option `icicle-search-hook' is a list of functions to be
 ;;    run after searching and moving to an `icicle-search' match,
 ;;    whether you move there by `RET', `C-RET', `C-next', or
@@ -5995,6 +6024,7 @@
 ;;  `icicle-search-region-bookmark' - Search bookmarked regions
 ;;  `icicle-search-remote-file-bookmark' - Search remote files
 ;;  `icicle-search-sentences' - Search using sentences as contexts
+;;  `icicle-search-thing' - Search for a thing-at-point-defined thing
 ;;  `icicle-search-url-bookmark' - Search URL bookmarks
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to t
@@ -6149,6 +6179,10 @@
 ;;
 ;;    `M-o'    - `icicle-insert-history-element': Invoke completion to
 ;;               insert a previously entered input in the minibuffer.
+;;
+;;    `M-%'    - Regexp quote current input or its active region, then
+;;               apropos-complete.  Use this to literally match all or
+;;               some input in the context of regexp matching overall.
 ;;
 ;;    `C-M-F' (`C-M-S-f') - `icicle-read+insert-file-name': Invoke
 ;;               completion to insert a file name in the minibuffer.
@@ -6422,6 +6456,8 @@
 ;;    `C-M-.'   - `icicle-toggle-dot'
 ;;    `C-x .'   - `icicle-toggle-hiding-common-match'
 ;;    `C-;'     - `icicle-toggle-expand-to-common-match'
+;;    `M-;'     - `icicle-toggle-search-replace-common-match'
+;;    `C-M-;'   - `icicle-toggle-icicle-toggle-ignoring-comments'
 ;;    `C-,'     - `icicle-change-sort-order'
 ;;    `M-,'     - `icicle-change-alternative-sort-order'
 ;;    `C-M-,'   - `icicle-toggle-alternative-sorting'
@@ -6465,6 +6501,7 @@
 ;;    `C-,'     - `icicle-change-sort-order'
 ;;    `M-_'     - `icicle-toggle-search-replace-whole'
 ;;    `M-,'     - `icicle-search-define-replacement'
+;;    `M-;'     - `icicle-toggle-search-replace-common-match'
 ;;    `M-q'     - `icicle-toggle-search-whole-word'
 ;;    `C-^'     - `icicle-toggle-highlight-all-current'
 ;;    `C-M-`'   - `icicle-toggle-literal-replacement'

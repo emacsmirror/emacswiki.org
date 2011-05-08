@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 14:33:25 2011 (-0700)
+;; Last-Updated: Sat May  7 11:41:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6474
+;;     Update #: 6496
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/07 dadams
+;;     Added: icicle-with-comments-hidden, icicle-hide/show-comments, icicle-search-thing,
+;;              icicle-defined-thing-p, icicle-next-visible-thing, icicle-search-thing-args,
+;;              icicle-search-thing-scan.
+;;     icicle-search: Doc string tweak.
 ;; 2011/05/04 dadams
 ;;     icicle-search-read-context-regexp: Changed prompt to make clear that we search within contexts.
 ;;     icicle-search-define-candidates: Remove any region highlighting, so we can see search hits.
@@ -757,6 +762,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/05/07 dadams
+;;     icicle-insert-cand-in-minibuffer: Go to prompt end before insert.
 ;; 2011/05/04 dadams
 ;;     icicle-transform-multi-completion: If cand is "" just return it.  (Emacs 20 split-string bug.)
 ;; 2011/05/03 dadams
@@ -2347,6 +2354,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/05/07 dadams
+;;     Added: icicle-toggle-ignoring-comments.  Bound to C-M-;.
+;;     Changed key for icicle-regexp-quote-input from C-M-; to M-% everywhere.
 ;; 2011/05/04 dadams
 ;;     icicle-transform-sole-candidate: Do nothing if for some reason icicle-current-input is nil.
 ;; 2011/05/03 dadams
@@ -3540,6 +3550,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/05/07 dadams
+;;     Changed key for icicle-regexp-quote-input from C-M-; to M-% everywhere.
+;;     Bound icicle-toggle-ignoring-comments to C-M-;.
+;;     icicle-mode doc string, icicle(-options)-menu-map: Added icicle-toggle-ignoring-comments.
 ;; 2011/05/03 dadams
 ;;     icicle-define-icicle-maps: Add icicle-toggle-highlight-saved-candidates to menus.
 ;;     icicle-(bind|restore)-completion-keys: Bind icicle-plus-saved-sort to C-M-+.
@@ -4536,6 +4550,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/05/07 dadams
+;;     Added: icicle-ignore-comments-flag.
 ;; 2011/05/03 dadams
 ;;     Added: icicle-highlight-saved-candidates-flag.
 ;;     icicle-Completions-toggle-submenu: Added icicle-toggle-highlight-saved-candidates to menu.

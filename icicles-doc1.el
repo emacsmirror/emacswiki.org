@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 08:11:38 2011 (-0700)
+;; Last-Updated: Sat May  7 10:57:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25971
+;;     Update #: 25974
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2266,7 +2266,7 @@
 ;;  substrings at particular locations in the target completion
 ;;  candidate, then progressive completion won't do the job - it
 ;;  matches its component regexps independently.  You can regexp-quote
-;;  (escape) parts or all of your input using `C-M-;'
+;;  (escape) parts or all of your input using `M-%'
 ;;  (`icicle-regexp-quote-input').
 ;;  See (@> "Quoting (Escaping) Special Characters")
 ;;
@@ -2663,7 +2663,7 @@
 ;;  completion, but you also want to match a literal substring that
 ;;  contains special characters.  You can of course quote (escape)
 ;;  each of these characters by hand.  Alternatively, you can use
-;;  `C-M-;' (`icicle-regexp-quote-input') to quote the text that you
+;;  `M-%' (`icicle-regexp-quote-input') to quote the text that you
 ;;  want to match literally.  If the region is active, then it is
 ;;  quoted; otherwise, your entire minibuffer input is quoted.
 ;;
@@ -4653,6 +4653,7 @@
 ;;  * `icicle-search-sentences'        - Search sentences as contexts
 ;;  * `icicle-search-text-property' (`C-c "') - Trip among buffer
 ;;                                       strings with a text property
+;;  * `icicle-search-thing'            - Search thing-at-point things
 ;;  * `icicle-search-word' (`C-c $')   - Trip among word-search hits
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by

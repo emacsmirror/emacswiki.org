@@ -107,7 +107,7 @@ as a (common) special case.  Sometimes you want to use regexp
 completion, but you also want to match a literal substring that
 contains special characters.  You can of course quote (escape)
 each of these characters by hand.  Alternatively, you can use
-'''`##C-M-;##'''' (`icicle-regexp-quote-input') to quote the text that you
+'''`##M-%##'''' (`icicle-regexp-quote-input') to quote the text that you
 want to match literally.  If the [[region]] is active, then it is
 quoted; otherwise, your entire minibuffer input is quoted.
 
