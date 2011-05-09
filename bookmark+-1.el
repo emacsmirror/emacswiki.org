@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 26 07:34:40 2011 (-0700)
+;; Last-Updated: Sun May  8 11:47:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2084
+;;     Update #: 2098
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -545,6 +545,9 @@
 
 ;; Quiet the byte-compiler
 
+(defvar bmkp-auto-light-when-set)       ; Defined in `bookmark+-lit.el'.
+(defvar bmkp-auto-light-when-jump)      ; Defined in `bookmark+-lit.el'.
+(defvar bmkp-light-priorities)          ; Defined in `bookmark+-lit.el'.
 (defvar bookmark-current-point)         ; Defined in `bookmark.el', but not in Emacs 23+.
 (defvar bookmark-edit-annotation-text-func) ; Defined in `bookmark.el'.
 (defvar bookmark-read-annotation-text-func) ; Defined in `bookmark.el', but not in Emacs 23+.
@@ -586,6 +589,11 @@
   "*Format string to match an autonamed bookmark name.
 It must have a single `%s' that to accept the buffer name."
   :type 'string :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-bookmark-name-length-max 70
+  "*Max number of chars for default name for a bookmark with a region."
+  :type 'integer :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-crosshairs-flag (> emacs-major-version 21)
@@ -667,85 +675,9 @@ the save (only)."
   :type '(repeat (variable :tag "Variable")) :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-this-buffer-cycle-sort-comparer '((bmkp-position-cp))
-  "*`bmkp-sort-comparer' value for cycling this-buffer bookmarks.
-Some values you might want to use: ((bmkp-position-cp)),
- ((bmkp-bookmark-creation-cp)), ((bmkp-visited-more-cp)).
-See `bmkp-sort-comparer'."
-  :type '(choice
-          (const    :tag "None (do not sort)" nil)
-          (function :tag "Sorting Predicate")
-          (list     :tag "Sorting Multi-Predicate"
-           (repeat (function :tag "Component Predicate"))
-           (choice
-            (const    :tag "None" nil)
-            (function :tag "Final Predicate"))))
-  :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-use-region t
-  "*Non-nil means visiting a bookmark activates its recorded region."
-  :type '(choice
-          (const :tag "Activate bookmark region (except during cycling)"  t)
-          (const :tag "Do not activate bookmark region"                   nil)
-          (const :tag "Activate bookmark region even during cycling"      cycling-too))
-  :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-prompt-for-tags-flag nil
-  "*Non-nil means `bookmark-set' prompts for tags (when called interactively)."
-  :type 'boolean :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-other-window-pop-to-flag t
-  "*Non-nil means other-window bookmark jumping uses `pop-to-buffer'.
-Use nil if you want the vanilla Emacs behavior, which uses
-`switch-to-buffer-other-window'.  That creates a new window even if
-there is already another window showing the buffer."
-  :type 'boolean :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-region-search-size 40
-  "*Same as `bookmark-search-size', but specialized for bookmark regions."
-  :type 'integer :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-save-new-location-flag t
-  "*Non-nil means save automatically relocated bookmarks.
-If nil, then the new bookmark location is visited, but it is not saved
-as part of the bookmark definition."
-  :type 'boolean :group 'bookmark-plus)
-
-;;;###autoload
 (defcustom bmkp-handle-region-function 'bmkp-handle-region-default
   "*Function to handle a bookmarked region."
   :type 'function :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-sequence-jump-display-function 'pop-to-buffer
-  "*Function used to display the bookmarks in a bookmark sequence."
-  :type 'function :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-su-or-sudo-regexp "\\(/su:\\|/sudo:\\)"
-  "*Regexp to recognize `su' or `sudo' Tramp bookmarks."
-  :type 'regexp :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-w3m-allow-multi-tabs t
-  "*Non-nil means jump to W3M bookmarks in a new session."
-  :type 'boolean :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-show-end-of-region t
-  "*Show end of region with `exchange-point-and-mark' when activating a region.
-If nil show only beginning of region."
-  :type 'boolean :group 'bookmark-plus)
-
-;;;###autoload
-(defcustom bmkp-bookmark-name-length-max 70
-  "*Max number of chars for default name for a bookmark with a region."
-  :type 'integer :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-incremental-filter-delay 0.6
@@ -767,6 +699,42 @@ If an integer, then use a menu only if there are fewer bookmark
           (const   :tag "Always use a menu to choose a bookmark" t)
           (const   :tag "Never use a menu to choose a bookmark" nil))
   :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-other-window-pop-to-flag t
+  "*Non-nil means other-window bookmark jumping uses `pop-to-buffer'.
+Use nil if you want the vanilla Emacs behavior, which uses
+`switch-to-buffer-other-window'.  That creates a new window even if
+there is already another window showing the buffer."
+  :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-prompt-for-tags-flag nil
+  "*Non-nil means `bookmark-set' prompts for tags (when called interactively)."
+  :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-region-search-size 40
+  "*Same as `bookmark-search-size', but specialized for bookmark regions."
+  :type 'integer :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-save-new-location-flag t
+  "*Non-nil means save automatically relocated bookmarks.
+If nil, then the new bookmark location is visited, but it is not saved
+as part of the bookmark definition."
+  :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-sequence-jump-display-function 'pop-to-buffer
+  "*Function used to display the bookmarks in a bookmark sequence."
+  :type 'function :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-show-end-of-region t
+  "*Show end of region with `exchange-point-and-mark' when activating a region.
+If nil show only beginning of region."
+  :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-sort-comparer '((bmkp-info-cp bmkp-gnus-cp bmkp-url-cp bmkp-local-file-type-cp)
@@ -865,6 +833,41 @@ is tried and
             (const    :tag "None" nil)
             (function :tag "Final Predicate"))))
   :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-su-or-sudo-regexp "\\(/su:\\|/sudo:\\)"
+  "*Regexp to recognize `su' or `sudo' Tramp bookmarks."
+  :type 'regexp :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-this-buffer-cycle-sort-comparer '((bmkp-position-cp))
+  "*`bmkp-sort-comparer' value for cycling this-buffer bookmarks.
+Some values you might want to use: ((bmkp-position-cp)),
+ ((bmkp-bookmark-creation-cp)), ((bmkp-visited-more-cp)).
+See `bmkp-sort-comparer'."
+  :type '(choice
+          (const    :tag "None (do not sort)" nil)
+          (function :tag "Sorting Predicate")
+          (list     :tag "Sorting Multi-Predicate"
+           (repeat (function :tag "Component Predicate"))
+           (choice
+            (const    :tag "None" nil)
+            (function :tag "Final Predicate"))))
+  :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-use-region t
+  "*Non-nil means visiting a bookmark activates its recorded region."
+  :type '(choice
+          (const :tag "Activate bookmark region (except during cycling)"  t)
+          (const :tag "Do not activate bookmark region"                   nil)
+          (const :tag "Activate bookmark region even during cycling"      cycling-too))
+  :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-w3m-allow-multi-tabs t
+  "*Non-nil means jump to W3M bookmarks in a new session."
+  :type 'boolean :group 'bookmark-plus)
  
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
@@ -888,8 +891,8 @@ is tried and
                              ("remote-file"      . bmkp-remote-file-history)
                              ("specific-buffers" . bmkp-specific-buffers-history)
                              ("specific-files"   . bmkp-specific-files-history)
-                             ("variable-list"    . bmkp-variable-list-history)
-                             ("url"              . bmkp-url-history))
+                             ("url"              . bmkp-url-history)
+                             ("variable-list"    . bmkp-variable-list-history))
   "Alist of bookmark types used by `bmkp-jump-to-type'.
 Keys are bookmark type names.  Values are corresponding history variables.")
 
@@ -908,8 +911,8 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-remote-file-history ()      "History for remote-file bookmarks.")
 (defvar bmkp-specific-buffers-history () "History for specific-buffers bookmarks.")
 (defvar bmkp-specific-files-history ()   "History for specific-files bookmarks.")
-(defvar bmkp-variable-list-history ()    "History for variable-list bookmarks.")
 (defvar bmkp-url-history ()              "History for URL bookmarks.")
+(defvar bmkp-variable-list-history ()    "History for variable-list bookmarks.")
 (defvar bmkp-w3m-history ()              "History for W3M bookmarks.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")

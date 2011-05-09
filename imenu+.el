@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Fri Mar 18 12:32:09 2011 (-0700)
+;; Last-Updated: Sun May  8 11:24:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 623
+;;     Update #: 625
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/05/08 dadams
+;;     imenu-lisp-var-defn-regexp: Try not to create entries for vacuous defvars, e.g., (defvar foo).
 ;; 2011/03/18 dadams
 ;;     imenu-emacs-key-defn-regexp-[1|2]: Handle (kbd "...").
 ;;     emacs-lisp-imenu-generic-expression: Increased index from 4 to 5, to fit change for kbd.
@@ -192,7 +194,8 @@ See also `imenu-emacs-key-defn-regexp-1'.")
       (concat "^\\s-*("
               (regexp-opt '("defvar" "defconst" "defconstant" "defcustom"
                             "defparameter" "define-symbol-macro") t)
-              "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+              "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)"
+              "\\s-+[^) \t\n]")
     "(\\s-*def\\(var\\|const\\)\\s-+\\([^ \t()]+\\)")
   "*Regexp that recognizes global Lisp variable definitions.")
 

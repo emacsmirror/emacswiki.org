@@ -1,3 +1,88 @@
-usefull ggyuj 
--- 
-[url=http://olmor-amariluh.blogspot.com]Good Cancer Walk Names x-mas in mail[/url]
+see http://c2.com/cgi-bin/wiki?KinesisKeyboard
+
+http://www.kinesis-ergo.com/images/132.jpg
+
+----
+I use a Kinesis keyboard with xemacs.  I basically have done nothing special for the setup.  It has made my typing much easier.  I was having problems with my wrists.  After about 6 months of high usage, I was basically unable to type for a full day.  Within a week of having my kinesis I was back to full day pain free typing.  I have remapped certain keys because I didn't like the layout.  The arrow keys were the main thing.  I would also like to have a Super/Hyper key.  It only has Controal and Alt/Meta.  I never thought I would miss that "windows" key; but an extra [[modifier key]] would be nice. --LathI
+----
+I also use KinesisKeyboard with XEmacs. I've remapped my Kinesis to use the Dvorak two-hand layout, and I've changed the Home key to iswitchb-buffer and End key to other-window. I've also remapped Caps_Lock to dabbrev-complete. These remappings were suggested by MarioLang on the EmacsChannel.
+
+I've also recently mapped right Alt to Super, and right Control to Hyper, this gives me more key combos to play with. --ShaeErisson
+
+''Can you give precise details of how you did this?''
+
+Sure, I installed xkeycaps, ran "xkeycaps -kbd kinesis" , held down Mouse3 on the Control_R button on the xkeycaps window, moved my mouse the "Edit KeySyms of this Key", released Mouse3.
+
+In the popup window, I set the character set to keyboard, set the KeySym to Hyper_R, and then I set Modifiers to mod5
+
+as for setting modifiers, the xkeycaps man page has exactly the information you need... one quick tip is that Gnome is a badly behaved program with expects Mod1 to be Meta, no matter what the xserver has on Mod1
+
+--ShaeErisson
+----
+I've experimented with remapping my KinesisKeyboard and found that my hands are happiest if I move all of my modifier keys under my thumbs. 
+
+Happily, almost everything is already there, you're only missing the Shift key.
+
+I tried remapping my Delete key to Shift, but that made hitting key-combos that combine Meta and Shift nearly impossible. I've recently decided to move my Meta and Control keys to Ctrl_R and Alt_R, and remap Hyper and Super to Ctrl_L and Alt_L, which should make Meta and Shift chording workable.
+
+Any other/better suggestions? I've also been looking at the maltron keyboard from http://www.maltron.com/ and it's spiffy, but 375 british pounds.
+
+Where's JamieZawinski when you need him?
+
+--ShaeErisson
+
+I had a bad experience with Maltron.  The keys have a junky, Matel feel, and very quickly the "6" key stopped working on me, so I couldn't even sell it to someone else.  Overall, a waste of money. 
+It has a huge number of keys, but as far as I can tell most of them are useless.  A Kinesis contoured model is much better for the emacs abuser.  -- Doom
+
+----
+I bought Kinesis Profession QD when I switched to dvorak keyboard layout, this keyboard with heavy bee's poison usage help my fingers, now I can type 6 hours a day without any pain.  I made some remaps: L_Ctrl->Delete, L_Ctrl->Page_UP, Delete->Home, L_Alt->Enter, L_Alt->End, Enter->Page_down, Page_UP->L_Ctrl, Page_down->L_Alt, L_Shift->Caps, Caps->L_Shift, Right_Backslash->Minus, Minus->Right_Backslash, Left_Backslash->Insert.  My right Alt generates Super and right Ctrl generates Hyper.  So I lost Home and End keys, but I dont miss them much :) --ZajcevEvgeny
+----
+If your Kinesis's hand rests are not in perfect order any more, you need not necessarily buy them from Kinesis. This is especially useful if you are living in Europe, where postage is significantly higher than in the US. I just replaced mine with "Scholl Druckstellenpflaster" -- a kind of soft plaster you use to keep parts of your feet from rubbing against tight shoes. Nearly any drug store should have these (or a similar brand). Don't get the pre-cut ones, take your old hand rests as a kind of cutting pattern and stick them on. Looks aside, these are a perfect replacement: They take sweat in better, they are cheaper and they have higher hack value (-;
+----
+Other useful key remaps:   The most useful one I've found is to put the modifier keys along the bottom row (Super, Hyper, Control, Meta).  Then Mode_switch is put on the thumb keys, and, as below, all the arrow keys (and delete, backspace, various kinds of parentheses, etc.) are accessed using Mode_switch. Of course, I did all this with XModmap.  But a few steps with the Kinesis onboard remapping feature were necessary to get rid of the Caps_Lock key and make it into something more useful. -- JoeCorneli
+
+Put all four arrow keys on one hand. I put them in the right hand, in the vi hjkl configuration (left/down/up/right). Life's a lot easier when you can drive the point around with one hand.
+
+: yea, I did this too -- LathI
+
+Put Escape on your thumb. I put it on Delete (who needs *both* delete and backspace?). Then I use Escape instead of Alt for meta. I have a hard time chording the Alt; the Emacs behaviour of Escape being a sticky Alt is just right for me.
+
+: excellent idea!  that would free up meta as a seperate modifier key!
+
+Don't forget that the Kinesis programmables have sticky modifiers - you can make all the mod keys sticky if you want.
+
+--NelsonMinar
+
+Myself, I tried a few different things, and eventually settled on moving the Esc to the CapsLock, using the Kinesis features for remapping:
+  Program + F12
+  Esc
+  CapsLock
+  Program + F12
+
+That solves two problems: moves "Esc" away from the wimpy chicklet key, and finds a use for the otherwise useless and annoying CapsLock. 
+-- Doom 
+
+
+----
+
+Here is an interesting link about customising the Kinesis keyboard by Bill Clementson: http://bc.tech.coop/blog/060623.html
+
+--SewerynKokot
+
+----
+
+I put control where delete is (I can't reach the top keys of the thumb pads properly) and Meta on the End key. Control is much more important than meta to me as I use p, n, b and f to navigate.
+
+--PhilJackson
+
+With the Kinesis, I really like binding the insert key to insert-register:
+
+  ; Makes the "insert" key useful (much shorter than "C-x r i"):
+  (global-set-key [insert] 'insert-register)
+
+I'm still looking for a good place to bind copy-to-register.  This is one idea:
+
+  ;; Ctrl-Alt-Page Down (not mnemonic, but much quicker than "C-x r s")
+  (global-set-key [C-M-next] 'copy-to-register)
+
+--Doom
