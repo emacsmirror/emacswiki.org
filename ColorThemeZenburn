@@ -9,3 +9,5 @@ Lisp:zenburn.el
 
 [new:KGB:2010-07-19 21:22 UTC]
 I made some additions to the theme and noticed something odd that I didn't want to "fix" in case there was something I was missing. The face zenburn-foreground is referenced a few times but isn't defined anywhere, I think these instances should be referencing zenburn-fg. Is this correct? - KGB.
+
+Yes -- see [https://github.com/mdengler/zenburn-el/commit/f5a35f3254830cb11f9d2597d15175bc84f19069 these fixes] -- MTD

@@ -9,7 +9,7 @@ buffers.
 
 Lisp:pabbrev.el
 
-== Update for Emacs 2.4 ==
+== Update for Emacs 24 ==
 Hey, if you are using it, `make-local-hook' will be void. Just comment the lines in pabbrev.el. Ref: [http://code.google.com/p/emacs-evernote-mode/issues/detail?id=3].
 
 == Customizations ==

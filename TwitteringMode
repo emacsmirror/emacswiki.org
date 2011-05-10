@@ -346,5 +346,8 @@ Mar 23, 2011; I had similar problems, getting the message: "Authorization via OA
 }}}
 Where site-lisp-path expands to your Emacs site-lisp directory. Now when I do M-x twit, I see the successful connection in Wireshark and get the request for my OAuth Pin. -- sboles
 
+[new]
+10 May 2011: Is there any way to use twittering-new-tweets-hook to filter out (i.e. not display) tweets which contain a particular hashtag? -- Alexis
+
 ----
 See also: [[Twitter]] [[Identica-mode]]
