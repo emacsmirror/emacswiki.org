@@ -9,7 +9,16 @@ It works where a line ends with a newline character ("\n") and paragraphs are se
       (let ((fill-column (point-max)))
         (fill-paragraph nil)))
 
-You can convert an entire buffer from paragraphs to lines by recording a macro that calls `unfill-paragraph' and moves past the blank-line to the next unfilled paragraph and then executing that macro on the whole buffer, `C-u 0 C-x e' (see InfiniteArgument).
+You can convert an entire buffer from paragraphs to lines by recording a macro that calls `unfill-paragraph' and moves past the blank-line to the next unfilled paragraph and then executing that macro on the whole buffer, `C-u 0 C-x e' (see InfiniteArgument). Or, use unfill-region, below.
+
+    (defun unfill-region ()
+      (interactive)
+      (let ((fill-column (point-max)))
+        (fill-region (region-beginning) (region-end) nil)))
+
+    ;; Handy key definitions
+    (define-key global-map "\M-Q" 'unfill-paragraph)
+    (define-key global-map "\M-\C-q" 'unfill-region)
 
 Also see UnwrapLine.
 

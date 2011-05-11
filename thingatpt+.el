@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sat May  7 13:03:50 2011 (-0700)
+;; Last-Updated: Tue May 10 08:17:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1061
+;;     Update #: 1095
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -23,6 +23,7 @@
 ;;; Commentary:
 ;;
 ;;    Extensions to `thingatpt.el'.
+;;
 ;;
 ;;  Commands defined here:
 ;;
@@ -53,6 +54,7 @@
 ;;    `thing-nearest-point-with-bounds', `unquoted-list-at-point',
 ;;    `unquoted-list-nearest-point',
 ;;    `unquoted-list-nearest-point-as-string', `word-nearest-point'.
+;;
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `thingatpt.el'
@@ -90,7 +92,7 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2011/05/07
+;; 2011/05/07 dadams
 ;;     Added: number-at-point-(decimal|hex) and aliases.
 ;;     Put (bounds-of-)thing-at-point properties: (hex-|decimal-)number-at-point.
 ;; 2011/05/05 dadams
@@ -781,6 +783,7 @@ Return nil if none is found."
 (put 'number 'thing-at-point 'number-at-point)
 (put 'number 'bounds-of-thing-at-point
      (lambda () (and (number-at-point) (bounds-of-thing-at-point 'sexp))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

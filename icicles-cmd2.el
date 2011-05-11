@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat May  7 10:50:09 2011 (-0700)
+;; Last-Updated: Tue May 10 16:52:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2776
+;;     Update #: 3064
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -78,11 +78,13 @@
 ;;    (+)`icicle-Info-menu', `icicle-Info-menu-cmd',
 ;;    `icicle-Info-virtual-book', `icicle-insert-char',
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-keyword-list',
-;;    (+)`icicle-map', `icicle-non-whitespace-string-p',
-;;    (+)`icicle-object-action', (+)`icicle-occur', (+)`icicle-plist',
-;;    `icicle-read-color', `icicle-read-kbd-macro',
-;;    (+)`icicle-regexp-list', `icicle-save-string-to-variable',
-;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
+;;    (+)`icicle-map', `icicle-next-visible-thing',
+;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
+;;    (+)`icicle-occur', (+)`icicle-plist',
+;;    `icicle-previous-visible-thing', `icicle-read-color',
+;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
+;;    `icicle-save-string-to-variable', (+)`icicle-search',
+;;    (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-bookmark',
@@ -158,7 +160,8 @@
 ;;    `icicle-insert-thesaurus-entry-cand-fn',
 ;;    `icicle-keys+cmds-w-prefix', `icicle-marker+text',
 ;;    `icicle-markers', `icicle-next-single-char-property-change',
-;;    `icicle-next-visible-thing',
+;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
+;;    `icicle-next-visible-thing-and-bounds',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-single-key-description',
 ;;    `icicle-read-var-value-satisfying',
@@ -190,9 +193,9 @@
 ;;
 ;;    `icicle-active-map', `icicle-info-buff', `icicle-info-window',
 ;;    `icicle-key-prefix', `icicle-key-prefix-2',
-;;    `icicle-named-colors', `icicle-orig-buff-key-complete',
-;;    `icicle-orig-extra-cands', `icicle-orig-font',
-;;    `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-last-visible-thing-type', `icicle-named-colors',
+;;    `icicle-orig-buff-key-complete', `icicle-orig-extra-cands',
+;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
 ;;    `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-win-key-complete',
@@ -3432,6 +3435,7 @@ NOTE:
         (functionp bounds-fn)
         (functionp thing-fn))))
 
+;;; Same as `hide/show-comments' in `thing-cmds.el'.
 ;;;###autoload
 (defun icicle-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
@@ -3472,6 +3476,7 @@ because it needs `comment-search-forward'."
                    (put-text-property cbeg cend 'invisible nil)))))
         (set-buffer-modified-p bufmodp)))))
 
+;;; Same as `with-comments-hidden' in `thing-cmds.el', except doc mentions `C-M-;'.
 (defmacro icicle-with-comments-hidden (start end &rest body)
   "Evaluate the forms in BODY while comments are hidden from START to END.
 But if `icicle-ignore-comments-flag' is nil, just evaluate BODY,
@@ -3479,8 +3484,7 @@ without hiding comments.  You can toggle this option using `C-M-;'.
 Show comments again when BODY is finished.
 
 See `icicle-hide/show-comments', which is used to hide and show the
-comments.  Note that prior to Emacs 21 comments this never hides
-comments."
+comments.  Note that prior to Emacs 21, this never hides comments."
   (let ((result  (make-symbol "result"))
         (ostart  (make-symbol "ostart"))
         (oend    (make-symbol "oend")))
@@ -3510,70 +3514,163 @@ If BEG and END are nil, scan entire BUFFER."
         (icicle-with-comments-hidden
          beg end
          (condition-case icicle-search-thing-scan
-             (progn (while (and beg  (< beg end))
-                      (while (and (< beg end) (get-text-property beg 'invisible))
-                        (setq beg  (next-single-property-change beg 'invisible nil end)))
-                      (let* ((thg+bnds    (icicle-next-visible-thing thing beg end))
-                             (hit-string  (and thg+bnds  (car thg+bnds)))
-                             (thg-beg     (and thg+bnds  (cadr thg+bnds)))
-                             (thg-end     (and thg+bnds  (cddr thg+bnds)))
-                             (end-marker  (and thg+bnds  (copy-marker thg-end))))
-                        (when thg+bnds
-                          (icicle-candidate-short-help
-                           (concat (and add-bufname-p
-                                        (format "Buffer: `%s', "
-                                                (buffer-name (marker-buffer end-marker))))
-                                   (format "Bounds: (%d, %d), Length: %d"
-                                           thg-beg thg-end (length hit-string)))
-                           hit-string)
-                          (push (cons (if add-bufname-p
-                                          (list hit-string
-                                                (let ((string  (copy-sequence (buffer-name))))
-                                                  (put-text-property
-                                                   0 (length string)
-                                                   'face 'icicle-candidate-part string)
-                                                  string))
-                                        hit-string)
-                                      end-marker)
-                                temp-list)
-                          ;; Highlight search context in buffer.
-                          (when (and (not (equal beg thg-end))
-                                     (<= (+ (length temp-list) (length icicle-candidates-alist))
-                                         icicle-search-highlight-threshold))
-                            (let ((ov  (make-overlay beg thg-end)))
-                              (push ov icicle-search-overlays)
-                              (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
-                              (overlay-put ov 'face 'icicle-search-main-regexp-others))))
-                        (if thg-end
-                            (setq beg  (1+ thg-end))
-                          (unless (get-text-property beg 'invisible) (setq beg  end)))))
-                    (setq icicle-candidates-alist  (append icicle-candidates-alist
-                                                           (nreverse temp-list))))
+             (save-excursion
+               (goto-char (min beg end)) ; `icicle-next-visible-thing-and-bounds' works with point.
+               (while (and beg  (< beg end))
+                 (when (and (< beg end) (get-text-property beg 'invisible))
+                   (setq beg  (next-single-property-change beg 'invisible nil end)))
+                 (let* ((thg+bnds    (icicle-next-visible-thing-and-bounds thing beg end))
+                        (hit-string  (and thg+bnds  (car thg+bnds)))
+                        (thg-beg     (and thg+bnds  (cadr thg+bnds)))
+                        (thg-end     (and thg+bnds  (cddr thg+bnds)))
+                        (end-marker  (and thg+bnds  (copy-marker thg-end))))
+                   (when thg+bnds
+                     (icicle-candidate-short-help
+                      (concat (and add-bufname-p
+                                   (format "Buffer: `%s', "
+                                           (buffer-name (marker-buffer end-marker))))
+                              (format "Bounds: (%d, %d), Length: %d"
+                                      thg-beg thg-end (length hit-string)))
+                      hit-string)
+                     (push (cons (if add-bufname-p
+                                     (list hit-string
+                                           (let ((string  (copy-sequence (buffer-name))))
+                                             (put-text-property
+                                              0 (length string)
+                                              'face 'icicle-candidate-part string)
+                                             string))
+                                   hit-string)
+                                 end-marker)
+                           temp-list)
+                     ;; Highlight search context in buffer.
+                     (when (and (not (equal beg thg-end))
+                                (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                    icicle-search-highlight-threshold))
+                       (let ((ov  (make-overlay beg thg-end)))
+                         (push ov icicle-search-overlays)
+                         (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
+                         (overlay-put ov 'face 'icicle-search-main-regexp-others))))
+                   (if thg-end
+                       (setq beg  (1+ thg-end))
+                     (unless (get-text-property beg 'invisible) (setq beg  end)))))
+               (setq icicle-candidates-alist  (append icicle-candidates-alist
+                                                      (nreverse temp-list))))
            (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
            (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
                   (error (error-message-string icicle-search-thing-scan)))))))))
 
-(defun icicle-next-visible-thing (thing beg end)
+(defun icicle-next-visible-thing-and-bounds (thing start end)
   "Return the next visible THING and its bounds.
 Start at BEG and end at END, when searching for THING.
 Return (THING THING-START . THING-END), with THING-START and THING-END
- the bounds of THING.
-Return nil if no such THING is found.
+ the bounds of THING.  Return nil if no such THING is found.
 
 The \"visible\" in the name refers to ignoring things that are within
-hidden comments.  You can toggle hiding of comments using `C-M-;'."
-  (let ((bounds  nil))
-    (save-excursion
-      (catch 'icicle-next-visible-thing
-        (while (< beg end)
-          (goto-char beg)
-          (while (and (< beg end) (get-text-property beg 'invisible))
-            (setq beg  (next-single-property-change beg 'invisible nil end)))
-          (when (setq bounds  (bounds-of-thing-at-point thing))
-            (throw 'icicle-next-visible-thing
-              (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
-          (setq beg  (1+ beg)))
-        nil))))
+invisible text, such as hidden comments.
+You can toggle hiding of comments using `C-M-;'."
+  (save-excursion (icicle-next-visible-thing thing start end)))
+
+;;; Same as `last-visible-thing-type' in `thing-cmds.el'.
+(defvar icicle-last-visible-thing-type nil
+  "Type of thing last used by `icicle-next-visible-thing' (or previous).")
+
+;;; Simple version of `previous-visible-thing' from `thing-cmds.el'.
+;;;###autoload
+(defun icicle-previous-visible-thing (thing start &optional end)
+  "Same as `icicle-next-visible-thing', except it moves backward."
+  (interactive (list (or (and (memq last-command '(icicle-next-visible-thing
+                                                   icicle-previous-visible-thing))
+                              icicle-last-visible-thing-type)
+                         (prog1 (intern (read-string "Thing: "))
+                           (setq this-command  'icicle-previous-visible-thing)))
+                     (point)
+                     (if mark-active (min (region-beginning) (region-end)) (point-min))))
+  (if (interactive-p)
+      (icicle-with-comments-hidden start end (icicle-next-visible-thing thing start end 'BACKWARD))
+    (icicle-next-visible-thing thing start end 'BACKWARD)))
+
+;;; Simple version of `next-visible-thing' from `thing-cmds.el'.
+;;;###autoload
+(defun icicle-next-visible-thing (thing &optional start end backward)
+  "Go to the next visible THING.
+Start at START.  If END is non-nil then look no farther than END.
+Interactively:
+ - START is point.
+ - If the region is not active, END is the buffer end.  If the region
+   is active, END is the region end: the greater of point and mark.
+
+Ignores (skips) comments if `icicle-ignore-comments-flag' is non-nil.
+You can toggle this ignoring of comments, using `C-M-;' in the
+minibuffer.
+
+If you use this command or `icicle-previous-visible-thing'
+successively, even mixing the two, you are prompted for the type of
+THING only the first time.  You can thus bind these two commands to
+simple, repeatable keys (e.g. `f11', `f12'), to navigate among things
+quickly.
+
+Non-interactively, optional arg BACKWARD means go to previous thing.
+
+Return (THING THING-START . THING-END), with THING-START and THING-END
+the bounds of THING.  Return nil if no such THING is found."
+  (interactive (list (or (and (memq last-command '(icicle-next-visible-thing
+                                                   icicle-previous-visible-thing))
+                              icicle-last-visible-thing-type)
+                         (prog1 (intern (read-string "Thing: "))
+                           (setq this-command  'icicle-next-visible-thing)))
+                     (point)
+                     (if mark-active (max (region-beginning) (region-end)) (point-max))))
+  (setq icicle-last-visible-thing-type  thing)
+  (unless start (setq start  (point)))
+  (unless end   (setq end    (if backward (point-min) (point-max))))
+  (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
+        ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
+  (if (interactive-p)
+      (icicle-with-comments-hidden start end (icicle-next-visible-thing-1 thing start end backward))
+    (icicle-next-visible-thing-1 thing start end backward)))
+
+;;; Same as `next-visible-thing-1' in `thing-cmds.el'.
+(if (fboundp 'next-visible-thing-1)
+    (defalias 'icicle-next-visible-thing-1 'next-visible-thing-1)
+  (defun icicle-next-visible-thing-1 (thing start end backward)
+    "Helper for `icicle-next-visible-thing'.  Get thing past point."
+    (let ((thg+bds  (icicle-next-visible-thing-2 thing start end backward)))
+      (if (not thg+bds)
+          nil
+        ;; $$$$$$ Which is better, > or >=, for (> (cddr thg+bds) (point))?
+        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
+          (if backward
+              (setq start  (max end (1- (cadr thg+bds))))
+            (setq start  (min end (1+ (cddr thg+bds)))))
+          (setq thg+bds  (icicle-next-visible-thing-2 thing start end backward)))
+        (when thg+bds (goto-char (cadr thg+bds)))
+        thg+bds))))
+
+;;; Same as `next-visible-thing-2' in `thing-cmds.el'.
+(if (fboundp 'next-visible-thing-2)
+    (defalias 'icicle-next-visible-thing-2 'next-visible-thing-2)
+  (defun icicle-next-visible-thing-2 (thing start end &optional backward)
+    "Helper for `icicle-next-visible-thing-1'.  Thing might not be past START."
+    (and (not (= start end))
+         (save-excursion
+           (let ((bounds  nil))
+             ;; If BACKWARD, swap START and END.
+             (cond ((< start end) (when   backward (setq start  (prog1 end (setq end  start)))))
+                   ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
+             (catch 'icicle-next-visible-thing-2
+               (while (if backward (> start end) (< start end))
+                 (goto-char start)
+                 (when (and (if backward (> start end) (< start end))
+                            (get-text-property start 'invisible))
+                   (setq start  (if backward
+                                    (previous-single-property-change start 'invisible nil end)
+                                  (next-single-property-change start 'invisible nil end)))
+                   (goto-char start))
+                 (when (setq bounds  (bounds-of-thing-at-point thing))
+                   (throw 'icicle-next-visible-thing-2
+                     (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
+                 (setq start  (if backward (1- start) (1+ start))))
+               nil))))))
 
 ;;;###autoload
 (defun icicle-search-char-property (beg end require-match

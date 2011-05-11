@@ -187,6 +187,13 @@ I wanted the mode-specific functionality of Sebastian's code, so I forked the gi
 
 : -- JohnAnderson
 
+[new]
+When using ido-mode, you do not wan't to use minibuffer-complete but ido-complete instead. Ido is active when ido-cur-item is bound.
+I'm using the original smart-tab.el, but as far as I can see, this is needed for John Anderson's edition too. Inserting this after the cond seems to do the trick
+
+((boundp 'ido-cur-item) 
+	   (ido-complete))
+
 == Fancy Tab ==
 
 [:FancyTab]

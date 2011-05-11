@@ -40,7 +40,7 @@ If you have `transient-mark-mode' on, you can just use `comment-dwim': select a 
 
 ( doesn't python-mode.el offer `py-comment-region? --CH )
 
-You can also use "rectangles" or [http://www.spela-casino.org/ casino på nätet] with comment/uncomment region (among other things that you can do with rectangles).  See RectangleCommands or "(emacs) Rectangles" in the Emacs manual.
+You can also use "rectangles" with comment/uncomment region (among other things that you can do with rectangles).  See RectangleCommands or "(emacs) Rectangles" in the Emacs manual.
 
 == Search the python documentation in Emacs ==
 

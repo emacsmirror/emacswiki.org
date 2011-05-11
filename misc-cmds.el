@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Sat May  7 02:13:26 2011 (-0700)
+;; Last-Updated: Tue May 10 18:48:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2917
+;;     Update #: 2928
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -32,7 +32,7 @@
 ;;    `clear-search-ring', `clear-search-histories',
 ;;    `count-chars-in-region', `delete-lines', `end-of-line+',
 ;;    `forward-char-same-line', `forward-overlay',
-;;    `goto-previous-mark', `hide/show-comments', `indirect-buffer',
+;;    `goto-previous-mark', `indirect-buffer',
 ;;    `kill-buffer-and-its-windows', `mark-buffer-after-point',
 ;;    `mark-buffer-before-point', `recenter-top-bottom',
 ;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/05/10 dadams
+;;     Removed hide/show-comments - moved it to thing-cmds.el.
 ;; 2011/05/06 dadams
 ;;     Added: hide/show-comments.
 ;; 2011/01/04 dadams
@@ -1051,49 +1053,6 @@ With prefix arg, clear also the simple search history."
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
-
-(defun hide/show-comments (&optional hide/show start end)
-  "Hide or show comments from START to END.
-Interactively, hide comments, or show them if you use a prefix arg.
-Interactively, START and END default to the region limits, if active.
-Otherwise, including non-interactively, they default to `point-min'
-and `point-max'.
-
-Uses `save-excursion', restoring point.
-
-Be aware that using this command to show invisible text shows *all*
-such text, regardless of how it was hidden.  IOW, it does not just
-show invisible text that you previously hid using this command.
-
-From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
-show them.
-
-This function does nothing in Emacs versions prior to Emacs 21,
-because it needs `comment-search-forward'."
-  (interactive
-   (cons (if current-prefix-arg 'show 'hide)
-         (if (or (not mark-active) (null (mark)) (= (point) (mark)))
-             (list (point-min) (point-max))
-           (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
-  (when (require 'newcomment nil t)     ; `comment-search-forward'
-    (unless start (setq start  (point-min)))
-    (unless end   (setq end    (point-max)))
-    (unless (<= start end) (setq start  (prog1 end (setq end  start))))
-    (let ((bufmodp           (buffer-modified-p))
-          (buffer-read-only  nil)
-          cbeg cend)
-      (unwind-protect
-           (save-excursion
-             (goto-char start)
-             (while (and (< start end) (setq cbeg  (comment-search-forward end 'NOERROR)))
-               (setq cend  (if (string= "" comment-end)
-                               (1+ (line-end-position))
-                             (search-forward comment-end end 'NOERROR)))
-               (when (and cbeg cend)
-                 (if (eq 'hide hide/show)
-                     (put-text-property cbeg cend 'invisible t)
-                   (put-text-property cbeg cend 'invisible nil)))))
-        (set-buffer-modified-p bufmodp)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-cmds.el ends here

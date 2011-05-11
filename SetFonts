@@ -141,6 +141,12 @@ but it has the side-effect of opening a description in *Help* if the font exists
     (if (null (x-list-fonts font))
         nil t))
 
+I use this:
+
+  (member font-name (font-family-list))
+
+-MichaelChen
+
 == True type fonts? ==
 
 [new]

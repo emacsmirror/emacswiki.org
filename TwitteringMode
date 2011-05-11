@@ -347,7 +347,26 @@ Mar 23, 2011; I had similar problems, getting the message: "Authorization via OA
 Where site-lisp-path expands to your Emacs site-lisp directory. Now when I do M-x twit, I see the successful connection in Wireshark and get the request for my OAuth Pin. -- sboles
 
 [new]
-10 May 2011: Is there any way to use twittering-new-tweets-hook to filter out (i.e. not display) tweets which contain a particular hashtag? -- Alexis
+10 May 2011: If you'd like to filter incoming tweets so that those matching a particular pattern aren't displayed in your timeline, you might find the following code useful:
+{{{
+(setq twittering-tweet-filters '("example" "example phrase"))                                   
+(defun twittering-filter-tweets ()                                            
+  (setq non-matching-statuses '())                                            
+  (dolist (status twittering-new-tweets-statuses)                             
+    (setq matched-tweets 0)                                                   
+    (dolist (pat twittering-tweet-filters)                                    
+      (if (string-match pat (cdr (assoc 'text status)))                       
+          (setq matched-tweets (+ 1 matched-tweets))))                        
+    (if (= 0 matched-tweets)                                                  
+        (setq non-matching-statuses (append non-matching-statuses `(,status)))))
+  (setq new-statuses non-matching-statuses))                                  
+(add-hook 'twittering-new-tweets-hook 'twittering-filter-tweets)
+}}}
+The above will not display any tweets containing the text "example" or "example phrase". A filter can consist of any regex accepted by the 'string-match' function.
+
+Tested with emacs 23.2.
+
+-- Alexis
 
 ----
 See also: [[Twitter]] [[Identica-mode]]

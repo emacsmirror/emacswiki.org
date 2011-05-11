@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Thu Feb 24 16:00:34 2011 (-0800)
+;; Last-Updated: Tue May 10 17:53:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 149
+;;     Update #: 370
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,40 +26,53 @@
 ;;  text entities ("things").  They are especially useful in
 ;;  combination with Transient Mark mode.
 ;; 
+;;
+;;  Macros defined here:
+;;
+;;    `with-comments-hidden'.
+;;
 ;;  Commands defined here:
 ;;
-;;    `cycle-thing-region', `mark-enclosing-sexp',
-;;    `mark-enclosing-sexp-backward', `mark-enclosing-sexp-forward',
-;;    `mark-thing', `select-thing-near-point', `thing-region'.
+;;    `cycle-thing-region', `hide/show-comments',
+;;    `mark-enclosing-sexp', `mark-enclosing-sexp-backward',
+;;    `mark-enclosing-sexp-forward', `mark-thing',
+;;    `next-visible-thing', `next-visible-thing-repeat',
+;;    `previous-visible-thing', `previous-visible-thing-repeat',
+;;    `select-thing-near-point', `thgcmd-bind-keys', `thing-region'.
 ;;
 ;;  User options defined here:
 ;;
-;;    `thing-types'.
+;;    `ignore-comments-flag', `thing-types'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `next-visible-thing-1', `next-visible-thing-2',
+;;    `thgcmd-repeat-command'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `mark-thing-type', `thing-region-index'.
+;;    `last-visible-thing-type', `mark-thing-type',
+;;    `thing-region-index'.
 ;;
 ;;  Put this in your init file (`~/.emacs'):
 ;;
 ;;   (require 'thing-cmds)
+;;   (thgcmd-bind-keys) ; Only if you want the key bindings it defines
 ;;
-;;  Suggested key bindings:
-;;
-;;   These two replace the std bindings for `mark-sexp' & `mark-word':
-;;   (global-set-key [(control meta ? )] 'mark-thing) ; vs `mark-sexp'
-;;   (global-set-key [(meta ?@)] 'cycle-thing-region) ; vs `mark-word'
-;;
-;;   (global-set-key [(control meta shift ?u)] 'mark-enclosing-sexp)
-;;   (global-set-key [(control meta shift ?b)] ; or [(control meta ?()]
-;;                   'mark-enclosing-sexp-backward)
-;;   (global-set-key [(control meta shift ?f)] ; or [(control meta ?))]
-;;                   'mark-enclosing-sexp-forward)
+;;  See also the doc strings of `next-visible-thing' and
+;;  `thgcmd-bind-keys', for more information about thing navigation
+;;  keys.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/05/10 dadams
+;;     Added (copied here from icicles-cmd2.el):
+;;      ignore-comments-flag, hide/show-comments, last-visible-thing-type, with-comments-hidden, 
+;;      next-visible-thing(-1|-2), previous-visible-thing.
+;;     Added: thgcmd-repeat-command, thgcmd-bind-keys, (next|previous)-visible-thing-repeat.
+;;     Extended (next|previous)-visible-thing to work with thgcmd-repeat-command.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom and commands.
 ;;     Added groups for defcustom.
@@ -98,7 +111,8 @@
 (require 'thingatpt+ nil t) ;; (no error if not found): bounds-of-thing-at-point
 (require 'thingatpt) ;; bounds-of-thing-at-point
 
-(when (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
+;; Quiet the byte-compiler
+(defvar last-repeatable-command)        ; Defined in `repeat.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -150,6 +164,11 @@ successive things of the same type, but to do that you must first use
       (message "%s" (capitalize (elt thing-types (1- thing-region-index)))))
     (when (>= thing-region-index (length thing-types))
       (setq thing-region-index  0))))
+
+;;;###autoload
+(defcustom ignore-comments-flag t
+  "Non-nil means macro `with-comments-hidden' hides comments."
+  :type 'boolean :group 'matching)
 
 ;;;###autoload
 (defcustom thing-types '("word" "symbol" "sexp" "list" "line" "sentence"
@@ -280,6 +299,243 @@ This command does not work if point is in a string or a comment."
 		  (and transient-mark-mode mark-active))
       (mark-enclosing-sexp nil (- (prefix-numeric-value arg)))
     (mark-enclosing-sexp (- (prefix-numeric-value arg)) t)))
+
+
+;;;###autoload
+(defun hide/show-comments (&optional hide/show start end)
+  "Hide or show comments from START to END.
+Interactively, hide comments, or show them if you use a prefix arg.
+Interactively, START and END default to the region limits, if active.
+Otherwise, including non-interactively, they default to `point-min'
+and `point-max'.
+
+Uses `save-excursion', restoring point.
+
+Be aware that using this command to show invisible text shows *all*
+such text, regardless of how it was hidden.  IOW, it does not just
+show invisible text that you previously hid using this command.
+
+From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
+show them.
+
+This function does nothing in Emacs versions prior to Emacs 21,
+because it needs `comment-search-forward'."
+  (interactive
+   (cons (if current-prefix-arg 'show 'hide)
+         (if (or (not mark-active) (null (mark)) (= (point) (mark)))
+             (list (point-min) (point-max))
+           (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
+  (when (require 'newcomment nil t)     ; `comment-search-forward', Emacs 21+.
+    (unless start (setq start  (point-min)))
+    (unless end   (setq end    (point-max)))
+    (unless (<= start end) (setq start  (prog1 end (setq end  start))))
+    (let ((bufmodp           (buffer-modified-p))
+          (buffer-read-only  nil)
+          cbeg cend)
+      (unwind-protect
+           (save-excursion
+             (goto-char start)
+             (while (and (< start end) (setq cbeg  (comment-search-forward end 'NOERROR)))
+               (setq cend  (if (string= "" comment-end)
+                               (1+ (line-end-position))
+                             (search-forward comment-end end 'NOERROR)))
+               (when (and cbeg cend)
+                 (if (eq 'hide hide/show)
+                     (put-text-property cbeg cend 'invisible t)
+                   (put-text-property cbeg cend 'invisible nil)))))
+        (set-buffer-modified-p bufmodp)))))
+
+(defvar last-visible-thing-type nil
+  "Type of thing last used by `next-visible-thing', `previous-visibl-thing'.")
+
+(defmacro with-comments-hidden (start end &rest body)
+  "Evaluate the forms in BODY while comments are hidden from START to END.
+But if `ignore-comments-flag' is nil, just evaluate BODY,
+without hiding comments.  Show comments again when BODY is finished.
+
+See `hide/show-comments', which is used to hide and show the comments.
+Note that prior to Emacs 21, this never hides comments."
+  (let ((result  (make-symbol "result"))
+        (ostart  (make-symbol "ostart"))
+        (oend    (make-symbol "oend")))
+    `(let ((,ostart  ,start)
+           (,oend    ,end)
+           ,result)
+      (unwind-protect
+           (setq ,result  (progn (when ignore-comments-flag
+                                   (hide/show-comments 'hide ,ostart ,oend))
+                                 ,@body))
+        (when ignore-comments-flag (hide/show-comments 'show ,ostart ,oend))
+        ,result))))
+
+;;;###autoload
+(defun previous-visible-thing (thing start &optional end)
+  "Same as `next-visible-thing', except it moves backward, not forward."
+  (interactive (list (or (and (memq last-command '(next-visible-thing
+                                                   previous-visible-thing))
+                              last-visible-thing-type)
+                         (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
+                                 (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
+                             ;; Save state for `repeat'.
+                             (let ((last-command-event       last-command-event)
+                                   (last-repeatable-command  last-repeatable-command))
+                               (intern (read-string "Thing: ")))
+                           last-visible-thing-type))
+                     (point)
+                     (if mark-active (min (region-beginning) (region-end)) (point-min))))
+  (if (interactive-p)
+      (with-comments-hidden start end (next-visible-thing thing start end 'BACKWARD))
+    (next-visible-thing thing start end 'BACKWARD)))
+
+;;;###autoload
+(defun next-visible-thing (thing &optional start end backward)
+  "Go to the next visible THING.
+Start at START.  If END is non-nil then look no farther than END.
+Interactively:
+ - START is point.
+ - If the region is not active, END is the buffer end.  If the region
+   is active, END is the region end: the greater of point and mark.
+
+Ignores (skips) comments if `ignore-comments-flag' is non-nil.
+If you also use Icicles then you can toggle this ignoring of comments,
+using `C-M-;' in the minibuffer.
+
+If you use this command or `previous-visible-thing' successively, even
+mixing the two, you are prompted for the type of THING only the first
+time.  You can thus bind these two commands to simple, repeatable
+keys (e.g. `f11', `f12'), to navigate among things quickly.
+
+If you do not want to sacrifice two simple, repeatable keys for this,
+then you can instead use commands `next-visible-thing-repeat' and
+`previous-visible-thing-repeat', binding them each to a less rare key
+sequence that uses a prefix key.  Command `thgcmd-bind-keys' does
+this: it binds them to `C-x down' and `C-x up', so you can repeat them
+separately using `C-x down down...' etc.  However, unlike bindings for
+`next-visible-thing' and `previous-visible-thing', switching from one
+direction to the other requires you to again enter the THING type.
+
+Non-interactively, optional arg BACKWARD means go to previous thing.
+
+Return (THING THING-START . THING-END), with THING-START and THING-END
+the bounds of THING.  Return nil if no such THING is found."
+  (interactive (list (or (and (memq last-command '(next-visible-thing
+                                                   previous-visible-thing))
+                              last-visible-thing-type)
+                         (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
+                                 (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
+                             ;; Save state for `repeat'.
+                             (let ((last-command-event       last-command-event)
+                                   (last-repeatable-command  last-repeatable-command))
+                               (intern (read-string "Thing: ")))
+                           last-visible-thing-type))
+                     (point)
+                     (if mark-active (max (region-beginning) (region-end)) (point-max))))
+  (setq last-visible-thing-type  thing)
+  (unless start (setq start  (point)))
+  (unless end   (setq end  (if backward (point-min) (point-max))))
+  (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
+        ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
+  (if (interactive-p)
+      (with-comments-hidden start end (next-visible-thing-1 thing start end backward))
+    (next-visible-thing-1 thing start end backward)))
+
+(defun next-visible-thing-1 (thing start end backward)
+  "Helper for `next-visible-thing'.  Get thing past point."
+  (let ((thg+bds  (next-visible-thing-2 thing start end backward)))
+    (if (not thg+bds)
+        nil
+      ;; $$$$$$ Which is better, > or >=, for (> (cddr thg+bds) (point))?
+      (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
+        (if backward
+            (setq start  (max end (1- (cadr thg+bds))))
+          (setq start  (min end (1+ (cddr thg+bds)))))
+        (setq thg+bds  (next-visible-thing-2 thing start end backward)))
+      (when thg+bds (goto-char (cadr thg+bds)))
+      thg+bds)))
+
+(defun next-visible-thing-2 (thing start end &optional backward)
+  "Helper for `next-visible-thing-1'.  Thing might not be past START."
+  (and (not (= start end))
+       (save-excursion
+         (let ((bounds  nil))
+           ;; If BACKWARD, swap START and END.
+           (cond ((< start end) (when   backward (setq start  (prog1 end (setq end  start)))))
+                 ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
+           (catch 'next-visible-thing-2
+             (while (if backward (> start end) (< start end))
+               (goto-char start)
+               (when (and (if backward (> start end) (< start end))
+                          (get-text-property start 'invisible))
+                 (setq start  (if backward
+                                  (previous-single-property-change start 'invisible nil end)
+                                (next-single-property-change start 'invisible nil end)))
+                 (goto-char start))
+               (when (setq bounds  (bounds-of-thing-at-point thing))
+                 (throw 'next-visible-thing-2
+                   (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
+               (setq start  (if backward (1- start) (1+ start))))
+             nil)))))
+
+(defun thgcmd-repeat-command (command)
+  "Repeat COMMAND."
+  (let ((repeat-message-function  'ignore))
+    (setq last-repeatable-command  command)
+    (repeat nil)))
+
+;;;###autoload
+(defun next-visible-thing-repeat () 
+  "Go to and get the next visible THING.
+This is a repeatable version of `next-visible-thing'."
+  (interactive)
+  (require 'repeat)
+  (let ((DO-NOT-USE-!@$%^&*+  t))  (thgcmd-repeat-command 'next-visible-thing)))
+
+;;;###autoload
+(defun previous-visible-thing-repeat () 
+  "Go to and get the previous visible THING.
+This is a repeatable version of `previous-visible-thing'."
+  (interactive)
+  (require 'repeat)
+  (let ((DO-NOT-USE-!@$%^&*+  t))  (thgcmd-repeat-command 'previous-visible-thing)))
+
+;;;###autoload
+(defun thgcmd-bind-keys (&optional msgp)
+  "Bind some keys to commands defined in `thing-cmds.el'.
+NOTE concerning the visible-thing navigation keys:
+
+`C-x down' and `C-x up' are bound here (for Emacs 21 and later) to
+`next-visible-thing-repeat' and `previous-visible-thing-repeat',
+respectively.  This means you can use `C-x down down down...' etc. to
+move forward to successive things, and similarly for `C-x up...' and
+backward.  You are asked for the thing type only the first time you
+hit `down' or `up' after `C-x'.
+
+However, you cannot mix the directions forward/backward without
+inputting the thing type again.  For example, If you do `C-x down up',
+the `up' does not perform thing navigation (it probably does
+`previous-line', the default `up' binding) .
+
+To change direction without getting prompted for the thing type, you
+need to bind, not commands `next-visible-thing-repeat' and
+`previous-visible-thing-repeat', but commands `next-visible-thing' and
+`previous-visible-thing' (no `-repeat' suffix).  Bind these to simple,
+repeatable keys, such as `f11' and `f12'.  Because such keys are rare
+\(mostly taken already), the only bindings made here for thing
+navigation are `C-x down' and `C-x up'."
+  (interactive "p")
+  (when (or (not msgp) (y-or-n-p "Bind thing-command default keys?"))
+    ;;   The first two replace the standard bindings for `mark-sexp' & `mark-word':
+    (global-set-key [(control meta ? )] 'mark-thing) ; vs `mark-sexp'
+    (global-set-key [(meta ?@)] 'cycle-thing-region) ; vs `mark-word'
+    (global-set-key [(control meta shift ?u)] 'mark-enclosing-sexp)
+    (global-set-key [(control meta shift ?b)] ; Alternative to consider: [(control meta ?()]
+                    'mark-enclosing-sexp-backward)
+    (global-set-key [(control meta shift ?f)] ; Alternative to consider: [(control meta ?))]
+                    'mark-enclosing-sexp-forward)
+    (when (> emacs-major-version 21)
+      (define-key ctl-x-map [down]  'next-visible-thing-repeat)
+      (define-key ctl-x-map [up]    'previous-visible-thing-repeat))
+    (when msgp (message "Thing-command keys bound"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 

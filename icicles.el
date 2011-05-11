@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri May  6 15:53:14 2011 (-0700)
+;; Last-Updated: Tue May 10 06:42:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22883
+;;     Update #: 22888
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -258,11 +258,12 @@
 ;;    `icicle-locate-file-no-symlinks',
 ;;    `icicle-locate-file-no-symlinks-other-window',
 ;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
-;;    `icicle-object-action', `icicle-occur',
-;;    `icicle-other-window-or-frame', `icicle-plist',
+;;    `icicle-next-visible-thing', `icicle-object-action',
+;;    `icicle-occur', `icicle-other-window-or-frame', `icicle-plist',
 ;;    `icicle-pop-tag-mark', `icicle-pp-eval-expression',
-;;    `icicle-read-color', `icicle-read-kbd-macro',
-;;    `icicle-recent-file', `icicle-recent-file-other-window',
+;;    `icicle-previous-visible-thing', `icicle-read-color',
+;;    `icicle-read-kbd-macro', `icicle-recent-file',
+;;    `icicle-recent-file-other-window',
 ;;    `icicle-recompute-shell-command-candidates',
 ;;    `icicle-regexp-list', `icicle-remove-buffer-candidate',
 ;;    `icicle-remove-buffer-config',
@@ -929,7 +930,9 @@
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate',
 ;;    `icicle-next-single-char-property-change',
-;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
+;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
+;;    `icicle-next-visible-thing-and-bounds',
+;;    `icicle-non-whitespace-string-p',
 ;;    `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
@@ -1120,6 +1123,7 @@
 ;;    `icicle-last-completion-command', `icicle-last-input',
 ;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function',
+;;    `icicle-last-visible-thing-type',
 ;;    `icicle-locate-file-action-fn',
 ;;    `icicle-locate-file-no-symlinks-p', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',

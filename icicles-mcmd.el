@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May  6 15:25:38 2011 (-0700)
+;; Last-Updated: Tue May 10 19:04:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16946
+;;     Update #: 16951
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -394,6 +394,7 @@
   (defvar mouse-drag-copy-region))
 
 (defvar filesets-data)                  ; Defined in `filesets.el'.
+(defvar ignore-comments-flag)           ; Defined in `thing-cmds.el'.
 (defvar minibuffer-confirm-exit-commands) ; Defined in `minibuffer.el' in Emacs 23+.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1298,9 +1299,12 @@ Bound to `M-_' in the minibuffer."
 ;;;###autoload
 (defun icicle-toggle-ignoring-comments () ; Bound to `C-M-;' in minibuffer.
   "Toggle the value of option `icicle-ignore-comments-flag'.
+If option `ignore-comments-flag' is defined (in library
+`thing-cmds.el') then it too is toggled.
 Bound to `C-M-;' in the minibuffer."
   (interactive)
   (setq icicle-ignore-comments-flag  (not icicle-ignore-comments-flag))
+  (when (boundp ignore-comments-flag) (setq ignore-comments-flag  (not ignore-comments-flag)))
   (icicle-msg-maybe-in-minibuffer (if icicle-ignore-comments-flag
                                       "Ignoring comments is now ON"
                                     "Ignoring comments is now OFF")))

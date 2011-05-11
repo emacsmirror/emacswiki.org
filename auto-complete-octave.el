@@ -1,5 +1,9 @@
 ;;; auto-complete-octave.el --- 
 
+;;; Warning: This file is obselete and will not be mantained anymore, use ac-octave instead.
+;;; ac-octave:
+;;     http://www.emacswiki.org/emacs/ac-octave.el
+;;  
 ;; Copyright 2009 Yen-Chin,Lee
 ;;
 ;; Author: coldnew

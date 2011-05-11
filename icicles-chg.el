@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat May  7 11:41:06 2011 (-0700)
+;; Last-Updated: Tue May 10 19:05:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6496
+;;     Update #: 6511
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/10 dadams
+;;     Added: icicle-last-visible-thing-type, icicle-previous-visible-thing,
+;;            icicle-next-visible-thing-(and-bounds|1|2).
+;;     Alias icicle-next-visible-thing-(1|2) to the same commands from thing-cmds.el.
+;;     icicle-search-thing-scan:
+;;       Use when, not while, to skip over invisible (since use next-single-property-change).
+;;       Use new icicle-next-visible-and-bounds, so save-excursion and goto min.
+;;     Old icicle-next-visible is now ~ *-2, but that handles backward too.  New one is a command.
 ;; 2011/05/07 dadams
 ;;     Added: icicle-with-comments-hidden, icicle-hide/show-comments, icicle-search-thing,
 ;;              icicle-defined-thing-p, icicle-next-visible-thing, icicle-search-thing-args,
@@ -2354,6 +2362,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/05/10 dadams
+;;     icicle-toggle-ignoring-comments: Toggle also ignore-comments-flag from thing-cmds.el.
 ;; 2011/05/07 dadams
 ;;     Added: icicle-toggle-ignoring-comments.  Bound to C-M-;.
 ;;     Changed key for icicle-regexp-quote-input from C-M-; to M-% everywhere.

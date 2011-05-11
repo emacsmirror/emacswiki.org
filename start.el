@@ -7,41 +7,42 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jan  4 14:13:44 2011 (-0800)
+;; Last-Updated: Tue May 10 18:53:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2868
+;;     Update #: 2872
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `appt', `apropos', `apropos+', `apropos-fn+var', `assoc',
-;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-lit',
-;;   `bookmark+-mac', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `cal-dst', `cal-julian', `cal-menu', `cal-opts',
-;;   `cal-persia', `calendar', `calendar+', `cl', `color-moccur',
-;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
-;;   `cus-face', `cus-load', `cus-start', `custom', `diary-lib',
-;;   `dired', `dired+', `dired-aux', `dired-details',
-;;   `dired-details+', `dired-sort-menu', `dired-sort-menu+',
-;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
-;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
-;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
-;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
-;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
-;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `header2', `help+20',
-;;   `hexrgb', `highlight', `icicles', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
-;;   `isearch+', `iso-transl', `kmacro', `lacarte', `levenshtein',
-;;   `lib-requires', `lisp-float-type', `lisp-mnt', `loadhist',
-;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `advice', `advice-preload', `appt', `apropos', `apropos+',
+;;   `apropos-fn+var', `assoc', `autofit-frame', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `bookmark+-mac', `browse-kill-ring',
+;;   `browse-kill-ring+', `buff-menu+', `cal-dst', `cal-julian',
+;;   `cal-menu', `cal-opts', `cal-persia', `calendar', `calendar+',
+;;   `cl', `color-moccur', `compile', `compile+20', `compile-20',
+;;   `cus-edit', `cus-edit+', `cus-face', `cus-load', `cus-start',
+;;   `custom', `diary-lib', `dired', `dired+', `dired-aux',
+;;   `dired-details', `dired-details+', `dired-sort-menu',
+;;   `dired-sort-menu+', `dired-x', `doremi', `doremi-cmd',
+;;   `doremi-frm', `easymenu', `ediff', `ediff+', `ediff-diff',
+;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
+;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `em-joc',
+;;   `emacsbug', `eshell-auto', `eyedropper', `facemenu',
+;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
+;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
+;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
+;;   `frame+', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `header2', `help+20', `hexrgb', `highlight', `icicles',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `icomplete', `icomplete+', `image-dired',
+;;   `imenu', `imenu+', `info', `info+', `isearch+', `iso-transl',
+;;   `kmacro', `lacarte', `levenshtein', `lib-requires',
+;;   `lisp-float-type', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
 ;;   `mouse+', `mouse3', `mwheel', `occur-schroeder', `oneonone',
@@ -89,6 +90,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2011/05/10 dadams
+;;     Call thgcmd-bind-keys to bind thing-cmds.el default keys.
 ;; 2010/11/20 dadams
 ;;     Removed soft require of font-menus.el for Emacs 24+.  It uses var font-lock-defaults-alist.
 ;;     Removed load-library of my ls-lisp.el.
@@ -486,7 +489,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'occur-schroeder nil t)        ; Occur alternative & isearch option.
 (load-library "delsel")
 (require 'thingatpt+ nil t)             ; Thing-at-point extensions.
-(require 'thing-cmds nil t)             ; Thing-at-point commands.
+(when (require 'thing-cmds nil t)       ; Thing-at-point commands and default key bindings.
+  (thgcmd-bind-keys))
+
 (require 'imenu+ nil t)                 ; Extensions to `imenu.el'.
 (autoload 'imenu-create-hierarchical-index "hier-imenu" ; Hierarchical imenu for HTML, Tex
   "Generate an alist for imenu from a buffer with hierarchical structure.")

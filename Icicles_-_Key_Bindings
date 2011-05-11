@@ -397,7 +397,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-some-tags-regexp-bookmark' -- Search bookmarks some of whose tags match a given regexp
 * `icicle-search-specific-buffers-bookmark' -- Search bookmarks for a given set of buffers
 * `icicle-search-specific-files-bookmark' -- Search bookmarks for a given set of files
-* `icicle-search-thing' -- ThingAtPoint things as search contexts
+* `icicle-search-thing' -- Search ThingAtPoint things (as search contexts)
 * `icicle-search-this-buffer-bookmark' -- Search bookmarks in the current buffer
 * `icicle-search-url-bookmark' -- Search URL bookmarks
 * `icicle-search-w3m-bookmark' -- Search W3M bookmarks

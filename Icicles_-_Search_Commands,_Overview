@@ -147,10 +147,10 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 [:icicle-search-text-property]
 [:icicle-search-overlay-property]
 [:icicle-search-char-property]
-[:icicle-search-thing]
 [:icicle-search-pages]
 [:icicle-search-paragraphs]
 [:icicle-search-sentences]
+[:icicle-search-thing]
 [:icicle-imenu]
 [:icicle-imenu-command]
 [:icicle-imenu-non-interactive-function]
@@ -171,10 +171,10 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 * '''`##C-c "##'''' -- '''`icicle-search-text-property'''' -- Search text having a given text property value.
 * '''`icicle-search-overlay-property'''' -- Search text having a given overlay property value.
 * '''`icicle-search-char-property'''' -- Search text having a given text or overlay property value.
-* '''`icicle-search-thing'''' -- Search ThingAtPoint things as contexts, optionally ignoring comments.
 * '''`icicle-search-pages'''' -- Search Emacs pages (##^L##/form-feed delimited) as contexts.
 * '''`icicle-search-paragraphs'''' -- Search Emacs paragraphs as contexts.
 * '''`icicle-search-sentences'''' -- Search sentences as contexts.
+* '''`icicle-search-thing'''' -- Search ThingAtPoint things as contexts, optionally ignoring comments.
 * '''`##C-c =##'''' -- '''`icicle-imenu'''' -- Navigate among [[ImenuMode|Imenu]] entries.
 * '''`icicle-imenu-command'''' -- Navigate among Emacs command definitions.
 * '''`icicle-imenu-non-interactive-function'''' -- Navigate among Emacs ''non''-interactive function definitions.
