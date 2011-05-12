@@ -10,15 +10,15 @@ in your ##.emacs##.  To enable frame-bufs, use the command ##frame-bufs-mode##, 
 
 == Features Overview ==
 
-When frame-bufs-mode is enabled, it keeps a record of which buffers are associated with each frame.  In the typical case, a buffer becomes associated with a frame if it is selected in one of that frame's windows.  Note, then, that a buffer can be associated with more than one frame.  We sometimes speak of a buffer that's associated with a frame as "frame-associated," and refer to the list of buffers associated with a given frame as that frame's "associated-buffer list."   (Frame-bufs does not alter the `buffer-list' or `buried-buffer-list' frame parameters of any frame; it keeps its own record of the buffers
+When frame-bufs-mode is enabled, it keeps a record of which buffers are associated with each frame.  In the typical case, a buffer becomes associated with a frame if it is selected in one of that frame's windows.  Note, then, that a buffer can be associated with more than one frame.  We sometimes speak of a buffer that's associated with a frame as "frame-associated," and refer to the list of buffers that are associated with a given frame as that frame's "associated-buffer list."   (Frame-bufs does not alter the `buffer-list' or `buried-buffer-list' frame parameters of any frame; it keeps its own record of the buffers
 associated with each frame.)
   
-The buffer menu initially lists all buffers (we call this "full-list mode").  By typing ##F## the buffer menu can be toggled between showing all buffers and showing only those buffers associated with the selected frame (when the buffer menu is in the latter state we say it is in "frame-list mode").  In full-list mode there is an additional column after the initial ##CRM## bit columns, the ##F## column.   Buffers associated with the selected frame are indicated with an `o' in this column.  In frame-list mode, the fourth column is suppressed.  Here are screenshots of the buffer menu in the two different modes:
+The buffer menu now has two modes:  it can either list all buffers (we call this "full-list mode") or only buffers associated with the selected frame ("frame-list mode").  By typing ##F## one can toggle between the two modes.   In full-list mode there is an additional column after the initial ##CRM## bit columns: the ##F## column.   Buffers associated with the selected frame are indicated with an `o' in this column.  In frame-list mode, the fourth column is suppressed.  Here are screenshots of the buffer menu in the two different modes:
 
 || [[image:FrameBufsLocalMode]] || [[image:FrameBufsFullMode]] ||
 || Buffer menu in frame-list mode, sorted by buffer size.  Only buffers associated with this frame are shown. || Buffer menu in full-list mode, sorted by buffer size.  All buffers are shown; the buffers associated with this frame are distinguished by an `o' bit in the fourth ##F## column. ||
 
-In subsequent calls the buffer menu opens in whatever mode it was last in.
+When first called up, the buffer menu appears in full-list mode.  In subsequent calls it opens in whatever mode it was last in.
 
 In addition to toggling between the two modes, there are two other new commands available in the buffer menu:
 

@@ -41,6 +41,9 @@ With org-mode, it make crash all emacs with a "Fatal error (10)Bus error" when y
 
 A similar problem was recently fixed in the Emacs core. Please try the most recent CVS version, and if the problem persists, please report it with M-x report-emacs-bug.
 
+[new:Andrzej:2011-05-12]
+##linum-mode## is incompatible with ##visual-line-mode##. If the top line of the buffer is a visual line (that is, not a physical one) the line number next to it blinks on any user action (like typing a text or dragging a scrollbar). Also, the line itself is being constantly refilled (which causes text to move around).
+
 == LinumPlus ==
 LinumPlus
 

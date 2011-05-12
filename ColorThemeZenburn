@@ -1,13 +1,5 @@
 The zenburn color theme is a low-contrast color theme. The color scheme was originally designed for 'vim` and since then ported to various other programs.
 
-The official version of zenburn-for-emacs is maintained by DanielBrockman; the version is a slightly updated version. An updated fork of the original project featuring all of EmacsWiki's contributions and more is maintained by BozhidarBatsov [http://github.com/bbatsov/zenburn-emacs here].
+There are two "official versions" of zenburn-for-emacs - the first is the new Zenburn Emacs theme, featuring many of EmacsWiki's contributions, clean code and consistent colouring. It is written and maintained by BozhidarBatsov and can be found [http://github.com/bbatsov/zenburn-emacs here]. BozhidarBatsov also maintains an updated copy of the older zenburn theme, that he's called zenburn-legacy. The other widely used zenburn for Emacs is maintained by DanielBrockman, but it seems that it's not that actively maintained these days.
 
-In an effort to have a unified and most complete version of the zenburn theme for Emacs I've started a GitHub project based initially on the version of zenburn.el from EmacsWiki. I'd be great
-if you fork my repo or send me patches so that we can maintain an updated version of the theme there. The repo is located [http://github.com/bbatsov/zenburn-emacs here].
-
-Lisp:zenburn.el
-
-[new:KGB:2010-07-19 21:22 UTC]
-I made some additions to the theme and noticed something odd that I didn't want to "fix" in case there was something I was missing. The face zenburn-foreground is referenced a few times but isn't defined anywhere, I think these instances should be referencing zenburn-fg. Is this correct? - KGB.
-
-Yes -- see [https://github.com/mdengler/zenburn-el/commit/f5a35f3254830cb11f9d2597d15175bc84f19069 these fixes] -- MTD
+The zenburn-theme has also been ported to (unreleased, development version) Emacs-24 'deftheme' system, you can find this here: [https://github.com/djcb/elisp/blob/master/themes/zenburn-theme.el on github]. 

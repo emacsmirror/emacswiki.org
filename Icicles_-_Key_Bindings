@@ -371,8 +371,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-all-tags-regexp-bookmark' -- Search bookmarks all of whose tags match a given regexp
 * `icicle-search-autofile-bookmark' -- Search autofile bookmars only
 * `icicle-search-bookmark' -- Search using bookmark targets as contexts
-* `icicle-search-bookmarks-together' -- Search multiple bookmarks together
 * `icicle-search-bookmark-list-bookmark' -- Search bookmark-list bookmarks
+* `icicle-search-bookmarks-together' -- Search multiple bookmarks together
 * `icicle-search-buff-menu-marked' -- Search BufferMenu marked buffers, in order
 * `icicle-search-buffer' -- Search multiple buffers
 * `icicle-search-char-property' - Search for character properties

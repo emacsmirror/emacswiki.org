@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May  7 10:44:17 2011 (-0700)
+;; Last-Updated: Wed May 11 14:25:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12287
+;;     Update #: 12288
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2712,7 +2712,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                   icicle-saved-completion-candidates)
                          (let ((candidate  (icicle-current-completion-in-Completions)))
                            (when (member candidate icicle-saved-completion-candidates)
-                             (let ((ov  (make-overlay beg end (current-buffer))))
+                             (let ((ov  (make-overlay beg end)))
                                (push ov icicle-saved-candidate-overlays)
                                (overlay-put ov 'face 'icicle-saved-candidate)
                                (overlay-put ov 'priority '10)))))

@@ -1,4 +1,4 @@
-There is ongoing work to add threading to Emacs. A developer branch is published at http://bzr.savannah.gnu.org/r/emacs/other-branches/concurrency/
+There is ongoing work to add threading to Emacs. A developer branch is published at http://bzr.savannah.gnu.org/lh/emacs/concurrency/files
 
 It was discussed in emacs-devel: http://thread.gmane.org/gmane.emacs.devel/120530/focus=122664
 

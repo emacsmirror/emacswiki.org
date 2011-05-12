@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May  7 13:13:20 2011 (-0700)
+;; Last-Updated: Wed May 11 10:47:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27728
+;;     Update #: 27745
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -427,11 +427,11 @@
 ;;                         Search text having a given overlay property
 ;;            `icicle-search-char-property' -
 ;;                    Search text having a given text/overlay property
-;;            `icicle-search-thing'     - Search thing-at-point things
-;;                                        optionally ignoring comments
 ;;            `icicle-search-pages'               - Search Emacs pages
 ;;            `icicle-search-paragraphs'     - Search Emacs paragraphs
 ;;            `icicle-search-sentences' - Search sentences as contexts
+;;            `icicle-search-thing'     - Search thing-at-point things
+;;                                        optionally ignoring comments
 ;;  `C-c ='   `icicle-imenu' - Navigate among Imenu entries.
 ;;            `icicle-imenu-command' -
 ;;               Navigate among Emacs command definitions.
@@ -822,7 +822,8 @@
 ;;    given type as candidates.  This prevents it, for example, from
 ;;    presenting as a candidate a sexp or list that is commented out.
 ;;    You can toggle this option anytime using `C-M-;' in the
-;;    minibuffer.
+;;    minibuffer, but to see the effect you might need to invoke the
+;;    current command again.
 ;;
 ;;  * `icicle-search-hook': Functions run after searching and moving
 ;;    to a match, whether by `RET' or `C-RET' (or `C-next' or
@@ -5116,7 +5117,8 @@
 ;;    given type as candidates.  This prevents it, for example, from
 ;;    presenting as a candidate a sexp or list that is commented out.
 ;;    You can toggle this option anytime using `C-M-;' in the
-;;    minibuffer.
+;;    minibuffer, but to see the effect you might need to invoke the
+;;    current command again.
 ;;
 ;;  * User option `icicle-search-hook' is a list of functions to be
 ;;    run after searching and moving to an `icicle-search' match,
@@ -5961,6 +5963,16 @@
 ;;  `icicle-apropos-command' - Enhanced `apropos-command'
 ;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
+;;  `icicle-bookmark-file-other-window' - Jump to file bookmarks
+;;  `icicle-bookmark-dired-other-window'  - Jump to Dired bookmarks
+;;  `icicle-bookmark-gnus-other-window' - Jump to Gnus bookmarks
+;;  `icicle-bookmark-info-other-window' - Jump to Info bookmarks
+;;  `icicle-bookmark-local-file-other-window' - Jump to local files
+;;  `icicle-bookmark-non-file-other-window' - Jump to buffers
+;;  `icicle-bookmark-region-other-window' - Jump to region bookmarks
+;;  `icicle-bookmark-remote-file-other-window' - Jump to remote files
+;;  `icicle-bookmark-url-other-window' - Jump to URL bookmarks
+;;  `icicle-bookmark-w3m-other-window' - Jump to W3M bookmarks
 ;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
 ;;  `icicle-clear-history' - Clear minibuffer histories
@@ -6003,11 +6015,18 @@
 ;;                          Set value of binary option to nil
 ;;  `icicle-save-string-to-variable' -
 ;;                          Save text for use with `C-='
+;;  `icicle-search-all-tags-bookmark' - Search bookmarks that have all
+;;                                      of a given set of tags
+;;  `icicle-search-all-tags-regexp-bookmark' - Search bookmarks all of
+;;                                     whose tags match a given regexp
+;;  `icicle-search-autofile-bookmark' - Search autofile bookmars only
 ;;  `icicle-search-bookmark' - Search bookmarks
 ;;  `icicle-search-bookmark-list-bookmark' - bookmark-list bookmarks
+;;  `icicle-search-bookmarks-together' - Search bookmarks together
 ;;  `icicle-search-buff-menu-marked' - Search marked buffers, in order
 ;;  `icicle-search-buffer' - Search multiple buffers
 ;;  `icicle-search-char-property' - Search for character properties
+;;  `icicle-search-desktop-bookmark' -- Search desktop bookmarks
 ;;  `icicle-search-dired-bookmark' - Search Dired bookmarks
 ;;  `icicle-search-dired-marked' - Search the marked files in Dired
 ;;  `icicle-search-file'  - Search multiple files
@@ -6024,8 +6043,18 @@
 ;;  `icicle-search-region-bookmark' - Search bookmarked regions
 ;;  `icicle-search-remote-file-bookmark' - Search remote files
 ;;  `icicle-search-sentences' - Search using sentences as contexts
-;;  `icicle-search-thing' - Search for a thing-at-point-defined thing
+;;  `icicle-search-some-tags-bookmark' - Search bookmarks that have
+;;                                       some of a given set of tags
+;;  `icicle-search-some-tags-regexp-bookmark' - Search bookmarks some
+;;                                  of whose tags match a given regexp
+;;  `icicle-search-specific-buffers-bookmark' - Search bookmarks for a
+;;                                              given set of buffers
+;;  `icicle-search-specific-files-bookmark' - Search bookmarks for a
+;;                                            given set of files
+;;  `icicle-search-thing' - Search thing-at-point-defined things
+;;  `icicle-search-this-buffer-bookmark' - Search bookmarks in buffer
 ;;  `icicle-search-url-bookmark' - Search URL bookmarks
+;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to t
 ;;  `icicle-toggle-option' - Toggle the value of a binary option

@@ -7,16 +7,16 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Tue May 10 17:53:50 2011 (-0700)
+;; Last-Updated: Wed May 11 15:22:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 370
+;;     Update #: 456
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `thingatpt', `thingatpt+'.
+;;   `hide-comnt', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -27,32 +27,27 @@
 ;;  combination with Transient Mark mode.
 ;; 
 ;;
-;;  Macros defined here:
-;;
-;;    `with-comments-hidden'.
-;;
 ;;  Commands defined here:
 ;;
-;;    `cycle-thing-region', `hide/show-comments',
-;;    `mark-enclosing-sexp', `mark-enclosing-sexp-backward',
-;;    `mark-enclosing-sexp-forward', `mark-thing',
-;;    `next-visible-thing', `next-visible-thing-repeat',
+;;    `cycle-thing-region', `mark-enclosing-sexp',
+;;    `mark-enclosing-sexp-backward', `mark-enclosing-sexp-forward',
+;;    `mark-thing', `next-visible-thing', `next-visible-thing-repeat',
 ;;    `previous-visible-thing', `previous-visible-thing-repeat',
 ;;    `select-thing-near-point', `thgcmd-bind-keys', `thing-region'.
 ;;
 ;;  User options defined here:
 ;;
-;;    `ignore-comments-flag', `thing-types'.
+;;    `thing-types'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `next-visible-thing-1', `next-visible-thing-2',
-;;    `thgcmd-repeat-command'.
+;;    `thgcmd-invisible-p', `thgcmd-next-visible-thing-1',
+;;    `thgcmd-next-visible-thing-2', `thgcmd-repeat-command'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `last-visible-thing-type', `mark-thing-type',
-;;    `thing-region-index'.
+;;    `thgcmd-last-visible-thing-type', `thgcmd-mark-thing-type',
+;;    `thgcmd-thing-region-index'.
 ;;
 ;;  Put this in your init file (`~/.emacs'):
 ;;
@@ -67,6 +62,13 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/05/11 dadams
+;;     Added: thgcmd-invisible-p.
+;;     Moved comment hide/show stuff to new library hide-comnt.el, and require that.
+;;       ignore-comments-flag, hide/show-comments, with-comments-hidden.
+;;     Renamed to use prefix thgcmd-: next-visible-thing-(1|2), last-visible-thing-type,
+;;                                    mark-thing-type, thing-region-index
+;;     thgcmd-next-visible-thing-2: Separate handling overlay & text prop. Use thgcmd-invisible-p.
 ;; 2011/05/10 dadams
 ;;     Added (copied here from icicles-cmd2.el):
 ;;      ignore-comments-flag, hide/show-comments, last-visible-thing-type, with-comments-hidden, 
@@ -110,6 +112,7 @@
 
 (require 'thingatpt+ nil t) ;; (no error if not found): bounds-of-thing-at-point
 (require 'thingatpt) ;; bounds-of-thing-at-point
+(require 'hide-comnt) ;; with-comments-hidden, so also hide/show-comments, ignore-comments-flag.
 
 ;; Quiet the byte-compiler
 (defvar last-repeatable-command)        ; Defined in `repeat.el'.
@@ -154,21 +157,16 @@ successive things of the same type, but to do that you must first use
   (interactive)
   (if (eq last-command this-command)
       (goto-char cycle-thing-region-point)
-    (setq thing-region-index        0
-          cycle-thing-region-point  (point)))
-  (let* ((thing    (elt thing-types thing-region-index))
+    (setq thgcmd-thing-region-index  0
+          cycle-thing-region-point   (point)))
+  (let* ((thing    (elt thing-types thgcmd-thing-region-index))
          (success  (thing-region thing)))
-    (setq thing-region-index  (1+ thing-region-index))
+    (setq thgcmd-thing-region-index  (1+ thgcmd-thing-region-index))
     (when success
-      (setq mark-thing-type  (intern thing)) ; Save it for `mark-thing'.
-      (message "%s" (capitalize (elt thing-types (1- thing-region-index)))))
-    (when (>= thing-region-index (length thing-types))
-      (setq thing-region-index  0))))
-
-;;;###autoload
-(defcustom ignore-comments-flag t
-  "Non-nil means macro `with-comments-hidden' hides comments."
-  :type 'boolean :group 'matching)
+      (setq thgcmd-mark-thing-type  (intern thing)) ; Save it for `mark-thing'.
+      (message "%s" (capitalize (elt thing-types (1- thgcmd-thing-region-index)))))
+    (when (>= thgcmd-thing-region-index (length thing-types))
+      (setq thgcmd-thing-region-index  0))))
 
 ;;;###autoload
 (defcustom thing-types '("word" "symbol" "sexp" "list" "line" "sentence"
@@ -183,9 +181,9 @@ The first element is the default thing type used by `mark-thing' and
 `cycle-thing-region'."
   :type '(repeat string) :group 'lisp :group 'editing)
 
-(defvar thing-region-index 0 "Index of current thing in `thing-types'.")
+(defvar thgcmd-thing-region-index 0 "Index of current thing in `thing-types'.")
 
-(defvar mark-thing-type nil "Current thing type used by `mark-thing'.")
+(defvar thgcmd-mark-thing-type nil "Current thing type used by `mark-thing'.")
 
 (defvar cycle-thing-region-point nil
   "Position of point before `cycle-thing-region'.")
@@ -228,24 +226,23 @@ to select more THINGS of the last kind selected."
                         (if (< (mark) (point)) -1 1)))
            (set-mark (save-excursion
                        (goto-char (mark))
-                       (forward-thing mark-thing-type arg)
+                       (forward-thing thgcmd-mark-thing-type arg)
                        (point))))
           (t
-           (setq mark-thing-type
-                 (or thing
-                     (intern (prog1
-                                 (let ((icicle-sort-function  nil))
-                                   (completing-read "Type of thing: "
-                                                    (mapcar #'list thing-types)
-                                                    nil nil nil nil
-                                                    (car thing-types)))
-                               (setq this-command  this-cmd)))))
+           (setq thgcmd-mark-thing-type  (or thing
+                                             (intern (prog1 (let ((icicle-sort-function  nil))
+                                                              (completing-read
+                                                               "Type of thing: "
+                                                               (mapcar #'list thing-types)
+                                                               nil nil nil nil
+                                                               (car thing-types)))
+                                                       (setq this-command  this-cmd)))))
            (push-mark (save-excursion
-                        (forward-thing mark-thing-type (prefix-numeric-value arg))
+                        (forward-thing thgcmd-mark-thing-type (prefix-numeric-value arg))
                         (point))
                       nil t)))
     (unless (memq this-cmd (list last-cmd 'cycle-thing-region))
-      (forward-thing mark-thing-type (if (< (mark) (point)) 1 -1))))
+      (forward-thing thgcmd-mark-thing-type (if (< (mark) (point)) 1 -1))))
   (setq deactivate-mark  nil))
 
 ;;;###autoload
@@ -300,87 +297,22 @@ This command does not work if point is in a string or a comment."
       (mark-enclosing-sexp nil (- (prefix-numeric-value arg)))
     (mark-enclosing-sexp (- (prefix-numeric-value arg)) t)))
 
-
-;;;###autoload
-(defun hide/show-comments (&optional hide/show start end)
-  "Hide or show comments from START to END.
-Interactively, hide comments, or show them if you use a prefix arg.
-Interactively, START and END default to the region limits, if active.
-Otherwise, including non-interactively, they default to `point-min'
-and `point-max'.
-
-Uses `save-excursion', restoring point.
-
-Be aware that using this command to show invisible text shows *all*
-such text, regardless of how it was hidden.  IOW, it does not just
-show invisible text that you previously hid using this command.
-
-From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
-show them.
-
-This function does nothing in Emacs versions prior to Emacs 21,
-because it needs `comment-search-forward'."
-  (interactive
-   (cons (if current-prefix-arg 'show 'hide)
-         (if (or (not mark-active) (null (mark)) (= (point) (mark)))
-             (list (point-min) (point-max))
-           (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
-  (when (require 'newcomment nil t)     ; `comment-search-forward', Emacs 21+.
-    (unless start (setq start  (point-min)))
-    (unless end   (setq end    (point-max)))
-    (unless (<= start end) (setq start  (prog1 end (setq end  start))))
-    (let ((bufmodp           (buffer-modified-p))
-          (buffer-read-only  nil)
-          cbeg cend)
-      (unwind-protect
-           (save-excursion
-             (goto-char start)
-             (while (and (< start end) (setq cbeg  (comment-search-forward end 'NOERROR)))
-               (setq cend  (if (string= "" comment-end)
-                               (1+ (line-end-position))
-                             (search-forward comment-end end 'NOERROR)))
-               (when (and cbeg cend)
-                 (if (eq 'hide hide/show)
-                     (put-text-property cbeg cend 'invisible t)
-                   (put-text-property cbeg cend 'invisible nil)))))
-        (set-buffer-modified-p bufmodp)))))
-
-(defvar last-visible-thing-type nil
+(defvar thgcmd-last-visible-thing-type nil
   "Type of thing last used by `next-visible-thing', `previous-visibl-thing'.")
-
-(defmacro with-comments-hidden (start end &rest body)
-  "Evaluate the forms in BODY while comments are hidden from START to END.
-But if `ignore-comments-flag' is nil, just evaluate BODY,
-without hiding comments.  Show comments again when BODY is finished.
-
-See `hide/show-comments', which is used to hide and show the comments.
-Note that prior to Emacs 21, this never hides comments."
-  (let ((result  (make-symbol "result"))
-        (ostart  (make-symbol "ostart"))
-        (oend    (make-symbol "oend")))
-    `(let ((,ostart  ,start)
-           (,oend    ,end)
-           ,result)
-      (unwind-protect
-           (setq ,result  (progn (when ignore-comments-flag
-                                   (hide/show-comments 'hide ,ostart ,oend))
-                                 ,@body))
-        (when ignore-comments-flag (hide/show-comments 'show ,ostart ,oend))
-        ,result))))
 
 ;;;###autoload
 (defun previous-visible-thing (thing start &optional end)
   "Same as `next-visible-thing', except it moves backward, not forward."
   (interactive (list (or (and (memq last-command '(next-visible-thing
                                                    previous-visible-thing))
-                              last-visible-thing-type)
+                              thgcmd-last-visible-thing-type)
                          (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
                                  (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
                              ;; Save state for `repeat'.
                              (let ((last-command-event       last-command-event)
                                    (last-repeatable-command  last-repeatable-command))
                                (intern (read-string "Thing: ")))
-                           last-visible-thing-type))
+                           thgcmd-last-visible-thing-type))
                      (point)
                      (if mark-active (min (region-beginning) (region-end)) (point-min))))
   (if (interactive-p)
@@ -420,28 +352,28 @@ Return (THING THING-START . THING-END), with THING-START and THING-END
 the bounds of THING.  Return nil if no such THING is found."
   (interactive (list (or (and (memq last-command '(next-visible-thing
                                                    previous-visible-thing))
-                              last-visible-thing-type)
+                              thgcmd-last-visible-thing-type)
                          (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
                                  (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
                              ;; Save state for `repeat'.
                              (let ((last-command-event       last-command-event)
                                    (last-repeatable-command  last-repeatable-command))
                                (intern (read-string "Thing: ")))
-                           last-visible-thing-type))
+                           thgcmd-last-visible-thing-type))
                      (point)
                      (if mark-active (max (region-beginning) (region-end)) (point-max))))
-  (setq last-visible-thing-type  thing)
+  (setq thgcmd-last-visible-thing-type  thing)
   (unless start (setq start  (point)))
   (unless end   (setq end  (if backward (point-min) (point-max))))
   (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
         ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
   (if (interactive-p)
-      (with-comments-hidden start end (next-visible-thing-1 thing start end backward))
-    (next-visible-thing-1 thing start end backward)))
+      (with-comments-hidden start end (thgcmd-next-visible-thing-1 thing start end backward))
+    (thgcmd-next-visible-thing-1 thing start end backward)))
 
-(defun next-visible-thing-1 (thing start end backward)
+(defun thgcmd-next-visible-thing-1 (thing start end backward)
   "Helper for `next-visible-thing'.  Get thing past point."
-  (let ((thg+bds  (next-visible-thing-2 thing start end backward)))
+  (let ((thg+bds  (thgcmd-next-visible-thing-2 thing start end backward)))
     (if (not thg+bds)
         nil
       ;; $$$$$$ Which is better, > or >=, for (> (cddr thg+bds) (point))?
@@ -449,32 +381,43 @@ the bounds of THING.  Return nil if no such THING is found."
         (if backward
             (setq start  (max end (1- (cadr thg+bds))))
           (setq start  (min end (1+ (cddr thg+bds)))))
-        (setq thg+bds  (next-visible-thing-2 thing start end backward)))
+        (setq thg+bds  (thgcmd-next-visible-thing-2 thing start end backward)))
       (when thg+bds (goto-char (cadr thg+bds)))
       thg+bds)))
 
-(defun next-visible-thing-2 (thing start end &optional backward)
-  "Helper for `next-visible-thing-1'.  Thing might not be past START."
+(defun thgcmd-next-visible-thing-2 (thing start end &optional backward)
+  "Helper for `thgcmd-next-visible-thing-1'.  Thing might not be past START."
   (and (not (= start end))
        (save-excursion
          (let ((bounds  nil))
            ;; If BACKWARD, swap START and END.
            (cond ((< start end) (when   backward (setq start  (prog1 end (setq end  start)))))
                  ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
-           (catch 'next-visible-thing-2
+           (catch 'thgcmd-next-visible-thing-2
              (while (if backward (> start end) (< start end))
                (goto-char start)
-               (when (and (if backward (> start end) (< start end))
-                          (get-text-property start 'invisible))
-                 (setq start  (if backward
-                                  (previous-single-property-change start 'invisible nil end)
-                                (next-single-property-change start 'invisible nil end)))
+               ;; Skip invisible text.
+               (when (and (if backward (> start end) (< start end)) (thgcmd-invisible-p start))
+                 (setq start  (if (get-text-property start 'invisible) ; Text prop.
+                                  (if backward
+                                      (previous-single-property-change start 'invisible nil end)
+                                    (next-single-property-change start 'invisible nil end))
+                                (if backward ; Overlay prop.
+                                    (previous-overlay-change start)
+                                  (next-overlay-change start))))
                  (goto-char start))
                (when (setq bounds  (bounds-of-thing-at-point thing))
-                 (throw 'next-visible-thing-2
+                 (throw 'thgcmd-next-visible-thing-2
                    (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
                (setq start  (if backward (1- start) (1+ start))))
              nil)))))
+
+(defun thgcmd-invisible-p (position)
+  "Return non-nil if the character at POSITION is invisible."
+  (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
+    (if (eq buffer-invisibility-spec t)
+        prop
+      (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec)))))
 
 (defun thgcmd-repeat-command (command)
   "Repeat COMMAND."

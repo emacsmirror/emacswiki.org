@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May 10 19:05:20 2011 (-0700)
+;; Last-Updated: Wed May 11 15:21:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6511
+;;     Update #: 6520
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/11 dadams
+;;     Added: icicle-invisible-p, icicle-previous-single-char-property-change.
+;;     icicle-search-thing-scan:
+;;       Handle also text invisible due to overlay, and invisible prop other than t.
+;;     icicle-next-visible-thing-2: Separate handling overlay and text prop.  Use icicle-invisible-p.
 ;; 2011/05/10 dadams
 ;;     Added: icicle-last-visible-thing-type, icicle-previous-visible-thing,
 ;;            icicle-next-visible-thing-(and-bounds|1|2).

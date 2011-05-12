@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 10 06:42:56 2011 (-0700)
+;; Last-Updated: Wed May 11 09:50:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22888
+;;     Update #: 22890
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -892,9 +892,9 @@
 ;;    `icicle-insert-Completions-help-string', `icicle-insert-dot',
 ;;    `icicle-insert-for-yank', `icicle-insert-input',
 ;;    `icicle-insert-thesaurus-entry-cand-fn', `icicle-insert-thing',
-;;    `icicle-isearch-complete-past-string', `icicle-join-nth-parts',
-;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
-;;    `icicle-kill-a-buffer',
+;;    `icicle-invisible-p', `icicle-isearch-complete-past-string',
+;;    `icicle-join-nth-parts', `icicle-key-description',
+;;    `icicle-keys+cmds-w-prefix', `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
 ;;    `icicle-kmacro-action', `icicle-last-modified-first-p',
 ;;    `icicle-levenshtein-match', `icicle-levenshtein-one-match',
@@ -941,8 +941,10 @@
 ;;    `icicle-position', `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
-;;    `icicle-prefix-keys-first-p', `icicle-proxy-candidate-first-p',
-;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
+;;    `icicle-prefix-keys-first-p',
+;;    `icicle-previous-single-char-property-change',
+;;    `icicle-proxy-candidate-first-p', `icicle-put-at-head',
+;;    `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
 ;;    `icicle-read-args-for-set-completion-methods',

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May  6 15:23:01 2011 (-0700)
+;; Last-Updated: Wed May 11 10:24:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4310
+;;     Update #: 4313
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1668,7 +1668,8 @@ option from the minibuffer at any time using `S-pause'."
 ;;;###autoload
 (defcustom icicle-ignore-comments-flag t
   "Non-nil means `icicle-with-comments-hidden' hides comments.
-You can toggle this option using `C-M-;' in the minibuffer."
+You can toggle this option using `C-M-;' in the minibuffer, but to see
+the effect you might need to invoke the current command again."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload

@@ -25,7 +25,7 @@ MissionStatement for more.''
 * 英語で開発されている Elisp の日本語による情報、
 などを目指します。
 
-ここはみんなで作るサイトです。既存、新規にかかわらずのページをご自由に作成してください。詳しくは [[利用手引]] / HowTo または、HowToEditをご覧ください。
+ここはみんなで作るサイトです。既存、新規にかかわらずのページをご自由に作成してください。詳しくは [[利用手引]] / HowTo または、[[HowToEdit]] をご覧ください。
 
 ----
 == 日本語版 サイトマップ ==
@@ -33,7 +33,7 @@ MissionStatement for more.''
 
 * HowToNavigate -- help using the site
 * [[Ｅｌｉｓｐセクション]] / ElispArea -- EmacsLispソースコードのアップロードとダウンロード
-* HowToEdit -- how you can contribute to the site
+* HowToEdit -- どうやってこのサイトに貢献すればよいか
 * [[EmacsWikiの管理者]] / EmacsWikiAdministrators -- handling vandalism and spam on this site
 * [[Wikiのダウンロード|Wikiのダウンロード]] / WikiDownload -- how to get copies of the site
 
@@ -46,9 +46,9 @@ Emacs とは？
 * [[日本語ＦＡＱ]] / [[JapaneseFAQ]] -- ＦＡＱ収集とその英訳
 
 Emacs のダウンロードとインストール
-* [[カテゴリ・Ports|Ports]] / CategoryPorts -- NT, Mac, GNU/Linux including Debian, BSD
-* [[カテゴリ・w32|w32]] / CategoryWThirtyTwo -- for w32-specific stuff
-* [[カテゴリ・ビルド|ビルド]] / CategoryBuilding -- how to build Emacs from sources
+* [[カテゴリ・Ports|Ports]] / CategoryPorts -- NT, Mac, GNU/Linux (Debian, BSDを含む)
+* [[カテゴリ・WThirtyTwo|w32]] / CategoryWThirtyTwo -- for w32-specific stuff
+* [[カテゴリ・ビルド|ビルド]] / CategoryBuilding -- ソースからどうやってビルドするか
 
 Emacs をテキストエディタとして使うには？
 * [[カテゴリ・改行と行折り返し|改行と行折り返し]] / CategoryFilling -- 行の折り返しについて
@@ -94,8 +94,8 @@ Emacs をカスタマイズするには
 * [[カテゴリ・プログラマ向けユーティリティ|プログラマ向けユーティリティ]] / CategoryProgrammerUtils -- コードブラウザ等、プログラマのためのツール
 * [[カテゴリ・リモートEmacs|リモートEmacs]] / CategoryRemoteEmacs -- 遠くのホストでEmacsを動かす
 * [[カテゴリ・外部プログラム|外部プログラム]] / CategoryExternalUtilities -- 外部のプログラムを呼ぶ
-* [[カテゴリ・メール|メール]] / CategoryMail -- メールの運用関連、Gnusは[[Gnus ニュース・メールリーダ]]へ
-* [[カテゴリ・Gnus ニュース・メールリーダ|Gnus ニュース・メールリーダ]] / CategoryGnus -- 高機能なニュース・メールリーダ
+* [[カテゴリ・メール|メール]] / CategoryMail -- メールの運用関連、Gnusは[[カテゴリ・Gnus]]へ
+* [[カテゴリ・Gnus|Gnus]] / CategoryGnus -- 高機能なニュース・メールリーダ
 * [[カテゴリ・BBDB（連絡帳）|BBDB（連絡帳）]] / CategoryBbdb -- 電話番号、メールアドレス等のデータベース
 * [[カテゴリ・バージョン管理|バージョン管理]] / CategoryVersionControl -- CVSやRCSへのインターフェース
 * [[カテゴリ・日記|日記]] / CategoryJournaling -- ブログへのインターフェース
@@ -107,7 +107,7 @@ Emacs の機能を追加するには？（Elisp プログラムと Emacs ソー�
 * [[カテゴリ・Eshell|Eshell]] / CategoryEshell -- a shell implemented completely in elisp
 * [[カテゴリ・パッチ|パッチ]] / CategoryPatches -- patches to Emacs, mostly for extensions on the C level
 * [[カテゴリ・言語の拡張|言語の拡張]] / CategoryExtensionLanguage -- alternatives to EmacsLisp: Guile, Erlang, Python, ...
-* SupportBiDi -- introduction to adding bidirectional input and output to Emacs
+* [[BiDiのサポート]] / SupportBiDi -- introduction to adding bidirectional input and output to Emacs
 
 Emacs ユーザーたちのコミュニティ
 * [[カテゴリ・ホームページ|ホームページ]] / CategoryHomepage -- web pages of friends of Emacs

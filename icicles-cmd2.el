@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue May 10 16:52:38 2011 (-0700)
+;; Last-Updated: Wed May 11 14:48:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3064
+;;     Update #: 3132
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -157,11 +157,12 @@
 ;;    `icicle-Info-build-node-completions-1',
 ;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
 ;;    `icicle-Info-index-action', `icicle-Info-read-node-name',
-;;    `icicle-insert-thesaurus-entry-cand-fn',
+;;    `icicle-insert-thesaurus-entry-cand-fn', `icicle-invisible-p',
 ;;    `icicle-keys+cmds-w-prefix', `icicle-marker+text',
 ;;    `icicle-markers', `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
+;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-single-key-description',
 ;;    `icicle-read-var-value-satisfying',
@@ -3392,7 +3393,8 @@ files.  See `icicle-search' for a full explanation.
 If user option `icicle-ignore-comments-flag' is nil then include
 THINGs located within comments.  Non-nil means to ignore comments for
 searching.  You can toggle this option using `C-M-;' in the
-minibuffer.
+minibuffer, but depending on when you do so you might need to invoke
+this command again.
 
 This command is intended only for use in Icicle mode.
 
@@ -3435,7 +3437,7 @@ NOTE:
         (functionp bounds-fn)
         (functionp thing-fn))))
 
-;;; Same as `hide/show-comments' in `thing-cmds.el'.
+;;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;;;###autoload
 (defun icicle-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
@@ -3476,12 +3478,15 @@ because it needs `comment-search-forward'."
                    (put-text-property cbeg cend 'invisible nil)))))
         (set-buffer-modified-p bufmodp)))))
 
-;;; Same as `with-comments-hidden' in `thing-cmds.el', except doc mentions `C-M-;'.
+;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
 (defmacro icicle-with-comments-hidden (start end &rest body)
   "Evaluate the forms in BODY while comments are hidden from START to END.
+
 But if `icicle-ignore-comments-flag' is nil, just evaluate BODY,
-without hiding comments.  You can toggle this option using `C-M-;'.
-Show comments again when BODY is finished.
+without hiding comments.  Show comments again when BODY is finished.
+You can toggle `icicle-ignore-comments-flag' using `C-M-;' in the
+minibuffer, but depending on when you do so you might need to invoke
+the current command again.
 
 See `icicle-hide/show-comments', which is used to hide and show the
 comments.  Note that prior to Emacs 21, this never hides comments."
@@ -3497,6 +3502,14 @@ comments.  Note that prior to Emacs 21, this never hides comments."
                                  ,@body))
         (when icicle-ignore-comments-flag (icicle-hide/show-comments 'show ,ostart ,oend))
         ,result))))
+
+;; Same as `thgcmd-invisible-p' in `thing-cmd.el'.
+(defun icicle-invisible-p (position)
+  "Return non-nil if the character at POSITION is invisible."
+  (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
+    (if (eq buffer-invisibility-spec t)
+        prop
+      (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec)))))
 
 (defun icicle-search-thing-scan (buffer beg end thing)
   "Scan BUFFER from BEG to END for things of type THING.
@@ -3517,8 +3530,9 @@ If BEG and END are nil, scan entire BUFFER."
              (save-excursion
                (goto-char (min beg end)) ; `icicle-next-visible-thing-and-bounds' works with point.
                (while (and beg  (< beg end))
-                 (when (and (< beg end) (get-text-property beg 'invisible))
-                   (setq beg  (next-single-property-change beg 'invisible nil end)))
+                 (while (and (< beg end) (icicle-invisible-p beg)) ; Skip invisible, overlay or text.
+                   (when (get-char-property beg 'invisible)
+                     (setq beg  (icicle-next-single-char-property-change beg 'invisible nil end))))
                  (let* ((thg+bnds    (icicle-next-visible-thing-and-bounds thing beg end))
                         (hit-string  (and thg+bnds  (car thg+bnds)))
                         (thg-beg     (and thg+bnds  (cadr thg+bnds)))
@@ -3552,7 +3566,8 @@ If BEG and END are nil, scan entire BUFFER."
                          (overlay-put ov 'face 'icicle-search-main-regexp-others))))
                    (if thg-end
                        (setq beg  (1+ thg-end))
-                     (unless (get-text-property beg 'invisible) (setq beg  end)))))
+                     (unless (icicle-invisible-p beg)
+                       (setq beg  end))))) ; If not invisible then no more things, so skip to END.
                (setq icicle-candidates-alist  (append icicle-candidates-alist
                                                       (nreverse temp-list))))
            (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
@@ -3567,7 +3582,10 @@ Return (THING THING-START . THING-END), with THING-START and THING-END
 
 The \"visible\" in the name refers to ignoring things that are within
 invisible text, such as hidden comments.
-You can toggle hiding of comments using `C-M-;'."
+
+You can toggle hiding of comments using `C-M-;' in the minibuffer, but
+depending on when you do so you might need to invoke the current
+command again."
   (save-excursion (icicle-next-visible-thing thing start end)))
 
 ;;; Same as `last-visible-thing-type' in `thing-cmds.el'.
@@ -3600,8 +3618,9 @@ Interactively:
    is active, END is the region end: the greater of point and mark.
 
 Ignores (skips) comments if `icicle-ignore-comments-flag' is non-nil.
-You can toggle this ignoring of comments, using `C-M-;' in the
-minibuffer.
+You can toggle this ignoring of comments using `C-M-;' in the
+minibuffer, but depending on when you do so you might need to invoke
+the current command again.
 
 If you use this command or `icicle-previous-visible-thing'
 successively, even mixing the two, you are prompted for the type of
@@ -3660,11 +3679,17 @@ the bounds of THING.  Return nil if no such THING is found."
              (catch 'icicle-next-visible-thing-2
                (while (if backward (> start end) (< start end))
                  (goto-char start)
-                 (when (and (if backward (> start end) (< start end))
-                            (get-text-property start 'invisible))
-                   (setq start  (if backward
-                                    (previous-single-property-change start 'invisible nil end)
-                                  (next-single-property-change start 'invisible nil end)))
+                 ;; Skip invisible text.
+                 (when (and (if backward (> start end) (< start end)) (icicle-invisible-p start))
+                   (setq start  (if (get-text-property start 'invisible) ; Text prop.
+                                    (if backward
+                                        (previous-single-property-change
+                                         start 'invisible nil end)
+                                      (next-single-property-change
+                                       start 'invisible nil end))
+                                  (if backward ; Overlay prop.
+                                      (previous-overlay-change start)
+                                    (next-overlay-change start))))
                    (goto-char start))
                  (when (setq bounds  (bounds-of-thing-at-point thing))
                    (throw 'icicle-next-visible-thing-2
@@ -3879,6 +3904,7 @@ PREDICATE is nil or a Boolean function that takes these arguments:
     (while val2 (add-to-list 'result (pop val2)))
     result))
 
+;; Same as `thgcmd-next-single-char-property-change' in `thing-cmds.el'.
 (if (fboundp 'next-single-char-property-change)
     (defalias 'icicle-next-single-char-property-change 'next-single-char-property-change)
   (defun icicle-next-single-char-property-change (position prop &optional object limit)
@@ -3889,20 +3915,48 @@ PROP changes.  Returns the position of that change.
 POSITION is a buffer position (integer or marker).
 
 Optional third arg OBJECT is ignored.  It is present for compatibility
- with Emacs 22.
+ with Emacs 22+.
 
 If optional fourth arg LIMIT is non-nil, search stops at position
-LIMIT.  LIMIT is returned if nothing is found before LIMIT.
+LIMIT.  LIMIT is returned if nothing is found before reaching LIMIT.
 
 The property values are compared with `eq'.  If the property is
-constant all the way to the end of the buffer, then the last valid
-buffer position is returned."
+constant all the way to the end of the buffer, then return the last
+valid buffer position."
     (save-excursion
       (goto-char position)
       (let ((propval  (get-char-property (point) prop))
             (end      (min limit (point-max))))
         (while (and (< (point) end) (eq (get-char-property (point) prop) propval))
           (goto-char (min (next-overlay-change (point))
+                          (next-single-property-change (point) prop nil end)))))
+      (point))))
+
+;; Same as `thgcmd-previous-single-char-property-change' in `thing-cmds.el'.
+(if (fboundp 'previous-single-char-property-change)
+    (defalias 'icicle-previous-single-char-property-change 'previous-single-char-property-change)
+  (defun icicle-previous-single-char-property-change (position prop &optional object limit)
+    "Position of previous change of PROP for text property or overlay change.
+Scans characters backward from buffer position POSITION until property
+PROP changes.  Returns the position of that change.
+
+POSITION is a buffer position (integer or marker).
+
+Optional third arg OBJECT is ignored.  It is present for compatibility
+ with Emacs 22+.
+
+If optional fourth arg LIMIT is non-nil, search stops at position
+LIMIT.  LIMIT is returned if nothing is found before reaching LIMIT.
+
+The property values are compared with `eq'.  If the property is
+constant all the way to the start of the buffer, then return the first
+valid buffer position."
+    (save-excursion
+      (goto-char position)
+      (let ((propval  (get-char-property (point) prop))
+            (end      (max limit (point-min))))
+        (while (and (> (point) end) (eq (get-char-property (point) prop) propval))
+          (goto-char (max (next-overlay-change (point))
                           (next-single-property-change (point) prop nil end)))))
       (point))))
 

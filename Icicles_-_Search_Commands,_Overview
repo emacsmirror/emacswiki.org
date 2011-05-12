@@ -509,7 +509,8 @@ means that `icicle-search-thing' ignores comments; that is, it hides them
 temporarily when it scans the region or buffer for things of the given type
 as candidates.  This prevents it, for example, from presenting as a candidate a
 [[sexp]] or [[list]] that is commented out.  You can
-toggle this option anytime using '''`##C-M-;##'''' in the minibuffer.
+toggle this option anytime using '''`##C-M-;##'''' in the minibuffer, but to see the effect you might need to invoke the
+current command again.
 
 * '''`icicle-search-hook'''': Functions run after searching and moving
   to a match, whether by `RET' or `C-RET' (or `C-next' or

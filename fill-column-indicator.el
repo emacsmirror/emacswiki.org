@@ -581,10 +581,7 @@ for tips on troubleshooting.)"
                          (concat fci-cursor-space
                                  (make-string (- fci-column (current-column) 1) 32))))
         (move-to-column fci-column)
-        (setq o (make-overlay (point) (match-end 0)))
-        ;; Empty string here is just to give the paren highlighting
-        ;; adjustments something to operate on.
-        (overlay-put o 'before-string ""))
+        (setq o (make-overlay (point) (match-end 0))))
       (overlay-put o 'face 'fci-shading) 
       (overlay-put o 'category 'fci)
       (goto-char (match-end 0)))))
@@ -665,22 +662,27 @@ for tips on troubleshooting.)"
 ;; Quiet the compiler.
 (defvar fci-other-olay nil)
 
-(defun fci-archive-string (o)
+(defun fci-cache-string (o)
   (when (overlay-get o 'before-string)
-    (overlay-put o 'fci-saved-str (overlay-get o 'before-string)) 
+    (overlay-put o 'fci-cached-str (overlay-get o 'before-string)) 
     (overlay-put o 'before-string nil)) 
-  (overlay-put o 'fci-defer-to (cons fci-other-olay (overlay-get o 'fci-defer-to))))
+  (overlay-put o 'fci-deferring-to (cons fci-other-olay (overlay-get o 'fci-deferring-to))))
 
 (defun fci-restore-string (o) 
-  (overlay-put o 'fci-defer-to (delq fci-other-olay (overlay-get o 'fci-defer-to)))
-  (unless (or (overlay-get o 'fci-defer-to)
+  (overlay-put o 'fci-deferring-to (delq fci-other-olay (overlay-get o 'fci-deferring-to)))
+  (unless (or (overlay-get o 'fci-deferring-to)
               (overlay-get o 'before-string))
-    (overlay-put o 'before-string (overlay-get o 'fci-saved-str))
-    (overlay-put o 'fci-saved-str nil)))  
+    (overlay-put o 'before-string (overlay-get o 'fci-cached-str))
+    (overlay-put o 'fci-cached-str nil)))  
 
 (defsubst fci-get-overlays-region (start end)
   (delq nil (mapcar #'(lambda (x) (if (eq (overlay-get x 'category) 'fci) x))
                     (overlays-in start end))))
+
+(defsubst fci-cache-before-strings (fci-other-olay)
+  (when (and fci-other-olay (overlay-start fci-other-olay)) 
+    (mapc #'fci-cache-string (fci-get-overlays-region (overlay-start fci-other-olay) 
+                                                      (overlay-end fci-other-olay)))))
 
 (defsubst fci-restore-before-strings (fci-other-olay)
   (when (and fci-other-olay (overlay-start fci-other-olay)) 
@@ -688,17 +690,12 @@ for tips on troubleshooting.)"
       (mapc #'fci-restore-string (fci-get-overlays-region (overlay-start fci-other-olay)
                                                           (overlay-end fci-other-olay))))))
 
-(defsubst fci-archive-before-strings (fci-other-olay)
-  (when (and fci-other-olay (overlay-start fci-other-olay)) 
-    (mapc #'fci-archive-string (fci-get-overlays-region (overlay-start fci-other-olay) 
-                                                        (overlay-end fci-other-olay)))))
- 
 (defadvice show-paren-function (around fill-column-indicator)
   (if (eq show-paren-style 'parenthesis) 
       ad-do-it
     (fci-restore-before-strings show-paren-overlay)
     ad-do-it         
-    (fci-archive-before-strings show-paren-overlay))) 
+    (fci-cache-before-strings show-paren-overlay))) 
 
 (defadvice mic-paren-highlight (around fill-column-indicator)
   (if paren-sexp-mode  
@@ -706,8 +703,8 @@ for tips on troubleshooting.)"
         (fci-restore-before-strings (aref mic-paren-overlays 0))
         (fci-restore-before-strings (aref mic-paren-overlays 2))
         ad-do-it
-        (fci-archive-before-strings (aref mic-paren-overlays 0))
-        (fci-archive-before-strings (aref mic-paren-overlays 2)))
+        (fci-cache-before-strings (aref mic-paren-overlays 0))
+        (fci-cache-before-strings (aref mic-paren-overlays 2)))
     ad-do-it))
 
 (defadvice hl-line-highlight (around fill-column-indicator)
@@ -715,7 +712,7 @@ for tips on troubleshooting.)"
   (if hl-line-overlay
       (overlay-put hl-line-overlay 'priority 1))
   ad-do-it
-  (fci-archive-before-strings hl-line-overlay))
+  (fci-cache-before-strings hl-line-overlay))
 
 (defadvice hl-line-unhighlight (before fill-column-indicator)
   (fci-restore-before-strings hl-line-overlay)) 

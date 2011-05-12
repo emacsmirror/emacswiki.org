@@ -1273,7 +1273,8 @@ temporarily when it scans the [[region]] or buffer for things of the
 given type as candidates.  This prevents it, for example, from
 presenting as a candidate a [[sexp]] or [[list]] that is commented out.
 You can toggle this option anytime using '''`##C-M-;##'''' in the
-minibuffer.
+minibuffer, but to see the effect you might need to invoke the
+current command again.
 
 
 
