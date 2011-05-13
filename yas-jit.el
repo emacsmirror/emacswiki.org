@@ -5,19 +5,13 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 27 08:14:43 2010 (-0500)
-;; Version: 0.5
-;; Last-Updated: Mon Nov  1 11:33:51 2010 (-0500)
+;; Version: 0.8
+;; Last-Updated: Thu May 12 15:29:10 2011 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 113
+;;     Update #: 132
 ;; URL: http://www.emacswiki.org/emacs/download/yas-jit.el
 ;; Keywords: Yasnippet fast loading.
 ;; Compatibility: Emacs 23.2 with Yasnippet on svn trunk as of release date.
-;;
-;; Features that might be required by this library:
-;;
-;;   `assoc', `backquote', `button', `bytecomp', `cl',
-;;   `dropdown-list', `easymenu', `help-fns', `help-mode', `view',
-;;   `yasnippet'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -50,6 +44,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 12-May-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu May 12 09:42:24 2011 (-0500) #119 (Matthew L. Fidler)
+;;    Made alias for yas/snippet-dirs for backward-compatibility with yasnippet 0.6
+;; 12-May-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu May 12 09:33:46 2011 (-0500) #115 (Matthew L. Fidler)
+
+;;    Checked for yas/extra-modes.  If not present don't load the
+;;    extra modes with this function.
+
+;; 12-May-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Nov  1 11:33:51 2010 (-0500) #113 (Matthew L. Fidler)
+;;    Allowed loading of yasnippet bundle.
 ;; 01-Apr-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov  1 11:33:51 2010 (-0500) #113 (Matthew L. Fidler)
 ;;    Allow caching of mode snippets into a single file.
@@ -104,7 +110,16 @@
 ;;; Code:
 
 (require 'cl)
-(require 'yasnippet)
+(require 'yasnippet nil t)
+(require 'yasnippet-bundle nil t)
+(when (or (not (featurep 'yasnippet)) (not (featurep 'yasnippet-bundle)))
+  (error "Cannot load yasnippet."))
+
+(if (and (not (fboundp 'yas/snippet-dirs))
+	 (fboundp 'yas/guess-snippet-directories))
+    (defun yas/snippet-dirs ()
+      (if (listp yas/root-directory) yas/root-directory (list yas/root-directory))))
+
 (defvar yas/jit-loads '()
   "Alist of JIT loads for yas.")
 (defvar yas/get-jit-loads-again 't)
@@ -139,6 +154,7 @@
     (when (file-readable-p f)
       (delete-file f))))
 
+
 (defun yas/get-jit-loads ()
   "* Loads Snippet directories just in time.  Should speed up the start-up of Yasnippet"
   (if (and yas/jit-use-cache-dir (file-readable-p "~/.yas-jit-cache.el"))
@@ -147,8 +163,8 @@
         (let ((major-mode 'text-mode))
           (yas/jit-hook))
 	(setq yas/get-jit-loads-again nil))
-  (when yas/get-jit-loads-again
-    (let* ((dirs (yas/snippet-dirs))
+    (when yas/get-jit-loads-again
+      (let* ((dirs (yas/snippet-dirs))
            files
            modes
            (files '())
@@ -201,8 +217,9 @@
         (debug-on-quit 't))
     (while (setq mode (get mode 'derived-mode-parent))
       (push mode modes-to-activate))
-    (dolist (mode (yas/extra-modes))
-      (push mode modes-to-activate))
+    (when (fboundp 'yas/extra-modes)
+      (dolist (mode (yas/extra-modes))
+	(push mode modes-to-activate)))
     (dolist (mode modes-to-activate)
       (let ((test-mode mode)
             (other-modes '())

@@ -44,6 +44,8 @@ A similar problem was recently fixed in the Emacs core. Please try the most rece
 [new:Andrzej:2011-05-12]
 ##linum-mode## is incompatible with ##visual-line-mode##. If the top line of the buffer is a visual line (that is, not a physical one) the line number next to it blinks on any user action (like typing a text or dragging a scrollbar). Also, the line itself is being constantly refilled (which causes text to move around).
 
+: It looks like ##visual-line-mode## doesn't like spaces in the margin (a bug?). A simple workaround is to set ##linum-format## to ##"%d"##. This has a side effect of aligning all line numbers to the left.
+
 == LinumPlus ==
 LinumPlus
 

@@ -37,7 +37,7 @@ This is for emacs version >= 22. Contribute your own.
   Fit window to buffer content     : C-x -
   Put >> in front of selected lines: C-x r t RET >>
   Count words in buffer            : M-x how-many RET \<
-  Compute square root of 2         : M-: (srqt 2)
+  Compute square root of 2         : M-: (sqrt 2)
   Scroll down other window         : C-M-v
   Scroll up other window           : C-M-- C-M-v
 

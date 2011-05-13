@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker 
 
 ;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.37
+;; Version: 0.40
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -150,7 +150,6 @@
 
 (unless (< 21 emacs-major-version)
   (error "Fill-column-indicator requires version 22 or later"))
-
 
 ;;; ---------------------------------------------------------------------
 ;;; User Options
@@ -306,6 +305,8 @@ Leaving this option set to the default value is recommended."
 (defconst fci-advised-functions '(set-fill-column
                                   hl-line-highlight
                                   hl-line-unhighlight
+                                  global-hl-line-highlight
+                                  global-hl-line-unhighlight
                                   show-paren-function
                                   mic-paren-highlight))
 
@@ -555,17 +556,20 @@ for tips on troubleshooting.)"
   (goto-char start)
   (let (o)
     (while (search-forward "\n" end t)
-      (setq o (make-overlay (match-beginning 0) (match-end 0)))
-      (overlay-put o 'category 'fci)
       (goto-char (match-beginning 0))
-      (if (< (current-column) fci-column)
-          (overlay-put o 
-                       'before-string
-                       (concat fci-cursor-space
-                               (make-string (- fci-column (current-column) 1) 32)
-                               fci-rule))
-        (if (= (current-column) fci-column)
-            (overlay-put o 'before-string fci-cursor-rule)))
+      (cond 
+       ((< (current-column) fci-column)
+        (setq o (make-overlay (match-beginning 0) (match-end 0)))
+        (overlay-put o 'category 'fci)
+        (overlay-put o 
+                     'before-string
+                     (concat fci-cursor-space
+                             (make-string (- fci-column (current-column) 1) 32)
+                             fci-rule)))
+       ((= (current-column) fci-column)
+        (setq o (make-overlay (match-beginning 0) (match-end 0)))
+        (overlay-put o 'category 'fci)
+        (overlay-put o 'before-string fci-cursor-rule)))
       (goto-char (match-end 0)))))
 
 (defun fci-put-overlays-shading (start end) 
@@ -573,15 +577,16 @@ for tips on troubleshooting.)"
   (let (o)
     (while (search-forward "\n" end t)
       (goto-char (match-beginning 0))
-      (if (< (current-column) fci-column)
-          (progn
-            (setq o (make-overlay (match-beginning 0) (match-end 0)))
-            (overlay-put o
-                         'before-string
-                         (concat fci-cursor-space
-                                 (make-string (- fci-column (current-column) 1) 32))))
+      (cond 
+       ((< (current-column) fci-column)
+        (setq o (make-overlay (match-beginning 0) (match-end 0)))
+        (overlay-put o
+                     'before-string
+                     (concat fci-cursor-space
+                             (make-string (- fci-column (current-column) 1) 32))))
+       (t
         (move-to-column fci-column)
-        (setq o (make-overlay (point) (match-end 0))))
+        (setq o (make-overlay (point) (match-end 0)))))
       (overlay-put o 'face 'fci-shading) 
       (overlay-put o 'category 'fci)
       (goto-char (match-end 0)))))
@@ -656,66 +661,114 @@ for tips on troubleshooting.)"
       ;; relevant part of the auto-hscrolling algorithm.  Most people won't
       ;; notice the difference in behavior, though.
       (set-window-hscroll (selected-window) 0)))
+ 
+;;; ---------------------------------------------------------------------
+;;; Compatibility with Highlighting
+;;; ---------------------------------------------------------------------
 
-;;; Compatibility with paren.el, mic-paren.el, hl-line.el
+;; Thus far, this implements compatibility with paren.el, mic-paren.el, and
+;; hl-line.el.  The mechanism is general enough that it should be
+;; straightforward to accomodate other libraries as the user complaints roll
+;; in.
 
 ;; Quiet the compiler.
 (defvar fci-other-olay nil)
 
-(defun fci-cache-string (o)
+(defsubst fci-cache-string (o)
   (when (overlay-get o 'before-string)
     (overlay-put o 'fci-cached-str (overlay-get o 'before-string)) 
     (overlay-put o 'before-string nil)) 
   (overlay-put o 'fci-deferring-to (cons fci-other-olay (overlay-get o 'fci-deferring-to))))
 
-(defun fci-restore-string (o) 
+(defsubst fci-restore-string (o) 
   (overlay-put o 'fci-deferring-to (delq fci-other-olay (overlay-get o 'fci-deferring-to)))
   (unless (or (overlay-get o 'fci-deferring-to)
               (overlay-get o 'before-string))
     (overlay-put o 'before-string (overlay-get o 'fci-cached-str))
     (overlay-put o 'fci-cached-str nil)))  
+ 
+(defun fci-cache-string-make-sibs (o)
+  (mapc #'(lambda (x) (overlay-put o 'fci-sibs (cons (copy-overlay o) (overlay-get o 'fci-sibs)))
+                      (overlay-put (car (overlay-get o 'fci-sibs)) 'window x))
+        (delq (selected-window) (get-buffer-window-list nil 'no-minibuf t)))
+  (fci-cache-string o))
+
+(defun fci-restore-string-delete-sibs (o)
+  (mapc #'(lambda (x) (delete-overlay x)) (overlay-get o 'fci-sibs))
+  (overlay-put o 'fci-sibs nil)
+  (fci-restore-string o))
 
 (defsubst fci-get-overlays-region (start end)
   (delq nil (mapcar #'(lambda (x) (if (eq (overlay-get x 'category) 'fci) x))
                     (overlays-in start end))))
 
-(defsubst fci-cache-before-strings (fci-other-olay)
+(defsubst fci-cacher (cache-fn)
   (when (and fci-other-olay (overlay-start fci-other-olay)) 
-    (mapc #'fci-cache-string (fci-get-overlays-region (overlay-start fci-other-olay) 
-                                                      (overlay-end fci-other-olay)))))
+    (mapc cache-fn (fci-get-overlays-region (overlay-start fci-other-olay) 
+                                            (overlay-end fci-other-olay)))))  
 
-(defsubst fci-restore-before-strings (fci-other-olay)
+(defsubst fci-restorer (restore-fn)
   (when (and fci-other-olay (overlay-start fci-other-olay)) 
     (with-current-buffer (overlay-buffer fci-other-olay)
-      (mapc #'fci-restore-string (fci-get-overlays-region (overlay-start fci-other-olay)
-                                                          (overlay-end fci-other-olay))))))
+      (mapc restore-fn (fci-get-overlays-region (overlay-start fci-other-olay)
+                                                  (overlay-end fci-other-olay))))))
+
+(defsubst fci-cache-strings (fci-other-olay)
+  (fci-cacher #'fci-cache-string))
+
+(defsubst fci-cache-strings-make-sibs (fci-other-olay)
+  (fci-cacher #'fci-cache-string-make-sibs))
+
+(defsubst fci-restore-strings (fci-other-olay)
+  (fci-restorer #'fci-restore-string))
+
+(defsubst fci-restore-strings-delete-sibs (fci-other-olay)
+  (fci-restorer #'fci-restore-string-delete-sibs))
+
+(defadvice hl-line-highlight (around fill-column-indicator)
+  (if hl-line-overlay
+      (overlay-put hl-line-overlay 'priority 1))
+  (if hl-line-sticky-flag
+      (progn
+        (fci-restore-strings hl-line-overlay)
+        ad-do-it
+        (fci-cache-strings hl-line-overlay))
+    (fci-restore-strings-delete-sibs hl-line-overlay)
+    ad-do-it
+    (fci-cache-strings-make-sibs hl-line-overlay)))
+
+(defadvice global-hl-line-highlight (around fill-column-indicator)
+  (if global-hl-line-overlay
+      (overlay-put global-hl-line-overlay 'priority 1))
+  (fci-restore-strings-delete-sibs global-hl-line-overlay)
+  ad-do-it
+  (fci-cache-strings-make-sibs global-hl-line-overlay))
+
+(defadvice hl-line-unhighlight (before fill-column-indicator)
+  (if hl-line-sticky-flag
+      (fci-restore-strings hl-line-overlay)
+    (fci-restore-strings-delete-sibs hl-line-overlay)))
+
+(defadvice global-hl-line-unhighlight (before fill-column-indicator)
+  (fci-restore-strings-delete-sibs global-hl-line-overlay))
 
 (defadvice show-paren-function (around fill-column-indicator)
   (if (eq show-paren-style 'parenthesis) 
       ad-do-it
-    (fci-restore-before-strings show-paren-overlay)
+    (fci-restore-strings show-paren-overlay)
     ad-do-it         
-    (fci-cache-before-strings show-paren-overlay))) 
+    (fci-cache-strings show-paren-overlay))) 
 
 (defadvice mic-paren-highlight (around fill-column-indicator)
   (if paren-sexp-mode  
       (progn
-        (fci-restore-before-strings (aref mic-paren-overlays 0))
-        (fci-restore-before-strings (aref mic-paren-overlays 2))
+        (fci-restore-strings (aref mic-paren-overlays 0))
+        (fci-restore-strings (aref mic-paren-overlays 2))
         ad-do-it
-        (fci-cache-before-strings (aref mic-paren-overlays 0))
-        (fci-cache-before-strings (aref mic-paren-overlays 2)))
+        (fci-cache-strings (aref mic-paren-overlays 0))
+        (fci-cache-strings (aref mic-paren-overlays 2)))
     ad-do-it))
 
-(defadvice hl-line-highlight (around fill-column-indicator)
-  (fci-restore-before-strings hl-line-overlay)
-  (if hl-line-overlay
-      (overlay-put hl-line-overlay 'priority 1))
-  ad-do-it
-  (fci-cache-before-strings hl-line-overlay))
-
-(defadvice hl-line-unhighlight (before fill-column-indicator)
-  (fci-restore-before-strings hl-line-overlay)) 
 
 (provide 'fill-column-indicator)
 

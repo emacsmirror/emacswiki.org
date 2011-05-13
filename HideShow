@@ -222,6 +222,20 @@ I found a quick solution by excluding the last line of the block. This can be ba
 May be this could be customized with a local variable like <code>hs-block-includes-last-line</code>. MarioStorti
 
 [new]
+I Think can change to this.
+
+             (q
+              ;; `q' is the point at the end of the block
+              (progn (hs-forward-sexp mdata 1)
+                     (if (not (= (point) (line-end-position)))
+                       (forward-line -1))
+                     (end-of-line)
+                     (point)))
+             ov)
+
+[new]
+
+[new]
 Also, is there some fix for the revert-file problem (all the collapses just disappear upon reverting)?  [An old version of hideshow.el used to include support for saving the hideshow state in a separate file in various ways.  These functions were excised for aesthetic reasons and are now available in hideshow-state.el, which has been mouldering away for about half a decade.  Perhaps summer or autumn 2005 will see an updated release. --ttn]
 [new]
 Also, how to get to expand upon a find-tag?

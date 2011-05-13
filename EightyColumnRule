@@ -29,7 +29,7 @@ And lines longer than 80 are *really really* annoying.
 Keeping lines short is important.
 
 ----
-Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition and FindLongLines.
+Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition, FindLongLines, and FillColumnIndicator.
 
 ----
 whitespace mode has two interesting options you can set in variable whitespace-style:

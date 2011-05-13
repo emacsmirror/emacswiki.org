@@ -30,7 +30,7 @@ When customizing colors, it may be helpful to use ##M-x list-colors-display## to
   (setq fci-rule-width 1)
   (setq fci-rule-color "darkblue")
 
-<b>Images vs. Characters for Rule Style</b>.  If bitmap images aren't available (e.g., when running on a character terminal), ##fci-mode## draws the fill-column rule using characters.  By default it uses `|' (i.e., ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
+<b>Images vs. Characters for Rule Style</b>.  If bitmap images aren't available (e.g., when running on a character terminal), ##fci-mode## draws the fill-column rule using characters.  By default it uses `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
 
 == Further Customization Examples==
 
@@ -155,7 +155,7 @@ fci-mode also causes the highlighting of the current line by hl-line-mode to be 
 
 [new:AlpAker:2011-05-04 14:53 UTC]
 
-Unfortunately, it's not quite that easy.  I've put a new version (0.36) that's partially compatible with hl-line-mode.  It won't work with global-hl-line-mode, or if you have hl-line-sticky-flag set to non-nil.  I'll have a comprehensive fix in the near-ish future (I'm a little swamped with work at the moment).  The current version, at least, is robust enough to handle simultaneous use of hl-lines-mode and the various kinds of paren highlighting. -- AA
+You're right; the problem is essentially the same.  Unfortunately, the fix isn't as straightforward as deleting the fill-column indication on a given line.  (That wouldn't work with global-hl-line-mode, or with hl-line-mode when hl-line-sticky-flag is nil.)  I've put up a new version (0.40) that's compatible with hl-line-mode.  -- AA
 
 ===From the (E-)Mailbag===
 
