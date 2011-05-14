@@ -1290,6 +1290,18 @@ whether you move there by `RET', `C-RET', `C-next', or
 `C-prior'.   See [[Icicles - Search Commands, Overview]].
 
 
+
+
+----
+[:icicle-thing-types]
+==== Option icicle-thing-types ====
+
+User option '''`icicle-thing-types'''' is a list of names of
+ThingAtPoint types to use in various commands.  If you also
+use library <tt>[[thing-cmds.el]]</tt> then the default value is taken from
+`thing-types', and the use of the option is similar.
+
+
 ----
 [:icicle-recenter]
 ==== Option icicle-recenter ====

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May 11 10:24:25 2011 (-0700)
+;; Last-Updated: Fri May 13 13:10:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4313
+;;     Update #: 4331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -170,7 +170,7 @@
 ;;    `icicle-TAB-completion-methods-per-command',
 ;;    `icicle-TAB-shows-candidates-flag', `icicle-recenter',
 ;;    `icicle-test-for-remote-files-flag',
-;;    `icicle-thing-at-point-functions',
+;;    `icicle-thing-at-point-functions', `icicle-thing-types',
 ;;    `icicle-top-level-key-bindings',
 ;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
@@ -3118,6 +3118,34 @@ reverses the meaning of `icicle-default-thing-insertion'."
      (const :tag "No function to successively grab more text" nil)
      (function :tag "Function to advance point one text thing")))
   :group 'Icicles-Miscellaneous)
+
+;; Default value taken from `thing-types' in `thing-cmds.el'.
+;;;###autoload
+(defcustom icicle-thing-types (if (boundp 'thing-types)
+                                  thing-types
+                                (let ((types  ()))
+                                  (mapatoms
+                                   (lambda (tt)
+                                     (when (thgcmd-defined-thing-p tt) (push (symbol-name tt) types))))
+                                  (setq types  (sort types #'string-lessp))
+                                  ;; Remove types that do not make sense.
+                                  (dolist (typ  '("sexp" "thing" "buffer" "point"))
+                                    (setq types (delete typ types)))
+                                  (setq types  (cons "sexp" types)))) ; Put `sexp' first.
+
+  ;; ("sexp" "button" "char" "char-same-line" "comment" "decimal-number" "defun" "email"
+  ;;  "filename" "hex-number" "line" "list" "non-nil-symbol-name" "number" "overlay" "page"
+  ;;  "region-or-word" "sentence" "symbol" "unquoted-list" "url" "whitespace"
+  ;;  "whitespace-&-newlines" "word")
+
+  "*List of thing types.
+Each is a string that names a type of text entity for which there is a
+either a corresponding `forward-'thing operation, or corresponding
+`beginning-of-'thing and `end-of-'thing operations.
+
+The default value includes the names of most symbols that satisfy
+`thgcmd-defined-thing-p'."
+  :type '(repeat string) :group 'Icicles-Miscellaneous :group 'lisp :group 'editing)
 
 ;; Must be before `icicle-top-level-key-bindings'.
 ;;;###autoload

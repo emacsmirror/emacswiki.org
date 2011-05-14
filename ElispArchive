@@ -1,3 +1,15 @@
+Despite the idea of closing the Ohio Emacs Lisp Archive, this is still
+alive, but not updated anymore.  Therefore, is now a historical archive,
+where can be found more than 30 MB of .el and tar files.
+
+The classic anonymous ftp access changed to
+* ftp.cse.ohio-state.edu   /pub/emacs-lisp
+
+Even the original index web page can be viewed at
+* ftp://ftp.cse.ohio-state.edu/pub/emacs-lisp/WWW/index.html
+
+------------
+
 The Ohio Emacs Lisp Archive is closed.  Use the ElispArea instead.
 
  From: ColinWalters

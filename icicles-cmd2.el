@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed May 11 14:48:44 2011 (-0700)
+;; Last-Updated: Fri May 13 13:25:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3132
+;;     Update #: 3223
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -194,7 +194,7 @@
 ;;
 ;;    `icicle-active-map', `icicle-info-buff', `icicle-info-window',
 ;;    `icicle-key-prefix', `icicle-key-prefix-2',
-;;    `icicle-last-visible-thing-type', `icicle-named-colors',
+;;    `icicle-last-thing-type', `icicle-named-colors',
 ;;    `icicle-orig-buff-key-complete', `icicle-orig-extra-cands',
 ;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
@@ -626,7 +626,7 @@ With a prefix argument:
    candidates in book order, and limit the candidates to the current
    node and the rest of the book following it.  In this case, the
    first candidate is `..', which means go up.
-   
+
  * A negative numeric prefix arg (e.g. `C-1') means show the target
    node in a new Info buffer (not available prior to Emacs 21).
    (This applies only to the final completion choice, not to
@@ -1198,7 +1198,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
              ;; Ignore symbols that produce errors.  Example: In Emacs 20, `any', which is defalias'd
              ;; to `icicle-anything', raises this error: "Symbol's function definition is void: any".
              ;; This is caused by the `after' advice `ad-advised-docstring' that is defined by Emacs
-             ;; itself for function `documentation'.  It is not a problem for Emacs 22+. 
+             ;; itself for function `documentation'.  It is not a problem for Emacs 22+.
              (let ((doc  (condition-case nil (documentation symb) (error nil))))
                (when (and doc (icicle-non-whitespace-string-p (icicle-fn-doc-minus-sig doc)))
                  (push (list (list (symbol-name symb) doc)) result))))))
@@ -1449,7 +1449,7 @@ Command names are highlighted using face `icicle-special-candidate'.
 You can see the list of matches with `S-TAB'.
 See `apropos-function' for a description of PATTERN."
      (interactive
-      (list 
+      (list
        (unwind-protect
             (progn
               (mapatoms #'(lambda (symb)
@@ -1543,7 +1543,7 @@ candidates are highlighted using face `icicle-special-candidate'.
 If VAR-PREDICATE is non-nil, show only variables, and only those that
 satisfy the predicate VAR-PREDICATE."
      (interactive
-      (list 
+      (list
        (unwind-protect
             (progn
               (unless (boundp 'apropos-do-all)
@@ -2482,9 +2482,8 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
     (unless buffer (setq buffer  (current-buffer)))
     (when (bufferp buffer)     ; Do nothing if BUFFER is not a buffer.
       (with-current-buffer buffer
-        (unless (and beg end)
-          (setq beg  (point-min)
-                end  (point-max)))
+        (unless (and beg end) (setq beg  (point-min)
+                                    end  (point-max)))
         (condition-case icicle-search-regexp-scan
             (save-excursion
               (goto-char (setq last-beg  beg))
@@ -2715,7 +2714,6 @@ display string as in `icicle-search-action'."
     (when (save-excursion (save-restriction ; Search within the current search context.
                             (narrow-to-region (- marker (length candidate)) marker)
                             (icicle-search-highlight-and-maybe-replace cand+mrker replace-string)))
-      
       ;; Update, since replacement might have changed the current candidate:
       ;; Rehighlight current context, update last candidate, update candidate in minibuffer.
       (if icicle-search-highlight-all-current-flag
@@ -3378,14 +3376,19 @@ command")))
 (icicle-define-search-bookmark-command "url")
 (icicle-define-search-bookmark-command "w3m")
 
+;;; Same as `thgcmd-last-thing-type' in `thing-cmds.el'.
+(defvar icicle-last-thing-type (if (boundp 'thgcmd-last-thing-type) thgcmd-last-thing-type 'sexp)
+  "Type of thing last used by `icicle-next-visible-thing' (or previous).")
+
 ;;;###autoload
 (defun icicle-search-thing (thing &optional beg end require-match where)
   "`icicle-search' with THINGs as search contexts.
 Enter the type of THING to search: `sexp', `sentence', `list', etc.
 
 Possible THINGs are those for which `bounds-of-thing-at-point' returns
-non-nil.  This does not include all THINGs for which `thing-at-point'
-returns non-nil.
+non-nil (and for which the bounds are not equal: an empty thing).
+This does not include all THINGs for which `thing-at-point' returns
+non-nil.
 
 You can search the region, buffer, multiple buffers, or multiple
 files.  See `icicle-search' for a full explanation.
@@ -3402,13 +3405,13 @@ NOTE:
 1. In some cases it can take a while to gather the candidate THINGs.
    Use the command on an active region when you do not need to search
    THINGS throughout an entire buffer.
-2. In Emacs releases prior to Emacs 23 the thing-at-point functions
-   can sometimes behave incorrectly.  Thus, `icicle-search-thing' also
-   behaves incorrectly in such cases, for Emacs prior to version 23.
-3. Prior to Emacs 21 there is no possibility of ignoring comments."
+2. Prior to Emacs 21 there is no possibility of ignoring comments.
+3. For best results, use also library `thingatpt+.el'.  It enhances
+   `thingatpt.el' and fixes some bugs there."
   (interactive (icicle-search-thing-args))
   (unless beg (setq beg  (point-min)))
   (unless end (setq end  (point-max)))
+  (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (setq icicle-search-context-level  0)
   (icicle-search beg end 'icicle-search-thing-scan require-match where thing))
 
@@ -3418,16 +3421,14 @@ NOTE:
          (beg+end  (icicle-region-or-buffer-limits))
          (beg1     (car beg+end))
          (end1     (cadr beg+end))
-         (thing    (intern (read-string "Thing: "))))
-    (while (not (icicle-defined-thing-p thing))
-      (message "Not a defined thing.  Try again (`C-g' to cancel)") (sit-for 2)
-      (setq thing  (intern (read-string "Thing: "))))
+         (thing    (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
+                                            nil nil (symbol-name icicle-last-thing-type)))))
     `(,thing ,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where)))
 
+;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
 (defun icicle-defined-thing-p (thing)
-  "Return non-nil if THING is defined for `thing-at-point'."
-  (let ((forward-op    (or (get thing 'forward-op)
-                           (intern-soft (format "forward-%s" thing))))
+  "Return non-nil if THING (type) is defined for `thing-at-point'."
+  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
         (beginning-op  (get thing 'beginning-op))
         (end-op        (get thing 'end-op))
         (bounds-fn     (get thing 'bounds-of-thing-at-point))
@@ -3517,18 +3518,16 @@ Push hits onto `icicle-candidates-alist'.
 If BUFFER is nil, scan the current buffer.
 Highlight the matches in face `icicle-search-main-regexp-others'.
 If BEG and END are nil, scan entire BUFFER."
-  (let ((add-bufname-p             (and buffer icicle-show-multi-completion-flag))
-        (temp-list                 ()))
+  (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
+        (temp-list      ()))
     (unless buffer (setq buffer  (current-buffer)))
-    (unless (and beg end) (setq beg  (point-min)
-                                end  (point-max)))
     (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
       (with-current-buffer buffer
         (icicle-with-comments-hidden
          beg end
          (condition-case icicle-search-thing-scan
              (save-excursion
-               (goto-char (min beg end)) ; `icicle-next-visible-thing-and-bounds' works with point.
+               (goto-char beg)          ; `icicle-next-visible-thing-and-bounds' works with point.
                (while (and beg  (< beg end))
                  (while (and (< beg end) (icicle-invisible-p beg)) ; Skip invisible, overlay or text.
                    (when (get-char-property beg 'invisible)
@@ -3588,21 +3587,17 @@ depending on when you do so you might need to invoke the current
 command again."
   (save-excursion (icicle-next-visible-thing thing start end)))
 
-;;; Same as `last-visible-thing-type' in `thing-cmds.el'.
-(defvar icicle-last-visible-thing-type nil
-  "Type of thing last used by `icicle-next-visible-thing' (or previous).")
-
 ;;; Simple version of `previous-visible-thing' from `thing-cmds.el'.
 ;;;###autoload
 (defun icicle-previous-visible-thing (thing start &optional end)
   "Same as `icicle-next-visible-thing', except it moves backward."
-  (interactive (list (or (and (memq last-command '(icicle-next-visible-thing
-                                                   icicle-previous-visible-thing))
-                              icicle-last-visible-thing-type)
-                         (prog1 (intern (read-string "Thing: "))
-                           (setq this-command  'icicle-previous-visible-thing)))
-                     (point)
-                     (if mark-active (min (region-beginning) (region-end)) (point-min))))
+  (interactive
+   (list (or (and (memq last-command '(icicle-next-visible-thing icicle-previous-visible-thing))
+                  icicle-last-thing-type)
+             (prog1 (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
+                                             nil nil (symbol-name icicle-last-thing-type)))))
+         (point)
+         (if mark-active (min (region-beginning) (region-end)) (point-min))))
   (if (interactive-p)
       (icicle-with-comments-hidden start end (icicle-next-visible-thing thing start end 'BACKWARD))
     (icicle-next-visible-thing thing start end 'BACKWARD)))
@@ -3628,18 +3623,19 @@ THING only the first time.  You can thus bind these two commands to
 simple, repeatable keys (e.g. `f11', `f12'), to navigate among things
 quickly.
 
-Non-interactively, optional arg BACKWARD means go to previous thing.
+Non-interactively, THING is a symbol, and optional arg BACKWARD means
+go to the previous thing.
 
 Return (THING THING-START . THING-END), with THING-START and THING-END
 the bounds of THING.  Return nil if no such THING is found."
-  (interactive (list (or (and (memq last-command '(icicle-next-visible-thing
-                                                   icicle-previous-visible-thing))
-                              icicle-last-visible-thing-type)
-                         (prog1 (intern (read-string "Thing: "))
-                           (setq this-command  'icicle-next-visible-thing)))
-                     (point)
-                     (if mark-active (max (region-beginning) (region-end)) (point-max))))
-  (setq icicle-last-visible-thing-type  thing)
+  (interactive
+   (list (or (and (memq last-command '(icicle-next-visible-thing icicle-previous-visible-thing))
+                  icicle-last-thing-type)
+             (prog1 (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
+                                             nil nil (symbol-name thgcmd-last-thing-type)))))
+         (point)
+         (if mark-active (max (region-beginning) (region-end)) (point-max))))
+  (setq icicle-last-thing-type  thing)
   (unless start (setq start  (point)))
   (unless end   (setq end    (if backward (point-min) (point-max))))
   (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
@@ -3691,7 +3687,8 @@ the bounds of THING.  Return nil if no such THING is found."
                                       (previous-overlay-change start)
                                     (next-overlay-change start))))
                    (goto-char start))
-                 (when (setq bounds  (bounds-of-thing-at-point thing))
+                 (when (and (setq bounds  (bounds-of-thing-at-point thing))
+                            (not (equal (car bounds) (cdr bounds)))) ; Not an empty thing, "".
                    (throw 'icicle-next-visible-thing-2
                      (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
                  (setq start  (if backward (1- start) (1+ start))))
@@ -3839,9 +3836,8 @@ PREDICATE is nil or a Boolean function that takes these arguments:
     (unless buffer (setq buffer  (current-buffer)))
     (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
       (with-current-buffer buffer
-        (unless (and beg end)
-          (setq beg  (point-min)
-                end  (point-max)))
+        (unless (and beg end) (setq beg  (point-min)
+                                    end  (point-max)))
         (condition-case icicle-search-char-property-scan
             (save-excursion
               (while (and (< beg end)
@@ -4864,7 +4860,7 @@ This command is intended for use only in Icicle mode."
                   (or (cdr (assoc (symbol-name typ) icicle-predicate-types-alist)) (symbol-name typ))
                 (symbol-name typ)))
              icicle-saved-completion-candidate)))
-    
+
 (when (> emacs-major-version 21)
   (defun icicle-get-anything-types ()
     "Return list of types defined in `anything-sources'.  See `anything.el'."
@@ -5912,7 +5908,7 @@ VAR is symbol `icicle-(S-)TAB-completion-methods(-alist)'."
             (push (assoc meth icicle-S-TAB-completion-methods-alist) methods)))
         (setq methods  (nreverse methods))))
     (list command methods current-prefix-arg (prefix-numeric-value current-prefix-arg))))
-    
+
 (defun icicle-set-completion-methods-for-command (command methods var arg msgp)
   "Set the possible completion methods for COMMAND.
 This works by advising COMMAND.
@@ -5936,7 +5932,7 @@ Null ARG means advise and enable."
            (ad-activate command)
            (when msgp (message "`%s' %s: %s" command type
                                (if (consp (car methods)) (mapcar #'car methods) methods)))))))
-           
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'icicles-cmd2)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed May 11 09:50:50 2011 (-0700)
+;; Last-Updated: Fri May 13 09:27:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22890
+;;     Update #: 22892
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -716,7 +716,7 @@
 ;;    `icicle-TAB-completion-methods-per-command',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
-;;    `icicle-thing-at-point-functions',
+;;    `icicle-thing-at-point-functions', `icicle-thing-types',
 ;;    `icicle-top-level-key-bindings',
 ;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
@@ -1124,8 +1124,7 @@
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command', `icicle-last-input',
 ;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
-;;    `icicle-last-transform-function',
-;;    `icicle-last-visible-thing-type',
+;;    `icicle-last-transform-function', `icicle-last-thing-type',
 ;;    `icicle-locate-file-action-fn',
 ;;    `icicle-locate-file-no-symlinks-p', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',

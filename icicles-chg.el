@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed May 11 15:21:53 2011 (-0700)
+;; Last-Updated: Fri May 13 13:24:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6520
+;;     Update #: 6540
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/13 dadams
+;;     Renamed: icicle-last-visible-thing-type to icicle-last-thing-type.
+;;     icicle-last-thing-type: Use thgcmd-last-thing-type value as default, if available.
+;;     icicle-search-thing: Ensure BEG is before END (swap if needed).
+;;     icicle-search-thing-args, icicle-(next|previous)-visible-thing:
+;;       Use completing-read, not read-string, to read thing type.
+;;     icicle-(next|previous)-visible-thing: Do not set this-command (no need).
+;;     icicle-search-thing-scan: Removed code defining BEG, END if nil.  Go to BEG, not min BEG, END.
+;;     icicle-next-visible-thing-2: Do not return an empty thing.
 ;; 2011/05/11 dadams
 ;;     Added: icicle-invisible-p, icicle-previous-single-char-property-change.
 ;;     icicle-search-thing-scan:
@@ -775,6 +784,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/05/12 dadams
+;;     icicle-candidate-short-help: Do nothing if string is empty ("").
 ;; 2011/05/07 dadams
 ;;     icicle-insert-cand-in-minibuffer: Go to prompt end before insert.
 ;; 2011/05/04 dadams
@@ -4565,6 +4576,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/05/13 dadams
+;;     Added: icicle-thing-types.
 ;; 2011/05/07 dadams
 ;;     Added: icicle-ignore-comments-flag.
 ;; 2011/05/03 dadams

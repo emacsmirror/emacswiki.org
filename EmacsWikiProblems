@@ -158,7 +158,12 @@ Yeah, I can confirm this. In the last few days, the server has been acting up st
 [new:DrewAdams:2011-05-03 17:51 UTC]
 In case it helps and is related, I sometimes also get timeouts ("could not connect to server") -- DrewAdams
 
+[new]
+I've heard from the hosting admins that they limited some other Python process to less memory because they noticed that the wiki script was crashing with out of memory errors. I haven't seen this error since then, so I'm hoping this one is resolved. -- AlexSchroeder
 
+
+[new:DrewAdams:2011-05-13 15:25 UTC]
+Thanks for following up on this, Alex.  I haven't noticed any problem lately.  Really appreciate the lack of this annoyance.  Thx -- DrewAdams
 
 
 == Conflict from my own edit 25 minutes ago? ==

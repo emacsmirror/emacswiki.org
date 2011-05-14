@@ -1,0 +1,17 @@
+Lisp:flymake-cursor.el
+
+The normal operation of flymake allows the user to see the error message for a particular line by “hovering” the mouse over the line. This is inconvenient for people who try to use the keyboard for all input. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
+
+This works in any language that flymake supports. Here's an example of it working with flymake-for-javascript: 
+
+http://i.stack.imgur.com/aFT2i.png
+
+The original code apparently is available at paste.lisp.org: [http://paste.lisp.org/display/60617,1/raw flymake-cursor.el] 
+
+It has since been modified to show the flymake error message in the minibuffer only after a delay.  This prevents a distracting UI experience - messages quickly flashing up in the minibuffer and then disappearing - when a user cursors through a document that contains multiple flymake errors.
+
+
+A similar capability is now available in [NxhtmlMode nXhtml] in the file <b>util/flymakemsg.el</b>).
+
+
+

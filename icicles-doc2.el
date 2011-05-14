@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed May 11 10:47:46 2011 (-0700)
+;; Last-Updated: Fri May 13 09:59:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27745
+;;     Update #: 27746
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5124,6 +5124,11 @@
 ;;    run after searching and moving to an `icicle-search' match,
 ;;    whether you move there by `RET', `C-RET', `C-next', or
 ;;    `C-prior'.
+;;
+;;  * User option `icicle-thing-types' is a list of names of
+;;    thing-at-point types to use in various commands.  If you also
+;;    use library `thing-cmds.el' then the default value is taken from
+;;    `thing-types', and the use of the option is similar.
 ;;
 ;;  * User option `icicle-recenter' is passed as argument to
 ;;    `recenter' whenever the current navigation destination would be

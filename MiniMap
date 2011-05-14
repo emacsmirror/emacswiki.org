@@ -139,5 +139,7 @@ Then I can bind single shortcut to minimap toggling, it's handy.
 
 
 ----
-  
+Would it be possible to make the minimap buffer scroll-wheel enabled ? Currently using the scroll-wheel triggers a refresh which just makes the buffer glitch a bit. As a workaround, tips to (really) disable the scroll wheel would be welcome.
+
+----  
 CategoryWindows   CategoryDisplay

@@ -1,6 +1,6 @@
 == Flymake for C# ==
 
-Flymake-for-csharp.el is a small elisp module that makes using FlyMake with C# modules, nicer. 
+Flymake for csharp  is now builtin to csharp-mode.el .  There are enhancements that makes using FlyMake with C# modules, nicer. 
 
 http://i40.tinypic.com/ifze6c.jpg
 
@@ -14,8 +14,7 @@ highlighting syntax errors or other compile problems.
 
 == Download ==
 
-A version is available at Lisp:flymake-for-csharp.el 
-The latest version is [http://code.google.com/p/csharpmode/source/browse/trunk/flymake-for-csharp.el on google]
+You get the flymake-for-csharp stuff when you use csharp-mode, available at Lisp:csharp-mode.el 
 
 
 == Rationale ==
@@ -35,6 +34,7 @@ The original flymake-for-csharp came from
 
 It has since been generalized, updated, and made more reliable and flexible.
 
+In May 2011, it was integrated into csharp-mode itself.
 
 == Basic Usage ==
 
@@ -48,46 +48,24 @@ Flymake-for-csharp can do syntax-checking builds, on-the-fly, via flymake, using
 
 To use it:
 
-1) put flymake-for-csharp.el on your load path.
+1) use csharp-mode
 
-2) somewhere in your .emacs, place this:
-
-      (require 'flymake-for-csharp)
-
-3) Add this to your csharp-mode-hook function:
+2) Add this to your csharp-mode-hook function:
 
       (flymake-mode)
 
-4) specify how you want to use flymake, via these variables:
+3) specify how you want to use flymake, by including a comment 
+   at the top of the file, eg:
 
-      flymake-for-csharp-netsdk-location
-      flymake-for-csharp-dotnet-location
-      flymake-for-csharp-buildfile-alist
-      flymake-for-csharp-grep-pgm
-      flymake-for-csharp-csc-arguments
- 
+   // flymake: csc.exe /t:module /R:MyAssembly.dll @@FILE@@
 
 For More Detail, see the extensive comments in the elisp source code. 
 
-[new]
-I was able to implement a monkey-patch to the popup menu presented by flymake-display-err-menu -for-current-line , that presents a list of "quick fixes", as with visual studio.  For example if your code has a CS0246 error (unknown type), then the menu presents a list of fixes including "add a using statement" and "use the fully qualified type".  
-
-Example:
-
-http://i40.tinypic.com/mwryw0.jpg
-
-This works on emacs v22.2.1 on Windows, but requires:
-
- - changes to flymake.el so that flymake-goto-next-error goes to the *column* as well as the line of the error
- - CSDEShell - the C# development environment shell - to lookup fully-qualified typenames on short names. 
-
-see [http://stackoverflow.com/questions/2601120/do-overlays-tooltips-work-correctly-in-emacs-for-windows/2604843#2604843 this post] for more.
 
 == Complementary stuff ==
 
 Don't forget:
 
-* CSharpMode -  mode for editing C#
 * PowerShell - Two things: 
 ** a mode for running powershell as an inferior shell. 
 ** A separate powershell-mode, which is for *editing* powershell code.

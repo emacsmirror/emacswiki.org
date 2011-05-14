@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May 11 14:25:15 2011 (-0700)
+;; Last-Updated: Thu May 12 17:18:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12288
+;;     Update #: 12289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5463,9 +5463,10 @@ Put `help-echo' property if `tooltip-mode' is non-nil.
 Put `icicle-mode-line-help' property (on the first character only) if
  `icicle-help-in-mode-line-flag' is non-nil.
 Return STRING, whether propertized or not."
-  (when icicle-help-in-mode-line-flag (put-text-property 0 1 'icicle-mode-line-help help string))
-  (when (and (boundp 'tooltip-mode) tooltip-mode)
-    (put-text-property 0 (length string) 'help-echo help string))
+  (unless (equal "" string)
+    (when icicle-help-in-mode-line-flag (put-text-property 0 1 'icicle-mode-line-help help string))
+    (when (and (boundp 'tooltip-mode) tooltip-mode)
+      (put-text-property 0 (length string) 'help-echo help string)))
   string)
 
 ;; Free vars here: `icicle-prompt', `icicle-candidate-help-fn', `completion-ignore-case',

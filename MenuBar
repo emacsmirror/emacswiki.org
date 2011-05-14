@@ -16,7 +16,13 @@ To disable the menu bar:
 
 ** ActiveMenu -- Displays the menu bar only when the mouse is close to it.
 
+before:
 
+http://i.imgur.com/wm5qo.png
+
+After: 
+
+http://i.imgur.com/gkGC4.png
 == Popup Menu Bar ==
 
 Starting with GnuEmacs 21, you can disable the menu bar but still have it available on a popup menu:

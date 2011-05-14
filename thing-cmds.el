@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Wed May 11 15:22:56 2011 (-0700)
+;; Last-Updated: Fri May 13 13:22:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 456
+;;     Update #: 634
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -46,8 +46,8 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `thgcmd-last-visible-thing-type', `thgcmd-mark-thing-type',
-;;    `thgcmd-thing-region-index'.
+;;    `thgcmd-defined-thing-p', `thgcmd-last-thing-type',
+;;    `thgcmd-thing-region-index', `thgcmd-thing-region-point'.
 ;;
 ;;  Put this in your init file (`~/.emacs'):
 ;;
@@ -62,6 +62,16 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/05/13 dadams
+;;     Added: thgcmd-defined-thing-p (from icicle-defined-thing-p).
+;;     Combined thgcmd-last-visible-thing-type and thgcmd-mark-thing-type into
+;;       thgcmd-last-thing-type.
+;;     Renamed: cycle-thing-region-point to thgcmd-thing-region-point.
+;;     thing-types: Default value defined using thgcmd-defined-thing-p, not a constant.
+;;     thing-region, mark-thing: Use name of thgcmd-last-thing-type as default value.
+;;     thing-region: Save THING as thgcmd-last-thing-type.
+;;     (next|previous)-visible-thing: Use completing-read, not read-string.
+;;     thgcmd-next-visible-thing-2: Be sure not to return an empty thing ("").
 ;; 2011/05/11 dadams
 ;;     Added: thgcmd-invisible-p.
 ;;     Moved comment hide/show stuff to new library hide-comnt.el, and require that.
@@ -119,16 +129,62 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun thgcmd-defined-thing-p (thing)
+  "Return non-nil if THING (type) is defined for `thing-at-point'."
+  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
+        (beginning-op  (get thing 'beginning-op))
+        (end-op        (get thing 'end-op))
+        (bounds-fn     (get thing 'bounds-of-thing-at-point))
+        (thing-fn      (get thing 'thing-at-point)))
+    (or (functionp forward-op)
+        (and (functionp beginning-op) (functionp end-op))
+        (functionp bounds-fn)
+        (functionp thing-fn))))
+
+;;;###autoload
+(defcustom thing-types (let ((types  ()))
+                         (mapatoms
+                          (lambda (tt)
+                            (when (thgcmd-defined-thing-p tt) (push (symbol-name tt) types))))
+                         (setq types  (sort types #'string-lessp))
+                         ;; Remove types that do not make sense.
+                         (dolist (typ  '("sexp" "thing" "buffer" "point"))
+                           (setq types (delete typ types)))
+                         (setq types  (cons "sexp" types))) ; Put `sexp' first.
+
+  ;; ("sexp" "button" "char" "char-same-line" "comment" "decimal-number" "defun" "email"
+  ;;  "filename" "hex-number" "line" "list" "non-nil-symbol-name" "number" "overlay" "page"
+  ;;  "region-or-word" "sentence" "symbol" "unquoted-list" "url" "whitespace"
+  ;;  "whitespace-&-newlines" "word")
+
+  "*List of thing types.
+Each is a string that names a type of text entity for which there is a
+either a corresponding `forward-'thing operation, or corresponding
+`beginning-of-'thing and `end-of-'thing operations.
+
+The default value includes the names of most symbols that satisfy
+`thgcmd-defined-thing-p'.
+
+Command `cycle-thing-region' cycles through this list, in order."
+  :type '(repeat string) :group 'lisp :group 'editing)
+
+(defvar thgcmd-thing-region-index 0 "Index of current thing in `thing-types'.")
+
+(defvar thgcmd-thing-region-point nil "Position of point before invoking `cycle-thing-region'.")
+
+(defvar thgcmd-last-thing-type 'sexp "Last thing type (a symbol) used by various commands.")
+
 ;;;###autoload
 (defun thing-region (thing)
   "Set the region around a THING near the cursor.
-You are prompted for the type of thing.  Completion is available for
-some standard types of thing, but you can enter any type.
+You are prompted for the type of thing.  Completion is available (lax).
 The cursor is placed at the end of the region.  You can return it to
-the original location by using `C-u C-SPC' twice."
+the original location by using `C-u C-SPC' twice.
+Non-interactively, THING is a string naming a thing type."
   (interactive (list (let ((icicle-sort-function  nil))
-                       (completing-read "Type of thing: " (mapcar #'list thing-types)
-                                        nil nil nil nil "sexp"))))
+                       (completing-read "Thing (type): " (mapcar #'list thing-types)
+                                        nil nil nil nil (symbol-name thgcmd-last-thing-type)))))
+  (setq thgcmd-last-thing-type  (intern thing))
   (let* ((bds    (if (fboundp 'bounds-of-thing-nearest-point) ; In `thingatpt+.el'.
                      (bounds-of-thing-nearest-point (intern thing))
                    (bounds-of-thing-at-point (intern thing))))
@@ -156,56 +212,29 @@ successive things of the same type, but to do that you must first use
 `C-x C-x': `\\[cycle-thing-region] C-x C-x \\[mark-thing]'"
   (interactive)
   (if (eq last-command this-command)
-      (goto-char cycle-thing-region-point)
+      (goto-char thgcmd-thing-region-point)
     (setq thgcmd-thing-region-index  0
-          cycle-thing-region-point   (point)))
+          thgcmd-thing-region-point   (point)))
   (let* ((thing    (elt thing-types thgcmd-thing-region-index))
          (success  (thing-region thing)))
     (setq thgcmd-thing-region-index  (1+ thgcmd-thing-region-index))
     (when success
-      (setq thgcmd-mark-thing-type  (intern thing)) ; Save it for `mark-thing'.
+      (setq thgcmd-last-thing-type  (intern thing))
       (message "%s" (capitalize (elt thing-types (1- thgcmd-thing-region-index)))))
     (when (>= thgcmd-thing-region-index (length thing-types))
       (setq thgcmd-thing-region-index  0))))
 
 ;;;###autoload
-(defcustom thing-types '("word" "symbol" "sexp" "list" "line" "sentence"
-                         "paragraph" "page" "defun" "number" "form")
-  "*List of thing types.  Used for completion and `cycle-thing-region'.
-Each list element is a string that names a type of text entity for
-which there is a either a corresponding `forward-'thing operation, or
-corresponding `beginning-of-'thing and `end-of-'thing operations.
-Examples include \"word\", \"sentence\", and \"defun\".
-
-The first element is the default thing type used by `mark-thing' and
-`cycle-thing-region'."
-  :type '(repeat string) :group 'lisp :group 'editing)
-
-(defvar thgcmd-thing-region-index 0 "Index of current thing in `thing-types'.")
-
-(defvar thgcmd-mark-thing-type nil "Current thing type used by `mark-thing'.")
-
-(defvar cycle-thing-region-point nil
-  "Position of point before `cycle-thing-region'.")
-
-;;;###autoload
 (defun mark-thing (thing &optional arg allow-extend)
   "Set point at one end of THING and set mark ARG THINGs from point.
-THING is a symbol that names a type of thing.  Interactively, the
-symbol name is read: \"word\", \"sexp\", and so on.  See option
-`thing-types' for more examples.
-
 Put mark at the same place command `forward-'THING would put it with
 the same prefix argument.
 
 Put point at the beginning of THING, unless the prefix argument (ARG)
 is negative, in which case put it at the end of THING.
 
-Interactively:
-
-You are prompted for THING.  Completion is available for the types of
-thing in user option `thing-types', but you can enter any type.  The
-default value is the first element of `thing-types'.
+THING is a symbol that names a type of thing.  Interactively, you are
+prompted for it.  Completion is available (lax).
 
 If `mark-thing' is repeated or if the mark is active (in Transient
 Mark mode), then it marks the next ARG THINGs, after the ones already
@@ -219,30 +248,26 @@ to select more THINGS of the last kind selected."
   (interactive "i\nP\np")               ; THING arg is nil (ignored) interactively.
   (let ((this-cmd  this-command)
         (last-cmd  last-command))
-    (cond ((and allow-extend (or (and (eq last-cmd this-cmd) (mark t))
-                                 (and transient-mark-mode mark-active)))
-           (setq arg  (if arg
-                          (prefix-numeric-value arg)
-                        (if (< (mark) (point)) -1 1)))
-           (set-mark (save-excursion
-                       (goto-char (mark))
-                       (forward-thing thgcmd-mark-thing-type arg)
-                       (point))))
+    (cond ((and allow-extend  (or (and (eq last-cmd this-cmd)  (mark t))
+                                  (and transient-mark-mode  mark-active)))
+           (setq arg  (if arg  (prefix-numeric-value arg)  (if (< (mark) (point)) -1 1)))
+           (set-mark (save-excursion (goto-char (mark))
+                                     (forward-thing thgcmd-last-thing-type arg)
+                                     (point))))
           (t
-           (setq thgcmd-mark-thing-type  (or thing
-                                             (intern (prog1 (let ((icicle-sort-function  nil))
-                                                              (completing-read
-                                                               "Type of thing: "
-                                                               (mapcar #'list thing-types)
-                                                               nil nil nil nil
-                                                               (car thing-types)))
-                                                       (setq this-command  this-cmd)))))
+           (setq thgcmd-last-thing-type
+                 (or thing
+                     (prog1 (let ((icicle-sort-function  nil))
+                              (intern (completing-read
+                                       "Thing (type): " (mapcar #'list thing-types) nil nil
+                                       nil nil (symbol-name thgcmd-last-thing-type))))
+                       (setq this-command  this-cmd))))
            (push-mark (save-excursion
-                        (forward-thing thgcmd-mark-thing-type (prefix-numeric-value arg))
+                        (forward-thing thgcmd-last-thing-type (prefix-numeric-value arg))
                         (point))
                       nil t)))
     (unless (memq this-cmd (list last-cmd 'cycle-thing-region))
-      (forward-thing thgcmd-mark-thing-type (if (< (mark) (point)) 1 -1))))
+      (forward-thing thgcmd-last-thing-type (if (< (mark) (point)) 1 -1))))
   (setq deactivate-mark  nil))
 
 ;;;###autoload
@@ -266,11 +291,9 @@ other end of the sexp.
 
 This command does not work if point is in a string or a comment."
   (interactive "P\np")
-  (cond ((and allow-extend
-	      (or (and (eq last-command this-command) (mark t))
-		  (and transient-mark-mode mark-active)))
-	 (setq arg  (if arg (prefix-numeric-value arg)
-                      (if (< (mark) (point)) 1 -1)))
+  (cond ((and allow-extend  (or (and (eq last-command this-command)  (mark t))
+                                (and transient-mark-mode  mark-active)))
+	 (setq arg  (if arg  (prefix-numeric-value arg)  (if (< (mark) (point)) 1 -1)))
 	 (set-mark (save-excursion (up-list (- arg)) (point)))
          (up-list arg))
 	(t
@@ -283,8 +306,7 @@ This command does not work if point is in a string or a comment."
 (defun mark-enclosing-sexp-forward (&optional arg) ; `C-M-F' or maybe `C-M-)'
   "`mark-enclosing-sexp' leaving point at region end."
   (interactive "P")
-  (if (or (and (eq last-command this-command) (mark t))
-		  (and transient-mark-mode mark-active))
+  (if (or (and (eq last-command this-command) (mark t))  (and transient-mark-mode mark-active))
       (mark-enclosing-sexp nil (prefix-numeric-value arg))
     (mark-enclosing-sexp (prefix-numeric-value arg) t)))
 
@@ -292,29 +314,26 @@ This command does not work if point is in a string or a comment."
 (defun mark-enclosing-sexp-backward (&optional arg) ; `C-M-B' or maybe `C-M-('
   "`mark-enclosing-sexp' leaving point at region start."
   (interactive "P")
-  (if (or (and (eq last-command this-command) (mark t))
-		  (and transient-mark-mode mark-active))
+  (if (or (and (eq last-command this-command) (mark t))  (and transient-mark-mode mark-active))
       (mark-enclosing-sexp nil (- (prefix-numeric-value arg)))
     (mark-enclosing-sexp (- (prefix-numeric-value arg)) t)))
-
-(defvar thgcmd-last-visible-thing-type nil
-  "Type of thing last used by `next-visible-thing', `previous-visibl-thing'.")
 
 ;;;###autoload
 (defun previous-visible-thing (thing start &optional end)
   "Same as `next-visible-thing', except it moves backward, not forward."
-  (interactive (list (or (and (memq last-command '(next-visible-thing
-                                                   previous-visible-thing))
-                              thgcmd-last-visible-thing-type)
-                         (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
-                                 (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
-                             ;; Save state for `repeat'.
-                             (let ((last-command-event       last-command-event)
-                                   (last-repeatable-command  last-repeatable-command))
-                               (intern (read-string "Thing: ")))
-                           thgcmd-last-visible-thing-type))
-                     (point)
-                     (if mark-active (min (region-beginning) (region-end)) (point-min))))
+  (interactive
+   (list (or (and (memq last-command '(next-visible-thing previous-visible-thing))
+                  thgcmd-last-thing-type)
+             (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
+                     (prog1 DO-NOT-USE-!@$%^&*+  (setq DO-NOT-USE-!@$%^&*+  nil)))
+                 ;; Save state for `repeat'.
+                 (let ((last-command-event       last-command-event)
+                       (last-repeatable-command  last-repeatable-command))
+                   (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
+                                            nil nil (symbol-name thgcmd-last-thing-type))))
+               thgcmd-last-thing-type))
+         (point)
+         (if mark-active  (min (region-beginning) (region-end))  (point-min))))
   (if (interactive-p)
       (with-comments-hidden start end (next-visible-thing thing start end 'BACKWARD))
     (next-visible-thing thing start end 'BACKWARD)))
@@ -328,9 +347,10 @@ Interactively:
  - If the region is not active, END is the buffer end.  If the region
    is active, END is the region end: the greater of point and mark.
 
-Ignores (skips) comments if `ignore-comments-flag' is non-nil.
-If you also use Icicles then you can toggle this ignoring of comments,
-using `C-M-;' in the minibuffer.
+Ignores (skips) comments if `ignore-comments-flag' is non-nil.  If you
+also use Icicles then you can toggle this ignoring of comments using
+`C-M-;' in the minibuffer, but depending on when you do so you might
+need to invoke the current command again.
 
 If you use this command or `previous-visible-thing' successively, even
 mixing the two, you are prompted for the type of THING only the first
@@ -346,23 +366,25 @@ separately using `C-x down down...' etc.  However, unlike bindings for
 `next-visible-thing' and `previous-visible-thing', switching from one
 direction to the other requires you to again enter the THING type.
 
-Non-interactively, optional arg BACKWARD means go to previous thing.
+Non-interactively, THING is a symbol, and optional arg BACKWARD means
+go to the previous thing.
 
 Return (THING THING-START . THING-END), with THING-START and THING-END
 the bounds of THING.  Return nil if no such THING is found."
-  (interactive (list (or (and (memq last-command '(next-visible-thing
-                                                   previous-visible-thing))
-                              thgcmd-last-visible-thing-type)
-                         (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
-                                 (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
-                             ;; Save state for `repeat'.
-                             (let ((last-command-event       last-command-event)
-                                   (last-repeatable-command  last-repeatable-command))
-                               (intern (read-string "Thing: ")))
-                           thgcmd-last-visible-thing-type))
-                     (point)
-                     (if mark-active (max (region-beginning) (region-end)) (point-max))))
-  (setq thgcmd-last-visible-thing-type  thing)
+  (interactive
+   (list (or (and (memq last-command '(next-visible-thing previous-visible-thing))
+                  thgcmd-last-thing-type)
+             (if (or (not (boundp 'DO-NOT-USE-!@$%^&*+))
+                     (prog1 DO-NOT-USE-!@$%^&*+ (setq DO-NOT-USE-!@$%^&*+  nil)))
+                 ;; Save state for `repeat'.
+                 (let ((last-command-event       last-command-event)
+                       (last-repeatable-command  last-repeatable-command))
+                   (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
+                                            nil nil (symbol-name thgcmd-last-thing-type))))
+               thgcmd-last-thing-type))
+         (point)
+         (if mark-active (max (region-beginning) (region-end)) (point-max))))
+  (setq thgcmd-last-thing-type  thing)
   (unless start (setq start  (point)))
   (unless end   (setq end  (if backward (point-min) (point-max))))
   (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
@@ -406,7 +428,8 @@ the bounds of THING.  Return nil if no such THING is found."
                                     (previous-overlay-change start)
                                   (next-overlay-change start))))
                  (goto-char start))
-               (when (setq bounds  (bounds-of-thing-at-point thing))
+               (when (and (setq bounds  (bounds-of-thing-at-point thing))
+                          (not (equal (car bounds) (cdr bounds)))) ; Not an empty thing, "".
                  (throw 'thgcmd-next-visible-thing-2
                    (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
                (setq start  (if backward (1- start) (1+ start))))

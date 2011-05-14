@@ -176,7 +176,8 @@ I did a copy 'n paste for simplicity.
                '("\\.py\\'" flymake-pyflakes-init))) 
 }}}
 
-There are some comments regarding using flymake-cursor to show the error in minibuffer [http://paste.lisp.org/display/60617,1/raw flymake-cursor.el] (the same idea is now available in [NxhtmlMode nXhtml] in the file <b>util/flymakemsg.el</b>).
+The normal operation of flymake allows the user to see the error message for a particular line by "hovering" the mouse over the line. This is inconvenient for people who try to use the keyboard for all input. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
+
 
 * PyIndent
 

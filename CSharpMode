@@ -3,7 +3,7 @@
 Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation. 
 
 [new]
-As of May 2010, the latest version is available at  https://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
+As of May 2010, the latest version is available at  http://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
 
 [new]
 
@@ -54,7 +54,7 @@ Note:
 ; http://csde.sourceforge.net/
 :Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not. 
 
-; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : hthis is just a link to zbrad's code. 
+; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : this is just a link to zbrad's code. 
 
 ; http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js
 :A modified CC mode from Emacs 22, with .elcs for Emacs 21.  Done by someone who doesn't use C#, but reported deficiencies will probably get fixed.
@@ -72,7 +72,9 @@ I currently use csharp-mode 0.7.5, on GNU emacs 22.2, on Windows (Vista). Every 
 
 The mode works well today, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.   
 
-As of May 2010, I've just hosted this code in a project on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
+In May 2010, I put this up on a project hosted on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
+
+Also, you can subscribe to updates [http://freshmeat.net/projects/csharp-mode/ via Freshmeat].
 
 Dylan Moonfire had the right idea with http://freshmeat.net/projects/csharp-mode  but it's no longer active, and anyway there's no good way to file bugs or track work requests on freshmeat. 
 
@@ -497,7 +499,7 @@ At the moment the mode hooks are run before local keys bindings are set, which m
 
 [new]
 
-Richard, I'll put that into the latest version. (31 May 2010)
+Richard, that fix is now in the latest version. (31 May 2010)
 
 --DinoChiesa
 
