@@ -1,0 +1,22 @@
+ Supports .cocci files for coccinelle, a semantic patch tool used to 
+ automate collateral evolutions in C codebases.
+
+                            Coccinelle 
+
+ Coccinelle allows programmers to easily write some complex
+ style-preserving source-to-source transformations on C source code,
+ like for instance to perform some refactorings.
+
+ coccinelle is used heavily in Linux, 
+ where make coccicheck executes a number of cocci scripts kept in:
+
+ linux-2.6.git]$ ls scripts/coccinelle
+ api/       free/      iterators/ locks/     misc/      null/      tests/     
+
+
+ http://coccinelle.lip6.fr/papers/cocciwk4_talk1.pdf
+ http://coccinelle.lip6.fr/papers/cocciwk4_talk2.pdf
+
+ the mode files in tarball:
+ editors/emacs/cocci-ediff.el  
+ editors/emacs/cocci.el

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri May 13 13:24:14 2011 (-0700)
+;; Last-Updated: Sat May 14 18:06:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6540
+;;     Update #: 6554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/14 dadams
+;;     Added: icicle-things-alist.
+;;     icicle-search-thing-args, icicle-(next|previous)-visible-thing:
+;;       Use icicle-things-alist, not (now removed) option icicle-thing-types.
+;;     icicle-next-visible-thing-1: Change comparison to < from <=
+;;     Removed: icicle-defined-thing-p (not used).
 ;; 2011/05/13 dadams
 ;;     Renamed: icicle-last-visible-thing-type to icicle-last-thing-type.
 ;;     icicle-last-thing-type: Use thgcmd-last-thing-type value as default, if available.
@@ -4576,6 +4582,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/05/14 dadams
+;;     Removed: icicle-thing-types.  Better to get the list dynamically.
 ;; 2011/05/13 dadams
 ;;     Added: icicle-thing-types.
 ;; 2011/05/07 dadams

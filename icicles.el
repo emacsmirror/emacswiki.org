@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri May 13 09:27:32 2011 (-0700)
+;; Last-Updated: Sat May 14 17:42:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22892
+;;     Update #: 22897
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -716,7 +716,7 @@
 ;;    `icicle-TAB-completion-methods-per-command',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
-;;    `icicle-thing-at-point-functions', `icicle-thing-types',
+;;    `icicle-thing-at-point-functions',
 ;;    `icicle-top-level-key-bindings',
 ;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
@@ -811,8 +811,8 @@
 ;;    `icicle-custom-type', `icicle-dabbrev--abbrev-at-point',
 ;;    `icicle-default-buffer-names',
 ;;    `icicle-define-crm-completion-map', ,
-;;    `icicle-define-cycling-keys', `icicle-defined-thing-p',
-;;    `icicle-define-icicle-maps', `icicle-define-minibuffer-maps',
+;;    `icicle-define-cycling-keys', `icicle-define-icicle-maps',
+;;    `icicle-define-minibuffer-maps',
 ;;    `icicle-delete-backward-char-dots',
 ;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
 ;;    `icicle-delete-count', `icicle-delete-current-candidate-object',
@@ -1019,7 +1019,8 @@
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
 ;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
-;;    `icicle-take', `icicle-this-command-keys-prefix',
+;;    `icicle-take', `icicle-things-alist',
+;;    `icicle-this-command-keys-prefix',
 ;;    `icicle-toggle-icicle-mode-twice', `icicle-top-level-prep',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion',

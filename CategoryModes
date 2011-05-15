@@ -39,6 +39,7 @@ Other pages (could this please be split in major and minor modes?):
 * ChopMode -- interactive binary search for a line within a window
 * ChronometerMode -- a [not so] simple chronometer
 * CmdMode -- mode for w32 cmd files
+* CocciMode -- mode for coccinelle/spatch files
 * CookMode -- mode for editing cook files (a make replacement)
 * CrontabMode -- mode for editing crontab files
 * CsvMode -- help editing CSV files

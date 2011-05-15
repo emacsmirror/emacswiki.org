@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri May 13 13:25:01 2011 (-0700)
+;; Last-Updated: Sat May 14 18:07:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3223
+;;     Update #: 3268
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -136,7 +136,7 @@
 ;;    `icicle-comint-search-send-input', `icicle-compilation-hook-fn',
 ;;    `icicle-compilation-search-in-context-fn',
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
-;;    `icicle-defined-thing-p', `icicle-describe-opt-action',
+;;    `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-doc-action',
 ;;    `icicle-edmacro-parse-keys', `icicle-flat-list',
 ;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
@@ -188,7 +188,7 @@
 ;;    `icicle-search-replace-search-hit', `icicle-search-thing-args',
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
-;;    `icicle-this-command-keys-prefix'.
+;;    `icicle-things-alist', `icicle-this-command-keys-prefix'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -3402,12 +3402,22 @@ this command again.
 This command is intended only for use in Icicle mode.
 
 NOTE:
-1. In some cases it can take a while to gather the candidate THINGs.
+
+1. For best results, use also library `thingatpt+.el'.  It enhances
+   `thingatpt.el' and fixes some bugs there.
+2. In some cases it can take a while to gather the candidate THINGs.
    Use the command on an active region when you do not need to search
    THINGS throughout an entire buffer.
-2. Prior to Emacs 21 there is no possibility of ignoring comments.
-3. For best results, use also library `thingatpt+.el'.  It enhances
-   `thingatpt.el' and fixes some bugs there."
+3. In `nxml-mode', remember that option `nxml-sexp-element-flag'
+   controls what a `sexp' means.  To use whole XML elements as search
+   contexts, set it to t, not nil.
+4. Remember that if there is only one THING in the buffer or active
+   region then no search is done.  Icicles search does nothing when
+   there is only one possible search hit.
+5. In Emacs releases prior to Emacs 23 the thing-at-point functions
+   can sometimes behave incorrectly.  Thus, `icicle-search-thing' also
+   behaves incorrectly in such cases, for Emacs prior to version 23.
+6. Prior to Emacs 21 there is no possibility of ignoring comments."
   (interactive (icicle-search-thing-args))
   (unless beg (setq beg  (point-min)))
   (unless end (setq end  (point-max)))
@@ -3421,22 +3431,27 @@ NOTE:
          (beg+end  (icicle-region-or-buffer-limits))
          (beg1     (car beg+end))
          (end1     (cadr beg+end))
-         (thing    (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
-                                            nil nil (symbol-name icicle-last-thing-type)))))
+         (thing    (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
+                                            (symbol-name icicle-last-thing-type)))))
     `(,thing ,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where)))
 
-;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
-(defun icicle-defined-thing-p (thing)
-  "Return non-nil if THING (type) is defined for `thing-at-point'."
-  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
-        (beginning-op  (get thing 'beginning-op))
-        (end-op        (get thing 'end-op))
-        (bounds-fn     (get thing 'bounds-of-thing-at-point))
-        (thing-fn      (get thing 'thing-at-point)))
-    (or (functionp forward-op)
-        (and (functionp beginning-op) (functionp end-op))
-        (functionp bounds-fn)
-        (functionp thing-fn))))
+;;; Same as `thgcmd-things-alist' in `thing-cmds.el'.
+(defun icicle-things-alist ()
+  "Alist of most thing types currently defined.
+Each is a cons (STRING), where STRING names a type of text entity for
+which there is a either a corresponding `forward-'thing operation, or
+corresponding `beginning-of-'thing and `end-of-'thing operations.  The
+list includes the names of the symbols that satisfy
+`thgcmd-defined-thing-p', but with these excluded: `thing', `buffer',
+`point'."
+  (let ((types  ()))
+    (mapatoms
+     (lambda (tt)
+       (when (thgcmd-defined-thing-p tt) (push (symbol-name tt) types))))
+    (dolist (typ  '("thing" "buffer" "point")) ; Remove types that do not make sense.
+      (setq types (delete typ types)))
+    (setq types  (sort types #'string-lessp))
+    (mapcar #'list types)))
 
 ;;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;;;###autoload
@@ -3504,14 +3519,6 @@ comments.  Note that prior to Emacs 21, this never hides comments."
         (when icicle-ignore-comments-flag (icicle-hide/show-comments 'show ,ostart ,oend))
         ,result))))
 
-;; Same as `thgcmd-invisible-p' in `thing-cmd.el'.
-(defun icicle-invisible-p (position)
-  "Return non-nil if the character at POSITION is invisible."
-  (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
-    (if (eq buffer-invisibility-spec t)
-        prop
-      (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec)))))
-
 (defun icicle-search-thing-scan (buffer beg end thing)
   "Scan BUFFER from BEG to END for things of type THING.
 Push hits onto `icicle-candidates-alist'.
@@ -3573,6 +3580,14 @@ If BEG and END are nil, scan entire BUFFER."
            (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
                   (error (error-message-string icicle-search-thing-scan)))))))))
 
+;; Same as `thgcmd-invisible-p' in `thing-cmd.el'.
+(defun icicle-invisible-p (position)
+  "Return non-nil if the character at POSITION is invisible."
+  (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
+    (if (eq buffer-invisibility-spec t)
+        prop
+      (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec)))))
+
 (defun icicle-next-visible-thing-and-bounds (thing start end)
   "Return the next visible THING and its bounds.
 Start at BEG and end at END, when searching for THING.
@@ -3594,8 +3609,8 @@ command again."
   (interactive
    (list (or (and (memq last-command '(icicle-next-visible-thing icicle-previous-visible-thing))
                   icicle-last-thing-type)
-             (prog1 (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
-                                             nil nil (symbol-name icicle-last-thing-type)))))
+             (prog1 (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
+                                             (symbol-name icicle-last-thing-type)))))
          (point)
          (if mark-active (min (region-beginning) (region-end)) (point-min))))
   (if (interactive-p)
@@ -3631,8 +3646,8 @@ the bounds of THING.  Return nil if no such THING is found."
   (interactive
    (list (or (and (memq last-command '(icicle-next-visible-thing icicle-previous-visible-thing))
                   icicle-last-thing-type)
-             (prog1 (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
-                                             nil nil (symbol-name thgcmd-last-thing-type)))))
+             (prog1 (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
+                                             (symbol-name icicle-last-thing-type)))))
          (point)
          (if mark-active (max (region-beginning) (region-end)) (point-max))))
   (setq icicle-last-thing-type  thing)
@@ -3652,8 +3667,10 @@ the bounds of THING.  Return nil if no such THING is found."
     (let ((thg+bds  (icicle-next-visible-thing-2 thing start end backward)))
       (if (not thg+bds)
           nil
-        ;; $$$$$$ Which is better, > or >=, for (> (cddr thg+bds) (point))?
-        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
+        ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
+        ;; $$$$$$ (while (and thg+bds
+        ;;                    (if backward  (> (cddr thg+bds) (point)) (<= (cadr thg+bds) (point))))
+        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (< (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))

@@ -5,9 +5,11 @@ From the [http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs/ Web page]:
 
 : Easymacs was designed with the non-programmer in mind, someone who would like to use Emacs to edit mainly text files, especially LaTeX and TEI-conforming XML. Since many aspects of the configuration of Emacs require a certain knowledge of programming, this sort of person might find the default behavior of Emacs too foreign and too hard to reconfigure.
 
-It may not be approprate for readers of Emacswiki, most of whom I suspect are comfortable with configuring Emacs for themselves.  It may, however, be a package you can recommend to friends, family and colleagues who would like to use Emacs via a more familiar style of UI, and who do not want or are unable to customize it this way themselves.
+It may not be appropriate for readers of Emacswiki, most of whom I suspect are comfortable with configuring Emacs for themselves.  It may, however, be a package you can recommend to friends, family and colleagues who would like to use Emacs via a more familiar style of UI, and who do not want or are unable to customize it this way themselves.
 
 It includes many useful Emacs packages that would otherwise have to be installed separately.
+
+For downloading, please, see the [http://sourceforge.net/projects/easymacs/ SourceForge link].
 
 ''Big packages:''
 
@@ -68,3 +70,6 @@ I've added links to the libraries above, when found. Please add the remaining li
 
 [new]
 I've made some research using Google and added links to some libraries above. I also replaced the perldoc.el link, because the link http://www.gnusoftware.com/Emacs/Lisp/perldoc.el is buggy. -- ViniciusJoseLatorre
+
+[new]
+Just added the Sourceforge link for downloading, because the link http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs/ is buggy. -- ViniciusJoseLatorre

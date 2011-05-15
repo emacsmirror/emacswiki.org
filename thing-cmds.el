@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Fri May 13 13:22:05 2011 (-0700)
+;; Last-Updated: Sat May 14 14:18:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 634
+;;     Update #: 649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,7 +42,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `thgcmd-invisible-p', `thgcmd-next-visible-thing-1',
-;;    `thgcmd-next-visible-thing-2', `thgcmd-repeat-command'.
+;;    `thgcmd-next-visible-thing-2', `thgcmd-repeat-command',
+;;    `thgcmd-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -62,6 +63,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/05/14 dadams
+;;     Added: thgcmd-things-alist.
+;;     thing-region, mark-thing, (next|previous)-visible-thing:
+;;       Use thgcmd-things-alist, not thing-types.
 ;; 2011/05/13 dadams
 ;;     Added: thgcmd-defined-thing-p (from icicle-defined-thing-p).
 ;;     Combined thgcmd-last-visible-thing-type and thgcmd-mark-thing-type into
@@ -163,7 +168,8 @@ either a corresponding `forward-'thing operation, or corresponding
 `beginning-of-'thing and `end-of-'thing operations.
 
 The default value includes the names of most symbols that satisfy
-`thgcmd-defined-thing-p'.
+`thgcmd-defined-thing-p' at the time the `defcustom' is evaluated.
+These types are excluded: `thing', `buffer', `point'.
 
 Command `cycle-thing-region' cycles through this list, in order."
   :type '(repeat string) :group 'lisp :group 'editing)
@@ -174,6 +180,21 @@ Command `cycle-thing-region' cycles through this list, in order."
 
 (defvar thgcmd-last-thing-type 'sexp "Last thing type (a symbol) used by various commands.")
 
+(defun thgcmd-things-alist ()
+  "List of most thing types currently defined.
+Each is a string that names a type of text entity for which there is a
+either a corresponding `forward-'thing operation, or corresponding
+`beginning-of-'thing and `end-of-'thing operations.  The list includes
+the names of the symbols that satisfy `thgcmd-defined-thing-p', but
+with these excluded: `thing', `buffer', `point'."
+  (let ((types  ()))
+    (mapatoms
+     (lambda (tt)
+       (when (thgcmd-defined-thing-p tt) (push (symbol-name tt) types))))
+    (dolist (typ  '("thing" "buffer" "point")) ; Remove types that do not make sense.
+      (setq types (delete typ types)))
+    (setq types  (sort types #'string-lessp))))
+
 ;;;###autoload
 (defun thing-region (thing)
   "Set the region around a THING near the cursor.
@@ -182,8 +203,8 @@ The cursor is placed at the end of the region.  You can return it to
 the original location by using `C-u C-SPC' twice.
 Non-interactively, THING is a string naming a thing type."
   (interactive (list (let ((icicle-sort-function  nil))
-                       (completing-read "Thing (type): " (mapcar #'list thing-types)
-                                        nil nil nil nil (symbol-name thgcmd-last-thing-type)))))
+                       (completing-read "Thing (type): " (thgcmd-things-alist) nil nil nil nil
+                                        (symbol-name thgcmd-last-thing-type)))))
   (setq thgcmd-last-thing-type  (intern thing))
   (let* ((bds    (if (fboundp 'bounds-of-thing-nearest-point) ; In `thingatpt+.el'.
                      (bounds-of-thing-nearest-point (intern thing))
@@ -259,8 +280,8 @@ to select more THINGS of the last kind selected."
                  (or thing
                      (prog1 (let ((icicle-sort-function  nil))
                               (intern (completing-read
-                                       "Thing (type): " (mapcar #'list thing-types) nil nil
-                                       nil nil (symbol-name thgcmd-last-thing-type))))
+                                       "Thing (type): " (thgcmd-things-alist) nil nil nil nil
+                                       (symbol-name thgcmd-last-thing-type))))
                        (setq this-command  this-cmd))))
            (push-mark (save-excursion
                         (forward-thing thgcmd-last-thing-type (prefix-numeric-value arg))
@@ -329,8 +350,8 @@ This command does not work if point is in a string or a comment."
                  ;; Save state for `repeat'.
                  (let ((last-command-event       last-command-event)
                        (last-repeatable-command  last-repeatable-command))
-                   (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
-                                            nil nil (symbol-name thgcmd-last-thing-type))))
+                   (intern (completing-read "Thing (type): " (thgcmd-things-alist) nil nil nil nil
+                                            (symbol-name thgcmd-last-thing-type))))
                thgcmd-last-thing-type))
          (point)
          (if mark-active  (min (region-beginning) (region-end))  (point-min))))
@@ -379,8 +400,8 @@ the bounds of THING.  Return nil if no such THING is found."
                  ;; Save state for `repeat'.
                  (let ((last-command-event       last-command-event)
                        (last-repeatable-command  last-repeatable-command))
-                   (intern (completing-read "Thing (type): " (mapcar #'list thing-types) nil nil
-                                            nil nil (symbol-name thgcmd-last-thing-type))))
+                   (intern (completing-read "Thing (type): " (thgcmd-things-alist) nil nil nil nil
+                                            (symbol-name thgcmd-last-thing-type))))
                thgcmd-last-thing-type))
          (point)
          (if mark-active (max (region-beginning) (region-end)) (point-max))))
