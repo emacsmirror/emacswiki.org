@@ -1267,16 +1267,16 @@ literally.  The default value is `nil'.  You can use '''`##M-`##'''' to
 [:icicle-ignore-comments-flag]
 ==== Option icicle-ignore-comments-flag ====
 
-Non-`nil' option '''`icicle-ignore-comments-flag'''' means that
-`icicle-search-thing' ignores comments; that is, it hides them
-temporarily when it scans the [[region]] or buffer for things of the
-given type as candidates.  This prevents it, for example, from
-presenting as a candidate a [[sexp]] or [[list]] that is commented out.
-You can toggle this option anytime using '''`##C-M-;##'''' in the
+* Non-`nil' option '''`icicle-ignore-comments-flag'''' means that
+`icicle-search-thing' and related commands
+(e.g. `icicle-search-xml-element') ignore comments.  That is,
+they hide comments temporarily while they scan the [[region]] or
+buffer for things of the given type to serve as search contexts
+(completion candidates).  This prevents them, for example, from
+presenting as a candidate a [[sexp]] or a [[list]] that is commented
+out.  You can toggle this option anytime using '''`##C-M-;##'''' in the
 minibuffer, but to see the effect you might need to invoke the
 current command again.
-
-
 
 
 

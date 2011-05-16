@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May 14 13:56:06 2011 (-0700)
+;; Last-Updated: Sun May 15 11:04:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27747
+;;     Update #: 27759
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -432,6 +432,8 @@
 ;;            `icicle-search-sentences' - Search sentences as contexts
 ;;            `icicle-search-thing'     - Search thing-at-point things
 ;;                                        optionally ignoring comments
+;;            `icicle-search-xml-element' - Search XML elements
+
 ;;  `C-c ='   `icicle-imenu' - Navigate among Imenu entries.
 ;;            `icicle-imenu-command' -
 ;;               Navigate among Emacs command definitions.
@@ -817,11 +819,13 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Option `icicle-use-C-for-actions-flag'").
 ;;
 ;;  * Non-nil option `icicle-ignore-comments-flag' means that
-;;    `icicle-search-thing' ignores comments; that is, it hides them
-;;    temporarily when it scans the region or buffer for things of the
-;;    given type as candidates.  This prevents it, for example, from
-;;    presenting as a candidate a sexp or list that is commented out.
-;;    You can toggle this option anytime using `C-M-;' in the
+;;    `icicle-search-thing' and related commands
+;;    (e.g. `icicle-search-xml-element') ignore comments.  That is,
+;;    they hide comments temporarily while they scan the region or
+;;    buffer for things of the given type to serve as search contexts
+;;    (completion candidates).  This prevents them, for example, from
+;;    presenting as a candidate a sexp or a list that is commented
+;;    out.  You can toggle this option anytime using `C-M-;' in the
 ;;    minibuffer, but to see the effect you might need to invoke the
 ;;    current command again.
 ;;
@@ -5112,11 +5116,13 @@
 ;;    toggle this at any time during Icicles search.
 ;;
 ;;  * Non-nil option `icicle-ignore-comments-flag' means that
-;;    `icicle-search-thing' ignores comments; that is, it hides them
-;;    temporarily when it scans the region or buffer for things of the
-;;    given type as candidates.  This prevents it, for example, from
-;;    presenting as a candidate a sexp or list that is commented out.
-;;    You can toggle this option anytime using `C-M-;' in the
+;;    `icicle-search-thing' and related commands
+;;    (e.g. `icicle-search-xml-element') ignore comments.  That is,
+;;    they hide comments temporarily while they scan the region or
+;;    buffer for things of the given type to serve as search contexts
+;;    (completion candidates).  This prevents them, for example, from
+;;    presenting as a candidate a sexp or a list that is commented
+;;    out.  You can toggle this option anytime using `C-M-;' in the
 ;;    minibuffer, but to see the effect you might need to invoke the
 ;;    current command again.
 ;;
@@ -6055,6 +6061,7 @@
 ;;  `icicle-search-this-buffer-bookmark' - Search bookmarks in buffer
 ;;  `icicle-search-url-bookmark' - Search URL bookmarks
 ;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
+;;  `icicle-search-xml-element' - Search the contents of XML elements
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to t
 ;;  `icicle-toggle-option' - Toggle the value of a binary option

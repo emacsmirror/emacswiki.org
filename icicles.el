@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May 14 17:42:24 2011 (-0700)
+;; Last-Updated: Sun May 15 10:18:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22897
+;;     Update #: 22898
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -298,10 +298,11 @@
 ;;    `icicle-search-text-property', `icicle-search-thing',
 ;;    `icicle-search-this-buffer-bookmark',
 ;;    `icicle-search-url-bookmark', `icicle-search-w3m-bookmark',
-;;    `icicle-search-word', `icicle-select-bookmarked-region',
-;;    `icicle-select-frame', `icicle-select-frame-by-name',
-;;    `icicle-select-window', `icicle-select-window-by-name',
-;;    `icicle-send-bug-report', `icicle-set-option-to-t',
+;;    `icicle-search-word', `icicle-search-xml-element',
+;;    `icicle-select-bookmarked-region', `icicle-select-frame',
+;;    `icicle-select-frame-by-name', `icicle-select-window',
+;;    `icicle-select-window-by-name', `icicle-send-bug-report',
+;;    `icicle-set-option-to-t',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command',
 ;;    `icicle-shell-dynamic-complete-command',

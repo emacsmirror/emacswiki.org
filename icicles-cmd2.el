@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat May 14 18:07:06 2011 (-0700)
+;; Last-Updated: Sun May 15 10:41:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3268
+;;     Update #: 3296
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -118,7 +118,8 @@
 ;;    (+)`icicle-search-this-buffer-bookmark',
 ;;    (+)`icicle-search-url-bookmark',
 ;;    (+)`icicle-search-w3m-bookmark', (+)`icicle-search-word',
-;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
+;;    (+)`icicle-search-xml-element', (+)`icicle-select-frame',
+;;    `icicle-select-frame-by-name',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', (+)`icicle-tags-search',
 ;;    (+)`icicle-vardoc', (+)`icicle-where-is', (+)`what-which-how'.
@@ -3381,7 +3382,34 @@ command")))
   "Type of thing last used by `icicle-next-visible-thing' (or previous).")
 
 ;;;###autoload
-(defun icicle-search-thing (thing &optional beg end require-match where)
+(defun icicle-search-xml-element (beg end require-match where element)
+  "`icicle-search with XML ELEMENTs as search contexts.
+ELEMENT is a regexp that is matched against actual element names.
+
+The search contexts are the top-level matching elements within the
+search limits, BEG and END.  They might or might not contain
+descendent elements that are themselves of type ELEMENT.
+
+You probably need nXML for this command.  It is included in vanilla
+Emacs, starting with Emacs 23."
+  (interactive
+   (let* ((where    (icicle-search-where-arg))
+          (beg+end  (icicle-region-or-buffer-limits))
+          (beg1     (car beg+end))
+          (end1     (cadr beg+end))
+          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
+     `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
+  (let ((nxml-sexp-element-flag  t))
+    (icicle-search-thing
+     'sexp beg end require-match where
+     `(lambda (thg+bds)
+       (and thg+bds
+        (if (fboundp 'string-match-p)
+            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
+          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))))))
+
+;;;###autoload
+(defun icicle-search-thing (thing &optional beg end require-match where predicate)
   "`icicle-search' with THINGs as search contexts.
 Enter the type of THING to search: `sexp', `sentence', `list', etc.
 
@@ -3398,6 +3426,11 @@ THINGs located within comments.  Non-nil means to ignore comments for
 searching.  You can toggle this option using `C-M-;' in the
 minibuffer, but depending on when you do so you might need to invoke
 this command again.
+
+Non-interactively, if optional arg PREDICATE is non-nil then it is a
+predicate that acceptable things must satisfy.  It is passed the thing
+in the form of the cons returned by
+`icicle-next-visible-thing-and-bounds'.
 
 This command is intended only for use in Icicle mode.
 
@@ -3423,7 +3456,7 @@ NOTE:
   (unless end (setq end  (point-max)))
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (setq icicle-search-context-level  0)
-  (icicle-search beg end 'icicle-search-thing-scan require-match where thing))
+  (icicle-search beg end 'icicle-search-thing-scan require-match where thing predicate))
 
 (defun icicle-search-thing-args ()
   "Read and return interactive arguments for `icicle-search-thing'."
@@ -3519,12 +3552,16 @@ comments.  Note that prior to Emacs 21, this never hides comments."
         (when icicle-ignore-comments-flag (icicle-hide/show-comments 'show ,ostart ,oend))
         ,result))))
 
-(defun icicle-search-thing-scan (buffer beg end thing)
+(defun icicle-search-thing-scan (buffer beg end thing &optional predicate)
   "Scan BUFFER from BEG to END for things of type THING.
 Push hits onto `icicle-candidates-alist'.
 If BUFFER is nil, scan the current buffer.
 Highlight the matches in face `icicle-search-main-regexp-others'.
-If BEG and END are nil, scan entire BUFFER."
+If BEG and END are nil, scan entire BUFFER.
+
+If PREDICATE is non-nil then it is a predicate that acceptable things
+must satisfy.  It is passed the thing in the form of the cons returned
+by `icicle-next-visible-thing-and-bounds'."
   (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
         (temp-list      ()))
     (unless buffer (setq buffer  (current-buffer)))
@@ -3544,7 +3581,7 @@ If BEG and END are nil, scan entire BUFFER."
                         (thg-beg     (and thg+bnds  (cadr thg+bnds)))
                         (thg-end     (and thg+bnds  (cddr thg+bnds)))
                         (end-marker  (and thg+bnds  (copy-marker thg-end))))
-                   (when thg+bnds
+                   (when (and thg+bnds (or (not predicate) (funcall predicate thg+bnds)))
                      (icicle-candidate-short-help
                       (concat (and add-bufname-p
                                    (format "Buffer: `%s', "

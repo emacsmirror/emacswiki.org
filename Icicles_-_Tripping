@@ -117,6 +117,7 @@ navigate.
 [:icicle-search-text-property]
 [:icicle-search-thing]
 [:icicle-search-word]
+[:icicle-search-xml-element]
 [:icicle-select-frame]
 [:icicle-select-window]
 
@@ -213,6 +214,7 @@ Here are some of the '''Icicles''' tripping commands:
   strings with some [[text property]]
 * '''`icicle-search-thing''''          --- Search ThingAtPoint things
 * '''`icicle-search-word'''' ('''`##C-c $##'''') -- Trip among word-search hits
+* '''`icicle-search-xml-element''''  -- Trip among XML elements
 * '''`icicle-select-frame'''' ('''`C-x 5 o'''') -- Trip among [[frame]]s, by name
 * '''`icicle-select-window'''' ('''`C-0 C-x o'''') -- Trip among [[window]]s, by buffer name
 

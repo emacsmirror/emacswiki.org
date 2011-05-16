@@ -58,11 +58,23 @@ braces don't stand out at all against that particular background making them ver
 Is there any way to restore the behaviour mentioned in the changelog of having independent depths for each paren type?  In C, most code is within a {} function block which means everything starts at depth 2.  Conditional expressions wrapped in () are also coloured differently depending on whether they're inside a for loop or other code block, but it would be nice if the colour scheme was more consistent (i.e. outer bracket is always the same colour.)  This would work if the depth was tracked independently for each character type.
 
 Is there also a way to add or remove tracking of particular paren types?  I'm not so interested in having {} coloured but very keen on having () highlighted.
-----
+[new]
+Nice to hear from the maintainer of such a popular color scheme :) I used zenburn's colors for the parens in an earlier version but have since hand-picked delimiter colors to contrast with one another. I'll see what I can do about making the green contrast well with the zenburn bg, but don't know if it can be done since rainbow-delimiters is using green as a paren color and is also trying to make the color scheme subtle+pleasant for dark gray/black and light (white) bgcolors. You are more than welcome to suggest a shade of green to use. You can also customize the color yourself of course, but ideally the default colors would work well for people using zenburn - it's widely used and well-liked.
+
+I designed and tested the mode with Clojure in mind, so seeing it get use with C means I need to tweak some things to fit. I like the idea of having a toggle in the customize interface for independent depth tracking. I also like being able to pick which delimiters are colored and which aren't.
+
+When working in Clojure, the truth is coloring each type of delimiter independently turned out to just be very confusing. It sounded good before I actually saw it in practice. However in C it would probably work. There will have to be a fairly significant change to allow both options - when I stopped tracking each depth independently and changed to a single 'depth' variable, a series of assumptions in the code changed along with that. Making this change isn't too big a deal but I won't get to it right away. 
+
+Thanks for the heads up; the changes to support C-like languages should be there in the next release. --JeremyRayman
+
 [new]
 I am seeing the following behaviour:
 Rainbow-delimiters works fine, as long as I call it specifically using M-x rainbow-delimiters-mode. If its called by hook when entering clojure mode it highlights [] correctly but ignores () until after I type a delimiter of some kind. It then correctly highlights everything after the point where I inserted the new delimiter. Any () before that point stay black. 
 
 Also any nesting deeper than 12 levels doesn't get coloured. Is this expected behaviour? Could it be made to cycle indefinitely through the colours?
+[new]
+There are only 12 faces defined; I just picked an arbitrary depth to go to. Cycling through the colors is probably smart. I'll plan on doing that.
+
+I'll try to replicate the problem with activating the mode using a hook. I assume you have the latest version of the mode. There was a problem that sounds a lot like this in an older version when there were unmatched closing parens in the file. Now, any unmatched closing delimiters should be red - if they are then this issue is something different. Thanks, I'll look into it. --JeremyRayman
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

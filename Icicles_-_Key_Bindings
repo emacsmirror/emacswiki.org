@@ -284,19 +284,20 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-non-file-bookmark]
 [:icicle-search-region-bookmark]
 [:icicle-search-remote-file-bookmark]
+[:icicle-search-sentences]
 [:icicle-search-some-tags-bookmark]
 [:icicle-search-some-tags-regexp-bookmark]
 [:icicle-search-specific-buffers-bookmark]
 [:icicle-search-specific-files-bookmark]
+[:icicle-search-thing]
 [:icicle-search-this-buffer-bookmark]
 [:icicle-search-url-bookmark]
 [:icicle-search-w3m-bookmark]
 [:icicle-search-overlay-property]
 [:icicle-search-char-property]
-[:icicle-search-thing]
 [:icicle-search-pages]
 [:icicle-search-paragraphs]
-[:icicle-search-sentences]
+[:icicle-search-xml-element]
 [:icicle-select-window]
 [:icicle-set-option-to-t]
 [:icicle-toggle-option]
@@ -398,6 +399,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-specific-buffers-bookmark' -- Search bookmarks for a given set of buffers
 * `icicle-search-specific-files-bookmark' -- Search bookmarks for a given set of files
 * `icicle-search-thing' -- Search ThingAtPoint things (as search contexts)
+* `icicle-search-xml-element' -- Search the contents of XML elements (as search contexts)
 * `icicle-search-this-buffer-bookmark' -- Search bookmarks in the current buffer
 * `icicle-search-url-bookmark' -- Search URL bookmarks
 * `icicle-search-w3m-bookmark' -- Search W3M bookmarks

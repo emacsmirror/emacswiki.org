@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May  7 10:57:34 2011 (-0700)
+;; Last-Updated: Sun May 15 10:42:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 25974
+;;     Update #: 25975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4655,6 +4655,7 @@
 ;;                                       strings with a text property
 ;;  * `icicle-search-thing'            - Search thing-at-point things
 ;;  * `icicle-search-word' (`C-c $')   - Trip among word-search hits
+;;  * `icicle-search-xml-element'      - Trip among XML elements
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
 ;;                                       buffer name

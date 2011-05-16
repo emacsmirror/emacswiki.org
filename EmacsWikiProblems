@@ -166,6 +166,10 @@ I've heard from the hosting admins that they limited some other Python process t
 Thanks for following up on this, Alex.  I haven't noticed any problem lately.  Really appreciate the lack of this annoyance.  Thx -- DrewAdams
 
 
+[new:DrewAdams:2011-05-15 18:07 UTC]
+Just FYI: I just had it happen a couple of times again, including when I hit the `Preview' button for this post.  So I guess the problem is not completely eliminated. -- DrewAdams
+
+
 == Conflict from my own edit 25 minutes ago? ==
 
 I edited page [[icicles-opt.el]] and saved. Later I tried to do the same thing. I got a lock message. I used the browser Back button to get to the editing again and saved again. I then got this:

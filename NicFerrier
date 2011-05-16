@@ -40,6 +40,58 @@ As of now elnode is just about functional. I am starting to write things with it
 
 It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
 
+== Templating in emacs ==
+
+If we're going to have a webserver we need a better way of making
+HTML. I've been kicking around ideas for small template languages in
+Javascript... seems like it should be easy to port them to lisp.
+
+Here's a first crack:
+
+{{{
+(defun list-to-alist (&rest lst)
+  "Convert a list to an alist
+(list-to-alist 'name "value" 'name "value")
+=> ((name "value")
+    (name "value"))
+"
+  (let ((l lst)
+        res)
+    (while (cdr l)
+      (let ((a (car l))
+            (b (cadr l)))
+        (setq res (cons (cons a b) res))
+        (setq l (cddr l))))
+    res))
+
+(defun tc (template &rest args)
+  "Do template replacement.
+
+{{value}} indicates a name in the args (a list of pairs) which is replaced with the value."
+  (let ((ctx (apply 'list-to-alist args))
+        (tmpl template))
+    (replace-regexp-in-string
+     "{{\\(.*?\\)}}" 
+     (lambda (r)
+       (cdr (assoc (intern (match-string 1 r)) ctx)))
+     tmpl
+     )))
+
+;; Example tc call
+(let ;; Define some data
+     ((params '(("name" "nicferrier")
+                ("age" "30"))))
+  (tc "<html><body><ul>{{paramlist}}</ul></body></html>\n"
+      'paramlist (mapconcat 
+                  (lambda (p)
+                    (tc "<li>{{paramcar}}: {{paramcdr}}</li>"
+                        'paramcar (car p)
+                        'paramcdr (cadr p)))
+                  params
+                  "\n"
+                  )
+      ))
+}}}
 
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).

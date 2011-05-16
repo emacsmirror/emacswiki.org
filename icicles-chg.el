@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat May 14 18:06:27 2011 (-0700)
+;; Last-Updated: Sun May 15 10:37:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6554
+;;     Update #: 6557
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,6 +402,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/15 dadams
+;;     Added: icicle-search-xml-element.
+;;     icicle-search-thing, icicle-search-thing-scan: Added PREDICATE optional arg.
 ;; 2011/05/14 dadams
 ;;     Added: icicle-things-alist.
 ;;     icicle-search-thing-args, icicle-(next|previous)-visible-thing:

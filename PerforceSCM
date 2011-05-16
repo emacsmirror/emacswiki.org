@@ -8,7 +8,7 @@ There is also an integration of Perforce with Emacs VC mode.  This integration m
 
 The above seems to be currently maintained by Magnus Henoch. See  [http://public.perforce.com/wiki/Emacs_VC-P4 Emacs VC-P4] Perforce wiki page and his [http://public.perforce.com:8080/@md=d&cd=//guest/magnus_henoch/vc-p4/&ra=s&c=W5c@//guest/magnus_henoch/vc-p4/?ac=83 Perforce public depot]. This version fixed a "wrong number of arguments" error I was seeing with vc-p4-print-log (C-x v l) in Emacs 23.2.1. The history shows more recent changes in both files than the ones in Jonathan's depot.
 
-Paul Du Bois's p4.el. <code>//guest/paul_dubois/perforce/utils/emacs</code> at http://public.perforce.com/.
+Paul Du Bois's p4.el. <code>//guest/paul_dubois/perforce/utils/emacs</code> at http://public.perforce.com/ (But as of 2011-05-15, last checkin was in 2000 so Paul Du Bois' version of p4.el and associated files must be quite old).
 
 See also: Wiki:PerforceVersionControl.
 
