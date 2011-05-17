@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May 15 10:41:28 2011 (-0700)
+;; Last-Updated: Mon May 16 10:29:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3296
+;;     Update #: 3301
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3466,6 +3466,8 @@ NOTE:
          (end1     (cadr beg+end))
          (thing    (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
                                             (symbol-name icicle-last-thing-type)))))
+    (when (and (eq thing 'comment)  icicle-ignore-comments-flag)
+      (message "Use `C-M-;' if you do not want to ignore comments") (sit-for 2))
     `(,thing ,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where)))
 
 ;;; Same as `thgcmd-things-alist' in `thing-cmds.el'.

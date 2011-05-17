@@ -33,3 +33,7 @@ And for the file local variables section of your .tex file:
 You'll also need a copy of lp-elisp.el:
 
 * http://edward.oconnor.cx/elisp/lp-elisp.el
+
+
+----
+CategoryComments

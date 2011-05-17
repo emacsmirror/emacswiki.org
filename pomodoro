@@ -1,0 +1,4 @@
+Pomodoro is a time management technique. http://www.pomodorotechnique.com
+
+There are at least two emacs modes specifically for this.
+They can be found at http://github.com.docgnome/pomodoro.el and http://kanis.fr/hg/lisp/ivan/pomodoro.el

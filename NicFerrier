@@ -93,6 +93,9 @@ Here's a first crack:
       ))
 }}}
 
+[new]
+Neat! Everyone uses {{}} in their brace-based languages but a Lisp-y syntax might be ((…)) or ,(…)  . Also, any thoughts on directly expressing loops in the template language? --AmitPatel
+
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).
 

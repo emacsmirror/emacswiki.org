@@ -73,8 +73,8 @@ Rainbow-delimiters works fine, as long as I call it specifically using M-x rainb
 
 Also any nesting deeper than 12 levels doesn't get coloured. Is this expected behaviour? Could it be made to cycle indefinitely through the colours?
 [new]
-There are only 12 faces defined; I just picked an arbitrary depth to go to. Cycling through the colors is probably smart. I'll plan on doing that.
+There are only 12 delim faces; I just picked an arbitrary depth to go to. Cycling through the colors is probably a good idea. I'll go ahead and do that.
 
-I'll try to replicate the problem with activating the mode using a hook. I assume you have the latest version of the mode. There was a problem that sounds a lot like this in an older version when there were unmatched closing parens in the file. Now, any unmatched closing delimiters should be red - if they are then this issue is something different. Thanks, I'll look into it. --JeremyRayman
+I'll try to recreate the problem with starting the mode using a hook. I assume you have the latest version of the mode... There was a problem that sounds a lot like this in an older version when there were unmatched closing parens in the file. It was fixed and unmatched closing delimiters turn red now. If unmatched delims turn red for you this is a different issue. Thanks, I'll look into it. --JeremyRayman
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

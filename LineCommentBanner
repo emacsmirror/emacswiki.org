@@ -1,8 +1,8 @@
-The LineCommentBanner code (found at Lisp:line-comment-banner.el) is designed to help you add one-line banner-style comments to your own code.
+Library Lisp:line-comment-banner.el helps you add one-line banner-style comments to your own code.
 
-It uses the comment-start and comment-end variables, which tend to be set by major modes, to tell it what to use for making the comments and works "out of the box" for many of these major modes.
+It uses [[variable]]s `comment-start' and `comment-end', which tend to be set by [[major mode]]s, to tell it what to use for making the comments and works "out of the box" for many of these major modes.
 
-There is much more usage information in the actual lisp file, so here's a couple of examples:
+There is much more usage information in the lisp file, so here's a couple of examples:
 
 * sh-mode or perl-mode
 
@@ -35,3 +35,6 @@ This is slightly more challenging, since you need to tell the code what the comm
 <pre>
     CCCCCCCCCCCCCCCCCCCCCCCCCC This is a comment CCCCCCCCCCCCCCCCCCCCCCCCCCC
 </pre>
+
+----
+CategoryComment

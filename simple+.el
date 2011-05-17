@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 15:57:35 2011 (-0800)
+;; Last-Updated: Mon May 16 07:48:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 405
+;;     Update #: 410
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -53,6 +53,10 @@
 ;;                              as a command to `command-history', not
 ;;                              as a string.
 ;;
+;;    `kill-new'              - Bug fix for < Emacs 21: be sure
+;;                              `kill-ring' is non-empty before trying
+;;                              to replace kill.
+;;
 ;;    `next-error'            - `C-u C-u' just deletes highlighting
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been REDEFINED HERE:
@@ -63,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/05/16 dadams
+;;     Added redefinition of kill-new for Emacs 20.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookie for command set-any-variable.
 ;; 2009-02-22 dadams
@@ -456,8 +462,30 @@ not end the comment.  Blank lines do not get comments."
                 (if (string= "" ce) ()
                   (end-of-line)
                   (insert ce)))
-              (search-forward "\n" nil 'move)))))))
-  )
+              (search-forward "\n" nil 'move))))))))
+
+
+;; REPLACES ORIGINAL in `simple.el':
+;;
+;; Fixes bug when REPLACE is non-nil but `kill-ring' is nil.
+;;
+(when (< emacs-major-version 21)
+  (defun kill-new (string &optional replace)
+    "Make STRING the latest kill in the kill ring.
+Set the kill-ring-yank pointer to point to it.
+If `interprogram-cut-function' is non-nil, apply it to STRING.
+Optional second argument REPLACE non-nil means that STRING will replace
+the front of the kill ring, rather than being added to the list."
+    (and (fboundp 'menu-bar-update-yank-menu)
+         (menu-bar-update-yank-menu string (and replace (car kill-ring))))
+    (if (and replace kill-ring)         ; Bug fix: only if non-nil `kill-ring'.
+        (setcar kill-ring string)
+      (setq kill-ring (cons string kill-ring))
+      (if (> (length kill-ring) kill-ring-max)
+          (setcdr (nthcdr (1- kill-ring-max) kill-ring) nil)))
+    (setq kill-ring-yank-pointer kill-ring)
+    (if interprogram-cut-function
+        (funcall interprogram-cut-function string (not replace)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

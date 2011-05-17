@@ -1,4 +1,3 @@
-
 * CommentingCode -- Emacs's abilities to handle source code comments.
 * CategoryIndentation -- Information on prettying the indentation of numerous programming languages.
 
@@ -59,3 +58,4 @@ code. :) --ScottEvans
 ----
 CategoryIndentation
 CategoryProgramming
+CategoryComments

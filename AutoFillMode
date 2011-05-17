@@ -36,4 +36,7 @@ To automatically fill comments but not code in ProgrammingModes, something like 
                                 'font-lock-comment-face))))))
 
 ----
-CategoryFilling | CategoryModes | CategoryDotEmacs
+CategoryComments
+CategoryFilling 
+CategoryModes 
+CategoryDotEmacs

@@ -1989,7 +1989,9 @@ saving using their own function instead of the default value,
 
 DrewsElispLibraries referenced here: Lisp:delsel.el, Lisp:icicles.el, Lisp:icicles-keys.el, Lisp:misc-cmds.el, Lisp:oneonone.el
 
+CategoryBookmarking
 CategoryCommands 
+CategoryComments
 CategoryBufferSwitching
 CategoryCompletion
 CategoryRegexp

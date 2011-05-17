@@ -156,5 +156,6 @@ You can bookmark [[Info]] nodes.  As an alternative, you can use [[Info+]] to cr
 * <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks
 
 ----
+CategoryBookmarking
 CategoryHypermedia CategoryPersistence
 CategoryGlossary

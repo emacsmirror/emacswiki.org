@@ -665,7 +665,9 @@ candidate set -- how to match the regexp.
 
 DrewsElispLibraries referenced here: Lisp:highlight.el, Lisp:icicles.el
 
+CategoryBookmarking
 CategoryCommands 
+CategoryComments
 CategoryCompletion
 CategoryRegexp
 CategoryRegion
@@ -675,6 +677,7 @@ CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
+CategoryXML
 
 
 

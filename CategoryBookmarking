@@ -1,0 +1,19 @@
+Click the heading to search for all wiki pages with this category.
+
+* '''BookMarks''' -- intro/overview of using bookmarks in Emacs
+
+
+* [[Bookmark+]] -- enhancements to standard Emacs bookmarks: tag, sort, mark, cycle, highlight, save/restore state in general ([[DiredBookmarks|Dired]], DeskTop,...) …
+* BookmarkExtension -- a fork of an old (2009) version of [[Bookmark+]]
+* BookMarkIteratorPackage –- cycle bookmarks
+* BreadcrumbForEmacs -- leave breadcrumb bookmarks in file buffers
+* EshellBmk –- integrate ‘eshell/cd’ with bookmarks
+* GraphicalBookmarkJump
+* [[Icicles - Bookmark Enhancements]] -- tag files; search bookmarked text; jump to type-specific bookmarks ([[multi-command]]s); filter; jump to bookmarks on-the-fly when you use a file or directory access command
+* VisibleBookmarks -- highlighted, buffer-local bookmarks (##bm.el##)
+* <tt>[[wuxch-bookmark.el]]</tt> -- extends [[Bookmark+]] and VisibleBookmarks
+
+
+
+
+

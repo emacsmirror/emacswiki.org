@@ -2,7 +2,7 @@
 
 ==Overview==
 
-Le Wang's fork of rebox.el that does seemless box editing and filling.
+[[LeWang]]'s fork of ##rebox.el## that does seemless box editing and filling.
 
 Comment blocks (consisting of whole line comments) are considered boxes, so you get all the filling and editing functionality in comments automatically.
 
@@ -16,7 +16,7 @@ Comment blocks (consisting of whole line comments) are considered boxes, so you 
 [http://www.youtube.com/watch?v=53YeTdVtDkU youtube]
 
 ==Discussion==
-[Lewang]  If you put your questions here, I'll try to address them.
+LeWang -- If you put your questions here, I'll try to address them.
 
 === Cycle through styles ===
 Hi Le, thanks for the package.
@@ -68,3 +68,6 @@ the list of styles. Any other input exits the loop."
       ))
 
 }}}
+
+----
+CategoryComments

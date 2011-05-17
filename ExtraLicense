@@ -53,10 +53,13 @@ To add a custom keyword, modify `##license-keywords-alist##' in the source.
 
 == See also ==
 
-Another license feature is provided by LicenseCopyright.
+* AutomaticFileHeaders -- automatically adding file headers, including with license text
+* LicenseCopyright -- another license feature
+
 
 ----
 ##xlicense.el## is poorly written, yet it works -- CinSK
 ----
 
-CategoryModes EmacsLispList CinSK
+CateogoryComments
+CategoryModes

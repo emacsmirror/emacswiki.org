@@ -1,0 +1,26 @@
+Click the heading to search for all wiki pages with this category.
+
+Comments in code depend on the programming language used.
+
+* '''CommentingCode''' -- introduction/overview of using comments in Emacs
+
+
+* AutoFillMode -- filling (code and) comments
+* AutomaticFileHeaders -- automatic insertion and update of (comment-block) file headers
+* DocMode -- create or edit foldable %%JavaDoc%% or Doxygen comment blocks
+* ExtraLicense -- insert (comment-block) licensing text into the current buffer
+* FillAdapt -- filling that guesses a fill prefix
+* FillingComments -- filling for comments only, in c-mode
+* '''<tt>[[hide-comnt.el]]</tt>''' -- Command '''`hide/show-comments'''' to hide/show all comments, or all comments in [[region]].  Lisp macro `with-comments-hidden'
+* HideShow -- hide/show multi-line comment blocks
+* '''<tt>[[Icicles - Search Commands, Overview#icicle-search-thing|icicle-search-thing]]</tt>'''
+** Use `##C-M-;##' to toggle ignoring comments while searching code
+** Use '''`comment'''' as the thing type to search only the comments
+* LineCommentBanner -- one-line banner-style comments
+* [[rebox2]] -- [[LeWang]]’s fork of ##rebox.el## that does comment box editing and filling
+* SemanticRecoder -- create or fill comments based on local context
+* UncommentSexp -- comment/uncomment a [[sexp]]
+* [[VimMode - Examples]] -- comment/uncomment the [[region]]
+
+
+----

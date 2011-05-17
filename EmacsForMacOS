@@ -299,6 +299,10 @@ Fullscreen mode doesn't work in Vanilla Emacs 23.1.  This at least maximizes you
 
 -- [[timcharper]]
 
+== Hacking on the Sources ==
+
+The section is meant to collect useful hacks to the C sources (or to Lisp sources that are executed before any init files are read, such as ##startup.el##).
+
 === True fullscreen for the Cocoa build in Emacs 23 ===
 
 This fork has patches for true fullscreen and it works wonderfully.
@@ -318,5 +322,97 @@ $ mv nextstep/Emacs.app /Applications
 
 Source: http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
 My recommendation for other how-to questions [http://www.mac-how.net Mac How]
+
+ 
+=== Changing the Scrollbar Appearance ===
+
+The size of the "knob" in a given window's scrollbar is proportional to how much of the buffer is displayed in the window.  When the whole buffer is displayed in the window, the knob takes up the entire scrollbar.  I find this distracting (not too mention aesthetically objectionable), and much prefer the behavior of applications like iTerm that show an empty scrollbar slot when a window displays all of its contents.  
+
+To get that effect in Emacs, you can edit src/nsterm.m.   Look for this bit of code:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+      [self setFloatValue: 0.0 knobProportion: 1.0];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      por = (float)portion/whole;
+      [self setFloatValue: pos knobProportion: por];
+    }
+  return self;
+}
+</pre>
+
+and replace it with:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setEnabled:NO];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      por = (float)portion/whole;
+      [self setFloatValue: pos knobProportion: por];
+    }
+  return self;
+}
+</pre>
+
+A further change is to have the knob be of constant, minimal size, so that it only indicates position in the buffer, not the portion of the buffer displayed in the window (I find the variable sizes distracting).  To do this, use the replacement cocde:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setEnabled:NO];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      [self setFloatValue: pos knobProportion: 0];
+    }
+  return self;
+}
+</pre>
+
 ------
 CategoryPorts CategoryBuilding 

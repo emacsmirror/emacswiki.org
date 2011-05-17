@@ -1,4 +1,4 @@
-HideShow is a minor mode similar to OutlineMode -- it hides and shows blocks of text. In particular, HideShow hides balanced-expression code blocks and multi-line comment blocks.
+%%HideShow%% is a minor mode similar to OutlineMode -- it hides and shows blocks of text. In particular, it hides balanced-expression code blocks and multi-line comment blocks.
 
 See HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
 
@@ -327,6 +327,10 @@ Move point to the beginning of the line, and run the normal hook
 
 </pre>
 Why isn't that a standard part of hide-show?
+
+
+
 ----
 CategoryHideStuff
+CategoryComments
 

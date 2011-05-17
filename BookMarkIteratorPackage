@@ -6,11 +6,14 @@ Lisp:bookmark-iterator.el iterates through bookmarks similar to DevStudio.
 
 '''See Also''' the following, for other ways to iterate among [[bookmark]]s:
 
-* [[BookMarks#CyclingBookmarks|Cycling Bookmarks]] -- command `doremi-bookmarks', in library Lisp:doremi-cmd.el.
+* [[BookmarkPlus#CyclingNavListAutonaming|Bookmark+]] -- cycle among any set of bookmarks, including highlighted bookmarks in the current buffer
+* [[BookMarks#CyclingBookmarks|Cycling Bookmarks]] -- command `doremi-bookmarks', in library <tt>[[doremi-cmd.el]]</tt>
 
-* [[Icicles - Tripping]] --  command `icicle-bookmark'. This supports [[completion]] also, including [[regexp]] completion.
+* [[Icicles - Tripping]] --  command `icicle-bookmark'. This supports [[completion]] also, including [[regexp]] completion
 
 -- DrewAdams
 
 ----
+
+CategoryBookmarking
 CategoryHypermedia

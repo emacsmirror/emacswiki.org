@@ -22,5 +22,9 @@ You can convert an entire buffer from paragraphs to lines by recording a macro t
 
 Also see UnwrapLine.
 
+[new]
+There is a whole bunch of unfilling functions in ourcomments-util.el in [NxhtmlMode nXhtml]. There is for example already a function unfill-region.
+
+
 ----
 CategoryFilling

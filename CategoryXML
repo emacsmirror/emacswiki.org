@@ -1,5 +1,8 @@
 These are some packages used for XML processing in Emacs or XEmacs:
 
+* [[Icicles - Search Commands, Overview|Icicles Search]] has commands to search the contents of selected XML elements (e.g. those in the [[region]]):
+** '''`icicle-search-xml-element'''' -- search elements whose names match a [[regexp]]
+** '''`icicle-search-thing'''' with thing-type `sexp' -- when in `nxml-mode'.  Option `nxml-sexp-element-flag' controls what [[sexp]] means -- set it to `t' if you want whole elements as sexps.
 * NxmlMode -- Major mode for emacs.  Probably the best available mode for XML.
 * PsgmlMode -- major mode for editing SGML and XML documents.  This is more complicated, and feature rich than XmlMode, but less flexible.  If you have a validating DTD for your XML, using PSGML will provide a variety of very useful features, most notably context sensitive help in inserting tags and attributes.
 * XmlMode -- editing XML, indentation, font-lock offered. simpler than PSGML, doesn't try to parse DTD.

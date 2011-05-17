@@ -32,9 +32,11 @@ Features:
 
 ** '''`C-end'''' -- go to the longest line. Repeat to go to the longest line following that one in the buffer. As usual, `C-g' puts you back where you started. This binding is made only if you also use library <tt>[[misc-cmds.el]]</tt>. See [[FindLongLines#goto-longest-line|Find Long Lines]].
 
-* Highlighting of the failed portion of your search string in the [[minibuffer]]-- that is, the portion that will be removed if you do `C-g'. (I added this feature to vanilla Emacs in release 23.1.)
+* Highlighting of the mismatched portion of your search string in the [[minibuffer]] (actually, Isearch uses the [[echo area]]) -- that is, the portion that will be removed if you do `C-g'. (I added this feature to vanilla Emacs in release 23.1.)
 
-* `M-e' during Isearch edit (that is, after `M-e' -- so `M-e M-e') moves the [[cursor]] between the match success and fail positions of the search string. This lets you quickly change a character or two that you mistyped at that position.
+* `M-e' (`icicle-edit-string') automatically puts the [[cursor]] at the first mismatch position in the search string, for easy editing.  Whereas `C-g' removes all of the mismatch, this feature lets you change or insert a character or two, without losing the rest of the search string.
+
+
 
 '''See Also:'''
 

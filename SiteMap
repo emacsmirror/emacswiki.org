@@ -44,6 +44,7 @@ Downloading and Installing Emacs:
 General Use:
 
 * [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible
+* [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer]]s
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command]]s, `M-x'
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other [[buffer]]s
@@ -60,6 +61,7 @@ General Use:
 ** [[CategoryWindows|Windows]] -- Emacs [[window]]s (panes within a [[frame]])
 * [[CategoryEditing|Editing]] -- miscellaneous information about text editing
 ** [[CategoryAlignment|Alignment]] -- align text, columns, comments or other programming-language constructs
+** [[CategoryComments|Comments]] -- manipulating and using code comments
 ** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
 ** [[CategoryIndentation|Indentation]] -- indenting text, including source code
 ** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches

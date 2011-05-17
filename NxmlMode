@@ -189,6 +189,17 @@ If you want to edit XML fragments and still use the validation in nxml-mode you 
 This is used for example when editing PHP.
 The framework for this is general, but it requires a bit elisp skill to use it for fragment of other XML DTDs than XHTML.
 
+
+=== Searching XML Elements ===
+
+[[Icicles]] has these commands that let you search the contents of selected XML elements (e.g. those in the [[region]]):
+
+* '''`icicle-search-xml-element'''' -- search elements whose names match a [[regexp]]
+
+* '''`icicle-search-thing'''' with thing-type `sexp' -- when in `nxml-mode'.  Option `nxml-sexp-element-flag' controls what [[sexp]] means -- set it to `t' if you want whole elements as sexps.
+
+You can use '''`##C-M-;##'''' in the [[minibuffer]] to toggle whether commented text is to be ignored (i.e., don't bother with sexps in comments.
+
 === Spelling ===
 
 Switch to XmlMode and use the tools menu.

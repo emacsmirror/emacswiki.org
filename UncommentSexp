@@ -48,3 +48,7 @@ Here is some code to comment/uncomment sexp. I bind my-toggle-comment-sexp to C-
 		   (<= end (point)))
 		 'my-uncomment-sexp 'my-comment-sexp))))
 }}}
+
+
+----
+CategoryComments
