@@ -50,6 +50,8 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * [[line ending]] -- one or more characters at the end of a [[line]]
 * [[LineWrap|line wrap]] -- how [[line]]s that are wider than a [[window]] are displayed (unless they are truncated at the right edge)
 * '''[::list]''' -- A '''list''' is the [[symbol]] `nil' or a [[cons]] whose [[cdr]] is a [[list]].
+
+* '''[::macro]''' -- An EmacsLisp form that, when evaluated, translates a [[sexp]] that is a [[list]] into another such, which is then evaluated and its result is returned.  IOW, it rewrites (without evaluating) one sexp as another and then evaluates the latter.  It is typically defined using `defmacro'.  It can be expanded without evaluating the result, using `macroexpand'.  See Manual:macros.
 * [[major mode]] -- there is one major mode per [[buffer]]
 * [[mark]] -- a [[buffer]] location that you can change, return to...
 * '''[::marker]''' -- a Lisp object that contains information about a position in a [[buffer]]

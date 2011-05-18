@@ -4,8 +4,8 @@
 ;;; Robert Adesam, robert@adesam.se
 ;;; http://www.adesam.se/robert/
 ;;;
-;;; This is my init file for Emacs 23 on
-;;; MacOSX, Linux, and Windows/Cygwin
+;;; This is my init file for Emacs 22, 23, and 24
+;;; on MacOSX, Linux, and Windows/Cygwin
 ;;;
 ;;; TODO: Solaris
 ;;;
@@ -43,8 +43,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Emacs on Windows 7, M-x version output:
-;;   GNU Emacs 23.2.1 (i386-mingw-nt6.1.7600)
-;;   of 2010-05-08 on G41R2F1
+;;   GNU Emacs 24.0.50.1 (i386-mingw-nt6.1.7600)
+;;   of 2011-01-17 on 3249CTO
 ;;
 ;; N.B. executed
 ;;
@@ -52,15 +52,16 @@
 ;;
 ;; in cmd.exe to set the HOME environment variable
 
+
 ;; Adding cygwin stuff
 (if (eq system-type 'windows-nt)
     (progn
       (setenv "PATH" 
-	      (concat 
-	       "c:\\cygwin\\usr\\local\\bin" ";"
-	       "c:\\cygwin\\usr\\bin" ";"
-	       "c:\\cygwin\\bin" ";"
-	       (getenv "PATH")))
+ 	      (concat 
+ 	       "c:\\cygwin\\usr\\local\\bin" ";"
+ 	       "c:\\cygwin\\usr\\bin" ";"
+ 	       "c:\\cygwin\\bin" ";"
+ 	       (getenv "PATH")))
       (setq exec-path (cons "c:/cygwin/bin/" exec-path))
       ;; Adding cygwin mounts
       (require 'cygwin-mount)
@@ -96,7 +97,8 @@
 ;; Server
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(server-start)
+(if (eq system-type 'windows-nt)
+    (server-start))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Environment
@@ -111,6 +113,7 @@
 (tooltip-mode nil)
 (set-scroll-bar-mode nil)
 (blink-cursor-mode -1)
+(setq vc-handled-backends nil)
 
 ;; ...other things I do
 (column-number-mode t)
@@ -134,9 +137,9 @@
           (cursor-color . "gray30")
           (left-fringe . 5)
           (right-fringe . 5)
-          (width . 88) 
+          (width . 98) 
           (height . 35)
-          (left . 295)))
+          (left . 200)))
        ((eq system-type 'darwin) ; MacOS X 10.5.x on Mac Mini @work
         '((scroll-bar-width . 2) 
           (foreground-color . "gray15")
@@ -180,9 +183,6 @@
             :height 90
             :family "DejaVu Sans Mono"))))))
 
-(custom-set-faces
- '(org-document-title ((((class color) (background light)) (:foreground "midnight blue" :weight bold)))))
-
 ;; This is needed when running Emacs 23, vm-mail otherwise crashes
 ;; emacs -nw when setting frame name, Fatal Error (10). Reported, see
 ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=4765
@@ -194,16 +194,20 @@
                    ))
 
 ;; Character encoding
-(prefer-coding-system 'utf-8-unix)
-(if (or (eq system-type 'darwin) (eq system-type 'windows-nt))
+(if (eq system-type 'darwin)
     (progn
+      (prefer-coding-system 'utf-8-unix)
       (set-default-coding-systems 'utf-8-unix)
       (if (< emacs-major-version 23)
           (set-keyboard-coding-system 'utf-8))
       (set-clipboard-coding-system 'utf-8)
       (set-terminal-coding-system 'utf-8)))
-(if (eq system-type 'gnu/linux)
-    (load-library "iso-transl"))
+(if (or (eq system-type 'gnu/linux)
+        (eq system-type 'windows-nt))
+    (progn
+      (prefer-coding-system 'utf-8-unix)
+      (load-library "iso-transl")))
+
 (define-coding-system-alias 'utf-8-emacs 'utf-8) ; needed by bbdb...
 
 ;; Fullscreen, does not work on my Emacs for Mac... yet...
@@ -258,9 +262,7 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 (setq calendar-date-style 'iso
       diary-show-holidays-flag nil
       calendar-week-start-day 1
-      calendar-mark-diary-entries-flag t
-      ;; calendar-time-display-form (quote (24-hours ":" minutes (if time-zone " (") time-zone (if time-zone ")")))
-      )
+      calendar-mark-diary-entries-flag t)
 
 ;; TODO: Fix function calling python-script for syncing with Google
 ;; calendar
@@ -273,8 +275,7 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
       ps-line-number nil
       ps-line-number-step 3
       ps-n-up-printing 1
-      ps-header-lines 0
-      )
+      ps-header-lines 0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global keys
@@ -285,9 +286,7 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
          (eq system-type 'darwin))
     (progn 
       (setq mac-command-modifier 'meta)
-      (setq mac-option-modifier nil)
-      ;; (one-buffer-one-frame-mode 0)
-      ))
+      (setq mac-option-modifier nil)))
 
 ;; Global keyboard tweaks
 (global-set-key [f9] "[")
@@ -298,7 +297,6 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 (global-set-key "\C-xf" 'find-file) ; i always hit the wrong key-combo
 (global-set-key "\C-xm" 'vm-mail)
 (global-set-key (kbd "C-c a") 'org-agenda)
-;; (global-set-key (kbd "C-c r") 'remember) ; replaced by org-capture
 (global-set-key "\C-cr" 'org-capture)
 (global-set-key "\C-cg" 'ra/gtd)
 (global-set-key "\C-cn" 'ra/note)
@@ -331,11 +329,12 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
          ("\\.xml$" . nxml-mode)
          ("\\.xsl$" . nxml-mode)
          ("cms\\.it\\.gu\\.se.*\\.txt$" . nxhtml-mumamo-mode)
+         ("www\\.blogger\\.com.*\\.txt$" . html-mumamo-mode)
          ("\\.org$" . org-mode)
          ("\\.org.old$" . org-mode)
          ("\\.sorg$" . org-mode)
-         ("\\.pho$" . mbrola-mode)
-         ) auto-mode-alist))
+         ("\\.pho$" . mbrola-mode)) 
+       auto-mode-alist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Email
@@ -391,7 +390,6 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 
 (setq gnus-select-method 
       '(nntp "oravannahka.helsinki.fi"))
-;;      '(nntp "news.gnus.org"))
 
 (setq gnus-secondary-select-methods
       '((nntp "news.gmane.org")))
@@ -451,19 +449,70 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 ;; MAIRIX SEARCH
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'mairix)
-(setq mairix-file-path "~/tmp"
+(setq mairix-file-path "~/mail"
       mairix-mail-program (quote vm)
       mairix-search-file "search")
 
+;; Redefined 20110518
+(defun mairix-call-mairix (query file threads)
+  "Call Mairix with QUERY and output FILE.
+If FILE is nil, use default.  If THREADS is non-nil, also return
+whole threads.  Function returns t if messages were found."
+  (let* ((commandsplit (split-string mairix-command))
+	 (args (cons (car commandsplit)
+		     `(nil ,(get-buffer-create mairix-output-buffer) nil)))
+	 rval)
+    (with-current-buffer mairix-output-buffer
+      (erase-buffer))
+    (when (> (length commandsplit) 1)
+      (setq args (append args (cdr commandsplit))))
+    (when threads
+      (setq args (append args '("-t"))))
+    (when (stringp query)
+      (setq query (split-string query)))
+    (setq mairix-last-search (list (mapconcat 'identity query " ")
+				     file threads))
+    (when (not file)
+      (setq file mairix-search-file))
+    (setq file
+	  (concat
+	   (file-name-as-directory
+      (expand-file-name
+      mairix-file-path))
+	   file))
+    ;; Filter to prune away the c:/cygwin part from file added by
+    ;; expand-file-name on Windows-NT Emacs 23.2. See blog post on URL
+    ;; http://robert-adesam.blogspot.com/2011/05/mairix-on-windows-nt-emacs.html
+    ;; for more info.
+    (if (eq system-type 'windows-nt)
+        (setq file
+              (replace-regexp-in-string "^c:/cygwin" "" file)))
+    (setq rval
+	  (apply 'call-process
+		 (append args (list "-o" file) query)))
+    (if (zerop rval)
+	(with-current-buffer mairix-output-buffer
+	  (goto-char (point-min))
+	  (re-search-forward "^Matched.*messages")
+	  (message (match-string 0)))
+      (if (and (= rval 1)
+	       (with-current-buffer mairix-output-buffer
+		 (goto-char (point-min))
+		 (looking-at "^Matched 0 messages")))
+	  (message "No messages found")
+	(error "Error running Mairix.  See buffer %s for details"
+	       mairix-output-buffer)))
+    (zerop rval)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; BBDB
+;; bbdb
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'bbdb)
 (bbdb-initialize 'vm)
 (setq bbdb-file
       (cond
        ((eq system-type 'windows-nt)
-        "m:/mail/.database.bbdb")
+        "c:/cygwin/home/robert/mail/.database.bbdb")
        ((eq system-type 'darwin)
         "~/mail/.database.bbdb")
        ((eq system-type 'gnu/linux)
@@ -502,7 +551,7 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 ;; Use as external editor when
 (setq as-external-alist 
       '(("/itsalltext/.*wiki" as-external-for-wiki)
-        ;; ("cms\\.it\\.gu\\.se.*\\.txt" as-external-its-all-text-default)
+        ("www\\.blogger\\.com.*\\.txt" as-external-its-all-text-default)
         (as-external-its-all-text-regexp as-external-its-all-text-default))
       nxml-slash-auto-complete-flag t)
 
@@ -630,7 +679,7 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 
 ;; misc setup
 (setq org-modules
-      '(org-bbdb org-bibtex org-vm org-crypt org-mairix)
+      '(org-bbdb org-bibtex org-crypt org-mairix)
       ;; how to archive
       org-archive-location "archive/%s.old::* Archive"
       ;; logging
@@ -661,7 +710,7 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
         ("@ltlunch" . ?l)
         ("@2020" . ?2)
         ("someday" . ?s)
-        ("@emacs" . ?g)
+        ("@gul" . ?g)
         ("flov" . ?f))
       ;; blank lines
       org-cycle-separator-lines 2
@@ -695,7 +744,6 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
          "~/gtd/tasks.org"
          "~/gtd/projects.org"))))
 
-
 (setq org-agenda-include-diary t
       org-agenda-include-all-todo t
       org-columns-default-format "%60ITEM %TODO %TAGS %6effort(EFFORT){:}"
@@ -709,7 +757,8 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 (add-hook 'org-agenda-mode-hook 
           (lambda ()
             (hl-line-mode t)
-            (local-set-key (kbd "r") 'org-agenda-refile)))
+            (local-set-key (kbd "r") 'org-agenda-refile)
+            (local-set-key (kbd "R") 'org-agenda-redo)))
 
 ;; adding shortcuts
 (add-hook 'org-mode-hook 
@@ -766,7 +815,6 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
         ("s" "Someday" entry
          (file+headline "inbox.org" "Inbox")
          "* %^{description} :someday:%^g%^{effort}p\n  :PROPERTIES:\n  :added:    %U\n  :END:\n\n  %?%i \n")))
-      
 
 ;; We also want to be able to encrypt subtrees in org-mode, requires
 ;; the epa-setup package
@@ -789,6 +837,25 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
 (setq sql-sqlite-program "sqlite3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; gclient
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Set w3m as default browser
+(setq browse-url-browser-function 'w3m-browse-url)
+
+;; g-client
+;; added the --insecure option to curl so we do not get the error
+;; message "invalid token 401" from google due to curl's failure to
+;; verify the cert. See http://curl.haxx.se/docs/sslcerts.html for
+;; more info and alternatives...
+(setq g-curl-common-options "--insecure --http1.0 --compressed --silent --location --location-trusted"
+      g-html-handler 'browse-url-of-buffer
+      g-user-email "robert@adesam.se")
+
+;; gblogger
+(setq gblogger-posting-url "http://www.blogger.com/feeds/1139989336831951363/posts/default")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; No more debug on error
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq debug-on-error nil)
@@ -803,4 +870,21 @@ yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
        '(("\\.gu.se$" . org-mode)
          ) auto-mode-alist))
 
+;; misc temp
 (put 'scroll-left 'disabled nil)
+(setq w32-get-true-file-attributes nil)
+(setq auto-save-default nil)
+(setq backup-inhibited t)
+
+;; (defun ra/win7-symlinks ()
+;;   (interactive)
+;;   (save-excursion
+;;     (goto-char 0)
+;;     (if (or (looking-at "\x4c\x00\x00\x00\x01\x14\x02\x00\x00\x00\x00\x00\xc0\x00\x00\x00\x00\x00\x00\x46") ; Windows shortcut file, see the MS-SHLLNK document
+;;             (looking-at "!<symlink>\xff\xfe")) ; CYGWIN style symlink
+;;         (progn
+;;           (re-search-forward "\xff\xfe\\(.*\\)")
+;; ;;          (message (replace-regexp-in-string "\0" "" (match-string 1) t t))))))
+;;           (find-alternate-file (replace-regexp-in-string "\0" "" (match-string 1) t t))))))
+
+;; (add-hook 'find-file-hook 'ra/win7-symlinks)

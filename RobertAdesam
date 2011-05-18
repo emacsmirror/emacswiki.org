@@ -22,6 +22,10 @@ I use Emacs daily for
 !ThinkPad @work running Mandriva 2010 and Windows 7 Enterprise; and my Samsung netbook @home running Windows 7 Starter.
 * RobertAdesamEmacsClientBat -- bat file for starting emacsclientw.exe on my netbook @home running Windows 7 Starter. On my blog I posted [http://robert-adesam.blogspot.com/2011/01/emacsclient-setup-on-windows-7-starter.html how I use it].
 
+== Hacks ==
+
+* RobertAdesamMairixPatch -- quick fix for running Mairix on Windows NT Emacs, see [http://robert-adesam.blogspot.com/2011/05/mairix-on-windows-nt-emacs.html my blog post] for more info.
+
 == Contact ==
 
 You can reach me via

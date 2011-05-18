@@ -11,7 +11,7 @@ Comments in code depend on the programming language used.
 * ExtraLicense -- insert (comment-block) licensing text into the current buffer
 * FillAdapt -- filling that guesses a fill prefix
 * FillingComments -- filling for comments only, in c-mode
-* '''<tt>[[hide-comnt.el]]</tt>''' -- Command '''`hide/show-comments'''' to hide/show all comments, or all comments in [[region]].  Lisp macro `with-comments-hidden'
+* HideOrIgnoreComments -- Command '''`hide/show-comments'''' to hide/show all comments or all comments in [[region]].  Lisp macro '''`with-comments-hidden'''', to do something while ignoring commented text.
 * HideShow -- hide/show multi-line comment blocks
 * '''<tt>[[Icicles - Search Commands, Overview#icicle-search-thing|icicle-search-thing]]</tt>'''
 ** Use `##C-M-;##' to toggle ignoring comments while searching code

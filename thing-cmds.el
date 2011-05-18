@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat May 14 14:18:11 2011 (-0700)
+;; Last-Updated: Tue May 17 14:01:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 649
+;;     Update #: 653
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,9 +22,10 @@
 ;; 
 ;;; Commentary:
 ;;
-;;  You can use the commands defined here to select different kinds of
-;;  text entities ("things").  They are especially useful in
-;;  combination with Transient Mark mode.
+;;  You can use the commands defined here to select or move to
+;;  different kinds of text entities ("things") that are at or near
+;;  point.  They are especially useful in combination with Transient
+;;  Mark mode.
 ;; 
 ;;
 ;;  Commands defined here:
@@ -375,10 +376,10 @@ need to invoke the current command again.
 
 If you use this command or `previous-visible-thing' successively, even
 mixing the two, you are prompted for the type of THING only the first
-time.  You can thus bind these two commands to simple, repeatable
+time.  You can thus bind these two commands to simple repeatable
 keys (e.g. `f11', `f12'), to navigate among things quickly.
 
-If you do not want to sacrifice two simple, repeatable keys for this,
+If you do not want to sacrifice two simple repeatable keys for this,
 then you can instead use commands `next-visible-thing-repeat' and
 `previous-visible-thing-repeat', binding them each to a less rare key
 sequence that uses a prefix key.  Command `thgcmd-bind-keys' does

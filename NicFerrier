@@ -93,8 +93,14 @@ Here's a first crack:
       ))
 }}}
 
-[new]
 Neat! Everyone uses {{}} in their brace-based languages but a Lisp-y syntax might be ((…)) or ,(…)  . Also, any thoughts on directly expressing loops in the template language? --AmitPatel
+
+[new]
+I think nested parens are too common in text to make a good implementation choice. Braces seem like a good cultural choice anyway. Also I don't like explicit looping much.. I do like the idea of adding mapping or comprehensions, something like:
+
+{{{
+<html><body><ul>{{paramlist||<li>{{paramcar}}: {{paramcdr}}</li>}}</ul></body></html>
+}}}
 
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).

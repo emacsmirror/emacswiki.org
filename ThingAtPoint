@@ -51,8 +51,8 @@ Libraries are available that extend library ##thingatpt.el## in various ways.
 * `<tt>[[Icicles - Search Commands, Overview|icicle-search-thing]]</tt>' -- Things of a given type as ''search contexts'', optionally ignoring those within comments.  Like `grep' or `occur', but (a) with things of any type, not just lines and (b) with dynamic search patterns -- change on the fly.
 * StringAtPoint -- determine a programming language string under point.
 * [[ThingAtPoint+]] -- general extension of ##thingatpt.el## (<tt>[[thingatpt+.el]]</tt>)
-* ThingAtPointCommands -- select successive objects of different types (<tt>[[thing-cmds.el]]</tt>)
-* ThingAtPointOptional -- utilities similar to %%ThingAtPointCommands%%.
+* ThingAtPointCommands -- various commands that use thing-at-point things (<tt>[[thing-cmds.el]]</tt>)
+* ThingAtPointOptional -- utilities
 * ThingEdit -- copy/paste various things at point (<tt>[[thing-edit-extension.el]]</tt>)
 
 The following add new kinds of things at point. They provide examples of how to use ##thingatpt.el##.
@@ -60,8 +60,9 @@ The following add new kinds of things at point. They provide examples of how to 
 * [[Chart]] -- stock and commodity symbols (ie. ticker codes)
 * TexMathPreview -- TeX math expressions
 * [[ThingAtPoint+]] -- things at or ''nearest'' point: list, number, word, sentence, sexp, symbol, symbol name
-* ThingAtPointUtils -- Delivers a set of functions to return,
-move over and manipulate a given thing.
+* ThingAtPointUtils -- functions to return, move over or manipulate a thing
+
+
 
 == See Also ==
 

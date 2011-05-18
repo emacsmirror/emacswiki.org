@@ -10,6 +10,7 @@ Requirements:
 * yasnippet: http://code.google.com/p/yasnippet/
 * Obviously R and ESS
 * A R process must be running
+* I uploaded the source [[r-autoyas.el|here]].  -- MatthewFidler
 
 == User notes ==
 

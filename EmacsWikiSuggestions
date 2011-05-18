@@ -14,6 +14,20 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+
+== Be Able To Specify Which Manual, for `Manual:' Links ==
+
+I recently added a glossary entry for `macro'.  I added this link: Manual:macros.  Unfortunately, there is also a `macros' page in the CC mode manual, so this link sends you to a page where you need to pick from the two manuals.  The choice will not be obvious to a newbie.
+
+It would be good to be able to somehow specify the manual: `(elisp)'. E.g. ##[[Manual (elisp):macros]]## or some such.  Being able to specify more than one manual would be a nice-to-have (without it one would just create multiple links). -- DrewAdams
+
+
+== Glossary Link in Page Header/Footer ==
+
+It is not obvious where to find the glossary, and it is quite helpful, especially for newbies.  I suggest we add a '''[[CategoryGlossary|Glossary]]''' link to the header and footer of each page. -- DrewAdams
+
+
+
 == Text-based Captcha for use with Emacs/w3m ==
 
 Hi, I just realized I had to leave Emacs to edit the Emacs Wiki (so I could solve the Captcha).  It would be cool to supply a math problem captcha if you detect a User Agent like Emacs/w3m or Emacs/w3.  Either that or get a non-Javascript-based version of ReCaptcha (but also note this! http://www.allspammedup.com/2011/01/google-recaptcha-cracked/). --jcorneli

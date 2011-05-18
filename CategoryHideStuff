@@ -1,13 +1,14 @@
 Modes/functions/packages to hide stuff by other means than using OutlineMode (see CategoryOutline).
 
-* HighLight -- Conditional text: hide/show text highlighted in any set of faces. Restrict to regexp matches or regions. Use highlighter pen. Overlays or text properties.
-* HideIfDef -- Hide code within `ifdef' constructs that the C preprocessor
-would eliminate.
-* HideLines -- Hide lines based on a regexp.
-* HideRegion -- Hide multiple regions of text in any mode.
-* HideShow -- Hide parts of the buffer like an outline mode.
 * BasicNarrowing -- Restrict actions, including viewing, to a
 specified region of the buffer.
+* HideOrIgnoreComments -- Command '''`hide/show-comments'''' to hide/show all comments or all comments in [[region]].  Lisp macro '''`with-comments-hidden'''', to do something while ignoring commented text.
+* HideIfDef -- Hide code within `ifdef' constructs that the C preprocessor
+would eliminate.
+* HighLight -- Conditional text: hide/show text highlighted in any set of faces. Restrict to regexp matches or regions. Use highlighter pen. Overlays or text properties.
+* HideLines -- Hide lines based on a regexp.
+* HideRegion -- Hide multiple regions of text in any mode.
+* HideSearch -- hides non-matching lines incrementally
+* HideShow -- Hide parts of the buffer like an outline mode.
 * MultipleNarrowings -- Use `##C-x n x x x...##’ to cycle a ring of narrowings (buffer restrictions).
 * `set-selective-display' -- Hide lines beyond a certain level of indentation.
-* HideSearch -- hides non-matching lines incrementally

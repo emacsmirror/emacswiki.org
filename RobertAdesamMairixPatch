@@ -1,0 +1,24 @@
+    *** mairix.el	2011-05-10 17:00:45.580724900 +0200
+    --- mairix.el.new	2011-05-11 08:56:29.250327600 +0200
+    ***************
+    *** 550,561 ****
+    --- 550,568 ----
+          (setq file
+      	  (concat
+      	   (file-name-as-directory
+      	    (expand-file-name
+      	     mairix-file-path))
+      	   file))
+    +     ;; Filter to prune away the c:/cygwin part from file added by
+    +     ;; expand-file-name on Windows-NT Emacs 23.2. See blog post on URL
+    +     ;; http://robert-adesam.blogspot.com/2011/05/mairix-on-windows-nt-emacs.html
+    +     ;; for more info.
+    +     (if (eq system-type 'windows-nt)
+    +         (setq file
+    +               (replace-regexp-in-string "^c:/cygwin" "" file)))
+          (setq rval
+      	  (apply 'call-process
+      		 (append args (list "-o" file) query)))
+          (if (zerop rval)
+      	(with-current-buffer mairix-output-buffer
+      	  (goto-char (point-min))

@@ -5,7 +5,7 @@
 ;; Author: coldnew <coldnew.tw@gmail.com>
 ;; Keywords: Octave, auto-compldte, complettion
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/download/ac-octave.el
-(defconst ac-octave-version "0.1")
+(defconst ac-octave-version "0.2")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,7 +23,9 @@
 
 ;;; Change Log:
 ;;
+;; 0.2: remove dulpicates completions.
 ;; 0.1: ac-octave.el 0.1 released.
+;;
 
 ;;; Install
 ;; Put this file into load-path'ed directory, and byte compile it if
@@ -75,34 +77,39 @@
   (interactive)
   (let* ((end (point))
 	 (command (save-excursion
-		   (skip-syntax-backward "w_")
-		   (buffer-substring-no-properties (point) end))))
+		    (skip-syntax-backward "w_")
+		    (buffer-substring-no-properties (point) end))))
 
-    (inferior-octave-send-list-and-digest
-     (list (concat "completion_matches (\"" command "\");\n")))
+    (scheme-send-string
+     (concat "completion_matches (\"" command "\");\n"))
+
     (setq ac-octave-complete-list
-          (sort inferior-octave-output-list 'string-lessp))
-  ))
+	  (sort inferior-octave-output-list 'string-lessp))
+
+    ;; remove dulpicates lists
+    (delete-dups ac-octave-complete-list)
+
+    ))
 
 
 (defun ac-octave-candidate ()
   (let (table)
     (ac-octave-do-complete)
     (dolist (s ac-octave-complete-list)
-	    (push s table))
+      (push s table))
     table)
   )
 
 
 (ac-define-source octave
-		  '((candidates . ac-octave-candidate)
-		    (candidate-face . ac-octave-candidate-face)
-		    (selection-face . ac-octave-selection-face)
-		    (init . ac-octave-init)
-		    (requires . 0)
-		    (cache)
-		    (symbol . "f")
-		    ))
+  '((candidates . ac-octave-candidate)
+    (candidate-face . ac-octave-candidate-face)
+    (selection-face . ac-octave-selection-face)
+    (init . ac-octave-init)
+    (requires . 0)
+    (cache)
+    (symbol . "f")
+    ))
 
 
 
@@ -110,4 +117,3 @@
 
 (provide 'ac-octave)
 ;; ac-octave.el ends here.
-

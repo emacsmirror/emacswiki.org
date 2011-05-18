@@ -1,5 +1,5 @@
 ;;;; dired-filetype-face.el  --- faces for different filetype in dired buffer.
-;;;  Time-stamp: <Joseph 2011-04-05 09:57:06>
+;;;  Time-stamp: <Joseph 2011-05-18 11:56:53>
 
 ;; Filename: dired-filetype-face.el
 ;; Description: set faces for different file type in dired buffer.
@@ -7,7 +7,8 @@
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-04-04
-;; Version: 0.2.0
+;; Update: 2011/05/18 11:56:09
+;; Version: 0.2.1
 ;; URL: http://www.emacswiki.org/emacs/download/dired-filetype-face.el
 ;; Keywords: dired filetype face custom
 ;; Compatibility: (Test on GNU Emacs 23.2.1 ,24.0.50)
@@ -416,6 +417,15 @@
   )
 
 (add-hook 'dired-mode-hook 'dired-filetype-face-mode-func)
+
+(defadvice  dired-toggle-read-only (after  dired-filetype-face activate)
+  "set different faces for different file type."
+  (dired-filetype-face-mode-func)
+ )
+(defadvice  wdired-exit (after dired-filetype-face activate)
+  "set different faces for different file type."
+  (dired-filetype-face-mode-func)
+)
 
 (provide 'dired-filetype-face)
 

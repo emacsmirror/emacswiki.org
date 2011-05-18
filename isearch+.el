@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Mon May 16 14:29:34 2011 (-0700)
+;; Last-Updated: Tue May 17 08:08:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 587
+;;     Update #: 599
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -180,6 +180,7 @@
 
 ;; Quiet the byte compiler.
 (defvar subword-mode)
+(defvar isearch-error)                  ; Defined in `isearch.el'.
 (defvar isearch-original-minibuffer-message-timeout) ; Defined in `isearch.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -382,11 +383,8 @@ Bindings in Isearch minor mode:
        (point)))))
 
 
-;; REPLACE ORIGINAL in `isearch.el'.
-;;
-;; Highlights failed part of search string in echo area, in face `isearch-fail'.
-;;
-;; (when (> emacs-major-version 21)        ; Emacs 22.
+;; $$$$$$
+;; (when (> emacs-major-version 21)        ; Emacs 22+
 ;;   (defun isearch-message (&optional c-q-hack ellipsis)
 ;;     ;; Generate and print the message string.
 ;;     (let ((cursor-in-echo-area ellipsis)
@@ -411,35 +409,32 @@ Bindings in Isearch minor mode:
 
 
 
-(defvar isearch-error)                  ; Quite the byte-compiler.
-
-
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
-;; Highlights failed part of search string in echo area, in face `isearch-fail'.
+;; Highlight failed part of search string in echo area, in face `isearch-fail'.
 ;;
-(when (> emacs-major-version 21)       ; Emacs 22+
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun isearch-message (&optional c-q-hack ellipsis)
     ;; Generate and print the message string.
-    (let ((cursor-in-echo-area ellipsis)
-          (m isearch-message)
-          (cmds isearch-cmds)
+    (let ((cursor-in-echo-area  ellipsis)
+          (msg                  isearch-message)
+          (cmds                 isearch-cmds)
           succ-msg)
       (when (or (not isearch-success) isearch-error)
         (while (or (not (isearch-success-state (car cmds))) (isearch-error-state (car cmds)))
           (pop cmds))
         (setq succ-msg  (and cmds (isearch-message-state (car cmds)))
-              m         (copy-sequence m))
-        (when (and (stringp succ-msg)  ; Highlight failed part of input.
-                   (< (length succ-msg) (length m)))
-          (add-text-properties (length succ-msg) (length m) '(face isearch-fail) m))
-        (when (string-match " +$" m)   ; Highlight trailing whitespace.
+              msg       (copy-sequence msg))
+        (when (and (stringp succ-msg)   ; Highlight failed part of input.
+                   (< (length succ-msg) (length msg)))
+          (add-text-properties (length succ-msg) (length msg) '(face isearch-fail) msg))
+        (when (string-match " +$" msg)  ; Highlight trailing whitespace.
           (add-text-properties (match-beginning 0) (match-end 0)
-                               '(face trailing-whitespace) m)))
-      (setq m (concat (isearch-message-prefix c-q-hack ellipsis isearch-nonincremental)
-                      m
-                      (isearch-message-suffix c-q-hack ellipsis)))
-      (if c-q-hack m (let ((message-log-max nil)) (message "%s" m)))))
+                               '(face trailing-whitespace) msg)))
+      (setq msg  (concat (isearch-message-prefix c-q-hack ellipsis isearch-nonincremental)
+                         msg
+                         (isearch-message-suffix c-q-hack ellipsis)))
+      (if c-q-hack msg (let ((message-log-max  nil)) (message "%s" msg)))))
 
 ;;; $$$$$$ No longer used.  `M-e' puts point at this position automatically.
 ;;;   (defun isearchp-goto-success-end ()   ; `M-e' in `minibuffer-local-isearch-map'.
@@ -537,7 +532,7 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
             ;; like switch buffers and start another isearch, and return.
             (condition-case nil
                 (isearch-done t t)
-              (exit nil))              ; was recursive editing
+              (exit nil))               ; was recursive editing
 
             ;; Save old point and isearch-other-end before reading from minibuffer
             ;; that can change their values.
@@ -606,7 +601,7 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
 
           ;; Reinvoke the pending search.
           (isearch-search)
-          (isearch-push-state)         ; this pushes the correct state
+          (isearch-push-state)          ; this pushes the correct state
           (isearch-update)
           (if isearch-nonincremental
               (progn
@@ -617,7 +612,7 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
                 (if (equal isearch-string "")
                     (message "")))))
 
-      (quit                            ; handle abort-recursive-edit
+      (quit                             ; handle abort-recursive-edit
        (isearch-abort)))));; outside of let to restore outside global values
 
 ;;;(require 'cl) ;; when, unless, cadr
