@@ -3,7 +3,9 @@ This page is about Evaluating Emacs-Lisp '''S-expressions''', or '''sexps'''.  A
 
 == M-: - eval-expression ==
 
-You can evaluate any Lisp sexp using `M-:' (command `eval-expression'). This prompts you to type an expression into the MiniBuffer, which is then
+You can evaluate any Lisp sexp using `M-:' (command `eval-expression'). 
+One can do this by pressing 3 keys : M , Shift and ':' together.
+This prompts you to type an expression into the MiniBuffer, which is then
 evaluated. The result is displayed in the echo area (or inserted to
 current buffer if a prefix argument is supplied).  This is especially
 useful when you are coding and testing, because this allows you to

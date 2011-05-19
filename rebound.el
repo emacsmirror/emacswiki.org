@@ -171,7 +171,7 @@ and `rebound-reposition-tests'."
     (dolist (fn rebound-advised-fns)
       (ad-activate fn))
     (dolist (hook rebound-hooks)
-      (remoe-hook (car hook) (cdr hook)))
+      (remove-hook (car hook) (cdr hook)))
     (message "Per-window point values are off")
     (run-hooks 'rebound-mode-off-hook))
   (run-mode-hooks 'rebound-mode-hook))

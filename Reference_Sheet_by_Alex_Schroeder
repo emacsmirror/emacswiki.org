@@ -21,7 +21,7 @@ This reference sheet assumes no customization.  There are several modes that mak
 ||C-k     ||Kill line (“cut line”)    ||
 |||| *Words*                          ||
 ||M-b     ||Backwards word            ||
-||M-f     ||Forwads word              ||
+||M-f     ||Forwards word             ||
 ||M-d     ||Kill word (“cut word”)    ||
 |||| *Balanced expressions* such as "foo" or (foo) ||
 ||C-M-b   ||Backwards sexp            ||

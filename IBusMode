@@ -73,6 +73,15 @@ ibus.el provides ibus-mode minor mode, which allows users on-the-spot style inpu
         ;; Change cursor color depending on IBus status
         (setq ibus-cursor-color '("red" "blue" "limegreen"))
 
+: If you use the client-server mode of emacs, replace the after-init-hook line by this:
+
+        (add-hook 'after-make-frame-functions
+	  (lambda (new-frame)
+	    (select-frame new-frame)
+	    (ibus-mode-on)))
+
+: If your distribution uses Python 3 by default, please customize the variable "ibus-python-shell-command-name" to "python2".
+
 : You can customize keybinding which toggles input status:
 
         ;; Use s-SPC to toggle input status

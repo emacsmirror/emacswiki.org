@@ -4,10 +4,10 @@
 ;; Maintainer : Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : Feburary 2005
 ;; Modified   : May 2011
-;; Version    : 0.8.2
+;; Version    : 0.8.3
 ;; Keywords   : c# languages oop mode
 ;; X-URL      : http://code.google.com/p/csharpmode/
-;; Last-saved : <2011-May-13 13:20:23>
+;; Last-saved : <2011-May-19 01:30:07>
 
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -28,8 +28,8 @@
 ;;; Commentary:
 ;;
 ;;    This is a major mode for editing C# code. It performs automatic
-;;    indentation of C# syntax; font locking; integration with compile.el;
-;;    integration with flymake.el; integration with yasnippet.el.
+;;    indentation of C# syntax; font locking; and integration with compile.el;
+;;    flymake.el; yasnippet.el; and imenu.el.
 ;;
 ;;    csharp-mode requires CC Mode 5.30 or later.  It works with
 ;;    cc-mode 5.31.3, which is current at this time.
@@ -64,7 +64,10 @@
 ;;
 ;;   - yasnippet integration
 ;;       - preloaded snippets
-;;       -?
+;;
+;;   - imenu integration - generates an index of namespaces/classes/methods
+;;     for easy navigation within the buffer.
+;;
 
 
 ;; Installation instructions
@@ -110,7 +113,7 @@
 ;;  syntax of your csharp code, and highlight errors.  To do so, add a
 ;;  comment line like this to each .cs file that you use flymake with:
 ;;
-;;   //  flymake: c:\.net3.5\csc.exe /t:module /nologo /R:Foo.dll
+;;   //  flymake: c:\.net3.5\csc.exe /t:module /nologo /R:Foo.dll @@FILE@@
 ;;
 ;;  That lines specifies a command "stub".  Flymake appends the name of
 ;;  the file to compile, and then runs the command to check
@@ -128,19 +131,22 @@
 ;;       `csharp-cmd-line-limit'.  See the documentation on that
 ;;       variable for more information.
 ;;
-;;    3. the command SHOULD NOT include the name of the source file
-;;       currently being edited. This is because flymake saves a copy of
-;;       the buffer into a temporary file with a unique name, and then
-;;       compiles that temporary file. The name of the temporary file is
-;;       automatically appended to the end of the command.  The command
-;;       should include /R options specifying external libraries that
-;;       the code depends on.
+;;    3. the command SHOULD use @@FILE@@ in place of the name of the
+;;       source file to be compiled, normally the file being edited.
+;;       This is because normally flymake saves a copy of the buffer
+;;       into a temporary file with a unique name, and then compiles
+;;       that temporary file. The token @@FILE@@ is replaced by
+;;       csharp-mode with the name of the temporary file created by
+;;       flymake, before invoking the command.
+;;
+;;    4. The command should include /R options specifying external
+;;       libraries that the code depends on.
 ;;
 ;;  If you have no external dependencies, then you need not specify any
-;;  flymake command at all. csharp-mode will implicitly act as ifyou had
+;;  flymake command at all. csharp-mode will implicitly act as if you had
 ;;  specified the command:
 ;;
-;;      // flymake: c:\.net3.5\csc.exe /t:module /nologo
+;;      // flymake: c:\.net3.5\csc.exe /t:module /nologo @@FILE@@
 ;;
 ;;
 ;;  If you use csc.exe as the syntax check tool (as almost everyone
@@ -197,6 +203,19 @@
 ;;  `csharp-want-yasnippet-fixup'.
 ;;
 ;;
+;;  imenu integration
+;;  -----------------------------
+;;
+;;  This should just work. For those who don't know what imenu is, it
+;;  allows navigation to different points within the file from an
+;;  "Index" menu, in the window's menubar.  csharp-mode computes the
+;;  menu containing the namespaces, classes, methods, and so on, in the
+;;  buffer.  This happens at the time the file is loaded; for large
+;;  files it takes a bit of time to complete the scan.  If you don't
+;;  want this capability, set `csharp-want-imenu' to nil.
+;;
+;;
+
 
 ;;; Known Bugs:
 ;;
@@ -220,9 +239,10 @@
 ;;
 ;;  Todo:
 ;;
-;;    Get csharp-mode.el accepted as part of the emacs standard distribution.
-;;    Must contact monnier at iro.umontreal.ca to make this happen.
+;;   Get csharp-mode.el accepted as part of the emacs standard distribution.
+;;   Must contact monnier at iro.umontreal.ca to make this happen.
 ;;
+;;   Figure out how to run FxCop nicely.  Maybe it's a flymake thing.
 ;;
 ;;
 ;;  Acknowledgements:
@@ -300,16 +320,26 @@
 ;;            hook if he doesn't like the defaults.
 ;;
 ;;    0.7.8 - redefine csharp-log to insert timestamp.
-;;
 ;;          - Fix byte-compile errors on emacs 23.2 ?  Why was
-;;            c-filter-ops duplicated here?  What is the purpose of its
+;;            c-filter-ops duplicated here?  What was the purpose of its
 ;;            presence here, I am not clear.
 ;;
 ;;    0.8.0 - include flymake magic into this module.
 ;;          - include yasnippet integration
 ;;
-;;    0.8.2 - small tweaks; now set a one-time bool for flymake installation
+;;    0.8.2 April 2011 DPC
+;;          - small tweaks; now set a one-time bool for flymake installation
 ;;          - some doc updates on flymake
+;;
+;;    0.8.3 May 17 2001 DPC
+;;          - better help on csharp-mode
+;;          - csharp-move-* functions for manual navigation.
+;;          - imenu integration for menu-driven navigation - navigate to
+;;            named methods, classes, etc.
+;;          - adjusted the flymake regexp to handle output from fxcopcmd,
+;;            and extended the help to provide examples how to use this.
+;;
+
 
 
 (require 'cc-mode)
@@ -429,7 +459,7 @@
 ;; csharp-mode utility and feature defuns
 ;; ==================================================================
 
-(defun csharp-at-vsemi-p (&optional pos)
+(defun csharp--at-vsemi-p (&optional pos)
   "Determines if there is a virtual semicolon at POS or point.
 This is the C# version of the function.
 
@@ -484,7 +514,7 @@ Otherwise nil.
              (cond
 
               ((eq (char-before) 93) ;; close sq brace
-               (csharp-at-vsemi-p (point)))
+               (csharp--at-vsemi-p (point)))
 
               ((or
                 (eq (char-before) 59) ;; semicolon
@@ -543,11 +573,12 @@ Another option is to use `csharp-lineup-region'.
 Basically this works like `c-in-literal' except it doesn't
 use or fill the cache (`c-in-literal-cache').
 
-The return value is `c' if in a C-style comment, `c++' if in a C++
-style comment, `string' if in a string literal, `pound' if DETECT-CPP
-is non-nil and in a preprocessor line, or nil if somewhere else.
-Optional LIM is used as the backward limit of the search.  If omitted,
-or nil, `c-beginning-of-syntax' is used.
+The return value is a symbol: `c' if in a C-style comment, `c++'
+if in a C++ style comment, `string' if in a string literal,
+`pound' if DETECT-CPP is non-nil and in a preprocessor line, or
+nil if somewhere else.  Optional LIM is used as the backward
+limit of the search.  If omitted, or nil, `c-beginning-of-syntax'
+is used.
 
 Note that this function might do hidden buffer changes.  See the
 comment at the start of cc-engine.el for more info."
@@ -708,7 +739,7 @@ comment at the start of cc-engine.el for more info."
 ;; ==================================================================
 
 (c-lang-defconst c-at-vsemi-p-fn
-  csharp 'csharp-at-vsemi-p)
+  csharp 'csharp--at-vsemi-p)
 
 
 ;; This c-opt-after-id-concat-key is a regexp that matches
@@ -1562,7 +1593,6 @@ comment at the start of cc-engine.el for more info."
   csharp '"\\(namespace\\)\\([^[:alnum:]_]\\|$\\)\\|\\(class\\|interface\\|struct\\)\\([^[:alnum:]_]\\|$\\)" )
 
 
-
 ;; Thu, 22 Apr 2010  14:29
 ;; I want this to handle    var x = new Foo[] { ... };
 ;; not sure if necessary.
@@ -1692,11 +1722,10 @@ comment at the start of cc-engine.el for more info."
     :type 'hook
     :group 'csharp)
 
-
   ;; The following fn allows this:
   ;;    (csharp-log 3 "scan result...'%s'" state)
 
-  (defcustom csharp-log-level 0
+(defcustom csharp-log-level 0
     "The current log level for CSharp-mode-specific operations.
 This is used in particular by the verbatim-literal
 string scanning.
@@ -1721,7 +1750,13 @@ only if flymake is loaded."
 
 
 ;;;###autoload
-(defcustom csharp-make-tool "nmake"
+(defcustom csharp-want-imenu t
+  "*Whether to generate a buffer index via imenu for C# buffers."
+  :type 'boolean :group 'csharp)
+
+
+;;;###autoload
+(defcustom csharp-make-tool "nmake.exe"
   "*The make tool to use. Defaults to nmake, found on path. Specify
 a full path or alternative program name, to tell csharp-mode to use
 a different make tool in compile commands.
@@ -1733,7 +1768,7 @@ See also, `csharp-msbuild-tool'.
 
 
 ;;;###autoload
-(defcustom csharp-msbuild-tool "msbuild"
+(defcustom csharp-msbuild-tool "msbuild.exe"
   "*The tool to use to build .csproj files. Defaults to msbuild, found on
 path. Specify a full path or alternative program name, to tell csharp-mode
 to use a different make tool in compile commands.
@@ -1777,16 +1812,21 @@ Flymake
 In the case of flymake, the command \"stub\" string must be
 prefixed with \"flymake:\".  For example,
 
-  // flymake: DOTNETDIR\csc.exe /target:netmodule /r:foo.dll
+ // flymake: DOTNETDIR\csc.exe /target:netmodule /r:foo.dll @@FILE@@
 
-In the case of flymake, the string should NOT
-include the name of the file for the buffer being checked.
-csharp-mode appends the name of the source file to compile, to
-this command \"stub\" before passing the command to flymake to
-run it.
+In the case of flymake, the string should NOT include the name of
+the file for the buffer being checked. Instead, use the token
+@@FILE@@ .  csharp-mode will replace this token with the name of
+the source file to compile, before passing the command to flymake
+to run it.
 
 If for some reason the command is invalid or illegal, flymake
 will report an error and disable itself.
+
+It might be handy to run fxcop, for example, via flymake.
+
+ // flymake: fxcopcmd.exe /c  /f:MyLibrary.dll
+
 
 
 In all cases
@@ -1852,9 +1892,8 @@ anything after the marker string as the command to run.
 Intended for internal use only.")
 
 (defvar csharp--flymake-has-been-installed  nil
-  "one-time use boolean, to check whether csharp tweaks for flymake (advice etc)
-have been installed.")
-
+  "one-time use boolean, to check whether csharp tweaks for flymake (advice
+etc) have been installed.")
 
 (defvar csharp-flymake-csc-arguments
   (list "/t:module" "/nologo")
@@ -1872,11 +1911,10 @@ error column when possible. ")
 
 
 (defvar csharp-flymake-csc-error-pattern
-  "^[ \t]*\\([_A-Za-z0-9][^(]+\\.cs\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) ?: \\(\\(error\\|warning\\) CS[0-9]+:[ \t\n]*\\(.+\\)\\)"
+  "^[ \t]*\\([_A-Za-z0-9][^(]+\\.cs\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) ?: \\(\\(error\\|warning\\) +:? *C[SA][0-9]+ *:[ \t\n]*\\(.+\\)\\)"
   "The regex pattern for C# compiler error messages. Follows
 the same form as an entry in `flymake-err-line-patterns'. The
-value is a STRING, a
-regex.")
+value is a STRING, a regex.")
 
 ;; TODO
 ;; Defines our constant for finding attributes.
@@ -1948,8 +1986,8 @@ compatibility with flymake and the process-start fn.
 
 "
   (let ((local-s s)
-        (my-re-1 "[^ \"]+\"[^\"]+\"\\|[^ \"]+")
-        (my-re-2 "\\([^ \"]+\\)\"\\([^\"]+\\)\"")
+        (my-re-1 "[^ \"]*\"[^\"]+\"\\|[^ \"]+")
+        (my-re-2 "\\([^ \"]*\\)\"\\([^\"]+\\)\"")
         (tokens))
     (while (string-match my-re-1 local-s)
       (let ((token (match-string 0 local-s))
@@ -2089,7 +2127,7 @@ The fn looks in the buffer for a line that looks like:
 Typically the command will be a line that runs nmake.exe,
 msbuild.exe, or csc.exe, with various options. It should
 eventually run the CSC.exe compiler, or something else that emits
-error messages in the same form as the C# compiler.
+error messages in the same form as the C# compiler, like FxCopCmd.exe
 
 Some notes on implementation:
 
@@ -2210,9 +2248,6 @@ Some notes on implementation:
 ;;             (append (csharp-flymake-get-final-csc-arguments
 ;;                      csharp-flymake-csc-arguments)
 ;;                     (list source)))))))
-
-
-
 
 
 
@@ -2444,11 +2479,6 @@ This fn does these things:
 
 
 
-;; ++++++++++++++++++++++
-
-
-
-
 ;; Need to temporarily turn off flymake while reverting.
 ;; There' some kind of race-condition where flymake is trying
 ;; to compile while the buffer is being changed, and that
@@ -2469,6 +2499,1436 @@ This fn does these things:
     ;; enable
     (if is-flymake-enabled
         (flymake-mode-on))))
+
+;; ++++++++++++++++++++++
+
+
+
+
+;; ========================================================================
+;; moving
+
+;; alist of regexps for various structures in a csharp source file.
+(eval-and-compile
+  (defconst csharp--regexp-alist
+    (list
+
+     `(func-start
+       ,(concat
+         "^[ \t\n\r\f\v]*"                            ;; leading whitespace
+         "\\("
+         "public\\(?: static\\)?\\|"                  ;; 1. access modifier
+         "private\\(?: static\\)?\\|"
+         "protected\\(?: internal\\)?\\(?: static\\)?\\|"
+         "static\\|"
+         "\\)"
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; 2. return type - possibly generic
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; 3. name of func
+         "[ \t\n\r\f\v]*"
+         "\\(\([^\)]*\)\\)"                           ;; 4. params w/parens
+         "[ \t\n\r\f\v]*"
+         ))
+
+     `(ctor-start
+       ,(concat
+         "^[ \t\n\r\f\v]*"                            ;; leading whitespace
+         "\\("
+         "public\\|"                                  ;; 1. access modifier
+         "private\\|"
+         "protected\\(?: internal\\)?\\|"
+         "static\\|"
+         "\\)"
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; 2. name of ctor
+         "[ \t\n\r\f\v]*"
+         "\\(\([^\)]*\)\\)"                           ;; 3. parameter list (with parens)
+         "[ \t\n\r\f\v]*"
+         ))
+
+
+     `(using-stmt
+       ,(concat
+         "^[ \t\n\r\f\v]*"
+         "\\(using\\)"
+         "[ \t\n\r\f\v]+"
+         "\\(?:"
+         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; alias
+         "[ \t\n\r\f\v]*"
+         "="
+         "[ \t\n\r\f\v]*"
+         "\\)?"
+         "\\("
+         "\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*"
+         "[A-Za-z_][[:alnum:]]*"
+         "\\)"                                        ;; imported namespace
+         "[ \t\n\r\f\v]*"
+         ";"
+         ))
+
+     `(class-start
+       ,(concat
+         "^[ \t]*"                                    ;; leading whitespace
+         "\\("
+         "public\\(?: static\\)?\\|"
+         "internal\\(?: static\\)?\\|"
+         "static\\(?: internal\\)?\\|"
+         "internal\\(?: sealed\\)?\\|"
+         "sealed\\(?: internal\\)?\\|"
+         "static\\|"
+         "sealed\\|"
+         "\\)"
+         "[ \t]+"
+         "\\(\\(?:partial[ \t]+\\)?class\\|struct\\)" ;; class/struct keyword
+         "[ \t]+"
+         "\\([[:alpha:]_][[:alnum:]]*\\)"             ;; type name
+         "\\("
+         "[ \t\n]*:[ \t\n]*"                          ;; colon
+         "\\("
+         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; parent type or intf - poss generic
+         "\\)"
+         "\\([ \t\n]*,[ \t\n]*"
+         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; addl interface - possibly generic
+         "\\)*"
+         "\\)?"                                       ;; possibly
+         "[ \t\n\r\f\v]*"
+         ))
+
+     `(enum-start
+       ,(concat
+         "^[ \t\f\v]*"                                ;; leading whitespace
+         "\\("
+         "public[ \t]+enum\\|"                        ;; enum keyword
+         "enum"
+         "\\)"
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; name of enum
+         "[ \t\n\r\f\v]*"
+         "\\(:[ \t\n\r\f\v]*"
+         "\\("
+         "sbyte\\|byte\\|short\\|ushort\\|int\\|uint\\|long\\|ulong"
+         "\\)"
+         "[ \t\n\r\f\v]*"
+         "\\)?"                                       ;; possibly
+         "[ \t\n\r\f\v]*"
+         ))
+
+
+     `(intf-start
+       ,(concat
+         "^[ \t\f\v]*"                                ;; leading whitespace
+         "\\(?:"
+         "public\\|internal\\|"                       ;; access modifier
+         "\\)"
+         "[ \t\n\r\f\v]+"
+         "\\(interface\\)"
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; name of interface
+         "[ \t\n\r\f\v]*"
+         ))
+
+     `(prop-start
+       ,(concat
+         "^[ \t\f\v]*"                                ;; leading whitespace
+         "\\("
+         "public\\|"                                  ;; 1: access modifier
+         "private\\|"
+         "protected internal\\|"
+         "internal protected\\|"
+         "internal\\|"
+         "\\)"
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; 2: return type - possibly generic
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; 3: name of prop
+         "[ \t\n\r\f\v]*"
+         ))
+
+     `(indexer-start
+       ,(concat
+         "^[ \t\f\v]*"                                ;; leading whitespace
+         "\\("
+         "public\\|"                                  ;; 1: access modifier
+         "private\\|"
+         "protected internal\\|"
+         "internal protected\\|"
+         "internal\\|"
+         "\\)"
+         "[ \t\n\r\f\v]+"
+         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; 2: return type - possibly generic
+         "[ \t\n\r\f\v]+"
+         "\\(this\\)"                                 ;; 3: 'this' keyword
+         "[ \t\n\r\f\v]*"
+         "\\["                                        ;; open square bracket
+         "[ \t\n\r\f\v]*"
+         "\\([^\]]+\\)"                               ;; 4: index type
+         "[ \t\n\r\f\v]+"
+         "[[:alpha:]_][[:alnum:]_]*"                  ;; index name - a simple identifier
+         "\\]"                                        ;; closing sq bracket
+         "[ \t\n\r\f\v]*"
+         ))
+
+     `(namespace-start
+       ,(concat
+         "^[ \t\f\v]*"                                ;; leading whitespace
+         "\\(namespace\\)"
+         "[ \t\n\r\f\v]+"
+         "\\("
+         "\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*"          ;; name of namespace
+         "[A-Za-z_][[:alnum:]]*"
+         "\\)"
+         "[ \t\n\r\f\v]*"
+         ))
+
+     )))
+
+
+(defun csharp--regexp (symbol)
+  "Retrieves a regexp from the `csharp--regexp-alist' corresponding
+to the given symbol.
+"
+  (let ((elt (assoc symbol csharp--regexp-alist)))
+    (if elt (cadr elt) nil)))
+
+
+(defun csharp-move-back-to-beginning-of-block ()
+  "Moves to the previous open curly.
+"
+  (interactive)
+  (re-search-backward "{" (point-min) t))
+
+
+(defun csharp--move-back-to-beginning-of-something (must-match &optional must-not-match)
+  "Moves back to the open-curly that defines the beginning of *something*,
+defined by the given MUST-MATCH, a regexp which must match immediately
+preceding the curly.  If MUST-NOT-MATCH is non-nil, it is treated
+as a regexp that must not match immediately preceding the curly.
+
+This is a helper fn for `csharp-move-back-to-beginning-of-defun' and
+`csharp-move-back-to-beginning-of-class'
+
+"
+  (interactive)
+  (let (done
+        (found (point))
+        (need-to-backup (not (looking-at "{"))))
+    (while (not done)
+      (if need-to-backup
+          (setq found (csharp-move-back-to-beginning-of-block)))
+      (if found
+          (setq done (and (looking-back must-match)
+                          (or (not must-not-match)
+                              (not (looking-back must-not-match))))
+                need-to-backup t)
+        (setq done t)))
+    found))
+
+
+
+(defun csharp-move-back-to-beginning-of-defun ()
+  "Moves back to the open-curly that defines the beginning of the
+enclosing method.  If point is outside a method, then move back to the
+beginning of the prior method.
+
+See also, `csharp-move-fwd-to-end-of-defun'.
+"
+  (interactive)
+  (cond
+
+   ((bobp) nil)
+
+   (t
+    (let (found)
+      (save-excursion
+        ;; handle the case where we're at the top of a fn now.
+        ;; if the user is asking to move back, then obviously
+        ;; he wants to move back to a *prior* defun.
+        (if (and (looking-at "{")
+                 (looking-back (csharp--regexp 'func-start))
+                 (not (looking-back (csharp--regexp 'namespace-start))))
+            (forward-char -1))
+
+        ;; now do the real work
+        (setq found (csharp--move-back-to-beginning-of-something
+                     (csharp--regexp 'func-start)
+                     (csharp--regexp 'namespace-start))))
+      (if found
+          (goto-char found))))))
+
+
+(defun csharp--on-defun-close-curly-p ()
+  "return t when point is on the close-curly of a method."
+  (and (looking-at "}")
+       (save-excursion
+         (and
+          (progn (forward-char) (forward-sexp -1) t)
+          (not (looking-back (csharp--regexp 'class-start)))
+          (not (looking-back (csharp--regexp 'namespace-start)))
+          (looking-back (csharp--regexp 'func-start))))))
+
+(defun csharp--on-ctor-close-curly-p ()
+  "return t when point is on the close-curly of a constructor."
+  (and (looking-at "}")
+       (save-excursion
+         (and
+          (progn (forward-char) (forward-sexp -1) t)
+          (looking-back (csharp--regexp 'ctor-start))))))
+
+(defun csharp--on-class-close-curly-p ()
+  "return t when point is on the close-curly of a class or struct."
+  (and (looking-at "}")
+       (save-excursion
+         (and
+          (progn (forward-char) (forward-sexp -1) t)
+          (not (looking-back (csharp--regexp 'namespace-start)))
+          (looking-back (csharp--regexp 'class-start))))))
+
+(defun csharp--on-intf-close-curly-p ()
+  "return t when point is on the close-curly of an interface."
+  (and (looking-at "}")
+       (save-excursion
+         (and
+          (progn (forward-char) (forward-sexp -1) t)
+          (looking-back (csharp--regexp 'intf-start))))))
+
+(defun csharp--on-enum-close-curly-p ()
+  "return t when point is on the close-curly of an enum."
+  (and (looking-at "}")
+       (save-excursion
+         (and
+          (progn (forward-char) (forward-sexp -1) t)
+          (looking-back (csharp--regexp 'enum-start))))))
+
+(defun csharp--on-namespace-close-curly-p ()
+  "return t when point is on the close-curly of a namespace."
+  (and (looking-at "}")
+       (save-excursion
+         (and
+          (progn (forward-char) (forward-sexp -1) t)
+          (looking-back (csharp--regexp 'namespace-start))))))
+
+(defun csharp--on-defun-open-curly-p ()
+  "return t when point is on the open-curly of a method."
+  (and (looking-at "{")
+       (not (looking-back (csharp--regexp 'class-start)))
+       (not (looking-back (csharp--regexp 'namespace-start)))
+       (looking-back (csharp--regexp 'func-start))))
+
+(defun csharp--on-class-open-curly-p ()
+  "return t when point is on the open-curly of a class."
+  (and (looking-at "{")
+       (not (looking-back (csharp--regexp 'namespace-start)))
+       (looking-back (csharp--regexp 'class-start))))
+
+(defun csharp--on-namespace-open-curly-p ()
+  "return t when point is on the open-curly of a namespace."
+  (and (looking-at "{")
+       (looking-back (csharp--regexp 'namespace-start))))
+
+(defun csharp--on-ctor-open-curly-p ()
+  "return t when point is on the open-curly of a ctor."
+  (and (looking-at "{")
+       (looking-back (csharp--regexp 'ctor-start))))
+
+(defun csharp--on-intf-open-curly-p ()
+  "return t when point is on the open-curly of a interface."
+  (and (looking-at "{")
+       (looking-back (csharp--regexp 'intf-start))))
+
+(defun csharp--on-prop-open-curly-p ()
+  "return t when point is on the open-curly of a property."
+  (and (looking-at "{")
+       (not (looking-back (csharp--regexp 'class-start)))
+       (looking-back (csharp--regexp 'prop-start))))
+
+(defun csharp--on-indexer-open-curly-p ()
+  "return t when point is on the open-curly of a C# indexer."
+  (and (looking-at "{")
+       (looking-back (csharp--regexp 'indexer-start))))
+
+;;(not (string= (match-string-no-properties 2) "class"))))
+
+(defun csharp--on-enum-open-curly-p ()
+  "return t when point is on the open-curly of a interface."
+  (and (looking-at "{")
+       (looking-back (csharp--regexp 'enum-start))))
+
+
+
+(defun csharp-move-fwd-to-end-of-defun ()
+  "Moves forward to the close-curly that defines the end of the enclosing
+method. If point is outside a method, moves forward to the close-curly that
+defines the end of the next method.
+
+See also, `csharp-move-back-to-beginning-of-defun'.
+"
+  (interactive)
+
+  (let ((really-move
+         (lambda ()
+           (let ((start (point))
+                 dest-char)
+             (save-excursion
+               (csharp-move-back-to-beginning-of-defun)
+               (forward-sexp)
+               (if (>= (point) start)
+                   (setq dest-char (point))))
+             (if dest-char
+                 (goto-char dest-char))))))
+
+    (cond
+
+     ;; case 1: end of buffer.  do nothing.
+     ((eobp) nil)
+
+     ;; case 2: we're at the top of a class
+     ((csharp--on-class-open-curly-p)
+      (let (found-it)
+        (save-excursion
+          (forward-char 1) ;; get off the curly
+          (setq found-it
+                (and ;; look for next open curly
+                 (re-search-forward "{" (point-max) t)
+                 (funcall really-move))))
+        (if found-it
+            (goto-char found-it))))
+
+
+     ;; case 3: we're at the top of a fn now.
+     ((csharp--on-defun-open-curly-p)
+      (forward-sexp))
+
+
+     ;; case 4: we're at the bottom of a fn now (possibly
+     ;; after just calling csharp-move-fwd-to-end-of-defun.
+     ((and (looking-back "}")
+           (save-excursion
+             (forward-sexp -1)
+             (csharp--on-defun-open-curly-p)))
+
+      (let (found-it)
+        (save-excursion
+          (setq found-it
+                (and (re-search-forward "{" (point-max) t)
+                     (funcall really-move))))
+        (if found-it
+            (goto-char found-it))))
+
+
+     ;; case 5: we're at none of those places.
+     (t
+      (funcall really-move)))))
+
+
+
+
+(defun csharp-move-back-to-beginning-of-class ()
+  "Moves back to the open-curly that defines the beginning of the
+enclosing class.  If point is outside a class, then move back to the
+beginning of the prior class.
+
+See also, `csharp-move-fwd-to-end-of-defun'.
+"
+  (interactive)
+
+  (cond
+   ((bobp) nil)
+
+   (t
+    (let (found)
+      (save-excursion
+        ;; handle the case where we're at the top of a class now.
+        ;; if the user is asking to move back, then obviously
+        ;; he wants to move back to a *prior* defun.
+        (if (and (looking-at "{")
+                 (looking-back (csharp--regexp 'class-start))
+                 (not (looking-back (csharp--regexp 'namespace-start))))
+            (forward-char -1))
+
+        ;; now do the real work
+        (setq found (csharp--move-back-to-beginning-of-something
+                     (csharp--regexp 'class-start)
+                     (csharp--regexp 'namespace-start))))
+      (if found
+          (goto-char found))))))
+
+
+
+
+(defun csharp-move-fwd-to-end-of-class ()
+  "Moves forward to the close-curly that defines the end of the
+enclosing class.
+
+See also, `csharp-move-back-to-beginning-of-class'.
+"
+  (interactive)
+  (let ((start (point))
+        dest-char)
+    (save-excursion
+      (csharp-move-back-to-beginning-of-class)
+      (forward-sexp)
+      (if (>= (point) start)
+          (setq dest-char (point))))
+
+    (if dest-char
+        (goto-char dest-char))))
+
+
+
+(defun csharp-move-back-to-beginning-of-namespace ()
+  "Moves back to the open-curly that defines the beginning of the
+enclosing namespace.  If point is outside a namespace, then move back
+to the beginning of the prior namespace.
+
+"
+  (interactive)
+  (cond
+
+   ((bobp) nil)
+
+   (t
+    (let (found)
+      (save-excursion
+        ;; handle the case where we're at the top of a namespace now.
+        ;; if the user is asking to move back, then obviously
+        ;; he wants to move back to a *prior* defun.
+        (if (and (looking-at "{")
+                 (looking-back (csharp--regexp 'namespace-start)))
+            (forward-char -1))
+
+        ;; now do the real work
+        (setq found (csharp--move-back-to-beginning-of-something
+                     (csharp--regexp 'namespace-start))))
+      (if found
+          (goto-char found))))))
+
+
+
+
+
+;; moving
+;; ========================================================================
+
+
+
+
+;; ==================================================================
+;;; imenu stuff
+
+;; (defun csharp-imenu-create-index-function-fake ()
+;;   "producees a fake index for imenu. See the documentation for
+;; `csharp-imenu-create-index-function' for more information.
+;;
+;; "
+;;   ;; example:
+;;   ;;
+;;   ;;  (("New" . #<marker at 589 in Rijndael-vb.vb>)
+;;   ;;   ("New" . #<marker at 678 in Rijndael-vb.vb>)
+;;   ;;   ("GetRijndaelManaged" . #<marker at 765 in Rijndael-vb.vb>)
+;;   ;;   ("Run" . #<marker at 1282 in Rijndael-vb.vb>)
+;;   ;;   ("Encrypt" . #<marker at 2381 in Rijndael-vb.vb>)
+;;   ;;   ("Decrypt" . #<marker at 3384 in Rijndael-vb.vb>))
+;;
+;;
+;;   '(("Somewhere in the header comment"  . 20)
+;;     ("Imports"  . 375)
+;;     ("Namespace Ionic.Tests.Crypto" . 447)
+;;     ("Class RijndaelVb - a submenu"
+;;      ("ctor"  . 597)
+;;      ("A function..."  . 1282)
+;;      ("etc..." . 3222))))
+
+
+
+;; define some advice for menu construction.
+
+;; The way imenu constructs menus from the index alist, in
+;; `imenu--split-menu', is ... ah ... perplexing.  If the csharp
+;; create-index fn returns an ordered menu, and the imenu "sort" fn has
+;; been set to nil, imenu still sorts the menu, according to the rule
+;; that all submenus must appear at the top of any menu. Why?  I don't
+;; know. This advice disables that weirdness in C# buffers.
+
+(defadvice imenu--split-menu (around
+                              csharp--imenu-split-menu-patch
+                              activate compile)
+  ;; This advice will run in all buffers.  Let's may sure we
+  ;; actually execute the important bits only when a C# buffer is active.
+  (if (and (string-match "\\.[Cc][Ss]$"  (file-relative-name buffer-file-name))
+           (boundp 'csharp-want-imenu)
+           csharp-want-imenu)
+      (let ((menulist (copy-sequence menulist))
+            keep-at-top)
+        (if (memq imenu--rescan-item menulist)
+            (setq keep-at-top (list imenu--rescan-item)
+                  menulist (delq imenu--rescan-item menulist)))
+        ;; This is the part from the original imenu code
+        ;; that puts submenus at the top.  huh? why?
+        ;; --------------------------------------------
+        ;; (setq tail menulist)
+        ;; (dolist (item tail)
+        ;;   (when (imenu--subalist-p item)
+        ;;     (push item keep-at-top)
+        ;;     (setq menulist (delq item menulist))))
+        (if imenu-sort-function
+            (setq menulist (sort menulist imenu-sort-function)))
+        (if (> (length menulist) imenu-max-items)
+            (setq menulist
+                  (mapcar
+                   (lambda (menu)
+                     (cons (format "From: %s" (caar menu)) menu))
+                   (imenu--split menulist imenu-max-items))))
+        (setq ad-return-value
+              (cons title
+                    (nconc (nreverse keep-at-top) menulist))))
+    ;; else
+    ad-do-it))
+
+
+;;
+;; I used this to examine the performance of the imenu scanning.
+;; It's not necessary during normal operation.
+;;
+;; (defun csharp-imenu-begin-profile ()
+;;   "turn on profiling"
+;;   (interactive)
+;;   (let ((fns '(csharp--on-class-open-curly-p
+;;              csharp--on-namespace-open-curly-p
+;;              csharp--on-ctor-open-curly-p
+;;              csharp--on-enum-open-curly-p
+;;              csharp--on-intf-open-curly-p
+;;              csharp--on-prop-open-curly-p
+;;              csharp--on-indexer-open-curly-p
+;;              csharp--on-defun-open-curly-p
+;;              csharp--imenu-create-index-helper
+;;              looking-back
+;;              looking-at)))
+;;     (if (fboundp 'elp-reset-all)
+;;         (elp-reset-all))
+;;     (mapc 'elp-instrument-function fns)))
+
+
+
+(defun csharp--imenu-remove-param-names-from-paramlist (s)
+  "The input string S is a parameter list, of the form seen in a
+C# method.  TYPE1 NAME1 [, TYPE2 NAME2 ...]
+
+This fn returns a string of the form TYPE1 [, TYPE2...]
+
+Upon entry, it's assumed that the parens included in S.
+
+"
+
+  (let* (new
+        (state 0)  ;; 0 => ws, 1=>slurping param...
+        i
+        c
+        cs
+        nesting
+        need-type
+        ix2
+        (s2 (substring s 1 -1))
+        (len (length s2))
+        (i (1- len)))
+
+    (while (> i 0)
+      (setq c (aref s2 i) ;; current character
+            cs (char-to-string c)) ;; s.t. as a string
+
+      (cond
+
+       ;; backing over whitespace "after" the param
+       ((= state 0)
+        (cond
+         ;; more ws
+         ((string-match "[ \t\f\v\n\r]" cs)
+          t)
+         ;; a legal char for an identifier
+         ((string-match "[A-Za-z_0-9]" cs)
+          (setq state 1))
+         (t
+          (error "unexpected char (A)"))))
+
+
+       ;; slurping param name
+       ((= state 1)
+        (cond
+         ;; ws signifies the end of the param
+         ((string-match "[ \t\f\v\n\r]" cs)
+          (setq state 2))
+         ;; a legal char for an identifier
+         ((string-match "[A-Za-z_0-9]" cs)
+          t)
+         (t
+          (error "unexpected char (B)"))))
+
+
+       ;; ws between typespec and param name
+       ((= state 2)
+        (cond
+         ((string-match "[ \t\f\v\n\r]" cs)
+          t)
+         ;; non-ws indicates the type spec is beginning
+         (t
+          (incf i)
+          (setq state 3
+                need-type nil
+                nesting 0
+                ix2 i))))
+
+
+       ;; slurping type
+       ((= state 3)
+        (cond
+         ((= ?> c) (incf nesting))
+         ((= ?< c)
+          (decf nesting)
+          (setq need-type t))
+
+         ;; ws or comma maybe signifies the end of the typespec
+         ((string-match "[ \t\f\v\n\r,]" cs)
+          (if (and (= nesting 0) (not need-type))
+              (progn
+                (setq new (cons (substring s2 (1+ i) ix2) new))
+                (setq state
+                      (if (= c ?,) 0 4)))))
+
+         ((string-match "[A-Za-z_0-9]" cs)
+          (setq need-type nil))))
+
+
+       ;; awaiting comma or b-o-s
+       ((= state 4)
+        (cond
+         ((= ?, c)
+          (setq state 0))
+
+         ((string-match "[ \t\f\v\n\r,]" cs)
+          t)
+         (t
+          (error "unexpected char (C)"))))
+       )
+
+      (decf i))
+
+    (if (and (= state 3) (= nesting 0))
+        (setq new (cons (substring s2 i ix2) new)))
+
+    (concat "("
+            (if new
+                (mapconcat 'identity new ", ")
+              "")
+            ")")))
+
+
+
+(defun csharp--imenu-create-index-helper (&optional parent-ns indent-level
+                                                    consider-usings consider-namespaces)
+  "Helper fn for `csharp-imenu-create-index'.
+
+Scans for a namespace, then scans within the namespace for methods.
+Returns a list, suitable for use as an imenu index
+alist. Leaves point after close-curly on the namespace.
+
+"
+
+  ;; A C# module consists of zero of more explicitly denoted (and
+  ;; possibly nested) namespaces. In the absence of an
+  ;; explicitly-denoted namespace, the global namespace is implicitly
+  ;; applied.  Within each namespace there can be zero or more
+  ;; "container" things - like class, struct, or interface; each with
+  ;; zero or more indexable items - like methods, constructors.
+  ;; and so on.
+
+  ;; This fn parses the module and indexes those items, creating a
+  ;; hierarchically organized list to describe them.  Each container
+  ;; (ns/class/struct/etc) is represented on a separate submenu.
+
+  ;; It works like this:
+  ;; (start at the top of the module)
+  ;;
+  ;; 1. look for a using clause
+  ;;    yes - insert an item in the menu; move to next open line; goto step 1
+  ;;
+  ;; 2. go to next open curly
+  ;;
+  ;; 2. beginning of a container?
+  ;;
+  ;;    yes - narrow, and recurse
+  ;;
+  ;;    no - create a menu item for the thing, whatever it is.
+  ;;         add to the submenu. Go to the end of the thing.
+  ;;         then goto step 1.
+  ;;
+
+
+  (let (container-name
+        this-flavor
+        this-item
+        this-menu
+        found-usings
+        done)
+
+    (while (not done)
+
+      ;; move to the next thing
+      (c-forward-syntactic-ws)
+      (cond
+       ((and consider-usings
+             (re-search-forward (csharp--regexp 'using-stmt) (point-max) t))
+        (goto-char (match-beginning 1))
+        (setq found-usings t
+              done nil))
+
+       ((re-search-forward "{" (point-max) t)
+        (let ((literal (csharp-in-literal)))
+          ;; skip over comments?
+          (if (memq literal '(c c++))
+              (progn
+                (while (memq literal '(c c++))
+                  (end-of-line)
+                  (forward-char 1)
+                  (setq literal (csharp-in-literal)))
+                (if (re-search-forward "{" (point-max) t)
+                    (forward-char -1)
+                  (setq done t)))
+
+            (forward-char -1)
+            (setq done nil))))
+
+       (t
+        (setq done t)))
+
+
+
+      (if (not done)
+          (cond
+           ;; case 0: in a string or comment
+           ((csharp-in-literal)
+            t)
+
+           ;; case 1: at the head of a block of using statements
+           (found-usings
+            (setq found-usings nil
+                  consider-usings nil) ;; only one batch
+            (let ((first-using (match-beginning 1))
+                  (count 0)
+                  marquis
+                  ;; don't search beyond next open curly
+                  (limit (1-
+                          (save-excursion
+                            (re-search-forward "{" (point-max) t)))))
+
+              ;; count the using statements
+              (while (re-search-forward (csharp--regexp 'using-stmt) limit t)
+                (incf count))
+
+              (setq marquis (if (eq count 1) "using (1)"
+                              (format "usings (%d)" count)))
+              (push (cons marquis first-using) this-menu)))
+
+
+           ;; case 2: an interface or enum inside the container
+           ;; (must come before class / namespace )
+           ((or (csharp--on-intf-open-curly-p)
+                (csharp--on-enum-open-curly-p))
+            (let ((top (match-beginning 1))
+                  (close-curly (save-excursion
+                                 (forward-sexp 1)
+                                 (point))))
+              (setq consider-namespaces nil
+                    consider-usings nil
+                    this-menu
+                    (append this-menu
+                            (list
+                             (cons (concat
+                                    (match-string-no-properties 1) ;; thing flavor
+                                    " "
+                                    (match-string-no-properties 2)) ;; intf name
+                                   top))))
+
+              (goto-char close-curly)))
+
+           ;; case 3: at the start of a container (class, namespace)
+           ((or (and consider-namespaces (csharp--on-namespace-open-curly-p))
+                (csharp--on-class-open-curly-p))
+
+            ;; produce a fully-qualified name for this thing
+            (if (string= (match-string-no-properties 1) "namespace")
+                (setq this-flavor (match-string-no-properties 1)
+                      this-item (match-string-no-properties 2))
+              (setq this-flavor (match-string-no-properties 2)
+                    this-item (match-string-no-properties 3)
+                    consider-usings nil
+                    consider-namespaces nil))
+
+            (setq container-name (if parent-ns
+                                     (concat parent-ns "." this-item)
+                                   this-item))
+
+            ;; create a submenu
+            (let (submenu
+                  (top (match-beginning 1))
+                  (open-curly (point))
+                  (close-curly (save-excursion
+                                 (forward-sexp 1)
+                                 (point))))
+
+              (setq submenu
+                    (list
+                     (concat this-flavor " " container-name)
+                     (cons "(top)" top)))
+
+              ;; find all contained items
+              (save-restriction
+                (narrow-to-region (1+ open-curly) (1- close-curly))
+
+                (let ((child-menu
+                       (csharp--imenu-create-index-helper container-name
+                                                          (concat indent-level "  ")
+                                                          (string= this-flavor "namespace")
+                                                          (string= this-flavor "namespace"))))
+                  ;; there may be multiple children; add them all
+                  (if child-menu
+                      (setq submenu (append submenu child-menu)))))
+
+              ;; (setq m (make-marker)
+              ;;       submenu
+              ;;       (append submenu
+              ;;               (list
+              ;;                (cons "(bottom)" (set-marker m close-curly)))))
+
+              (setq submenu
+                    (append submenu
+                            (list
+                             (cons "(bottom)" close-curly))))
+
+              (setq this-menu
+                    (append this-menu (list submenu)))
+
+              (goto-char close-curly)))
+
+
+           ;; case 4: a property
+           ((csharp--on-prop-open-curly-p)
+            (let ((top (match-beginning 1))
+                  (close-curly (save-excursion
+                                 (forward-sexp 1)
+                                 (point))))
+              (setq consider-namespaces nil
+                    consider-usings nil
+                    this-menu
+                    (append this-menu
+                            (list
+                             (cons (concat
+                                    "prop "
+                                    (match-string-no-properties 3)) ;; prop name
+                                   top))))
+              (goto-char close-curly)))
+
+           ;; case 4: an indexer
+           ((csharp--on-indexer-open-curly-p)
+            (let ((top (match-beginning 1))
+                  (close-curly (save-excursion
+                                 (forward-sexp 1)
+                                 (point))))
+              (setq consider-namespaces nil
+                    consider-usings nil
+                    this-menu
+                    (append this-menu
+                            (list
+                             (cons (concat
+                                    "indexer "
+                                    (match-string-no-properties 4)) ;; index type
+                                   top ))))
+
+              (goto-char close-curly)))
+
+
+           ;; case 6: a constructor inside the container
+           ((csharp--on-ctor-open-curly-p)
+            (let ((top (match-beginning 1))
+                  (close-curly (save-excursion
+                                 (forward-sexp 1)
+                                 (point))))
+
+              (setq consider-namespaces nil
+                    consider-usings nil
+                    this-menu
+                    (append this-menu
+                            (list
+                             (cons (concat
+                                    "ctor "
+                                    (match-string-no-properties 2) ;; ctor name
+                                    (csharp--imenu-remove-param-names-from-paramlist
+                                     (match-string-no-properties 3))) ;; ctor params
+                                   top))))
+
+              (goto-char close-curly)))
+
+
+           ;; case 4: a method inside the container
+           ((csharp--on-defun-open-curly-p)
+            (let ((top (match-beginning 1))
+                  (close-curly (save-excursion
+                                 (forward-sexp 1)
+                                 (point))))
+
+              (setq consider-namespaces nil
+                    consider-usings nil
+                    this-menu
+                    (append this-menu
+                            (list
+                             (cons (concat
+                                    "method "
+                                    (match-string-no-properties 2) ;; return type
+                                    " "
+                                    (match-string-no-properties 3) ;; func name
+                                    (csharp--imenu-remove-param-names-from-paramlist
+                                     (match-string-no-properties 4))) ;; fn params
+                                   top ))))
+
+              (goto-char close-curly)))
+
+           (t
+            (forward-char 1)))))
+
+    this-menu))
+
+
+
+(defcustom csharp-imenu-max-similar-items-before-extraction 4
+  "The maximum number of things of a particular
+category (constructor, property, method, etc) that will be
+separely displayed on an imenu without factoring them into a
+separate submenu.
+
+For example, if a module has 3 consructors, 5 methods, and 7
+properties, and the value of this variable is 4, then upon
+refactoring, the constructors will remain in the toplevel imenu
+and the methods and properties will each get their own
+category-specific submenu.
+
+See also `csharp-imenu-min-size-for-sub-submenu'.
+
+For more information on how csharp-mode uses imenu,
+see `csharp-want-imenu', and `csharp-mode'.
+"
+  :type 'integer
+  :group 'csharp)
+
+
+(defcustom csharp-imenu-min-size-for-sub-submenu 18
+  "The minimum number of imenu items  of a particular
+category (constructor, property, method, etc) that will be
+broken out into sub-submenus.
+
+For example, if a module has 28 properties, then the properties will
+be placed in a submenu, and then that submenu with be further divided
+into smaller submenus.
+
+See also `csharp-imenu-max-similar-items-before-extraction'
+
+For more information on how csharp-mode uses imenu,
+see `csharp-want-imenu', and `csharp-mode'.
+"
+  :type 'integer
+  :group 'csharp)
+
+
+(defun csharp--first-word (s)
+  "gets the first word from the given string.
+It had better be a string!"
+  (car (split-string s nil t)))
+
+(defun csharp--make-plural (s)
+  "make a work plural. For use within the generated imenu."
+  (cond
+   ((string= s "prop")
+    "properties")
+   ((string= s "ctor")
+    "constructors")
+   (t
+    (concat s "s"))))
+
+
+
+(defun csharp--imenu-counts (list)
+  "Returns an alist, each item is a cons cell where the car is a
+unique first substring of an element of LIST, and the cdr is the
+number of occurrences of that substring in elements in the
+list.
+
+For a complicated imenu generated for a large C# module, the result of
+this fn will be something like this:
+
+    ((\"(top)\"        . 1)
+     (\"properties\"   . 38)
+     (\"methods\"      . 12)
+     (\"constructors\" . 7)
+     (\"(bottom)\"     . 1))
+
+"
+  (flet ((helper (list new)
+                 (if (null list) new
+                   (let* ((elt (car list))
+                          (topic (csharp--make-plural (csharp--first-word (car elt))))
+                          (xelt (assoc topic new)))
+                     (helper (cdr list)
+                             (if xelt
+                                 (progn (incf (cdr xelt)) new)
+                               (cons (cons topic 1) new)))))))
+    (nreverse (helper list nil))))
+
+
+
+(defun csharp--imenu-get-submenu-size (n)
+  "Gets the preferred size of submenus given N, the size of the
+flat, unparceled menu.
+
+Suppose there are 50 properties in a given C# module. This fn maps
+from that number, to the maximum size of the submenus into which the
+large set of properties should be broken.
+
+Currently the submenu size for 50 is 12.  To change this, change
+the lookup table.
+
+The reason it's a lookup table and not a simple arithmetic
+function: I think it would look silly to have 2 submenus each
+with 12 items.  Twelve of 14 items on a submenu seems fine when
+you're working through 120 items. But if you have only 20 items,
+better to have 3 items with 6 and 7 items each.  That's what this
+lookup tries to do.
+
+"
+  (let ((size-pairs '((100 . 20)
+                      (80 . 18)
+                      (60 . 16)
+                      (40 . 15)
+                      (30 . 12)
+                      (24 . 9)
+                      (0  . 7)))
+        elt
+        (r 0))
+
+    (while (and size-pairs (eq r 0))
+      (setq elt (car size-pairs))
+      (if (> n (car elt))
+          (setq r (cdr elt)))
+      (setq size-pairs (cdr size-pairs)))
+    r))
+
+
+(defun csharp--imenu-item-basic-comparer (a b)
+  "Compares the car of each element, assumed to be a string."
+  (string-lessp (car a) (car b)))
+
+
+(defun csharp--imenu-item-last-word-comparer (a b)
+  "Compares the last word in the car of each element. The car of
+each element is assumed to be a string with multiple tokens in it. "
+  (let ((alast (car (last (split-string (car a) "[ \t]" t))))
+        (blast (car (last (split-string (car b) "[ \t]" t)))))
+  (string-lessp alast blast)))
+
+
+(defun csharp--imenu-remove-category-names (menu-list)
+  "Input is a list, each element is (LABEL . LOCATION). This fn
+returns a modified list, with the first word - the category name
+- removed from each label.
+
+"
+  (mapcar (lambda (elt)
+            (let ((tokens (split-string (car elt) "[ \t]" t)))
+              (cons (mapconcat 'identity (cdr tokens) " ")
+                    (cdr elt))))
+          menu-list))
+
+
+(defun csharp--imenu-break-one-menu-into-submenus (menu-list)
+  "Parcels a flat list MENU-LIST up into smaller sublists. It tries
+to balance the number of sublists and the size of each sublist.
+
+The max size of any sublist will be about 20 (arbitrary) and the
+min size will be 7 or so. See `csharp--imenu-get-submenu-size'
+for how this is done.
+
+It does this destructively, using `nbutlast'.
+
+Returns a new list, containing sublists.
+"
+
+  (let ((len (length menu-list))
+        (counts (csharp--imenu-counts menu-list)))
+
+    (cond
+     ;; a small number, and all the same flavor
+     ((and (< len csharp-imenu-min-size-for-sub-submenu) (= (length counts) 1))
+      (csharp--imenu-remove-category-names
+       (sort menu-list
+             (if (string= (caar counts) "methods")
+                 'csharp--imenu-item-last-word-comparer
+               'csharp--imenu-item-basic-comparer))))
+
+     ;; is the length already pretty short?
+     ((< len csharp-imenu-min-size-for-sub-submenu)
+      menu-list)
+
+     ((/= (length counts) 1)
+      menu-list)
+
+     (t
+      (let* ((lst    (sort menu-list 'csharp--imenu-item-basic-comparer))
+             new
+             (sz     (csharp--imenu-get-submenu-size len)) ;; goal max size of sublist
+             (n      (ceiling (/ (* 1.0 len) sz))) ;; total number of sublists
+             (adj-sz (ceiling (/ (* 1.0 len) n)))  ;; maybe a little less than sz
+             (nsmall (mod (- adj-sz (mod len adj-sz)) adj-sz)) ;; num of (n-1) lists
+             (i      0)
+             (base-name (csharp--first-word (caar lst)))
+             (plural-name (csharp--make-plural base-name))
+             label
+             chunksz
+             this-chunk)
+
+        (while lst
+          (setq chunksz (if (> nsmall i) (1- adj-sz) adj-sz)
+                this-chunk (csharp--imenu-remove-category-names
+                            (nthcdr (- len chunksz) lst))
+                lst (nbutlast lst chunksz)
+                label (format "%s %d" plural-name (- n i))
+                new (cons (cons label this-chunk) new)
+                len (- len chunksz))
+          (incf i))
+        new)))))
+
+
+
+(defun csharp--imenu-break-into-submenus (menu-list)
+  "For an imenu menu-list with category-based submenus,
+possibly break a submenu into smaller sublists, based on size.
+
+"
+  (mapcar (lambda (elt)
+            (if (imenu--subalist-p elt)
+                (cons (car elt)
+                      (csharp--imenu-break-one-menu-into-submenus (cdr elt)))
+              elt))
+          menu-list))
+
+
+
+(defun csharp--imenu-reorg-flat-alist-intelligently (menu-alist)
+  "Accepts an imenu alist. Returns an alist, each item is a cons
+cell where the car is a unique first word that appears in the car of
+each element of LIST, and the cdr is a list of the cdrs of each
+of the corresponding unique element in the original list.
+
+It's easier to understand than it is to explain.
+
+Before:
+
+    ((\"usings (4)\" . #<marker at 1538 in ZipFile.cs>)
+     (\"namespace Ionic.Zip\"
+      (\"(top)\" . #<marker at 1651 in ZipFile.cs>)
+      (\"partial class Ionic.Zip.ZipFile\"
+       (\"(top)\" . #<marker at 5473 in ZipFile.cs>)
+       (\"prop FullScan\" . #<marker at 8036 in ZipFile.cs>)
+           ...
+       (\"prop Comment\" . #<marker at 21118 in ZipFile.cs>)
+       (\"prop Verbose\" . #<marker at 32278 in ZipFile.cs>)
+       (\"method override String ToString\" . #<marker at 96577 in ZipFile.cs>)
+       (\"method internal void NotifyEntryChanged\" . #<marker at 97608 in ZipFile.cs>)
+          ....
+       (\"method internal void Reset\" . #<marker at 98231 in ZipFile.cs>)
+       (\"ctor ZipFile\" . #<marker at 103598 in ZipFile.cs>)
+           ...
+       (\"ctor ZipFile\" . #<marker at 109723 in ZipFile.cs>)
+       (\"ctor ZipFile\" . #<marker at 116487 in ZipFile.cs>)
+       (\"indexer int\" . #<marker at 121232 in ZipFile.cs>)
+       (\"indexer String\" . #<marker at 124933 in ZipFile.cs>)
+       (\"(bottom)\" . #<marker at 149777 in ZipFile.cs>))
+      (\"public enum Zip64Option\" . #<marker at 153839 in ZipFile.cs>)
+      (\"enum AddOrUpdateAction\" . #<marker at 154815 in ZipFile.cs>)
+      (\"(bottom)\" . #<marker at 154893 in ZipFile.cs>)))
+
+
+This is displayed as a toplevel menu with 2 items; the namespace
+menu has 5 items (top, bottom, the 2 enums, and the class).  The
+class menu has 93 items. Unworkable.
+
+After:
+
+    ((\"usings (4)\" . #<marker at 1538 in ZipFile.cs>)
+     (\"namespace Ionic.Zip\"
+      (\"(top)\" . #<marker at 1651 in ZipFile.cs>)
+      (\"partial class Ionic.Zip.ZipFile\"
+       (\"(top)\" . #<marker at 5473 in ZipFile.cs>)
+       (\"prop\"
+        (\"prop WriteStream\" . #<marker at 146489 in ZipFile.cs>)
+        (\"prop Count\" . #<marker at 133827 in ZipFile.cs>)
+            ....
+        (\"prop BufferSize\" . #<marker at 12837 in ZipFile.cs>)
+        (\"prop FullScan\" . #<marker at 8036 in ZipFile.cs>))
+       (\"method\"
+        (\"method virtual void Dispose\" . #<marker at 144389 in ZipFile.cs>)
+        (\"method void RemoveEntry\" . #<marker at 141027 in ZipFile.cs>)
+           ....
+        (\"method override String ToString\" . #<marker at 96577 in ZipFile.cs>)
+        (\"method bool ContainsEntry\" . #<marker at 32517 in ZipFile.cs>))
+       (\"ctor\"
+        (\"ctor ZipFile\" . #<marker at 116487 in ZipFile.cs>)
+           ....
+        (\"ctor ZipFile\" . #<marker at 105698 in ZipFile.cs>)
+        (\"ctor ZipFile\" . #<marker at 103598 in ZipFile.cs>))
+       (\"indexer int\" . #<marker at 121232 in ZipFile.cs>)
+       (\"indexer String\" . #<marker at 124933 in ZipFile.cs>)
+       (\"(bottom)\" . #<marker at 149777 in ZipFile.cs>))
+      (\"public enum Zip64Option\" . #<marker at 153839 in ZipFile.cs>)
+      (\"enum AddOrUpdateAction\" . #<marker at 154815 in ZipFile.cs>)
+      (\"(bottom)\" . #<marker at 154893 in ZipFile.cs>)))
+
+All menus are the same except the class menu, which has been
+organized into subtopics, each of which gets its own cascaded submenu.
+
+"
+  (let ((counts (csharp--imenu-counts menu-alist)))
+
+    (flet ((helper (list new)
+                   (if (null list)
+                       new
+                     (let* ((elt (car list))
+                            (topic (csharp--make-plural (csharp--first-word (car elt))))
+                            (xelt (assoc topic new)))
+                       (helper (cdr list)
+                               (if xelt
+                                   (progn
+                                     (rplacd xelt (cons elt (cdr xelt)))
+                                     new)
+                                 (cons
+
+                                  (cond
+                                   ((> (cdr (assoc topic counts)) csharp-imenu-max-similar-items-before-extraction )
+                                    (cons topic (list elt)))
+
+                                   ((imenu--subalist-p elt)
+                                    (cons (car elt)
+                                          (csharp--imenu-reorg-flat-alist-intelligently (cdr elt))))
+                                   (t
+                                      elt))
+
+                                    new)))))))
+
+      (csharp--imenu-break-into-submenus
+       (nreverse (helper menu-alist nil))))))
+
+
+
+
+(defun csharp-imenu-create-index ()
+  "This function is called by imenu to create an index for the
+current C# buffer, conforming to the format specified in
+`imenu--index-alist' .
+
+See `imenu-create-index-function' for background information.
+
+To produce the index, which lists the classes, functions,
+methods, and properties for the current buffer, this function
+scans the entire buffer.
+
+This can take a long time for a large buffer. The scan uses
+regular expressions that attempt to match on the general-case C#
+syntax, for classes and functions, generic types, base-classes,
+implemented interfaces, and so on. This can be time-consuming.
+For a large source file, say 160k, it can take 10 seconds or more.
+The UI hangs during the scan.
+
+imenu calls this fn when it feels like it, I suppose when it
+thinks the buffer has been updated. The user can also kick it off
+explicitly by selecting *Rescan* from the imenu menu.
+
+After generating the hierarchical list of props, methods,
+interfaces, classes, and namespaces, csharp-mode re-organizes the
+list as appropriate:
+
+ - it extracts sets of like items into submenus. All properties
+   will be placed on a submenu. See
+   `csharp-imenu-max-similar-items-before-extraction' for a way
+   to tune this.
+
+ - it converts those submenus into sub-submenus, if there are more than
+   `csharp-imenu-min-size-for-sub-submenu' items.
+
+ - it sorts each set of items on the outermost menus lexicographically.
+
+The result of these transformations is what is provided to imenu
+to generate the visible menus.  Just FYI - the reorganization of
+the scan results is much much faster than the actual generation
+of the scan results. If you're looking to save time, the re-org
+logic is not where the cost is.
+
+imenu itself likes to sort the menus. See `imenu--split-menu' and
+also `csharp--imenu-split-menu-patch', which is advice that
+attempts to disable the weird re-jiggering that imenu performs.
+
+"
+  ;; I think widen/narrow causes the buffer to be marked as
+  ;; modified. This is a bit surprising, but I have no other
+  ;; explanation for the source of the problem.
+  ;; So I use `c-save-buffer-state' so that the buffer is not
+  ;; marked modified when the scan completes.
+
+  (c-save-buffer-state ()
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char (point-min))
+
+          (let ((index-alist
+                 (csharp--imenu-create-index-helper nil "" t t)))
+
+            (csharp--imenu-reorg-flat-alist-intelligently index-alist)
+
+            ;;index-alist
+
+            ;; What follows is No longer used.
+            ;; =======================================================
+
+            ;; If the index menu contains exactly one element, and it is
+            ;; a namespace menu, then remove it.  This simplifies the
+            ;; menu, and results in no loss of information: all types
+            ;; get fully-qualified names anyway. This will probably
+            ;; cover the majority of cases; often a C# source module
+            ;; defines either one class, or a set of related classes
+            ;; inside a single namespace.
+
+            ;; To remove that namespace, we need to prune & graft the tree.
+            ;; Remove the ns hierarchy level, but also remove the 1st and
+            ;; last elements in the sub-menu, which represent the top and
+            ;; bottom of the namespace.
+
+            ;; (if (and
+            ;;      (= 1 (length index-alist))
+            ;;      (consp (car index-alist))
+            ;;      (let ((tokens (split-string
+            ;;                     (car (car index-alist))
+            ;;                     "[ \t]" t)))
+            ;;        (and (<= 1 (length tokens))
+            ;;             (string= (downcase
+            ;;                       (nth 0 tokens)) "namespace"))))
+            ;;
+            ;;     (let (elt
+            ;;           (newlist (cdar index-alist)))
+            ;;       (setf (car (car newlist))  (car (car index-alist)))
+            ;;       newlist)
+            ;;
+            ;;   index-alist)
+
+            )))))
+
+
+;; ==================================================================
 
 
 
@@ -2915,7 +4375,6 @@ underlying scanner used to set the text properties in a C# buffer.
 
 
   (defun csharp-scan-for-verbatim-literals-and-set-props (&optional beg end)
-
     "Scans the buffer, between BEG and END, for verbatim literal
 strings, and sets override text properties on each string to
 allow proper syntax highlighting, indenting, and cursor movement.
@@ -2935,7 +4394,7 @@ every buffer change, with the BEG and END set to the values for
 the change.
 
 The return value is nil if the buffer was not a csharp-mode
-buffer.  Otherwise it is the last cursor position examined by the
+buffer. Otherwise it is the last cursor position examined by the
 scan.
 "
 
@@ -3567,15 +5026,110 @@ ctrl-e.
 ;;; The entry point into the mode
 ;;;###autoload
   (defun csharp-mode ()
-    "Major mode for editing C# code. This mode is derived from CC Mode to
+  "Major mode for editing C# code. This mode is derived from CC Mode to
 support C#.
 
-The hook `c-mode-common-hook' is run with no args at mode
-initialization, then `csharp-mode-hook'.
+Normally, you'd want to autoload this mode by setting `auto-mode-alist' with
+an entry for csharp, in your .emacs file:
 
-This mode will automatically add a symbol and regexp to the
-`compilation-error-regexp-alist' and `compilation-error-regexp-alist-alist'
-respectively, for Csc.exe error and warning messages.
+   (autoload 'csharp-mode \"csharp-mode\" \"Major mode for editing C# code.\" t)
+   (setq auto-mode-alist
+      (append '((\"\\.cs$\" . csharp-mode)) auto-mode-alist))
+
+
+The mode provides fontification and indent for C# syntax, as well
+as some other handy features.
+
+At mode startup, there are two interesting hooks that run:
+`c-mode-common-hook' is run with no args, then `csharp-mode-hook' is run after
+that, also with no args.
+
+To run your own logic after csharp-mode starts, do this:
+
+  (defun my-csharp-mode-fn ()
+    \"my function that runs when csharp-mode is initialized for a buffer.\"
+    (turn-on-font-lock)
+    (turn-on-auto-revert-mode) ;; helpful when also using Visual Studio
+    (setq indent-tabs-mode nil) ;; tabs are evil
+    (flymake-mode 1)
+    (yas/minor-mode-on)
+    (require 'rfringe)  ;; handy for flymake
+    (require 'flymake-cursor) ;; also handy for flymake
+    ....your own code here...
+  )
+  (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
+
+
+The function above is just a suggestion.
+
+
+Compile integration:
+========================
+
+csharp-mode binds the function `csharp-invoke-compile-interactively' to
+\"\C-x\C-e\" .  This function attempts to intellgently guess the format of the
+compile command to use for a buffer.  It looks in the comments at the head of
+the buffer for a line that begins with compile: .  For exammple:
+
+  // compile: csc.exe /t:library /r:Mylib.dll Foo.cs
+
+If csharp-mode finds a line like this, it will suggest the text that follows
+as the compilation command when running `compile' for the first time.  If such
+a line is not found, csharp-mode falls back to a msbuild or nmake command.
+See the documentation on `csharp-cmd-line-limit' for further information. If
+you don't want this magic, then you can just run `compile' directly, rather
+than `csharp-invoke-compile-interactively' .
+
+This mode will also automatically add a symbol and regexp to the
+`compilation-error-regexp-alist' and`compilation-error-regexp-alist-alist'
+respectively, for Csc.exe error and warning messages. If you invoke `compile',
+then `next-error' should work properly for error messages produced by csc.exe.
+
+
+Flymake Integraiton
+========================
+
+You can use flymake with csharp mode to automatically check the syntax of your
+csharp code, and highlight errors.  To do so, add a comment line like this to
+each .cs file that you use flymake with:
+
+   //  flymake: csc.exe /t:module /R:Foo.dll @@FILE@@
+
+csharp-mode replaces special tokens in the command with different values:
+
+  @@ORIG@@ - gets replaced with the original filename
+  @@FILE@@ - gets replaced with the name of the temporary file
+      created by flymake. This is usually what you want in place of the
+      name of the file to be compiled.
+
+See the documentation on `csharp-cmd-line-limit' for further information.
+
+You may also want to run a syntax checker, like fxcop:
+
+   //  flymake: fxcopcmd.exe /c /F:MyLibrary.dll
+
+In this case you don't need either of the tokens described above.
+
+If the module has no external dependencies, then you need not specify any
+flymake command at all. csharp-mode will implicitly act as if you had
+specified the command:
+
+     // flymake: csc.exe /t:module /nologo @@FILE@@
+
+It looks for the EXE on the path.  You can specify a full path if you like.
+
+
+YASnippet and IMenu Integraiton
+===============================
+
+Check the menubar for menu entries for YASnippet and Imenu; the latter
+is labelled \"Index\".
+
+The Imenu index gets computed when the file is .cs first opened and loaded.
+This may take a moment or two.  If you don't like this delay and don't
+use imenu, you can turn this off with the variable `csharp-want-imenu'.
+
+
 
 Key bindings:
 \\{csharp-mode-map}"
@@ -3622,7 +5176,7 @@ Key bindings:
         (progn
           (add-to-list
            'compilation-error-regexp-alist-alist
-           '(ms-csharp "^[ \t]*\\([-_:A-Za-z0-9][^(]*\\.\\(?:cs\\|xaml\\)\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) ?: \\(error\\|warning\\) CS[0-9]+:" 1 2 3))
+           '(ms-csharp "^[ \t]*\\([-_:A-Za-z0-9][^\n(]*\\.\\(?:cs\\|xaml\\)\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) ?: \\(error\\|warning\\) CS[0-9]+:" 1 2 3))
           (add-to-list
            'compilation-error-regexp-alist
            'ms-csharp)))
@@ -3667,10 +5221,25 @@ Key bindings:
     (c-update-modeline)
     (c-run-mode-hooks 'c-mode-common-hook 'csharp-mode-hook)
 
+    ;; maybe do imenu scan after hook returns
+    (if csharp-want-imenu
+      (progn
+        ;; There are two ways to do imenu indexing. One is to provide a
+        ;; function, via `imenu-create-index-function'.  The other is to
+        ;; provide imenu with a list of regexps via
+        ;; `imenu-generic-expression'; imenu will do a "generic scan" for you.
+        ;; vbnet-mode uses the former method.
+        ;;
+        (setq imenu-create-index-function 'csharp-imenu-create-index)
+        (imenu-add-menubar-index)))
+
     ;; The paragraph-separate variable was getting stomped by
     ;; other hooks, so it must reside here.
     (setq paragraph-separate
           "[ \t]*\\(//+\\|\\**\\)\\([ \t]+\\|[ \t]+<.+?>\\)$\\|^\f")
+
+    (setq beginning-of-defun-function 'csharp-move-back-to-beginning-of-defun)
+    ;; end-of-defun-function   can remain forward-sexp !!
 
     (set (make-local-variable 'comment-auto-fill-only-comments) t)
     )

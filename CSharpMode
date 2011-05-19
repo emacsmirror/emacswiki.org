@@ -503,6 +503,11 @@ Richard, that fix is now in the latest version. (31 May 2010)
 
 --DinoChiesa
 
+[new]
+
+Imenu integration, new, for v0.8.3 of csharp-mode.el 
+
+http://3mb.us/images/359_csharp_imenu.gif
 
 ----
 CategoryModes ProgrammingModes

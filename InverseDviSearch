@@ -149,6 +149,7 @@ with the shortcut <code>C-c C-v</code>.
 * KDVI, http://developer.kde.org/~kdvi/
 * xdvi(k), http://xdvi.sourceforge.net/
 * Yap (from !MikTeX)
+* DocViewMode ? (Can it do this? It seems like it really ought to but I've not figured out how yet)
 
 == Notes on the dvi-previewers ==
 === Problem: Black pages with xdvik under cygwin ===
