@@ -1,114 +1,128 @@
 == Overview ==
 
-Imenu (pronounced "eye menu") matches regexp patterns against the text in the current buffer, typically a source-code buffer. The matches are generally definitions (of functions, variables, etc.), but they could in principle match anything. Imenu then lets you jump to the match occurrences in the buffer.
+Imenu produces menus for accessing locations in documents, typically in the current [[buffer]].  You can access the locations using an ordinary menu ([[menu bar]] or other) or using [[minibuffer]] [[completion]].
 
-In this, Imenu resembles OccurMode. However, for Imenu, the patterns are predefined for the current buffer mode, whereas, for Occur, you enter a pattern interactively. The other significant difference is that Imenu gives you access to match occurrences via a menu or [[minibuffer]] [[completion]].
+A typical use of Imenu shows a menu-bar menu that is an index or table of contents for the current buffer.  For a source-code buffer it is typical to index definitions of functions, [[variable]]s, and so on.
 
-The Imenu patterns for a given buffer constitute the local value of variable '''`imenu-generic-expression''''. That is, the patterns are defined for a given mode, giving you a mode-specific buffer index for quickly accessing definitions. The value of `imenu-generic-expression' is essentially a list of regexps that match source-code definitions (of functions, variables, etc.).
+You can use Imenu with any [[major mode]] and any programming language or document type.  If there is no Imenu support for your context, you can add it using EmacsLisp and the constructs provided in library ##imenu.el##.
 
-See the Emacs manual, node '''Imenu''': Manual:Imenu.
+Example:
+
+http://3mb.us/images/359_csharp_imenu.gif
+
+There are two ways to generate an Imenu menu (index):
+
+* Provide [[regexp]]s that match the locations to index.  See variable '''`imenu-generic-expression''''.
+* Provide a function that generates the index. See variable '''`imenu-create-index-function''''.
+
+For a source-code buffer the locations to index are typically definitions of functions, variables, and so on.  For a text or markup buffer (e.g. LaTeX) the locations might be section headings.  You can use an EmacsLisp [[marker]] as a target destination, so that targets need not be limited to the current buffer.
+
+See Manual:Imenu.
+
 
 == Imenu from a Menu ==
 
-One way to use Imenu is as a menubar menu. To automatically add Imenu to the menu bar for a mode, do something like this:
+To automatically add an Imenu menu to the [[menu bar]] for a given mode, do something like this:
 
- (add-hook 'c-mode-hook 'imenu-add-menubar-index)
+ (add-hook 'my-mode-hook 'imenu-add-menubar-index)
 
-`font-lock-mode-hook' is run immediately after entering every major mode. You can make use of this to add an Imenu index to the menu bar in /any/ mode that supports it:
+`font-lock-mode-hook' is run after entering a major mode. You can make use of this to add an Imenu index to the menu bar in any mode that supports Imenu:
 
  (defun try-to-add-imenu ()
-
   (condition-case nil (imenu-add-to-menubar "yourFancyName") (error nil)))
-
  (add-hook 'font-lock-mode-hook 'try-to-add-imenu)
 
 
 == Imenu from the Keyboard, with Completion ==
 
-It can often be quicker to access Imenu from the keyboard, using completion:
+It can often be quicker to access an Imenu menu from the keyboard, using completion:
 
  M-x imenu
 
 Why? Because you don't have to read down a long list of menu items, many of which look similar. Just type a prefix of the defined name, and let completion do the work for you.
 
-You can bind Imenu to any KeySequence. Here's how to bind it to `S-mouse-3':
+'''[[Icicles]]''' can make this even handier, by letting you complete any part of a defined name (or its definition), not just a prefix -- see [[#ImenuBrowser]], below. Just type enough of a name to identify it uniquely, and voila!
+
+You can bind Imenu to any [[key sequence]]. Here is how to bind it to `S-mouse-3':
 
  (if (featurep 'xemacs)
      (global-set-key [(shift button3)] 'imenu) ; XEmacs
    (global-set-key [S-mouse-3] 'imenu)) ; GNU Emacs
 
-'''[[Icicles]]''' can make this even handier, by letting you complete any part of a defined name (or its definition), not just a prefix -- see [[#ImenuBrowser]], below. Just type enough of a name to identify it uniquely, and voila!
 
+== Grouping and Truncating Menu Items ==
 
-== Grouping and Truncating of Menu Items ==
-
-If there are too many menu entries in the current buffer, then Imenu splits them
-into submenus.  These submenus are labeled `##From: ...##' -- see [[#ImenuScreenshot]], below.  Each contains
-only a limited number of menu items.  You can change how many menu items can be
-listed in each submenu by customizing `imenu-max-items'. 
+If there are too many Imenu menu items then Imenu splits them
+into submenus.  By default, these submenus are labeled `##From: ...##' -- see [[#ImenuScreenshot]], below.  You can change how many menu items can be
+listed in each submenu by customizing [[option]] `imenu-max-items'. 
 
 Long menu items are truncated to `imenu-max-item-length' characters.
 Depending on the size of your display, you might want to customize this
-variable.
+option also.
 
 
 == Sorting ==
 
-You can control the order of Imenu menu items by customizing `imenu-sort-function'.  For alphabetical order, use `imenu--sort-by-name' as the value.
+You can control the order of Imenu menu items by customizing [[option]] '''`imenu-sort-function''''.  For alphabetical order, use `imenu--sort-by-name' as the value.
+
+
+
+
 
 [:ImenuBrowser]
 == Imenu Browser ==
 
-'''[[Icicles]]''' command '''`icicle-imenu'''' turns any Imenu-supported buffer into an Imenu ''browser''.  Use it to navigate among the various Imenu entries in a buffer (usually mode-specific definitions of things like functions and variables). No need for a separate window like SpeedBar. See [[Icicles - Search Commands, Overview]].
+'''[[Icicles]]''' command '''`icicle-imenu'''' turns any Imenu-supported buffer into an Imenu browser.  Use it to navigate among the various Imenu entries.  No need for a separate window such as SpeedBar. See [[Icicles - Search Commands, Overview]].
 
 Here's a screenshot of using `icicle-imenu' to find function definitions (Imenu submenu '''Functions''') that match the regexp `kill':
 
 [[image:IciclesImenuScreenshot]]
 
-So much for navigating by cycling among defined terms. Most of the time, however, you just want to go directly to a definition; you aren't interested in browsing among multiple definitions. Since `icicle-imenu' is an '''Icicles''' command, you can also use completion against any parts of a definition (just type a regexp, such as a substring). 
+So much for navigating by cycling among defined terms. Most of the time, however, you just want to go directly to a definition; you aren't interested in browsing among multiple definitions. Since `icicle-imenu' is an '''Icicles''' command, you can also use completion against any parts of a definition (just type a [[regexp]], such as a substring). 
 
-This is quite handy. While you can use completion with the vanilla Emacs command `imenu', it is only prefix completion. With `icicle-imenu', you can type any part of a defined term -- in fact, any part of the line that defines it, and go to the definition in the buffer immediately. 
+This is quite handy. You can also use simple completion with the vanilla Emacs command `imenu', but with `icicle-imenu' you can type any part of a defined term -- in fact, any part of the line that defines it, and go to the definition in the buffer immediately. 
 
-What's more, using `icicle-imenu', you can also combine ''semantic'' search with the purely syntactic search of Imenu. In Emacs-Lisp mode, if you supply a prefix argument to `icicle-imenu', you can selectively find only commands or only non-interactive functions.
+Using `icicle-imenu' you can also combine ''semantic'' search with the purely syntactic search of Imenu. In Emacs-Lisp mode, if you supply a prefix argument to `icicle-imenu', you can selectively find only [[command]]s or only non-interactive functions.
+
+
+
 
 == Imenu+ == 
 
-Library Lisp:imenu+.el (Imenu+), by DrewAdams, extends standard library ##imenu.el##.  Among the improvements are: 
+Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##. 
 
 * Redefines standard functions `imenu-update-menubar' and `imenu--mouse-menu' so that submenus are sorted before splitting.
 * Adds new commands:
-** `imenu-add-defs-to-menubar' -- Add '''Defs''' imenu to MenuBar for current local keymap.
-** `toggle-imenu-sort' -- Toggle sorting in <code>imenu</code>.
-* Adds mode-specific '''Defs''' imenus for Lisp mode and Emacs-Lisp mode, including faces, user options, other variables, functions, macros, key bindings etc.
+** '''`imenu-add-defs-to-menubar'''' -- Add '''Defs''' imenu to MenuBar for current local keymap.
+** '''`toggle-imenu-sort'''' -- Toggle sorting.
+* Adds mode-specific '''Defs''' Imenus for Lisp mode and Emacs-Lisp mode.  These menus include [[face]]s, [[user option]]s, other [[variable]]s, functions, [[macro]]s, [[key binding]]s etc.
 
-:: Here is a screen shot showing the '''Defs''' menu in Emacs-Lisp mode:
+:: Here is a screenshot showing the '''Defs''' menu in Emacs-Lisp mode:
 
 [:ImenuScreenshot]
 :: [[image:DrewEmacsImenuImage]]
 
+
+
 == Defining an Imenu Menu for a Mode ==
 
-Here is a simple example of an imenu-generic-expression for the mail-mode:
+Here is an example of an `imenu-generic-expression' for `mail-mode':
 
-<pre>
   (setq mail-imenu-generic-expression
       '(("Subject"  "^Subject: *\\(.*\\)" 1)
         ("Cc"     "^C[Cc]: *\\(.*\\)" 1)
         ("To"     "^To: *\\(.*\\)" 1)
         ("From"  "^From: *\\(.*\\)" 1)))
-</pre>
 
-Then you can hook it to the mail-mode with:
+You can hook this to `mail-mode':
 
-<pre>
   (add-hook 'mail-mode-hook 
         (lambda ()
            (setq imenu-generic-expression mail-imenu-generic-expression)))
-</pre>
 
 
 
-Here's a complex example for PL/SQL (for SqlMode):
+Here's a more complex example, for PL/SQL (for SqlMode):
 
  (setq sql-imenu-generic-expression
        '(("Comments" "^-- \\(.+\\)" 1)
@@ -118,6 +132,7 @@ Here's a complex example for PL/SQL (for SqlMode):
  [ \n\t]*([a-z0-9 _,\n\t]*)[ \n\t]*\\(return[ \n\t]+[a-z0-9_]+[ \n\t]*\\)?;" 2)
 	 ("Indexes" "^\\s-*create\\s-+index\\s-+\\(\\w+\\)" 1)
 	 ("Tables" "^\\s-*create\\s-+table\\s-+\\(\\w+\\)" 1)))
+
 
 [new]
 : Hmm, sorry but his does not work here. I'm using emacs 21.1 and execute the above. imenu just points at me, telling me that "imenu--make-index-alist: No items suitable for an index found in this buffer" -- MathiasDahl
@@ -156,10 +171,11 @@ In these examples, the major mode supports a buffer local copy of the "real" var
 
 That way, setting `imenu-generic-expression' will only change for the buffer the hook runs in -- the foo-mode buffer.
 
+
+
 == Using Selection Buffer ==
 
-I do not like completion I/F.
-I prefer using selection buffer. -- Anonymous
+I do not like completion I/F. I prefer using selection buffer. -- Anonymous
 
 <pre>
 (define-derived-mode imenu-selection-mode fundamental-mode "imenu"
@@ -198,13 +214,15 @@ I prefer using selection buffer. -- Anonymous
 
 </pre>
 
+
+
 [:Ido]
 == Using Ido ==
 
 Lisp:idomenu.el by GeorgBrandl lets you use [InteractivelyDoThings Ido] with imenu.
 
 [new]
-Alternatively, add the following command to ##.emacs##:
+Alternatively, add the following command to your [[init file]]:
 
     (defun ido-goto-symbol (&optional symbol-list)
       "Refresh imenu and jump to a place in the buffer using Ido."
@@ -259,12 +277,10 @@ Alternatively, add the following command to ##.emacs##:
 -- shjk (updated by MattKeller to handle overlays as "positions"; updated by VegardOye to set the mark before jumping).
 
 
-== Use with Anything ==
+== Using Anything ==
 '''[[Anything]]''' is a candidate selection framework.
-
 Start with `M-x anything-imenu', narrow the list by typing some patterns(multiple patterns are space-delimited string),
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-
 With `C-z' contents of selected candidate are displayed without quitting anything session.
 
 

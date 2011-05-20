@@ -1,6 +1,14 @@
 = CSharpMode (CSharp, C#) =
 
-Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation. 
+Lisp:csharp-mode.el
+
+Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation, and integration with compile.el, flymake.el, yasnippet.el, and imenu.el.  
+
+[new]
+
+Here's a view of a c# buffer using csharp-mode.  In addition to the fontification and indenting, this animated gif shows off the Imenu integration, new, for v0.8.3 of csharp-mode.el 
+
+http://3mb.us/images/359_csharp_imenu.gif
 
 [new]
 As of May 2010, the latest version is available at  http://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
@@ -17,12 +25,77 @@ Note:
 
 [NxhtmlMode nXhtml] includes a slightly modified version of latest csharp-mode.el.
 
+----
+== Usage Notes and Hints ==
 
+=== Imenu ===
+
+Imenu support is new for v0.8.3.  It indexes the entire .cs buffer and produces a menu of the classes, methods, properties, etc.  For large buffers this can cause a delay in opening a file, of several seconds. If you don't want this, see '''`csharp-want-imenu'''' .
+
+=== Flymake ===
+
+To use flymake, just open a C# file.  If you have flymake loaded (you can do (require 'flymake) in your csharp-mode-hook fn) then it will automatically start working. The flymake stuff in csharp-mode assumes csc.exe is on your path; if it is not, you can 
+explicitly specify the flymake command to use in code comments, like this: 
+
+http://i.imgur.com/28V7e.png
+
+You can run [http://msdn.microsoft.com/en-us/library/bb429476(VS.80).aspx FxCop] for your flymake. This is really handy.  To do so, you need at least v0.8.3, and you need a comment like this near the top of your file: 
+
+<pre>
+// flymake: c:\fxcop\FxCopcmd.exe /c /rid:-Microsoft.Naming#CA1704  /f:Base64stream.dll
+</pre>
+
+All of the issues found by flymake will be highlighted in the buffer. 
+
+Some complementary things for flymake: FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  
+
+Also, there's [http://www.emacswiki.org/emacs/RFringe RFringe], which displays buffer-relative locations in the fringe. It gives you a visual summary of the flymake issues, and their approximate locations. 
+
+http://i.imgur.com/SgoLa.png
+
+RFringe is not part of csharp-mode *or* flymake; it's a complementary, independent thing. 
+
+=== Compile ===
+
+csharp-mode sets the '''`compilation-error-regexp-alist-alist'''', so that error messages emitted by csc.exe will be properly handled by next-error and prev-error. The default build command is 'nmake' but you can specify it explicitly in each buffer with in-code comments:
+
+<pre>
+// compile: c:\.NET3.5\csc.exe /t:module /r:MyAssembly.dll file.cs
+</pre>
+
+Example: 
+
+http://i.imgur.com/28V7e.png
+
+You can replace that compile command with whatever you like. For example:
+
+<pre>
+// compile: msbuild.exe /p:Configuration:Release
+</pre>
+
+
+
+=== YASnippet ===
+
+yasnippet is a nice snippet expansion package, available elsewhere. csharp-mode defines some snippets automatically for you, and makes them available if you have yasnippet.  This means you can type for<TAB> and get a template of a for loop. There are snips for switch statements, properties, while loops, and so on. Pretty handy. You can also define your own snips.  
+
+=== Other tidbits ===
+
+csharp-mode Works with Linum.el : 
+
+http://i42.tinypic.com/29pdmjd.jpg
+
+
+
+
+----
 == Complementary Stuff / Minor Modes ==
 
 ||[http://code.google.com/p/yasnippet/v yasnippet.el]||||dynamically expand snippets, like dabbrev on steroids. [http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx How to use yasnippet with C#.]||
+||ImenuMode||||produce an index of the contents of a C# buffer.||
 ||HideShow||||hide and show regions of code.[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx How to use hideshow.el with C#]||
-||FlymakeCsharp||||check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. ||
+||FlymakeCsharp|||| **now included with csharp-mode. check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. ||
+||FlymakeCursor||||display flymake messages in the minibuffer, automatically, after a delay.||
 ||[http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el]||||multi-mode for editing ASPX files within emacs. Handles HTML, JS, CSS, and C#.||
 ||[[MSTFS]]||||Emacs integration with Team foundation server, via the tf.exe tool||
 ||[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html Linum.el]||||line numbers||
@@ -35,32 +108,8 @@ Note:
 
 
 
-== Some History: previous attempts at C# mode ==
 
-; http://mfgames.com/csharp-mode
-:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking] (Broken link as of December 2009)
-:: The above link was changed to point people to the Google Code page since I'm not working on it anymore. I left the link to the historical releases on the site. There were no reported issues when the bug tracker was shut down at the end of 2009. -- DylanMoonfire (November 2010)
-
-
-; http://www.cybercom.net/~zbrad/DotNet/Emacs/
-:This is the original.  It involves changes to a set of standard elisp files.  It apparently doesn't handle @"\" correctly.
-
-* please send me a more detailed description of the problem reported here? Thanks mailto:zbrad@cybercom.net
-
-; http://davh.dk/script/
-:Is a mod of zbrad's original. Collects all the changes into a single file.  It also doesn't solve the @"\" problem.  
-[http://lists.ximian.com/pipermail/mono-list/2002-May/006182.html]
-
-; http://csde.sourceforge.net/
-:Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not. 
-
-; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : this is just a link to zbrad's code. 
-
-; http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js
-:A modified CC mode from Emacs 22, with .elcs for Emacs 21.  Done by someone who doesn't use C#, but reported deficiencies will probably get fixed.
-
-
-== Comments/Remarks ==
+== Comments / Remarks / Gripes ==
 
 === Works Well ===
 
@@ -74,11 +123,7 @@ The mode works well today, but there are plenty of opportunities for improvement
 
 In May 2010, I put this up on a project hosted on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
 
-Also, you can subscribe to updates [http://freshmeat.net/projects/csharp-mode/ via Freshmeat].
-
-Dylan Moonfire had the right idea with http://freshmeat.net/projects/csharp-mode  but it's no longer active, and anyway there's no good way to file bugs or track work requests on freshmeat. 
-
---DinoChiesa
+Also, you can subscribe to updates [http://freshmeat.net/projects/csharp-mode/ via Freshmeat].  Thanks to Dylan Moonfire for setting that up. 
 
 === Inclusion into Emacs ===
 
@@ -181,7 +226,11 @@ Thanks for all the helpful comments on this page and elsewhere!
 -- DanMuller
 
 [new]
-If you tell me the minor gliches, I'll put them in my bug-tracking for csharp-mode ([http://cinki.mfgames.com/] (broken link as of December 2009)) and see about get them fixed as soon as possible. Thanks for pointing out how to do the Hide/Show stuff, I haven't figured it quite out, but I'll see if I can add most of that automatically into the mode. Or at least as much as possible.
+2011 may 18 - For minor glitches, please report them to http://code.google.com/p/csharpmode/issues/list .  Also, as of v0.8.2, you do not need to modify the error/warning regexps -- these are automatically added by csharp-mode when it starts. 
+
+
+[new]
+Thanks for pointing out how to do the Hide/Show stuff, I haven't figured it quite out, but I'll see if I can add most of that automatically into the mode. Or at least as much as possible.
 
 -- DylanMoonfire
 
@@ -314,7 +363,7 @@ I don't know why (define-key csharp-mode-map ...) doesn't work but c-mode-map do
 
 [new]
 
-There's codedoc support in the v0.7.2 version.  Type three slashes and you get a synthetic codedoc template inserted into the buffer, similar to the effect in VisualStudio.  Also, fill-paragraph now works as expected. -- DinoChiesa
+There's codedoc support starting with version v0.7.2 (but you should really upgrade to v0.8.3).  For the code doc: position point above a method/class, and type three slashes; you will get a synthetic codedoc template inserted into the buffer, similar to the effect you may have seen in VisualStudio.  Also, fill-paragraph now works as expected; in the current version of csharp-mode.el, there should be no need to setq paragraph-separate in your csharp-mode hook function.  -- DinoChiesa
 
 Example:
 
@@ -437,15 +486,16 @@ ide-complete do work under windows only (funny to read that it has to be "ported
 
 --GM/LIAR
 
+
 === Version 0.7.2 & Xemacs ===
 
 I get a "Symbol's function definition is void: line number-at-pos" when typing the third '/' in ///
 
 --GM/LIAR
 
-=== Works with Linum.el ===
+[new] 
+I believe that is fixed in v0.7.4 and later.  If still a problem, raise the issue on the googlecode repository.  http://code.google.com/p/csharpmode/issues/list
 
-http://i42.tinypic.com/29pdmjd.jpg
 
 === Incorrect indentation ===
 
@@ -465,49 +515,33 @@ http://i26.tinypic.com/2exuis3.jpg
 2010 October 25.   Have you set the appropriate offsets with c-set-offset?  The pictures here seem to just show code indented according to a particular style.  (I don't see any incorrect indenting of comments, for example)  If you don't like that indenting style you can change the offsets. Would that solve it?   If not, in what version of csharp-mode do you see this behavior?  There have been some changes in the indentation for v0.7.4, that may fix this for you. 
 
 --DinoChiesa
-=== Hooks are run too early ===
 
-At the moment the mode hooks are run before local keys bindings are set, which means you can't modify them in a hook if you don't like them.  I modified my copy as follows:-
 
-<pre>
---- /tmp/tmp.677.84	2010-05-25 14:37:27.000000000 +0100
-+++ csharp-mode.el	2010-05-25 14:37:12.000000000 +0100
-@@ -1945,8 +1945,6 @@ Key bindings:
-        "[ \t]*\\(//+\\|\\**\\)\\([ \t]+\\|[ \t]+<.+?>\\)$\\|^\f")
- 
- 
--  (c-run-mode-hooks 'c-mode-common-hook 'csharp-mode-hook)
--
- 
-   ;; Need the following for parse-partial-sexp to work properly with
-   ;; verbatim literal strings Setting this var to non-nil tells
-@@ -1964,7 +1962,10 @@ Key bindings:
-   (local-set-key (kbd "/") 'csharp-maybe-insert-codedoc)
-   (local-set-key (kbd "{") 'csharp-insert-open-brace)
- 
--  (c-update-modeline))
-+  (c-update-modeline)
-+
-+  (c-run-mode-hooks 'c-mode-common-hook 'csharp-mode-hook)
-+)
- 
- 
- 
-</pre>
 
--- Richard Kettlewell
+== Some History: previous attempts at C# mode ==
 
-[new]
+; http://mfgames.com/csharp-mode
+:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking] (Broken link as of December 2009)
+:: The above link was changed to point people to the Google Code page since I'm not working on it anymore. I left the link to the historical releases on the site. There were no reported issues when the bug tracker was shut down at the end of 2009. -- DylanMoonfire (November 2010)
 
-Richard, that fix is now in the latest version. (31 May 2010)
 
---DinoChiesa
+; http://www.cybercom.net/~zbrad/DotNet/Emacs/
+:This is the original.  It involves changes to a set of standard elisp files.  It apparently doesn't handle @"\" correctly.
 
-[new]
+* please send me a more detailed description of the problem reported here? Thanks mailto:zbrad@cybercom.net
 
-Imenu integration, new, for v0.8.3 of csharp-mode.el 
+; http://davh.dk/script/
+:Is a mod of zbrad's original. Collects all the changes into a single file.  It also doesn't solve the @"\" problem.  
+[http://lists.ximian.com/pipermail/mono-list/2002-May/006182.html]
 
-http://3mb.us/images/359_csharp_imenu.gif
+; http://csde.sourceforge.net/
+:Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not. 
+
+; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : this is just a link to zbrad's code. 
+
+; http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js
+:A modified CC mode from Emacs 22, with .elcs for Emacs 21.  Done by someone who doesn't use C#, but reported deficiencies will probably get fixed.
+
 
 ----
 CategoryModes ProgrammingModes

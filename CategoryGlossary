@@ -40,6 +40,7 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * [[init file]] -- your personal startup file, loaded when Emacs starts up: ##~/.emacs## or ##~/_emacs##
 * InteractiveFunction -- [[command]]
 * '''[::key binding]''' -- a mapping (relation) between an Emacs command and a key sequence. A key binding can be a '''[::global key binding]''', a '''[::local key binding]''' (enabled only for a given [[major mode]]), or a '''[::minor-mode key binding]''' (enabled only for a given [[minor mode]])
+* [[isearch]] -- incremental search, which interactively searches for the search string character-by-character as you type it
 * [[keyboard macro]] -- a recording of [[key sequence]]s that you can replay
 * '''[::keymap]''' -- a collection of [[key binding]]s, that is, a mapping (relation) between Emacs [[command]]s and [[key sequence]]s. A keymap can be a '''[::global keymap]''', a '''[::local keymap]''' (applicable only to a given [[major mode]]), or a '''[::minor-mode keymap]''' (applicable only to a given [[minor mode]])
 * [[key sequence]] -- a key sequence can be bound to a [[command]], to execute it
@@ -52,9 +53,9 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * '''[::list]''' -- A '''list''' is the [[symbol]] `nil' or a [[cons]] whose [[cdr]] is a [[list]].
 
 * '''[::macro]''' -- An EmacsLisp form that, when evaluated, translates a [[sexp]] that is a [[list]] into another such, which is then evaluated and its result is returned.  IOW, it rewrites (without evaluating) one sexp as another and then evaluates the latter.  It is typically defined using `defmacro'.  It can be expanded without evaluating the result, using `macroexpand'.  See Manual:macros.
-* [[major mode]] -- there is one major mode per [[buffer]]
+* [[major mode]] -- each [[buffer]] is in one major mode
 * [[mark]] -- a [[buffer]] location that you can change, return to...
-* '''[::marker]''' -- a Lisp object that contains information about a position in a [[buffer]]
+* '''[::marker]''' -- a Lisp object that contains information about a position in a [[buffer]] that is updated to track the same location should edits insert or delete text around it
 * '''[::mark ring]''' -- ring of [[#mark]]s.  [[#variable|Variable]] `mark-ring' holds the marks of the current buffer; variable `global-mark-ring' holds the global marks (across all buffers).
 * [[menu bar]] -- menus at the top of an Emacs [[frame]]
 * '''[::Meta] key''' (written '''`M-'''') -- a logical modifier key that is usually realized as the '''Alt''' keyboard key

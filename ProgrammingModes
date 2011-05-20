@@ -77,7 +77,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * PlsqlMode
 * PrologMode
 * ProcommMode -- mode for editing Procomm ASPECT scripts
-* PythonMode
+* PythonProgrammingInEmacs -- python modes (Note: PythonMode redirects there. OldDiscussionPythonMode has historical info.)
 * PureMode -- mode for editing and running Pure scripts
 * QuackMode -- alternative for PLT Scheme's <nowiki>DrScheme</nowiki>
 * R-Mode -- mode for R language, a part of EssMode

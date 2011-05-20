@@ -389,7 +389,7 @@ mode.  You would write a function to assign to
 ** See [[Icicles - Search Commands, Overview]] (command `icicle-imenu'). You can even make semantic distinctions, such as between Emacs commands and non-interactive functions.
 ** EmacsCodeBrowser
 ** SeanO uses a Semantic/Imenu hack.
-
+** CSharpMode does this, obviously for C# code only, with imenu
 * I'd like to have format strings (%d and friends) to be highlighted
   in their own [[Face]]
 ** Write a `font-lock-syntactic-face-function' which checks the contents of

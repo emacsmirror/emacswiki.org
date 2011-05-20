@@ -12,6 +12,7 @@ Language-specific:
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
 * MythrylLanguage -- Mythryl specific programming
 * PerlLanguage -- Perl specific programming.
+* PythonProgrammingInEmacs -- About python programming features
 * RubyLanguage -- Ruby specific programming.
 
 Coding style:

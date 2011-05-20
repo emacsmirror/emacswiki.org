@@ -1,9 +1,9 @@
 For information regarding using Python in Emacs,
 please see PythonProgrammingInEmacs
 
--
--
--
+----
+
+== THIS IS JUST AN OLD DISCUSSION ==
 
 this is a very, very confusing page. It's hard to make head nor tail of what could and should be used in emacs 23 and I will try to annotate/clip this page when I know more. The whole python.el v python-mode.el thing is really messy -- RichardRiley
 
@@ -21,3 +21,6 @@ How about PythonProgrammingInEmacs --CH
 :::::: This page is essentially left as a reminder of what happened to the 'PythonMode' page. The new page is PythonProgrammingInEmacs . I've made the link at the top a bit more noticable. I'm not sure whether that page is 'comprehensive' though, I think it still needs work, although it's the best starting point. -- CH
 
 ::::::: Wouldn't it be better to have a heading saying something like "Old Discussion" below the initial line? It's easy enough to figure out that all these comments aren't what you're looking for, but a heading would make it just a bit more readable for people coming from Google.  --jhb
+
+
+Category: ProgrammingModes

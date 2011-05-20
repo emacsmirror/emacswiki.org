@@ -2,13 +2,15 @@
 
 This page collects information for creating a usable Python programming environment in Emacs. 
 
-There are two implementations of a Python mode for Emacs: python.el and python-mode.el. python.el comes with GNU Emacs. [https://launchpad.net/python-mode python-mode.el] comes from Python. (Unification is desired.)
+There are two implementations of a Python mode for Emacs: python.el and python-mode.el.
 
-# ProgrammingWithPythonDotEl
+# ProgrammingWithPythonDotEl -- python.el comes with GNU Emacs.
 
-# ProgrammingWithPythonModeDotEl
+# ProgrammingWithPythonModeDotEl -- [https://launchpad.net/python-mode python-mode.el] comes from Python.
 
-You may also find these useful:
+(Unification is desired.)
+
+You may also find these pages useful:
 
 * [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
 
@@ -380,4 +382,4 @@ The following is based on [http://pedrokroger.net/2010/07/configuring-emacs-as-a
 3.1 ##C-c !## to start an ipython buffer.
 
 ----
-ProgrammingModes
+Categories: CategoryProgramming, ProgrammingModes

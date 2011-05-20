@@ -2,7 +2,7 @@
 
 Существуют русские переводы данного учебника. В поставку XEmacs он входит под именем TUTORIAL.ru. Для GNU Emacs этот перевод уже имеется в CVS-версии, и будет доступен после очередного основного релиза GNU Emacs. Пока его можно получить по адресу http://alexott.net/ru/emacs/TUTORIAL.ru
 
-Кроме этого доступен русский перевод руководства по GNU Emacs. Его можно получить по адресу http://www.gnu.org.ru/emacs/emacs.html или с http://www.linux.org.ru/books/GNU/emacs/emacs_toc.html
+Кроме этого доступен русский перевод руководства по GNU Emacs. Его можно получить по адресу http://www.linux.org.ru/books/GNU/emacs/emacs_toc.html
 
 TUTORIAL.ru входит в состав [[XEmacs]], она будет использована, если у вас стоит русская локаль.
 

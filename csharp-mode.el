@@ -4,10 +4,10 @@
 ;; Maintainer : Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : Feburary 2005
 ;; Modified   : May 2011
-;; Version    : 0.8.3
+;; Version    : 0.8.4
 ;; Keywords   : c# languages oop mode
 ;; X-URL      : http://code.google.com/p/csharpmode/
-;; Last-saved : <2011-May-19 01:30:07>
+;; Last-saved : <2011-May-19 11:42:29>
 
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -242,8 +242,6 @@
 ;;   Get csharp-mode.el accepted as part of the emacs standard distribution.
 ;;   Must contact monnier at iro.umontreal.ca to make this happen.
 ;;
-;;   Figure out how to run FxCop nicely.  Maybe it's a flymake thing.
-;;
 ;;
 ;;  Acknowledgements:
 ;;
@@ -338,6 +336,9 @@
 ;;            named methods, classes, etc.
 ;;          - adjusted the flymake regexp to handle output from fxcopcmd,
 ;;            and extended the help to provide examples how to use this.
+;;
+;;    0.8.4 DPC 2011 May 18
+;;          - fix a basic bug in the `csharp-yasnippet-fixup' fn.
 ;;
 
 
@@ -3003,10 +3004,6 @@ to the beginning of the prior namespace.
       (if found
           (goto-char found))))))
 
-
-
-
-
 ;; moving
 ;; ========================================================================
 
@@ -3015,31 +3012,6 @@ to the beginning of the prior namespace.
 
 ;; ==================================================================
 ;;; imenu stuff
-
-;; (defun csharp-imenu-create-index-function-fake ()
-;;   "producees a fake index for imenu. See the documentation for
-;; `csharp-imenu-create-index-function' for more information.
-;;
-;; "
-;;   ;; example:
-;;   ;;
-;;   ;;  (("New" . #<marker at 589 in Rijndael-vb.vb>)
-;;   ;;   ("New" . #<marker at 678 in Rijndael-vb.vb>)
-;;   ;;   ("GetRijndaelManaged" . #<marker at 765 in Rijndael-vb.vb>)
-;;   ;;   ("Run" . #<marker at 1282 in Rijndael-vb.vb>)
-;;   ;;   ("Encrypt" . #<marker at 2381 in Rijndael-vb.vb>)
-;;   ;;   ("Decrypt" . #<marker at 3384 in Rijndael-vb.vb>))
-;;
-;;
-;;   '(("Somewhere in the header comment"  . 20)
-;;     ("Imports"  . 375)
-;;     ("Namespace Ionic.Tests.Crypto" . 447)
-;;     ("Class RijndaelVb - a submenu"
-;;      ("ctor"  . 597)
-;;      ("A function..."  . 1282)
-;;      ("etc..." . 3222))))
-
-
 
 ;; define some advice for menu construction.
 
@@ -3249,19 +3221,18 @@ alist. Leaves point after close-curly on the namespace.
   ;; (start at the top of the module)
   ;;
   ;; 1. look for a using clause
-  ;;    yes - insert an item in the menu; move to next open line; goto step 1
+  ;;    yes - insert an item in the menu; move past all using clauses.
   ;;
   ;; 2. go to next open curly
   ;;
-  ;; 2. beginning of a container?
+  ;; 2. beginning of a container? (a class or namespace)
   ;;
   ;;    yes - narrow, and recurse
   ;;
-  ;;    no - create a menu item for the thing, whatever it is.
-  ;;         add to the submenu. Go to the end of the thing.
-  ;;         then goto step 1.
+  ;;    no - create a menu item for the thing, whatever it is.  add to
+  ;;         the submenu. Go to the end of the thing (to the matching
+  ;;         close curly) then goto step 1.
   ;;
-
 
   (let (container-name
         this-flavor
@@ -3299,7 +3270,6 @@ alist. Leaves point after close-curly on the namespace.
 
        (t
         (setq done t)))
-
 
 
       (if (not done)
@@ -3427,7 +3397,7 @@ alist. Leaves point after close-curly on the namespace.
                                    top))))
               (goto-char close-curly)))
 
-           ;; case 4: an indexer
+           ;; case 5: an indexer
            ((csharp--on-indexer-open-curly-p)
             (let ((top (match-beginning 1))
                   (close-curly (save-excursion
@@ -3468,7 +3438,7 @@ alist. Leaves point after close-curly on the namespace.
               (goto-char close-curly)))
 
 
-           ;; case 4: a method inside the container
+           ;; case 7: a method inside the container
            ((csharp--on-defun-open-curly-p)
             (let ((top (match-beginning 1))
                   (close-curly (save-excursion
@@ -3496,6 +3466,20 @@ alist. Leaves point after close-curly on the namespace.
 
     this-menu))
 
+
+;; =======================================================
+;; DPC Thu, 19 May 2011  11:25
+;; There are two challenges with the imenu support: generating the
+;; index, and generating a reasonable display for the index.  The index
+;; generation is pretty straightforward: use regexi to locate
+;; interesting stuff in the buffer.
+;;
+;; The menu generation is a little trickier.  Long lists of methods
+;; mixed with properties and interfaces (etc) will be displayed in the
+;; menu but will look Very Bad. Better to organize the menu into
+;; submenus, organized primarily by category.  Also the menus should be
+;; sorted, for ease of human scanning.  The next section of logic is
+;; designed to do the stuff for the menu generation.
 
 
 (defcustom csharp-imenu-max-similar-items-before-extraction 4
@@ -5228,7 +5212,7 @@ Key bindings:
         ;; function, via `imenu-create-index-function'.  The other is to
         ;; provide imenu with a list of regexps via
         ;; `imenu-generic-expression'; imenu will do a "generic scan" for you.
-        ;; vbnet-mode uses the former method.
+        ;; csharp-mode uses the former method.
         ;;
         (setq imenu-create-index-function 'csharp-imenu-create-index)
         (imenu-add-menubar-index)))
@@ -5281,7 +5265,7 @@ and if the snippets do not already exist.
           ;; yasnippet is present
           (let ((snippet-table (yas/snippet-table 'csharp-mode))
                 (keymap (if yas/use-menu
-                            (yas/menu-keymap-for-mode mode)
+                            (yas/menu-keymap-for-mode 'csharp-mode)
                           nil))
                 (yas/require-template-condition nil)
                 (builtin-snips
@@ -5521,7 +5505,7 @@ $0" "XML Documentation" nil)
 [assembly: AssemblyTitle(\"$1\")]
 [assembly: AssemblyCompany(\"${2:YourCoName}\")]
 [assembly: AssemblyProduct(\"${3}\")]
-[assembly: AssemblyCopyright(\"Copyright Â© ${4:Someone} 2011\")]
+[assembly: AssemblyCopyright(\"Copyright © ${4:Someone} 2011\")]
 [assembly: AssemblyTrademark(\"\")]
 [assembly: AssemblyCulture(\"\")]
 [assembly: AssemblyConfiguration(\"\")]
@@ -5530,75 +5514,11 @@ $0" "XML Documentation" nil)
 [assembly: AssemblyFileVersion(\"${7:1.0.1.0}\")]
 
 " "assembly info" nil)
-  ("args" "for (int i=0; i < args.Length; i++)
-{
-    switch (args[i])
-    {
-        case \"-f\":
-            i++;
-            if (args.Length <= i) throw new ArgumentException(args[i-1]);
-            _file = args[i];
-            break;
-
-        case \"-p\":
-            i++;
-            if (args.Length <= i) throw new ArgumentException(args[i-1]);
-            _password = args[i];
-            break;
-
-        case \"-d\":
-            i++;
-            if (args.Length <= i) throw new ArgumentException(args[i-1]);
-            _dir = args[i];
-            break;
-
-        case \"-i\":
-            i++;
-            if (args.Length <= i) throw new ArgumentException(args[i-1]);
-            if (_intParam != DefaultIntParamValue)
-                throw new ArgumentException(args[i]);
-            if (args[i].StartsWith(\"0x\"))
-                _intParam = System.Int32.Parse(args[i].Substring(2), System.Globalization.NumberStyles.AllowHexSpecifier );
-            else
-                _intParam = System.Int32.Parse(args[i]);
-            break;
-
-
-        case \"-s\":
-            i++;
-            if (args.Length <= i) throw new Exception(args[i-1]);
-            if (args[i].ToUpper().EndsWith(\"K\"))
-                _size = System.Int32.Parse(args[i].Substring(0,args[i].Length-1)) * 1024;
-            else if (args[i].ToUpper().EndsWith(\"KB\"))
-                _size = System.Int32.Parse(args[i].Substring(0,args[i].Length-2)) * 1024;
-            else if (args[i].ToUpper().EndsWith(\"M\"))
-                _size = System.Int32.Parse(args[i].Substring(0,args[i].Length-1)) * 1024*1024;
-            else if (args[i].ToUpper().EndsWith(\"MB\"))
-                _size = System.Int32.Parse(args[i].Substring(0,args[i].Length-2)) * 1024*1024;
-            else
-                _size = Int32.Parse(args[i]);
-            break;
-
-
-
-        case \"-?\":
-            throw new ArgumentException(args[i]);
-
-        default:
-            if (_positionalArg != null)
-                throw new ArgumentException(args[i]);
-
-            _positionalArg = args[i];
-            break;
-    }
-}
-" "switch on args" nil)
   )))
-
 
             (setq csharp--yasnippet-has-been-fixed t)
 
-            (add-to-list 'yas/known-modes 'csharp-mode))
+            (add-to-list 'yas/known-modes 'csharp-mode)
 
             ;; It's possible that Csharp-mode is not on the yasnippet menu
             ;; Install it here.
@@ -5631,8 +5551,7 @@ $0" "XML Documentation" nil)
                             `(menu-item ,(yas/template-name template)
                                         ,(yas/make-menu-binding (yas/template-content template))
                                         :keys ,(concat key yas/trigger-symbol))))))))
-             builtin-snips))))
-
+             builtin-snips)))))
 
 
 

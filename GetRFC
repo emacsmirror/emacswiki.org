@@ -58,5 +58,8 @@ Thus, to take advantage of this, you need to patch get-rfc.el:
 </pre>
 
 That's it.
+
+
+Handy little tool. I had to download the rfc-index.txt to my get-rfc-local-rfc-directory to get it to work. --Mitch
 ----
 CategoryFiles
