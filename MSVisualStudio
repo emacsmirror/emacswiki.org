@@ -213,6 +213,17 @@ Arguments: -n +$(CurLine):$(CurCol) $(ItemFileName)$(ItemFileExt)
 *note there is a variable button that will help you with the shortcuts like $(CurLine)
 WorkingDirectory: $(ItemDirectory)
 </pre>
+
+Sample for VS2010
+<pre>
+Name: Emacs 
+Location: c:\path-to\emacsclientw.exe
+Arguments: -n +$(CurLine):$(CurCol) $(ItemPath)
+*note there is a variable button that will help you with the shortcuts like $(CurLine)
+WorkingDirectory: $(ItemDirectory)
+</pre>
+
+
 Then bind whatever keys you prefer to the external tools (Will be called something like ExternalToolsn, with n depending on your tool order) in your keyboard preferences (I use Ctl-Alt-E).
 == See Also ==
 

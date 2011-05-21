@@ -343,6 +343,12 @@ Would it be possible to make a [SkeletonMode skeleton pair] that would automatic
 [new]
 Rest of discussion moved to [[AutoPairs#Discussion|AutoPairs]].
 
+== Internal version of TeX-texify ==
+To run LaTeX and BibTeX on a document one has to press C-c C-c multiple times.
+On the page [[http://www.emacswiki.org/emacs/TN]] there is a section ''TeX-texify: Get everything done for a LaTeX-file'' with the elisp function !TeX-texify which gets this job done. [[http://comments.gmane.org/gmane.emacs.auctex.general/3805|Someone]] asked me whether this function can be included into AUCTeX.
+
+Should it?
+
 ----
 CategoryModes
 CategoryTex

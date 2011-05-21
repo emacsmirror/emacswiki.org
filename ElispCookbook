@@ -123,6 +123,9 @@ A more concise version:
       (let ((s (if (symbolp str) (symbol-name str) str)))
         (replace-regexp-in-string "\\(^[[:space:]\n]*\\|[[:space:]\n]*$\\)" "" s)))
 
+[new]
+None of these seem to work if I there is a newline inside the text, because then the $ anchor find the internal newline instead of the last one. These functions should be improved to take that case into account.
+
 === Splitting strings ===
 
 See SplitString.
