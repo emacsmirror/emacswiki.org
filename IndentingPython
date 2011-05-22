@@ -12,7 +12,7 @@ If you have not embraced semantic indentation yet, PyIndent allows the use of C-
 
 == Tabs or spaces ==
 
-The official [http://www.python.org/dev/peps/pep-0008/ Style Guide for Python Code] states that both spaces (preferably 4-space tabs) ''or'' spaces can be used to indent code. However, for new projects, spaces are recommended.
+The official [http://www.python.org/dev/peps/pep-0008/ Style Guide for Python Code] states that both tabs (preferably 4-space tabs) ''or'' spaces can be used to indent code. However, for new projects, spaces are recommended.
 
 The variable that controls the indentation level is called `python-indent' and defaults to 4.
 

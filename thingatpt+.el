@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri May 13 13:13:24 2011 (-0700)
+;; Last-Updated: Sat May 21 08:06:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1167
+;;     Update #: 1176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -84,6 +84,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/05/21 dadams
+;;     bounds-of-thing-at-point-1: Synchronized with vanilla Emacs fix for bug #8667.
 ;; 2011/05/13 dadams
 ;;     Added redefinition of bounds-of-thing-at-point - fixed bug #8667.
 ;;       Removed old-bounds-of-thing-at-point.  Added: bounds-of-thing-at-point-1.
@@ -250,30 +252,30 @@ Do all except handle the optional SYNTAX-TABLE arg."
       (condition-case nil
           (save-excursion
             ;; Try moving forward, then back.
-            (funcall (or (get thing 'end-op)
+            (funcall (or (get thing 'end-op) ; Move to end.
                          (lambda () (forward-thing thing 1))))
-            (funcall (or (get thing 'beginning-op)
+            (funcall (or (get thing 'beginning-op) ; Move to beg.
                          (lambda () (forward-thing thing -1))))
             (let ((beg  (point)))
-              (if (not (and beg (> beg orig)))
+              (if (<= beg orig)
                   ;; If that brings us all the way back to ORIG,
                   ;; it worked.  But END may not be the real end.
                   ;; So find the real end that corresponds to BEG.
+                  ;; FIXME: in which cases can `real-end' differ from `end'?
                   (let ((real-end
                          (progn
                            (funcall
                             (or (get thing 'end-op)
                                 (lambda () (forward-thing thing 1))))
                            (point))))
-                    (and beg real-end (<= beg orig) (<= orig real-end)
-                         (/= beg real-end)
+                    (and (<= orig real-end) (< beg real-end)
                          (cons beg real-end)))
                 (goto-char orig)
                 ;; Try a second time, moving first backward and then forward,
                 ;; so that we can find a thing that ends at ORIG.
-                (funcall (or (get thing 'beginning-op)
+                (funcall (or (get thing 'beginning-op) ; Move to beg.
                              (lambda () (forward-thing thing -1))))
-                (funcall (or (get thing 'end-op)
+                (funcall (or (get thing 'end-op) ; Move to end.
                              (lambda () (forward-thing thing 1))))
                 (let ((end (point))
                       (real-beg
@@ -282,8 +284,7 @@ Do all except handle the optional SYNTAX-TABLE arg."
                           (or (get thing 'beginning-op)
                               (lambda () (forward-thing thing -1))))
                          (point))))
-                  (and real-beg end (<= real-beg orig) (<= orig end)
-                       (/= real-beg end)
+                  (and (<= real-beg orig) (<= orig end) (< real-beg end)
                        (cons real-beg end))))))
         (error nil)))))
 

@@ -498,3 +498,6 @@ Hi. I use autocomplete + eclim. I wrote an autocomplete source which uses eclim 
 CategoryCompletion
 
 
+[FAQ]
+
+How does it work ? What does it get assigned to any keys ? Which function should I assign to get auto-completion ?

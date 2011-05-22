@@ -47,13 +47,15 @@ You can run [http://msdn.microsoft.com/en-us/library/bb429476(VS.80).aspx FxCop]
 
 All of the issues found by flymake will be highlighted in the buffer. 
 
-Some complementary things for flymake: FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  
+If you use Flymake - with any language - you may want to check out some complementary stuff.
 
-Also, there's [http://www.emacswiki.org/emacs/RFringe RFringe], which displays buffer-relative locations in the fringe. It gives you a visual summary of the flymake issues, and their approximate locations. 
+* FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  
+
+* [http://www.emacswiki.org/emacs/RFringe RFringe] displays buffer-relative locations in the fringe. It gives you a visual summary of the flymake issues, and their approximate locations.  
 
 http://i.imgur.com/SgoLa.png
 
-RFringe is not part of csharp-mode *or* flymake; it's a complementary, independent thing. 
+Neither FlymakeCursor nor RFringe is part of csharp-mode *or* flymake; they are complementary, add-on things. 
 
 === Compile ===
 
@@ -81,10 +83,21 @@ yasnippet is a nice snippet expansion package, available elsewhere. csharp-mode 
 
 === Other tidbits ===
 
+There's codedoc support starting with version v0.7.2 (but you should really upgrade to v0.8.?).  For the code doc: position point above a method/class, and type three slashes; you will get a codedoc template inserted into the buffer, similar to the effect you may have seen in VisualStudio.  Fill-paragraph works as expected in the documentation string; there should be no need to setq paragraph-separate in your csharp-mode hook function.  -- DinoChiesa
+
+Example:
+
+http://imgur.com/vFvf3.gif
+
+It tries to be smart about which template to insert.  If you type 3 slashes after a closing </para>, then you'll get another set of <para></para> . 
+
+http://i44.tinypic.com/zl99bc.jpg
+
+[new]
+
 csharp-mode Works with Linum.el : 
 
 http://i42.tinypic.com/29pdmjd.jpg
-
 
 
 
@@ -94,7 +107,7 @@ http://i42.tinypic.com/29pdmjd.jpg
 ||[http://code.google.com/p/yasnippet/v yasnippet.el]||||dynamically expand snippets, like dabbrev on steroids. [http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx How to use yasnippet with C#.]||
 ||ImenuMode||||produce an index of the contents of a C# buffer.||
 ||HideShow||||hide and show regions of code.[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx How to use hideshow.el with C#]||
-||FlymakeCsharp|||| **now included with csharp-mode. check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. ||
+||FlymakeCsharp||||now included with csharp-mode. check syntax more-or-less continually, and use overlays to highlight syntax problems in the code.||
 ||FlymakeCursor||||display flymake messages in the minibuffer, automatically, after a delay.||
 ||[http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el]||||multi-mode for editing ASPX files within emacs. Handles HTML, JS, CSS, and C#.||
 ||[[MSTFS]]||||Emacs integration with Team foundation server, via the tf.exe tool||
@@ -363,15 +376,8 @@ I don't know why (define-key csharp-mode-map ...) doesn't work but c-mode-map do
 
 [new]
 
-There's codedoc support starting with version v0.7.2 (but you should really upgrade to v0.8.3).  For the code doc: position point above a method/class, and type three slashes; you will get a synthetic codedoc template inserted into the buffer, similar to the effect you may have seen in VisualStudio.  Also, fill-paragraph now works as expected; in the current version of csharp-mode.el, there should be no need to setq paragraph-separate in your csharp-mode hook function.  -- DinoChiesa
+As of v0.7.2? code-doc generation is included into csharp-mode; thanks for the idea. -- DinoChisa
 
-Example:
-
-http://imgur.com/vFvf3.gif
-
-It tries to be smart about which template to insert.  If you type 3 slashes after a closing </para>, then you'll get another set of <para></para> . 
-
-http://i44.tinypic.com/zl99bc.jpg
 
 ----
 

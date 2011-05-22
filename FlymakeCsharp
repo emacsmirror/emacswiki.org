@@ -39,12 +39,13 @@ In May 2011, it was integrated into csharp-mode itself.
 == Basic Usage ==
 
 
-Flymake-for-csharp can do syntax-checking builds, on-the-fly, via flymake, using either 
+Flymake-for-csharp can do syntax-checking builds, on-the-fly, via flymake, using 
 
-* makefile
-* msbuild or .csproj file
+* a makefile
+* msbuild of a .sln or .csproj file
 * directly invoking the csc.exe compiler 
-
+* [http://msdn.microsoft.com/en-us/library/bb429476(VS.80).aspx FxCop] 
+* something else
 
 To use it:
 
@@ -59,7 +60,8 @@ To use it:
 
    // flymake: csc.exe /t:module /R:MyAssembly.dll @@FILE@@
 
-For More Detail, see the extensive comments in the elisp source code. 
+For more detail, see the extensive comments in the elisp source code, or 
+view the doc string for csharp-flymake-get-cmdline . 
 
 
 == Complementary stuff ==
@@ -69,7 +71,8 @@ Don't forget:
 * PowerShell - Two things: 
 ** a mode for running powershell as an inferior shell. 
 ** A separate powershell-mode, which is for *editing* powershell code.
-
+* [http://www.emacswiki.org/emacs/RFringe RFringe]
+* FlymakeCursor
 
 
 ----

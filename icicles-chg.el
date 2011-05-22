@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May 16 10:30:39 2011 (-0700)
+;; Last-Updated: Sat May 21 13:37:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6558
+;;     Update #: 6561
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/05/21 dadams
+;;     icicle-customize-apropos(-options): let -> let* for interactive form.
 ;; 2011/04/29 dadams
 ;;     icicle-execute-extended-command(-1), icicle-command-abbrev(-action|-command),
 ;;       icicle-execute-named-keyboard-macro, icicle-increment-(option|variable),

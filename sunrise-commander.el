@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 364 $
+;; RCS Version: $Rev: 365 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -848,13 +848,13 @@ automatically:
 
 ;; Fixes dired-goto-file and all functions that depend on it in *nix systems
 ;; in which directory names end with a slash.
-(defadvice dired-get-filename
-  (around sr-advice-dired-get-filename (&optional localp no-error-if-not-filep))
-  ad-do-it
-  (if ad-return-value
-      (setq ad-return-value
-            (replace-regexp-in-string "/$" "" ad-return-value))))
-(ad-activate 'dired-get-filename)
+;; (defadvice dired-get-filename
+;;   (around sr-advice-dired-get-filename (&optional localp no-error-if-not-filep))
+;;   ad-do-it
+;;   (if ad-return-value
+;;       (setq ad-return-value
+;;             (replace-regexp-in-string "/$" "" ad-return-value))))
+;; (ad-activate 'dired-get-filename)
 
 ;; selects the correct (selected) pane when switching from other windows:
 (defadvice other-window
@@ -1501,9 +1501,11 @@ automatically:
 (defun sr-find-regular-directory (directory)
   "Visit the given regular directory in the active pane."
   (setq directory (file-name-as-directory directory))
-  (if (string= directory (expand-file-name "../"))
-      (sr-dired-prev-subdir)
-    (sr-goto-dir directory)))
+  (let ((parent (expand-file-name "../")))
+    (if (and (not (sr-equal-dirs parent default-directory))
+             (sr-equal-dirs directory parent))
+        (sr-dired-prev-subdir)
+      (sr-goto-dir directory))))
 
 (defun sr-find-virtual-directory (sr-virtual-dir)
   "Visit the given Sunrise VIRTUAL directory in the active pane."

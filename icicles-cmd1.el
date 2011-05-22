@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 14:27:35 2011 (-0700)
+;; Last-Updated: Sat May 21 13:36:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21930
+;;     Update #: 21935
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1665,17 +1665,17 @@ If ALL is t (interactively, with prefix arg), include options which
 Use `S-TAB', [next], and [prior], to match regexp input - this lets
 you see what items will be available in the customize buffer."
   (interactive
-   (let ((pref-arg  current-prefix-arg)
-         (icicle-must-pass-after-match-predicate
-          #'(lambda (s)
-              (setq s  (intern s))
-              (or (get s 'custom-group)
-                  (custom-facep s)
-                  (and (boundp s) (or (get s 'saved-value)
-                                      (custom-variable-p s)
-                                      (if (null pref-arg)
-                                          (user-variable-p s)
-                                        (get s 'variable-documentation))))))))
+   (let* ((pref-arg  current-prefix-arg)
+          (icicle-must-pass-after-match-predicate
+           #'(lambda (s)
+               (setq s  (intern s))
+               (or (get s 'custom-group)
+                   (custom-facep s)
+                   (and (boundp s) (or (get s 'saved-value)
+                                       (custom-variable-p s)
+                                       (if (null pref-arg)
+                                           (user-variable-p s)
+                                         (get s 'variable-documentation))))))))
      (list (completing-read "Customize (regexp): " obarray nil nil nil 'regexp-history)
            pref-arg)))
   (let ((found  nil))
@@ -1761,15 +1761,15 @@ With prefix argument, include options which are not user-settable.
 Use `S-TAB', [next], and [prior], to match regexp input - this lets
 you see what items will be available in the customize buffer."
   (interactive
-   (let ((pref-arg  current-prefix-arg)
-         (icicle-must-pass-after-match-predicate
-          #'(lambda (s)
-              (setq s  (intern s))
-              (and (boundp s) (or (get s 'saved-value)
-                                  (custom-variable-p s)
-                                  (if (null pref-arg)
-                                      (user-variable-p s)
-                                    (get s 'variable-documentation)))))))
+   (let* ((pref-arg  current-prefix-arg)
+          (icicle-must-pass-after-match-predicate
+           #'(lambda (s)
+               (setq s  (intern s))
+               (and (boundp s) (or (get s 'saved-value)
+                                   (custom-variable-p s)
+                                   (if (null pref-arg)
+                                       (user-variable-p s)
+                                     (get s 'variable-documentation)))))))
      (list (completing-read "Customize options (regexp): " obarray nil nil nil 'regexp-history)
            pref-arg)))
   (customize-apropos regexp (or arg 'options)))

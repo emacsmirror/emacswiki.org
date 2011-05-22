@@ -156,7 +156,7 @@ java -jar ~/bin/compiler.jar --warning_level VERBOSE --js $1 --js_output_file /d
 1. Don't forget to start flymake mode by adding (flymake-mode t) to your javascript mode hook.
 
 
-=== Display flymake errors/warnings on the fringe ===
+=== RFringe: Display the number and location of flymake errors/warnings on the fringe ===
 
 See [http://www.emacswiki.org/emacs/RFringe rfringe.el] to display the buffer-relative positions of flymake errors and warnings on the fringe .  This works with any language.  Just add this to your .emacs:
 
@@ -165,6 +165,12 @@ See [http://www.emacswiki.org/emacs/RFringe rfringe.el] to display the buffer-re
 Example appearance:
 
 http://i.imgur.com/34ceS.png
+
+
+=== flymake-cursor.el : Display flymake messages in the minibuffer ===
+
+FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  It works with any language.  Just require it, and it works.
+
 
 == More Tips and Questions ==
 
