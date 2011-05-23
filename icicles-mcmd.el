@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 10 19:04:53 2011 (-0700)
+;; Last-Updated: Sun May 22 13:42:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16951
+;;     Update #: 16956
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -393,9 +393,13 @@
   (defvar read-buffer-completion-ignore-case)
   (defvar mouse-drag-copy-region))
 
-(defvar filesets-data)                  ; Defined in `filesets.el'.
-(defvar ignore-comments-flag)           ; Defined in `thing-cmds.el'.
-(defvar minibuffer-confirm-exit-commands) ; Defined in `minibuffer.el' in Emacs 23+.
+(defvar doremi-boost-down-keys)         ; In `doremi.el'
+(defvar doremi-boost-up-keys)           ; In `doremi.el'
+(defvar doremi-down-keys)               ; In `doremi.el'
+(defvar doremi-up-keys)                 ; In `doremi.el'
+(defvar filesets-data)                  ; In `filesets.el'.
+(defvar ignore-comments-flag)           ; In `thing-cmds.el'.
+(defvar minibuffer-confirm-exit-commands) ; In `minibuffer.el' in Emacs 23+.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -1066,7 +1070,7 @@ See description of `yank-pop'."
   (interactive "*p")
   (icicle-call-then-update-Completions #'yank-pop arg))
 
-(when (fboundp 'yank-secondary)         ; Defined in `second-sel.el'.
+(when (fboundp 'yank-secondary)         ; In `second-sel.el'.
   (defun icicle-yank-secondary ()       ; Bound to `C-M-y' in minibuffer.
     "Insert the secondary selection at point.
 Move point to the end of the inserted text.  Does not change mark."
@@ -1085,7 +1089,7 @@ Move point to the end of the inserted text.
 If `mouse-yank-at-point' is non-nil, insert at point
 regardless of where you click."
   (interactive "*e")
-  (if (fboundp 'yank-secondary)         ; Defined in `mouse+.el'.
+  (if (fboundp 'yank-secondary)         ; In `mouse+.el'.
       (icicle-call-then-update-Completions #'mouse-yank-secondary event current-prefix-arg)
     (icicle-call-then-update-Completions #'mouse-yank-secondary event)))
 
@@ -2627,7 +2631,7 @@ You need library `fit-frame.el' for the frame-fitting part."
   (icicle-insert-thing icicle-list-join-string 'no-replace)
   (let ((len  (length icicle-list-join-string)))
     (when (and (string= "\C-j" (substring icicle-list-join-string (1- len) len))
-               (boundp '1on1-fit-minibuffer-frame-flag) ; Defined in `oneonone.el'.
+               (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
                1on1-fit-minibuffer-frame-flag
                (require 'fit-frame nil t))
       (1on1-fit-minibuffer-frame))))
@@ -2695,7 +2699,7 @@ a standalone minibuffer frame to the new minibuffer contents.
 You need library `fit-frame.el' for the frame-fitting part."
   (interactive "p")
   (icicle-self-insert arg)
-  (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; Defined in `oneonone.el'.
+  (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
              1on1-fit-minibuffer-frame-flag
              (require 'fit-frame nil t))
     (1on1-fit-minibuffer-frame)))
@@ -3403,7 +3407,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                  ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
                  (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
                             (require 'fit-frame nil t))
-                   (1on1-fit-minibuffer-frame))) ; Defined in `oneonone.el'.
+                   (1on1-fit-minibuffer-frame))) ; In `oneonone.el'.
                (deactivate-mark)
                (icicle-highlight-initial-whitespace icicle-current-input)
                (when (and (icicle-file-name-input-p)
@@ -3715,7 +3719,7 @@ message either.  NO-DISPLAY-P is passed to
              ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
              (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
                         (require 'fit-frame nil t))
-               (1on1-fit-minibuffer-frame)) ; Defined in `oneonone.el'.
+               (1on1-fit-minibuffer-frame)) ; In `oneonone.el'.
              (deactivate-mark)
              (icicle-highlight-initial-whitespace icicle-current-input)
              (when (and (icicle-file-name-input-p)

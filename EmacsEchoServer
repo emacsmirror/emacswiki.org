@@ -51,8 +51,9 @@ For Emacs22 or later (requires server-socket).
     )
   
   (defun echo-server-sentinel (proc msg)
-    (delq proc echo-server-clients)
-    (echo-server-log (format "client %s has quit" proc)))
+   (when (string= msg "connection broken by remote peer\n")
+    (setq echo-servers-clients (assq-delete-all proc echo-server-clients))
+    (echo-server-log (format "client %s has quit" proc))))
   
   ;;from server.el
   (defun echo-server-log (string &optional client)
@@ -64,6 +65,8 @@ For Emacs22 or later (requires server-socket).
                   (if client (format " %s:" client) " ")
                   string)
           (or (bolp) (newline)))))
+
+
 </pre>
 == Questions == 
 Is there a better way to accept outputs than the above lame 1 second timer?

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat May 21 13:37:00 2011 (-0700)
+;; Last-Updated: Sun May 22 21:00:10 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6561
+;;     Update #: 6574
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/05/22 dadams
+;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/21 dadams
 ;;     icicle-customize-apropos(-options): let -> let* for interactive form.
 ;; 2011/04/29 dadams
@@ -404,6 +406,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/22 dadams
+;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/16 dadams
 ;;     icicle-search-thing-args: Message about C-M-; when ignoring comments and THING is comment.
 ;; 2011/05/15 dadams
@@ -797,6 +801,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/05/22 dadams
+;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/12 dadams
 ;;     icicle-candidate-short-help: Do nothing if string is empty ("").
 ;; 2011/05/07 dadams
@@ -2270,6 +2276,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/05/22 dadams
+;;     icicle-define(-file)-command: Use #',FUNCTION instead of ',FUNCTION.
+;;     icicle-with-selected-window, icicle-(buffer|file)-bindings:
+;;       Use #' with lambdas (not really needed).
 ;; 2011/05/03 dadams
 ;;     icicle-buffer-bindings, icicle-file-bindings:
 ;;       Had to revert definition for Emacs > 20, but keep it for Emacs 20.  Thx to Michael Heerdegen.
@@ -2391,6 +2401,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/05/22 dadams
+;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/10 dadams
 ;;     icicle-toggle-ignoring-comments: Toggle also ignore-comments-flag from thing-cmds.el.
 ;; 2011/05/07 dadams
@@ -3589,6 +3601,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/05/22 dadams
+;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/07 dadams
 ;;     Changed key for icicle-regexp-quote-input from C-M-; to M-% everywhere.
 ;;     Bound icicle-toggle-ignoring-comments to C-M-;.
@@ -4589,6 +4603,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/05/22 dadams
+;;     icicle-init-value-flag/icicle-default-value: Added 3rd arg for make-obsolete-variable.
 ;; 2011/05/14 dadams
 ;;     Removed: icicle-thing-types.  Better to get the list dynamically.
 ;; 2011/05/13 dadams

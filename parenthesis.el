@@ -183,12 +183,10 @@ Default value is t."
   (mapc
    (lambda (x)
      (fset (car x)
-           #'(lambda (rep)
-               (interactive "p")
-               (let ((type (assq (cadr (backtrace-frame 4))
-                                 parenthesis-func-alist)))
-                 (parenthesis-insert-internal
-                  rep (nth 1 type) (nth 2 type) (nth 3 type))))))
+           `(lambda (rep)
+              (interactive "p")
+              (parenthesis-insert-internal
+               rep ,(nth 1 x) ,(nth 2 x) ,(nth 3 x)))))
    parenthesis-func-alist))
 
 (defun parenthesis-insert-internal (rep open close &optional pos)

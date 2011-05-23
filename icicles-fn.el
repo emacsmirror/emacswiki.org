@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 12 17:18:25 2011 (-0700)
+;; Last-Updated: Sun May 22 13:19:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12289
+;;     Update #: 12303
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -324,16 +324,24 @@
   (defvar tooltip-mode))
 
 (when (< emacs-major-version 23)
-  (defvar completion-styles)            ; Defined in `minibuffer.el'
-  (defvar icicle-Completions-text-scale-decrease)) ; Defined in `icicles-opt.el' (for Emacs 23)
+  (defvar completion-styles)            ; In `minibuffer.el'
+  (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23)
 
-(defvar filesets-data)                  ; Defined in `filesets.el'
-(defvar font-width-table)               ; Defined in C code.
-(defvar font-weight-table)              ; Defined in C code.
-(defvar font-slant-table)               ; Defined in C code.
-(defvar list-colors-sort)               ; Defined in `facemenu.el'
-(defvar shell-completion-execonly)      ; Defined in `shell.el'
-(defvar recentf-list)                   ; Defined in `recentf.el'
+(defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
+(defvar doremi-boost-down-keys)         ; In `doremi.el'
+(defvar doremi-boost-up-keys)           ; In `doremi.el'
+(defvar doremi-down-keys)               ; In `doremi.el'
+(defvar doremi-up-keys)                 ; In `doremi.el'
+(defvar eyedrop-picked-background)      ; In `eyedrop.el' and `palette.el'
+(defvar eyedrop-picked-foreground)      ; In `eyedrop.el' and `palette.el'
+(defvar filesets-data)                  ; In `filesets.el'
+(defvar font-width-table)               ; In C code.
+(defvar font-weight-table)              ; In C code.
+(defvar font-slant-table)               ; In C code.
+(defvar list-colors-sort)               ; In `facemenu.el'
+(defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
+(defvar shell-completion-execonly)      ; In `shell.el'
+(defvar recentf-list)                   ; In `recentf.el'
 (defvar recentf-menu-filter-commands)
 (defvar recentf-menu-filter)
 (defvar recentf-max-menu-items)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May 14 14:22:31 2011 (-0700)
+;; Last-Updated: Sun May 22 13:06:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4334
+;;     Update #: 4335
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1228,7 +1228,7 @@ inserted."
 ;; works for newer Emacs too.
 (when (fboundp 'defvaralias)            ; Emacs 22+
   (defvaralias 'icicle-init-value-flag 'icicle-default-value)
-  (make-obsolete-variable 'icicle-init-value-flag 'icicle-default-value))
+  (make-obsolete-variable 'icicle-init-value-flag 'icicle-default-value "2008-04-18"))
 
 ;;;###autoload
 (defcustom icicle-default-value t

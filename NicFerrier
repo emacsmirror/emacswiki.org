@@ -46,60 +46,29 @@ If we're going to have a webserver we need a better way of making
 HTML. I've been kicking around ideas for small template languages in
 Javascript... seems like it should be easy to port them to lisp.
 
-Here's a first crack:
+[new]
+My first crack is in the history here and used {{}} which are common
+template delimitters. However, I think this is better:
 
 {{{
-(defun list-to-alist (&rest lst)
-  "Convert a list to an alist
-(list-to-alist 'name "value" 'name "value")
-=> ((name "value")
-    (name "value"))
-"
-  (let ((l lst)
-        res)
-    (while (cdr l)
-      (let ((a (car l))
-            (b (cadr l)))
-        (setq res (cons (cons a b) res))
-        (setq l (cddr l))))
-    res))
-
 (defun tc (template &rest args)
-  "Do template replacement.
-
-{{value}} indicates a name in the args (a list of pairs) which is replaced with the value."
-  (let ((ctx (apply 'list-to-alist args))
-        (tmpl template))
+  (let ((tmpl template))
     (replace-regexp-in-string
-     "{{\\(.*?\\)}}" 
+     ":\\(:.*?\\)::" 
      (lambda (r)
-       (cdr (assoc (intern (match-string 1 r)) ctx)))
+       (plist-get args (intern (match-string 1 r))))
      tmpl
-     )))
-
-;; Example tc call
-(let ;; Define some data
-     ((params '(("name" "nicferrier")
-                ("age" "30"))))
-  (tc "<html><body><ul>{{paramlist}}</ul></body></html>\n"
-      'paramlist (mapconcat 
-                  (lambda (p)
-                    (tc "<li>{{paramcar}}: {{paramcdr}}</li>"
-                        'paramcar (car p)
-                        'paramcdr (cadr p)))
-                  params
-                  "\n"
-                  )
-      ))
+     )
+    )
+  )
 }}}
 
-Neat! Everyone uses {{}} in their brace-based languages but a Lisp-y syntax might be ((…)) or ,(…)  . Also, any thoughts on directly expressing loops in the template language? --AmitPatel
-
-[new]
-I think nested parens are too common in text to make a good implementation choice. Braces seem like a good cultural choice anyway. Also I don't like explicit looping much.. I do like the idea of adding mapping or comprehensions, something like:
+Here's an example:
 
 {{{
-<html><body><ul>{{paramlist||<li>{{paramcar}}: {{paramcdr}}</li>}}</ul></body></html>
+(tc 
+ "<html><body><a href='/elpad/::padname::/user/'>users</a></body></html>"
+ :padname padname))
 }}}
 
 == Emacs in a screen terminal: colors ==

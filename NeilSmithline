@@ -1,0 +1,32 @@
+I hate writing these silly pages. So I looked at other people's pages to get an idea of what to do. I decided that AlexSchroeder's page could be used to make a, hopefully, entertaining comparison to what I wanted to say. 
+
+Before going further, I want to state that while I have a long history with Emacs (I fixed bugs in its C source code for version 18.3x releases and had arguments about Emacs development with RichardStallman back when he actually responded to email), Alex, in a much shorter time period, has dedicated more time and effort to Emacs than I have. The following comparison is supposed to be entertaining only. In no way is it a claim that I have done anything to rival Alex's work.
+
+; Alex says "I’m an editor of the EmacsWiki.": I say "I use the EmacsWiki."
+
+; Alex says "I invite all Emacs and XEmacs users to ...": I say "I use Emacs, formerly used XEmacs, and was part of the team at Sun that funded the development of XEmacs. The Wikipedia [http://en.wikipedia.org/wiki/XEmacs article] is incorrect about when Sun started funding XEmacs. Sun nurtured XEmacs while it was still a project at some university (can't recall which) and continued to provide funding after Lucid adopted it to create their spectacular, yet non-selling, IDE. Sun also funded development of other projects at Lucid. Sun's first incremental linker (haven't used Solaris in a long time so not sure if it still is in use) was purchased from Lucid just months before Lucid went bankrupt and was beefed up to meet Sun's requirements and shipped by a two-person team at Sun, of which I was the junior team member."
+
+; Alex says "You can contact me using mailto:kensanata@gmail.com.": I say "I get way too much spam already. I'm sure you can find my email if you need to." Furthermore, I'll add "I'm deeply grateful that people like Alex are willing to be a wiki editor so I don't have to post my email address."
+
+; Alex says "I am FSF Member #894, joined on 2003-03-06, I used to be FSFE Member #372, joined 2005-05-22, and I am EFF Member, joined 2006-03-14.": I say "I never joined any of those groups though I do recall when they were formed. But, I've been using and supporting GNU Emacs (was paid to support in when in college) or XEmacs since RichardStallman was still leading its development (as well as most of the rest of the GNU/Linux project), an "internet connection" was implemented via a modem, and RichardStallman refused to put a password on his account at the MIT AI labs.
+
+: They eventually forced him to add a password so, being RichardStallman, he set the password for his username, 'rms', to the password 'rms'. I also recall when EFF got donated its first computer (I think it was prep.ai.mit.edu). This was a big deal because he was hosting Emacs on ai.mit.edu and, with effectively no password, this got the AI lab rather upset. Whenever I logged in as 'rms' to download something, there were always a half-dozen or more 'rms' users logged in. 
+
+; Alex says "RepeatedStrainInjury – saw a doctor, started physiotherapy on 2002-02-05. I bought a Kinesis keyboard. I used little programs that forced me to take a lot of breaks. It didn’t help. I stopped therapy 2002-10-21 and decided to work less, get up more often, started practicing Aikido, and no longer work in long shifts. That helped": I say "I saw many doctors, used all sorts of software to have me take breaks and had both hands operated on. But none of that helped. I eventually found a spectacular doctor, Dr. Richard Markison, who convinced me to become a vegetarian and take up Tai Chi. That helped."
+
+Neil Smithline
+
+Long Time Emacs Fan
+
+
+
+[new:DrewAdams:2011-05-23 04:05 UTC]
+Interesting history.  Welcome to the wiki.  -- DrewAdams
+
+
+
+
+
+
+----
+CategoryHomepage

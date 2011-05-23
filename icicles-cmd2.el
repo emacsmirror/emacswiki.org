@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon May 16 10:29:02 2011 (-0700)
+;; Last-Updated: Sun May 22 12:53:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3301
+;;     Update #: 3305
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -321,6 +321,9 @@
 (defvar anything-sources)               ; In `anything.el'
 (defvar anything-candidate-cache)       ; In `anything.el'
 (defvar anything-idle-delay)            ; In `anything.el'
+(defvar apropos-do-all)                 ; In `apropos.el'
+(defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
+(defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar replace-count)                  ; In `replace.el'.
@@ -331,9 +334,10 @@
 ;; (< emacs-major-version 22)
 (defvar compilation-current-error)
 (defvar cookie-cache)
-(defvar Info-menu-entry-name-re)      ; In `info.el'
+(defvar Info-menu-entry-name-re)        ; In `info.el'
 (defvar Info-read-node-completion-table) ; In `info.el'
-(defvar tags-case-fold-search)        ; In `etags.el'
+(defvar synonyms-obarray)               ; In `synonyms.el'
+(defvar tags-case-fold-search)          ; In `etags.el'
 (defvar yow-after-load-message)
 (defvar yow-file)
 (defvar yow-load-message)

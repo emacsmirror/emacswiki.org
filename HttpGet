@@ -13,6 +13,11 @@ EmacsWebBrowser; it is now heavily modified by AlexSchroeder.
 * http://savannah.nongnu.org/projects/http-emacs
 * [[http://cvs.savannah.nongnu.org/viewcvs/*checkout*/http-emacs/http-get.el?root=http-emacs http-get.el]]
 
+== Current? ==
+
+Be aware that emacs since v22 has included the UrlPackage. It lets you do HTTP GET, POST, OPTIONS, HEAD, accept cookies, do authentication, use proxies, and so on. Very thorough. 
+Works great in emacs v23. Therefore this code may be redundant and out of date. 
+
 == Changes ==
 * 07/05/2003 set the encoding according to http headers
 

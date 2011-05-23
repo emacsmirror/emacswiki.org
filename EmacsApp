@@ -109,9 +109,11 @@ I have tried outlining 3 basic options for European users in a blog post/video [
 
 == Questions ==
 
-* I'm missing an "emacs" binary, to execute from the command line, from Emacs.app. It's expected by some Makefiles, for instance. Does anyone know how to create or fake one? -- ThomasKappler
+* Can not set default window position and size by  ./Emacs.app/Contents/MacOS/Emacs -q -g 400x400 or org.gnu.Emacs.plist. Is there another way to set default window size except from .emacs?
 
 [new]
+* I'm missing an "emacs" binary, to execute from the command line, from Emacs.app. It's expected by some Makefiles, for instance. Does anyone know how to create or fake one? -- ThomasKappler
+
 The executable binary is already there: Emacs.app/Contents/MacOS/Emacs. -- UntitledApple
 
 [new]

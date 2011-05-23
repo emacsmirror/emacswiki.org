@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May 21 13:36:43 2011 (-0700)
+;; Last-Updated: Sun May 22 12:36:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21935
+;;     Update #: 21941
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -432,7 +432,11 @@
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
 (defvar bbdb-hashtable)                 ; In `bbdb.el'
-(defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+.el'
+(defvar bmkp-bookmark-name-length-max)  ; In `bookmark+-1.el'
+(defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
+(defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+-1.el'
+(defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'
+(defvar bookmark-current-point)         ; In `bookmark.el' for Emacs < 
 (defvar color-theme)                    ; In `color-theme.el'
 (defvar color-themes)                   ; In `color-theme.el'
 (defvar color-theme-initialized)        ; In `color-theme.el'

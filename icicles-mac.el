@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May  3 15:18:29 2011 (-0700)
+;; Last-Updated: Sun May 22 20:50:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 664
+;;     Update #: 677
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -133,13 +133,13 @@ potentially make a different buffer current.  It does not alter
 the buffer list ordering."
     (when (fboundp 'declare) (declare (indent 1) (debug t)))
     ;; Most of this code is a copy of save-selected-window.
-    `(let ((save-selected-window-window (selected-window))
+    `(let ((save-selected-window-window  (selected-window))
            ;; It is necessary to save all of these, because calling
            ;; select-window changes frame-selected-window for whatever
            ;; frame that window is in.
-           (save-selected-window-alist
-            (mapcar (lambda (frame) (list frame (frame-selected-window frame)))
-             (frame-list))))
+           (save-selected-window-alist   (mapcar #'(lambda (frame)
+                                                     (list frame (frame-selected-window frame)))
+                                          (frame-list))))
       (save-current-buffer
         (unwind-protect
              (progn (if (> emacs-major-version 21)
@@ -233,8 +233,8 @@ created after the others."
          (if current-prefix-arg
              (cond ((zerop (prefix-numeric-value current-prefix-arg))
                     (let ((this-mode  major-mode))
-                      (icicle-remove-if-not (lambda (bf)
-                                              (with-current-buffer bf (eq major-mode this-mode)))
+                      (icicle-remove-if-not #'(lambda (bf)
+                                                (with-current-buffer bf (eq major-mode this-mode)))
                                             (buffer-list))))
                    ((< (prefix-numeric-value current-prefix-arg) 0)
                     (cdr (assq 'buffer-list (frame-parameters))))
@@ -299,8 +299,8 @@ created after the others."
          (if current-prefix-arg
              (cond ((zerop (prefix-numeric-value current-prefix-arg))
                     (let ((this-mode  major-mode))
-                      (icicle-remove-if-not (lambda (bf)
-                                              (with-current-buffer bf (eq major-mode this-mode)))
+                      (icicle-remove-if-not #'(lambda (bf)
+                                                (with-current-buffer bf (eq major-mode this-mode)))
                                             (buffer-list))))
                    ((< (prefix-numeric-value current-prefix-arg) 0)
                     (cdr (assq 'buffer-list (frame-parameters))))
@@ -349,8 +349,8 @@ created after the others."
                         (cons `("by `icicle-file-sort'" . ,icicle-file-sort) icicle--temp-orders)))
                   icicle--temp-orders)))
         (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
-        (icicle-candidate-help-fn                    (lambda (cand)
-                                                       (icicle-describe-file cand current-prefix-arg)))
+        (icicle-candidate-help-fn                    #'(lambda (cand)
+                                                         (icicle-describe-file cand current-prefix-arg)))
         (icicle-candidate-alt-action-fn
          (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
         (icicle-all-candidates-list-alt-action-fn
@@ -398,8 +398,8 @@ created after the others."
                         (cons (` ("by `icicle-file-sort'" . (, icicle-file-sort))) icicle--temp-orders)))
                   icicle--temp-orders)))
         (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
-        (icicle-candidate-help-fn                    (lambda (cand)
-                                                       (icicle-describe-file cand current-prefix-arg)))
+        (icicle-candidate-help-fn                    #'(lambda (cand)
+                                                         (icicle-describe-file cand current-prefix-arg)))
         (icicle-candidate-alt-action-fn
          (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
         (icicle-all-candidates-list-alt-action-fn
@@ -521,19 +521,19 @@ This is an Icicles command - see command `icicle-mode'.")
                     (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
                            (with-current-buffer icicle-orig-buff
                              (save-selected-window (select-window icicle-orig-window)
-                                                   (funcall ',function candidate))))
+                                                   (funcall #',function candidate))))
                           ((window-live-p icicle-orig-window)
                            (save-selected-window (select-window icicle-orig-window)
-                                                 (funcall ',function candidate)))
+                                                 (funcall #',function candidate)))
                           (t
-                           (funcall ',function candidate)))
+                           (funcall #',function candidate)))
                   (error (unless (string= "Cannot switch buffers in minibuffer window"
                                           (error-message-string in-action-fn))
                            (error "%s" (error-message-string in-action-fn)))
                          (when (window-live-p icicle-orig-window)
                            (select-window icicle-orig-window)
                            (select-frame-set-input-focus (selected-frame)))
-                         (funcall ',function candidate)))
+                         (funcall #',function candidate)))
                 (select-window (minibuffer-window))
                 (select-frame-set-input-focus (selected-frame))
                 nil))))                 ; Return nil for success.
@@ -543,7 +543,7 @@ This is an Icicles command - see command `icicle-mode'.")
                                               ,initial-input ,hist ,def ,inherit-input-method)))
             ;; Reset after reading input, so that commands can tell whether input has been read.
             (setq icicle-candidate-action-fn  nil)
-            (funcall ',function cmd-choice))
+            (funcall #',function cmd-choice))
         (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
         (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
                (error "%s" (error-message-string act-on-choice))))
@@ -664,19 +664,19 @@ This is an Icicles command - see command `icicle-mode'.")
                     (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
                            (with-current-buffer icicle-orig-buff
                              (save-selected-window (select-window icicle-orig-window)
-                                                   (funcall ',function candidate))))
+                                                   (funcall #',function candidate))))
                           ((window-live-p icicle-orig-window)
                            (save-selected-window (select-window icicle-orig-window)
-                                                 (funcall ',function candidate)))
+                                                 (funcall #',function candidate)))
                           (t
-                           (funcall ',function candidate)))
+                           (funcall #',function candidate)))
                   (error (unless (string= "Cannot switch buffers in minibuffer window"
                                           (error-message-string in-action-fn))
                            (error "%s" (error-message-string in-action-fn)))
                          (when (window-live-p icicle-orig-window)
                            (select-window icicle-orig-window)
                            (select-frame-set-input-focus (selected-frame)))
-                         (funcall ',function candidate)))
+                         (funcall #',function candidate)))
                 (select-window (minibuffer-window))
                 (select-frame-set-input-focus (selected-frame))
                 nil))))                 ; Return nil for success.
@@ -689,7 +689,7 @@ This is an Icicles command - see command `icicle-mode'.")
                                    ,initial-input ,predicate))))
             ;; Reset after reading input, so that commands can tell whether input has been read.
             (setq icicle-candidate-action-fn  nil) ; Reset after completion.
-            (funcall ',function file-choice))
+            (funcall #',function file-choice))
         (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
         (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
                (error "%s" (error-message-string act-on-choice))))

@@ -46,7 +46,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Use BreadcrumbForEmacs to set a series of breadcrumb bookmarks in the buffers, and jump back to them quickly.  Visiting the bookmarks in the other window is a quick way to browse all the bookmarked locations.
 * When you are inserting from [[register]] with <code>C-x r i</code>, you may use a prefix argument to jump to the end of the inserted text, but if you forget you can use <code>C-x C-x</code>.
 * Use <code>M-m</code> instead of <code>C-a TAB</code> to jump to identation point.  Also consider switching C-a and M-m, since most of the time you want back-to-indentation.
-* Use `reindent-then-newline-and-indent' command. For example if you have long line and you want move part of it to new line, just move point to the place where splist must be done and do <code>M-x reindent-then-newline-and-indent RET</code>.  Also consider (global-define-key (kbd "RET") 'reindent-then-newline-and-indent).
+* Use `reindent-then-newline-and-indent' command. For example if you have long line and you want move part of it to new line, just move point to the place where splist must be done and do <code>M-x reindent-then-newline-and-indent RET</code>.  Also consider <code>(global-set-key (kbd "RET") 'reindent-then-newline-and-indent)</code>.
 * Use <code>C-x C-n (`set-goal-column')</code> when doing vertical editing.
 * For <em>really</em> heavy-duty vertical editing, consider PictureMode.  
 ** Actually, ArtistMode is an improvement of PictureMode and it's really cool! -- [[gejun]]

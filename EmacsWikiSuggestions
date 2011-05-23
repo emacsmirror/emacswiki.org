@@ -426,6 +426,54 @@ Brilliant. Maybe a new wiki mechanism is needed? or integration with something l
 [new]
 I guess we're at 2:2 right now. :) -- Alex
 
+[new]
+Hello all. First time posting but no need to be gentle on the noob. I promise I won't pay the courtesy back ;-). Well here goes...
+
+Without choosing sides in the above discussion, I'll say that this site needs lots of work (told you I wouldn't go easy). Lots and lots of work (and still going :-). 
+
+I've been collecting some of my bigger ideas and will post it soon. In short, I think this wiki is trying to accomplish multiple goals for people in multiple roles. The roles I see are:
+# Emacs noobs. This wiki may even help people decide if they want to try Emacs
+# Emacs users who wish to learn more, get help, find a package, browse elisp, perhaps even help maintain a package or two.
+# Emacs gurus for whom this website is an act of love.
+
+The site is also trying to serve multiple goals by providing a place for:
+# Noob introduction and support for Emacs: I think the wiki navigation is too complex for this.
+# Discussions about Emacs: The wiki is somewhat successful at this. But if you compare it to a forum or something like Slashdot...
+# Bug reporting and tracking: Being I don't think anyone has stats as to how many bugs are raised, followed, repaired, ignored, or outdated, it seems clear that this isn't being met.
+# Code distribution: It makes code available, but I'm not sure it is in a useful manner. I present this (FYI: 'present this' is secret code for 'rant on and on about') in some detail.
+# Archival of outdated information: A+ for this. But, alas, the amount of outdated material is so great and so widespread that there is no way to distinguish archival from new. 
+# Likely many more.
+
+So I favor a major reorganization of the wiki material. It may seem impossible to do this as you're all volunteers and I'm just a complaining site visitor who has only complained and not even had the courtesy to offer to help. That being said, I think that the reorganization can happen gradually (over years) and can be aided by technologies such as ranking search results by date, adding banners to abandoned packages, etc...
+
+Oh, I think that every change that is not a minor edit must be automatically time stamped and the time stamp must be displayed, when appropriate, automatically.
+
+As I said, I have more written, but it is taking longer than I want to get put together so I thought I'd throw this in while watching 2 episodes of Dr. Who.
+
+I didn't want to say this at the beginning as I didn't want to sound like I was sucking up or something, but I think you guys are doing a great job on this site. You have been improving the site for years and the site has revitalized my interest in participating in the Emacs again. 
+
+I think your discussion about comment pages and my comments in this posting are proof to the success of the site. In my mind, all of these comments are trying to deal with the problem that the wiki is a site whose content has grown faster than its organization and technology can keep up with.
+
+Sure that's a problem, but it's also a sign of great success.
+
+May 22, 2011 at 21:24 ET (GMT-04:00) -- NeilSmithline 
+
+[new]
+Looks like there is a feature to sign and timestamp comments in the wiki but it is a bit broken.. The TextFormattingRules claims that if you start your posting with <code>[ new :: ]</code> (with the spaces removed, that it will start a new comment, add your name, and show a timestamp when you mouse over the comment. I couldn't get it to work. No matter what I did adding :: to the initial new broke in some way. That being said, I did learn that if you put <code>[ new :: ]</code> (spaces deleted) inline of your comment that it gets partially expanded. Even if you put it inside a nowiki tag such as: "<nowiki>This use of new: [new:NeilSmithline:2011-05-23 02:07 UTC] is inside nowiki tags. See how <code>doesn't do </code> anything?</nowiki>". Is posting here enough to get this posted as a bug?
+
+BTW, as I was writing my first post above, it occurred to me that TRAC is designed to combine version control, comments, wiki, etc... I've never been a big fan of TRAC just because it just looks terrible, but I see why it is used (this is not an endorsement, just a comment).
+
+May 22, 2011 at 22:10 ET (GMT-04:00) -- NeilSmithline
+
+[new:AlexSchroeder:2011-05-23 08:10 UTC]
+I'd be interested in understanding how adding :: broke "in some way". I think it still works for me.
+
+You are right in that the initial ##[ new::]## will get expanded before any text formatting rules are applied. These macros are applied before saving a page, not when rendering a page. That's why it has no access to HTML context, text formatting rules, and so on. I consider the feature (the expansion with timestamp and username) to be very minor and the effort to fix this appears to be a major undertaking. I'd rather remove the feature. Most of the uses I've seen only involve ##[new]## anyway, without the colons.
+
+As for wiki reorganization: I think it works just like a wish list for an open source project. If it doesn't scratch someone's itch, nobody is going to add it. I think it's a fundamental issue with our business model: there is no pay for boring stuff. Plus, 
+documentation is of no direct use for anything -- unlike code. Thus, people are mostly motivated to keep their own code and its documentation up to date. I don't think there is anything we can do about that. That's why the MissionStatement does not mention organization and quality.
+
+Personally, I think the wiki exists somewhere between the newsgroups, the FAQ, the mailing lists, and IRC. It's certainly nowhere near the quality of organization and writing that the Emacs documentation has -- and I don't think this is the right medium to aim for this level of quality. I think the people willing to invest that amount of energy to write quality stuff ought to be writing the real Emacs documentation -- and they probably are.
 
 ----
 CategoryEmacsWikiSite

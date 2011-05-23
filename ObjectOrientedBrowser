@@ -1,6 +1,6 @@
 The OO-Browser is a language-independent object oriented browser for Emacs and XEmacs, developed principally by BobWeiner.  It has been around for many years, but only recently has been moved to Sourceforge site.  It supports C++, Java, Python, and a few other languages.  For example, it can quickly locate classes, class members, classes that implement a particular virtual function.
 
-* http://www.sf.net/projects/oo-browser/ (last release was 4.08 on January 2003).
+* http://www.sf.net/projects/oo-browser/ (as of May 22, 2011 the latest release is version 4.08 delivered in January 2002).
 
 OO-browser will create a paned layout consisting of several narrow listing windows above a full-width viewing/editing window.  Make sure point is in a listing window for most of these commands.
 

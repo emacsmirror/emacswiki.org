@@ -28,146 +28,11 @@ Thanks. For me the problem was an old version of firemacs. -- ThomasAlexanderGer
 
 
 
-== Now the NxhtmlMode page is empty ==
-
-Why?
-[new]
-Removing the "<nowiki>X)</nowiki>" emoticon from the page fixed it.  Didn't look into it any further. -- AaronHawley
-[new]
-Thanks Aaron.
-
-[new]
-Strange that the smilies have been causing problems, lately. I think this is annoying enough to disable
-smilies for the moment. Older pages that have them remain unaffacted until edited or until their HTML cache expires. -- Alex
-
-== Why is Sacha Chua's page empty? ==
-
-Why is the page SachaChua currently empty?
-Or am I the only one seeing this?
-
-
-[new:DrewAdams:2011-01-12 19:25 UTC]
-I see it too. No header/footer (so no History link). Nada. -- DrewAdams
-
-[new]
-Removing the "<nowiki>=)</nowiki>" smilies from the page fixed it.  Didn't look into it any further. -- AaronHawley
-
 == Page not found by search ==
 
 Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you will not see the DiredPlus page in the list.  But search for ##GrepPlus## and you will see the GrepPlus page.  Wonder why. -- DrewAdams
 
 
-== Server error! ==
-
-FYI -- After editing and clicking save, I got this error:
-
-<pre>
-Server error!
-The server encountered an internal error and was unable to complete your request. 
-
-Error message: 
-Premature end of script headers: emacs 
-
-If you think this is a server error, please contact the webmaster. 
-
-Error 500
-www.emacswiki.org
-Mon Jun 21 18:15:06 2010
-Apache/2.2.9 (Debian) DAV/2 SVN/1.5.1 mod_jk/1.2.26 mod_ssl/2.2.9 OpenSSL/0.9.8g mod_wsgi/2.5 Python/2.5.2 
-
-</pre>
-
-But I just clicked the Back button and tried save again, with no problem. -- DrewAdams
-
-[new]
-If anybody else starts noticing these, speak up. I'm guessing somebody restarted Apache or some other vital system. -- AlexSchroeder
-
-[new:DrewAdams:2010-07-02 15:46 UTC]
-Not somebody else, but it just happened to me again.  I was creating the new page Lisp:bookmark+-lit.el. Again, I hit the `Back' button and was able to continue without losing anything. -- DrewAdams
-
-<pre>
-Server error!
-The server encountered an internal error and was unable to complete your request. 
-
-Error message: 
-Premature end of script headers: emacs 
-
-If you think this is a server error, please contact the webmaster. 
-
-Error 500
-www.emacswiki.org
-Fri Jul 2 17:43:42 2010
-Apache/2.2.9 (Debian) DAV/2 SVN/1.5.1 mod_jk/1.2.26 mod_ssl/2.2.9 OpenSSL/0.9.8g mod_wsgi/2.5 Python/2.5.2 
-</pre>
-
-[new]
-Hm, whatever it is, it must be rather rare. The two last logfiles spanning the time from ##02/Jul/2010:06:35:16 +0200## to ##03/Jul/2010:12:38:42 +0200## have 448/80193 code 500 responses. They seem to happen on a regular basis:
-
-{{{
-aschroeder@thinkmo:~$ grep " 500 "< logs/access.log < logs/access.log.1|bin/time-grouping
-      03/Jul/2010:06         26     5%
-      03/Jul/2010:05         14     3%
-      03/Jul/2010:04         25     5%
-      03/Jul/2010:03         30     6%
-      03/Jul/2010:02         10     2%
-      03/Jul/2010:01         12     2%
-      03/Jul/2010:00         21     4%
-      02/Jul/2010:23         25     5%
-      02/Jul/2010:22         14     3%
-      02/Jul/2010:21         26     5%
-      02/Jul/2010:20         23     5%
-      02/Jul/2010:19         12     2%
-      02/Jul/2010:18          9     2%
-      02/Jul/2010:17         23     5%
-      02/Jul/2010:16         27     6%
-      02/Jul/2010:15         12     2%
-      02/Jul/2010:14         21     4%
-      02/Jul/2010:13          7     1%
-      02/Jul/2010:12         17     3%
-      02/Jul/2010:11          4     0%
-      02/Jul/2010:10         23     5%
-      02/Jul/2010:09         18     4%
-      02/Jul/2010:08         15     3%
-      02/Jul/2010:07         31     6%
-      02/Jul/2010:06          3     0%
-}}}
-
-I can't see any pattern in that... I'll keep an eye open. -- Alex
-
-[new:DrewAdams:2010-07-04 04:37 UTC]
-FYI -- It just happened to me again.  (I won't bother to signal it again, though.) -- DrewAdams
-
-[new:DrewAdams:2010-07-20 20:58 UTC]
-And again. -- DrewAdams
-
-
-[new:DrewAdams:2011-04-29 14:56 UTC]
-This is happening to me very often now -- in fact, most of the time when I click a link on the wiki.  -- DrewAdams
-
-[new:DrewAdams:2011-04-29 17:41 UTC]
-Actually, it is quite variable.  When it happens it happens a lot.  Right now it's not happening.  I wonder if it doesn't happen perhaps because of some extra load on the Apache server at certain times?  -- DrewAdams
-
-
-[new:DrewAdams:2011-04-29 17:42 UTC]
-Wow.  A soon as I wrote that it happened again. -- DrewAdams
-
-[new:AlexSchroeder:2011-04-29 20:30 UTC]
-Yeah, I can confirm this. In the last few days, the server has been acting up strangely. I wonder what's going on. I didn't change my config, so I'm assuming something beyond my control, though. – AlexSchroeder
-
-
-[new:DrewAdams:2011-05-03 17:51 UTC]
-In case it helps and is related, I sometimes also get timeouts ("could not connect to server") -- DrewAdams
-
-[new]
-I've heard from the hosting admins that they limited some other Python process to less memory because they noticed that the wiki script was crashing with out of memory errors. I haven't seen this error since then, so I'm hoping this one is resolved. -- AlexSchroeder
-
-
-[new:DrewAdams:2011-05-13 15:25 UTC]
-Thanks for following up on this, Alex.  I haven't noticed any problem lately.  Really appreciate the lack of this annoyance.  Thx -- DrewAdams
-
-
-[new:DrewAdams:2011-05-15 18:07 UTC]
-Just FYI: I just had it happen a couple of times again, including when I hit the `Preview' button for this post.  So I guess the problem is not completely eliminated. -- DrewAdams
 
 
 == Conflict from my own edit 25 minutes ago? ==
@@ -225,32 +90,10 @@ It just happened that once. And I simply pasted and saved the file again, so the
 
 The link text retains its crude ASCII formatting. -- VegardOye
 
-== Internal Server Errors When Try to Save a Page ==
 
-I'm getting errors like this:
 
-  Server error!
-  The server encountered an internal error and was unable to complete your request. 
 
-  Error message: 
-  Premature end of script headers: emacs 
 
-  If you think this is a server error, please contact the webmaster. 
-
-  Error 500
-  www.emacswiki.org
-  Fri Jan 15 21:45:27 2010
-  Apache/2.2.9 (Debian) DAV/2 SVN/1.5.1 mod_jk/1.2.26 mod_ssl/2.2.9 OpenSSL/0.9.8g mod_wsgi/2.5 Python/2.5.2 
-
-I'm not getting the errors at each save attempt -- just occasionally. Started today AFAIK. -- DrewAdams
-
-[new]
-Could it be the rapid fire uploads this afternoon :)
-Maybe Alex has a throttle per the spammers?
-It looks like you identified a problem at 20:48 UTC.
-Are the changes from 21:40 UTC -> 21:55 UTC your attempts to reproduce the problems?
-If not then the 20+ uploads between then 20:48 and 21:16 UTC may be more than this little wiki can handle.
-Weird internal server errors can also indicate a looming hard-disk failure...  --[[mon_key]]
 
 
 
@@ -351,21 +194,12 @@ I believe you. Unfortunately I don't know what to do about it. I'm sure your bro
 [new:DrewAdams:2008-09-07 06:27 UTC]
 Yes, as I said, I've done that. The point was that it's a shame that users will now need to do that -- some might become discouraged or not understand. What's odd is that I've never seen this (treating '''Open in New Window''' as a popup) on any other site. Anyway, it's not a biggee. And perhaps it affects only IE6 users who happen to use Google Toolbar -- dunno. -- DrewAdams
 
-== .emacs -> InitFile Substitution ==
 
-Recently, "~/.emacs" strings have all been replaced by "InitFile" 
-on the wiki pages. This is unfortunate, since non-english wiki pages
-are now cluttered with references to the english InitFile page, 
-instead of the corresponding
-translation. It would have been better to make the substitution on the
-english pages only, and let each locale deal with the problem 
-in the appropriate way. Or better, just leave the ~/.emacs references, 
-which do not depend on the locale.
 
-[new]
-Yeah, I'm not a big fan of large-scale changes myself. Hopefully that
-person used a user name while doing the changes and then you can contact
-them on their name page? -- AlexSchroeder
+
+
+
+
 
 == RecentChanges doesn't reflect recent changes ==
 
@@ -405,6 +239,10 @@ I think the first regexp matches keys and the second matches symbols. Thus `RET'
 [new]
 Alright, I'll just use `C-m C-i'.  I'll have to try and find time to investigate the consequences of changing that regexp, though. -- AaronHawley
 
+
+
+
+
 == both www.emacsen.org and emacsen.org work without one redirecting to the other ==
 
 This might not be the best setup, Google-juice-wise. Permanently redirecting from one to the other seems like the way to go.
@@ -413,6 +251,9 @@ Additionally, even with a domain, pages lack a canonical URI; ##/cgi-bin/emacs/f
 
 [new]
 Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewrite, and all those and I don't have an automated test suite that would point out how changes to .htaccess are affecting the site. That's why I hesitate to fix these. -- AlexSchroeder
+
+
+
 
 == emacswiki and w3m ==
 
@@ -427,28 +268,7 @@ Try this solution, been using it a while now --[[pft]]:
             (w3m-view-this-url)
           (w3m-submit-form))))
 
-== Winky emoticon displayed instead of &amp; ==
 
-[new]
-When an ampersand happens to be surrounded by parentheses the wiki returns
-the following:
-
-    (&amp<img src="/pics/blink.png" alt=";)">
-
-(&)
-
-It seems that smilies are converted after unsafe characters.  Note that this
-doesn't happen when it is escaped as code.
-
-This bug was noticed on SampleWikiModeSetup. -- DianeMurray
-
-[new]
-Indeed: ##&)## -> &).  Wierd. -- AaronHawley
-
-[new]
-Hm yes, must be a problem with the ordering of the rules: After HTML escaping (which I do),
-there is in fact a ##;)## in the source text.  I wonder why the ##&amp;## doesn't get
-rendered first... -- AlexSchroeder
 
 == Connection broken when uploading Elisp files ==
 
@@ -465,6 +285,10 @@ Any news on this issue? -- AlexSchroeder
 
 Update 2006-10-14: My file seems too big, the wiki program blocked any furhter editing.  Alex Schroeder had to remove it by hand and uploaded a compressed version. -- [[dida]]
 
+
+
+
+
 == Problem with Google search ==
 
 [new] If you search for the word "sticky" you do not find the page StickyModifiers, but that word is on that page. -- LennartBorgman
@@ -475,33 +299,7 @@ Update 2006-10-14: My file seems too big, the wiki program blocked any furhter e
 [new] I set my search languages to Chinese in google search preferences, so when I search in emacswiki.org, only a few pages can be found, can I just search all languages in emacswiki.org without change my google preferences? Or in the page of search result provides a radio button to select language.  
 -- [[Ye_Wenbin]]
 
-== Page names not split apart correctly in titles ==
 
-EmacsWiki's title names are being split so that the search functionality works even when a word is mentioned only in a page's title.  The splitting is not quite correct, though, as neighboring capital letters aren't split apart.  Here a couple examples:
-
-* HowToSetUpSemanticBovinatorForANewLanguage becomes "!EmacsWiki: How To Set Up Semantic Bovinator For ANew Language"
-
-* WThreeMEditingWikis becomes "!EmacsWiki: WThree MEditing Wikis" ("W Three M Editing Wikis" would look odd as well but should be easier to read)
-
--- DianeMurray
-
-[new]
-I think that these names don't lend themselves to typical wiki-style linking anyway. They should be renamed to [[How To Set Up Semantic Bovinator For A New Language]] and [[w3m Editing Wikis]] or whatever seems appropriate. For titles that are not just two or three ordinary words smashed together, wiki-style names are a poor choice, and therefore I think my time is better spent elsewhere. If we fix this, there will always be another example showing that it isn't perfect.
-
-If anybody else is interested in suggesting a solution, here's the code:
-
- $str =~ s/([[:lower:]])([[:upper:]])/$1 $2/g;
-
--- Alex
-
-[new]
-It can't get perfect, but something like this might be useable:
-
- $str =~ s/([^ ])([[:upper:]][[:lower:]])/$1 $2/g;
- $str =~ s/([^ ])([[:upper:]][[:lower:]])/$1 $2/g;
- $str =~ s/([[:lower:]])A /$1 A /g;
-
--- LennartBorgman
 
 == RSS for single-pages doesn't work in Google Reader ==
 
@@ -509,6 +307,9 @@ I haven't figured out what the problem is yet, but I added http://www.emacswiki.
 
 [new]
 When I look at the RSS feed, I get to see the latest revision of the page. I must therefore assume that it's Google Reader's fault. I can imagine two problems: 1. It takes very long for changes to be picked up by Google. That's the explanation I currently favor because I have several of my own wikis in Google Reader and I often have the impression that Google Reader is up to a day late. 2. Google Reader thinks that you're looking at an update to an existing page and will not show it anymore. I remember there was such an option for Blog Lines, but I can't find anything like it for Google Reader. -- AlexSchroeder
+
+
+
 
 == File type "data" ==
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May  6 15:33:41 2011 (-0700)
+;; Last-Updated: Sun May 22 13:21:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7458
+;;     Update #: 7460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -198,26 +198,27 @@
   (defvar mouse-wheel-up-event)
   (defvar read-file-name-function))
 
-(defvar Buffer-menu-mode-map)           ; Defined in `buff-menu.el'.
-(defvar comint-mode-map)                ; Defined in `comint.el'.
-(defvar crm-local-completion-map)       ; Defined in `crm.el'.
-(defvar crm-local-must-match-map)       ; Defined in `crm.el'.
-(defvar dired-mode-map)                 ; Defined in `dired.el'.
-(defvar gud-minibuffer-local-map)       ; Defined in `gud.el'.
-(defvar ibuffer-mode-map)               ; Defined in `ibuffer.el'.
-(defvar ibuffer-mode-operate-map)       ; Defined in `ibuffer.el'.
+(defvar Buffer-menu-mode-map)           ; In `buff-menu.el'.
+(defvar comint-mode-map)                ; In `comint.el'.
+(defvar crm-local-completion-map)       ; In `crm.el'.
+(defvar crm-local-must-match-map)       ; In `crm.el'.
+(defvar dired-mode-map)                 ; In `dired.el'.
+(defvar gud-minibuffer-local-map)       ; In `gud.el'.
+(defvar ibuffer-mode-map)               ; In `ibuffer.el'.
+(defvar ibuffer-mode-operate-map)       ; In `ibuffer.el'.
 (defvar icicle-crm-local-completion-map) ; In `icicles-fn.el' after load `crm.el'.
 (defvar icicle-crm-local-must-match-map) ; In `icicles-fn.el' after load `crm.el'.
 (defvar icicle-kmacro-ring-max)         ; In `icicles-opt.el' for Emacs 22+.
 (defvar icicle-saved-kmacro-ring-max)   ; In `icicles-var.el' for Emacs 22+.
-(defvar ielm-map)                       ; Defined in `ielm.el'.
-(defvar inferior-tcl-mode-map)          ; Defined in `tcl.el'.
-(defvar Info-mode-map)                  ; Defined in `info.el'.
-(defvar isearch-mode-map)               ; Defined in `isearch.el'.
+(defvar ielm-map)                       ; In `ielm.el'.
+(defvar inferior-tcl-mode-map)          ; In `tcl.el'.
+(defvar Info-mode-map)                  ; In `info.el'.
+(defvar isearch-mode-map)               ; In `isearch.el'.
 (defvar old-crm-local-completion-map)   ; In `icicles-fn.el' after load `crm.el'.
 (defvar old-crm-local-must-match-map)   ; In `icicles-fn.el' after load `crm.el'.
-(defvar shell-mode-map)                 ; Defined in `shell.el'.
-(defvar sh-mode-map)                    ; Defined in `sh-script.el'.
+(defvar savehist-minibuffer-history-variables) ; In `savehist.el'
+(defvar shell-mode-map)                 ; In `shell.el'.
+(defvar sh-mode-map)                    ; In `sh-script.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -495,7 +496,7 @@ bindings are not available to you."
                  (icicle-redefine-standard-options)
                  (when (ad-find-some-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
                    (ad-enable-advice 'describe-face 'before 'icicle-respect-WYSIWYG))
-                 (when (fboundp 'minibuffer-depth-indicate-mode) ; Defined in `mb-depth(+).el'
+                 (when (fboundp 'minibuffer-depth-indicate-mode) ; In `mb-depth(+).el'
                    (minibuffer-depth-indicate-mode 99))
                  (if icicle-menu-items-to-history-flag
                      (add-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
@@ -858,7 +859,7 @@ Used on `pre-command-hook'."
     (define-key icicle-menu-map [icicle-separator-last] '("--"))
 
     (when (and (not icicle-touche-pas-aux-menus-flag) ; `Bookmark+' menu.
-               (boundp 'bmkp-bmenu-menubar-menu)) ; Defined in `bookmark+-bmu.el'.
+               (boundp 'bmkp-bmenu-menubar-menu)) ; In `bookmark+-bmu.el'.
       (defvar icicle-bookmark+-menu-map (make-sparse-keymap)
         "Icicles submenu for `Bookmark+' menu.")
       (define-key bmkp-bmenu-menubar-menu [icicles]
@@ -879,7 +880,7 @@ Used on `pre-command-hook'."
     (unless icicle-touche-pas-aux-menus-flag ; Use Dired's `Multiple' or `Operate' menu.
       (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
         "Icicles submenu for Dired's `Multiple' (or `Operate') menu.")
-      (if (boundp 'diredp-menu-bar-operate-menu) ; Defined in `dired+.el'.
+      (if (boundp 'diredp-menu-bar-operate-menu) ; In `dired+.el'.
           (define-key diredp-menu-bar-operate-menu [icicles]
             (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode))
         (define-key dired-mode-map [menu-bar operate icicles]
@@ -900,7 +901,7 @@ Used on `pre-command-hook'."
     (unless icicle-touche-pas-aux-menus-flag ; Use Dired's `Dir' or `Subdir' menu.
       (defvar icicle-dired-dir-menu-map (make-sparse-keymap)
         "Icicles submenu for Dired's `Dir' (or `Subdir') menu.")
-      (if (boundp 'diredp-menu-bar-subdir-menu) ; Defined in `dired+.el'.
+      (if (boundp 'diredp-menu-bar-subdir-menu) ; In `dired+.el'.
           (define-key diredp-menu-bar-subdir-menu [icicles]
             (list 'menu-item "Icicles" icicle-dired-dir-menu-map :visible 'icicle-mode))
         (define-key dired-mode-map [menu-bar subdir icicles]
@@ -2160,9 +2161,9 @@ Used on `pre-command-hook'."
         (icicle-search (point-min) (point-max) (icicle-isearch-complete-past-string) t))))
   (dolist (key icicle-isearch-complete-keys)
     (define-key isearch-mode-map key 'icicle-isearch-complete))
-  (cond ((fboundp 'isearch-moccur)      ; Defined in `moccur.el'.
+  (cond ((fboundp 'isearch-moccur)      ; In `moccur.el'.
          (define-key isearch-mode-map (kbd "C-o") 'isearch-moccur))
-        ((fboundp 'isearch-occur)       ; Defined in `occur-schroeder.el'.
+        ((fboundp 'isearch-occur)       ; In `occur-schroeder.el'.
          (define-key isearch-mode-map (kbd "C-o") 'isearch-occur))))
 
 (defun icicle-bind-key-completion-keys-for-map-var (keymap-var)
@@ -2401,7 +2402,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (dolist (key  icicle-read+insert-file-name-keys)
          (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
        (define-key map "\n"                      'icicle-insert-newline-in-minibuffer) ; `C-j'
-       (when (fboundp 'yank-secondary)  ; Defined in `second-sel.el'.
+       (when (fboundp 'yank-secondary)  ; In `second-sel.el'.
          (define-key map "\C-\M-y" 'icicle-yank-secondary))) ; `C-M-y'
 
      ;; `minibuffer-local-ns-map': default minibuffer map when spaces are not allowed.
@@ -2496,7 +2497,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (dolist (key  icicle-read+insert-file-name-keys)
            (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
          (define-key map "\n"                      'icicle-insert-newline-in-minibuffer) ; `C-j'
-         (when (fboundp 'yank-secondary) ; Defined in `second-sel.el'.
+         (when (fboundp 'yank-secondary) ; In `second-sel.el'.
            (define-key map "\C-\M-y" 'icicle-yank-secondary)))) ; `C-M-y'
 
      ;; `minibuffer-local-isearch-map': minibuffer map for editing isearch strings.
@@ -2591,7 +2592,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (dolist (key  icicle-read+insert-file-name-keys)
            (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
          (define-key map "\n"                      'icicle-insert-newline-in-minibuffer) ; `C-j'
-         (when (fboundp 'yank-secondary) ; Defined in `second-sel.el'.
+         (when (fboundp 'yank-secondary) ; In `second-sel.el'.
            (define-key map "\C-\M-y" 'icicle-yank-secondary)))) ; `C-M-y'
 
      ;; `minibuffer-local-completion-map': completion map.
@@ -3241,7 +3242,7 @@ complete)"))
     (define-key map [(meta ?o)]              'icicle-insert-history-element) ; `M-o'
     (define-key map [(meta ?.)]              'icicle-insert-string-at-point) ; `M-.'
     (define-key map [(meta ?:)]              'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
-    (when (fboundp 'yank-secondary)     ; Defined in `second-sel.el'.
+    (when (fboundp 'yank-secondary)     ; In `second-sel.el'.
       (define-key map "\C-\M-y"              'icicle-yank-secondary)) ; `C-M-y'
     (define-key map [M-S-backspace]          'icicle-erase-minibuffer) ; `M-S-backspace'
     (define-key map [M-S-delete]             'icicle-erase-minibuffer) ; `M-S-delete'
@@ -3796,7 +3797,7 @@ Used in `completion-setup-hook'."
 
 (defun icicle-update-ignored-extensions-regexp ()
   "Update ignored extensions if `completion-ignored-extensions' changed."
-  (when (and (icicle-file-name-input-p) ; Defined in `icicles-fn.el'.
+  (when (and (icicle-file-name-input-p) ; In `icicles-fn.el'.
              (not (equal icicle-ignored-extensions completion-ignored-extensions)))
     (setq icicle-ignored-extensions-regexp ; Make regexp for ignored file extensions.
           (concat "\\(" (mapconcat #'regexp-quote completion-ignored-extensions "\\|") "\\)\\'")
