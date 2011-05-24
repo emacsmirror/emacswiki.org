@@ -64,7 +64,7 @@ delete. This '''[::incremental completion]''' is another form of icompletion, un
 The particular non-`nil' value of `icicle-incremental-completion-flag' determines when `*Completions*' is
 displayed and updated.  The default value, `t', means that
 `*Completions*' is updated only if it is already displayed.  Use `t'
-if you don't want `*Completions*' to be too intrusive but you want
+if you do not want `*Completions*' to be too intrusive but you want
 it to provide the most help when you ask for help (via `TAB' or
 `S-TAB').
 

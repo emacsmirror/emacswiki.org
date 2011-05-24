@@ -470,6 +470,10 @@ I'd be interested in understanding how adding :: broke "in some way". I think it
 
 You are right in that the initial ##[ new::]## will get expanded before any text formatting rules are applied. These macros are applied before saving a page, not when rendering a page. That's why it has no access to HTML context, text formatting rules, and so on. I consider the feature (the expansion with timestamp and username) to be very minor and the effort to fix this appears to be a major undertaking. I'd rather remove the feature. Most of the uses I've seen only involve ##[new]## anyway, without the colons.
 
+[new:DrewAdams:2011-05-23 13:21 UTC]
+: I use ##[ new::]## and would like to continue to do so.  Having the timestamps is helpful to me. -- DrewAdams
+[new]
+
 As for wiki reorganization: I think it works just like a wish list for an open source project. If it doesn't scratch someone's itch, nobody is going to add it. I think it's a fundamental issue with our business model: there is no pay for boring stuff. Plus, 
 documentation is of no direct use for anything -- unlike code. Thus, people are mostly motivated to keep their own code and its documentation up to date. I don't think there is anything we can do about that. That's why the MissionStatement does not mention organization and quality.
 

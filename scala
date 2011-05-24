@@ -14,24 +14,40 @@ In order to use scala in emacs, you must first use the mode distributed with sca
       (define-key scala-mode-map (kbd "<f9>") 'ensime-builder-build)
       (define-key scala-mode-map (kbd "<f10>") 'ensime-inf-switch)))
 
- I then use ensime http://aemon.com/file_dump/ensime_manual.html and sbt http://code.google.com/p/simple-build-tool/wiki/Setup. 
-
-Next step: make sure you can get sbt to create a project folder! I personally took the linux script from the library scalala, which also comes with sbt ....
-
-Now, we need to modify exec-path so that ensime can find its .sh script, and also so that it can find the scala executable. Something like this in .emacs should do it 
-
- (setq exec-path
-          (append exec-path (list "~/.opt/scala/bin" "and_other_directories_needed")))
-
-Ok, so create a random file in the source directory created by sbt that contains some random code.
-Run ensime-config-project, follow instructioons, etc. It should suggest that the project is of type sbt.
-Now, run ensime-sbt (or first ensime-connect) - and voila-you have an sbt prompt! Now place the following in it
-
- (eval-after-load "scala-mode" 
+    (eval-after-load "scala-mode" 
       '(progn
-         (define-key scala-mode-map (kbd "<f9>") (lambda () (interactive) (ensime-sbt-action "run")))
+         (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+         (define-key scala-mode-map (kbd "<f9>") 'scala-run)
          (define-key scala-mode-map (kbd "RET") 'newline-and-indent)
          ))
 
-And you can now hit f9 to automatically run your code - sbt will automatically compile if necessary, have jars on pathway, etc. Nice!
+   (defun scala-run () 
+      (interactive)   
+     (ensime-sbt-action "run")
+     (ensime-sbt-action "~compile")
+ (let ((c (current-buffer)))
+      (switch-to-buffer-other-window
+     (get-buffer-create (ensime-sbt-build-buffer-name)))
+   (switch-to-buffer-other-window c))) 
+   (setq exec-path
+          (append exec-path (list "~/.opt/scala/bin"))) ;;REPLACE THIS with the directory of your scalac executable!
+
+
+I then use ensime http://aemon.com/file_dump/ensime_manual.html and sbt http://code.google.com/p/simple-build-tool/wiki/Setup. 
+
+Next step: make sure you can get sbt to setup your project (see sbt docs).
+
+Ok, so create a random file in the source directory created by sbt that contains some random code.
+Run ensime-config-project, follow instructioons, etc. It should suggest that the project is of type sbt.
+Now, run the command 'ensime' - it should connect with ensime. Now, type C-c C-v s, this will start the scala sbt process. I suggest opening it in another frame by using 'C-x 5 2'. 
+
+ 
+And you can now hit f9 to run your code - ok, so you have to hit it twice for some reason!
+
+OK - so good libraries to use with emacs - 
+
+ido.el - quickly switch buffers
+
+ibuffer - replacement for C-x C-b - you can create a 'scala' group, and then switch between your project files easily, just as if you were using , say , a eclipse project directory. 
+
 

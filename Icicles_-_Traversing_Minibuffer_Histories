@@ -9,7 +9,7 @@
 Perhaps you are already used to accessing past inputs with vanilla Emacs using the `down' and `up' arrow keys (or `M-n', `M-p', and `next').  If not, try it (not in ''Icicle'' mode).
 You can go backward and forward in the [[minibuffer]] histories (there
 are different history lists for different kinds of input).  You
-can't really cycle them (with wraparound), but when you get to one end you can
+cannot really cycle them (with wraparound), but when you get to one end you can
 reverse the direction of traversal.
 
 Anyway, the input-[[Icicles - Cycling Completions|cycling]] behavior that '''Icicles''' offers is in ''addition'' to this standard

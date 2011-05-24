@@ -128,7 +128,7 @@ bookmarked objects, including the files that have a given set of
 del.icio.us-style tags and the bookmarks that are marked in a
 given bookmark-list state.
 
-And don't forget that all uses of '''Icicles''' search also let you do
+And do not forget that all uses of '''Icicles''' search also let you do
 [[Icicles - Search-And-Replace|search-and-replace]] on the fly.  This applies to `grep' results,
 searching marked files in Dired, tags navigation, and Imenu
 navigation.  You can at any time ''replace'' the current search hit
@@ -266,7 +266,7 @@ A related feature is being able to filter tags definitions and
 then save the filtered hit list.  This works the same way, and it
 gives you the equivalent of ''per-project [[TagsFile|tags files]]'': A saved hit
 list acts just like a custom tags file when you reuse it.  And
-unlike some of your project files, a tags file doesn't change
+unlike some of your project files, a tags file does not change
 often, so saved hit sets stay accurate longer.
 
 
@@ -277,7 +277,7 @@ often, so saved hit sets stay accurate longer.
 
 I no longer develop software.  I just putz around with EmacsLisp
 for my own enjoyment, entertainment, and enlightenment.  So I
-don't use things like ECB (EmacsCodeBrowser) or SemanticBovinator.  I don't use any IDE that has knowledge of a
+do not use things like ECB (EmacsCodeBrowser) or SemanticBovinator.  I do not use any IDE that has knowledge of a
 particular programming language.  The '''Icicles''' commands I've
 written therefore use little or no semantic or language
 information; they rely upon syntax for the most part, and they are
@@ -286,7 +286,7 @@ essentially language-agnostic (i.e. ignorant).
 But ''you'' are a different story.  If you use, say, Semantic, you
 could write a little EmacsLisp code to take advantage of '''Icicles'''
 in combination with Semantic's parser information.  With complete
-ignorance of Semantic, I dare say it wouldn't be hard.  If you can
+ignorance of Semantic, I dare say it would not be hard.  If you can
 get an [[alist]] of completion candidates for something from Semantic
 in some context, then you can exploit all of the '''Icicles''' features:
 [[apropos completion]], [[progressive completion]], [[multi-command]]s,

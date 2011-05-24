@@ -1,4 +1,4 @@
-Timestamp: Wed May  4 07:22:55 BST 2011
+Timestamp: Mon May 23 22:00:33 BST 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -394,7 +394,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://csde.sourceforge.net/ csde.el] --- Integrated Development Environment for Csharp. (by Matt Bruce)
 
-[http://www.davh.dk/script/csharp-mode.el csharp-mode.el] --- csharp-mode (by Dennis Haney)
+[http://code.google.com/p/csharpmode/downloads/list csharp-mode.el] --- major mode for editing C# (by Dino Chiesa)
 
 [http://www.garshol.priv.no/download/software/css-mode/ css-mode.el] --- Trivial CSS editing mode. (by Lars Marius Garshol)
 
@@ -813,6 +813,10 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://josefsson.org/flow-fill.html flow-fill.el] --- interprete RFC2646 "flowed" text (by Simon Josefsson)
 
 [http://flymake.sourceforge.net/ Flymake] --- an on-the-fly syntax checker for Emacs (by Pavel Kobiakov)
+
+[http://www.emacswiki.org/emacs/flymake-cursor.el Flymake-cursor.el] --- displays flymake error msg in minibuffer after delay (by Dino Chiesa)
+
+[http://code.google.com/p/jslint-for-wsh/downloads/list  flymake-for-jslint-for-wsh.el] --- use flymake with js code, on Windows (by Dino Chiesa)
 
 [http://kaolin.unice.fr/~serrano/emacs/flyspell flyspell.el] --- On-the-fly spell checker (by Manuel Serrano)
 
@@ -1732,6 +1736,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.xahlee.org/3d/povray_emacs.html pov-mode.el] --- Major mode for editing PoVray scene Files (by Marco Pessotto)
 
+[http://www.emacswiki.org/emacs/Powershell.el powershell.el] --- run powershell as an inferior shell in emacs (by Dino Chiesa)
+
 [http://www.imada.sdu.dk/~blackie/emacs/power-macros.el power-macros.el] --- [manage a group of keyboard macros with descriptions] (by Jesper K. Pedersen)
 
 [http://www.emacswiki.org/elisp/pp+.el pp+.el] --- extensions to standard library `pp.el' (by Drew Adams)
@@ -1880,6 +1886,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.neilvandyke.org/rfcview/ rfcview.el] --- view IETF RFCs with readability-improved formatting (by Neil W. Van Dyke)
 
+[http://www.emacswiki.org/emacs/rfringe.el rfringe.el] --- display the relative location of the region, in the fringe. (by Dino Chiesa)
+
 [http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/11751 ri.el] --- browse the output of the ri command (by Colin Steele)
 
 [http://www.nongnu.org/riece/index.html.en riece.el] --- yet another IRC client for Emacs (by Daiki Ueno)
@@ -1918,7 +1926,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://savannah.nongnu.org/projects/emacs-rtf/ rtf.el] --- Mode for editing RTF documents. (by Oliver Scholz)
 
-[http://ftp.codefactory.se/pub/gnu/xemacs/Attic/patches/clipboard-rtf-support-20000704/rtf-support.el rtf-support.el] --- MS Rich Text Format support functions (by Alastair J. Houghton)
+[http://ftp.xemacs.org/Attic/patches/clipboard-rtf-support-20000704/rtf-support.el rtf-support.el] --- MS Rich Text Format support functions (by Alastair J. Houghton)
 
 [http://www.ruby-lang.org/cgi-bin/cvsweb.cgi/ruby/misc/ruby-mode.el ruby-mode.el] --- Mode for editing Ruby code. (by Yukihiro Matsumoto)
 
@@ -2206,6 +2214,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://anxiety-closet.mit.edu/afs/sipb/project/sipbsrc/src/Roget/software thesaurus.el] --- [Access via perl scripts to Roget's thesaurus] (by Darryl Okahata)
 
+[http://www.emacswiki.org/emacs/tfs.el tfs.el] --- MS Team Foundation Server commands for Emacs. (by Dino Chiesa)
+
 [http://www.emacswiki.org/cgi-bin/wiki/download/thing-cmds.el thing-cmds.el] --- commands to select things at or near the cursor (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/thingatpt+.el thingatpt+.el] --- extensions to standard library `thingatpt.el' (by Drew Adams)
@@ -2343,6 +2353,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://www.cis.upenn.edu/~bcpierce/papers/uuinsert.el uuinsert.el] --- [uu-encode/decode files and directories into text buffers] (by Benjamin Pierce)
 
 = V =
+
+[http://www.emacswiki.org/emacs/vbnet-mode.el vbnet-mode.el] --- A mode for editing Visual Basic .NET programs. (by Dino Chiesa)
 
 [http://www.emacswiki.org/elisp/vc+.el vc+.el] --- extensions to standard library `vc.el' (by Drew Adams)
 

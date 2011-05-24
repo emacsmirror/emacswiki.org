@@ -167,7 +167,7 @@ As a convenience, you can use function
 '''`icicle-candidate-short-help'''' to apply both
 `icicle-mode-line-help' and `help-echo' text properties to a candidate string.
 
-How does this work? '''Icicles''' redefines the standard Emacs function `display-completion-list' so that it retains text properties. Emacs should do the same, but it doesn't (yet).
+How does this work? '''Icicles''' redefines the standard Emacs function `display-completion-list' so that it retains text properties. Emacs should do the same, but it does not (yet).
 
 [new:DrewAdams:2007-01-24 15:19 UTC]
 : 2007-01-24 -- [[RMS]] has agreed to fix Emacs in this way, so this will become possible in Emacs. -- DrewAdams

@@ -28,10 +28,10 @@ not just programmers, some way to globally filter candidates.
 For example, if you have a command, such as `icicle-buffer', that
 reads a [[buffer]] name and displays the buffer, some users might
 always be interested only in buffers that are associated with
-files.  They don't want to see possible candidates like
+files.  They do not want to see possible candidates such as
 `*scratch*' and `*Messages*'.  What they need is a way to apply a
 global predicate that limits candidates to file-buffer names -- but
-they don't have access to the call to `completing-read' that is
+they do not have access to the call to `completing-read' that is
 inside the command definition.
 
 For this reason, some global filtering [[variable]]s are provided by '''Icicles''':

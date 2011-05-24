@@ -26,7 +26,7 @@ In general, Emacs does not play too well
 with one-buffer-per-frame (`pop-up-frames' = `t'), and this is a
 good example of that general problem.  See '''OneOnOneEmacs''' for a discussion of this.  I reported this Emacs bug. I've been hoping it will be corrected since Emacs 21...
 
-I don't have this problem of loss of frame input focus in my own setup, even though I use
+I do not have this problem of loss of frame input focus in my own setup, even though I use
 `pop-up-frames' = `t', because I use my library '''<tt>[[oneonone.el]]</tt>'''.  (Try
 it!)  If you need a solution while waiting for the Emacs fix, you can
 try doing something similar to what I do in <tt>[[oneonone.el]]</tt>:

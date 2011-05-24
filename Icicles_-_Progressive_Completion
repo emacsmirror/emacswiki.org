@@ -56,7 +56,7 @@ During [[completion]], '''`M-*'''' is bound in the [[minibuffer]] to [[command]]
 matches it against the current set of completion candidates.
 
 For example, suppose that you want to know about an Emacs function that deletes the character to the left of [[point]] (that is,
-backward).  You don't recall if it's `delete-character-back',
+backward).  You do not recall if it is `delete-character-back',
 `delete-backward-char', `character-delete-backward', or whatever.
 You take a guess that the name contains `delete', `char', and `back'.
 
@@ -172,7 +172,7 @@ Progressive completion lets you match multiple regexps, some of
 which could of course be literal substrings, with their regexp
 special characters, if any, escaped.  If you need to match such
 substrings at particular locations in the target completion
-candidate, then progressive completion won't do the job -- it
+candidate, then progressive completion will not do the job -- it
 matches its component regexps independently.  You can regexp-quote
 (escape) parts or all of your input using '''`##M-%##''''
 (`icicle-regexp-quote-input').

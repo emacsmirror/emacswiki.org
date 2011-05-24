@@ -19,7 +19,7 @@ You now know enough to use '''Icicles'''. If you have doc-phobia or are easily o
 
 If you want a little more explanation than the help page (`##C-?##'), then read the rest of this page, but no more. This page shows a sample of what you can do in ''Icicle'' mode.
 
-If you want to know more about '''Icicles''' by reading instead of just trying, then read beyond this page. There is a lot you can learn, but there is not much that you need to learn, to use '''Icicles''' usefully. Don't be afraid to get in and get wet. Above all, don't be overwhelmed by the doc -- if it helps, fine. 
+If you want to know more about '''Icicles''' by reading instead of just trying, then read beyond this page. There is a lot you can learn, but there is not much that you need to learn, to use '''Icicles''' usefully. Do not be afraid to get in and get wet. Above all, do not be overwhelmed by the doc -- if it helps, fine. 
 
 
 
@@ -196,7 +196,7 @@ together, combining them cooperatively.
 '''Icicles''' is very general.  It affects many aspects of minibuffer
 completion.  As you learn to take advantage of its features it can
 change how you use Emacs.  But '''Icicles''' also stays out of the way if
-you don't ask for its help.  If you just use `TAB' completion and you
+you do not ask for its help.  If you just use `TAB' completion and you
 use none of the keys bound specially during completion (for cycling,
 progressive completion, etc.), then you will hardly notice '''Icicles'''.
 
@@ -507,10 +507,10 @@ See [http://blogs.gnome.org/xan/2007/10/08/gtk-hacking-with-emacs-a-small-trick/
 
 There's a joke about a sculptor who, when asked how he created
 such a life-like statue of an elephant, said that he just chipped
-steadily away, removing marble that didn't resemble an elephant. (Actually, Michelangelo supposedly said something similar.)
+steadily away, removing marble that did not resemble an elephant. (Actually, Michelangelo supposedly said something similar.)
 
 '''Icicles''' lets you sculpt this way too -- it is in fact a common
-'''Icicles''' usage idiom.  There are two ways to say, "I don't want
+'''Icicles''' usage idiom.  There are two ways to say, "I do not want
 that" when it comes to possible completions:
 
 * The '''`delete'''' key or '''`S-mouse-2'''' says, "Get rid of this
@@ -557,7 +557,7 @@ and you can use it to remove very large chips.
 
 For instance, suppose you are looking for a standard Emacs [[command]]
 involving [[buffer]]s.  You try `M-x buff S-TAB', but that shows
-zillions of matches.  Suppose that you know you don't want a
+zillions of matches.  Suppose that you know you do not want a
 command in some 3rd-party package.  You proceed to eliminate
 those, progressively, using something like this:
 
@@ -567,7 +567,7 @@ those, progressively, using something like this:
 And so on.  That is, instead of using `##M-*##' repeatedly to specify
 multiple patterns that candidates must match, you use `##C-~##'
 repeatedly (after an initial `##M-*##'), to chip away candidates you
-don't want.  You could, alternatively, hold down the `delete' key
+do not want.  You could, alternatively, hold down the `delete' key
 to eliminate each of these groups of command names.  There are
 over 100 commands whose names begin with `ediff', however, so `##M-*
 C-~##' can be quicker in that case.  It can definitely be quicker
@@ -615,7 +615,7 @@ with the mouse in `*Completions*':
 22) `mouse-1-click-follows-link' is an integer, then you will need
 to hold the mouse button depressed longer than that many seconds,
 or else that candidate will simply by chosen.  If the value is
-`t', then this won't work at all.  Any other value presents no
+`t', then this will not work at all.  Any other value presents no
 problem.  (Personally, I use `nil'.)]
 
 The candidates that you selected -- those between `##icicles-face.el##'
@@ -652,7 +652,7 @@ See [[Icicles - Candidate Sets]] for more about saving and retrieving sets of ca
 [:HelpOnCandidates]
 == Get Help on Completion Candidates ==
 
-Sometimes, you'd like to be able to ask for help about individual completion candidates while you're in the process of choosing one. That's the purpose of the '''Icicles''' '''`C-M-'''' key bindings available during completion.
+Sometimes, you'd like to be able to ask for help about individual completion candidates while you're in the process of choosing one. That is the purpose of the '''Icicles''' '''`C-M-'''' key bindings available during completion.
 
 The simplest such bindings are `C-M-RET' and `C-M-mouse2'. They each do the same thing: provide help on the current candidate. You can use them during cycling or whenever you've narrowed the choice down to a single candidate. You can check this way, before you execute a command you're unsure of.
 
@@ -773,7 +773,7 @@ visit ##icicles-fn.el## in read-only mode, and function
 with ##ici##.
 
 You can use `C-u' with a function you choose, to pretty-print its
-result (in buffer `##*Pp Eval Output*##', if too large for the [[echo area]]).  That's useful for functions that have no side effects.
+result (in buffer `##*Pp Eval Output*##', if too large for the [[echo area]]).  That is useful for functions that have no side effects.
 For this to work, use `C-RET', not `RET', to choose the function.
 
 Each command defines its own alternative action, but many '''Icicles'''
@@ -841,7 +841,7 @@ information.  These faces are combined to produce the various
 highlighting effects -- keep that in mind if you customize them.
 
 When you are inputting, keep an eye out for this highlighting.  If
-you don't see it when you are prompted for input, it means that
+you do not see it when you are prompted for input, it means that
 input completion is not available.  This in turn means that
 `S-TAB' is available, not for input completion, but for '''Icicles''' [[Icicles - Key Completion | key
 completion]].
@@ -967,7 +967,7 @@ Oh, can you use [[#ProgressiveCompletion|progressive completion]] with '''Icicle
 And [[#ChippingAway|chipping away the non-elephant]] (complementing)?  Yep.  Try
 using vanilla Emacs incremental search to find a line that contains a
 given set of words in any (unknown) order and that also does not
-contain another given set of words.  No can do.  But that's simple using
+contain another given set of words.  No can do.  But that is simple using
 '''Icicles''' search.  (Yes, you can do it using `grep'.)
 
 And while you're searching, you can perform on-the-fly, on-demand
@@ -1078,7 +1078,7 @@ If you are an EmacsLisp programmer, this is the no-brainer, nutshell view of how
 : Add this line to your library: ##(require 'icicles nil ##'''##t##'''##)##
 [new]
 
-That's really all you need to do.  And there is no consequence if users don't have
+That is really all you need to do.  And there is no consequence if users do not have
 '''Icicles''' (no load error is raised, because of the non-`nil' third
 argument).  In other words, there is no reason ''not'' to add this soft
 `require', unless your library somehow conflicts with '''Icicles'''

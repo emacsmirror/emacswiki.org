@@ -84,7 +84,7 @@ A [[prefix argument]] changes the default behavior, as follows:
 [:icicle-find-first-tag-other-window]
 === `icicle-find-first-tag': Find First Tag in the Current Tags Table ===
 
-Sometimes you don't need the full power and flexibility of
+Sometimes you do not need the full power and flexibility of
 `icicle-find-tag'.  If you just want to find the first tag among
 several duplicates that match your input, and you just want to use
 the current tags table, then you can use '''`icicle-find-first-tag'''' or

@@ -17,14 +17,14 @@ That is, buffer `*Completions*' can act as a multiple-choice menu.
 
 Simple use case: Suppose that you use special characters (Greek
 letters, math symbols, accented letters in another language...),
-but only occasionally -- you don't want to take the trouble to
+but only occasionally -- you do not want to take the trouble to
 learn a special input method for them or flip to a different soft
 keyboard.  One simple way to handle this is to create a menu of
 such special characters -- Greek letters, for instance.  You only
 need to create the menu once, providing the necessary completions
 as, say, Unicode characters.  When you need to input such a
 character, just use your command that pops up buffer `*Completions*'
-with the available special characters.  Even if you don't know how
+with the available special characters.  Even if you do not know how
 to type them on your keyboard, you can cycle through them or use
 `mouse-2' to choose them.
 
@@ -97,8 +97,8 @@ This just adds a binding for
 `icicle-show-Completions-initially-flag', so that `*Completions*'
 is displayed initially.
 
-Granted, the `*Completions*' display doesn't exactly look like your
-average menu. And the header line doesn't mention the
+Granted, the `*Completions*' display does not exactly look like your
+average menu. And the header line does not mention the
 multiple-choice possibility (holding Control while clicking). But
 the header does say to use `C-h' for help, and that help does
 mention `C-mouse-2' (as does the prompt). And the menu does act
@@ -121,7 +121,7 @@ One common use of a multiple-choice menu is letting the user select a [[list]] o
 * '''`icicle-keyword-list'''' -- keywords ([[regexp]]s), selected from those you have previously entered
 * '''`hlt-choose-faces'''', '''`hlt-choose-visible-faces'''', '''`hlt-choose-invisible-faces'''' -- face names, selected from the (visible/invisible) highlighting faces in the buffer
 
-Such commands can be used on their own, or they can be used in the `interactive' specs of other commands that act on an entire list of selected items.  And don't forget that the set of "menu items"
+Such commands can be used on their own, or they can be used in the `interactive' specs of other commands that act on an entire list of selected items.  And do not forget that the set of "menu items"
 (completion candidates) is susceptible to sorting in various ways,
 as well as filtering in the usual ways: [[progressive completion]], [[Icicles - Nutshell View#ChippingAway|
 chipping away the non-elephant]], and so on.

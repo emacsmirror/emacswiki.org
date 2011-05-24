@@ -1,11 +1,13 @@
-== Espresso mode ==
+== JS mode (formerly Espresso) ==
 
-<b>This is part of Emacs since version 23.2 under the name js-mode (with an alias javascript-mode).</b> See EmacsDevelopmentSources for how to get it.
+For a long while there was debate and back-and-forth about Javascript support in emacs. There were a number of different options, in various stages of maturity and completion. 
+As of emacs 23.2, there is a standard major mode for editing javascript: js-mode. You can still use any javascript major mode you like, but the main one will probably be js-mode going forward. 
 
+<b>js-mode is part of Emacs since version 23.2 (with an alias javascript-mode).</b> It is derived and updated from Espresso mode. 
 
-Espresso-mode is a fork of Karl Landstrom's mode below, but with additional features and robustness improvements. See http://www.nongnu.org/espresso
+Espresso-mode itself is a fork of Karl Landstrom's Javascript mode (described below), but with additional features and robustness improvements. For the legacy page, see http://www.nongnu.org/espresso .  For the current js-mode, just get a current Emacs (23.2 or later). If you have a back-rev of emacs, see EmacsDevelopmentSources for how to get js-mode. 
 
-It includes:
+js-mode includes:
 * Support for cc-mode's comment wrapping
 * C preprocessor support - yes, people use this with Javascript
 * Full suite of movement commands, including beginning-of-defun, end-of-defun, and so on.
@@ -15,11 +17,13 @@ It includes:
 
 
 == JavaScript mode ==
-The most useful javascript mode may be Karl's implementation: http://www.brgeight.se/downloads/emacs/javascript.el
+
+This name refers to Karl Landstrom's implementation: http://www.brgeight.se/downloads/emacs/javascript.el
 
 The one from XEmacs works fine also in GNU Emacs: http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/prog-modes/javascript-mode.el
 
-Mewde Project contain Xemacs javascript mode with adding Mozilla Spider Monkey Project Javascript-Shell support. It works inside Emacs, but only primitively.
+The Mewde Project contain Xemacs javascript mode with adding Mozilla Spider Monkey Project Javascript-Shell support. It works inside Emacs, but only primitively.
+
 You can see details and screenshot here [http://mewde.blogspot.com/2007/05/what-comes-with-mewde.html] and download here [http://mewde.googlecode.com/files/javascript.el javascript-el] Also it has a most powerful javascript-mode, because it supports object-class-function browsing into speedbar for new javascript libraries and frameworks; like prototype, jquery, mochikit, and dojo.
 
 An older one at http://www.brigadoon.de/peter/javascript-mode.el needs ##(require 'hilit19)## in order to work correctly, and does not work in latest Emacs. It requires obsolete c-mode.el. The functionality is very limited. You're better off using JavaMode for Javascript.
@@ -126,6 +130,9 @@ Why isn't js2-mode in end of 23.2, instead of Espresso-mode?
 == Imenu integration ==
 
 This integration supports prorotoype.js class representation and original class representation.
+
+(It's not clear which javascript major mode this imenu stuff is intended for.  js-mode (in emacs) includes imenu support; it works pretty well.  You don't need this extra stuff. )
+
 
 {{{
 (defvar javascript-identifier-regexp "[a-zA-Z0-9.$_]+")

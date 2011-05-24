@@ -1,11 +1,12 @@
 auto-lang.el is a minor mode that tries to find out the language of the current buffer/paragraph. It can set the ispell dictionary (see InteractiveSpell) accordingly and switch on flyspell (see FlySpell) for you.
 
-* http://www.marquardt-home.de/auto-lang.el
+* Original source: http://www.marquardt-home.de/auto-lang.el
+* A slightly updated version lives here: http://github.com/altruizine/auto-lang
 
-Supported languages are French, Spanish, Italian, Portugese, Danish, Swedish, Polish, Latvian, German and English, but it's easy to add support for a new language by introducing a new wordlist. 
+Supported languages are French, Spanish, Italian, Portugese, Danish, Swedish, Polish, Latvian, German and English, but it's easy to add support for a new language by introducing a new wordlist.
 If you have done so, please contribute it back.
 
-I don't consider this code finished nor nice, but it works for me. Tell me if you want to 
+I don't consider this code finished nor nice, but it works for me. Tell me if you want to
 help improve it.
 
 I should add support for iso-8859-15 to be used with a dictionary definition like this:
@@ -23,4 +24,4 @@ I should add support for iso-8859-15 to be used with a dictionary definition lik
 ----
 see also: AutoDictionaryMode
 ----
-CategorySpelling CategoryModes CategoryInternationalization GuessBufferLanguage GuessLang WikiSpell 
+CategorySpelling CategoryModes CategoryInternationalization GuessBufferLanguage GuessLang WikiSpell

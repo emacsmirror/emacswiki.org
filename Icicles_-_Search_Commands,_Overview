@@ -226,7 +226,7 @@ match) with more semantic search criteria.  After building up a complex predicat
 
 # As always in '''Icicles''', your current minibuffer input ''filters'' the set of current candidates -- the search contexts, so that only those that contain matches to your input remain as candidates.  This is a second level of matching: looking for a ''refinement pattern within the search contexts''.   And this constitutes a '''_fifth way_''' you can limit the set of search contexts.
 
-# As always in '''Icicles''', this input can be a regexp.  This is ordinary [[apropos completion]], applied to searching. You don't type `RET' to enter this regexp, and you can change it on the fly to change the set of search hits.  '''Icicles''' searching is thus ''incremental'', in the sense that changing your input dynamically changes the set of matching search hits.  '''Icicles''' searching is not incremental with respect to the initial, context matching, however.
+# As always in '''Icicles''', this input can be a regexp.  This is ordinary [[apropos completion]], applied to searching. You do not type `RET' to enter this regexp, and you can change it on the fly to change the set of search hits.  '''Icicles''' searching is thus ''incremental'', in the sense that changing your input dynamically changes the set of matching search hits.  '''Icicles''' searching is not incremental with respect to the initial, context matching, however.
 
 # As always in '''Icicles''', you can type some input and then hit
 `##C-~##' to remove all candidates that match that input.  Then
@@ -587,7 +587,7 @@ function-definition regexp is twice as complex)!  Put it into a
 variable or register once and use `C-=' or `C-x r i' from then on to retrieve it -- simple.
 
 If it's so simple, then why not let a command do it?  This is exactly what command '''`icicle-imenu'''' (bound to '''`##C-c =##'''') does. You
-don't need to bother looking up Imenu regexps and assigning them
+do not need to bother looking up Imenu regexps and assigning them
 to variables for use with `C-=' and `icicle-search' -- `icicle-imenu' does that for you automatically.  See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
 
 
@@ -611,7 +611,7 @@ it to modify your second  and subsequent
 regexps on the fly -- those that filter
 the initial candidate list further.  You can repeat `C-l' to retrieve older completion inputs, and you can use `C-S-l' (that is, `##C-##'''##L##'''') to cycle previous inputs in the other direction.  See [[Icicles - History Enhancements]].
 
-Oh -- And don't forget that you can do things like take the
+Oh -- And do not forget that you can do things like take the
 ''complement'' of your fine-tuning regexp matches, within the context
 of your coarse-tuning matches (see [[Icicles - Candidate Sets#icicle-candidate-set-complement|set complement]]).  For example, use `<code>^.*defun.*$</code>' as the main regexp, to find all lines containing
 `defun'.  Then type `icicle' to match only the lines with `defun'

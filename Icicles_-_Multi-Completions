@@ -25,7 +25,7 @@ against separately and simultaneously.
 Have you ever used standard Emacs [[command]] `apropos-documentation'?
 It searches the [[doc string]]s of all EmacsLisp [[symbol]]s for matches
 to an input [[regexp]], and displays the hits.  It can be useful when
-you don't remember the name of a function or [[variable]] but you can
+you do not remember the name of a function or [[variable]] but you can
 guess at terms that might occur in its doc string.  Typically,
 people resort to it only after first trying apropos commands that
 match against the function or variable name.
@@ -105,13 +105,13 @@ concatenation of the two.  You join these two regexps using
 using `C-q', so to input `##^G^J##' you can use `C-q C-g C-q C-j'.  
 
 However, in '''Icicles''', `C-j' (newline) is self-inserting
-during completion, so you don't need to quote it with `C-q' -- you can just
+during completion, so you do not need to quote it with `C-q' -- you can just
 use `C-q C-g C-j'.  Better yet, you can use '''`C-M-j''''
 (`icicle-insert-list-join-string') to insert `##^G^J##'.
 
 This has the
 added benefit (in Emacs 22 or later) of hiding the `##^G##' -- it's
-there, but you don't see it.  This hiding is only cosmetic; you
+there, but you do not see it.  This hiding is only cosmetic; you
 still match the characters `##^G##' and `##^J##'. In the same way, '''Icicles''' hides the `##^G##' part of `##^G^J##' in
 `*Completions*', so the join string appears as a newline character.
 
@@ -151,7 +151,7 @@ match all functions whose names contain `dired' and whose doc
 strings' first lines contain `file'.
 
 Why only the first lines?  Because '''`##.##'''' matches any character
-except a newline -- it doesn't look past the first line.  If you
+except a newline -- it does not look past the first line.  If you
 want to search the entire doc strings (or property lists, for
 `icicle-plist'), then you need to use a connecting regexp that
 matches any character, including a newline.  That means a regexp
@@ -304,7 +304,7 @@ and then by file-name for the same date.  This gives you an easy
 way to look up ''files that you modified during a given time period''.
 For example, your input regexp can limit candidates to those files
 last modified sometime in July, 2008, and you can then access these
-chronologically (by cycling or in buffer `*Completions*').  And don't
+chronologically (by cycling or in buffer `*Completions*').  And do not
 forget that you can always reverse the current sort order, using
 `##C-##'''''##N##'''''## C-,##' where '''''##N##''''' is an integer.
 

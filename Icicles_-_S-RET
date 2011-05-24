@@ -62,7 +62,7 @@ accepted immediately, regardless of the context (whether a match
 is required or not) and without having to use `RET' or `S-RET', there is
 '''Icicles''' user option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>''''.
 If you set this to non-`nil', then, whenever your input matches only one
-candidate completion, that candidate is used immediately.  I don't
+candidate completion, that candidate is used immediately.  I do not
 recommend this practice generally, but some people might prefer it.
 
 Option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>'''' is the number

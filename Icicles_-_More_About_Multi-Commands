@@ -226,7 +226,7 @@ Use input patterns, with [[progressive completion]], [[chip away|chipping away]]
 and so on, to define the candidates to delete, then use '''`C-u S-delete'''' and confirm their deletion.  Bye-bye.
 
 Do not confuse the ''un''shifted `delete' key with `S-delete'.
-`delete' does not delete any ''objects''; it just removes a ''completion candidate'' so that you can't complete to it.  `S-delete' deletes an
+`delete' does not delete any ''objects''; it just removes a ''completion candidate'' so that you cannot complete to it.  `S-delete' deletes an
 object and removes its name as a completion candidate.
 
 If you are an EmacsLisp programmer, then you can define your own

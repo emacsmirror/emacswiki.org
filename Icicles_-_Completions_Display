@@ -179,7 +179,7 @@ matched portions of the candidates in `*Completions*'.  This
 portion is replaced by ellipsis, '''`##...##''''.  (In Emacs 20, it is
 replaced by nothing.)
 
-This can be useful when you don't care about the text that matches or when that text is particularly long.  For example, if
+This can be useful when you do not care about the text that matches or when that text is particularly long.  For example, if
 you use `icicle-find-file-absolute' (`C-u C-x C-f') and the
 completion candidates are absolute file names that share a
 common directory, it can be convenient to hide the directory

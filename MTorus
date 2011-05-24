@@ -29,12 +29,13 @@ The project page is at http://mtorus.berlios.de/
 == History ==
 * MTorus started under the name of "session-stack" around 2001 and was renamed later to mtorus.el (Stefan). 
 This version features a simple display engine, some evil code but the saving and restoring of the torus.
-[http://skamphausen.de/software/skamacs/mtorus.el Get it].
-* It was rewritten from scratch around 2002/2003 with a new display engine but without the saving and restoring. [http://skamphausen.de/software/skamacs/mtorus-2.el Get it] (Stefan)
+(This is not available anymore).
+* It was rewritten from scratch around 2002/2003 by Stefan with a new display engine but without the saving and restoring. ([http://www.skamphausen.de/cgi-bin/ska/mtorus Get it at Stefans place])
 * Once again it was totally reformed in 2004 by Sebastian to a much more general approach.  For the adventuresome and for lisp wizards ;-)
 
 All text hereafter only refers to the current, advanced version.
-
+: You mean the 2004 version, right? --CH
+:: yes, Sebastian wrote most of this page. I still use my own version and I don't know whether Sebastian is still using his or working on it -- StefanKamphausen
 == Obtaining MTorus ==
 
 MTorus is available via berlios.de CVS, use

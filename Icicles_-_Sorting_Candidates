@@ -151,7 +151,7 @@ during [[minibuffer]] completion.
 There are many different uses of completion in Emacs, and this means that sorting candidates needs to be flexible -- there cannot be a single sort order, or even a single set of sort
 orders, that is useful for all purposes. Completion, and therefore also sorting of completion candidates, needs to deal with different types of candidates and different numbers of them, in different contexts.
 
-'''Icicles''' predefines many sort functions, and you can easily define more of your own. You can choose a different sort at any time, as mentioned above. A good sort order can be a big help, depending on the context. However, sorting isn't free, and it's helpful to think for a moment about some of the consequences of sorting, in terms of performance.
+'''Icicles''' predefines many sort functions, and you can easily define more of your own. You can choose a different sort at any time, as mentioned above. A good sort order can be a big help, depending on the context. However, sorting is not free, and it can be helpful to think for a moment about some of the consequences of sorting, in terms of performance.
 
 What does a sort function do? It determines which of two strings should come first, that is, which is "less than" the other. During sorting, pairs of candidates are compared using the sort function.  And each time you change your input by typing or deleting a character, the new set of matching candidates is sorted (if `icicle-incremental-completion-flag' is non-`nil').
 
@@ -164,7 +164,7 @@ many.
 
 If there are many candidates matching your input, then many comparisons will be made each time the candidate set is sorted. This means that if your sort function is complex, response can be slow. A complex sort function might be OK for sorting a small or medium set of candidates, but it might not be appropriate for sorting a very large set.
 
-Only you, as a user, can control which sort makes the best sense for you in any given situation. If you are likely to have zillions of candidates in some context, then you probably will want to change to a sort that computes quickly. You can, of course, even choose not to sort at all, but simple sort comparisons don't noticeably impact performance, even for a very large number of candidates.  
+Only you, as a user, can control which sort makes the best sense for you in any given situation. If you are likely to have zillions of candidates in some context, then you probably will want to change to a sort that computes quickly. You can, of course, even choose not to sort at all, but simple sort comparisons do not noticeably impact performance, even for a very large number of candidates.  
 
 '''Icicles''' could offer a threshold option similar to `icicle-incremental-completion-threshold' (or it could reuse that option), and not bother to sort if the number of candidates passed the threshold, but there can be many sort orders of differing complexity, so a set of thresholds would really be needed, perhaps one per sort order. 
 

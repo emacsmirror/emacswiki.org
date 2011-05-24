@@ -346,8 +346,34 @@ functionality.
 
 To get a copy of this extension go to:
 
-* http://joseito.republika.pl/sunrise-x-old-checkpoints.el.gz
 * Lisp:sunrise-x-old-checkpoints.el
+* http://joseito.republika.pl/sunrise-x-old-checkpoints.el.gz
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+
+----
+[:W32Addons]
+==The Windows Add-ons Extension==
+
+Not long ago, a user of the Sunrise Commander FM on MS Windows asked me if there
+are any facilities in SC that would give him easy access to the different drives
+and special folders in this OS. Since there weren't any I wrote the Windows
+Add-ons Extension.
+
+This extension implements a listing of all Windows drives and special folders
+inside the Sunrise Commander, as well as support for symbolic links (shortcuts)
+for all file system operations inside Sunrise.
+
+One caveat, though: this is only for Emacs ports that run directly on the
+Windows file system (like e.g. [http://ourcomments.org/Emacs/EmacsW32.html EmacsW32])
+if yours works on top of some simulation layer that maps the file system (such
+as [http://x.cygwin.com/ Cygwin]), you don't need this code.
+
+You can get a copy of the Sunrise Commander Windows Addons extension
+(including installation and usage notes) from:
+
+* Lisp:sunrise-x-w32-addons.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-w32-addons.el.gz
 
 ----
 [:Misc]

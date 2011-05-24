@@ -1728,7 +1728,7 @@ minibuffer or called with a negative prefix argument.
 
 Non-`nil' user option '''`icicle-use-candidates-only-once-flag'''' means
 that acting on a candidate removes it from the set of available
-candidates, so that you don't see that it can be used again.
+candidates, so that you do not see that it can be used again.
 (`TAB' or `S-TAB' makes it available again.)  The default value
 is `nil', and you probably do not want to customize this.
 However, if you write EmacsLisp code that uses completion, then

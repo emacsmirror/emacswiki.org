@@ -32,7 +32,7 @@ Command '''`icicle-execute-extended-command'''' is simply a multi-command versio
 With the default value of [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''', `M-x' is bound to
 `icicle-execute-extended-command' whenever you are in ''Icicle'' mode.
-If you never use it as a multi-command, you won't notice any
+If you never use it as a multi-command, you will not notice any
 difference from `execute-extended-command'.
 
 
@@ -52,7 +52,7 @@ Repeat as many times as you want.  Use a [[prefix argument]] if you like.
 To switch to another command 
 in the same `M-x' invocation: Erase
 the minibuffer (`M-k'), complete the second command, then
-use `C-RET'.  As long as you haven't yet used `RET',
+use `C-RET'.  As long as you have not yet used `RET',
 `S-RET', `C-g' (or, say, `##C-]##'), you remain within the same
 invocation of `M-x'.
 
@@ -130,7 +130,7 @@ When you choose a command that reads an argument in the minibuffer and you then 
 
 And that's why `describe-variable' works in Emacs 20 but not in later versions: In Emacs 20, `describe-variable' (sanely) raises a type error if you pass it a string, and '''Icicles''' is able to save the day by then passing it the corresponding symbol. In later versions of Emacs, however, instead of raising an error with the message "You did not specify a variable", `describe-variable' just displays the message -- no error, so there is no way for '''Icicles''' to recuperate.
 
-I've reported this design misfeature to the Emacs developers, and I hope it will be fixed in a future Emacs version. Until then, at least you know... The more general lesson is this: '''Icicles''' can turn every command into a multi-command, but multi-command actions won't work for every command.
+I've reported this design misfeature to the Emacs developers, and I hope it will be fixed in a future Emacs version. Until then, at least you know... The more general lesson is this: '''Icicles''' can turn every command into a multi-command, but multi-command actions will not work for every command.
 
 
 

@@ -25,7 +25,7 @@ Just as with prefix [[completion]], '''Icicles''' lets you cycle among the
 apropos candidates.  To do this, you use keys `next' and `prior' (labeled ##PageDown## and ##PageUp## on many keyboards). The root that was completed is
 ''underlined'' in the minibuffer completion candidate.
 
-For example, suppose you use `M-x' to enter a [[command]].  You don't
+For example, suppose you use `M-x' to enter a [[command]].  You do not
 remember the exact command name, but it has something to do with
 [[line]]s, so you type `M-x line', then hit `next' repeatedly until you
 see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Prefix

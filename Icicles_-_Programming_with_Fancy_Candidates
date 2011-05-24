@@ -30,7 +30,7 @@ the original candidate information.
 
 This conversion (encoding and decoding) can be costly, especially
 when there are many candidates.  For this reason, it is turned
-off, by default, so it that doesn't represent overhead during
+off, by default, so it that does not represent overhead during
 completion of non-fancy candidates.
 
 In order to use `completing-read' with fancy candidates, you must

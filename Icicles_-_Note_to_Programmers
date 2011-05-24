@@ -11,7 +11,7 @@ Here are some simple guidelines for using '''Icicles''' in EmacsLisp
 programming:
 
 
-'''1.''' '''''Use it!''''' Even if you don't do anything else, include this in
+'''1.''' '''''Use it!''''' Even if you do not do anything else, include this in
 your library: 
 
   (require 'icicles nil t)
@@ -31,7 +31,7 @@ a ##REQUIRE-MATCH## argument.
 Try also to find an appropriate `PREDICATE' argument, and a good
 set of default values to pass to `completing-read' as its ##COLLECTION##
 argument.  Too often, I think, we use an overly general ##COLLECTION##
-argument, such as the `obarray', and we don't provide a (good)
+argument, such as the `obarray', and we do not provide a (good)
 ##PREDICATE##.  Using an input-completion function with an
 appropriate candidate completion list and predicate can help
 users considerably.

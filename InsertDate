@@ -40,6 +40,11 @@ This command will insert the standard date format:
     (interactive)
     (insert (format-time-string "%c")))
 
+[new]
+
+I have something like this bound to a keystroke, so with just a tap-tap, I can insert a timestamp into any document I am editing. --DinoChiesa
+
+[new]
 
 See InsertingAndUpdatingDates for other ways to insert dates in buffers and files.
 

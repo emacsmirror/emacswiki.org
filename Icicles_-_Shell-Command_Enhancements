@@ -27,25 +27,112 @@ This section describes the completion available for `##M-!##' and
 In vanilla Emacs, when you enter a shell command at the prompt for
 `##M-!##' or `##M-|##', no completion is available for Emacs prior to
 Emacs 23.  In Emacs 23, no completion is available for empty
-input, and non-empty input is completed only to a shell command in your
+input, and non-empty input is completed only to a shell command that is in your
 search path.
 
 In ''Icicle'' mode, `##M-!##' and `##M-|##' can, like in vanilla Emacs 23,
-complete using commands on your search path.  This depends on the
+complete using commands in your search path.  This depends on the
 the value of [[option]] `icicle-guess-commands-in-path' (see below).
 
-The most significant thing about '''Icicles''' completion for reading a
-shell command is that it is enhanced ''file-name'' completion.  This
-means that you can easily invoke a program no matter where it
-resides, whether or not its directory is in your search path.  You
-can use completion to navigate to the command's location.
+
+
+
+
+
+
+
+
+[:ShellCommandCompletionAsFileNameCompletion]
+=== Shell Command Completion as File-Name Completion ===
+
+The most significant, and craziest, thing about '''Icicles''' completion
+for reading a shell command is that it is in fact ''file-name''
+completion.  Reading a shell command means, first, reading a
+file name.  This is unexpected, to say the least.
+
+A shell command is itself an executable file, either a binary
+program or a script.  That's not so shocking.  But since '''Icicles'''
+uses file-name completion for your entire shell-command input,
+including any switches (options) and command arguments, all of
+that input is interpreted by `read-file-name' as a file name,
+before it gets passed on to the shell.
+
+The reason for providing file-name completion for a shell command
+is to let you easily invoke a program no matter where it resides,
+whether or not its directory is in your search path.  You can use
+completion to navigate to the command's location.
 
 '''Icicles''' shell-command completion is [[lax]], so you can enter any command you
-want, not just a completion candidate, and you can edit completed
-input, to add switches (options) and arguments.
+want, not just a file-name completion candidate.  And you can edit the completed
+input before hitting `RET', to add command switches (options) and arguments.  The overall input
+string is taken as a (pseudo) file name, but it is then passed to
+the shell for execution.
+
+
+
+
+
+
+
+
+
+
+[:GotchaDollarInShellCommands]
+=== Gotcha: `$' in Shell Commands ===
+
+There is a gotcha, however, regarding `##$##' and file-name input:
+
+When you hit `RET' to accept the input, `read-file-name' finishes
+its job, as always, by trying to expand any environment variables
+in the string.  Usually this is what you want, and it presents no
+problem.  But in the context of a shell another `##$##' syntax is also
+used.  For example, `##$1##' typically means the first argument or
+first field; it does not mean a variable named `1'.
+
+`read-file-name' knows nothing about this different `##$##' syntax,
+and it systematically calls `substitute-in-file-name' to expand
+any environment variables in the file name you enter (when you hit
+`RET').  It interprets `##$1##' the same way it inteprets `##$PATH##',
+treating `1' as an (unknown) environment variable.  This is not
+what you want it to do.  If you input `##awk '{print $1}##' Emacs
+raises this error:
+
+  Substituting nonexistent environment variable "1"
+
+What can you do about this?  Three possible approaches:
+
+* Do not use this '''Icicles''' feature at all.  Customize [[option]]
+'''`icicle-functions-to-redefine'''' to remove the shell-related
+functions, `dired-read-shell-command' and `read-shell-command'.
+If you do that, then ''Icicle'' mode will not substitute '''Icicles'''
+functions for these functions and you will get the vanilla Emacs
+behavior.
+
+* Escape the `##$##' sign by doubling it: use `##$$##' instead of `##$##' when
+you want to pass a `##$##' to the shell and not let `read-file-name'
+try to interpret it in terms of an environment variable.
+
+* Turn off ''Icicle'' mode temporarily when you use a complex command
+that involves `##$##': `M-x icy-mode'.
+
+
+That file-name completion is used for shell commands is, well,
+weird, I admit.  You might or might not appreciate it.  Just
+remember that you can easily turn it off if you want.
+
+
+
+
+
+
+
+
 
 [:icicle-guess-commands-in-path]
-Though file-name completion is used for reading shell commands, extra, known commands are also made available as ''proxy'' completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
+[:KnownShellCommandsAsProxyCandidates]
+=== Known Shell Commands as Proxy Candidates ===
+
+Though file-name completion is used for reading shell commands, extra, known shell commands are also made available as ''proxy'' completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
 files (or of all files, if `shell-completion-execonly' is `nil') in
 your ''search path''.
 
@@ -90,7 +177,7 @@ extra candidate, help is
 provided for the command by the `apropos' shell command (if available).  For a
 file-name candidate, help shows the file's properties.  See [[Icicles - Help on Candidates]].
 
-Remember also:
+Reminder:
 
 * After you have typed or completed the shell command per se
  (e.g. a file name or search-path command), you can use '''`C-M-S-f''''
@@ -104,7 +191,7 @@ Remember also:
  or arguments), then you can use `M-o' to retrieve it for reuse (possibly
 editing it).  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']]
 
-* If for some reason you do not want to use the enhancements
+* If you do not want to use the enhancements
 described here, just customize option 
 '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' to remove shell-related functions.  If you do
 that, then ''Icicle'' mode will not substitute '''Icicles''' functions for them.

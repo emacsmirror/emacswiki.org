@@ -51,10 +51,10 @@ There are a few things wrong with this definition, however. In the action functi
  (lambda (x) 
    (condition-case nil
        (funcall cmd x)                            ; Try to use a string candidate
-     (wrong-type-argument                         ; If that didn't work, use a
+     (wrong-type-argument                         ; If that did not work, use a
       (funcall cmd (car (read-from-string x)))))) ; symbol or number candidate.
 
-A similar problem occurs if the action function called doesn't accept a (single) argument. The best thing to do in this case is punt -- call `icicle-help-on-candidate' to display help on the candidate. To the code above, we add another error handler:
+A similar problem occurs if the action function called does not accept a (single) argument. The best thing to do in this case is punt -- call `icicle-help-on-candidate' to display help on the candidate. To the code above, we add another error handler:
 
  (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))
 

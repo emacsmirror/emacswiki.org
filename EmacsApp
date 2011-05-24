@@ -111,6 +111,10 @@ I have tried outlining 3 basic options for European users in a blog post/video [
 
 * Can not set default window position and size by  ./Emacs.app/Contents/MacOS/Emacs -q -g 400x400 or org.gnu.Emacs.plist. Is there another way to set default window size except from .emacs?
 
+[new:AlpAker:2011-05-23 19:29 UTC]
+
+Not without recompiling, unfortunately.  The NextStep (i.e., OS X) port explicitly disregards any geometry parameters that appear among the command line arguments (look at the the definition of `command-line-ns-option-alist' in lisp/startup.el).  It *should* read org.gnu.Emacs.plist, but the implementation of that is incomplete, so as you've found out, that method doesn't work either.  Your only options are to modify startup.el to pass size parameters to the initial make-frame command, or to change the values of ##DEFAULT_ROWS## and ##DEFAULT_COLS## in src/frame.c.  In either case, you'll have to rebuild the application.  -- AlpAker
+
 [new]
 * I'm missing an "emacs" binary, to execute from the command line, from Emacs.app. It's expected by some Makefiles, for instance. Does anyone know how to create or fake one? -- ThomasKappler
 

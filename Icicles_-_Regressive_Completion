@@ -48,7 +48,7 @@ common search engines.
 '''Gotcha:''' When completing file names that are not absolute
 (e.g. using `C-x C-f', not `C-u C-x C-f'), be sure that the
 default directory is not included in your minibuffer input when
-you hit `##M-+##'.  You don't want the overall regexp that `##M-+##'
+you hit `##M-+##'.  You do not want the overall regexp that `##M-+##'
 constructs to be something like ##\(/my/default/dir/foo\|bar\)## -- you
 want it to be just ##\(foo\|bar\)##.  For absolute file name
 completion there is no such problem, because the completion  candidates themselves have a directory component.  So either use a

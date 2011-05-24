@@ -11,7 +11,7 @@ Here's another weird '''Icicles''' feature: [[Completion]] of ''[[key sequence]]
 
 ''What on earth for?'' Ever want to use one of those myriad `C-x' key sequences, but forget just what it was? The standard solution to that is to use `C-x C-h', to display all of the `C-x' [[key binding|bindings]] together with their commands.
 
-OK, but then you have to scroll down the list of bindings, searching for the command you want, and then use its key binding. You can use `C-M-s' to search for a substring of the command name, in case you don't recall the exact name, but why not use '''Icicles''' completion for this? Why not ''match against possible key sequences and commands''?
+OK, but then you have to scroll down the list of bindings, searching for the command you want, and then use its key binding. You can use `C-M-s' to search for a substring of the command name, in case you do not recall the exact name, but why not use '''Icicles''' completion for this? Why not ''match against possible key sequences and commands''?
 
 
 
@@ -45,7 +45,7 @@ You can customize it, using [[option]] '''`<tt>[[Icicles - Customization and Gen
 [:StartWithS-TAB]
 === `S-TAB' Is Everywhere - Start With It ===
 
-In ''Icicle'' mode, whenever you are not in the minibuffer or [[buffer]] `*Completions*', key `S-TAB' initiates key completion. That is, you don't need to first type part of a key sequence to use it -- you can ''start with it''. Hit `S-TAB' at any time, and you're completing a key sequence, even if you haven't yet hit any keys. This lets you see all key sequences that are available in a given context. For example, in [[DiredMode|Dired]], keys special to that mode are included (and are highlighted as local bindings -- see [[#HighlightLocalBindings]], below).
+In ''Icicle'' mode, whenever you are not in the minibuffer or [[buffer]] `*Completions*', key `S-TAB' initiates key completion. That is, you do not need to first type part of a key sequence to use it -- you can ''start with it''. Hit `S-TAB' at any time, and you're completing a key sequence, even if you have not yet hit any keys. This lets you see all key sequences that are available in a given context. For example, in [[DiredMode|Dired]], keys special to that mode are included (and are highlighted as local bindings -- see [[#HighlightLocalBindings]], below).
 
 When completing a key sequence, you can type part of a command name, then hit `S-TAB' again to [[apropos completion|apropos-complete]] against the command name. In this respect, `S-TAB' acts like `M-x', but the key binding is also part of the completion candidate, so you can also match key names.
 
@@ -110,7 +110,7 @@ Here are some screenshots, from `S-TAB' in the Buffer Menu (`C-x C-b'), to illus
 === Meta Key Bindings ===
 
 If you use `S-TAB' at the top level, and you look for the
-key sequence `M-x' or `M-d', you won't find it.  [[Meta]] key bindings are there, but many of them are disguised
+key sequence `M-x' or `M-d', you will not find it.  [[Meta]] key bindings are there, but many of them are disguised
 as keys in the `ESC' [[prefix keymap]] -- e.g. `##ESC x##' for `M-x'.  That is, you must first choose the `ESC' [[prefix key]]:
 `##ESC  =  ...##', and then choose the `x' key or whatever.  That's just the way Emacs works.  So, yes, you can use
 '''Icicles''' key completion to execute any Emacs command, even one that
@@ -270,7 +270,7 @@ Of course, you need a couple other keys, as well. How many? Suppose you had limi
 What does vanilla Emacs offer out of the box in this regard?
 
 * You can get by with just `mouse-1' and the [[menu bar]] menus, but they
-  don't cover all of Emacs. You can't use them to enter text, for
+  do not cover all of Emacs. You cannot use them to enter text, for
   instance. Of course, you could add more menus, to be able to do more.
 
 * You can use `M-x' plus `RET' to execute any command. But how would
@@ -300,7 +300,7 @@ You could even perhaps get away with only three mouse buttons, and no keyboard:
 * `mouse-2' -- Do what `S-TAB' does (bind it to `icicle-complete-keys' and `icicle-apropos-complete').
 * `mouse-3' -- Do what `C-g' does (bind it to `keyboard-quit' and `icicle-abort-recursive-edit').
 
-Here, `mouse-2' and `mouse-3' aren't even used as mouse ([[pointer]]) functions; any keys or buttons would do. You could use just `mouse-1' plus a Shift key and a Control key.
+Here, `mouse-2' and `mouse-3' are not even used as mouse ([[pointer]]) functions; any keys or buttons would do. You could use just `mouse-1' plus a Shift key and a Control key.
 
 Would you ''want'' to use Emacs only this way? Of course not, if you had a
 choice.  Typing the character `a' by cycling through every possible
@@ -363,8 +363,8 @@ type its description (name) with your keyboard.  You can even insert characters 
 way that your system has no font for -- they will be displayed as
 empty boxes, but they will be correctly inserted.
 
-There is an exception, however.  You cannot insert some characters
-this way, because they don't have a one-to-one relation with keys that are bound to `self-insert-command'. In such cases, "keys" are bound to `self-insert-command' that represent not single characters but groups of characters. '''Icicles''' filters out these keys, so they are not available as completion candidates. The problematic keys are in Korean, Chinese, Japanese,
+There is an exception, however.  There are some characters that you cannot insert
+this way, because they do not have a one-to-one relation with keys that are bound to `self-insert-command'. In such cases, "keys" are bound to `self-insert-command' that represent not single characters but groups of characters. '''Icicles''' filters out these keys, so they are not available as completion candidates. The problematic keys are in Korean, Chinese, Japanese,
 Ethiopic, Indian, Tibetan, and some Unicode character sets.
 
 Because insertion of special characters is useful, but is a

@@ -95,7 +95,7 @@ been fontified.
 [:IciclesImenu]
 === Icicles Imenu: `icicle-imenu' ===
 
-Command '''`icicle-imenu'''', which is bound to '''`##C-c =##'''', is an ''[[ImenuMode|Imenu]] browser''.  It lets you use '''Icicles''' completion to navigate among definitions of functions, [[variable]]s, types, [[key]]s, and so on in a programming language (in fact, any language that Imenu handles).  As always in '''Icicles''', your current input (e.g. a regexp) filters the set of available candidates.  That is, you can match against ''parts'' of an Imenu entry -- any parts. That's particularly useful if there are many entries in the Imenu menu; you don't need to read/scan the whole list.
+Command '''`icicle-imenu'''', which is bound to '''`##C-c =##'''', is an ''[[ImenuMode|Imenu]] browser''.  It lets you use '''Icicles''' completion to navigate among definitions of functions, [[variable]]s, types, [[key]]s, and so on in a programming language (in fact, any language that Imenu handles).  As always in '''Icicles''', your current input (e.g. a regexp) filters the set of available candidates.  That is, you can match against ''parts'' of an Imenu entry -- any parts. That's particularly useful if there are many entries in the Imenu menu; you do not need to read/scan the whole list.
 
 Here's a screenshot of using `icicle-imenu' to find function definitions (Imenu submenu '''Functions''') that match the regexp `kill':
 

@@ -137,7 +137,7 @@ some user interfaces by filling out a checklist followed by clicking `OK'.
 22) `mouse-1-click-follows-link' is an integer, then you will need
 to hold the mouse button depressed longer than that many seconds,
 or else that candidate will simply by chosen.  If the value is
-`t', then this won't work at all.  Any other value presents no
+`t', then this will not work at all.  Any other value presents no
 problem.  (Personally, I use `nil'.)]
 
 

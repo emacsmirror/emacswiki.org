@@ -133,7 +133,7 @@ return `nil' as a success indicator.
 In fact, things can get even hairier (much hairier) still, if the
 function at the core of your command does things like create a new
 frame -- especially on MS Windows, with its click-to-focus window
-manager.  The action of `change-font' doesn't do that, but if it
+manager.  The action of `change-font' does not do that, but if it
 did, you would need to redirect the focus back to the minibuffer
 frame, using `select-frame-set-input-focus'.  As an illustration
 of what's involved, here's a definition that would deal with such
@@ -174,7 +174,7 @@ failure.
                 orig-frame (list (cons 'font orig-font)))
                (error (error-message-string act-on-choice))))))
 
-That's a lot of (error-prone) work!  You obviously don't want to
+That's a lot of (error-prone) work!  You obviously do not want to
 be doing that a lot.  Whenever you can, you should use macro
 `icicle-define-command' or `icicle-define-file-command' to define
 your multi-commands.

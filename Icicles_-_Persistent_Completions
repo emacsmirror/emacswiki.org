@@ -151,7 +151,7 @@ directories and files can even be in disparate locations.
 
 Start
 with [[command]] `icicle-locate-file' (or
-`icicle-locate-file-no-symlinks').  Then use [[progressive completion]] to match the directories and files you want and [[Icicles - Nutshell View#ChippingAway|chip away]] at those you don't want.  Once you get just the set you need
+`icicle-locate-file-no-symlinks').  Then use [[progressive completion]] to match the directories and files you want and [[Icicles - Nutshell View#ChippingAway|chip away]] at those you do not want.  Once you get just the set you need
 for your project, save that set using '''`##C-}##''''.  You can have any
 number of saved sets, for different projects or different purposes
 in the same project.

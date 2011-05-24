@@ -14,9 +14,9 @@ Defining a [[command]] that uses '''Icicles''' [[completion]] and [[Icicles - Cy
 simple: just call `completing-read' or `read-file-name' to read
 input, then act on that input.  
 
-Nothing could be simpler -- just use `completing-read' or `read-file-name'! '''Icicles''' does the rest. This is the most important thing to learn about defining '''Icicles''' commands: ''you don't need to do anything'' except call `completing-read' or `read-file-name' as you would normally anyway. 
+Nothing could be simpler -- just use `completing-read' or `read-file-name'! '''Icicles''' does the rest. This is the most important thing to learn about defining '''Icicles''' commands: ''you do not need to do anything'' except call `completing-read' or `read-file-name' as you would normally anyway. 
 
-Or at least as I ''hope'' you would normally. I fear that many Emacs-Lisp programmers don't take sufficient advantage of `completing-read' when they could, using instead a function such as ''(quel horreur !)'' `read-string' to read user input.
+Or at least as I ''hope'' you would normally. I fear that many Emacs-Lisp programmers do not take sufficient advantage of `completing-read' when they could, using instead a function such as ''(quel horreur !)'' `read-string' to read user input.
 
 
 === Multi-Commands Are Easy To Define Too ===
@@ -43,7 +43,7 @@ identical to the definition of `icicle-buffer', except that the
 action function is `insert-buffer' instead of `switch-to-buffer'.
 
 The point is to not be afraid of defining multi-commands yourself.  You
-don't really need to have me add a multi-command to '''Icicles''' in
+do not really need to have me add a multi-command to '''Icicles''' in
 most cases; you can easily define it yourself.  Here is a simple
 definition of `icicle-insert-buffer'.  You will understand it in
 detail after reading the next section.
@@ -348,7 +348,7 @@ for some reason '''Icicles''' cannot be found or successfully loaded.
 
 But that brings up another question: What happens to your
 multi-command if '''Icicles''' is not available for a user, or s?he
-doesn't want to load it? No problem -- your multi-command then
+does not want to load it? No problem -- your multi-command then
 automatically turns into a normal, single-choice command --
 graceful degradation.
 

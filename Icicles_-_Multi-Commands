@@ -62,7 +62,7 @@ can choose any number of completion candidates, using `C-RET' (or
 or even ''multiple times on the same'' candidate, during the same
 execution of the command. 
 
-But you don't have to -- you can use any
+But you do not have to -- you can use any
 multi-command just ''as if it were a normal, single-choice command''.''
 
 For example, command `icicle-delete-file' lets you delete a single file or  a set of 

@@ -195,7 +195,7 @@ toggles `##M-_##', `##C-^##', `##C-;##', and `##M-;##'.  And you need to know ho
 repeated `C-S-RET' works vs repeated `C-S-next'.
 
 I know it's tricky to learn.  Experimenting helps.  If something
-happens that you didn't expect, reread this section and try to
+happens that you did not expect, reread this section and try to
 understand.  Have fun.
 
 
