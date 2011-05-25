@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Tue May 17 14:01:59 2011 (-0700)
+;; Last-Updated: Tue May 24 11:32:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 653
+;;     Update #: 656
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/05/24 dadams
+;;     thgcmd-invisible-p: Use invisible-p if available (Emacs 22+).
 ;; 2011/05/14 dadams
 ;;     Added: thgcmd-things-alist.
 ;;     thing-region, mark-thing, (next|previous)-visible-thing:
@@ -459,10 +461,12 @@ the bounds of THING.  Return nil if no such THING is found."
 
 (defun thgcmd-invisible-p (position)
   "Return non-nil if the character at POSITION is invisible."
-  (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
-    (if (eq buffer-invisibility-spec t)
-        prop
-      (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec)))))
+  (if (fboundp 'invisible-p)            ; Emacs 22+
+      (invisible-p position)
+    (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
+      (if (eq buffer-invisibility-spec t)
+          prop
+        (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec))))))
 
 (defun thgcmd-repeat-command (command)
   "Repeat COMMAND."

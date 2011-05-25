@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 21:00:10 2011 (-0700)
+;; Last-Updated: Tue May 24 11:31:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6574
+;;     Update #: 6579
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -406,6 +406,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/24 dadams
+;;     icicle-invisible-p: Use invisible-p if available (Emacs 22+).
 ;; 2011/05/22 dadams
 ;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/16 dadams
@@ -4603,6 +4605,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/05/24 dadams
+;;     icicle-functions-to-redefine: Removed (dired-)read-shell-command - turned off by default now.
 ;; 2011/05/22 dadams
 ;;     icicle-init-value-flag/icicle-default-value: Added 3rd arg for make-obsolete-variable.
 ;; 2011/05/14 dadams

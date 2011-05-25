@@ -391,6 +391,26 @@ I don't have any progress to report on the debugger thing. I'll keep trying. I'm
 
 pj  
 
+[new:NeilSmithline:2011-05-25 08:16 UTC]
+Drew - Long ago I evaluated Emacs' Windows and Frames model and have revisited many times since as new things come along that cause me to feel the need to reevaluate my decisions. Your OOOE (no offense but that's a crappy acronym :-) was another shiny new toy that made me consider how I want to use Windows and Frames. 
+
+I'll start out by saying that your statement that Frames should be called Windows except for historical reason is absolutely correct. When Frames came out I argued for a giant renaming of about everything in Emacs (maybe it was XEmacs - think Emacs had crappy frames first but XEmacs had usable frames first). I know the rename would have been excruciating but back then the Emacs code base was considerably smaller. I'm not sure I really was for the rename. I was for some serious discussion. But nobody wanted to talk about it. As the rename would have meant a boat-load of work for the people in the discussion so it was sort of a lost cause. But the fact that you need to make clarifying statements about Frames and Windows 20 years after I said they should be renamed, yet again, makes me question that the question was summarily rejected.
+
+I agree with your statement that Emacs treats Frames as a 2nd class citizen. Once they were added, they should have been given the attention they deserved. That you needed to rewrite some common Emacs commands to use frames is proof of the inattention they've been given.
+
+But, and I recognize that this is a personal matter of taste, simply hate frames. Perhaps if they were really well integrated into Emacs I might use them --- but I don't think so. IMO, without OOOE, I see little value in frames. But with OOOE Emacs stops becoming a window manager and you just use your native desktop's window manager to manager Emacs windows along with other windows. I frequently pop back and forth from Emacs and my browser so I see a big gain there.
+
+That being said, I only have one browser window. At the moment it has about 30 tabs open in it, but it is only one window. The only time I create a second window is if I need to look at multiple pages at the same time. I've tried lots of Firefox extensions to display two tabs in one window but find them awkward and unstable. And, it is rare that I want to do that. 
+
+My personal thought is that I don't see myself as likely to use Frames, but I think your extension is slick and wish that the core of Emacs would give Frames more attention. Back when everything was run on glass TTYs, lots of programs divided your screen up into sections (especially some good games) so Emacs' Windows were natural. But now, virtually nothing splits the viewable space into separate Windows. Instead, they use the OS's windows. So, IMO, out of the box, Emacs Windows should be completely disabled. You have Frames and tabs. 
+
+Many of the nerdier crowd prefer to keep more control than the OS window managers tend to give you. But nobody becomes an Emacs guru overnight.
+
+In any case, think this is a great extension but wish you didn't need to write it because Emacs did it out of the box.
+
+May 25, 2011 at 04:15 ET (GMT-04:00) -- Neil Smithline
+
+PS: Ramblings like this seem much more forum oriented than the wiki can provide.
 
 ----
 

@@ -1,4 +1,4 @@
-<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode for coloring parentheses, brackets, and braces based on their nesting depth. It gives a visual reference for which delimiters match, and what statements are at the same depth - if two statements are the same level, they will be the same color.
+<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode for coloring parentheses, brackets, and braces according to their nesting depth. It gives a visual reference for which delimiters match, and what statements are at the same depth - if several statements are at the same level, they will be the same color.
 
 Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
 
@@ -7,8 +7,12 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 = Download: =
 * Lisp:rainbow-delimiters.el
 
-* Current release: <b>1.2.1</b> (2011-03-29)
-** Conform to ELPA conventions.
+* Current release: <b>1.3</b> (2011-05-24)
+** Add separate color schemes for light and dark backgrounds.
+** Checkboxes to enable/disable highlighting of each type of delimiter.
+** Improvements to customize interface.
+** Infinite depth support by repeatedly cycling through defined faces.
+** Documentation changes.
 
 
 = Setup instructions: =
@@ -26,26 +30,44 @@ M-x byte-compile-file <location of rainbow-delimiters.el>
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 </pre>
 
-4. **OPTIONAL**: You can also activate the mode temporarily in a buffer with:
+* You can also activate the mode temporarily in a buffer with:
 <pre>
-M-x rainbow-delimiters-mode
+        M-x rainbow-delimiters-mode
 </pre>
 
-== Customizing the color scheme: ==
-To *customize the color scheme*, you can use:
+4. *When using a dark background*, if delimiter colors seem washed out you may need to add the following to your dot-emacs/init file and restart Emacs:
+<pre>
+(setq-default 'frame-background-mode 'dark)
+</pre>
+More information about this is at the top of the Lisp:rainbow-delimiters.el file.
+
+
+== Customization: ==
+
+To *customize rainbow-delimiters mode*, you can use:
 <pre>
 M-x customize-group rainbow-delimiters
 </pre>
 
-The group <code>rainbow-delimiters-faces</code> contains the needed faces. Parens, brackets, and braces all use them. You can change them if you want to customize the color scheme for yourself.
+=== Color Scheme ===
+The customize group *Color Scheme* (aka <code>rainbow-delimiters-faces</code>) contains the faces for successive nested pairs of delimiters. You can change them to customize the color scheme for yourself.
 
-Each nested depth uses a face of the form <code>rainbow-delimiters-depth-#-face</code>. Depth begins at 1, the outermost color. Faces are numbered from 1-12.
+The face <code>rainbow-delimiters-unmatched-face</code> is used for unmatched closing delimiters.
 
 *Color-theme.el users:* Further information is available in the Lisp:rainbow-delimiters.el file.
 
-*NOTE*: The default colors are a little easier to tell apart on darker backgrounds, though they look good with any background color. If you want a set of colors specifically for light backgrounds, please leave a note on this wiki page saying so and I'll add the appropriate light/dark options to the faces.
+
+=== Stop Highlighting Certain Delimiters: ===
+You can *disable highlighting* of specific delimiter characters through the customize interface, in the *Toggle Delimiters* section.
+
+
+== Other Information ==
+Rainbow-delimiters comes with two *default color schemes*, for light and dark backgrounds. Emacs chooses which to used based on the value of variable 'frame-background-mode' (see step 4 above).
+
+The light/dark color schemes differ only in their brightness level.
 
 <pre>
+
 
 
 

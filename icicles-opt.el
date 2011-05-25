@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 13:06:58 2011 (-0700)
+;; Last-Updated: Tue May 24 09:07:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4335
+;;     Update #: 4340
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1447,11 +1447,16 @@ and you must load library `filesets.el'."
     customize-apropos-groups             customize-apropos-options
     customize-apropos-options-of-type    customize-face
     customize-face-other-window          dabbrev-completion
-    dired-read-shell-command             ess-complete-object-name
+    ;; Use these two if you want Icicles completion for shell commands.
+    ;; See http://www.emacswiki.org/emacs/Icicles_-_Shell-Command_Enhancements.
+    ;; 
+    ;; dired-read-shell-command
+    ;; read-shell-command
+    ess-complete-object-name
     gud-gdb-complete-command             lisp-complete-symbol
     lisp-completion-at-point             minibuffer-default-add-completions
     read-color                           read-from-minibuffer
-    read-shell-command                   read-string
+    read-string
     recentf-make-menu-items              repeat-complex-command)
   "*List of symbols representing functions to be redefined in Icicle mode.
 In Icicle mode, each such FUNCTION is aliased to Icicles function

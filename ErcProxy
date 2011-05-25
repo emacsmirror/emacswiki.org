@@ -45,5 +45,20 @@ Set the server to "localhost" if you are running Tor/Privoxy on the localhost, o
 Does this solutions [http://wiki.torproject.org/noreply/TheOnionRouter/TorFAQ#SOCKSAndDNS leak dns?]
 
 
+== Corkscrew ==
+
+Instead of /desproxy/, I use [http://www.agroman.net/corkscrew/ corkscrew] to tunnel IRC connections through HTTP proxies. Here's what I do:
+
+ (defun corkscrew-open-network-stream (name buffer host service)
+   "Opens a network stream via corkscrew"
+   (open-network-stream name buffer host service
+                        :type 'shell
+                        :shell-command "corkscrew <proxyhost> <proxyport> %s %p"))
+
+ (let ((erc-server-connect-function open-network-stream))
+   (erc :server "chat.freenode.net"))
+
+Of course, you want to install /corkscrew/ first. --[[sthuebner]]
+
 -----
 [[ERC]]

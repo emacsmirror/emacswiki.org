@@ -8,66 +8,15 @@
 
 '''Icicles''' can help with DiredMode in these ways:
 
-* You can use [[completion]] when you use '''`##!##'''' or '''`##&##'''' to execute a [[#CompleteShellCommands|shell command]].
-
 * You can use '''Icicles''' [[#SearchAndReplace|search-and-replace]] on the marked files.
 
 * You can [[#SaveFilesAsCandidates|save marked file names]] as completion candidates for reuse later.
 
-* You can [[#OpenDiredOnSavedFiles|open Dired on saved file names]], that is, names that you previously saved as a completion candidates set or as an Emacs [[fileset]]. It does not matter how the file names were saved or which directories the files are in.
+* You can [[#OpenDiredOnSavedFiles|open Dired on saved file names]], that is, names that you previously saved as a completion candidates set or as an Emacs [[fileset]]. It does not matter how the file names were saved or which directories the files are in.  The set of saved file names
+can be persistent or just for the current Emacs session.
 
-
-
-
-
-
-[:CompleteShellCommands]
-=== Shell Commands On Marked Files ===
-
-In ''Icicle mode'', '''`##!##'''' and '''`##&##'''' in Dired let you complete a shell command.  All '''Icicles''' [[completion]] features are available.  This is the same program-file completion that is available anywhere when a shell command is read (see
-[[Icicles - Shell-Command Enhancements]]), but in Dired the extra, [[proxy candidate]]s include commands that '''Icicles''' thinks might be
-particularly appropriate for the marked files.
-
-These proxy candidates are not necessarily only command names.
-They can include switches (options) that specialize a command.
-For example, if a PDF file (##*.pdf##) is marked in Dired, the
-completion candidates might include `##gv -safer##', `##pdftotext ?  -##',
-and `##xpdf##'.  The first two of these are not just command names
-(`##-safer##' is a command switch).
-
-Starting with Emacs 23, '''Icicles''' uses both of the following
-methods to guess extra (proxy) candidates that are file type-specific:
-
-* MIME-type associations
-
-* The rules defined by [[user option]] '''`dired-guess-shell-alist-user''''
-and variable `dired-guess-shell-alist-default' (provided you use
-Dired X, that is, standard library `##dired-x.el##')
-
-Prior to Emacs 23, MIME types are not used.  In the example of a PDF
-file, candidates `##gv -safer##' and `##pdftotext ? -##' are provided by
-MIME-type associations, and candidate `##xpdf##' is provided by the
-[[Dired X]] rules.  Note that you can customize the rules.
-
-Any candidates that are specific to the marked files are '''Icicles''' proxy candidates -- see
-[[Icicles - Completions Display#ProxyCandidates|Proxy Candidates]].  These
-are available regardless of the current default-directory.  They
-are not treated as file-name candidates, even though they are
-available during file-name completion.  '''Icicles''' proxy candidates
-have face `icicle-proxy-candidates' in buffer `*Completions*'.
-
-[:icicle-dired-guess-all-shell-cmds-flag]
-Again, everything that is true for shell-command completion
-elsewhere is also true for shell-command completion in Dired.  See
-[[Icicles - Shell-Command Enhancements]].  This includes adding
-all commands from your search path as proxy candidates if option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil', and providing help on
-individual candidates (shell commands or files) during completion.
-
-
-
-
-
+* You can use file-name [[completion]] when you use '''`##!##'''' or '''`##&##'''' to execute a [[#CompleteShellCommands|shell command]].  This is an optional feature that is
+''not enabled by default''.  See also [[Icicles - Shell-Command Enhancements]].
 
 
 
@@ -175,6 +124,79 @@ project subset to work on, and then use `##C-M->##' to operate on that
 subset using '''Icicles''' completion.  And you can have any number of
 projects -- you access each by its name (with completion) and need
 not remember its cache file name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[:CompleteShellCommands]
+=== Shell Commands On Marked Files ===
+
+This is an optional feature that is
+''not enabled by default''.  See also [[Icicles - Shell-Command Enhancements]].
+
+
+In ''Icicle mode'', '''`##!##'''' and '''`##&##'''' in Dired let you complete a shell command.  You can optionally use '''Icicles''' file-name [[completion]] for
+the shell command, by customizing [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>''''
+to add the shell-related functions
+`dired-read-shell-command' and `read-shell-command'.
+
+If you do
+that, then ''Icicle'' mode will substitute '''Icicles''' functions for these
+standard functions and you will get the Icicles completion
+described here.
+This is the same optional program-file completion that is available anywhere when a shell command is read (see
+[[Icicles - Shell-Command Enhancements]]), but in Dired the extra, [[proxy candidate]]s include commands that '''Icicles''' thinks might be
+particularly appropriate for the marked files.
+
+These proxy candidates are not necessarily only command names.
+They can include switches (options) that specialize a command.
+For example, if a PDF file (##*.pdf##) is marked in Dired, the
+completion candidates might include `##gv -safer##', `##pdftotext ?  -##',
+and `##xpdf##'.  The first two of these are not just command names
+(`##-safer##' is a command switch).
+
+Starting with Emacs 23, '''Icicles''' uses both of the following
+methods to guess extra (proxy) candidates that are file type-specific:
+
+* MIME-type associations
+
+* The rules defined by [[user option]] '''`dired-guess-shell-alist-user''''
+and variable `dired-guess-shell-alist-default' (provided you use
+Dired X, that is, standard library `##dired-x.el##')
+
+Prior to Emacs 23, MIME types are not used.  In the example of a PDF
+file, candidates `##gv -safer##' and `##pdftotext ? -##' are provided by
+MIME-type associations, and candidate `##xpdf##' is provided by the
+[[Dired X]] rules.  Note that you can customize the rules.
+
+Any candidates that are specific to the marked files are '''Icicles''' proxy candidates -- see
+[[Icicles - Completions Display#ProxyCandidates|Proxy Candidates]].  These
+are available regardless of the current default-directory.  They
+are not treated as file-name candidates, even though they are
+available during file-name completion.  '''Icicles''' proxy candidates
+have face `icicle-proxy-candidates' in buffer `*Completions*'.
+
+[:icicle-dired-guess-all-shell-cmds-flag]
+Again, everything that is true for shell-command completion
+elsewhere is also true for shell-command completion in Dired.  See
+[[Icicles - Shell-Command Enhancements]].  This includes adding
+all commands from your search path as proxy candidates if option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil', and providing help on
+individual candidates (shell commands or files) during completion.
+
+
+
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May 23 14:21:43 2011 (-0700)
+;; Last-Updated: Tue May 24 09:20:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27997
+;;     Update #: 28026
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -218,12 +218,13 @@
 ;;    (@> "Shell Command Completion as File-Name Completion")
 ;;    (@> "Gotcha: `$' in Shell Commands")
 ;;    (@> "Known Shell Commands as Proxy Candidates")
+;;
 ;;  (@> "Icicles Dired Enhancements")
-;;    (@> "Shell Commands on Marked Files")
 ;;    (@> "Search-and-Replace Marked Files")
 ;;    (@> "Save Marked Files as Completion Candidates")
 ;;    (@> "Open Dired for a Set of File Names")
 ;;    (@> "Marked Files as a Project")
+;;    (@> "Shell Commands on Marked Files")
 ;;
 ;;  (@> "Icicles Info Enhancements")
 ;;    (@> "Icicles Completion for Info")
@@ -1922,14 +1923,16 @@
 ;;    See (@> "Completion in Comint Modes").
 ;;
 ;;  * In any buffer, it provides Icicles completion for `M-!' and
-;;    `M-|'.
+;;    `M-|'.  This is an optional feature that is not enabled by
+;;    default.
 ;;
 ;;  * In Dired mode, it provides Icicles completion for `!', and `&'.
-;;    See (@> "Shell Commands on Marked Files").
+;;    See (@> "Shell Commands on Marked Files").  This is an optional
+;;    feature that is not enabled by default.
 ;;
-;;  This section describes the completion available for `M-!' and
-;;  `M-|'.  It applies also to completion for `!', and `&' in Dired
-;;  (but those have additional enhancements).
+;;  This section describes the optional Icicles completion available
+;;  for `M-!' and `M-|'.  It applies also to completion for `!', and
+;;  `&' in Dired (but those have additional enhancements).
 ;;
 ;;  In vanilla Emacs, when you enter a shell command at the prompt for
 ;;  `M-!' or `M-|', no completion is available for Emacs prior to
@@ -1944,10 +1947,18 @@
 ;;(@* "Shell Command Completion as File-Name Completion")
 ;;  ** Shell Command Completion as File-Name Completion **
 ;;
-;;  The most significant, and craziest, thing about Icicles completion
-;;  for reading a shell command is that it is in fact *file-name*
-;;  completion.  Reading a shell command means, first, reading a file
-;;  name.  This is unexpected, to say the least.
+;;  The most significant thing about Icicles completion for reading a
+;;  shell command is that it is in fact *file-name* completion.
+;;  Reading a shell command means, first, reading a file name.  This
+;;  is unexpected, to say the least.
+;;
+;;  Because of this unusual behavior, this feature is optional and is
+;;  not enabled by default.  To enable it, customize option
+;;  `icicle-functions-to-redefine' to add the shell-related functions
+;;  `dired-read-shell-command' and `read-shell-command'.  If you do
+;;  that, then Icicle mode will substitute Icicles functions for these
+;;  standard functions and you will get the Icicles completion
+;;  described here.
 ;;
 ;;  A shell command is itself an executable file, either a binary
 ;;  program or a script.  That's not so shocking.  But since Icicles
@@ -1992,33 +2003,27 @@
 ;;
 ;;  What can you do about this?  Three possible approaches:
 ;;
-;;  * Do not use this Icicles feature at all.  Customize option
-;;    `icicle-functions-to-redefine' to remove the shell-related
-;;    functions, `dired-read-shell-command' and `read-shell-command'.
-;;    If you do that, then Icicle mode will not substitute Icicles
-;;    functions for these functions and you will get the vanilla Emacs
-;;    behavior.
+;;  * Do not use this Icicles feature at all.  The feature is turned
+;;    off, by default.
 ;;
-;;  * Escape the `$' sign by doubling it: use `$$' instead of `$' when
-;;    you want to pass a `$' to the shell and not let `read-file-name'
-;;    try to interpret it in terms of an environment variable.
+;;  * You can escape a dollar sign by doubling it: use `$$' instead of
+;;    `$' when you want to pass a `$' to the shell and not let
+;;    `read-file-name' try to interpret it in terms of an environment
+;;    variable.
 ;;
-;;  * Turn off Icicle mode temporarily when you use a complex command
-;;    that involves `$': `M-x icy-mode'.
-;;
-;;  That file-name completion is used for shell commands is, well,
-;;  weird, I admit.  You might or might not appreciate it.  Just
-;;  remember that you can easily turn it off if you want.
+;;  * You can turn off Icicle mode temporarily whenever you use a
+;;    complex command that involves `$': `M-x icy-mode'.
 ;;
 ;;(@* "Known Shell Commands as Proxy Candidates")
 ;;  ** Known Shell Commands as Proxy Candidates **
 ;;
-;;  Though file-name completion is used for reading shell commands,
-;;  extra, known shell commands are also made available as proxy
-;;  completion candidates, if option `icicle-guess-commands-in-path'
-;;  is non-`nil' (it is `nil' by default).  These extra candidates are
-;;  the names of all executable files (or of all files, if
-;;  `shell-completion-execonly' is `nil') in your search path.
+;;  If you do turn on Icicles file-name completion for reading shell
+;;  commands, then extra, known shell commands are also made available
+;;  as proxy completion candidates, provided that option
+;;  `icicle-guess-commands-in-path' is non-`nil' (it is `nil' by
+;;  default).  These extra candidates are the names of all executable
+;;  files (or of all files, if `shell-completion-execonly' is `nil')
+;;  in your search path.
 ;;
 ;;  The fact that these are Icicles proxy candidates means that they
 ;;  are available regardless of the current default-directory - they
@@ -2057,14 +2062,14 @@
 ;;  Icicles can guess might be appropriate for the target files.
 ;;  See (@> "Shell Commands on Marked Files").
 ;;
-;;  During shell-command completion, help is available for individual
-;;  candidates, using `C-M-RET', `C-M-mouse-2', and so on.  For an
-;;  extra candidate, help is provided for the command by the `apropos'
-;;  shell command (if available).  For a file-name candidate, help
-;;  shows the file's properties.  See
+;;  During Icicles shell-command completion, help is available for
+;;  individual candidates, using `C-M-RET', `C-M-mouse-2', and so on.
+;;  For an extra candidate, help is provided for the command by the
+;;  `apropos' shell command (if available).  For a file-name
+;;  candidate, help shows the file's properties.  See
 ;;  (@file :file-name "icicles-doc1.el" :to "Get Help on Candidates").
 ;;
-;;  Reminder:
+;;  Remember also:
 ;;
 ;;  * After you have typed or completed the shell command per se
 ;;    (e.g. a file name or search-path command), you can use `C-M-S-f'
@@ -2079,11 +2084,6 @@
 ;;    or arguments), then you can use `M-o' to retrieve it for reuse
 ;;    (possibly editing it).  See
 ;;    (@file :file-name "icicles-doc2.el" :to "Using Completion to Insert Previous Inputs: `M-o'")
-;;
-;;  * If you do not want to use the enhancements described here, you
-;;    can customize option `icicle-functions-to-redefine' to remove
-;;    shell-related functions.  If you do that, then Icicle mode will
-;;    not substitute Icicles functions for them.
  
 ;;(@* "Icicles Dired Enhancements")
 ;;
@@ -2091,9 +2091,6 @@
 ;;  --------------------------
 ;;
 ;;  Icicles can help with Dired in these ways:
-;;
-;;  * You can use completion when you use `!' or `&' to execute a
-;;    shell command.
 ;;
 ;;  * You can use Icicles search-and-replace on the marked files.
 ;;
@@ -2103,55 +2100,12 @@
 ;;  * You can open Dired on saved file names, that is, names that you
 ;;    previously saved as a completion candidates set or as an Emacs
 ;;    fileset.  It does not matter how the file names were saved or
-;;    which directories the files are in.
+;;    which directories the files are in.  The set of saved file names
+;;    can be persistent or just for the current Emacs session.
 ;;
-;;(@* "Shell Commands on Marked Files")
-;;  ** Shell Commands on Marked Files **
-;;
-;;  In Icicle mode, `!' and `&' in Dired let you complete a shell
-;;  command.  All Icicles completion features are available.  This is
-;;  the same program-file completion that is available anywhere when a
-;;  shell command is read (see
-;;  (@> "Icicles Shell-Command Enhancements")), but in Dired the
-;;  extra, proxy candidates include commands that Icicles thinks might
-;;  be particularly appropriate for the marked files.
-;;
-;;  These proxy candidates are not necessarily only command names.
-;;  They can include switches (options) that specialize a command.
-;;  For example, if a PDF file (*.pdf) is marked in Dired, the
-;;  completion candidates might include `gv -safer', `pdftotext ?  -',
-;;  and `xpdf'.  The first two of these are not just command names
-;;  (`-safer' is a command switch).
-;;
-;;  Starting with Emacs 23, Icicles uses both of the following methods
-;;  to guess extra (proxy) candidates that are file type-specific:
-;;
-;;  * MIME-type associations
-;;
-;;  * The rules defined by user option `dired-guess-shell-alist-user'
-;;    and variable `dired-guess-shell-alist-default' (provided you use
-;;    Dired X, that is, standard library `dired-x.el')
-;;
-;;  Prior to Emacs 23, MIME types are not used.  In the example of a
-;;  PDF file, candidates `gv -safer' and `pdftotext ? -' are provided
-;;  by MIME-type associations, and candidate `xpdf' is provided by the
-;;  Dired X rules.  Note that you can customize the rules.
-;;
-;;  Any candidates that are specific to the marked files are Icicles
-;;  proxy candidates - see
-;;  (@file :file-name "icicles-doc1.el" :to "Completions Display").
-;;  These are available regardless of the current default-directory.
-;;  They are not treated as file-name candidates, even though they are
-;;  available during file-name completion.  Icicles proxy candidates
-;;  have face `icicle-proxy-candidates' in buffer `*Completions*'.
-;;
-;;  Again, everything that is true for shell-command completion
-;;  elsewhere is also true for shell-command completion in Dired.  See
-;;  (@> "Icicles Shell-Command Enhancements").  This includes adding
-;;  all commands from your search path as proxy candidates if option
-;;  `icicle-guess-commands-in-path' is non-`nil', and providing help
-;;  on individual candidates (shell commands or files) during
-;;  completion.
+;;  * You can use file-name completion when you use `!'  or `&' to
+;;    execute a shell command.  This is an optional feature that is
+;;    not enabled by default.  See also (@> "Icicles Shell-Command Enhancements").
 ;;
 ;;(@* "Search-and-Replace Marked Files")
 ;;  ** Search-and-Replace Marked Files **
@@ -2255,6 +2209,63 @@
 ;;  subset using Icicles completion.  And you can have any number of
 ;;  projects - you access each by its name (with completion) and need
 ;;  not remember its cache file name.
+;;
+;;(@* "Shell Commands on Marked Files")
+;;  ** Shell Commands on Marked Files **
+;;
+;;  This is an optional feature that is not enabled by default.  See
+;;  also (@> "Icicles Shell-Command Enhancements").
+;;
+;;  In Icicle mode, `!' and `&' in Dired let you complete a shell
+;;  command.  You can optionally use Icicles file-name completion for
+;;  the shell command, by customizing option
+;;  `icicle-functions-to-redefine' to add the shell-related functions
+;;  `dired-read-shell-command' and `read-shell-command'.
+;;
+;;  If you do that, then Icicle mode will substitute Icicles functions
+;;  for these standard functions and you will get the Icicles
+;;  completion described here.  This is the same optional program-file
+;;  completion that is available anywhere when a shell command is read
+;;  (see (@> "Icicles Shell-Command Enhancements")), but in Dired the
+;;  extra, proxy candidates include commands that Icicles thinks might
+;;  be particularly appropriate for the marked files.
+;;
+;;  These proxy candidates are not necessarily only command names.
+;;  They can include switches (options) that specialize a command.
+;;  For example, if a PDF file (*.pdf) is marked in Dired, the
+;;  completion candidates might include `gv -safer', `pdftotext ?  -',
+;;  and `xpdf'.  The first two of these are not just command names
+;;  (`-safer' is a command switch).
+;;
+;;  Starting with Emacs 23, Icicles uses both of the following methods
+;;  to guess extra (proxy) candidates that are file type-specific:
+;;
+;;  * MIME-type associations
+;;
+;;  * The rules defined by user option `dired-guess-shell-alist-user'
+;;    and variable `dired-guess-shell-alist-default' (provided you use
+;;    Dired X, that is, standard library `dired-x.el')
+;;
+;;  Prior to Emacs 23, MIME types are not used.  In the example of a
+;;  PDF file, candidates `gv -safer' and `pdftotext ? -' are provided
+;;  by MIME-type associations, and candidate `xpdf' is provided by the
+;;  Dired X rules.  Note that you can customize the rules.
+;;
+;;  Any candidates that are specific to the marked files are Icicles
+;;  proxy candidates - see
+;;  (@file :file-name "icicles-doc1.el" :to "Completions Display").
+;;  These are available regardless of the current default-directory.
+;;  They are not treated as file-name candidates, even though they are
+;;  available during file-name completion.  Icicles proxy candidates
+;;  have face `icicle-proxy-candidates' in buffer `*Completions*'.
+;;
+;;  Again, everything that is true for shell-command completion
+;;  elsewhere is also true for shell-command completion in Dired.  See
+;;  (@> "Icicles Shell-Command Enhancements").  This includes adding
+;;  all commands from your search path as proxy candidates if option
+;;  `icicle-guess-commands-in-path' is non-`nil', and providing help
+;;  on individual candidates (shell commands or files) during
+;;  completion.
 ;;
 ;;
 ;;  See Also:

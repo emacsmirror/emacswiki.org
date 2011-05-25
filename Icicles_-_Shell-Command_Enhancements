@@ -15,12 +15,15 @@ ways:
   arguments), file names, and environment variables.
   See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Comint Mode Completion]].
 
-* In any [[buffer]], it provides completion for '''`##M-!##'''' and '''`##M-|##''''.
+* In any [[buffer]], it provides completion for '''`##M-!##'''' and '''`##M-|##''''.  This is an optional feature that is ''not enabled by
+default''.
 
-* In [[Dired]] mode, it provides '''Icicles''' completion for '''`##!##'''', and '''`##&##''''.  See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].
+* In [[Dired]] mode, it provides '''Icicles''' completion for '''`##!##'''', and '''`##&##''''.  See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].  This is an optional feature that is ''not enabled by
+default''.
 
 
-This section describes the completion available for `##M-!##' and
+
+This section describes the optional '''Icicles''' completion available for `##M-!##' and
 `##M-|##'.  It applies also to completion for `##!##', and `##&##' in Dired
 (but those have additional enhancements).
 
@@ -45,10 +48,19 @@ the value of [[option]] `icicle-guess-commands-in-path' (see below).
 [:ShellCommandCompletionAsFileNameCompletion]
 === Shell Command Completion as File-Name Completion ===
 
-The most significant, and craziest, thing about '''Icicles''' completion
+The most significant thing about '''Icicles''' completion
 for reading a shell command is that it is in fact ''file-name''
 completion.  Reading a shell command means, first, reading a
 file name.  This is unexpected, to say the least.
+
+Because of this unusual behavior, this feature is optional and is
+''not enabled by default''.  To enable it, customize [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>''''
+to add the shell-related functions
+`dired-read-shell-command' and `read-shell-command'.  If you do
+that, then ''Icicle'' mode will substitute '''Icicles''' functions for these
+standard functions and you will get the Icicles completion
+described here.
 
 A shell command is itself an executable file, either a binary
 program or a script.  That's not so shocking.  But since '''Icicles'''
@@ -101,24 +113,15 @@ raises this error:
 
 What can you do about this?  Three possible approaches:
 
-* Do not use this '''Icicles''' feature at all.  Customize [[option]]
-'''`icicle-functions-to-redefine'''' to remove the shell-related
-functions, `dired-read-shell-command' and `read-shell-command'.
-If you do that, then ''Icicle'' mode will not substitute '''Icicles'''
-functions for these functions and you will get the vanilla Emacs
-behavior.
+* Do not use this '''Icicles''' feature at all.  The feature is turned
+off, by default.
 
-* Escape the `##$##' sign by doubling it: use `##$$##' instead of `##$##' when
+* You can escape a dollar sign by doubling it: use `##$$##' instead of `##$##' when
 you want to pass a `##$##' to the shell and not let `read-file-name'
 try to interpret it in terms of an environment variable.
 
-* Turn off ''Icicle'' mode temporarily when you use a complex command
+* You can turn off ''Icicle'' mode temporarily whenever you use a complex command
 that involves `##$##': `M-x icy-mode'.
-
-
-That file-name completion is used for shell commands is, well,
-weird, I admit.  You might or might not appreciate it.  Just
-remember that you can easily turn it off if you want.
 
 
 
@@ -132,7 +135,7 @@ remember that you can easily turn it off if you want.
 [:KnownShellCommandsAsProxyCandidates]
 === Known Shell Commands as Proxy Candidates ===
 
-Though file-name completion is used for reading shell commands, extra, known shell commands are also made available as ''proxy'' completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
+If you do turn on '''Icicles''' file-name completion for reading shell commands, then extra, known shell commands are also made available as ''proxy'' completion candidates, provided that option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
 files (or of all files, if `shell-completion-execonly' is `nil') in
 your ''search path''.
 
@@ -171,13 +174,13 @@ include additional commands (possibly including switches) that '''Icicles''' can
 guess might be appropriate for the target files.
 See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].
 
-During shell-command completion, help is available for individual
+During '''Icicles''' shell-command completion, help is available for individual
 candidates, using `C-M-RET', `C-M-mouse-2', and so on.  For an
 extra candidate, help is
 provided for the command by the `apropos' shell command (if available).  For a
 file-name candidate, help shows the file's properties.  See [[Icicles - Help on Candidates]].
 
-Reminder:
+Remember also:
 
 * After you have typed or completed the shell command per se
  (e.g. a file name or search-path command), you can use '''`C-M-S-f''''
@@ -190,11 +193,6 @@ Reminder:
  entered some complex shell command (e.g. with various switches
  or arguments), then you can use `M-o' to retrieve it for reuse (possibly
 editing it).  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']]
-
-* If you do not want to use the enhancements
-described here, just customize option 
-'''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' to remove shell-related functions.  If you do
-that, then ''Icicle'' mode will not substitute '''Icicles''' functions for them.
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May 23 14:02:33 2011 (-0700)
+;; Last-Updated: Tue May 24 08:55:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26064
+;;     Update #: 26065
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -333,11 +333,11 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Gotcha: `$' in Shell Commands")
 ;;    (@file :file-name "icicles-doc2.el" :to "Known Shell Commands as Proxy Candidates")
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Dired Enhancements")
-;;    (@file :file-name "icicles-doc2.el" :to "Shell Commands on Marked Files")
 ;;    (@file :file-name "icicles-doc2.el" :to "Search-and-Replace Marked Files")
 ;;    (@file :file-name "icicles-doc2.el" :to "Save Marked Files as Completion Candidates")
 ;;    (@file :file-name "icicles-doc2.el" :to "Open Dired for a Set of File Names")
 ;;    (@file :file-name "icicles-doc2.el" :to "Marked Files as a Project")
+;;    (@file :file-name "icicles-doc2.el" :to "Shell Commands on Marked Files")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Info Enhancements")
 ;;    (@file :file-name "icicles-doc2.el" :to "Icicles Completion for Info")

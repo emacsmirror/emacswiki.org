@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 12:53:35 2011 (-0700)
+;; Last-Updated: Tue May 24 14:16:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3305
+;;     Update #: 3312
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3415,7 +3415,8 @@ Emacs, starting with Emacs 23."
 ;;;###autoload
 (defun icicle-search-thing (thing &optional beg end require-match where predicate)
   "`icicle-search' with THINGs as search contexts.
-Enter the type of THING to search: `sexp', `sentence', `list', etc.
+Enter the type of THING to search: `sexp', `sentence', `list',
+`string', `comment', etc.
 
 Possible THINGs are those for which `bounds-of-thing-at-point' returns
 non-nil (and for which the bounds are not equal: an empty thing).
@@ -3440,8 +3441,7 @@ This command is intended only for use in Icicle mode.
 
 NOTE:
 
-1. For best results, use also library `thingatpt+.el'.  It enhances
-   `thingatpt.el' and fixes some bugs there.
+1. For best results, use also library `thingatpt+.el'.
 2. In some cases it can take a while to gather the candidate THINGs.
    Use the command on an active region when you do not need to search
    THINGS throughout an entire buffer.
@@ -3623,13 +3623,15 @@ by `icicle-next-visible-thing-and-bounds'."
            (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
                   (error (error-message-string icicle-search-thing-scan)))))))))
 
-;; Same as `thgcmd-invisible-p' in `thing-cmd.el'.
+;; Same as `thgcmd-invisible-p' in `thing-cmds.el'.
 (defun icicle-invisible-p (position)
   "Return non-nil if the character at POSITION is invisible."
-  (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
-    (if (eq buffer-invisibility-spec t)
-        prop
-      (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec)))))
+  (if (fboundp 'invisible-p)            ; Emacs 22+
+      (invisible-p position)
+    (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
+      (if (eq buffer-invisibility-spec t)
+          prop
+        (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec))))))
 
 (defun icicle-next-visible-thing-and-bounds (thing start end)
   "Return the next visible THING and its bounds.
@@ -3739,10 +3741,8 @@ the bounds of THING.  Return nil if no such THING is found."
                  (when (and (if backward (> start end) (< start end)) (icicle-invisible-p start))
                    (setq start  (if (get-text-property start 'invisible) ; Text prop.
                                     (if backward
-                                        (previous-single-property-change
-                                         start 'invisible nil end)
-                                      (next-single-property-change
-                                       start 'invisible nil end))
+                                        (previous-single-property-change start 'invisible nil end)
+                                      (next-single-property-change start 'invisible nil end))
                                   (if backward ; Overlay prop.
                                       (previous-overlay-change start)
                                     (next-overlay-change start))))
