@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 14 May 2011
 ;; Version: 1
-;; RCS Version: $Rev: 367 $
+;; RCS Version: $Rev: 368 $
 ;; Keywords: Sunrise Commander Emacs File Manager Windows Drives Special Folders Shortcuts
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-w32-addons.el
 ;; Compatibility: GNU Emacs 23+
@@ -105,7 +105,7 @@
 
 ;; This implements virtual folder resolution in Windows:
 (defadvice sr-find-file
-  (before sr-w32-advice-sr-find-file (&optional filename))
+  (before sr-w32-advice-sr-find-file (filename &optional wildcards))
   (when sr-w32-follow-shortcuts
     (let ((info) (target (format "%s/target.lnk" filename)))
       (if (file-readable-p target)

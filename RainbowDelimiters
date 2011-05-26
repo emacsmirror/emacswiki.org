@@ -4,10 +4,14 @@ Great care has been taken to make this mode FAST. You shouldn't see any change i
 
 You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; they are unobtrusive enough to make the mode worth looking at even if you usually don't like rainbow parentheses modes. 
 
+* <b>NOTE:</b>  People who downloaded version 1.3 yesterday and had issues with light background colors, there is a bugfix release available now. Also, fixed a typo in the installation instructions: Last step should have said <code>(setq frame-background-color 'dark)</code>.
+
 = Download: =
 * Lisp:rainbow-delimiters.el
 
-* Current release: <b>1.3</b> (2011-05-24)
+* Current release: <b>1.3.1</b> (2011-05-25)
+** Bugfix: Light color scheme appeared all gray on SRGB monitors. Revert to old colors.
+* Added in <b>1.3</b> (2011-05-24):
 ** Add separate color schemes for light and dark backgrounds.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
 ** Improvements to customize interface.
@@ -37,7 +41,7 @@ M-x byte-compile-file <location of rainbow-delimiters.el>
 
 4. *When using a dark background*, if delimiter colors seem washed out you may need to add the following to your dot-emacs/init file and restart Emacs:
 <pre>
-(setq-default 'frame-background-mode 'dark)
+(setq-default frame-background-mode 'dark)
 </pre>
 More information about this is at the top of the Lisp:rainbow-delimiters.el file.
 
@@ -66,6 +70,10 @@ Rainbow-delimiters comes with two *default color schemes*, for light and dark ba
 
 The light/dark color schemes differ only in their brightness level.
 
+[http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot. If you haven't looked at emacs-fu, it's an exceptional place for all sorts of useful tips on improving your emacs experience.
+
+== Contributing ==
+If you want to add a feature to rainbow-delimiters.el, the current development version will always be at github under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Having the development progress on github should make it easy to integrate patches. Please email me (see the top of the file) before starting work on anything big to make sure we don't duplicate effort.
 <pre>
 
 
@@ -97,6 +105,6 @@ Also any nesting deeper than 12 levels doesn't get coloured. Is this expected be
 [new]
 There are only 12 delim faces; I just picked an arbitrary depth to go to. Cycling through the colors is probably a good idea. I'll go ahead and do that.
 
-I'll try to recreate the problem with starting the mode using a hook. I assume you have the latest version of the mode... There was a problem that sounds a lot like this in an older version when there were unmatched closing parens in the file. It was fixed and unmatched closing delimiters turn red now. If unmatched delims turn red for you this is a different issue. Thanks, I'll look into it. --JeremyRayman
+I assume you have the latest version of the mode (and have re-byte-compiled it). Since I can't reproduce it and haven't heard anyone else mention it, I'd need to know your emacs version and a file that shows this problem if it's not happening to all files where rainbow-delimiters is started by a hook. --JeremyRayman
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

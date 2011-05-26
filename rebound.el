@@ -2,8 +2,8 @@
 
 ;; Copyright (c) 2011 Alp Aker
 
-;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.60
+;; Author: Alp Aker <alp.tekin.aker@gmail.com>
+;; Version: 0.62
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -106,7 +106,7 @@ Do not set this variable directly.  Use the command
 `rebound-mode' instead.  See the documentation of that command
 for a description of the mode.")
 
-;; Alist that records all rebound's data. Elements are of the form (WIN
+;; Alist that records all rebound's data. Each element is of the form (WIN
 ;; BUF-DATA BUF-DATA ...). Each BUF-DATA is of the form (BUFFER MARKER
 ;; MARKER), where the markers record, respectively, the last values for
 ;; window-point and window-start for BUFFER in WIN.  (We can't store the
@@ -115,7 +115,7 @@ for a description of the mode.")
 ;; they're not available on v22.)
 (defvar rebound-alist nil)
 
-(defconst rebound-hooks 
+(defconst rebound-hook-assignments 
   '((temp-buffer-setup-hook . rebound-before-temp-buffer)
     (window-configuration-change-hook . rebound-forget-dead-windows)
     (delete-frame-functions . rebound-forget-frame-windows)
@@ -158,19 +158,19 @@ and `rebound-reposition-tests'."
   (if rebound-mode
       ;; Enabling
       (progn 
-        (setq rebound-alist nil)      
         (ad-enable-regexp "rebound")
         (dolist (fn rebound-advised-fns)
           (ad-activate fn t))
-        (dolist (hook rebound-hooks)
+        (dolist (hook rebound-hook-assignments)
           (add-hook (car hook) (cdr hook)))
         (message "Per-window point values are on")
         (run-hooks 'rebound-mode-on-hook))
     ;; Disabling
+    (setq rebound-alist nil)      
     (ad-disable-regexp "rebound")
     (dolist (fn rebound-advised-fns)
       (ad-activate fn))
-    (dolist (hook rebound-hooks)
+    (dolist (hook rebound-hook-assignments)
       (remove-hook (car hook) (cdr hook)))
     (message "Per-window point values are off")
     (run-hooks 'rebound-mode-off-hook))
@@ -202,7 +202,7 @@ and `rebound-reposition-tests'."
 
 (defadvice replace-buffer-in-windows (around rebound)
   (let* ((buf (or (ad-get-arg 0) (current-buffer)))
-         (winlist (get-buffer-window-list buf 'no-minibuf)))
+         (winlist (get-buffer-window-list buf 'no-minibuf t)))
     (mapc #'rebound-register-win winlist)
     ad-do-it
     (mapc #'rebound-reposition winlist)))
@@ -246,22 +246,24 @@ and `rebound-reposition-tests'."
 ;; Called when a buffer is about to be killed; removes info about that buffer
 ;; from rebound-alist.
 (defun rebound-forget-dead-buffer ()
-  (setq rebound-alist (mapcar #'(lambda (x) (delq (assq (current-buffer) x) x))
-                              rebound-alist)))
+  (setq rebound-alist 
+        (mapcar #'(lambda (x) (delq (assq (current-buffer) x) x))
+                rebound-alist)))
 
 ;; Called when the window configuration changes; removes info about any newly
 ;; deleted windows from rebound-alist.
 (defun rebound-forget-dead-windows ()
-  (setq rebound-alist (delq nil 
-                            (mapcar #'(lambda (x) (and (window-live-p (car x)) x))
-                                    rebound-alist))))
+  (setq rebound-alist 
+        (delq nil (mapcar #'(lambda (x) (and (window-live-p (car x)) x))
+                          rebound-alist))))
 
 ;; Called when a frame is deleted (that event doesn't run the window
 ;; configuration change hook); removes any windows that become dead as a
 ;; result of frame deletion.
 (defun rebound-forget-frame-windows (frame)
   (dolist (win (window-list frame 'no-minibuf))
-    (setq rebound-alist (delq (assq win rebound-alist) rebound-alist))))
+    (setq rebound-alist 
+          (delq (assq win rebound-alist) rebound-alist))))
 
 ;;; ---------------------------------------------------------------------
 ;;; Recording Data
@@ -274,23 +276,31 @@ and `rebound-reposition-tests'."
   (when (and (not (window-minibuffer-p win))
              (window-live-p win))
     ;; Get window data from the main alist, then buffer data from WIN's own
-    ;; alist.  They might be nil, but that doesn't change the routine.
-    (let* ((win-data (assq win rebound-alist))
-           (buf (window-buffer win))
-           (buf-data (assq buf win-data)))
-      (setq rebound-alist (delq win-data rebound-alist)
-            win-data (delq buf-data win-data))
-      ;; If we had data on BUF for WIN, trash the markers.
-      (when buf-data
-        (set-marker (nth 1 buf-data) nil)
-        (set-marker (nth 2 buf-data) nil))
-      ;; Add the new data for window-point and window-start to WIN's info for
-      ;; BUF, then add WIN's data to the main alist.
-      (setq buf-data (list buf
-                           (set-marker (make-marker) (window-point win) buf)
-                           (set-marker (make-marker) (window-start win) buf))
-            win-data (cons win (cons buf-data (cdr win-data)))
-            rebound-alist (cons win-data rebound-alist)))))
+    ;; alist.  
+    (let* ((buf (window-buffer win)) 
+           (win-data (rebound-get-win-data win))
+           (buf-data (rebound-get-buf-data buf win-data)))
+      ;; Update the markers.
+      (set-marker (nth 1 buf-data) (window-point win) buf)
+      (set-marker (nth 2 buf-data) (window-start win) buf))))
+
+;; Called with argument W (a window), returns the element of `rebound-alist'
+;; that has W as key.  If no such element exists, add one to rebound-alist
+;; and return it.
+(defun rebound-get-win-data (w)
+  (or (assq win rebound-alist)
+      (let ((new-w-data (list win)))
+        (push new-w-data rebound-alist)
+        new-w-data)))
+
+;; Called with argument B (a buffer) and W-DATA (an element of
+;; `rebound-alist'), returns the element of W-DATA that has B as key.  If no
+;; such element exists, add one to W-DATA and return it.
+(defun rebound-get-buf-data (b w-data)
+  (or (assq b w-data)
+      (let ((new-b-data (list b (make-marker) (make-marker))))
+        (nconc w-data (list new-b-data))
+        new-b-data)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Repositioning Re-displayed Buffers
@@ -299,7 +309,7 @@ and `rebound-reposition-tests'."
 (defun rebound-reposition (win)
   (when (window-live-p win)
     (let ((buf (window-buffer win)))
-      ;; First, check to see whether BUF is one we should ignore.
+      ;; First, check to see whether BUF is one we should ignore in WIN.
       (unless (rebound-exception-p buf win)
         ;; If not, check to see if there's point and window-start info for
         ;; displaying BUF in WIN. Reposition if so.
@@ -319,9 +329,9 @@ and `rebound-reposition-tests'."
 ;; which case return t.  (For example, when looking up a function definition
 ;; via `describe-function', point is moved to the function definition before
 ;; the library that defines the function is displayed; we then don't want to
-;; move point away from the definition after the library display is
-;; displayed.)  This test used here will return the wrong answer in two
-;; corner cases that I doubt ever arise in the wild.
+;; move point away from the definition after the library is displayed.)  The
+;; test used here will return the wrong answer in two corner cases that (I
+;; hope) are extremely uncommon.
 (defun rebound-defer-to-program-p (buf win)
   (let ((point (with-current-buffer buf (point)))
         (l1 (mapcar 

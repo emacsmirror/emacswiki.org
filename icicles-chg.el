@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May 24 11:31:20 2011 (-0700)
+;; Last-Updated: Wed May 25 08:41:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6579
+;;     Update #: 6582
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -406,6 +406,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/05/25 dadams
+;;     icicle-fundoc, icicle-vardoc, icicle-plist:
+;;       Use icicle-doc-action only.  Bind icicle-list-use-nth-parts to (1).  Thx to Michael Heerdegen.
 ;; 2011/05/24 dadams
 ;;     icicle-invisible-p: Use invisible-p if available (Emacs 22+).
 ;; 2011/05/22 dadams

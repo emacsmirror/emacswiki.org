@@ -1,4 +1,4 @@
-Assume you want to replace all occurences of "foo" with "bar", "baz", "quux" and so on. You want to cycle through the replacements.
+Assume you want to replace all occurences of `foo' with `bar', `baz', `quux', and so on. You want to cycle through the replacements:
 
 {{{
 (let ((master '("bar" "baz" "quux"))
@@ -9,7 +9,7 @@ Assume you want to replace all occurences of "foo" with "bar", "baz", "quux" and
     (setq items (cdr items))))
 }}}
 
-The code above has a master list of replacements and a working copy called `items'. It will use the first item in the list of items, or get a copy of the master list and use that. Then it shortens the list by one item, and loops.
+The code above has a master list of replacements and a working copy called `items'. It will use the first item in the list of items, or get a copy of the master list and use that. Then it shortens the list by one item and loops.
 
 Or we can use a circular list:
 
@@ -21,9 +21,27 @@ Or we can use a circular list:
     (setq items (cdr items))))
 }}}
 
-The `nconc' function modifies the ListStructure and makes it circular. The list of items basically holds bar, baz, quux, bar, baz, quux, ad infinitum. See ListModification for more information about nconc.
+The `nconc' function modifies the ListStructure and makes it circular. The list of items basically holds `bar', `baz', `quux', `bar', `baz', `quux', ''ad infinitum''. See ListModification for more information about `nconc'.
 
 With a circular list, we can now use the first item of it, and shorten it by one, and we'll never run out of items.
+
+== Read syntax ==
+
+To represent shared or circular structures in Lisp code, use the reader constructs <code>#n=</code> and <code>#n#</code>, where <code>n</code> is some integer. Use <code>#n=</code> before an object to label it, then use <code>#n#</code> to refer to the same object in another place.
+
+For example, here is how to make a list in which the first element recurs as the third element:
+
+{{{
+(#1=(a) b #1#)
+}}}
+
+You can also use the same syntax to make a circular structure, which appears as an "element" within itself:
+
+{{{
+#1=(a #1#)
+}}}
+
+The Lisp printer can produce this syntax if you bind the variable <code>print-circle</code> to a non-<code>nil</code> value. For more details, see the GNU Emacs Lisp Reference Manual, section 2.5.
 
 ----
 CategoryCode

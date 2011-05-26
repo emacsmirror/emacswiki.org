@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue May 24 14:16:34 2011 (-0700)
+;; Last-Updated: Wed May 25 08:42:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3312
+;;     Update #: 3322
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -141,7 +141,6 @@
 ;;    `icicle-describe-opt-of-type-complete', `icicle-doc-action',
 ;;    `icicle-edmacro-parse-keys', `icicle-flat-list',
 ;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
-;;    `icicle-funvardoc-action',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
@@ -1134,7 +1133,7 @@ candidates.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
-  icicle-funvardoc-action               ; Action function
+  icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let* ((num-arg         (prefix-numeric-value pref-arg))
          (options-only-p  (<= num-arg 0))
@@ -1157,16 +1156,16 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "VAR `C-M-j' DOC: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   (icicle-candidate-help-fn           'icicle-funvardoc-action)
+   (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
   (progn
     (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
     (icicle-highlight-lighter)
     (message "Gathering variable descriptions...")))
 
-(defun icicle-funvardoc-action (entry)
-  "Action function for `icicle-vardoc', `icicle-fundoc', `icicle-plist'."
-  (with-output-to-temp-buffer "*Help*" (princ entry)))
+;;; $$$$$$ (defun icicle-funvardoc-action (entry)
+;;;   "Action function for `icicle-vardoc', `icicle-fundoc', `icicle-plist'."
+;;;   (with-output-to-temp-buffer "*Help*" (princ entry)))
 
 ;;;###autoload (autoload 'icicle-fundoc "icicles-cmd2.el")
 (icicle-define-command icicle-fundoc    ; Command name
@@ -1193,7 +1192,7 @@ the time that would be needed to gather the documentation.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
-  icicle-funvardoc-action               ; Action function
+  icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg icicle-fundoc-last-initial-cand-set)))
     (unless result                      ; COLLECTION arg is an alist whose items are ((symb doc)).
@@ -1212,7 +1211,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "FUNC `C-M-j' DOC: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   (icicle-candidate-help-fn           'icicle-funvardoc-action)
+   (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
   (progn
     (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
@@ -1253,7 +1252,7 @@ to cause an Emacs crash.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
-  icicle-funvardoc-action               ; Action function
+  icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg (wholenump (prefix-numeric-value pref-arg))
                       icicle-plist-last-initial-cand-set)))
@@ -1275,6 +1274,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   nil nil nil nil nil nil
   ((prompt                             "SYMB `C-M-j' PLIST: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
   (progn
     (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code

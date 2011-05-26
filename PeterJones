@@ -1,18 +1,18 @@
-http://pmade.com/static/images/people/pjones/vegas-200px.jpg
+http://www.pmade.com/static/images/people/pjones-01.jpg
 
 I'm an Emacs newb (been using Emacs since Oct. 2007), and used vi for 10 years before that.
 
 Some of my favorite packages:
 
 * OrgMode
-* EmacsMuse
-* [[ERC]]
+* [[rcirc]]
 * [[Gnus]]
 
 Stuff I've Written:
 
 * Lisp:external-abook.el (ExternalAbook)
 * Lisp:bitlbee.el
+* Plus tons of stuff for OrgMode
 
 Contact Info:
 

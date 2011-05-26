@@ -364,6 +364,9 @@ That should let you see the problem.  The function bases the max frame height on
 5. Use `C-h f RET require RET' to learn about `require'.
 ##(require 'foo nil t)## means load library ##foo## if it has not already been loaded, but do not raise an error if the library is not found.  ##(require 'foo)## is the same but raises an error if the library is not found.  That's the only difference.  I call the former a "''soft'' `require'". So a library that soft-requires ##fit-frame.el## loads it if it is in your `load-path' but raises no error if cannot be found.  IOW, for that library, library ##fit-frame.el## is just a nice-to-have; it is not strictly required. -- DrewAdams
 
+
+
+
 [new:pauljohn32:2010-12-14 18:34 UTC]
 
 OK, lets tackle one thing at a time.  About colors.  I don't understand what you don't understand :)  Emacs does not remember the color choices I make inside your system.  Your Emacs has blue background. I hate that. I do C-middle button to bring up the palette chooser, make the background white again.  I try the usual menu Options /Save Options, but the color choice I make is not remembered when I close/restart Emacs. If I change background/foreground colors in Emacs in the ordinary way--without your libraries installed--I'm pretty sure Options /Save Options does record the colors.  As it is, Options / Save Options drops this on the end of my ~/.emacs: 
@@ -391,6 +394,49 @@ I don't have any progress to report on the debugger thing. I'll keep trying. I'm
 
 pj  
 
+
+[new:DrewAdams:2011-05-25 13:35 UTC]
+Sorry, PJ, I just now noticed your reply, so this is a very late response (5 months!).
+
+The default background color is controlled in Emacs by option `default-frame-alist'.  If you use <tt>[[oneonone.el]]</tt> then you can customize option '''`1on1-default-frame-alist''''. 
+
+If you use <tt>[[doremi-frm.el]]</tt> to change things like the background, only the current value is changed.  To save the changes use `M-x customize-customized' to see which options have been modified, then save any that you want to keep.
+
+But see also this comment in ##doremi-frm.el##:
+
+<pre>
+;;    There is no single variable for saving changes to parameters of
+;;    the current frame.  Instead, there are several different
+;;    frame-alist variables, which you can use to define different
+;;    kinds of frames.  These include: `default-frame-alist',
+;;    `initial-frame-alist', and `special-display-frame-alist'.  The
+;;    complete list of such frame alist variables is available using
+;;    function `frame-alist-var-names', defined in library
+;;    `frame-cmds.el'.
+;;
+;;    Example: Suppose you change the background color of a frame and
+;;    want to make that the default background color for new frames in
+;;    the future.  You will need to update the value of variable
+;;    `default-frame-alist' to use the `background-color' parameter
+;;    setting of the changed frame.
+;;
+;;    You can easily copy one or all parameter values from any given
+;;    frame to any frame alist (such as `default-frame-alist'), by
+;;    using the commands `set-frame-alist-parameter-from-frame' and
+;;    `set-all-frame-alist-parameters-from-frame'.  Those commands are
+;;    defined in library `frame-cmds.el'.
+</pre>
+
+HTH.  Again, sorry I didn't notice your reply sooner. -- DrewAdams
+
+
+
+
+
+
+
+
+
 [new:NeilSmithline:2011-05-25 08:16 UTC]
 Drew - Long ago I evaluated Emacs' Windows and Frames model and have revisited many times since as new things come along that cause me to feel the need to reevaluate my decisions. Your OOOE (no offense but that's a crappy acronym :-) was another shiny new toy that made me consider how I want to use Windows and Frames. 
 
@@ -408,9 +454,31 @@ Many of the nerdier crowd prefer to keep more control than the OS window manager
 
 In any case, think this is a great extension but wish you didn't need to write it because Emacs did it out of the box.
 
-May 25, 2011 at 04:15 ET (GMT-04:00) -- Neil Smithline
+May 25, 2011 at 04:15 ET (GMT-04:00) -- NeilSmithline
 
 PS: Ramblings like this seem much more forum oriented than the wiki can provide.
+
+
+
+
+[new:DrewAdams:2011-05-25 13:52 UTC]
+Hi Neil.  Interesting read.  I agree with much (most) of what you say.
+
+Wrt use of things like tabs, windows, and frames -- people are different (very!), and they use computers, and Emacs, differently and for different purposes.  I don't expect anyone in particular to want to use Emacs and its thingies the same way I do.  Like many others, I just publish my own customizations in case someone finds them useful, either as is or as inspiration for their own customizations.
+
+Wrt One-On-One-Emacs taking away from using Emacs as a window manager -- I don't see that at all.  I can see that it can let you take advantage of your computer's window manager a bit more, but I don't see how it prevents you in any way from using Emacs itself to control things.
+
+In addition, o-o-o-e (and some other libraries) let you do things with frames that you cannot do with ordinary window-manager windows.
+
+For instance, I really wish I could, with regular win-mgr windows, move them around and resize them easily using the keyboard.  I'm in such a habit of doing that with Emacs frames that I find myself really missing that for non-Emacs windows.  I use `##C-M-(left|right|up|down)##' to resize frames incrementally, and I use `##M-(left|right|up|down)##' to move them around.
+
+I also use thumbnail frames (FisheyeWithThumbs) a lot.  I would love to be able to have such live icons also for ordinary (non-Emacs) window-manager windows.
+
+Anyway, I enjoyed your post.  -- DrewAdams
+
+
+
+
 
 ----
 

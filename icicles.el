@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 15 10:18:25 2011 (-0700)
+;; Last-Updated: Wed May 25 08:41:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22898
+;;     Update #: 22899
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -857,8 +857,7 @@
 ;;    `icicle-flat-list', `icicle-fn-doc-minus-sig',
 ;;    `icicle-font-w-orig-size', `icicle-frame-name-history',
 ;;    `icicle-frames-on', `icicle-function-name-history',
-;;    `icicle-funvardoc-action', `icicle-fuzzy-candidates',
-;;    `icicle-get-alist-candidate',
+;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',

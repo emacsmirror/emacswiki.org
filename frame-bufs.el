@@ -2,8 +2,8 @@
 
 ;; Copyright (c) 2011 Alp Aker
 
-;; Author: Alp Aker <aker@pitt.edu>
-;; Version: 0.91
+;; Author: Alp Aker <alp.tekin.aker@gmail.com>
+;; Version: 0.92
 ;; Keywords: convenience, buffers
 
 ;; This program is free software; you can redistribute it and/or
@@ -53,28 +53,28 @@
 ;; Usage
 ;; =====
 
-;; Frame-bufs operates fairly transparently.  The typical way a buffer
-;; becomes associated with a frame is by being selected in a window on the
-;; frame.  By default a new buffer menu initially lists all buffers, with a
-;; new fourth column after the initial CRM columns--the `F' column.  Buffers
-;; associated with the selected frame are indicated with an `o' in this
-;; column.
+;; Frame-bufs operates fairly transparently.  The buffer menu now has two
+;; modes.  In "full-list" mode, it lists all buffers; in "frame-list" mode it
+;; lists only those buffers that are associated with the selected frame.  One
+;; can toggle between the modes by typing "F".
 
-;; By typing `F' one can toggle between listing all buffers ("full-list
-;; mode") and listing only those buffers associated with the selected frame
-;; ("frame-list mode").  In frame-list mode, the fourth `F' column is
-;; suppressed.  Full-list/frame-list status is also indicated in the mode
-;; line.
+;; In full-list mode, there is a new fourth column after the initial CRM
+;; columns--the `F' column.  Buffers associated with the selected frame are
+;; indicated with an `o' in this column.  In frame-list mode, the fourth `F'
+;; column is suppressed.  (Full-list/frame-list status is also indicated in
+;; the mode line.)
 
-;; Two other new commands are available in the buffer menu.  By typing `A' a
-;; buffer can be marked as to be added to the buffers associated with the
-;; selected frame.  By typing `N' a buffer can be marked as to have its
-;; association with the selected frame severed.  As with other actions in the
-;; buffer menu, these changes take effect when `Buffer-menu-execute' is
-;; called.
+;; The typical way a buffer becomes associated with a frame is by being
+;; selected in a window on the frame.  One can manually associate buffers
+;; with a frame, and disassociate them as well, using two other new commands
+;; in the buffer menu.  By typing `A' a buffer can be marked as to be added
+;; to the buffers associated with the selected frame.  By typing `N' a buffer
+;; can be marked as to have its association with the selected frame
+;; severed.  As with other actions in the buffer menu, these changes take
+;; effect when `Buffer-menu-execute' is called.
 
-;; In subsequent calls the buffer menu opens in frame-list or full-list mode
-;; according as it was last in frame-list or full-list mode.
+;; When first called, the buffer menu open in full-list mode.  In subsequent
+;; calls it opens in whatever mode it was last in.
 
 ;; Criteria That Control Buffer-Frame Association
 ;; ==============================================
@@ -113,24 +113,6 @@
 ;;      new frame when the frame-creating command terminates, it will still
 ;;      be associated with the new frame.)
 
-;; Other Customization Options
-;; ===========================
-
-;; o To rebind the new buffer menu commands, alter their bindings in the
-;;   keymap `frame-bufs-mode-map'.
-
-;; o The indicator bit used for frame-associated buffers (default `o') can be
-;;   set via the variable `frame-bufs-associated-buffer-bit'.
-
-;; o The strings used to indicate frame-list/full-list state in the buffer
-;;   menu's mode line can be changed by setting the variables
-;;   `frame-bufs-mode-line-frame-list-string' and
-;;   `frame-bufs-mode-line-full-list-string'.  The mode-line indication can
-;;   be turned off by setting `frame-bufs-mode-line-indication' to
-;;   nil.  (This latter variable can be set to any valid mode-line construct;
-;;   users setting this variable to a custom mode-line construct will
-;;   probably want to make use of the variable `frame-bufs-full-list'.)
-
 ;; Other Commands and Features
 ;; ===========================
 
@@ -162,6 +144,24 @@
 
 ;; By default, none of these commands has a key binding.
 
+;; Other Customization Options
+;; ===========================
+
+;; o To rebind the new buffer menu commands, alter their bindings in the
+;;   keymap `frame-bufs-mode-map'.
+
+;; o The indicator bit used for frame-associated buffers (default `o') can be
+;;   set via the variable `frame-bufs-associated-buffer-bit'.
+
+;; o The strings used to indicate frame-list/full-list state in the buffer
+;;   menu's mode line can be changed by setting the variables
+;;   `frame-bufs-mode-line-frame-list-string' and
+;;   `frame-bufs-mode-line-full-list-string'.  The mode-line indication can
+;;   be turned off by setting `frame-bufs-mode-line-indication' to
+;;   nil.  (This latter variable can be set to any valid mode-line construct;
+;;   users setting this variable to a custom mode-line construct will
+;;   probably want to make use of the variable `frame-bufs-full-list'.)
+
 ;; Compatibility
 ;; =============
 
@@ -181,6 +181,13 @@
 ;;   will contain only live, non-internal buffers; be updated to reflect the
 ;;   current value of frame-bufs-always-include-names; and be sorted
 ;;   stably by selection order on the current frame.
+
+
+;; Acknowledgements
+;; ============================
+
+;; Thanks to Greg Bognar for alpha testing and to Drew Adams for suggesting
+;; many improvements.
 
 ;;; Code:
 
@@ -315,7 +322,7 @@ use of the variable `frame-bufs-full-list'."
 ;; The following are used in initializing the associated-buffer list of a
 ;; newly created frame.
 
-;; Let-bound to t during execution of list-buffers or
+;; This is let-bound to t during execution of list-buffers or
 ;; buffer-menu-other-window.  In case those commands display the buffer menu
 ;; on a different frame, we don't want normal associated-buffer list
 ;; initialization performed on that frame (our advice around those functions
@@ -343,6 +350,12 @@ use of the variable `frame-bufs-full-list'."
   '(electric-buffer-list
     list-buffers
     buffer-menu-other-window))
+
+(defconst frame-bufs-hook-assignments
+  '((Buffer-menu-mode-hook . frame-bufs-set-up-buff-menu)
+    (window-configuration-change-hook . frame-bufs-window-change)
+    (before-make-frame-hook . frame-bufs-before-make-frame)
+    (after-make-frame-functions . frame-bufs-after-make-frame)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Mode Definitions and Keymaps
@@ -436,16 +449,14 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
         (ad-enable-regexp "frame-bufs")
         (dolist (fn frame-bufs-advised-fns)
           (ad-activate fn))
-        (add-hook 'Buffer-menu-mode-hook 'frame-bufs-set-up-buff-menu)
-        (add-hook 'window-configuration-change-hook 'frame-bufs-window-change)
-        (add-hook 'before-make-frame-hook 'frame-bufs-before-make-frame)
-        (add-hook 'after-make-frame-functions 'frame-bufs-after-make-frame)
-        (run-hooks 'frame-bufs-mode-on-hook)
+        (dolist (hook frame-bufs-hook-assignments)
+          (add-hook (car hook) (cdr hook)))
         ;; In case we toggle the mode while the buffer menu exists.
         (let ((buf (get-buffer "*Buffer List*")))
           (when buf
             (with-current-buffer buf
               (revert-buffer))))
+        (run-hooks 'frame-bufs-mode-on-hook)
         (message "Per-frame buffer menus are enabled"))
     ;; Disabling.
     (dolist (frame (frame-list))
@@ -454,11 +465,8 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
     (ad-disable-regexp "frame-bufs")
     (dolist (fn frame-bufs-advised-fns)
       (ad-activate fn))
-    (remove-hook 'Buffer-menu-mode-hook 'frame-bufs-set-up-buff-menu)
-    (remove-hook 'window-configuration-change-hook 'frame-bufs-window-change)
-    (remove-hook 'before-make-frame-hook 'frame-bufs-before-make-frame)
-    (remove-hook 'after-make-frame-functions 'frame-bufs-after-make-frame)
-    (run-hooks 'frame-bufs-mode-off-hook)
+    (dolist (hook frame-bufs-hook-assignments)
+      (remove-hook (car hook) (cdr hook)))
     ;; Again, in case we toggle the mode while the buffer menu exists, but
     ;; this time with a hack to make sure Buffer-menu-revert-function finds
     ;; the right buffer despite the change in Buffer-menu-buffer-column.
@@ -473,6 +481,7 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
                                  'buffer
                                  (get-text-property (1+ pos) 'buffer))))
           (revert-buffer))))
+    (run-hooks 'frame-bufs-mode-off-hook)
     (message "Per-frame buffer menus are disabled"))
   (run-mode-hooks 'frame-bufs-mode-hook))
 
@@ -495,7 +504,7 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
                           frame))
 
 ;; The next three functions handle initialization of the associated-buffer
-;; list for newly created frames.  The procedures is as follows: 
+;; list for newly created frames.  The procedure is as follows: 
 
 ;; (1) frame-bufs-before-make-frame is called before the new frame is
 ;;     created, and records the current buffer, the associated-buffer list of
@@ -523,9 +532,10 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
 ;; (e.g., when pop-up-frames is non-nil).  In that case, the buffer menu is
 ;; displayed on a new frame, and we want the buffer menu's associated-buffer
 ;; list to be just like that of the frame from which the buffer menu is
-;; called.  So those functions set `frame-bufs-no-list-initialization' to t,
-;; disabling the above routine (aside from setting the buffer predicate of
-;; the new frame), and handle associated-buffer list initialization themselves.
+;; called.  So those functions let-bind `frame-bufs-no-list-initialization'
+;; to t, disabling the above routine (aside from setting the buffer predicate
+;; of the new frame), and then handle associated-buffer list initialization
+;; themselves.
 
 (defun frame-bufs-before-make-frame ()
   (unless frame-bufs-no-list-initialization
@@ -667,6 +677,7 @@ itself."
         (mapcar #'(lambda (x) (if (not (string-match "^ " (buffer-name x))) x))
                 bufs)))
 
+;; Simple destructive set difference.
 (defun frame-bufs-set-minus (subtrahend minuend)
   (dolist (element subtrahend)
     (setq minuend (delq element minuend)))
@@ -751,10 +762,9 @@ Call `frame-bufs-reset-frame' on all live frames."
   (let ((before (reverse (memq 'mode-line-buffer-identification
                                 (reverse mode-line-format))))
         (after (cdr (memq 'mode-line-buffer-identification mode-line-format))))
-  (set (make-local-variable 'mode-line-format)
-         (append before
-                 frame-bufs-mode-line-identification
-                 after))))
+  (setq mode-line-format (append before
+                                 frame-bufs-mode-line-identification
+                                 after))))
 
 ;;; ---------------------------------------------------------------------
 ;;; New Buffer Menu Commands

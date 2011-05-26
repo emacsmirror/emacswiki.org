@@ -36,6 +36,10 @@ External tools supported
 * Graphviz (dot) - supported by COGRE for diagram layout and export.
 * ExuberantCtags - Supported as an alternate parser for Semantic for many languages, like Bourne shell scripts.
 
+Issues
+
+* Currently CEDET issues a warning "Warning: cedet-called-interactively-p called with 0 arguments, but requires 1", which can be suppressed by adding <code>(setq byte-compile-warnings nil)</code> in your .emacs file before CEDET is loaded
+
 ----
 Links to some comments, pictures etc
 

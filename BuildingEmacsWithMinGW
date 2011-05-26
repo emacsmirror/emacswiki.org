@@ -1,9 +1,9 @@
 === Official? ===
 Here's an announcement from http://mingw.sf.net group.  I haven't tested this. -- PatrickAnderson
 
-MinGW Community, finally there is a method for building GNU emacs with MinGW and MSYS. The caveats are, you must use the HEAD code from emacs CVS. You may need to add a date tag to the cvs checkout found in mingwPORT.beforeconfigure to get a good set of source. I tested with the source as of 2005-01-24. Also during the installation process, there is a shortcut created that contains extraneous characters in the Target and Start in text boxes. You need to right click, choose properties and remove the two characters q\ from both text boxes. 
+MinGW Community, finally there is a method for building GNU emacs with MinGW and MSYS. The caveats are, you must use the HEAD code from emacs CVS. You may need to add a date tag to the cvs checkout found in mingwPORT.beforeconfigure to get a good set of source. I tested with the source as of 2005-01-24. Also during the installation process, there is a shortcut created that contains extraneous characters in the Target and Start in text boxes. You need to right click, choose properties and remove the two characters q\ from both text boxes. 
 
- 
+
 Dependencies: 
 MSYS 
 msysDTK 
@@ -23,7 +23,7 @@ Manual step:
 : Click ok 
  
 
-Good Luck and may your mileage with this script not vary. -- http://sourceforge.net/forum/forum.php?forum_id=440305
+Good Luck and may your mileage with this script not vary.  -- http://sourceforge.net/forum/forum.php?forum_id=440305
 
 : Here are the scripts (2kb) http://prdownloads.sf.net/mingw/emacs-cvs-mingwPORT-1.tar.bz2?download
 

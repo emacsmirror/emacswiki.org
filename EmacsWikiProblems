@@ -10,6 +10,20 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+
+
+== FYI - still getting Server Error ==
+
+Just an FYI that this problem has not disappeared, even if it is less frequent. -- DrewAdams
+
+
+
+
+== Problem with `Manual:' syntax? ==
+
+How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[[Manual:Circular Objects]]## and a few variants, but didn't find anything that works.  -- DrewAdams
+
+
 == Problems with edit shortcut ==
 
 The first bullet point on [[HowToEdit]] tells me "In common browsers,

@@ -116,6 +116,51 @@ By default, Mew 6.3 does not work with [http://www.stunnel.org/download/binaries
           (setq mew-ssl-ver 4)
           (setq mew-ssl-minor-ver 33))
 
+== RFC2047 ==
+
+-----
+
+To send attachment using rfc2047 encode the mew header, patch the mew-header.el by modifying function mew-header-insert like this(in mew6.3.50 beta):
+<pre>
+(defvar *mew-header-encoding-method* :rfc2047)
+(defun mew-header-insert (key value &optional no-fold)
+  (if (and value (stringp key))
+      (let ((beg (point)) params med parname parval)
+        (when (listp value)
+          (setq params (cdr value))
+          (setq value (car value)))
+        (insert key)
+        (insert " ")
+        (setq med (point))
+        (if (string-match "^[\t -~]*$" value)
+            (insert value)
+          (mew-header-encode-text value nil (length key)))
+        (dolist (par params)
+          (mew-set '(parname parval) par)
+          (insert ";")
+          (cond
+           ((string-match "^[-a-zA-Z0-9]+$" parval)
+            ) ;; do nothing
+           ((and (string= (mew-charset-guess-string parval) mew-us-ascii)
+                 (not (string-match "\"" parval)))
+            (setq parval (concat "\"" parval "\"")))
+           (t
+            (case *mew-header-encoding-method*
+              (:rfc2047
+               (when (loop for c across parval
+                        thereis (> c 255))
+                 (setq parval (concat "\"" (rfc2047-encode-string parval)
+                                      "\""))))
+              (t (setq parval (mew-param-encode parval))
+                 (setq parname (concat parname "*"))))))
+          (insert " " parname "=" parval))
+        (insert "\n")
+        (unless no-fold
+          (mew-header-fold-region beg (point) med)))))
+</pre>
+
+---- by Jingtao Xu
+
 == Other stuff ==
 
 -----
