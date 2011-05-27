@@ -70,7 +70,7 @@ Rainbow-delimiters comes with two *default color schemes*, for light and dark ba
 
 The light/dark color schemes differ only in their brightness level.
 
-[http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot. If you haven't looked at emacs-fu, it's an exceptional place for all sorts of useful tips on improving your emacs experience.
+[http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot using a custom color theme. If you haven't looked at emacs-fu, it's an exceptional place for all sorts of useful tips on improving your emacs experience.
 
 == Contributing ==
 If you want to add a feature to rainbow-delimiters.el, the current development version will always be at github under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Having the development progress on github should make it easy to integrate patches. Please email me (see the top of the file) before starting work on anything big to make sure we don't duplicate effort.

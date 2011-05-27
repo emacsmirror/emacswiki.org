@@ -32,13 +32,17 @@ To represent shared or circular structures in Lisp code, use the reader construc
 For example, here is how to make a list in which the first element recurs as the third element:
 
 {{{
-(#1=(a) b #1#)
+(setq x '(#1=(a) b #1#))
+(eq (nth 0 x) (nth 2 x))
+  => t
 }}}
 
 You can also use the same syntax to make a circular structure, which appears as an "element" within itself:
 
 {{{
-#1=(a #1#)
+(setq x '#1=(a #1#))
+(eq x (cadr x))
+  => t
 }}}
 
 The Lisp printer can produce this syntax if you bind the variable <code>print-circle</code> to a non-<code>nil</code> value. For more details, see the GNU Emacs Lisp Reference Manual, section 2.5.

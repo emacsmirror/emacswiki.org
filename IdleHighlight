@@ -1,37 +1,8 @@
-M-x idle-highlight sets an idle timer that highlights all occurences in the buffer of the word under the point.
+M-x idle-highlight-mode sets an idle timer that highlights all occurences in the buffer of the word under the point.
 
-Canonical URL: http://github.com/technomancy/dotfiles/blob/master/.emacs.old/idle-highlight.el
+This library is best installed via [http://marmalade-repo.org/packages/idle-highlight-mode package.el]: M-x package-install idle-highlight-mode
 
-This library is best installed via [[ELPA]].
-
-..
-
-But anyway, here is an ebuild for it:
+Repository: https://github.com/nonsequitur/idle-highlight-mode
 
 
-    # cat files/70idle-highlight-gentoo.el 
-    (add-to-list 'load-path "@SITELISP@")
 
-    (autoload 'idle-highlight "idle-highlight" "Highlight the word the point is on" t)
-
-
-    # cat idle-highlight-9999.ebuild
-    inherit elisp
-
-    DESCRIPTION="Highlight the word the point is on"
-    HOMEPAGE="http://www.emacswiki.org/cgi-bin/wiki/IdleHighlight"
-
-    SRC_URI=""
-
-    LICENSE="GPL-3"
-    SLOT="0"
-    KEYWORDS="alpha amd64 arm hppa ia64 ppc ppc64 s390 sh sparc x86 x86-fbsd"
-    IUSE=""
-
-    SITEFILE="70${PN}-gentoo.el"
-
-    URL="http://github.com/technomancy/dotfiles/raw/master/.emacs.old/idle-highlight.el"
-
-    src_unpack() {
-    	wget "${URL}"
-    }

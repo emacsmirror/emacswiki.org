@@ -1,0 +1,71 @@
+== What is it ==
+
+rfc.el is an extension to browse RFC documents and the RFC index. It is maintained by Katsuya Iida
+
+== Download ==
+
+You can download it from Lisp:rfc.el
+
+== install ==
+
+* Put Lisp:rfc.el in your load-path, and add 
+{{{
+        (require 'rfc)  
+}}}
+: in ~/.emacs.
+
+* Basic configuration
+
+{{{
+        (setq rfc-url-save-directory "~/rfc")
+        (setq rfc-index-url "http://www.ietf.org/rfc/rfc-index.txt")
+        (setq rfc-archive-alist (list (concat rfc-url-save-directory "/rfc.zip")
+                                      rfc-url-save-directory
+                                      "http://www.ietf.org/rfc/"))
+        (setq rfc-insert-content-url-hook '(rfc-url-save)
+
+}}}
+
+* Known issue
+
+You may need to comment out <code>(require 'w3)</code> line if you do not have a w3 package installed (since it is too old).
+
+{{{
+        sed -i -e 's/ (require.*w3)/;&/' rfc.el
+}}}
+
+== Usage ==
+
+After installation & configuration, try <code> M-x rfc-index </code>
+
+== Key bindings ==
+
+{{{
+
+(defvar rfc-index-mode-map nil
+  "Keymap for RFC index mode")
+
+(if rfc-index-mode-map
+    nil
+  (setq rfc-index-mode-map (make-sparse-keymap))
+  (suppress-keymap rfc-index-mode-map)
+  (let ((map rfc-index-mode-map))
+    (define-key map "\C-m" 'rfc-index-goto-nearest)
+    (define-key map "g" 'rfc-goto-number)
+    (define-key map "\C-j" 'rfc-index-follow-nearest)
+    (define-key map "f" 'rfc-index-follow-number)
+    (define-key map "o" 'rfc-index-follow-obsoleted)
+    (define-key map "O" 'rfc-index-follow-obsoletes)
+    (define-key map "u" 'rfc-index-follow-updates)
+    (define-key map "U" 'rfc-index-follow-updated)
+    (define-key map [mouse-2] 'rfc-index-mouse-2)
+    (define-key map "n" 'scroll-up)
+    (define-key map "p" 'scroll-down)
+    (define-key map " " 'scroll-up)
+    (define-key map "\C-?" 'scroll-down)
+    (define-key map "s" 'isearch-forward)
+    (define-key map "r" 'isearch-backward)
+    (define-key map "q" 'rfc-index-kill-buffer)
+    ))
+
+}}}

@@ -50,7 +50,7 @@ Keeping this list current is much easier if you add these infos:
 I propose to limit the listing here to releases [http://en.wikipedia.org/wiki/Debian#Release_history still] supported to avoid cruft.
 
 
-=== Avoiding Issues with Site Wide Init Files: === 
+=== Avoiding Issues with Site Wide Init Files === 
 
 The init files of the external packages should not, by default (or through an option), be loaded at startup, unless the user (or the administrator) declares  (require 'external-packages-inits) or requires packages or their init files individually.
 
@@ -58,15 +58,10 @@ Most debian packages that contain add on el files that would be installed site w
 
 If a specific package installs itself site wide, and you later decide that this is not what you want, you can always remove the offending file from /etc/emacs/site-start.d/  This change is sancrosant, and a Debian package will not later reinstall this file. (If it does, please file an RC bug using reportbug with Severity: serious)
 
-[new:Memnon Anon:2010-01-16 18:06 UTC]
-== Discussion ==
-* Seems to me most of the information on this page is related to woody, which was released 2002-07 and no more supported since 2006-08. I use the debian packages and never experienced any of the problems above, so I think this page really gives a hell of a first impression. How am I to proceed now? I only have a testing available, but I think to remove an item as obsolete, it should be checked against all supported versions, i.e. etch and lenny. I could add a '/bold/Obsolete in squeeze [Date]/bold/', though. Any advice? 
-* And btw.: Why is gentoo policy info on this page?
 
-[new]
-I think such information should either be deleted, or moved to a new page called %%EmacsForWoody%%. Marking information as obsolete on this page will just increase the clutter. Similarly, information for Gentoo should be moved to %%EmacsForGentoo%% or a similar page. -- AlexSchroeder
+=== Using development sources with Debian === 
 
-----
-See also: EmacsCvsAndDebian
+If you want to install a bleeding-edge version of Emacs direct from Bazaar, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, a handy script and Debian package by Michael Olson are available at https://github.com/rrthomas/src-emacs-on-debian
+
 ----
 CategoryPorts

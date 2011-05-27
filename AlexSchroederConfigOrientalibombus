@@ -17,6 +17,7 @@
 (blink-cursor-mode -1)
 (display-battery-mode 1)
 (set-face-attribute 'default nil :height 105)
+(setq history-length 300)
 (setq visible-bell t)
 (setq x-select-enable-clipboard t)
 
@@ -205,6 +206,7 @@ From a program takes two point or marker arguments, BEG and END."
 ;;       default-frame-alist '((height . 35)))
 ;; (require 'pink-bliss)
 ;; (color-theme-pink-bliss)
+;; (set-face-attribute 'default nil :height 90 :family )
 
 (define-generic-mode 'venus-feed-mode
   '(?#)
@@ -540,6 +542,7 @@ feed address and the blog title."
 	  "#perl6"))
 	;; "#clojure" "#clojure.de"
 	("ircnet.eversible.com" :channels ("#drsrm"))
+	("irc.ch.euirc.net" :channels ("#tanelorn"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse"))
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
 	("localhost" :channels ("&bitlbee" "&bsi" "&roleplaying" "&emacs"
@@ -548,7 +551,7 @@ feed address and the blog title."
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
-      rcirc-ignore-list '("jordanb" "consolers" "Nihplod" "raela")
+      rcirc-ignore-list '("jordanb" "consolers" "Nihplod" "raela" "dustpuppy")
       rcirc-authinfo (with-temp-buffer
 		       (insert-file-contents-literally "~/.rcirc-authinfo")
 		       (read (current-buffer))))
@@ -861,14 +864,22 @@ cells by columns first."
 
 (require 'goto-addr)
 
+(defface strike '((t (:strike-through t)))
+  "Strike-through.")
+
 (defvar alex-oddmuse-keywords
   `(("^=[^=\n]+=+$" . 'info-title-1)
     ("^==[^=\n]+=+$" . 'info-title-2)
     ("^===[^=\n]+=+$" . 'info-title-3)
     ("^====[^=\n]+=+$" . 'info-title-4)
-    ("^[ \t].*$" . 'fixed-pitch)
+    ;; ("^[ \t].*$" . 'fixed-pitch)
+    ("\\[b\\].*?\\[/b\\]" . 'bold)
+    ("\\[i\\].*?\\[/i\\]" . 'italic)
+    ("\\[u\\].*?\\[/u\\]" . 'underline)
+    ("\\[s\\].*?\\[/s\\]" . 'strike)
+    ("\\[url.*?/url\\]" . 'link)
     ("\\[\\[.*?\\]\\]" . 'link)
-    ("\\[.*\\]" . 'link)
+    ("\\[.*?\\]" . 'link)
     (,goto-address-url-regexp . 'link)
     ("\\*\\*\\(.*?\n\\)*?.*?\\*\\*" . 'bold)
     ("\\*.+?\\*" . 'bold)
@@ -893,6 +904,27 @@ The particular markup mix is specific to my preferences.")
 		      (format-time-string "%Y-%m-%d "))))
   (oddmuse-edit "Alex" title)
   (setq font-lock-keywords alex-oddmuse-keywords))
+
+(add-to-list 'auto-mode-alist
+	     (cons (expand-file-name "~/.emacs.d/oddmuse/Alex/")
+		   'alex-oddmuse-mode))
+
+(defmacro define-bb-code (code)
+  (let ((func (intern (concat "bb-" code)))
+	(doc (format "Insert [%s]…[/%s]." code code)))
+    `(define-skeleton ,func ,doc nil
+       "[" ,code  "]" _ "[/" ,code  "]" )))
+
+(eval
+ (cons 'progn
+       (mapcar (lambda (s) `(define-bb-code ,s))
+	       '("b" "i" "u" "s" "colo" "size" "font"
+		 "url" "img" "quote" "center" "list" "code"
+		 "h1" "h2" "h3" "h4" "h5" "h6"))))
+
+(add-hook 'alex-oddmuse-mode-hook
+	  (lambda ()
+	    (set (make-local-variable 'skeleton-end-newline) nil)))
 
 (defvar campaign-wiki-font-lock-list
   '(("^=[^=\n]+" . 'info-title-1)

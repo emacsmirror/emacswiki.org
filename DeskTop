@@ -46,42 +46,18 @@ follow the suggestions in the doc-string of `desktop-globals-to-save':
 
 : An element may be variable name (a symbol) or a cons cell of the form (VAR . MAX-SIZE), which means to truncate VAR's value to at most MAX-SIZE elements (if the value is a list) before saving the value.
 
-
-
-== Automatically Saving the Desktop Periodically ==
-
-I (PaulTipper) got hacked off with having Xorg lock up on me during an Emacs session, thus losing all the changes to my desktop, so I knocked up the following config (neatened a bit from my messy .emacs, hopefully without breaking it).  This gives you a persistent single desktop, as opposed to multiple ones, and saves it every 5 minutes, which hopefully means you don't lose too much when something less reliable flakes out further up the chain.
-
-  (setq *foo-desktop-dir* (expand-file-name "~/.emacs.d/desktop"))
-  (setq desktop-dir *foo-desktop-dir*)
-  (setq desktop-path (list *foo-desktop-dir*))
-  (desktop-save-mode 1) ;; Switch on desktop.el
-  (setq *foo-desktop-file* (concatenate 'string desktop-dir
-                                        "/" desktop-base-file-name))
-  (setq *foo-desktop-lock* (concatenate 'string desktop-dir
-                                        "/" desktop-base-lock-name))
-  (defun desktop-in-use-p ()
-    (and (file-exists-p *foo-desktop-file*) (file-exists-p *foo-desktop-lock*)))
-  (defun autosave-desktop ()
-    (if (desktop-in-use-p) (desktop-save-in-desktop-dir)))
-  ;; Can be switched off with (cancel-timer *foo-desktop-saver-timer*)
-  (add-hook 'after-init-hook
-             (lambda ()
-                     (setq *foo-desktop-saver-timer*
-                           (run-with-timer 5 300 'autosave-desktop))))
-
-
-
 == Auto-Saving the Desktop ==
 
-I prefer autosaving the desktop whenever Emacs is idle. Tying it to `auto-save-hook' works pretty well for that.  I'm starting to work on a new package called [[DesktopRecover|desktop-recover.el]] with some improvements like this. Alternatively, you can just add something like this to your [[init file]]:  -- [[Doom]]
+I'm starting to work on a new package called [[DesktopRecover|desktop-recover.el]] with some improvements like this. Alternatively, you can just add something like this to your [[init file]] to auto-save your desktop when Emacs is idle:  -- [[Doom]]
 
   (require 'desktop)
   (desktop-save-mode 1)
-  (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
-
-
-
+  (defun my-desktop-save ()
+    (interactive)
+    ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
+    (if (eq (desktop-owner) (emacs-pid))
+        (desktop-save desktop-dirname)))
+  (add-hook 'auto-save-hook 'my-desktop-save)
 
 == Automatically Overriding Stale Locks ==
 
@@ -253,9 +229,6 @@ in my .emacs. -- Randolf Schultz
 
 A simple example of moving the desktop file save locations ~/.emacs.desktop(.lock) to ~/.emacs.d/desktop/emacs.desktop(.lock) would be very helpful.
 
-----
-[new]
-Is there any way of stopping the infuriating "Desktop saved in XYZ" messages? They almost always show up while I am trying to do something in the minibuffer. Saving is, after all, the expected result. By all means notify me if it all goes **** up, but there's no need otherwise.
 ----
 [new]
 Look, let's just be honest. It doesn't work, does it?

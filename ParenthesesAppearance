@@ -35,7 +35,8 @@ The nesting of sexps can also be made more apparent by highlighting
 the parens around point.
 
 ===RainbowDelimiters===
-RainbowDelimiters is a "rainbow parentheses" minor mode to colorize parentheses, brackets, and braces. It correctly colorizes statements at the same depth - if two statements are at the same level, they will be the same color.
+
+RainbowDelimiters is a “rainbow parentheses”-like mode for coloring parentheses, brackets, and braces according to their nested depth. It gives a visual reference for which delimiters match, and what statements are at the same depth - if several statements are at the same level, they will be the same color.
 
 ===HighlightParentheses===
 
