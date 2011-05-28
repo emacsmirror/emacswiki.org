@@ -37,6 +37,7 @@ Features:
 * `M-e' (`icicle-edit-string') automatically puts the [[cursor]] at the first mismatch position in the search string, for easy editing.  Whereas `C-g' removes all of the mismatch, this feature lets you change or insert a character or two, without losing the rest of the search string.
 
 
+* A [[user option]], '''`isearchp-initiate-edit-commands'''', that specifies [[command]]s whose [[key]]s will not exit Isearch but will instead initiate editing of the search string.  For example, if `backward-char' is included in the list then `C-b' and `left' will just move the [[cursor]] backward over the search string so you can change, delete, or insert chars in the middle somewhere.  This makes the search string more [[minibuffer]]-like.
 
 '''See Also:'''
 

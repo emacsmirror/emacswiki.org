@@ -19,9 +19,9 @@ Emacs用語では、
 * カーソルの位置は、常にイコール'''ポイント(point)'''値となります。たとえば、カーソルがバッファの3文字目にある場合、ポイントの値は3です。"ポイント"と"マーク"については、リージョン（テキストの選択）で詳しく説明します。
 * '''キーバインド(key binding)'''はEmacsのコマンドとキー操作を結びつけたもの。Windowsのショートカットキーと同じようなものです。
 
-このページのタイトルをクリックすると、Wiki内のグロッサリが含まれるすべてのページを表示することができます。さらに、EmacsManual（`C-h i'）のGlossaryノードも参照してみてください。
+このページの上の検索窓で、Wiki内のGlossaryが含まれるすべてのページを表示することができます。さらに、EmacsManual（`C-h i'）のGlossaryノードも参照してみてください。
 
-* Emacsジャーゴン(EmacsJargon) -- Emacsで使われるEmacs用語のことです。
+* Emacsジャーゴン(EmacsJargon) --  Emacsで使われるEmacs用語のことです。
 * コマンド([[Command]]) -- コマンドとは、インタラクティブ関数のことを指します。`M-x'を使います。
 * キー([[Key]]) -- キーシーケンス（一連のキーボード操作）によってコマンドが実行できるように、キーシーケンスとコマンドを対応づける
 * [[Chord]] -- a key sequence that you can hold to repeat a command
@@ -50,4 +50,4 @@ Emacs用語では、
 ** 行の折り返し(LineWrap)
 * エレクトリック([[Electricity]]) -- エレクトリック機能のこと
 
-
+ここに[http://www.bookshelf.jp/texi/emacs-man/21-3/jp/emacs_41.html GNU Emacsマニュアル 用語集]があるので足りないものは追加するといいかも

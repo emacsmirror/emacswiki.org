@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Tue May 17 08:08:45 2011 (-0700)
+;; Last-Updated: Fri May 27 16:28:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 599
+;;     Update #: 608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -35,6 +35,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `isearchp-initiate-edit-commands' (Emacs 22+),
 ;;    `isearchp-regexp-quote-yank-flag', `isearchp-set-region-flag'.
 ;;
 ;;  Faces defined here:
@@ -43,7 +44,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `isearchp-fail-pos', `isearchp-set-region'.
+;;    `isearchp-fail-pos', `isearchp-set-region',
+;;    `isearchp-update-edit-init-commands' (Emacs 22+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -76,6 +78,11 @@
 ;;    `prior'      `isearch-repeat-backward'
 ;;
 ;;
+;;  User option `isearchp-initiate-edit-commands' causes certain keys
+;;  not to exit Isearch but rather to edit the search string.
+;;  Customize it to `nil' if you do not want this behavior at all.
+;;
+;;
 ;;  The following bindings are made here for incremental search edit
 ;;  mode:
 ;;
@@ -90,6 +97,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/05/27 dadams
+;;     Added: isearchp-initiate-edit-commands, isearchp-update-edit-init-commands.
 ;; 2011/05/16 dadams
 ;;     Added: isearchp-fail-pos, redefinition of isearch-edit-string.
 ;;     Removed: isearchp-goto-success-end (not needed - go there by default now).
@@ -182,6 +191,7 @@
 (defvar subword-mode)
 (defvar isearch-error)                  ; Defined in `isearch.el'.
 (defvar isearch-original-minibuffer-message-timeout) ; Defined in `isearch.el'.
+(defvar isearchp-initiate-edit-commands) ; Defined below.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -198,6 +208,64 @@
         (((type tty) (class mono)) :inverse-video t)
         (t :background "gray"))
     "*Face for highlighting failed part in Isearch echo-area message."
+    :group 'isearch))
+
+(when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
+  (defun isearchp-update-edit-init-commands ()
+    "Make `isearchp-initiate-edit-commands' edit the search string."
+    (dolist (cmd  isearchp-initiate-edit-commands)
+      (substitute-key-definition cmd
+                                 (lambda (&rest ignored)
+                                   (interactive)
+                                   (isearch-unread-key-sequence
+                                    (listify-key-sequence (this-command-keys)))
+                                   (isearch-edit-string))
+                                 isearch-mode-map
+                                 (current-global-map))))
+
+  ;; No autoload cookie - need function `isearchp-update-edit-init-commands'.
+  (defcustom isearchp-initiate-edit-commands
+    '(backward-char                     ; `C-b'
+      left-char                         ; `left' (Emacs 24+)
+      ;; backward-delete-char                ; `DEL'
+      ;; backward-delete-char-untabify       ; `DEL'
+      ;; backward-kill-paragraph             ; `C-backspace'
+      ;; backward-kill-sentence              ; `C-x DEL'
+      ;; backward-kill-sexp                  ; `C-M-backspace'
+      ;; backward-kill-word                  ; `M-DEL'
+      ;; backward-list                       ; `C-M-p'
+      ;; backward-page                       ; `C-x ['
+      ;; backward-paragraph                  ; `C-up', `M-{'
+      ;; backward-sentence                   ; `M-a'
+      backward-sexp                     ; `C-M-b', `C-M-left'
+      ;; backward-to-indentation             ; Not bound by default
+      ;; backward-up-list                    ; `C-M-u', `C-M-up'
+      backward-word                     ; `M-b', `M-left'
+      ;; delete-backward-char
+      ;; kill-backward-up-list               ; Not bound by default
+      ;; beginning-of-buffer                 ; `M-<', `C-home'
+      ;; beginning-of-defun                  ; `C-M-a', `C-M-home', 
+      ;; beginning-of-line                   ; `C-a', `home'
+      ;; beginning-of-line+                  ; `C-a', `home'
+      ;; beginning-of-line-text              ; Not bound by default
+      ;; beginning-of-visual-line            ; `C-a', `home'
+      )
+    "*Commands whose key bindings initiate Isearch edit.
+When invoked by a key sequence, Isearch edits the search string,
+applying the command to it immediately.
+
+Commands you might want to include here are typically commands that
+move point to the left, possibly deleting text along the way.
+
+Set this to `nil' if you always want all such commands to exit Isearch
+and act on the buffer text."
+    :set #'(lambda (sym defs)
+             (custom-set-default sym defs)
+             (isearchp-update-edit-init-commands))
+    :type '(repeat (restricted-sexp :tag "Command"
+                    ;; Use `symbolp' instead of `functionp' or `fboundp', in
+                    ;; case the library defining the function is not loaded.
+                    :match-alternatives (symbolp) :value ignore))
     :group 'isearch))
 
 ;;;###autoload

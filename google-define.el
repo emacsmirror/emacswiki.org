@@ -1,6 +1,5 @@
-;;; google-define.el --- Pulls definitions from google and displays them in a buffer
 ;;; -*- indent-tabs-mode:nil -*-
-;;;; Copyright (c) 2007,2008,2009,2010 Jeremy English <jhe@jeremyenglish.org>
+;;;; Copyright (c) 2007,2008,2009,2010,2011 Jeremy English <jhe@jeremyenglish.org>
 ;;;;
 ;;;; Permission to use, copy, modify, distribute, and sell this
 ;;;; software and its documentation for any purpose is hereby granted
@@ -46,6 +45,9 @@
 ;;;;
 ;;;; 2010-02-19 Kevin Brubeck Unhammer added code to clear read-only
 ;;;; properties on things at point.
+;;;;
+;;;; 2011-05-27 Updated to work with googles change to the define 
+;;;; feature.
 
 (require 'font-lock)
 
@@ -161,9 +163,7 @@ google, and print in a temp-buffer"
      (princ (concat header "\n\n"))
      (set-buffer data-buffer)
      (goto-char (point-min))
-     (search-forward-regexp "<div id=prs>" nil t) ;;Move to the div containing the definitions
-     (search-forward-regexp "<b>[^<]+" nil t) ;;Skip the "Web"
-     (search-forward-regexp "<b>[^<]+" nil t) ;;Skip the bold definitions title
+     (search-forward-regexp "<div class=std>" nil t) ;;Move to the div containing the definitions
      (while (and (search-forward-regexp "\\(<[^>]+>\\)\\([^<]+\\)" nil t) continue)
        (let ((tag (match-string 1))
              (definition 
@@ -175,14 +175,9 @@ google, and print in a temp-buffer"
             (save-excursion
               ;;(insert (format "%s\n" tag))
               (cond
-               ((string-equal tag "<b>")
-                (setq count 0)
-                (insert (format "%s\n\n" definition)))
-               ((string-equal tag "<li>")
+               ((string-equal tag "<li style=\"list-style:none\">")
                 (setq count (+ 1 count))
-                (insert (format "%3d. %s\n\n" count definition)))
-               ((string-equal tag "<p>")
-                (setq continue nil))))
+                (insert (format "%3d. %s\n\n" count definition)))))
             (fill-paragraph nil)
             (google-define-replace-html)
             (google-define-replace-unicode)
@@ -193,6 +188,7 @@ google, and print in a temp-buffer"
  (let ((word-at-point (thing-at-point 'word)))
    (set-text-properties 0 (length word-at-point) nil word-at-point)
    word-at-point))
+
 
 (defun google-define ()
   "Ask google for the definition of a word.
@@ -205,9 +201,9 @@ If we have a current region use it's value as the default."
         (data-buffer
          (google-define-get-command "www.google.com"
                           (concat
-                           "/search?num=100&hl=en&defl=all&q=define%3A%22"
+                           "/search?num=100&hl=en&defl=all&q=%22"
                            (replace-regexp-in-string " +" "\+" search-word)
-                 "%22&btnG=Search"))))
+                 "%22&ie=utf-8&oe=utf-8&aq=t&tbs=dfn:1"))))
     (google-define-parse-buffer search-word data-buffer)
     (kill-buffer data-buffer)))
 
@@ -224,3 +220,4 @@ If we have a current region use it's value as the default."
   (font-lock-fontify-buffer))
 
 (provide 'google-define)
+

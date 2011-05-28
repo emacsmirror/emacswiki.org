@@ -2,6 +2,16 @@ He uses Emacs. He's also known as [::snogglethorpe].
 
 <tt>miles</tt> /at/ <tt>gnu.org</tt>
 
+== The code the end of my .emacs file... ==
+
+[:dont-panic]
+
+   ;; Display "Don't Panic" in large, friendly, letters
+   (setq initial-scratch-message
+	 (propertize "Don't\nPanic\n"
+		     'font-lock-face '(:height 10.0 :inherit variable-pitch))
+	 inhibit-startup-screen t)
+
 
 == Some fun little minor modes ==
 

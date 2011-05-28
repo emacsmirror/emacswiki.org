@@ -5,7 +5,7 @@
 ;;;"Babelfish HTML has changed ; please look for a new version of babel.el" as of 4/2010
 ;;;
 ;;; Author: Eric Marsden <emarsden@laas.fr>
-;;;         Juergen Hoetzel <juergen@hoetzel.info> 
+;;;         Juergen Hoetzel <juergen@archlinux.org> 
 ;;; Keywords: translation, web
 ;;; Copyright: (C) 1999-2001 Eric Marsden
 ;;;                2005-2008 Juergen Hoetzel

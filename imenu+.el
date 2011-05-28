@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Sun May  8 11:24:58 2011 (-0700)
+;; Last-Updated: Fri May 27 08:56:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 625
+;;     Update #: 665
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -46,7 +46,7 @@
 ;;  ***** NOTE: The following functions defined in `imenu.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `imenu-update-menubar', `imenu--mouse-menu'.
+;;  `imenu--mouse-menu', `imenu-update-menubar'.
 ;;
 ;;
 ;;  ***** NOTE: The following variable defined in `imenu.el' has
@@ -63,6 +63,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/05/27 dadams
+;;     imenu-lisp-var-defn-regexp:
+;;       Corrected to allow \n after var name (\n is comment-end syntax, not whitespace, in Lisp).
 ;; 2011/05/08 dadams
 ;;     imenu-lisp-var-defn-regexp: Try not to create entries for vacuous defvars, e.g., (defvar foo).
 ;; 2011/03/18 dadams
@@ -195,13 +198,16 @@ See also `imenu-emacs-key-defn-regexp-1'.")
               (regexp-opt '("defvar" "defconst" "defconstant" "defcustom"
                             "defparameter" "define-symbol-macro") t)
               "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)"
-              "\\s-+[^) \t\n]")
+              "\\(\\s-\\|[\n]\\)+"      ; Because \n has char syntax `>', not whitespace.
+              "[^) \t\n]")
     "(\\s-*def\\(var\\|const\\)\\s-+\\([^ \t()]+\\)")
   "*Regexp that recognizes global Lisp variable definitions.")
 
 
-;; REPLACES ORIGINAL in `lisp-mode.el':
-;; Functions, Macros, Structures added.
+;; REPLACE ORIGINAL in `lisp-mode.el'.
+;;
+;; Add `Functions', `Macros', `Structures'.
+;;
 (defconst lisp-imenu-generic-expression
   (list
    (list "Other" imenu-lisp-other-defn-regexp 2)
@@ -283,11 +289,12 @@ See `imenu' for more information."
                       menu-items))))
 
 
-
-;;; REPLACES ORIGINAL in `imenu.el'.
-;;; Sorts each submenu before splitting submenus, instead of sorting among submenus after.
+;; REPLACE ORIGINAL in `imenu.el'.
+;;
+;; Sort each submenu before splitting submenus, instead of sorting among submenus after.
+;;
 (defun imenu-update-menubar ()
-  "Update the imenu. Use as `menu-bar-update-hook'."
+  "Update the Imenu menu.  Use as `menu-bar-update-hook'."
   (when (and (current-local-map)
              (keymapp (lookup-key (current-local-map) [menu-bar index]))
              (or (not (boundp 'imenu-menubar-modified-tick))
@@ -324,8 +331,9 @@ See `imenu' for more information."
 
 
 
-;;; REPLACES ORIGINAL in `imenu.el'.
-;;; Sorts each submenu before splitting submenus, instead of sorting among submenus after.
+;; REPLACE ORIGINAL in `imenu.el'.
+;;
+;; Sort each submenu before splitting submenus, instead of sorting among submenus after.
 ;;
 (defun imenu--mouse-menu (index-alist event &optional title)
   "Let the user select from a buffer index from a mouse menu.
