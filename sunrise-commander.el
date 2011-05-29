@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 369 $
+;; RCS Version: $Rev: 371 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -482,7 +482,7 @@ substitution may be about to happen."
         C-u F ......... visit all marked files in the background
         o,v ........... quick visit selected file (scroll with C-M-v, C-M-S-v)
         C-u o, C-u v .. kill quick-visited buffer (restores normal scrolling)
-        X ............. execute selected (executable) file in active pane
+        X ............. execute selected file
         C-u X.......... execute selected file with arguments
 
         + ............. create new directory
@@ -1478,18 +1478,20 @@ automatically:
 (defun sr-advertised-execute-file (&optional prefix)
   "Executes the currently selected file in a new subprocess."
   (interactive "P")
-  (let ((filename (dired-get-filename nil t)) (args))
-    (unless filename
+  (let ((path (dired-get-filename nil t)) (label) (args))
+    (if path
+        (setq label  (file-name-nondirectory path))
       (error "Sunrise: no executable file on this line"))
-    (unless (and (not (file-directory-p filename)) (file-executable-p filename))
-      (error "Sunrise: %s is not an executable file" filename))
+    (unless (and (not (file-directory-p path)) (file-executable-p path))
+      (error "Sunrise: \"%s\" is not an executable file" label))
     (when prefix
-      (setq args (read-string (format "arguments for %s: " filename))))
-    (message "Sunrise: executing %s in new process" filename)
+      (setq args (read-string (format "arguments for \"%s\": " label))
+            label (format "%s %s" label args)))
+    (message "Sunrise: executing \"%s\" in new process" label)
     (if args
-        (apply #'start-process (append (list "Sunrise Subprocess" nil filename)
+        (apply #'start-process (append (list "Sunrise Subprocess" nil path)
                                        (split-string args)))
-      (start-process "Sunrise Subprocess" nil filename))))
+      (start-process "Sunrise Subprocess" nil path))))
 
 (defun sr-find-file (filename &optional wildcards)
   "Determines the proper way of handling an object in the file system, which can
@@ -2023,7 +2025,8 @@ automatically:
         (message "Sunrise: continuing long lines"))
     (progn
       (setq truncate-partial-width-windows (sr-truncate-v t))
-      (message "Sunrise: truncating long lines"))))
+      (message "Sunrise: truncating long lines")))
+  (dired-do-redisplay))
 
 (defun sr-truncate-p nil
   "Returns  whether  truncate-partial-width-widows  is  set to truncate the long
@@ -2035,7 +2038,7 @@ automatically:
 (defun sr-truncate-v (active)
   "Returns the right value to set for truncate-partial-width-widows depending on
   the emacs version being used. Used by sr-toggle-truncate-lines."
-  (or (and (equal "23" (substring emacs-version 0 2))
+  (or (and (<= 23 (string-to-number (substring emacs-version 0 2)))
            (or (and active 3000) 0))
       active))
 
@@ -3802,8 +3805,8 @@ or (c)ontents? ")
   "Summarize basic Sunrise commands and show recent dired errors."
   (interactive)
   (dired-why)
-  (message "C-opy, R-ename, K-lone, D-elete, v-iew, e-X-ecute, q-uit, Jj-ump, \
-m-ark, u-nmark, h-elp"))
+  (message "C-opy, R-ename, K-lone, D-elete, v-iew, e-X-ecute, Ff-ollow, \
+Jj-ump, q-uit, m-ark, u-nmark, h-elp"))
 
 (defun sr-restore-point-if-same-buffer ()
   "Puts  the point in the same place of the same buffer, if it's being displayed

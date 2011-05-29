@@ -22,7 +22,7 @@ Each component of smtp-accounts has the form
 
  (protocol  "adres_matched_in_From_field@foo.com"  "protocol.foo.com"  "port"  "user@foo.com" "password" "key" "cert")
 
-where key and cert are optional.
+where KEY and CERT are optional. Setting PASSWORD to NIL will make SMTPMAIL-SEND-IT prompt for a password before sending every message. (More secure, more bugging.)
 
  ;; Default smtpmail.el configurations.
  (require 'smtpmail)
@@ -72,20 +72,14 @@ where key and cert are optional.
                (t (error "Unrecognized SMTP auth. mechanism: `%s'." auth-mech)))
            finally (error "Cannot infer SMTP information."))))
 
- (add-hook 'message-send-hook 'change-smtp) ; OBSOLETE! (See below!)
+In order to trigger CHANGE-SMTP before every SMTPMAIL-VIA-SMTP call, we introduce an advice as follows.
 
-Also keep in mind that, supplying NIL instead of a password in SMTP-ACCOUNTS, will make SMTPMAIL-SEND-IT function to ask for password before sending every message. (More secure, more bugging.)
-
-Unfortunately, above CHANGE-SMTP (hooked into MESSAGE-SEND-HOOK) gets called only by SEND-MESSAGE, which means while sending multiple messages (consider SMTPMAIL-SEND-QUEUED-MAIL) CHANGE-SMTP won't get triggered. (Thanks Memnon for the bug report!) To tackle this problem, instead of hooking CHANGE-SMTP into MESSAGE-SEND-HOOK, wrap SMTPMAIL-VIA-SMTP totally:
-
-  (defvar %smtpmail-via-smtp (symbol-function 'smtpmail-via-smtp))
-
-  (defun smtpmail-via-smtp (recipient smtpmail-text-buffer)
-    (with-current-buffer smtpmail-text-buffer
-      (change-smtp))
-    (funcall (symbol-value '%smtpmail-via-smtp) recipient smtpmail-text-buffer))
-
-This will make CHANGE-SMTP to get triggered just before every SMTPMAIL-VIA-SMTP call.
+  (defadvice smtpmail-via-smtp
+    (before smtpmail-via-smtp-ad-change-smtp (recipient smtpmail-text-buffer))
+    "Call `change-smtp' before every `smtpmail-via-smtp'."
+    (with-current-buffer smtpmail-text-buffer (change-smtp)))
+  
+  (ad-activate 'smtpmail-via-smtp)
 
 --- Volkan YAZICI
 
@@ -116,14 +110,6 @@ Are there plans to integrate this (the first solution) in the official distribut
 
 [new]This doesn't seem to work.
 apply: Wrong number of arguments: #[(server port key cert) "Æ^PÇ^QÈ^R^K^T^M^V^K^K^M^N^L^N^MFC^V^N^K^M^N^O^N^PFC^V^QÉÊ^K^M^N^R$?" [starttls-use-gnutls starttls-gnutls-program starttls-extra-arguments server smtpmail-smtp-server port t "gnutls-cli" nil message ...] 5 ("/home/goo/.gnus.el" . 1634)], 6
-
-
-Instead of wrapping, how about just using defadvice?
-
- (defadvice smtpmail-via-smtp (before set-smtp-account
- 				     (&optional recipient smtpmail-text-buffer))
-   "First set SMTP account."
-     (with-current-buffer smtpmail-text-buffer (change-smtp)))
 
 [new]
 How about using `gnus-posting-styles' for setting the SMTP server? All
