@@ -1,4 +1,4 @@
-;;;; quick-jump.el ---Remember current position,and jump back
+;;; quick-jump.el ---Remember current position,and jump back
 
 ;; Filename: quick-jump.el
 ;; Description:Remember current position,and jump back cyclely.

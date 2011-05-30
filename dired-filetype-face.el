@@ -1,4 +1,4 @@
-;;;; dired-filetype-face.el  --- faces for different filetype in dired buffer.
+;;; dired-filetype-face.el  --- faces for different filetype in dired buffer.
 ;;;  Time-stamp: <Joseph 2011-05-18 11:56:53>
 
 ;; Filename: dired-filetype-face.el

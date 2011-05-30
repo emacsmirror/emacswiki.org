@@ -47,29 +47,24 @@ HTML. I've been kicking around ideas for small template languages in
 Javascript... seems like it should be easy to port them to lisp.
 
 [new]
-My first crack is in the history here and used {{}} which are common
-template delimitters. However, I think this is better:
+I had a few cracks at this before coming up with [[Sweat|'''sweat''']] which is a very lispy version of another template system of mine (for javascript) called '''tache'''. 
+
+[[Sweat|Sweat]] is designed to solve the problem of how you make a tidy and straight forward template in a functional language. Here's a complex example:
 
 {{{
-(defun tc (template &rest args)
-  (let ((tmpl template))
-    (replace-regexp-in-string
-     ":\\(:.*?\\)::" 
-     (lambda (r)
-       (plist-get args (intern (match-string 1 r))))
-     tmpl
-     )
-    )
-  )
+(sweat-let ((title "nic's demo")
+            (items (stream-from-list
+                    (lambda (item)
+                      `((name . ,(car item))
+                        (value . ,(cdr item))))
+                    '(("username" . "nicferrier")
+                      ("firstname" . "nic")))))
+           "<html><head><title>::title::</title><head><body><ul>"
+           (sweat-* items "<li>::name:: - ::value::</li>")
+           "</ul></body></html>")
 }}}
 
-Here's an example:
-
-{{{
-(tc 
- "<html><body><a href='/elpad/::padname::/user/'>users</a></body></html>"
- :padname padname))
-}}}
+Go see the wiki page for slightly more info. I'll update if it's useful.
 
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).
@@ -166,4 +161,5 @@ Hopefully [[rubikitch]] will be able to add that to
 auto-install. Ideally, it would do the kind of things that [[ELPA]]
 does.
 
----- CategoryHomepage
+---- 
+CategoryHomepage

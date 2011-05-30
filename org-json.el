@@ -1,4 +1,3 @@
-<pre>
 ;;; org-json.el --- conversion between org and json
 
 ;; Copyright (C) 2010 Changyuan Yu
@@ -270,4 +269,3 @@ actural call `org-json-gen-alist1' to work."
 (provide 'org-json)
 
 ;;; org-json.el ends here
-</pre>

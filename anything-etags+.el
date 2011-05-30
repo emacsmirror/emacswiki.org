@@ -1,5 +1,5 @@
-;;;; anything-etags+.el ---Another Etags anything.el interface
-;;;; Time-stamp: <Joseph 2011-04-10 20:44:29>
+;;; anything-etags+.el ---Another Etags anything.el interface
+;;; Time-stamp: <Joseph 2011-04-10 20:44:29>
 
 ;; Filename: anything-etags+.el
 ;; Description: Another Etags anything.el interface

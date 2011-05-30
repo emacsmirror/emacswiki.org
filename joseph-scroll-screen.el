@@ -1,4 +1,4 @@
-;;;; joseph-scroll-screen.el Scroll half screen down or up, and highlight current line.
+;;; joseph-scroll-screen.el Scroll half screen down or up, and highlight current line.
 
 ;; Filename: joseph-scroll-screen.el
 ;; Description: Scroll half screen down or up, and highlight current line

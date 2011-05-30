@@ -4,7 +4,6 @@ Great care has been taken to make this mode FAST. You shouldn't see any change i
 
 You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; they are unobtrusive enough to make the mode worth looking at even if you usually don't like rainbow parentheses modes. 
 
-* <b>NOTE:</b>  People who downloaded version 1.3 yesterday and had issues with light background colors, there is a bugfix release available now. Also, fixed a typo in the installation instructions: Last step should have said <code>(setq frame-background-color 'dark)</code>.
 
 = Download: =
 * Lisp:rainbow-delimiters.el

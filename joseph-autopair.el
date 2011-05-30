@@ -1,4 +1,4 @@
-;;;; joseph-autopair.el  Another autopair or skeleton. 
+;;; joseph-autopair.el  Another autopair or skeleton. 
 
 ;; Filename: joseph-autopair.el
 ;; Description:   Another autopair or skeleton. 

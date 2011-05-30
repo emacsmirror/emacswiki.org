@@ -1,4 +1,4 @@
-;;;; joseph-file-util.el --- Function library about file and directory.
+;;; joseph-file-util.el --- Function library about file and directory.
 
 ;; Filename: joseph-file-util.el
 ;; Description: Function library about file and directory.

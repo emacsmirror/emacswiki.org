@@ -8,35 +8,35 @@ See WikiNavMode for a user-friendly library built on top of button-lock mode.
 
 Both button-lock mode and WikiNavMode are available at github:
 
-https://github.com/rolandwalker/button-lock
+: https://github.com/rolandwalker/button-lock
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:button-lock.el
 
 Here's a trivial example, showing how to use button-lock to activate hyperlinks
 in all buffers:
 
-<pre>
-(require 'button-lock)
-(global-button-lock-mode 1)
-(button-lock-set-global-button "\\<http://[^[:space:]\n]+"
-                               'browse-url-at-mouse
-                               :face 'link :policy 'prepend)
-</pre>
+   (require 'button-lock)
+   (global-button-lock-mode 1)
+   (button-lock-set-global-button "\\<http://[^[:space:]\n]+"
+                                  'browse-url-at-mouse
+                                  :face 'link :policy 'prepend)
 
 and here's an interesting example, showing how to turn folding-mode delimiters into mouseable buttons:
 
-<pre>
-(require 'folding)
-(require 'button-lock)
+   (require 'folding)
+   (require 'button-lock)
 
-; turn folding-mode delimiters into mouseable buttons
-(add-hook 'folding-mode-hook  #'(lambda ()
-                                  (button-lock-mode 1)
-                                  (button-lock-set-button
-                                   (concat "^" (regexp-quote (car (folding-get-mode-marks))))
-                                   'folding-toggle-show-hide)
-                                  (button-lock-set-button
-                                   (concat "^" (regexp-quote (cadr (folding-get-mode-marks))))
-                                   'folding-toggle-show-hide)))
-</pre>
+   ; turn folding-mode delimiters into mouseable buttons
+   (add-hook 'folding-mode-hook  #'(lambda ()
+                                     (button-lock-mode 1)
+                                     (button-lock-set-button
+                                      (concat "^" (regexp-quote (car (folding-get-mode-marks))))
+                                      'folding-toggle-show-hide)
+                                     (button-lock-set-button
+                                      (concat "^" (regexp-quote (cadr (folding-get-mode-marks))))
+                                      'folding-toggle-show-hide)))
 
 It is probably more interesting to use button-lock from another library than it is to use button-lock directly.
 

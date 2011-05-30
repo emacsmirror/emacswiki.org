@@ -7,7 +7,11 @@ It provides functionality similar to LinkdMode.  Wiki-nav mode uses a different 
 
 Wiki-nav is distributed with ButtonLockMode:
 
-https://github.com/rolandwalker/button-lock
+: https://github.com/rolandwalker/button-lock
+
+and is also available via <nowiki>EmacsWiki</nowiki>
+
+: Lisp:wiki-nav.el
 
 ----
 CategoryModes

@@ -1,4 +1,4 @@
-;;;; term-toggle.el --- Toggle to and from the *terminal* buffer
+;;; term-toggle.el --- Toggle to and from the *terminal* buffer
 
 ;; Filename: term-toggle.el
 ;; Description: Toggle to and from the *terminal* buffer

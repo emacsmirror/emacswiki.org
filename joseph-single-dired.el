@@ -1,4 +1,4 @@
-;;;; joseph-single-dired.el   --Only Open One Dired Buffer.
+;;; joseph-single-dired.el   --Only Open One Dired Buffer.
 
 ;; Filename: joseph-single-dired.el
 ;; Description: only open a single dired buffer.

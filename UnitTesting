@@ -1,17 +1,17 @@
-'''Unit tests''' are supplementary programs and/or source code that you create that will automatically test the functionality and correctness of your code modules. They are a way of formalizing the assumptions you have about the behavior of your code. You can then validate your code and code changes at any time, and know exactly when a code change breaks existing code.
+'''Unit tests''' are supplementary source code created to automatically test the functionality and correctness of code modules. They are a way of formalizing assumptions about the code's behavior. With unit tests, one can validate code and code changes at any time, and know exactly when a new change breaks existing code.
 
-This page discusses unit-testing of EmacsLisp scripts and programs.
+This page discusses unit testing of EmacsLisp scripts and programs.
 
 == Terminology ==
 
-A '''unit test''' is a piece of a code that checks the correctness of some other code. In Emacs Lisp, meaningful "units" to test may be functions, commands and macros.
+A '''unit test''' is a piece of a code that checks the correctness of some other code. In Emacs Lisp, meaningful "units" to test are functions, commands and macros.
 
 Various '''testing frameworks''' simplify the task of writing and running tests. The following terms are commonly encountered:
 
 * '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it wasn't (the comparison returned ##nil##), ##assert## would signal an error.
 * '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the unit and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
 * '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object containing the tests is sometimes called the "test case" or "test harness".)
-* '''Mock/stub:''' a stand-in for actual code, useful for "stubbing out" external behavior. (Roughly speaking, mocks and stubs do the same thing, but mocks are generally more sophisticated.) A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. 
+* '''Mock/stub:''' a stand-in for actual code, useful for "stubbing out" external behavior. (Roughly speaking, mocks and stubs do the same thing, but mocks are more sophisticated.) A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web.
 * '''Fixture:''' setting up (and tearing down) an environment for a test or a test suite.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
 * '''Test-Driven Developent''': a methodology that emphasizes continual testing as part of the "development cycle".

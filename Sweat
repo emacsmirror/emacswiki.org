@@ -1,0 +1,50 @@
+Sweat is a simple template system. But it's not designed to be useful anywhere outside of EmacsLISP.
+
+== Download ==
+
+[[sweat.el|sweat from the Emacs WIKI]]
+
+== About ==
+
+It would be best to offer an example:
+
+{{{
+(sweat-let ((title "nic's demo"))
+       "<html><head><title>::title::</title><head><body>"
+       "</body></html>"
+    )
+}}}
+
+The result of this is a string which is the evaluation of the template:
+
+{{{
+<html><head><title>nic's demo</title><head><body></body></html>
+}}}
+
+sweat-let is a little like ordinary let:
+
+* define a list of bindings for values that will be used in the template 
+* list the forms of the template
+* evaluation means to replace the ::variable:: names in the templates with the values from the bindings
+
+Here's a more complex example:
+
+{{{
+(sweat-let ((title "nic's demo")
+            (items (stream-from-list
+                    (lambda (item)
+                      `((name . ,(car item))
+                        (value . ,(cdr item))))
+                    '(("username" . "nicferrier")
+                      ("firstname" . "nic")))))
+       "<html><head><title>::title::</title><head><body><ul>"
+       (sweat-* items "<li>::name:: - ::value::</li>")
+       "</ul></body></html>"
+    )
+}}}
+
+This shows that you can have more complex things happening in the form list. In this case '''items''' is a stream. A stream is a function that produces items from a list it is bound to. '''sweat-*''' iterates over the stream processing the template against each item from the stream. In this case the items are binding lists.
+
+----
+CategoryTemplates
+CategoryCode

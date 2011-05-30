@@ -1,4 +1,4 @@
-;;;; anything-dired-history.el Show dired history with anything.el support.
+;;; anything-dired-history.el Show dired history with anything.el support.
 
 ;; Filename: anything-dired-history.el
 ;; Description:  Show dired history with anything.el support.
