@@ -11,7 +11,5 @@ release (see https://launchpad.net/records/1.5/1.5.2)
 
 This release adds no new feature except it is likely it will build successfully now. Please test and report any bug on the launchpad project.
 
-<rss https://launchpad.net/records/1.5/1.5.2/+rdf >
-
 ----
-CategoryPersonalInformationManager CategoryTodo CategoryModes
+CategoryPersonalInformationManager CategoryTodo CategoryModes CategoryJournaling

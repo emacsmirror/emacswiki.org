@@ -1,4 +1,4 @@
-Timestamp: Mon May 23 22:00:33 BST 2011
+Timestamp: Mon May 30 11:16:02 BST 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -247,6 +247,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://www.balestra.org/~bradym/emacs-lisp/buffermenu.el buffermenu.el] --- modifies the xemacs buffer menu to organize files by directory (by Brady Montz)
 
 [http://groups.google.com/groups?selm=lg4rx76w8i.fsf%40abla.agisphere.com&output=gplain buffi.el] --- BUildFile FInder, a smart compile wrapper to build multiple [java] projects (by Raphael Pierquin)
+
+[https://github.com/rolandwalker/button-lock button-lock.el] --- clickable text defined by regular expression, controlled by font-lock (by Roland Walker)
 
 = C =
 
@@ -1628,7 +1630,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/order-head.el order-head.el] --- re-arrange mail headers into pleasing order (by Noah Friedman)
 
-[http://www.astro.uva.nl/~dominik/Tools/org/ org.el] --- Carstens outline variant for keeping track of everything. (by Carsten Dominik)
+[http://www.orgmode.org org.el] --- Outline-based notes management and organizer (by Carsten Dominik)
 
 [http://www.cl.cam.ac.uk/~pz215/files/org-mouse.el org-mouse.el] --- Better mouse support for org-mode (by Piotr Zielinski )
 
@@ -2481,6 +2483,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://www.geocities.com/kensanata/wiki/WikiMode.html wiki.el] --- Description: Maintain Wikis using Emacs (by Alex Schroeder)
 
 [http://www.geocities.com/kensanata/elisp/wiki-inter.el.txt wiki-inter.el] --- interwikis for wiki.el (by Alex Schroeder)
+
+[https://github.com/rolandwalker/button-lock wiki-nav.el] --- simple file navigation using [[WikiStrings]] (by Roland Walker)
 
 [http://www.emacswiki.org/cgi-bin/wiki.pl?WikiRemote wiki-remote.el] --- edit pages on a remote wiki (by Alex Schroeder)
 

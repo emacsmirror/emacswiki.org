@@ -54,5 +54,8 @@ In Lisp programs, be sure to set the case-fold-search variable to nil with regul
 	(message "Found text heading.")
       (message "End of buffer"))))
 
+[new]
+The term "case-fold" might appear strange to an emacs newbie. Is there any reason, "historical" or other, for it? -- PhilHudson
+
 ----
 CategoryRegexp

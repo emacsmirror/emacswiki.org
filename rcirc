@@ -53,9 +53,8 @@ You need a fork of rcirc:
 https://github.com/nealey/rcirc/wiki 
 which makes possible to use an arbitrary connection method (ssl/proxy/whatever)
 
-or this (just SSL with an optional :use-tls for `rcirc-server-alist':
-https://github.com/melmothx/rcirc/raw/to-emacs/rcirc.el
-
+or this (SSL with an optional :use-tls for `rcirc-server-alist' and :custom-connect-function for arbitrary connection method (ssl/proxy/whatever) similar to the neale's patch)
+https://github.com/melmothx/rcirc/tree/to-emacs
 
 
 ==rcirc add-ons and commands==

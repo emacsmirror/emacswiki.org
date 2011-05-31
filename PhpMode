@@ -1,6 +1,11 @@
 == Overview ==
 
-Major mode for editing PHP files
+Major mode for editing PHP files.
+
+There is a long standing wish to develop a new and better php mode that can be included in Emacs.
+Unfortunately the current php-mode.el can not be used as a basis for this since not all contributors have been willing to sign papers for Emacs. Refer to Emacs devel mailing list for more details.
+
+Contributions to a new php-mode are very welcome!
 
 == Download ==
 

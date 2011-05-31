@@ -164,3 +164,19 @@ Here is my calendar configuration. -- [[rubikitch]]
 (add-hook 'today-invisible-calendar-hook 'calendar-mark-weekend)
 </pre>
 
+=== Swiss ===
+<pre>
+;; Holidays
+; Swiss national holidays
+(setq holiday-other-holidays 
+      '((holiday-fixed 1 1 "Neujahr")
+	(holiday-fixed 1 2 "Berchtoldstag")
+        (holiday-easter-etc -2 "Karfreitag")
+        (holiday-easter-etc 1 "Ostermontag")
+        (holiday-easter-etc 39 "Auffahrt")
+	(holiday-easter-etc 50 "Pfingstmontag")
+        (holiday-fixed 5 1   "Tag der Arbeit") 
+        (holiday-fixed 8 1  "Nationalfeiertag") 
+        (holiday-fixed 12 25 "Weihnachten")
+	(holiday-fixed 12 26 "Stephanstag")))
+</pre>
