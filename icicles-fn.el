@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 13:19:30 2011 (-0700)
+;; Last-Updated: Tue May 31 10:26:10 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12303
+;;     Update #: 12308
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -187,8 +187,8 @@
 ;;    `old-dired-smart-shell-command', `old-display-completion-list',
 ;;    `old-face-valid-attribute-values',
 ;;    `old-minibuffer-default-add-completions', `old-read-face-name',
-;;    `old-read-file-name', `old-read-from-minibuffer',
-;;    `old-read-number', `old-read-string', `old-shell-command',
+;;    `old-read-from-minibuffer', `old-read-number',
+;;    `old-read-string', `old-shell-command',
 ;;    `old-shell-command-on-region'.
 ;;
 ;;  Internal variables defined here:
@@ -1087,7 +1087,12 @@ provides a file dialog box.
 See also `read-file-name-completion-ignore-case' (Emacs version > 21)
 and `read-file-name-function'."
   (unwind-protect
-       (let* ((ffap-available-p                 (or (require 'ffap- nil t) (require 'ffap nil t)))
+       (let* ((mouse-file                       "*mouse-2 file name*")
+              (icicle-special-candidate-regexp  (or icicle-special-candidate-regexp ".+/$"))
+              (minibuffer-completing-file-name  t)
+              (read-file-name-predicate         (and (boundp 'read-file-name-predicate)
+                                                     read-file-name-predicate))
+              (ffap-available-p                 (or (require 'ffap- nil t) (require 'ffap nil t)))
               ;; The next four prevent slowing down `ffap-guesser'.
               (ffap-alist nil)                  (ffap-machine-p-known 'accept)
               (ffap-url-regexp nil)             (ffap-shell-prompt-regexp nil) 
@@ -1097,8 +1102,6 @@ and `read-file-name-function'."
                        (abbreviate-file-name (dired-get-file-for-visit))
                      (error nil))
                  (and ffap-available-p (ffap-guesser))))
-              (mouse-file                       "*mouse-2 file name*")
-              (icicle-special-candidate-regexp  (or icicle-special-candidate-regexp ".+/$"))
               (icicle-proxy-candidates
                (append 
                 (and icicle-add-proxy-candidates-flag
@@ -1115,10 +1118,6 @@ and `read-file-name-function'."
                                     (push (concat "'" (symbol-name cand) "'") ipc))))
                                ipc)))
                 icicle-proxy-candidates))
-              (minibuffer-completing-file-name  t)
-              (read-file-name-predicate  (or (and (boundp 'read-file-name-predicate)
-                                                  read-file-name-predicate)
-                                             nil))
               result)
 
          ;;  ;; $$$$$$ Does Emacs 23+ need explicit directory? If so, add these three lines
@@ -1195,10 +1194,9 @@ and `read-file-name-function'."
       (when (< emacs-major-version 21)
         (setq prompt  (concat (and icicle-candidate-action-fn "+ ") prompt)))
       (condition-case nil               ; If Emacs 22+, use predicate arg.
-          (setq result
-                (catch 'icicle-read-top
-                  (funcall (or icicle-old-read-file-name-fn 'read-file-name) prompt dir
-                           default-filename require-match initial-input predicate)))
+          (setq result  (catch 'icicle-read-top
+                          (funcall (or icicle-old-read-file-name-fn 'read-file-name) prompt dir
+                                   default-filename require-match initial-input predicate)))
         (wrong-number-of-arguments
          (setq result  (catch 'icicle-read-top
                          (funcall (or icicle-old-read-file-name-fn 'read-file-name) prompt dir

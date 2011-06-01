@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May  4 14:41:57 2011 (-0700)
+;; Last-Updated: Tue May 31 10:31:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1497
+;;     Update #: 1500
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1051,7 +1051,7 @@ Used by, e.g., `icicle-execute-extended-command'.")
 (defvar icicle-old-read-file-name-fn (and (not (boundp 'read-file-name-function)) ; Em 22+
                                           'orig-read-file-name) ; Emacs 20, 21
   "Value of `read-file-name-function' outside of Icicle mode.
-For versions of Emacs before 22, this is `read-file-name'.")
+For versions of Emacs < 22, this is the original `read-file-name'.")
 
 (defvar icicle-orig-buff nil
   "Current buffer when you invoked an Icicles multi-command.")

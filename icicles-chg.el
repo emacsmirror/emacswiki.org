@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed May 25 08:41:00 2011 (-0700)
+;; Last-Updated: Tue May 31 16:34:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6582
+;;     Update #: 6583
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -806,6 +806,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/05/31 dadams
+;;     icicle-read-file-name: Reordered let bindings (cosmetic).
 ;; 2011/05/22 dadams
 ;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/12 dadams

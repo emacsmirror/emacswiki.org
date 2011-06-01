@@ -48,7 +48,9 @@ Please also consider visiting these pages in order to getting started:
 
 ==Connecting to servers using SSL/TLS ==
 
-You need a fork of rcirc:
+The trunk (emacs 24) has SSL support out of the box.
+
+For emacs 23 you need a fork of rcirc:
 
 https://github.com/nealey/rcirc/wiki 
 which makes possible to use an arbitrary connection method (ssl/proxy/whatever)
