@@ -403,3 +403,5 @@ Otherwise, returns THING itself."
   (condition-case ()
       (eval thing)
     (error thing)))
+
+(provide 'repeat-insert)

@@ -91,7 +91,7 @@ Detailed build instructions are available on BuildingAquamacs.
 Emacs 23.2 ships with Cocoa support.  You can build it by running something like the following:
 
 <pre>
-  ./configure --with-ns
+  ./configure --with-ns --without-dbus
   make
   make install
 </pre>
