@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 24 09:20:56 2011 (-0700)
+;; Last-Updated: Fri Jun  3 16:07:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28026
+;;     Update #: 28035
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -706,9 +706,9 @@
 ;;    candidate, so you can match against it.
 ;;
 ;;    Note that even when the value of this option is `nil', if option
-;;    `icicle-help-in-mode-line-flag' is non-`nil' then you can see
-;;    the buffer name in the mode-line (as well as the position and
-;;    length of the search context in the buffer).
+;;    `icicle-help-in-mode-line-delay' is greater than zero then you
+;;    can see the buffer name in the mode-line (as well as the
+;;    position and length of the search context in the buffer).
 ;;
 ;;  * Icicles search functions that use an initial regexp highlight
 ;;    the first `icicle-search-highlight-threshold' matches for that
@@ -4833,17 +4833,22 @@
 ;;    `icicle-Completions-instruction-1' and
 ;;    `icicle-Completions-instruction-2'.
 ;;
-;;  * Non-`nil' option `icicle-help-in-mode-line-flag' means display
-;;    help on individual completion candidates in the mode-line as you
-;;    cycle or your input is completed.  The mode-line used is that of
-;;    buffer `*Completions*', if it is displayed, or the current
-;;    buffer, otherwise.  Typically, this mode-line candidate help is
-;;    the first line of a doc string, but alternative help is
-;;    available.
+;;  * Option `icicle-help-in-mode-line-delay' is the number of seconds
+;;    to display help on individual completion candidates in the
+;;    mode-line as you cycle or your input is completed.  The
+;;    mode-line that is used is that of buffer `*Completions*', if it
+;;    is displayed, or the current buffer, otherwise.  Typically, this
+;;    mode-line candidate help is the first line of a doc string, but
+;;    alternative help is available.
+;;
+;;    Regardless of the option value, a user event (e.g. a key press)
+;;    always interrupts (terminates) this help display.  Note too that
+;;    `post-command-hook' actions do not take place until this display
+;;    is finished.
 ;;
 ;;  * Face `icicle-mode-line-help' is used to highlight Icicles help
 ;;    shown in the mode-line.  This includes that controlled by option
-;;    `icicle-help-in-mode-line-flag' and the indication in
+;;    `icicle-help-in-mode-line-delay' and the indication in
 ;;    `*Completions*' of the total number of matching candidates.
 ;;
 ;;  * User option `icicle-Completions-mouse-3-menu-entries' defines
@@ -7326,8 +7331,9 @@
 ;;
 ;;  * `icicle-mode-line-help' - candidate help shown in the mode-line
 ;;    when the candidate is current, provided option
-;;    `icicle-help-in-mode-line-flag' is non-`nil' (only the first
-;;    character of a candidate string is tested for this property)
+;;    `icicle-help-in-mode-line-delay' is greater than zero (only the
+;;    first character of a candidate string is tested for this text
+;;    property)
 ;;
 ;;  * `help-echo' - candidate help shown in a mouseover tooltip,
 ;;    provided `tooltip-mode' is on

@@ -26,7 +26,7 @@ the cursor) is highlighted.
 
 When you cycle completion candidates in the [[minibuffer]]:
 * The current candidate is highlighted in `*Completions*'.
-* Help on the current candidate (typically, the first line of a [[doc string]]) is displayed in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-`nil'.
+* Help on the current candidate (typically, the first line of a [[doc string]]) is displayed in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-delay|icicle-help-in-mode-line-delay]]</tt>'''' is greater than zero.
 
 
 

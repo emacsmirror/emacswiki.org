@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed May 25 08:42:02 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:50:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3322
+;;     Update #: 3328
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -402,7 +402,7 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
       (aset xlfd-fields xlfd-regexp-pixelsize-subnum icicle-orig-pixelsize)
       (aset xlfd-fields xlfd-regexp-pointsize-subnum icicle-orig-pointsize)
       (let* ((sized-font   (x-compose-font-name xlfd-fields))
-             (font-info    (and (or icicle-help-in-mode-line-flag ; Get it only if user will see it.
+             (font-info    (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
                                     (and (boundp 'tooltip-mode) tooltip-mode))
                                 (font-info sized-font)))
              (iii          (if (< emacs-major-version 21) 3 2))
@@ -1092,7 +1092,7 @@ This is used as the value of `minibuffer-completion-table'."
                                                                  entry icicle-list-join-string)
                                                       icicle-list-end-string))
                              (doc       ; Don't bother to look up doc, if user won't see it.
-                              (and (or icicle-help-in-mode-line-flag
+                              (and (or (> icicle-help-in-mode-line-delay 0)
                                        (and (boundp 'tooltip-mode) tooltip-mode))
                                    (documentation-property (car entry) 'variable-documentation t)))
                              (doc1  (and (stringp doc)
@@ -1903,7 +1903,7 @@ prefixed by MARKER's buffer name."
                      (buffer-substring-no-properties (save-excursion (beginning-of-line) (point))
                                                      (save-excursion (end-of-line) (point)))))
             (buff  (and globalp icicle-show-multi-completion-flag (buffer-name)))
-            (help  (and (or icicle-help-in-mode-line-flag ; Get it only if user will see it.
+            (help  (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
                             (and (boundp 'tooltip-mode) tooltip-mode))
                         (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
         (when (string= "" line) (setq line  "<EMPTY LINE>"))
@@ -2626,7 +2626,7 @@ the initial regexp (context regexp)."
         (compl-win                       (get-buffer-window "*Completions*" 0)))
 ;;; $$$$$$ These are now avoided always for all candidates, in `icicle-all-candidates-action-1'.
 ;;;     (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
-;;;     (icicle-help-in-mode-line-flag   nil)) ; Avoid delays for individual candidate help.
+;;;     (icicle-help-in-mode-line-delay  0)) ; Avoid delays for individual candidate help.
     (unless icicle-search-replacement
       (icicle-search-define-replacement)
       (when (and compl-win icicle-completion-candidates)

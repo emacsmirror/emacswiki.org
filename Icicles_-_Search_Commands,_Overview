@@ -409,7 +409,7 @@ and replacement behavior.
 * If '''`<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'''' is non-`nil' (the default
   value), then, whenever you use a [[prefix argument]], '''Icicles''' search functions annotate each candidate with the name of the buffer where the search hit
 occurs, highlighted, to help orient you.  The buffer name is actually part of the ([[multi-completion]]) candidate, so you can match against it.  Note that even when the value of this option is
-`nil', , if option '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-`nil' then you can see the buffer name in the mode-line (as well as the position and length of the search context in the buffer).
+`nil', , if option '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-delay|icicle-help-in-mode-line-delay]]</tt>'''' is greater than zero then you can see the buffer name in the mode-line (as well as the position and length of the search context in the buffer).
 
 * '''Icicles''' search functions that use an initial regexp highlight the first '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-threshold|icicle-search-highlight-threshold]]</tt>'''' matches for
   that regexp ''at once'' (using face

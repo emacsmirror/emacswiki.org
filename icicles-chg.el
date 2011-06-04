@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May 31 16:34:40 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:56:23 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6583
+;;     Update #: 6598
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -406,6 +406,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/06/03 dadams
+;;     Replace icicle-help-in-mode-line-flag by icicle-help-in-mode-line-delay everywhere.
 ;; 2011/05/25 dadams
 ;;     icicle-fundoc, icicle-vardoc, icicle-plist:
 ;;       Use icicle-doc-action only.  Bind icicle-list-use-nth-parts to (1).  Thx to Michael Heerdegen.
@@ -806,6 +808,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/06/03 dadams
+;;     icicle-completion-(all|try)-completion(s):
+;;       Added optional METADATA arg to handle Emacs 24's new METADATA arg.
+;;     Replace icicle-help-in-mode-line-flag by icicle-help-in-mode-line-delay everywhere.
+;;     icicle-show-in-mode-line: Use icicle-help-in-mode-line-delay, not hard-coded 10 sec.
 ;; 2011/05/31 dadams
 ;;     icicle-read-file-name: Reordered let bindings (cosmetic).
 ;; 2011/05/22 dadams
@@ -2408,6 +2415,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/06/03 dadams
+;;     icicle-next-candidate-per-mode:
+;;       Set this-command according to direction, per NTH.  If NTH is nil set it to 1.  For Icomplete+.
+;;     Replace icicle-help-in-mode-line-flag by icicle-help-in-mode-line-delay everywhere.
 ;; 2011/05/22 dadams
 ;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/10 dadams
@@ -4610,6 +4621,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/06/03 dadams
+;;     Renamed icicle-help-in-mode-line-flag to icicle-help-in-mode-line-delay and changed to 5 secs.
 ;; 2011/05/24 dadams
 ;;     icicle-functions-to-redefine: Removed (dired-)read-shell-command - turned off by default now.
 ;; 2011/05/22 dadams

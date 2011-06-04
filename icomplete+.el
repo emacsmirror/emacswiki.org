@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 10:43:58 2011 (-0800)
+;; Last-Updated: Fri Jun  3 10:47:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 891
+;;     Update #: 906
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -308,46 +308,46 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 ;;
 (when (> emacs-major-version 22)        ; Emacs 23+
   (defun icomplete-exhibit ()
-    "Insert icomplete completions display.
+  "Insert icomplete completions display.
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
 and `minibuffer-setup-hook'."
-    (when (and icomplete-mode (icomplete-simple-completing-p))
-      (save-match-data
-        (save-excursion
-          (goto-char (point-max))
-          ;; Insert the match-status information.
-          (when (and (> (point-max) (minibuffer-prompt-end))
-                     buffer-undo-list   ; Wait for some user input.
-                     (save-excursion    ; Do nothing if looking at a list, string, etc.
-                       (goto-char (minibuffer-prompt-end))
-                       (not (looking-at ; No (, ", ', 9 etc. at start.
-                             "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)")))
-                     (or
-                      ;; Don't bother with delay after certain number of chars:
-                      (> (- (point) (field-beginning)) icomplete-max-delay-chars)
-                      ;; Don't delay if alternatives number is small enough:
-                      (and (sequencep minibuffer-completion-table)
-                           (< (length minibuffer-completion-table)
-                              icomplete-delay-completions-threshold))
-                      ;; Delay - give some grace time for next keystroke, before
-                      ;; embarking on computing completions:
-                      (sit-for icomplete-compute-delay)))
-            (let ((text             (while-no-input
-                                     (icomplete-completions
-                                      (field-string)
-                                      minibuffer-completion-table
-                                      minibuffer-completion-predicate
-                                      (not minibuffer-completion-confirm))))
-                  (buffer-undo-list t)
-                  deactivate-mark)
-              ;; Do nothing if `while-no-input' was aborted.
-              (when (stringp text)
-                (move-overlay icomplete-overlay (point) (point) (current-buffer))
-                ;; The current C cursor code doesn't know to use the overlay's
-                ;; marker's stickiness to figure out whether to place the cursor
-                ;; before or after the string, so let's spoon-feed it the pos.
-                (put-text-property 0 1 'cursor t text)
-                (overlay-put icomplete-overlay 'after-string text)))))))))
+  (when (and icomplete-mode (icomplete-simple-completing-p))
+    (save-excursion
+      (goto-char (point-max))
+      ;; Insert the match-status information.
+      (when (and (> (point-max) (minibuffer-prompt-end))
+                 buffer-undo-list       ; Wait for some user input.
+                 (save-excursion ; Do nothing if looking at a list, string, etc.
+                   (goto-char (minibuffer-prompt-end))
+                   (save-match-data
+                     (not (looking-at   ; No (, ", ', 9 etc. at start.
+                           "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
+                 (or
+                  ;; Don't bother with delay after certain number of chars:
+                  (> (- (point) (field-beginning)) icomplete-max-delay-chars)
+                  ;; Don't delay if alternatives number is small enough:
+                  (and (sequencep minibuffer-completion-table)
+                       (< (length minibuffer-completion-table)
+                          icomplete-delay-completions-threshold))
+                  ;; Delay - give some grace time for next keystroke, before
+                  ;; embarking on computing completions:
+                  (sit-for icomplete-compute-delay)))
+        (let ((text             (while-no-input
+                                  (icomplete-completions
+                                   (field-string)
+                                   minibuffer-completion-table
+                                   minibuffer-completion-predicate
+                                   (not minibuffer-completion-confirm))))
+              (buffer-undo-list t)
+              deactivate-mark)
+          ;; Do nothing if `while-no-input' was aborted.
+          (when (stringp text)
+            (move-overlay icomplete-overlay (point) (point) (current-buffer))
+            ;; The current C cursor code doesn't know to use the overlay's
+            ;; marker's stickiness to figure out whether to place the cursor
+            ;; before or after the string, so let's spoon-feed it the pos.
+            (put-text-property 0 1 'cursor t text)
+            (overlay-put icomplete-overlay 'after-string text))))))))
 
 
 
@@ -504,7 +504,7 @@ Prospective completion suffixes (if any) are displayed, bracketed by
 The displays for unambiguous matches have ` [ Matched ]' appended
 \(whether complete or not), or ` \[ No matches ]', if no eligible
 matches exist.  \(Keybindings for uniquely matched commands are
-exhibited within the square brackets, [].)
+exhibited within brackets, [].)
 
 When more than one completion is available, the total number precedes
 the suffixes display, like this:
@@ -538,7 +538,7 @@ following the rest of the icomplete info:
 ;;; $$$$$           (if (and base-size (> base-size 0))
 ;;;                     (completion-try-completion name candidates predicate (length name))
 ;;;                   ;; If `comps' are 0-based, result should be the same with `comps'.
-                  (completion-try-completion name comps nil (length name)))
+                (completion-try-completion name comps nil (length name)))
                (most (if (consp most-try) (car most-try) (if most-try (car comps) "")))
                ;; Compare name and most, so we can determine if name is
                ;; a prefix of most, or something else.

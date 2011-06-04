@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri May 27 16:28:59 2011 (-0700)
+;; Last-Updated: Fri Jun  3 09:56:57 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 608
+;;     Update #: 610
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,6 +97,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/06/03 dadams
+;;     isearchp-initiate-edit-commands: Added left-word.
 ;; 2011/05/27 dadams
 ;;     Added: isearchp-initiate-edit-commands, isearchp-update-edit-init-commands.
 ;; 2011/05/16 dadams
@@ -241,6 +243,7 @@
       ;; backward-to-indentation             ; Not bound by default
       ;; backward-up-list                    ; `C-M-u', `C-M-up'
       backward-word                     ; `M-b', `M-left'
+      left-word                         ; `C-left'
       ;; delete-backward-char
       ;; kill-backward-up-list               ; Not bound by default
       ;; beginning-of-buffer                 ; `M-<', `C-home'

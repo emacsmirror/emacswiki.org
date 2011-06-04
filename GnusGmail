@@ -242,6 +242,9 @@ You can put the following in your .gnus or init.el or whatever:
 (setq bbdb/news-auto-create-p t)
 </pre>
 
+[new]
+There is also a new project called Org-contacts which combines Org-mode (for email storage) and Gnus (for mailing). It works quite well!
+
 ===Reply-to with the same address as it was sent to===
 You can emulate this Gmail feature with the variable `gnus-posting-styles', which also allows you to set a whole bunch of other variables based on the email you reply to or the group you're in. A very simple example, for just two addresses, would be:
 

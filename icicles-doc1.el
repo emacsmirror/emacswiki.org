@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 24 08:55:19 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:18:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26065
+;;     Update #: 26067
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2966,7 +2966,7 @@
 ;;
 ;;    - Help on the current candidate (typically, the first line of a
 ;;      doc string) is displayed in the mode line, provided user
-;;      option `icicle-help-in-mode-line-flag' is non-`nil'.
+;;      option `icicle-help-in-mode-line-delay' is greater than zero.
 ;;
 ;;  * The total number of completion candidates is displayed in the
 ;;    mode-line of buffer `*Completions*' - e.g. `567 candidates'.
@@ -3831,10 +3831,10 @@
 ;;
 ;;  When you cycle among candidates for input, help on the current
 ;;  candidate is shown in the mode-line, provided user option
-;;  `icicle-help-in-mode-line-flag' is non-`nil'.  This makes it easy
-;;  to see what each candidate means or does.  Similarly, this help is
-;;  shown whenever your input is completed entirely to one of the
-;;  candidates.  If you use library `lacarte.el', then mode-line
+;;  `icicle-help-in-mode-line-delay' is greater than zero.  This makes
+;;  it easy to see what each candidate means or does.  Similarly, this
+;;  help is shown whenever your input is completed entirely to one of
+;;  the candidates.  If you use library `lacarte.el', then mode-line
 ;;  candidate help is even available for menu-item candidates.
 ;;
 ;;  Typically, this candidate mode-line help is the first line of the

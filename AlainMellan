@@ -23,5 +23,27 @@ emacsclient -a cat --eval '(let () (setq compile-command "cat make.log") (recomp
 
 After that, I can use ESC-` to jump to the next error.
 
+=== Emacs as SystemVerilog IDE ===
+
+Almost :-)  But the following allows to parse error messages from Cadence's ncsim:
+
+{{{
+;;;
+;;; ---- Scan IUS error messages -------------------------------------------
+;;;
+
+(load-library "compile")
+
+(setq compilation-error-regexp-alist-alist             ; create regexp
+      (append compilation-error-regexp-alist-alist
+              '((ncsim "*[EWN],.+(\\(.*\\),\\([0-9]+\\)" 1 2 nil nil))))
+
+(setq compilation-error-regexp-alist                   ; tell emacs to use it
+      (cons 'ncsim compilation-error-regexp-alist))
+
+}}}
+
+Then I can do <tt>ESC-x compile</tt>, type the compile command, and open directly source files from the compile log error messages. Saves a lot of time.
+
 ----
 CategoryHomepage

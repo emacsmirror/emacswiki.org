@@ -12,7 +12,7 @@ input, by hitting '''`##C-?##'''' (`icicle-minibuffer-help').  This section
 is about specific help on ''individual'' completion
 candidates instead.
 
-When you [[Icicles - Cycling Completions|cycle]] among candidates for input, help on the current candidate is shown in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-‘nil’.  This makes it easy to see what each candidate means or does.  Similarly, this help is shown whenever your input is completed entirely to one of the
+When you [[Icicles - Cycling Completions|cycle]] among candidates for input, help on the current candidate is shown in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-delay|icicle-help-in-mode-line-delay]]</tt>'''' is greater than zero.  This makes it easy to see what each candidate means or does.  Similarly, this help is shown whenever your input is completed entirely to one of the
 candidates.  If you use library '''LaCarte''' (<tt>[[lacarte.el]]</tt>), then mode-line
 candidate help is even available for menu-item candidates.
 

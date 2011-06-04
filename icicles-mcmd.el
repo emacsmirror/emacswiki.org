@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 13:42:29 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:48:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16956
+;;     Update #: 16968
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2229,8 +2229,8 @@ floating point support."
              (or (null read)
                  (progn
                    ;; If last command was a prefix arg, e.g. C-u, push this event onto
-                   ;; unread-command-events as (t . EVENT) so it will be added to
-                   ;; this-command-keys by read-key-sequence.
+                   ;; `unread-command-events' as (t . EVENT) so it will be added to
+                   ;; `this-command-keys' by `read-key-sequence'.
                    (if (memq overriding-terminal-local-map
                              (list universal-argument-map icicle-universal-argument-map))
                        (setq read (cons t read)))
@@ -2719,13 +2719,16 @@ element instead.
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-candidate-per-mode]')."
   (interactive)
+  (unless nth (setq nth  1))
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (case icicle-current-completion-mode
     (prefix
-     (setq this-command  'icicle-next-prefix-candidate)
+     (setq this-command
+           (if (wholenump nth) 'icicle-next-prefix-candidate 'icicle-previous-prefix-candidate))
      (icicle-next-prefix-candidate nth))
     (apropos
-     (setq this-command  'icicle-next-apropos-candidate)
+     (setq this-command
+           (if (wholenump nth) 'icicle-next-apropos-candidate 'icicle-previous-apropos-candidate))
      (icicle-next-apropos-candidate nth))
     ((nil)
      (when icicle-default-cycling-mode (next-history-element (or nth 1))))))
@@ -3134,8 +3137,9 @@ The order between NAV-FN and ACTION-FN respects the value of
          (funcall nav-fn nth))
         (t
          ;; Inhibit showing help in mode-line while moving to next/previous candidate
-         ;; in `*Completions*', because help sits for 10 sec.  Display the help after we do the action.
-         (let ((icicle-help-in-mode-line-flag  nil)) (funcall nav-fn nth))
+         ;; in `*Completions*', because help sits for `icicle-help-in-mode-line-delay' sec.
+         ;; Display the help after we do the action.
+         (let ((icicle-help-in-mode-line-delay  0)) (funcall nav-fn nth))
          (let ((icicle-acting-on-next/prev  (get nav-fn 'icicle-cycling-command)))
            (save-excursion (save-selected-window (funcall action-fn))))
          (when (stringp icicle-last-completion-candidate)
@@ -4178,7 +4182,7 @@ ALTP is passed to `icicle-candidate-action-1'."
          (candidates                      (or local-saved icicle-completion-candidates))
          (failures                        nil)
          (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
-         (icicle-help-in-mode-line-flag   nil) ; Avoid delays for individual candidate help.
+         (icicle-help-in-mode-line-delay  0) ; Avoid delays for individual candidate help.
          (icicle-all-candidates-action    t))
     (when local-saved (setq icicle-completion-candidates  local-saved))
     (if listp
@@ -4258,7 +4262,7 @@ Optional arg CAND non-nil means it is the candidate to act on."
                  last-command                      (if altp
                                                        'icicle-candidate-alt-action
                                                      'icicle-candidate-action))
-           (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+           (let ((icicle-help-in-mode-line-delay  0)) ; Avoid delay for candidate help.
              (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
                                           'icicle-prefix-candidates
                                         'icicle-apropos-candidates)
@@ -4453,7 +4457,7 @@ occurrence."
   (unless (stringp icicle-last-completion-candidate)
     (setq icicle-last-completion-candidate  icicle-current-input
           last-command                      'icicle-delete-candidate-object)
-    (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+    (let ((icicle-help-in-mode-line-delay  0)) ; Avoid delay for candidate help.
       (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
                                    'icicle-prefix-candidates
                                  'icicle-apropos-candidates)
@@ -4505,7 +4509,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
         (unless (stringp icicle-last-completion-candidate)
           (setq icicle-last-completion-candidate  icicle-current-input
                 last-command                      'icicle-delete-candidate-object)
-          (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+          (let ((icicle-help-in-mode-line-delay  0)) ; Avoid delay for candidate help.
             (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
                                          'icicle-prefix-candidates
                                        'icicle-apropos-candidates)
@@ -4725,7 +4729,7 @@ You can use this command only from the minibuffer or `*Completions*'
           ((not (stringp icicle-last-completion-candidate))
            (setq icicle-last-completion-candidate  icicle-current-input
                  last-command                      'icicle-help-on-candidate)
-           (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+           (let ((icicle-help-in-mode-line-delay  0)) ; Avoid delay for candidate help.
              (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
                                           'icicle-prefix-candidates
                                         'icicle-apropos-candidates)
@@ -4936,7 +4940,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (unless (stringp icicle-last-completion-candidate)
     (setq icicle-last-completion-candidate  icicle-current-input
           last-command                      'icicle-candidate-action)
-    (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+    (let ((icicle-help-in-mode-line-delay  0)) ; Avoid delay for candidate help.
       (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
                                    'icicle-prefix-candidates
                                  'icicle-apropos-candidates)

@@ -757,21 +757,26 @@ Non-`nil' option '''`icicle-show-Completions-help-flag'''' means display help
 (instructions) at the top of the `*Completions*' window.  These instructions are shown in faces '''`icicle-Completions-instruction-1'''' and '''`icicle-Completions-instruction-2''''.
 
 ----
-[:icicle-help-in-mode-line-flag]
-==== Option icicle-help-in-mode-line-flag ====
+[:icicle-help-in-mode-line-delay]
+==== Option icicle-help-in-mode-line-delay ====
 
-Non-`nil' option '''`icicle-help-in-mode-line-flag'''' means display
-help on individual completion candidates in the [[mode line]] as you [[Icicles - Cycling Completions|cycle]] or your input is completed.  The mode-line used is that of buffer `*Completions*', if
+Option '''`icicle-help-in-mode-line-delay'''' is the number of seconds to display 
+help on individual completion candidates in the [[mode line]] as you [[Icicles - Cycling Completions|cycle]] or your input is completed.  The mode-line that is used is that of buffer `*Completions*', if
 it is displayed, or the current buffer, otherwise.  Typically,
 this mode-line candidate help is the first line of a [[doc string]],
 but alternative help is available.
+
+Regardless of the option value, a user event (e.g. a [[key]] press)
+always interrupts (terminates) this help display.  Note too that
+`post-command-hook' actions do not take place until this display
+is finished.
 
 ----
 [:icicle-mode-line-help]
 ==== Face icicle-mode-line-help ====
 
 Face '''`icicle-mode-line-help'''' is used to highlight '''Icicles''' help
-shown in the [[mode line]].  This includes that controlled by option `<tt>[[#icicle-help-in-mode-line-flag]]</tt>' and the indication in
+shown in the [[mode line]].  This includes that controlled by option `<tt>[[#icicle-help-in-mode-line-delay]]</tt>' and the indication in
 `*Completions*' of the total number of matching candidates.
 
 

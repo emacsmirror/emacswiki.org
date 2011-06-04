@@ -239,6 +239,23 @@ No.  No need to do that.  That's what [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' is for.  By default it binds `##C-'##' to `icicle-occur' -- just remove that entry (it's the fifth one in the list). -- DrewAdams
 
 
+But what is the best way to remove an internal value in the [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''? It is a quite big list in its value. If I choose to remove that specific line through customize that variable, it would make my init file un-readable. So I need to write some function to make it in the runtime. Here is my function:
+
+    (eval-after-load "icicles-opt.el"
+     (add-hook 'icicle-mode-hook
+              (lambda ()
+                 (setq my-icicle-top-level-key-bindings
+                         (mapcar (lambda (lst)
+                                   (unless (string= "icicle-occur" (nth 1 lst)) lst))
+                                  icicle-top-level-key-bindings))
+                        (setq icicle-top-level-key-bindings my-icicle-top-level-key-bindings) )))
+    
+    (icy-mode)
+
+
+-- DavidYoung
+
 ----
 ----
 

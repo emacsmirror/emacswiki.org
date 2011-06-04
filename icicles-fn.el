@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 31 10:26:10 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:42:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12308
+;;     Update #: 12335
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3496,8 +3496,8 @@ completions for its argument, the current partial input (a string).
 Optional arg REGEXP-P non-nil means that CANDIDATES-FN uses regexp
 matching. This is used to highlight the appropriate matching root.
 
-If option `icicle-help-in-mode-line-flag' is non-nil, then help on the
-current candidate is shown in the mode line."
+If option `icicle-help-in-mode-line-delay' is positive, then help on
+the current candidate is shown in the mode line."
   (let ((saved-last-input  icicle-last-input)) ; For call to `icicle-recompute-candidates'.
     (unless (stringp icicle-last-completion-candidate)
       (setq icicle-last-completion-candidate  icicle-initial-value))
@@ -3607,8 +3607,8 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
       
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
-Do this only if `icicle-help-in-mode-line-flag' is non-nil."
-  (when icicle-help-in-mode-line-flag
+Do this only if `icicle-help-in-mode-line-delay' is positive."
+  (when (> icicle-help-in-mode-line-delay 0)
     (let* ((cand       (cond (;; Call to `lacarte-execute(-menu)-command' (in `lacarte.el').
                               ;; Use command associated with menu item.
                               (consp lacarte-menu-items-alist)
@@ -3683,13 +3683,14 @@ Do this only if `icicle-help-in-mode-line-flag' is non-nil."
                        (format-time-string  "%c" (nth 5 attrs)) (nth 8 attrs))))) ; "%Y-%m-%d %H"
 
 (defun icicle-show-in-mode-line (text &optional buffer)
-  "Display TEXT in BUFFER's mode line for 10 sec (or until user event).
-Note: This sits for 10 sec or until a user event, so call this last in
-a sequence of user-visible actions."
+  "Display TEXT in BUFFER's mode line.
+The text is shown for `icicle-help-in-mode-line-delay' seconds, or
+until a user event.  So call this last in a sequence of user-visible
+actions."
   (message nil)                         ; Remove any msg, such as "Computing completion candidates...".
   (with-current-buffer (or buffer (current-buffer))
     (make-local-variable 'mode-line-format) ; Needed for Emacs 21+.
-    (let ((mode-line-format  text))  (force-mode-line-update) (sit-for 10))
+    (let ((mode-line-format  text))  (force-mode-line-update) (sit-for icicle-help-in-mode-line-delay))
     (force-mode-line-update)))
 
 (defun icicle-recompute-candidates (nth candidates-fn saved-last-input)
@@ -5431,14 +5432,24 @@ Otherwise remove only Icicles internal text properties:
                                                                     'search-ring))))
            nil nil isearch-string (if isearch-regexp 'regexp-search-ring 'search-ring)))))
 
-(defun icicle-completion-all-completions (string table pred point)
+;; $$$$$$ Filed Emacs BUG #8795.  They added a non-optional arg, METADATA (with no doc).
+;;
+(defun icicle-completion-all-completions (string table pred point &optional metadata)
   "Icicles version of `completion-all-completions'.
-Append `$' to each candidate, if current input ends in `$'.
-Also removes the last cdr, which might hold the base size."
-  (let ((res  (completion-all-completions string table pred point)))
-    (when (consp res)
-      (let ((last  (last res)))
-        (when last (setcdr last nil))))
+1. Handle all Emacs versions.
+2. Append `$' to each candidate, if current input ends in `$'.
+3. Remove the last cdr, which might hold the base size.
+4. METADATA is optional and defaults to `completion--field-metadata'
+   at point."
+  (let* ((mdata  (and (fboundp 'completion--field-metadata)
+                      (or metadata  (completion--field-metadata (field-beginning)))))
+         (res    (if mdata              ; Emacs 24 added a 5th arg, METADATA.
+                     (completion-all-completions string table pred point mdata)
+                   ;; $$$$$$$$ UNLESS BUG #8795 is fixed, still need METADATA, even if nil.
+                   (if (fboundp 'completion--field-metadata)
+                       (completion-all-completions string table pred point nil)
+                     (completion-all-completions string table pred point)))))
+    (when (consp res)  (let ((last  (last res)))  (when last (setcdr last nil))))
     (let* ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input))
            (env-var-p       (and (icicle-not-basic-prefix-completion-p)
                                  (> (length input-sans-dir) 0)
@@ -5450,10 +5461,23 @@ Also removes the last cdr, which might hold the base size."
 ;; E.g. (completion-try-completion "c:/some-dir/$HOMj" nil 17) returns: ("c:/some-dir/$$HOMj" . 18)
 ;;
 ;; This causes `icicle-highlight-input-noncompletion' not to highlight the `j' in the above example.
-(defun icicle-completion-try-completion (string table pred point)
+;;
+;; $$$$$$ Filed Emacs BUG #8795.  They added a non-optional arg, METADATA (with no doc).
+;;
+(defun icicle-completion-try-completion (string table pred point &optional metadata)
   "Icicles version of `completion-try-completion'.
-Removes the last cdr, which might hold the base size."
-  (let ((res  (completion-try-completion string table pred point)))
+1. Handle all Emacs versions.
+2. Remove the last cdr, which might hold the base size.
+3. METADATA is optional and defaults to `completion--field-metadata'
+   at point."
+  (let* ((mdata  (and (fboundp 'completion--field-metadata)
+                      (or metadata  (completion--field-metadata (field-beginning)))))
+         (res    (if mdata              ; Emacs 24 added a 5th arg, METADATA.
+                     (completion-try-completion string table pred point mdata)
+                   ;; $$$$$$$$ UNLESS BUG #8795 is fixed, still need METADATA, even if nil.
+                   (if (fboundp 'completion--field-metadata)
+                       (completion-try-completion string table pred point nil)
+                     (completion-try-completion string table pred point)))))
     (when (consp res) (setq res (car res)))
     res))
 
@@ -5467,10 +5491,11 @@ Return non-nil if current REQUIRE-MATCH arg to `completing-read' or
   "Put string of text HELP on STRING as text properties.
 Put `help-echo' property if `tooltip-mode' is non-nil.
 Put `icicle-mode-line-help' property (on the first character only) if
- `icicle-help-in-mode-line-flag' is non-nil.
+ `icicle-help-in-mode-line-delay' is positive.
 Return STRING, whether propertized or not."
   (unless (equal "" string)
-    (when icicle-help-in-mode-line-flag (put-text-property 0 1 'icicle-mode-line-help help string))
+    (when (> icicle-help-in-mode-line-delay 0)
+      (put-text-property 0 1 'icicle-mode-line-help help string))
     (when (and (boundp 'tooltip-mode) tooltip-mode)
       (put-text-property 0 (length string) 'help-echo help string)))
   string)
@@ -5611,7 +5636,7 @@ If nil, then COLOR-NAME is used to determine the hex RGB string."
                          (list (cons 'foreground-color (if (< value 0.6) "White" "Black"))
                                (cons 'background-color rgb-string))
                          rgb-string))
-    (when (or icicle-help-in-mode-line-flag ; Construct help only if user will see it.
+    (when (or (> icicle-help-in-mode-line-delay 0) ; Construct help only if user will see it.
               (and (boundp 'tooltip-mode) tooltip-mode))
       (let* ((rgb   (hexrgb-hex-to-rgb rgb-string))
              (hsv   (apply #'hexrgb-rgb-to-hsv rgb))

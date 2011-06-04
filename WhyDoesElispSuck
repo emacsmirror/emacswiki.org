@@ -195,6 +195,15 @@ How hard would it be to add only one background thread that runs these idle task
 
  -- Blandest
 
+= pro-emacs comment =
+I think it's quite funny that people never take into account the empirically observable reality. It's like falling and staying in love with comunism besides real history. 
+
+Almost any kind of application I can think of, when there is an emacs mode for it, its always best in class. Going back from Emacs to other editors /IDE's is like going back to the stoneage. If Scheme is so great - why is there no proof of it? Why is it possible to realize really complex extensions like org-mode and gnus in EmacsLisp, if it sucks so much? Where are better extensible programs in Java, Phyton, whatever? 
+
+I think it's fun to program in Emacs Lisp, a huge project with a long history in this language yielded an unsurpassed piece of software (Emacs) - it can't be bad, it must be very suitable for the task at hand.   
+
+ -- pro-emacs
+
 ----
 CategoryCode
 CategoryHistory

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 31 10:31:05 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:52:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1500
+;;     Update #: 1504
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -557,7 +557,7 @@ noted in parentheses.
 * `icicle-file-*'                        - `icicle-file' options
 * `icicle-filesets-as-saved-completion-sets-flag'- Use filesets?
 * `icicle-guess-commands-in-path'        - Shell commands to complete
-* `icicle-help-in-mode-line-flag'        - Candidate mode-line help?
+* `icicle-help-in-mode-line-delay'       - Secs to show candidate help
 * `icicle-hide-common-match-in-Completions-flag'- Show common match?
 * `icicle-highlight-historical-candidates-flag'
                                          - Highlight past input?

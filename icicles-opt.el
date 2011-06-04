@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 24 09:07:59 2011 (-0700)
+;; Last-Updated: Fri Jun  3 15:36:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4340
+;;     Update #: 4358
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -97,7 +97,7 @@
 ;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
-;;    `icicle-help-in-mode-line-flag',
+;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
 ;;    `icicle-highlight-input-completion-failure',
@@ -1527,16 +1527,22 @@ a prefix argument, that command also saves the cache persistently."
   :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-help-in-mode-line-flag t
-  "*Non-nil means show help in the mode-line for individual completions.
+(defcustom icicle-help-in-mode-line-delay 5
+  "*Seconds to show help in the mode-line for individual completions.
 If buffer `*Completions*' is displayed, then use its mode-line.
 Otherwise, use the mode-line of the current buffer.
 
 The help is shown when you cycle among completion candidates and when
 your input is completed (entirely) to a candidate.
 
-Face `icicle-mode-line-help' is used for the help."
-  :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Miscellaneous)
+Face `icicle-mode-line-help' is used for the help.
+
+A value of zero means do not show such help at all.  In any case, a
+user event (e.g. a key press) always interrupts this display.
+
+Note that `post-command-hook' actions do not take place until this
+display is finished."
+  :type 'number :group 'Icicles-Completions-Display :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-hide-common-match-in-Completions-flag nil
