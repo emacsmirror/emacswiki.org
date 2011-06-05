@@ -238,7 +238,7 @@ key binding to icicle-occur command conflict to org-mode org-babel. So I would l
 No.  No need to do that.  That's what [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' is for.  By default it binds `##C-'##' to `icicle-occur' -- just remove that entry (it's the fifth one in the list). -- DrewAdams
 
-
+[new]
 But what is the best way to remove an internal value in the [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''? It is a quite big list in its value. If I choose to remove that specific line through customize that variable, it would make my init file un-readable. So I need to write some function to make it in the runtime. Here is my function:
 
@@ -253,8 +253,19 @@ But what is the best way to remove an internal value in the [[option]]
     
     (icy-mode)
 
-
 -- DavidYoung
+
+[new:DrewAdams:2011-06-04 14:00 UTC]
+You can do that, but I don't recommend it.  What I recommend is to use a separate file for all [[Customize]] customizations.  That's what option `custom-file' is for.  That's a good idea anyway, because it separates a file you edit manually (your [[init file]]) from the file where Customize makes automatic changes (the value of `custom-file').
+
+The Customize interface for changing, adding, and deleting individual members of a complex structure (such as a list like `icicle-top-level-key-bindings') is straightforward and less error prone.  And if you use `custom-file' then you don't care how large or how ugly the complex value is in the file -- you never edit the Lisp [[sexp]] by hand.
+
+In any case, if you do prefer to use Lisp then it's better to use `custom-set-variable' than `setq'. -- DrewAdams
+
+
+
+
+
 
 ----
 ----

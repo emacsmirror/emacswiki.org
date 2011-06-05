@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 371 $
+;; RCS Version: $Rev: 372 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -196,6 +196,7 @@
 
 (require 'dired)
 (require 'dired-x)
+(require 'enriched)
 (require 'find-dired)
 (require 'font-lock)
 (require 'sort)
@@ -244,7 +245,7 @@
   :group 'sunrise
   :type 'string)
 
-(defcustom sr-virtual-listing-switches "-al"
+(defcustom sr-virtual-listing-switches "-ald"
   "Listing switches for building buffers in Sunrise VIRTUAL mode based on find
   and locate results. Should not contain the -D option."
   :group 'sunrise
@@ -649,6 +650,7 @@ automatically:
   (set-keymap-parent sr-virtual-mode-map sr-mode-map)
   (sr-highlight)
   (dired-omit-mode dired-omit-mode)
+  (enriched-mode -1)
 
   (make-local-variable 'truncate-partial-width-windows)
   (setq truncate-partial-width-windows (sr-truncate-v t))
@@ -830,9 +832,16 @@ automatically:
     (insert-directory file switches wildcard full-directory-p)
     (dired-align-file beg (point))
     (save-excursion
-      (forward-line -1)
-      (re-search-forward directory-listing-before-filename-regexp (point-at-eol) t)
+      (search-backward file)
       (add-text-properties (point) (point-at-eol) '(dired-filename t)))))
+
+(add-to-list 'enriched-translations '(dired-filename (t "x-dired-filename")))
+(defun sr-enrich-buffer ()
+  "Activates enriched-mode before saving a Sunrise  buffer to a file, so all its
+  dired-filename attributes are kept in the file."
+  (if (memq major-mode '(sr-mode sr-virtual-mode))
+      (enriched-mode 1)))
+(add-hook 'before-save-hook 'sr-enrich-buffer)
 
 ;; This is a hack to avoid some dired mode quirks:
 (defadvice dired-find-buffer-nocreate
@@ -847,16 +856,6 @@ automatically:
       (setq ad-return-value sr-other-directory)
     ad-do-it))
 (ad-activate 'dired-dwim-target-directory)
-
-;; Fixes dired-goto-file and all functions that depend on it in *nix systems
-;; in which directory names end with a slash.
-;; (defadvice dired-get-filename
-;;   (around sr-advice-dired-get-filename (&optional localp no-error-if-not-filep))
-;;   ad-do-it
-;;   (if ad-return-value
-;;       (setq ad-return-value
-;;             (replace-regexp-in-string "/$" "" ad-return-value))))
-;; (ad-activate 'dired-get-filename)
 
 ;; selects the correct (selected) pane when switching from other windows:
 (defadvice other-window
@@ -875,6 +874,16 @@ automatically:
       (delete-file directory)
     ad-do-it))
 (ad-activate 'delete-directory)
+
+;; stop pestering me with questions whether I want hard lines, just guess:
+(defadvice use-hard-newlines
+  (around sr-advice-use-hard-newlines (&optional arg insert))
+  (if (memq major-mode '(sr-mode sr-virtual-mode))
+      (let ((inhibit-read-only t))
+        (setq insert 'guess)
+        ad-do-it)
+    ad-do-it))
+(ad-activate 'use-hard-newlines)
 
 ;;; ============================================================================
 ;;; Sunrise Commander keybindings:
@@ -2011,10 +2020,12 @@ automatically:
   (if (null (get sr-selected-window 'hidden-attrs))
       (progn
         (sr-hide-attributes)
-        (message "Sunrise: hiding attributes in %s pane" (symbol-name sr-selected-window)))
+        (message "Sunrise: hiding attributes in %s pane"
+                 (symbol-name sr-selected-window)))
     (progn
       (sr-unhide-attributes)
-      (message "Sunrise: displaying attributes in %s pane" (symbol-name sr-selected-window)))))
+      (message "Sunrise: displaying attributes in %s pane"
+               (symbol-name sr-selected-window)))))
 
 (defun sr-toggle-truncate-lines ()
   "Enables/Disables truncation of long lines in the active pane."
@@ -2940,7 +2951,7 @@ or (c)ontents? ")
         (sr-change-window)
         (setq other (sr-pop-mark))
         (sr-change-window)
-        (setq other (or other this))))
+        (setq other (or other (file-name-nondirectory this)))))
     (setq this (concat default-directory this)
           other (concat sr-other-directory other))
     (list fun this other)))
@@ -3087,9 +3098,11 @@ or (c)ontents? ")
   pane match the given regular expression"
   (interactive "sPrune paths matching: ")
   (dired-unmark-all-marks)
-  (condition-case description
-      (dired-mark-sexp `(string-match ,regexp name))
-    (error (ignore)))
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward-regexp regexp nil t)
+      (dired-mark 1)
+      (beginning-of-line)))
   (dired-do-kill-lines))
 
 (eval-and-compile

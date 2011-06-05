@@ -6,6 +6,8 @@ Thanks the CL implementation authors for that useful software.
 This file provides a single function, `el-swank-fuzzy-completions',
 which you can use for the SLIME/swank's FUZZY-COMPLETIONS alike completion function for Emacs Lisp.
 
+- how do you use this as a replacement for lisp-complete-symbol in elisp code? There are no interactive functions defined in el-swank-fuzzy.el
+
 = Elisp =
 
 * Lisp:el-swank-fuzzy.el

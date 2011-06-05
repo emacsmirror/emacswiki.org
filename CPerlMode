@@ -424,6 +424,50 @@ This seems breaks with newer versions of emacs. To repair it you have to define
 
 somewhere in your init.el [willert@cpan.org]
 
+== Known Issues ==
+
+The function cperl-write-tags in cperl-mode.el hard coded tags-file-name to "TAGS". When used conjunction with PerlDevelopEnvironment this will cause problem. 
+
+PerlDevelopEnvironment generates tags content based on Perl syntax. It is good in Perl but very bad for any others. So it'd better to store this kind of tags in to specific files in stead of the general one. But unfortunate, tags-file-name was hard coded into cperl-mode.el. 
+
+This is part of the code indicates this problem in cperl-mode.el
+
+
+    (defun cperl-write-tags (&optional file erase recurse dir inbuffer noxs topdir)
+      ;; If INBUFFER, do not select buffer, and do not save
+      ;; If ERASE is `ignore', do not erase, and do not try to delete old info.
+      (require 'etags)
+      (if file nil
+        (setq file (if dir default-directory (buffer-file-name)))
+        (if (and (not dir) (buffer-modified-p)) (error "Save buffer first!")))
+      (or topdir
+          (setq topdir default-directory))
+      (let ((tags-file-name "TAGS")
+    	(case-fold-search (eq system-type 'emx))
+    	xs rel tm)
+
+I have reported this problem to bug-gnu-emacs@gnu.org. You can now fix this problem with workaround like follows: 
+
+1 Input C-h f cperl-write-tags or  M-x describe-function RET cperl-write-tags
+
+2. Click on `cperl-mode.el' to locate to cperl-write-tags function in cperl-mode.el.gz
+
+3. Copy the code of cperl-write-tags into your init file
+
+4. Locate to the line in cperl-write-tags 
+
+      (let ((tags-file-name "TAGS")
+
+5. Change it in this way
+
+      (let ((tags-file-name cperl-tags-file-name)
+
+6. Then define your own cperl-tags-file-name in this way
+
+      (setq cperl-tags-file-name "YOUR-TAGS")
+
+
+
 == Questions ==
 
 *Note: The wiki is not the place to report bugs.* If you want to report bugs (either in the code or the documentation), use `M-x report-emacs-bug'.

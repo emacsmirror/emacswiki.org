@@ -32,7 +32,7 @@ Keeping lines short is important.
 Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition, FindLongLines, and FillColumnIndicator.
 
 ----
-whitespace mode has two interesting options you can set in variable whitespace-style:
+whitespace mode (part of Emacs 23+) has two interesting options you can set in variable whitespace-style:
 
 `lines', will highlight lines that go beyond thw columnus limit defined in `whitespace-line-column'
 
@@ -44,7 +44,7 @@ whitespace mode has two interesting options you can set in variable whitespace-s
 Example config:
 
  (require 'whitespace)
- (setq whitespace-style '(empty tabs lines-tail trailing))
+ (setq whitespace-style '(face empty tabs lines-tail trailing))
  (global-whitespace-mode t)
 
 ----
