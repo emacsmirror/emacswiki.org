@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:56:23 2011 (-0700)
+;; Last-Updated: Sun Jun  5 09:25:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6598
+;;     Update #: 6606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -808,6 +808,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/06/05 dadams
+;;     icicle-unsorted(-file-name)-prefix-candidates, icicle-prefix-any(-file-name)-candidates-p:
+;;       Add METADATA arg to icicle-completion-(try|all)-completion(s) calls.
 ;; 2011/06/03 dadams
 ;;     icicle-completion-(all|try)-completion(s):
 ;;       Added optional METADATA arg to handle Emacs 24's new METADATA arg.

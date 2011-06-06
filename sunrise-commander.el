@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 372 $
+;; RCS Version: $Rev: 373 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2627,7 +2627,8 @@ automatically:
       (sr-progress-reporter-update progress (nth 7 (file-attributes f)))
       (let* ((name (file-name-nondirectory f))
              (target-file (concat target-dir name))
-             (symlink-to (file-symlink-p (replace-regexp-in-string "/*$" "" f))))
+             (symlink-to (file-symlink-p (replace-regexp-in-string "/*$" "" f)))
+             (clone-args (list f target-file t)))
         (cond
          (symlink-to
           (progn
@@ -2643,11 +2644,14 @@ automatically:
 
          (clone-op
           ;; (message "[[Cloning: %s => %s]]" f target-file)
+          (if (eq clone-op 'copy-file)
+              (setq clone-args
+                    (append clone-args (list dired-copy-preserve-time))))
           (if (file-exists-p target-file)
               (if (or (eq do-overwrite 'ALWAYS)
                       (setq do-overwrite (sr-ask-overwrite target-file)))
-                  (apply clone-op (list f target-file t)))
-            (apply clone-op (list f target-file t))))))))
+                  (apply clone-op clone-args))
+            (apply clone-op clone-args)))))))
    file-paths))
 
 (defun sr-clone-directory (in-dir d to-dir clone-op progress do-overwrite)

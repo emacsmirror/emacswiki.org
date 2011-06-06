@@ -479,5 +479,21 @@ documentation is of no direct use for anything -- unlike code. Thus, people are 
 
 Personally, I think the wiki exists somewhere between the newsgroups, the FAQ, the mailing lists, and IRC. It's certainly nowhere near the quality of organization and writing that the Emacs documentation has -- and I don't think this is the right medium to aim for this level of quality. I think the people willing to invest that amount of energy to write quality stuff ought to be writing the real Emacs documentation -- and they probably are.
 
+[new:NeilSmithline:2011-06-06 01:47 UTC]
+Can't recall how the new tag broke Alex. In my initial comment, I do have a use of the new tag in the middle of a paragraph in a pair of nowiki tags and it got expanded there. But I couldn't make it happen at the start of a comment. 
+
+Drew, I couldn't help laughing when I read your comment about the quality of documentation. IMO, the best case is that the quality of Emacs matches the quality of your documentation. 
+
+Regarding timestamps, I'm not arguing against them. I want more of them. I think that every *comment* should have a timestamp. I think that every page, including the *.el pages, should have the date of the last significant modification on the top of the page. I'm tired of reading through a huge page to find some 2008 date on the bottom. 
+
+Regarding the quality of pages, I don't think that we should, in any way, prohibit some users, pages, formats, etc... This is a wiki - it's supposed to be a mish-mash (yes, that is a technical term). 
+
+What I want to be able to do is be aware of the timeliness and quality of a page before visiting it or, at a minimum, immediately when viewing a page. I'm not looking to set a minimum quality standard for a page to be on the wiki or to say that if a page or its *.el packaes haven't been updated in some period of time that they should be deleted. I just want to be able to filter the results in a reasonable efficient manner. 
+
+While I would like this feature, I do feel that it is important for the less Emacs-experienced users. I suspect that the fact that I'm willing to take the time to complain about the lack of organization in the Wiki means I'm one of the more dedicated users. But I suspect that others are less dedicated and give up sooner. I want to make it easy for them.
+
+-- NeilSmithline 2011-06-06 01:47 UTC 
+
+
 ----
 CategoryEmacsWikiSite

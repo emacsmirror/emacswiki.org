@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:42:48 2011 (-0700)
+;; Last-Updated: Sun Jun  5 09:18:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12335
+;;     Update #: 12354
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3095,7 +3095,10 @@ prefix over all candidates."
                   (icicle-completion-all-completions input minibuffer-completion-table
                                                      minibuffer-completion-predicate
                                                      ;; $$$$$$ (- (point) (field-beginning)))
-                                                     (length input))
+                                                     (length input)
+                                                     (and (fboundp 'completion--field-metadata) ;Emacs24
+                                                          (completion--field-metadata
+                                                           (field-beginning))))
                 (all-completions input minibuffer-completion-table minibuffer-completion-predicate
                                  icicle-ignore-space-prefix-flag)))
              (icicle-extra-candidates
@@ -3124,7 +3127,10 @@ prefix over all candidates."
                      (icicle-completion-try-completion input minibuffer-completion-table
                                                        minibuffer-completion-predicate
                                                        ;; $$$$$$ (- (point) (field-beginning)))
-                                                       (length input))
+                                                       (length input)
+                                                       (and (fboundp 'completion--field-metadata)
+                                                            (completion--field-metadata ; Emacs 24
+                                                             (field-beginning))))
                    (try-completion input minibuffer-completion-table
                                    minibuffer-completion-predicate))))
             (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
@@ -3150,7 +3156,11 @@ prefix over all candidates."
       (let* ((candidates
               (if (icicle-not-basic-prefix-completion-p)
                   (icicle-completion-all-completions input minibuffer-completion-table
-                                                     minibuffer-completion-predicate (length input))
+                                                     minibuffer-completion-predicate
+                                                     (length input)
+                                                     (and (fboundp 'completion--field-metadata) ;Emacs24
+                                                          (completion--field-metadata
+                                                           (field-beginning))))
                 (all-completions input minibuffer-completion-table minibuffer-completion-predicate
                                  icicle-ignore-space-prefix-flag)))
              (icicle-extra-candidates
@@ -3188,7 +3198,10 @@ prefix over all candidates."
                  (if (icicle-not-basic-prefix-completion-p)
                      (icicle-completion-try-completion input minibuffer-completion-table
                                                        minibuffer-completion-predicate
-                                                       (length input))
+                                                       (length input)
+                                                       (and (fboundp 'completion--field-metadata)
+                                                            (completion--field-metadata ; Emacs 24
+                                                             (field-beginning))))
                    (try-completion input minibuffer-completion-table default-directory))))
             ;; If common prefix matches an empty directory, use that dir as the sole completion.
             (when (and (stringp common-prefix)
@@ -4832,7 +4845,9 @@ defined)."
         (icicle-completion-try-completion input minibuffer-completion-table
                                           minibuffer-completion-predicate
                                           ;; $$$$$$ (- (point) (field-beginning)))
-                                          (length input))
+                                          (length input)
+                                          (and (fboundp 'completion--field-metadata) ; Emacs 24
+                                               (completion--field-metadata (field-beginning))))
       (try-completion input minibuffer-completion-table minibuffer-completion-predicate))))
 
 (defun icicle-prefix-any-file-name-candidates-p (input)
@@ -4841,7 +4856,10 @@ defined)."
          (minibuffer-completion-predicate  minibuffer-completion-predicate))
     (if (icicle-not-basic-prefix-completion-p)
         (icicle-completion-try-completion input minibuffer-completion-table
-                                          minibuffer-completion-predicate (length input))
+                                          minibuffer-completion-predicate
+                                          (length input)
+                                          (and (fboundp 'completion--field-metadata) ; Emacs 24
+                                               (completion--field-metadata (field-beginning))))
       (try-completion input minibuffer-completion-table default-directory))))
 
 (defun icicle-apropos-any-candidates-p (input)
@@ -5440,15 +5458,13 @@ Otherwise remove only Icicles internal text properties:
 2. Append `$' to each candidate, if current input ends in `$'.
 3. Remove the last cdr, which might hold the base size.
 4. METADATA is optional and defaults to `completion--field-metadata'
-   at point."
+   at `field-beginning'."
   (let* ((mdata  (and (fboundp 'completion--field-metadata)
                       (or metadata  (completion--field-metadata (field-beginning)))))
-         (res    (if mdata              ; Emacs 24 added a 5th arg, METADATA.
+         ;; $$$$$$$$ UNLESS BUG #8795 is fixed, need METADATA even if nil.
+         (res    (if (fboundp 'completion--field-metadata) ; Emacs 24 added a 5th arg, METADATA.
                      (completion-all-completions string table pred point mdata)
-                   ;; $$$$$$$$ UNLESS BUG #8795 is fixed, still need METADATA, even if nil.
-                   (if (fboundp 'completion--field-metadata)
-                       (completion-all-completions string table pred point nil)
-                     (completion-all-completions string table pred point)))))
+                   (completion-all-completions string table pred point))))
     (when (consp res)  (let ((last  (last res)))  (when last (setcdr last nil))))
     (let* ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input))
            (env-var-p       (and (icicle-not-basic-prefix-completion-p)
@@ -5469,15 +5485,13 @@ Otherwise remove only Icicles internal text properties:
 1. Handle all Emacs versions.
 2. Remove the last cdr, which might hold the base size.
 3. METADATA is optional and defaults to `completion--field-metadata'
-   at point."
+   at `field-beginning'."
   (let* ((mdata  (and (fboundp 'completion--field-metadata)
                       (or metadata  (completion--field-metadata (field-beginning)))))
-         (res    (if mdata              ; Emacs 24 added a 5th arg, METADATA.
+         ;; $$$$$$$$ UNLESS BUG #8795 is fixed, still need METADATA, even if nil.
+         (res    (if (fboundp 'completion--field-metadata) ; Emacs 24 added a 5th arg, METADATA.
                      (completion-try-completion string table pred point mdata)
-                   ;; $$$$$$$$ UNLESS BUG #8795 is fixed, still need METADATA, even if nil.
-                   (if (fboundp 'completion--field-metadata)
-                       (completion-try-completion string table pred point nil)
-                     (completion-try-completion string table pred point)))))
+                   (completion-try-completion string table pred point))))
     (when (consp res) (setq res (car res)))
     res))
 

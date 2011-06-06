@@ -1,16 +1,23 @@
-= Introduction =
+This page is about library Lisp:el-swank-fuzzy.el, which is based on ##swank-fuzzy.lisp## distributed by SLIME (see [http://common-lisp.net/project/slime/doc/html/Fuzzy-Completion.html Fuzzy Completion - SLIME user Manual]).
 
-This program is based on the swank-fuzzy.lisp distributed SLIME itself.
-Thanks the CL implementation authors for that useful software.
+Thanks to the CL implementation authors for that useful software.
 
-This file provides a single function, `el-swank-fuzzy-completions',
-which you can use for the SLIME/swank's FUZZY-COMPLETIONS alike completion function for Emacs Lisp.
+##el-swank-fuzzy.el##
+provides a single function, `el-swank-fuzzy-completions',
+which you can use to get swank completions similar to those provided by SLIME/swank's fuzzy completions.
 
-- how do you use this as a replacement for lisp-complete-symbol in elisp code? There are no interactive functions defined in el-swank-fuzzy.el
 
-= Elisp =
+== Discussion ==
 
-* Lisp:el-swank-fuzzy.el
+[new]
+How do you use this as a replacement for lisp-complete-symbol in elisp code? There are no interactive functions defined in el-swank-fuzzy.el -- [[catphive]]
 
-= Link =
-* [http://common-lisp.net/project/slime/doc/html/Fuzzy-Completion.html Fuzzy Completion - SLIME user Manual]
+[new:]
+Some possibilities:
+* Use [[Icicles - Fuzzy Completion#SwankCompletion|Icicles swank completion]].  With the current `TAB' completion method as `swank' you automatically get swank fuzzy completion, including for `M-TAB' to complete Lisp symbols.
+
+* Use HippieExpand for Lisp symbol completion, and supply it with the list of completions provided by `el-swank-fuzzy-completions'.
+
+* Use [[Anything]] with `anything-el-swank-fuzzy-complete-symbol' -- AnythingApplications.
+
+-- DrewAdams

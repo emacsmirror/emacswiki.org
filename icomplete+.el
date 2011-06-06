@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jun  3 10:47:00 2011 (-0700)
+;; Last-Updated: Sun Jun  5 09:29:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 906
+;;     Update #: 921
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -62,6 +62,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/05 dadams
+;;     icomplete-completions: Handle Emacs 24's new METADATA arg for completion-try-completion.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps.  Added them for defgroup, defface.
 ;; 2010/07/29 dadams
@@ -534,11 +536,17 @@ following the rest of the icomplete info:
                     "\t%sNo matches%s")
                   open-bracket close-bracket)
 ;;; $$$$$   (if last (setcdr last nil))
-        (let* ((most-try
+        (let* ((mdata  (and (fboundp 'completion--field-metadata)
+                            (completion--field-metadata (field-beginning))))
+               (most-try
 ;;; $$$$$           (if (and base-size (> base-size 0))
 ;;;                     (completion-try-completion name candidates predicate (length name))
 ;;;                   ;; If `comps' are 0-based, result should be the same with `comps'.
-                (completion-try-completion name comps nil (length name)))
+
+                ;; $$$$$$$$ UNLESS BUG #8795 is fixed, need METADATA even if nil.
+                (if (fboundp 'completion--field-metadata) ; Emacs 24 added a 5th arg, METADATA.
+                    (completion-try-completion name comps nil (length name) mdata)
+                  (completion-try-completion name comps nil (length name))))
                (most (if (consp most-try) (car most-try) (if most-try (car comps) "")))
                ;; Compare name and most, so we can determine if name is
                ;; a prefix of most, or something else.

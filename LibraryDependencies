@@ -21,9 +21,9 @@ Library <tt>[[lib-requires.el]]</tt> extends some of the functionality of standa
 
 These are the commands provided by ##lib-requires.el##:
 
-* `lib-requires-tree' -- returns a tree of all of the `require' dependencies for a library, at all levels
-* `lib-requires' -- returns a flat list of all libraries ultimately required by a library
-* `insert-lib-requires-as-comment' -- inserts a comment into Lisp code, listing the libraries returned by `lib-requires'
+* `libreq-requires-tree' -- returns a tree of all of the `require' dependencies for a library, at all levels
+* `libreq-requires-list' -- returns a flat list of all libraries ultimately required by a library
+* `libreq-insert-lib-requires-as-comment' -- inserts a comment into Lisp code, listing the libraries returned by `lib-requires'
 
 Here is the value returned by `lib-requires-tree' for library `doremi-frm':
 
@@ -46,14 +46,14 @@ The usefulness of `lib-requires-tree' is that it shows you dependency structure.
 
 And here is the Lisp comment that is inserted by `insert-lib-requires-as-comment' for library `doremi-frm':
 
-  ;;  Library `doremi-frm' requires these libraries:
+  ;;  Features that might be required by this library:
   ;;
   ;;    `avoid', `doremi', `faces', `faces+', `frame-cmds', `frame-fns',
   ;;    `hexrgb', `icomplete', `icomplete+', `mwheel', `ring', `ring+',
   ;;    `strings', `thingatpt', `thingatpt+'.
   ;;
 
-As for standard library `<code>loadhist.el</code>', library `<code>lib-requires.el</code>' uses the current value of `load-history' to determine library dependencies. However, its commands first try to load the library being interrogated, which should load all the libraries that it requires, updating `load-history'.
+Just as for standard library `<code>loadhist.el</code>', library `<code>lib-requires.el</code>' uses the current value of `load-history' to determine library dependencies. However, its commands first try to load the library being interrogated, which should load all the libraries that it requires, updating `load-history'.
 
 If a `require'd library fails to load, it will of course not be recorded in `load-history'. A '''soft `require'''' is one that raises no error if the required library is not loaded (e.g. not found); a '''hard `require'''' raises an error.
 
@@ -62,13 +62,13 @@ If a `require'd library fails to load, it will of course not be recorded in `loa
 
 Given the knowledge of a soft `require' for library `frame-cmds', and looking at the example of `lib-requires-tree' for library `doremi-frm', you can see that some of the libraries `require'd by `frame-cmds' are not really required.
 
-Notice from the examples above that both `lib-requires-tree' and `lib-requires' generally return '''''strings''''' as library names -- these are the ''file names'' (sans extension) of the corresponding required ''features''. 
+Notice from the examples above that both `libreq-requires-tree' and `libreq-requires-list' generally return '''''strings''''' as library names -- these are the ''file names'' (sans extension) of the corresponding required ''features''. 
 
 Notice too that in both examples above, feature `mwheel' is ''not'' represented by a string, but by a '''''symbol'''''. What that means is that feature `mwheel' was not in fact loaded (it was not found): it is required (by library `doremi'), but it was not loaded. Since no error was raised, we know that `mwheel' is a soft `require' of `doremi'. (Library `mwheel' is available in Emacs21 but not in Emacs 20; a hard `require' would make library `doremi' fail to load in Emacs 20.)
 
 Otherwise, for libraries that were successfully loaded, there is '''''no way to tell whether a given `require' is soft or hard'''''. This is very unfortunate, because such information is important, but `load-history' does not record such a distinction, so there is nothing that can be done in this regard.
 
-'''See Also:''' '''AutomaticFileHeaders''' for use of library <tt>[[lib-requires.el]]</tt> in automatically inserting and updating a comment with library dependencies (via ‘insert-lib-requires-as-comment’).
+'''See Also:''' '''AutomaticFileHeaders''' for use of library <tt>[[lib-requires.el]]</tt> in automatically inserting and updating a comment with library dependencies (via ‘libreq-insert-lib-requires-as-comment’).
 
 == Library elisp-depend.el ==
 
@@ -77,6 +77,36 @@ ElispDepend is similar in some ways to <tt>[[lib-requires.el]]</tt>. A differenc
 == Library elx.el ==
 
 Library <tt>[http://github.com/tarsius/elx elx.el]</tt> can extract all kinds of information from an elisp file.  It is similar to standard library <tt>lisp-mnt.el</tt>.  Both of these libraries do not require the library from which information is extracted to be loaded.  <tt>lisp-mnt.el</tt> actually only extracts information from the library header.  <tt>elx.el</tt> on the other hand also provides functions <tt>elx-required</tt> and <tt>elx-provided</tt> which extract dependency information using regular expressions.  Therefor it can be used in situations where some of the required libraries are not actually available or when one does not want to load the libraries for performance or security reasons.
+
+== Comments ==
+[new]
+Drew,
+
+Cool set of libraries, not to mention wonderful explanatory text. I use a few macros that I find helps me with feature management. They don't seem big enough to warrant a package of their own but maybe they fit in your libraries. No fuss if you don't think so. 
+
+Also, this page is very formal with high quality. So, whatever you decide, please delete my comment. Move them to another page, delete them, incorporate them, or whatever. Just don't let my ramblings mess up your nice page. 
+<pre>
+    (defmacro when-feature-loaded (feature &rest body)
+      "When FEATURE is loaded, evaluate and execute BODY."
+      `(when (featurep ,feature) ,@body))
+
+    (defmacro unless-feature-loaded (feature &rest body)
+      "Unless FEATURE is loaded, evaluate and execute BODY."
+      `(unless (featurep ,feature) ,@body))
+
+    (defmacro when-feature-loadable (feature &rest body)
+      "If FEATURE has been or can be loaded, evaluate and execute BODY."
+      `(when (require ,feature nil t) ,@body))
+
+    (defmacro unless-feature-loadable (feature &rest body)
+      "If cannot be loaded, evaluate and execute BODY."
+      `(unless (require ,feature nil t) ,@body))
+</pre>
+
+I made them macros under the, perhaps mistaken, belief that this may prevent some errors on edge cases. Specifically, if the FEATURE is not loaded and defines new syntax (eg: macros, syntax table modifications, hyperlinks, etc..) then the reading of BODY may generate an error. I haven't really tested to see if that is the case. But the macro's are only one-liners so I think it is more effort to determine that macros don't help than to leave them as macros. -- NeilSmithline 05-Jun-2011 at 20:57 ET
+
+[new:DrewAdams:2011-06-06 06:00 UTC]
+Hi Neil -- Thanks for the feedback.  My personal preference is actually to use the code that you have in the bodies of your macros (!), because I think it is clearer (clear without extra lookup, and about the same length).  But I wouldn't delete your comments and macros, if I were you, because I think others might find them useful. -- DrewAdams
 
 ----
 CategoryCode 
