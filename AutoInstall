@@ -22,7 +22,7 @@ When you install an Emacs lisp file for use with Emacs, you generally have to na
 Is there any way to do all of this automatically?
 *Yes, there is.* Auto Install can download, install and update your collection of Elisp files automatically.
 
-The biggest difference between auto-install.el and other Elisp installers is that auto-install.el can download Elisp files *asynchronously* directly from Emacs, without the help of any external download program.
+The biggest difference between auto-install.el and most other Elisp installers is that auto-install.el can download Elisp files *asynchronously* directly from Emacs, without the help of any external download program.
 
 ==Installation of auto-install.el==
 
@@ -217,7 +217,7 @@ just hit RET.  Go on be lazy!
 
 ==Other Elisp Installers==
 
-See also: [[ELPA]], EmacsLispList, and InstallElisp
+See also: [[ELPA]], [[el-get]], EmacsLispList, and InstallElisp
 
 
 ==Questions==

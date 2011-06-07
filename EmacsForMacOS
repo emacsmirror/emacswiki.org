@@ -299,6 +299,65 @@ Fullscreen mode doesn't work in Vanilla Emacs 23.1.  This at least maximizes you
 
 -- [[timcharper]]
 
+=== Objective C++ ===
+
+Emacs doesn't know about Objective C++. If you open a ".mm" file, it'll be in text-mode or lisp-mode or whatever your default is, which is not very useful.
+
+Unfortunately, until someone writes an objc++-mode, you have to choose between objc-mode and c++-mode. Either one is going to have incomplete syntax highlighting, but the latter also often gets confused with indentation. So, add something like this to your .emacs to open ".mm" files as objc-mode:
+<pre>
+(add-to-list 'auto-mode-alist '("\\.mm\\'" . objc-mode))
+</pre>
+
+=== Objective C headers ===
+
+The default mode for .h files is c-mode. This works reasonably well for C++ headers, although it has incomplete syntax highlighting, but it's much worse for Objective C, where you get things like parameters not lining up properly by their colons. You can handle this by adding a function to magic-mode-alist, like this:
+<pre>
+(add-to-list 'magic-mode-alist
+                `(,(lambda ()
+                     (and (string= (file-name-extension buffer-file-name) "h")
+                          (re-search-forward "@\\<interface\\>" 
+					     magic-mode-regexp-match-limit t)))
+                  . objc-mode))
+</pre>
+So, any .h file that defines an @interface is objc-mode instead of c-mode. (You could extend this to distinguish C++ from C by looking for class or template definitions, but I haven't bothered.)
+
+=== ff-find-other-file and friends ===
+
+find-file-other-file doesn't work right, for two reasons.
+
+The first problem is that cc-other-file-alist doesn't know about Obj-C++ (.mm) files, and doesn't know that .h files can be headers for .m and .mm files. To fix that:
+<pre>
+(push ".m" (cadr (assoc "\\.h\\'" cc-other-file-alist)))
+(push ".mm" (cadr (assoc "\\.h\\'" cc-other-file-alist)))
+(push '("\\.m\\'" (".h")) cc-other-file-alist)
+(push '("\\.mm\\'" (".h")) cc-other-file-alist)
+</pre>
+
+The bigger problem is that the header-search algorithm doesn't understand frameworks. So, &lt;sys/types&gt; properly finds /usr/include/sys/types, but &lt;Foundation/Foundation.h&gt; fails. To fix that:
+<pre>
+(defadvice ff-get-file-name (around ff-get-file-name-framework
+				    (search-dirs 
+				     fname-stub 
+				     &optional suffix-list))
+  "Search for Mac framework headers as well as POSIX headers."
+   (or
+    (if (string-match "\\(.*?\\)/\\(.*\\)" fname-stub)
+	(let* ((framework (match-string 1 fname-stub))
+	       (header (match-string 2 fname-stub))
+	       (fname-stub (concat framework ".framework/Headers/" header)))
+	  ad-do-it))
+      ad-do-it))
+(ad-enable-advice 'ff-get-file-name 'around 'ff-get-file-name-framework)
+(ad-activate 'ff-get-file-name)
+</pre>
+Unfortunately, there are some libraries that effectively reimplement parts of find-file.el instead of using it, which means you may need to patch more functions if you use those libraries.
+
+Of course you'll also want to add the framework paths to cc-search-directories. I used to have code to extract the gcc defaults for both include directories and framework directories at startup, but that turns out to be not much better than using the built-in defaults, because it doesn't take into account the local values for the project(s) I work on. So now I just hard-code it in my .emacs, and then have project-specific files to eval as needed.
+<pre>
+(setq cc-search-directories '("." "../include" "/usr/include" "/usr/local/include/*"
+			      "/System/Library/Frameworks" "/Library/Frameworks"))
+</pre>
+
 == Hacking on the Sources ==
 
 The section is meant to collect useful hacks to the C sources (or to Lisp sources that are executed before any init files are read, such as ##startup.el##).

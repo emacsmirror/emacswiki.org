@@ -6,10 +6,10 @@
 ;; Maintainer: Sven Hartenstein
 
 ;; Created: Fri Mar 25 10:36:08 2011 (-0500)
-;; Version: 0.16
-;; Last-Updated: Tue May 17 11:22:17 2011 (-0500)
+;; Version: 0.17
+;; Last-Updated: Mon Jun  6 16:14:56 2011 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 723
+;;     Update #: 728
 ;; URL: http://www.svenhartenstein.de/Software/R-autoyas
 ;; Keywords: R yasnippet
 ;; Compatibility:
@@ -53,6 +53,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 06-Jun-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Jun  6 15:23:54 2011 (-0500) #725 (Matthew L. Fidler)
+;;    Added a bug-fix for complex language statements like reshape.
 ;; 16-May-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon May 16 19:38:46 2011 (-0500) #718 (Matthew L. Fidler)
 ;;    Bug Fixes for cached snippets.
@@ -91,7 +94,7 @@
 ;; 21-Apr-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Apr 21 14:55:20 2011 (-0500) #329 (Matthew L. Fidler)
 ;;    Tried to fix the autobrackets in r-auotyas.
-;; 15-Apr-2011    Matthew L. Fidler  
+;; 15-Apr-2011    Matthew L. Fidler
 ;;    Last-Updated: Fri Apr 15 11:50:41 2011 (-0500) #284 (Matthew L. Fidler)
 ;;    Bugfix for ess-eval-linewise option
 ;; 15-Apr-2011    Matthew L. Fidler  
@@ -254,6 +257,9 @@ write.table(d,
   
   :type 'boolean
   :group 'r-autoyas)
+
+(defvar r-autoyas-cache nil
+  "Cache of complex language statments for R-autoyas")
 
 (defcustom r-autoyas-wrap-on-exit t
   "Defines if R-autoyas attempts to wrap end of lines."
@@ -631,11 +637,29 @@ nr <- nr+1;
 str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':NULL$(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='language') {
-tmp <- .r.autoyas.esc(deparse(formals[[field]]));
+tmp <- deparse(formals[[field]]);
+if (all(regexpr(\"[{}\\n]\", tmp) == -1)){
+tmp <- .r.autoyas.esc(tmp);
 tmp2 <- gsub(\"\\\"\",\"\\\\\\\\\\\\\\\"\",tmp);
 tmp2 <- paste(\"\\\"\",tmp2,\"\\\"\",sep=\"\");
 str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp,'$(rayas/ma \"\" ',tmp2,')}${',nr,':$(rayas/space ',nr,')}', sep=''));
 nr <- nr+1;
+} else {
+tmp <- .r.autoyas.esc(tmp)
+tmp2 <- paste(gsub(\"\\\"\",\"\\\\\\\\\\\\\\\"\",tmp),collapse=\"\");
+tmp2 <- paste(\"\\\"\",tmp2,\"\\\"\",sep=\"\");
+if (length(str) > 1){
+str[1] <-  paste('`(progn (add-to-list \\'r-autoyas-cache \\'((',funcname,' ',nr,') ',tmp2,')) \"\")`', str[1],sep=\"\");
+tmp <- paste(\"(cdr (assoc '(\",funcname,\" \",nr,\") r-autoyas-cache))\",sep=\"\")
+tmp2 <- paste(\"`\",tmp,\"`\",sep=\"\")
+str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp2,'$(rayas/ma \"\" ',tmp,')}${',nr,':$(rayas/space ',nr,')}', sep=''));
+} else {
+tmp <- paste(\"(cdr (assoc '(\",funcname,\" \",nr,\") r-autoyas-cache))\",sep=\"\")
+tmp3 <- paste(\"`\",tmp,\"`\",sep=\"\")
+str <- append(str, paste('`(progn (add-to-list \\'r-autoyas-cache \\'((',funcname,' ',nr,') ',tmp2,')) \"\")`','${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp3,'$(rayas/ma \"\" ',tmp,')}${',nr,':$(rayas/space ',nr,')}', sep='')); 
+}
+nr <-  nr+1;
+}
 }
 }
 str <- paste(str, sep='', collapse='');

@@ -24,11 +24,25 @@ The ##-n##, which makes `grep' add line numbers to the output, is necessary to m
 Hits from `##M-x grep##' can be iterated through using `##C-x `##'. This runs Emacs command `next-error'.
 
 
-== Using grep and find on Windows ==
+== Using `grep' and `find' on MS Windows ==
 
-The [[EmacsW32]] distribution comes with ##grep## and ##find## included.
+There are several ways to get a working `grep' and `find' on MS Windows.
 
-Alternatively, if you are using the standard Emacs distribution, you can obtain them from the [http://gnuwin32.sourceforge.net/ GnuWin32] project:
+* [[EmacsW32]]
+
+* CygWin -- see <tt>[[cygwin-mount.el]]</tt> and <tt>[[setup-cygwin.el]]</tt>
+
+* [[#GnuWin32]]
+
+* [[#MSYS]]
+
+
+
+
+[:GnuWin32]
+=== GnuWin32 ===
+
+You can obtain `grep' and `find' from the [http://gnuwin32.sourceforge.net/ GnuWin32] project:
 
 * [http://gnuwin32.sourceforge.net/packages/grep.htm Grep for Windows]
 * [http://gnuwin32.sourceforge.net/packages/findutils.htm FindUtils for Windows]
@@ -47,6 +61,22 @@ For some additional tweaking, do
          (add-to-list 'grep-files-history "*")))
 
 This makes `M-x lgrep' skip directories without warnings. Also, the default is to search ''all'' files, that is, "##*##".
+
+[:MSYS]
+=== MSYS ===
+
+Find and grep utilities from [http://gnuwin32.sourceforge.net/ GnuWin32] are very old versions. To have a recent version of find and grep plus other GNU utilities such as egrep you can install [http://www.mingw.org/wiki/msys/ MSYS]. After installation, put this in your .emacs in order to tell Emacs to use these files over any other executables with the same name, including Windows' own ##find## utility:
+
+<pre>
+(setenv "PATH"
+  (concat
+   ;; Change this with your path to MSYS bin directory
+   "C:\\MinGW\\msys\\1.0\\bin;"
+   (getenv "PATH")))
+</pre>
+
+
+
 
 
 == Grep+: Enhancements to Emacs grep ==

@@ -2,6 +2,7 @@ Enlightenment Foundation Libraries and Enlightenment DR17 (e17) have a variation
 
     (c-add-style "e17"
      '("gnu"
+       (show-trailing-whitespace t)
        (indent-tabs-mode . t)
        (tab-width . 8)
        (c-offsets-alist .
