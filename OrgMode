@@ -63,7 +63,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * Lisp:org-assoc-tags.el Allow user to have list of associated tags, that are automatically assigned to the item.
 * inlimg.el in [NxhtmlMode nXhtml] (> v 1.88) lets you display images inline in org files.
 * FreeMind lets you import/export between org-mode and freemind file format.
-* mobileorg is a FREE (open-source) iPhone and iPod Touch application for storing, searching, viewing and editing your Org-mode files. Its home page is at http://mobileorg.ncogni.to/ and its EmacsWiki page is at http://www.emacswiki.org/emacs/mobileorg
+* [[mobileorg]] ([http://mobileorg.ncogni.to/ home page]) is an iPhone and iPod Touch application for storing, searching, viewing and editing Org-mode files
 * OrgOutlook lets you integrate with Microsoft Outlook
 * Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
 * Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface

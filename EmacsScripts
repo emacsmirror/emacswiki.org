@@ -81,5 +81,69 @@ else, from "Teach Yourself Scheme in Fixnum Days" by Dorai Sitaram:
 This works, since ":" is the same as : to the shell and is
 self-evaluating in all versions of Emacs.
 
+
+== Linux/Unix and Windows/Dos scripting ==
+
+
+The following script runs on both Linux and Windows.
+
+
+    :;exec emacs -batch -l    $0  -f : $* --no-site-file -q  # -*- Emacs-Lisp -*-
+    ;@echo emacs -batch -l "%~f0" -f : %* --no-site-file -q  & goto :EOF
+    ;
+    ; This script will obfuscate a text file, by loading it in, then repeatedly
+    ; doing pairs of ^F and ^T commands throughout, and then saving it.
+    ;
+    ; Usage:  script-name  text-file-name
+    ;
+    ; (No it will not fool any serious cryptographer/programmer, but it will keep folks
+    ;  from reading over your shoulder (the results are -really- hard on the eyes) and
+    ;  will probably keep your children from ever decoding it.)
+    ;
+    (defun : ()
+      (find-file (nth 5 command-line-args))
+      (condition-case nil
+          (execute-kbd-macro "\^f\^[1\^t" 0)
+        (error nil) )
+      (save-buffer) )
+    ;:EOF
+
+
+
+1) This runs in bash.  It also runs in cmd.exe and command.com .  Line terminations like LF or CRLF don't seem
+to matter, as long as the first line's CR (if there is one) is kept away from  the tokens there;  that is why
+it is a good idea to leave the number sign there, otherwise bash would make the CR part of one of the arguments
+and give a "I don't know what -q(CR) means" kind of error.
+
+2) For Windows or DOS this can be named with either a .cmd or .bat file extension - but .cmd is newer and seems better behaved.  The last line is only needed for older systems, since nowadays cmd.exe and command.com assume the :EOF line label at end-of-file.  Really older systems will need to replace the %* in line 2 with
+
+     %1 %2 %3 %4 %5 %6 %7 %8 %9 
+
+(And it also runs in Cygwin's bash, but for unhealthy reasons - - the "exec" in line 1 does run, but doesn't do anything, so it then runs line 2 just like Dos.  Of course the emacs can handle filenames like a:/autoexec.bat , but don't use something like /cygdrive/c/windows/system32 if your emacs doesn't know about cygdrives.)
+
+3) This represents how an emacs script really should be written:  Figure out that the task to be done is well suited to emacs.  Then go into emacs, work it out in lisp or in a macro.  Then just put it into a script like the one above.  (The one above took about five minutes.)  
+
+(Note that a macro can be encapsulated in the "execute-kbd-macro" function above; it can be written with the "insert-kbd-macro" command.) (This one fails, however, when it reaches the end of the buffer; that is why the lisp error catcher "condition-case" is there.)
+
+Here is another one - - if you ever need a random number on the fly, emacs can provide it.
+
+    :;exec emacs -batch -l    $0  $* --no-site-file -q  # -*- Emacs-Lisp -*-
+    ;@echo emacs -batch -l "%~f0" %* --no-site-file -q  & goto :EOF
+    ;
+    ; Gives a (usually) big random integer number, with no arguments.
+    ;                  If a positive integer n is given, the range is [0,n) .
+    ;
+      (random t)
+      (if (> (length command-line-args-left) 0)
+          (princ (random (string-to-number (nth 0 command-line-args-left))))
+        (princ (random))       )
+      (princ "\n")
+    ;
+    ;:EOF
+
+
+
+In batch mode, (princ) writes to stdout.  (message) writes to stderr.
+
 ----
 CategoryCode

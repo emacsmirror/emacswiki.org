@@ -6,10 +6,10 @@
 ;; Maintainer: Sven Hartenstein
 
 ;; Created: Fri Mar 25 10:36:08 2011 (-0500)
-;; Version: 0.17
-;; Last-Updated: Mon Jun  6 16:14:56 2011 (-0500)
+;; Version: 0.18
+;; Last-Updated: Wed Jun  8 16:24:01 2011 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 728
+;;     Update #: 743
 ;; URL: http://www.svenhartenstein.de/Software/R-autoyas
 ;; Keywords: R yasnippet
 ;; Compatibility:
@@ -53,6 +53,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 08-Jun-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Jun  8 16:21:09 2011 (-0500) #741 (Matthew L. Fidler)
+;;    A partial fix for noweb (Rnw)
+;; 06-Jun-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Jun  6 17:07:36 2011 (-0500) #733 (Matthew L. Fidler)
+;;    Small update to fix lisp-based replacements.
 ;; 06-Jun-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Jun  6 15:23:54 2011 (-0500) #725 (Matthew L. Fidler)
 ;;    Added a bug-fix for complex language statements like reshape.
@@ -290,7 +296,7 @@ write.table(d,
                  "x= "
                  "file=\"\""
                  "quote=TRUE"
-                 "eol=\"\n\""
+                 "eol=\"\\n\""
                  "na=\"NA\""
                  "row.names=TRUE"
                  ))
@@ -433,12 +439,14 @@ write.table(d,
 			   (if (string-match "^[ \t]*\\(.*?\\)[ \t]*=[ \t]*\\(.*?\\)[ \t]*$" x)
 			       (progn
 				 (format "${%s:$(rayas/comma \"%s\" %s)}${%s:%s$(rayas/ma \"\")}"
-					 num (match-string 1 x) num num (match-string 2 x)))
+					 num (match-string 1 x) num num (if (< 0 (length (match-string 2 x))) (match-string 2 x) " ")))
 			     (format "${%s:$(rayas/comma \"%s\" %s)}${%s:NULL$(rayas/ma \"\")}" num x num num))
-			 (setq num (+ num 1))))
+			     (setq num (+ num 1))))
 		     (nth 1 (assoc func r-autoyas-lisp-based-dot-replacement))
 		     "")))
-	    (replace-match (format "%s${%s:$(rayas/comma nil %s)}${%s:...$(rayas/ma \"\")}" snip num num num) t t)))))))
+	    (replace-match (format "%s${%s:$(rayas/comma nil %s)}${%s:...$(rayas/ma \"\")}" snip num num num) t t)))
+	(message "Snippet: %s" snip)
+	(symbol-value 'snip)))))
 
 (defun r-autoyas-generate-dotreplace-list ()
   "Generates dot-replace R-code"
@@ -690,11 +698,27 @@ cat(\"Loaded r-autoyas\\n\");
                                (if (string= ess-dialect "R")
                                    (r-autoyas-inject-commands))))
 
+(defadvice noweb-indent-line (around r-autoyas-update)
+  "Allow noweb files to have R-autoyas enabled"
+  (let (do-it)
+    (if (interactive-p)
+	(if (and (boundp 'ess-dialect)
+		 (string= ess-dialect "R"))
+	    (if (not (r-autoyas-expand))
+		(setq do-it t))
+	  (setq do-it t))
+      (setq do-it t))
+    (when do-it
+      ad-do-it)))
+
+(ad-activate 'noweb-indent-line)
+
 (defun r-autoyas-expand-maybe (&rest ignore)
   "Might auto-expand snippet."
   (interactive)
-  (if (not (r-autoyas-expand))
-      (call-interactively 'ess-indent-command)))
+  (when (string= ess-dialect "R")
+    (if (not (r-autoyas-expand))
+	(call-interactively 'ess-indent-command))))
 
 (defun r-autoyas-namespace (function-name)
   "Returns the namespace for FUNCTION-NAME, or nil if it cannot be determined."
@@ -751,15 +775,14 @@ cat(\"Loaded r-autoyas\\n\");
 ;;;###autoload
 (add-hook 'ess-mode-hook
           '(lambda ()
-             (when (string= ess-dialect "R")
-               (require 'r-autoyas)
-               (when (featurep 'r-autoyas)
-                 (set (make-local-variable 'yas/fallback-behavior)
-                      '(apply r-autoyas-expand-maybe))
-                 (when (boundp 'autopair-handle-action-fns)
-                   (set (make-local-variable 'autopair-handle-action-fns)
-                        (list
-                         #'autopair-r-autoyas-paren-action)))))))
+	     (require 'r-autoyas)
+	     (when (featurep 'r-autoyas)
+	       (set (make-local-variable 'yas/fallback-behavior)
+		    '(apply r-autoyas-expand-maybe))
+	       (when (boundp 'autopair-handle-action-fns)
+		 (set (make-local-variable 'autopair-handle-action-fns)
+		      (list
+		       #'autopair-r-autoyas-paren-action))))))
 
 (defvar r-autoyas-paren-skip-autopair nil)
 (make-variable-buffer-local 'r-autoyas-paren-skip-autopair)
@@ -782,21 +805,23 @@ cat(\"Loaded r-autoyas\\n\");
         (skeleton-pair-insert-maybe nil)
       (self-insert-command 1)
       (setq this-command 'self-insert-command))))
-  
+
 (defun autopair-r-autoyas-paren-action (action pair pos-before)
   "Autopair R autoyas paren-action"
-  (condition-case err
-      (let ((ret (and
-                  r-autoyas-auto-expand-with-paren
-		  (eq action 'opening)
-		  (= pair 41)
-		  (r-autoyas-defined-p t))))
-        (if (not ret) (autopair-default-handle-action action pair pos-before)
-	  (setq ret (r-autoyas-expand t))
-          (if ret
-	      (message "Expand ignoring ending )")
-	    (autopair-default-handle-action action pair pos-before))))
-    (error (message "[r-autoyas-pair-error]: %s" (error-message-string err)))))
+  (if (string= ess-dialect "R")
+      (condition-case err
+	  (let ((ret (and
+		      r-autoyas-auto-expand-with-paren
+		      (eq action 'opening)
+		      (= pair 41)
+		      (r-autoyas-defined-p t))))
+	    (if (not ret) (autopair-default-handle-action action pair pos-before)
+	      (setq ret (r-autoyas-expand t))
+	      (if ret
+		  (message "Expand ignoring ending )")
+		(autopair-default-handle-action action pair pos-before))))
+	(error (message "[r-autoyas-pair-error]: %s" (error-message-string err))))
+    (autopair-default-handle-action action pair pos-before)))
 
 (when (boundp 'ess-mode-map)
   (define-key ess-mode-map (kbd "(") 'r-autoyas-paren))

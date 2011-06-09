@@ -102,7 +102,7 @@ To start from one instead of of zero:
   Replace regexp: http://\S-+
   Replace regexp with: \,(browse-url \&)
 
-== Convert $$...$$ into [...]
+== Convert $$...$$ into [...] ==
  
   M-x replace-regexp
   Replace regexp: \$\$

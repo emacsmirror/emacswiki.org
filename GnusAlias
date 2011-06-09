@@ -18,4 +18,8 @@ Other advantages to using gnus-alias:
 * can start a new message with a given Identity pre-selected (coming soon)
 
 
-Latest version can always be found at: http://www.northbound-train.com/emacs.html
+Latest version by original author can be found at: http://www.northbound-train.com/emacs.html
+
+Emacswiki hosts a slightly updated version: Lisp:gnus-alias.el
+
+And this version adds a few goodies, including support swapping identities in multi-part MIME messages: https://github.com/altruizine/gnus-alias

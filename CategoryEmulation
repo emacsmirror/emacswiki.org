@@ -13,6 +13,7 @@ Click on the heading to search for all pages related to emulating other software
 * PcSelectionMode -- Manage your regions like Motif, MAC or MS-Windows.
 * WholeLineOrRegion -- Operate on a line if nothing is selected.
 * Imititating Vi and Vim.
+** [[Evil]] -- an extensible Vi layer, the successor of Vimpulse (see below)
 ** ViperMode -- A comprehensive mode that comes with Emacs.
 ** [[Emaci]] -- A powerful reader in Emacs like vi.
 ** [[Vimpulse]] -- Extends Viper with Vim features.

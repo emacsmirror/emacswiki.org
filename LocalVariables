@@ -1,3 +1,5 @@
+See also: FileLocalVariables, DirectoryVariables
+
 There are two things you can do to force variable changes local to files, when you load them.
 
 The easiest thing is to add values to the first line, like this (all examples taken from the Emacs info page, "File Variables" (but the page's first line reads "Local Variables in Files")):

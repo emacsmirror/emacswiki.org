@@ -15,3 +15,11 @@ And what about the "tagging" feature of tracker?  Has anyone implemented adding/
 Yes, see [[BookmarkPlus#BookmarkTags|Bookmark Tags]]. You can bookmark files and other kinds of Emacs objects, and you can associate any number of tags with any number of bookmarks. List objects by tag and tag combinations, sort them, search them,... -- DrewAdams
 
 
+[new]
+The file [[http://waits.cp.jku.at/~maarten/downloads/tracker-dired.el|tracker-dired.el]] provides access to Tracker from within Emacs, via dbus. It is analogous to (and based on) find-dired.el. I use it by adding
+* (require 'tracker-dired)
+* (global-set-key (kbd "C-c s") 'tracker-dired)
+
+to my .emacs file.
+
+To answer the question about searching by tags above: The code in [[http://waits.cp.jku.at/~maarten/downloads/tracker-dired.el|tracker-dired.el]] builds a sparql query around the search terms to perform a fulltext search. I guess you can trivially change the sparql query (even if sparql syntax is not especially trivial :-) to perform the search on tags.

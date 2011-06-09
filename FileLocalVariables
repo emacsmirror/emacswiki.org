@@ -1,3 +1,5 @@
+See also: LocalVariables, DirectoryVariables
+
 In short local or file variables can be used to set certain aspects of Emacs local to a file. This might be useful for setting the indention level of a C program as well as setting the MajorMode to use for this file. This mechanism is regularly used in multi-document LaTeX projects where AUCTeX stores the information which file is the master document so it can compile the right one when the user invokes the LaTeX command (usually via C-c C-c).
 
 Those variables are located at the end of your file and look like this:
@@ -35,3 +37,34 @@ Aborting the file open with C-g and then opening it with C-x C-f allows you to o
 (setq enable-local-variables nil
       enable-local-eval nil)
 }}}
+
+== Using Directory Local Variable classes for individual files ==
+
+This is actually using DirectoryVariables, but seems more useful to document here.
+
+Directory Local Variables can be configured purely in elisp by configuring "directory classes" and specifying which classes apply to which directories.
+
+There is no such mechanism for File Local Variables, but it turns out that we can successfully* apply directory classes to individual files. The only issue is that ##dir-locals-set-directory-class## calls ##file-name-as-directory## on its argument, which prevents it from being matched, due to the trailing slash.
+
+The following, therefore, is a way to configure directory local variables for a single file, without modifying the file itself, or affecting other files under the same parent directory.
+
+{{{
+(defun my-file-locals-set-directory-class (file class &optional mtime)
+  "Enable 'directory local' classes for individual files,
+by allowing non-directories in `dir-locals-directory-cache'.
+Adapted from `dir-locals-set-directory-class'."
+  (setq file (expand-file-name file))
+  (unless (assq class dir-locals-class-alist)
+    (error "No such class `%s'" (symbol-name class)))
+  (push (list file class mtime) dir-locals-directory-cache))
+
+(dir-locals-set-class-variables
+ 'my-javascript-class
+ '((nil . ((js-indent-level . 2)
+           (indent-tabs-mode . nil)))))
+
+(my-file-locals-set-directory-class
+ "path/to/the/file.js" 'my-javascript-class)
+}}}
+
+%%* tested with Emacs 23.3.1%%

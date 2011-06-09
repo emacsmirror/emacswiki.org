@@ -135,5 +135,15 @@ DocString. -- AaronHawley
 [new]
 It will be documented in Emacs 24 (and is documented in the trunk).
 
+[new]
+Why does ##normal-top-level-add-to-load-path## puts the new list in 
+cdr of load-path? I expect the normal use-case for this, as in the
+example above, to be to add personal packages on the load-path; 
+as it is now, my bleeding-edge libraries get shadowed by 'old' 
+emacs-shipped libraries.
+JonasBernoulli: IIUC, it is just a helper for when you want to add a list
+of dirs to load-path. And you are right, it makes little sense when your
+list is just ("."). -- TiagoSaboga
+
 ----
 CategoryHelp
