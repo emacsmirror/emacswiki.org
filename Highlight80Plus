@@ -6,5 +6,10 @@ http://nschum.de/src/emacs/highlight-80+/highlight-80+.png
 
 Emacs 23 has this feature integrated into WhitespaceMode.
 Add lines or lines-tail to whitespace-style, and customize whitespace-line-column. -- [[nschum]]
+
+The WhitespaceMode of Emacs does a very similar thing, but not exactly the same.  It highlights the ''entire'' line, when the line is longer than `whitespace-line-column'.  It would also be nice if we could configure Emacs to show an overlay at column 80, like the one shown at:
+
+http://img39.imageshack.us/img39/9063/pyscripter.png
+
 ----
 CategoryModes

@@ -92,9 +92,12 @@ The following script runs on both Linux and Windows.
     ;@echo emacs -batch -l "%~f0" -f : %* --no-site-file -q  & goto :EOF
     ;
     ; This script will obfuscate a text file, by loading it in, then repeatedly
-    ; doing pairs of ^F and ^T commands throughout, and then saving it.
+    ; doing pairs of ^F and ^T commands throughout, and then saving it.  The original
+    ; file is kept as a tilde (~) backup.
     ;
     ; Usage:  script-name  text-file-name
+    ;         To reverse the process and get your original file as a result,
+    ;         run the script again.
     ;
     ; (No it will not fool any serious cryptographer/programmer, but it will keep folks
     ;  from reading over your shoulder (the results are -really- hard on the eyes) and
@@ -142,8 +145,11 @@ Here is another one - - if you ever need a random number on the fly, emacs can p
     ;:EOF
 
 
-
 In batch mode, (princ) writes to stdout.  (message) writes to stderr.
+
+I also give credit to Dorai Sitaram and his book about Scheme, for pointing out that prefixing
+DOS statements, even label statements, with a semicolon still allows it to run, but makes it
+invisible to Scheme (and eLisp).  Hence scripts that run in emacs + windows + unix.
 
 ----
 CategoryCode

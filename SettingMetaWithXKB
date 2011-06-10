@@ -15,8 +15,8 @@ Then edit that file -- with emacs of course -- and change whatever
 you like ;-)
 
 I do not have win keys, but something that looks like <> which
-actually send the same codes as the win keys, aparently.  So assuming
-you have ether keys, you would look for lines containig something
+actually send the same codes as the win keys, apparently.  So assuming
+you have either keys, you would look for lines containing something
 like:
 
     <LWIN> = 115;
