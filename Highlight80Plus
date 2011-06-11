@@ -11,5 +11,7 @@ The WhitespaceMode of Emacs does a very similar thing, but not exactly the same.
 
 http://img39.imageshack.us/img39/9063/pyscripter.png
 
+To get a overlay marker at column 80 check out FillColumnIndicator.
+
 ----
 CategoryModes

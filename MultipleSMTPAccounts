@@ -25,6 +25,7 @@ Each component of smtp-accounts has the form
 where KEY and CERT are optional. Setting PASSWORD to NIL will make SMTPMAIL-SEND-IT prompt for a password before sending every message. (More secure, more bugging.)
 
  ;; Default smtpmail.el configurations.
+ (require 'cl)
  (require 'smtpmail)
  (setq send-mail-function 'smtpmail-send-it
        message-send-mail-function 'smtpmail-send-it

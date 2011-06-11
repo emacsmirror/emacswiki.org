@@ -2,6 +2,7 @@ An easy way to save and restore a bunch of [[frame]]s for your emacs sessions. I
 
 Feel free to add more properties to be preserved.
 <pre>
+(require 'cl)
 (defun save-frame-configuration ()
   (let 
       ((fs)(f))

@@ -57,7 +57,7 @@ notices that no key will be Meta and accepts Alt instead of Meta.
 This is because Meta and Alt are different and you can bind things to
 M-a and to A-a and they should not be confused.  But in the case where
 there is no Meta binding, it's preferable to treat Alt as Meta since
-Alt bindings are much more rare than Meta bindings.
+Alt bindings are much more rare than Meta bindings in Emacs.
 
 === Just clear mod4 ===
 
@@ -81,10 +81,58 @@ And now everything is fine.
 
 === xmodmap background ===
 
-(If you know more about xmodmap, fix this.)
+There are several terms and concepts which can be confusing.
 
-Usually, applications talk about the Alt or the Meta key and all they
-mean is that the key acts as mod1.  Here's the output of xmodmap:
+ * A keycap is the label on a physical key.
+ * A keycode is the numeric value produced by a physical key
+   (these may not be the same on two different systems even
+   if they use the same software and keyboard layout).
+ * A keysym is the meaning assigned to the key.  It is the logical
+   value sent to applications when you press that key, is determined
+   by the keyboard mapping, and can be changed with xmodmap.
+ * A modifier is special state produced by pressing a modifier key.
+   Modifiers don't do anything unless another key is pressed.  An
+   example is the shift modifier produced while you hold down a
+   shift key.  Which keys produce which modifiers is controlled by
+   the modifier mapping, and this can be modified with xmodmap.
+   There are eight modifiers available, three of which have static
+   meanings (shift, control, and lock), and the five others have
+   generic names (mod1 through mod5).
+ * A modifier key is a physical key which has its keycode listed
+   in the modifier map.  It will produce one of the eight modifiers
+   while pressed.
+
+Note there are two types of mappings xmodmap can handle: keycode
+to keysym and keycode to modifier.  The latter are somewhat
+unique to X, and are the most common source of confusion.  In
+fact xmodmap makes it somewhat confusing because it's configuration
+directives for modifiers are based on keysyms, which it internally
+resolves into keycodes. 
+
+Also note that modifiers like Alt, Meta, Super, Hyper, NumLock,
+and ScrollLock don't have fixed modifier names -- they are
+reported to the application as one of the five generic modifiers.
+It is up to the application to determine the meaning of the
+modifier.
+
+The way applications are supposed to do this is to inspect the
+list of keysyms for the keycodes assigned to that modifier.  For
+example upon receiving a key press event with mod1, if mod1's
+keycode list includes a keycode with a mapping to Alt_L, this
+would mean mod1 is the Alt modifier.  Some applications instead
+follow static mapping conventions.  For example mod1 might be
+treated as Meta regardless of the assigned keysym.  This used to
+be true of Emacs, so you will see lots of advice about putting
+Alt, Meta, or Super on specific modifiers.  This shouldn't matter
+to current versions of Emacs.
+
+However, to complicate things further, Emacs does implement two
+special cases.  First, if there is no modifier with a keycode
+with a mapping to Meta_L or Meta_R, Emacs will use the Alt
+modifier as the Meta modifier.  And if Alt and Meta correspond
+to the same modifier, it will only use the Meta modifier.
+
+Here's the output of xmodmap:
 
  ~$ xmodmap
  xmodmap:  up to 2 keys per modifier, (keycodes in parentheses):
@@ -98,15 +146,17 @@ mean is that the key acts as mod1.  Here's the output of xmodmap:
  mod4        Super_L (0x73),  Super_R (0x74)
  mod5        Scroll_Lock (0x4e)
 
-As you can see, the Shift keys act as shift, the Control keys act as
-control, and the left Alt key acts as mod1.  And in addition to that,
-you can see that the "Use Super for mod4" solution has been used in
-this setup.
+As you can see, the Shift keys act as a shift modifier, the Control
+keys act as a control modifier, and the left Alt key acts as mod1
+modifier.  And in addition to that, you can see that the
+"Use Super for mod4" solution has been used in this setup.  There is
+no mention of Meta for any modifier, so Emacs will use the Alt
+modifier (mod1) as a Meta modifier.
 
-On some keyboards there is, however, a real Meta key.  Meta is no
-longer a modifier like mod1 -- it is a real keysym.  So that takes
-precedence.  Assuming that whichever key having mod1 is Meta is just a
-fallback.
+On some keyboards there is a real Meta key.  In that case and in
+some other cases you may want Meta to be distinct from Alt.  In that
+case you would need to take one of the modifiers (for example mod4),
+and assign Meta_L and/or Meta_R and remove any other keycodes.
 
 === Emacs only changes ===
 
@@ -280,7 +330,7 @@ Meta-key in XTerm edit follwing:
 
 === terminals ===
 
-It might not be obvious that when using EmacsOnTerminal, at least
+It might not be obvious that when using [http://www.diamondlinks.net/ link building service] EmacsOnTerminal, at least
 certain popular DEC terminals in the absense of an Escape-key send the
 escape prefix sequence on <code>C-3</code> or <code>C-[</code>.  Often
 the Emacs term/ libraries configure the <code>f11</code> to be an
