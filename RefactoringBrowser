@@ -19,5 +19,8 @@ If someone has an emacs tool that will go through a set of C files and headers, 
 [new]
 I would think that would be either a GCC trick with some shell programming, or a perhaps there's a hack possible with EmacsTags. -- AaronHawley
 
+[new]
+This page doesn't provide enough information about how it relates to refactoring. This needs more information or should be deleted. -- PraveenKumar
+
 ----
 CategoryProgrammerUtils

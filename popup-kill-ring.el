@@ -58,6 +58,11 @@
 
 ;;; ChangeLog:
 ;;
+;; * 0.2.8 (2011/06/10)
+;;   Added the new variable `popup-kill-ring-last-used-move-first'.  If
+;;   this variable is non-nil, It means that last selected `kill-ring'
+;;   item comes first of `kill-ring'. This value is `t' by default.
+;;
 ;; * 0.2.7 (2010/05/05)
 ;;   If `popup-kill-ring-interactive-insert' is `t' and
 ;;   `C-g' was typed, clear the inserted string.
@@ -139,7 +144,7 @@
 
 ;;; Variables:
 
-(defconst popup-kill-ring-version "0.2.7"
+(defconst popup-kill-ring-version "0.2.8"
   "Version of `popup-kill-ring'")
 
 
@@ -183,6 +188,10 @@ Nil means that item does not be truncate.")
 (defvar popup-kill-ring-interactive-insert-face 'highlight
   "*The face for interactively inserted string when
 `popup-kill-ring-interactive-insert' is `t'.")
+
+(defvar popup-kill-ring-last-used-move-first t
+  "*Non-nil means that last selected `kill-ring' item comes first of
+`kill-ring'.")
 
 ;; key setting for `popup-menu*'.
 (defvar popup-kill-ring-keymap
@@ -254,9 +263,13 @@ and `pos-tip.el'"
              (popup-kill-ring-buffer-point-hash (make-hash-table :test 'equal))
              num item)
         (when popup-kill-ring-interactive-insert
+          ;; TODO: (nth 0 kill-ring) != (nth 0 kring).
+          ;; The kring discards item that lenght shorter than
+          ;; `popup-kill-ring-item-min-width'.
+          ;; So, The following code should be fixed.
           (popup-kill-ring-insert-item 0))
         ;; always execute `pos-tip-hide'
-        ;; (the case that the item was selected.
+        ;; (The case that the item was selected.
         ;;  the case that it was typed `C-g'.)
         (unwind-protect
             (progn (setq item (popup-menu* kring
@@ -269,11 +282,18 @@ and `pos-tip.el'"
                    (when item
                      (setq num (popup-kill-ring-get-index item))
                      (when num
-                       (insert (nth num kill-ring)))))
+                       (let ((kill-ring-item (nth num kill-ring)))
+                         (when popup-kill-ring-last-used-move-first
+                           (setq kill-ring
+                                 (nconc (reverse (last (reverse kill-ring) num))
+                                        (cdr (nthcdr num kill-ring))))
+                           (push kill-ring-item kill-ring))
+                         (insert kill-ring-item)))))
           (pos-tip-hide)
           ;; If `C-g' was typed, clear the inserted string. (7 is `C-g'.)
           (when (and popup-kill-ring-interactive-insert
-                     (= last-input-event 7))
+                     (numberp last-input-event)
+                     (= last-input-event ? ))
             (popup-kill-ring-clear-inserted)))))))
 
 (defun popup-kill-ring-pos-tip-show (str pos)
@@ -422,5 +442,10 @@ and `pos-tip.el'"
         (goto-char (car p))))))
 
 (provide 'popup-kill-ring)
+
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 
 ;;; popup-kill-ring.el ends here

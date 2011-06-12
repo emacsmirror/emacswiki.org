@@ -111,5 +111,13 @@ non-native English speaker.  At least it makes me think whether or not a
 sentence is proper or not.
 -- DavidMaus
 
+[new]
+First of all, thank you for your work. To me, Emacs is the editor for everybody.
+I am a student of literature and I do all my work on Emacs23.
+I could not install grammar-mode, a message says: Enabling Grammar mode gave an error.
+Could you provide a step by step description in order to install grammar-mode?
+I tried to do this: 1) Copy grammar.el and grammar.cc in my /.emacs.d 2)Then I include this: (require 'grammar) in my /.emacs -- Alfredo
+
+
 ----
 CategoryHomepage

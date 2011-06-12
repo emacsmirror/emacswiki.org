@@ -330,7 +330,7 @@ Meta-key in XTerm edit follwing:
 
 === terminals ===
 
-It might not be obvious that when using [http://www.diamondlinks.net/ link building service] EmacsOnTerminal, at least
+It might not be obvious that when using EmacsOnTerminal, at least
 certain popular DEC terminals in the absense of an Escape-key send the
 escape prefix sequence on <code>C-3</code> or <code>C-[</code>.  Often
 the Emacs term/ libraries configure the <code>f11</code> to be an

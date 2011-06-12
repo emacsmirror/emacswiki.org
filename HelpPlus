@@ -7,6 +7,37 @@ This page is about the following libraries, which together enhance the Emacs hel
 
 Each of these libraries provides enhancements to the standard Emacs library of the same name but without the `##+##'. Library <tt>[[help+20.el]]</tt> is an exception to this naming convention; it enhances standard library ##help.el## for Emacs 20. Library <tt>[[help-macro+.el]]</tt> works for Emacs 20 and later. The other libraries work with Emacs 22 and later.
 
+
+
+== Help Commands Provide Links to Manuals ==
+
+Pretty much all of the standard help commands (`describe-face', `describe-function', `describe-variable',...), as well as the new help commands described [[#NewHelpCommands|below]] (`describe-keymap',...), are enhanced by <tt>[[help-fns+.el]]</tt> (starting with Emacs version 23.2) so that the `##*Help*##' window also has a link to the locations in the various manuals ([[Info]]) where the given help target is indexed.
+
+For example, if you do `C-h f forward-char', the `##*Help*##' buffer has this text, where `manuals' is a link:
+
+  For more information check the manuals.
+
+If you click `manuals' you get an [[Info]] buffer that is a menu of the index entries for `forward-char' in all of the manuals searched.  In the case of function `forward-char' it has two links, one to the ElispManual, one to the EmacsManual:
+
+  * forward-char [elisp]:      (elisp)Character Motion.
+  * forward-char [emacs]:      (emacs)Moving Point.
+
+Which manuals are searched this way for index entries?  You control this using [[user option]] '''`help-cross-reference-manuals''''.  You can have Emacs check ''all'' manuals on your system or just a specific set of manuals (or no manuals, to turn off this feature).  By default, only the Emacs manual and Elisp manual are searched.
+
+If, for example, you customize `help-cross-reference-manuals' so that it searches all manuals, then the manuals link from `C-h f forward-char' will give you an [[Info]] menu something like this:
+
+  * forward-char [elisp]:      (elisp)Character Motion.
+  * forward-char [emacs]:      (emacs)Moving Point.
+  * forward-char [mh-e]:       (mh-e)Processing Mail Tour.
+
+Obviously, searching the indexes of all manuals takes more time.
+
+Option `help-cross-reference-manuals' also controls whether to check for manual entries before adding the ##For more information check the manuals.## link.  By default, there is no check: the link is added even if there might not be any manual entries for the help target.  This saves time.  When you click the link the target is looked up in the manual indexes, in any case.
+
+
+
+
+[:NewHelpCommands]
 == New Commands ==
 
 The following new commands are provided:

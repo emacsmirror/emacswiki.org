@@ -89,7 +89,7 @@ The following script runs on both Linux and Windows.
 
 
     :;exec emacs -batch -l    $0  -f : $* --no-site-file -q  # -*- Emacs-Lisp -*-
-    ;@echo emacs -batch -l "%~f0" -f : %* --no-site-file -q  & goto :EOF
+    ;     @emacs -batch -l "%~f0" -f : %* --no-site-file -q  & goto :EOF
     ;
     ; This script will obfuscate a text file, by loading it in, then repeatedly
     ; doing pairs of ^F and ^T commands throughout, and then saving it.  The original
@@ -131,7 +131,7 @@ and give a "I don't know what -q(CR) means" kind of error.
 Here is another one - - if you ever need a random number on the fly, emacs can provide it.
 
     :;exec emacs -batch -l    $0  $* --no-site-file -q  # -*- Emacs-Lisp -*-
-    ;@echo emacs -batch -l "%~f0" %* --no-site-file -q  & goto :EOF
+    ;     @emacs -batch -l "%~f0" %* --no-site-file -q  & goto :EOF
     ;
     ; Gives a (usually) big random integer number, with no arguments.
     ;                  If a positive integer n is given, the range is [0,n) .
