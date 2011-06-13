@@ -59,6 +59,14 @@ where ##environment-support.el## is:
 
 Note: You must create a dummy ##environment.plist## file to seed the process.
 
+== A Quick & Ugly Alternative Path Solution == 
+
+ In your init file, e.g. ~/.emacs, add
+
+   ;;; A quick & ugly PATH solution to Emacs on Mac OSX
+   (if (string-equal "darwin" (symbol-name system-type))
+      (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
+
 
 == Launching from Spotlight ==
 

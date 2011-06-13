@@ -105,6 +105,18 @@ Hello!
 
 I'm using Emacs in Supercollider mode, which opens two buffer windows automatically, and makes them equal size. I would like to have one of them bigger then another every time i'm starting emacs with -sclang option... is it possible to put something like (enlarge-window *SCLang:workspace* 10) or any other thing which will resize buffer window after it created? thank  you!
 
+--
+
+:: Check out the documentation on the variables 'default-frame-alist' and 'initial-frame-alist'.  My need was the opposite, I wanted all my frames the same -- but Emacs will treat the first frame differently than the rest, which should be good news for you.  In my .emacs, I have something like
+::::: (setq default-frame-alist '((width . 154) (height . 44)))
+
+:: and you could add in 
+::::: (setq initial-frame-alist '((top . 1) (left . 1) (width . 80) (height . 55)))
+
+:: as the documentation suggests.
+
+:: -- TomBaker
+
 ==Swapping international characters==
 
 [new]

@@ -26,45 +26,47 @@ vc-git.el also includes support for git blame, in the vc-annotate command (C-x v
 
 == Other packages ==
 
-Magit is another interface to git:
+*Egg* (*Emacs got Git*) is a git interface having many advanced features. These include a full log viewer able to diff against old versions, create new branches, assign tags, upload and download from remote git servers (e.g. github), etc. It can handle complex git rebase operations. When committing changes to git, it uses a commit-status window where you can cherry-pick related changes and group them as a single commit, leaving other changes in the tree untouched.
 
-* Get it from: http://magit.github.com/magit
-* Manual: http://magit.github.com/magit/magit.html
-
-Egg (Emacs got Git) is a clone (fork) of Magit.
+It was forked from Magit and uses many of its core ideas. It has since added and changed many features, so the two modes should be considered on their own merits.
 
 * Homepage: http://github.com/byplayer/egg (original: http://github.com/bogolisk/egg/tree/master)
 * Repository: ##git clone git://github.com/byplayer/egg.git ##
 
-egit is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
+*Magit* is another interface to git:
+
+* Get it from: http://magit.github.com/magit
+* Manual: http://magit.github.com/magit/magit.html
+
+*egit* is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
 
 * Homepage: http://github.com/jimhourihan/egit/tree/master
 * Repository: ##git clone git://github.com/jimhourihan/egit.git##
 
-Gitsum is a mode to do interactive partial commits with Emacs in the style of ##darcs record##.
+*Gitsum* is a mode to do interactive partial commits with Emacs in the style of ##darcs record##.
 
 * Homepage: http://github.com/chneukirchen/gitsum/tree/master
 * Repository: ##git clone git://github.com/chneukirchen/gitsum.git ##
 * See also: http://chneukirchen.org/blog/archive/2008/02/introducing-gitsum.html
 
-git-emacs is yet another git mode on emacs for newbies.
+*git-emacs* is yet another git mode on emacs for newbies.
 
 * Homepage: http://github.com/tsgates/git-emacs/tree/master
 * Repository: ##git clone git://github.com/tsgates/git-emacs.git##
 * Documentation: http://files.taesoo.org/git-emacs/git-emacs.html
 
-mo-git-blame is an interactive and iterative major mode for git blame.
+*mo-git-blame* is an interactive and iterative major mode for git blame.
 
 * Homepage: http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
 * Repository: ##git clone git://github.com/mbunkus/mo-git-blame.git##
 * Documentation: https://github.com/mbunkus/mo-git-blame/blob/master/README
 
-tortoise-git.el is a simple interface to TortoiseGit within emacs
+*tortoise-git.el* is a simple interface to TortoiseGit within emacs
 
 * Homepage: http://floatsolutions.com/blog/2010/05/tortoisegit-interface-for-emacs/
 * Repository: http://github.com/openist/tortoise-git-emacs
 
-GitDwim defines context-aware commands.
+*GitDwim* defines context-aware commands.
 
 [MdReadme]
 

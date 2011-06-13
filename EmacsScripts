@@ -122,7 +122,7 @@ and give a "I don't know what -q(CR) means" kind of error.
 
      %1 %2 %3 %4 %5 %6 %7 %8 %9 
 
-(And it also runs in Cygwin's bash, but for unhealthy reasons - - the "exec" in line 1 does run, but doesn't do anything, so it then runs line 2 just like Dos.  Of course the emacs can handle filenames like a:/autoexec.bat , but don't use something like /cygdrive/c/windows/system32 if your emacs doesn't know about cygdrives.)
+(And it also runs in Cygwin's bash, but for unhealthy reasons - - the "exec" in line 1 does run, but doesn't do anything, so it then runs line 2 just like Dos.  Of course the emacs can handle filenames like a:/autoexec.bat , but don't use something like /cygdrive/c/windows/system32 if your emacs doesn't know about cygdrives; the NTEmacsWithCygwin page has some help on that.)
 
 3) This represents how an emacs script really should be written:  Figure out that the task to be done is well suited to emacs.  Then go into emacs, work it out in lisp or in a macro.  Then just put it into a script like the one above.  (The one above took about five minutes.)  
 

@@ -82,6 +82,7 @@ Tips and tricks to writing a MajorMode.
 * CheckDoc -- A tool to check your documentation strings.
 * CodingStyle -- Write well formatted code.
 * ElispPackageChecklist -- A document with suggestions for package authors.
+* InitFileByPurpose -- Utilities (and a bit of ranting) as to how you should take back control of the organization of your InitFile. 
 * MeaningfulNames -- choosing identifiers (symbols) for code
 * NonLocalExit -- Examples of error handling and `throw'...`catch'.
 * NonNilValues -- Which non-`nil' value should I use? `t'? `42'? Does it matter?
