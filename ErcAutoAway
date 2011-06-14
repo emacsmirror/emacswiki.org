@@ -63,6 +63,38 @@ out more, please write me an email! mailto:forcer@forcix.cx
    (message "meep %i." fc-idle-num)
    (setq fc-idle-num (+ fc-idle-num 1)))
 
+== X Idle Time AutoAway ==
+
+The following function is uses the external xprintidle program to get
+the xorg idle time (same method as used by xscreensaver) and set away
+status in Bitlbee based on that. This emulates the functionality of
+most traditional IM clients and could be modified to work for other IRC
+servers and channels.
+
+I have not been able to think of a way to do this without a polling loop,
+so any suggestions and improvements are welcome.
+
+ (defvar am-here-p t)
+ (setq timeout 300)
+ (setq erc-away-status "I am away.")
+
+ (defun custom-auto-set-away ()
+   "Set away message to erc-away-status and clear it if already away."
+   (interactive)
+   (if (> (/ (string-to-number (shell-command-to-string "/usr/bin/xprintidle")) 1000.0) timeout)
+       (when am-here-p
+         (message "Going Away")
+         (set-buffer "&bitlbee")
+         (setq am-here-p nil)
+         (erc-cmd-AWAY erc-away-status))
+     (unless am-here-p
+       (set-buffer "&bitlbee")
+       (setq am-here-p t)
+       (erc-cmd-AWAY ""))))
+
+ (run-at-time t 60 'custom-auto-set-away)
+
+am-here-p is kept track of so as to not spam the channel/server with status updates.
 
 ----
 [[ERC]]

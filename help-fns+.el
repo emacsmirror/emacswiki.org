@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sat Jun 11 07:33:23 2011 (-0700)
+;; Last-Updated: Mon Jun 13 09:27:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 619
+;;     Update #: 644
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -53,6 +53,7 @@
 ;;    `help-remove-duplicates', `help-value-satisfies-type-p',
 ;;    `help-var-inherits-type-p', `help-var-is-of-type-p',
 ;;    `help-var-matches-type-p', `help-var-val-satisfies-type-p',
+;;    `Info-any-index-occurrences-p' (Emacs 23.2+),
 ;;    `Info-indexed-find-file' (Emacs 23.2+), `Info-indexed-find-node'
 ;;    (Emacs 23.2+), `Info-index-entries-across-manuals' (Emacs
 ;;    23.2+), `Info-index-occurrences' (Emacs 23.2+),
@@ -89,6 +90,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/13 dadams
+;;     Added: Info-any-index-occurrences-p.
+;;     Info-make-manuals-xref: Use Info-any-index-occurrences-p, not Info-index-occurrences.
 ;; 2011/06/11 dadams
 ;;     Added, for Emacs 23.2+:
 ;;       describe-face, describe-function-1, help-cross-reference-manuals, Info-indexed-find-file,
@@ -226,10 +230,25 @@
 (defvar file-local-variables-alist)
 (defvar help-window)
 (defvar help-window-point-marker)
+(defvar Info-indexed-nodes)             ; In `info.el'
+(defvar help-cross-reference-manuals)   ; For Emacs < 23.2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defvar variable-name-history () "Minibuffer history for variable names.")
+
+(define-key help-map "c" 'describe-command)
+(define-key help-map "o" 'describe-option)
+(define-key help-map "\C-c" 'describe-key-briefly)
+(define-key help-map "\C-o" 'describe-option-of-type)
+(define-key help-map "\M-c" 'describe-copying)
+(define-key help-map "\M-f" 'describe-file)
+(define-key help-map "\M-k" 'describe-keymap)
+(define-key help-map "\M-l" 'find-function-on-key)
+
+
 (when (boundp 'Info-virtual-files)      ; Emacs 23.2+
+
   (defcustom help-cross-reference-manuals '(("emacs" "elisp"))
     "*Manuals to search, for a `*Help*' buffer link to the manuals.
 A cons.
@@ -250,21 +269,7 @@ A cons.
              (repeat :tag "Specific Manuals (files)" string)
              (const  :tag "All Manuals" all))
             (boolean :tag "Search Before Creating Button?"))
-    :group 'help))
-
-(defvar variable-name-history () "Minibuffer history for variable names.")
-
-(define-key help-map "c" 'describe-command)
-(define-key help-map "o" 'describe-option)
-(define-key help-map "\C-c" 'describe-key-briefly)
-(define-key help-map "\C-o" 'describe-option-of-type)
-(define-key help-map "\M-c" 'describe-copying)
-(define-key help-map "\M-f" 'describe-file)
-(define-key help-map "\M-k" 'describe-keymap)
-(define-key help-map "\M-l" 'find-function-on-key)
-
-
-(when (boundp 'Info-virtual-files)      ; Emacs 23.2+
+    :group 'help)
 
   (defvar Info-indexed-file "*Indexed*"
     "Info file for virtual manual from `Info-index-entries-across-manuals'.")
@@ -319,7 +324,8 @@ the manuals."
       (let ((manuals       (car help-cross-reference-manuals))
             (search-now-p  (cdr help-cross-reference-manuals))
             (symb-name     (if (stringp symbol) symbol (symbol-name symbol))))
-        (when (or (not search-now-p) (save-current-buffer (Info-index-occurrences symb-name manuals)))
+        (when (or (not search-now-p)
+                  (save-current-buffer (Info-any-index-occurrences-p symb-name manuals)))
           (let ((buffer-read-only  nil))
             (insert (format "\n\nFor more information %s the "
                             (if (cdr help-cross-reference-manuals) "see" "check")))
@@ -351,23 +357,23 @@ MANUALS has the form of `help-cross-reference-manuals'."
         (Info-find-node Info-indexed-file nodename))))
 
   ;; Similar to `Info-apropos-matches', but using exact matches. 
-  (defun Info-index-occurrences (string &optional manuals)
+  (defun Info-index-occurrences (index-entry &optional manuals)
     "Collect occurrences of INDEX-ENTRY in MANUALS.
 MANUALS has the form of `help-cross-reference-manuals'.
 Return a list of the form ((FILE INDEX-ENTRY NODE LINE)), where:
  FILE is the name of an Info file,
  NODE is an Info node name,
  LINE is the line number of the INDEX-ENTRY occurrence in that node."
-    (unless (string= string "")
+    (unless (string= index-entry "")
       ;; Unlike `Info-apropos-matches', we match only the exact string as an index entry.
       (let ((pattern  (format "\n\\* +\\([^\n]*%s\\):[ \t]+\\([^\n]+\\)\
 \\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
-                              (regexp-quote string)))
+                              (regexp-quote index-entry)))
             matches index-nodes node)
-        (message "Searching indexes of %s..."
-                 (if (eq manuals 'all)
-                     "all manuals"
-                   (concat "manuals " (mapconcat #'identity manuals ", "))))
+        (message "Searching indexes of %s..." (if (eq manuals 'all)
+                                                  "all manuals"
+                                                (concat "manuals "
+                                                        (mapconcat #'identity manuals ", "))))
         (condition-case nil
             (with-temp-buffer
               (Info-mode)
@@ -397,7 +403,51 @@ Return a list of the form ((FILE INDEX-ENTRY NODE LINE)), where:
                                       node         (car index-nodes)))
                     (Info-goto-node node)))))
           (error nil))
-        matches))))
+        matches)))
+
+  ;; Like `Info-index-occurrences', but just return non-nil as soon as we know there is a match.
+  (defun Info-any-index-occurrences-p (index-entry &optional manuals)
+    "Return non-nil if there are any occurrences of INDEX-ENTRY in MANUALS.
+MANUALS has the form of `help-cross-reference-manuals'."
+    (and (not (string= index-entry ""))
+         ;; Unlike `Info-apropos-matches', we match only the exact string as an index entry.
+         (let ((pattern  (format "\n\\* +\\([^\n]*%s\\):[ \t]+\\([^\n]+\\)\
+\\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
+                                 (regexp-quote index-entry)))
+               (any?     nil)
+               index-nodes node)
+           (message "Searching indexes of %s..." (if (eq manuals 'all)
+                                                     "all manuals"
+                                                   (concat "manuals "
+                                                           (mapconcat #'identity manuals ", "))))
+           (condition-case nil
+               (with-temp-buffer
+                 (Info-mode)
+                 (Info-directory)
+                 (goto-char (point-min))
+                 (re-search-forward "\\* Menu: *\n" nil t)
+                 (when (eq manuals 'all)
+                   (setq manuals  ())
+                   (let (manual)
+                     (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
+                       ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
+                       (setq manual  (match-string 1))
+                       (set-text-properties 0 (length manual) nil manual)
+                       (add-to-list 'manuals manual))))
+                 (setq any?  (catch 'Info-any-index-occurrences-p
+                               (dolist (manual  manuals)
+                                 (message "Searching indexes of manual `%s'..." manual)
+                                 (when (setq index-nodes  (Info-index-nodes (Info-find-file manual)))
+                                   (Info-find-node manual (car index-nodes))
+                                   (while (progn (goto-char (point-min))
+                                                 (when (re-search-forward pattern nil t)
+                                                   (throw 'Info-any-index-occurrences-p t))
+                                                 (setq index-nodes  (cdr index-nodes)
+                                                       node         (car index-nodes)))
+                                     (Info-goto-node node))))
+                               nil)))
+             (error nil))
+           any?))))
 
 
 ;; REPLACE ORIGINAL in `help-fns.el':

@@ -86,6 +86,12 @@
   (clipboard-kill-ring-save (region-beginning) 
                             (region-end))) 
 
+;; Play nice with linux
+
+(setq x-select-enable-clipboard t)
+(setq x-select-enable-primary nil)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
 ;;
 ;;
 ;;  Terminal Mode Tweaks
@@ -176,3 +182,6 @@
 
 (global-set-key (kbd "H-[")  'elscreen-previous)
 (global-set-key (kbd "H-]")  'elscreen-next)
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+

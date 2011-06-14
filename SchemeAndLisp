@@ -22,7 +22,7 @@ non-standard ones (usually, implementation-dependent), but the draft
 of R6RS includes one. Emacs Lisp has no
 real module system.
 
-Scheme is much smaller then Common Lisp; Common Lisp has more library
+Scheme is much smaller than Common Lisp; Common Lisp has more library
 features, and a much longer language reference.
 
 Common Lisp has a standard object system (CLOS). Scheme has several

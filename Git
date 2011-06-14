@@ -21,7 +21,7 @@ directory (already installed in Debian as part of ##git-core## or package ##git-
 
 In emacs 23 the command showing the repository status C-x v d has been rewritten, it supports checking in multiple files/directories at a time, and has fancy display.  It can be extended with git specific functions.
 vc-git-grep can be used and a UI for git grep.
-vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g) *TODO* CONFIRM THIS
+vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g).
 
 
 == Other packages ==
@@ -30,8 +30,10 @@ vc-git.el also includes support for git blame, in the vc-annotate command (C-x v
 
 It was forked from Magit and uses many of its core ideas. It has since added and changed many features, so the two modes should be considered on their own merits.
 
-* Homepage: http://github.com/byplayer/egg (original: http://github.com/bogolisk/egg/tree/master)
+* Homepage: http://github.com/byplayer/egg
 * Repository: ##git clone git://github.com/byplayer/egg.git ##
+* Documentation: 
+** http://bogolisk.blogspot.com/ (older version, still useful and includes screenshots)
 
 *Magit* is another interface to git:
 

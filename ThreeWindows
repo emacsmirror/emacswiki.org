@@ -293,5 +293,19 @@ And since there are different size of windows, things must be able to be changed
 
 }}}
 
+== change-split-type ==
+
+'change-split-type-2' and 'change-split-type-3' can be further merged into one function that automatically detects split type and changes vertical to horizontal or vice-versa, like this:
+
+  (defun change-split-type ()
+    "Changes splitting from vertical to horizontal and vice-versa"
+    (interactive)
+    (if (= 2 (length (window-list)))
+        (change-split-type-2)
+      (change-split-type-3)
+      ))
+
+A second check for there being 3 buffers can be added if more complex functionality (such as for more than 3 windows) is added.
+
 ----
 CategoryWindows
