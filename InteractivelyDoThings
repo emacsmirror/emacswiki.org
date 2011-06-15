@@ -431,6 +431,9 @@ Quote from the history section of ido.el:
 
 == Bugs ==
 
+
+I'm not sure where to add this so I'm just putting it here for people who may find a problem with ido-mode.  I've used iswitchb for a while, but when I would try ido, things just didn't work, I couldn't select files, directories, or even go to the next item in the list.  What I found was that my customization of MComplete mode was overriding the ido mode such that C-s, etc. weren't calling ido functions, but mcomplete functions.  All I had to do to get ido to work like I would expect was to turn off mcomplete-mode in my customizations.  I hope this helps someone - MattSavoie
+
 [new:eleanor:Sun Oct 26 19:10:09 CET 2008]
 After C-x C-f in ido-mode, M-r doesn't work as expected. With the default find-file, you can regexp search for recently opened files. With ido, the file names do show up in ido-work-file-list but I always get a 'no earlier matching history item' when searching for a history item.
 
