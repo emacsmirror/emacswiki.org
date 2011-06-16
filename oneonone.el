@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Thu Feb 24 15:45:07 2011 (-0800)
+;; Last-Updated: Wed Jun 15 13:47:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2561
+;;     Update #: 2564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -260,6 +260,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/06/15 dadams
+;;     Moved soft requre of files+.el (switch-to-buffer-other-frame no longer used).
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defgroup, defcustom, and commands.
 ;; 2010/11/30 dadams
@@ -523,7 +525,6 @@
 (eval-and-compile (require 'cl)) ;; remove-if (plus, for Emacs < 20, when, unless)
 
 (require 'frame-cmds nil t) ;; (no error if not found): rename-frame
-(require 'files+ nil t) ;; (no error if not found): switch-to-buffer-other-frame
 (require 'zoom-frm nil t) ;; (no error if not found):
                           ;; frame-zoom-font-difference, zoom-frm-out
 (require 'hexrgb) ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jan  4 11:24:45 2011 (-0800)
+;; Last-Updated: Wed Jun 15 15:08:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3368
+;;     Update #: 3372
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,6 +88,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/15 dadams
+;;     menu-bar-select-buffer: Use pop-to-buffer-other-frame for Emacs 24.
 ;; 2011/01/04 dadams
 ;;     defsubst -> defun.
 ;;     Removed autoload cookies from defvar.  Added for commands.
@@ -356,10 +358,17 @@
 
 ;; REPLACES ORIGINAL in `menu-bar.el':
 ;; Uses -other-frame.
+;;
+;; Note: Starting with Emacs 23, this is no longer used by `menu-bar-update-buffers', so this
+;;       no longer has any effect on the menu.  See Emacs bug #8876.
+;;
 ;;;###autoload
 (defun menu-bar-select-buffer ()
   "Switch to `last-command-event' buffer in other frame."
-  (interactive) (switch-to-buffer-other-frame last-command-event)) ;`files+.el'
+  (interactive)
+  (if (fboundp 'pop-to-buffer-other-frame) ; Emacs 24+.
+      (pop-to-buffer-other-frame last-command-event)
+    (switch-to-buffer-other-frame last-command-event))) ;`files+.el'
 
 
 ;; REPLACES ORIGINAL MENU-BAR.

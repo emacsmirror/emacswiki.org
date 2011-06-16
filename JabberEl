@@ -447,5 +447,8 @@ I seem to have problems if I, by reflex, close the *-jabber-* buffer.  That seem
 [new]
 Painfully, jabber.el doesn't support PGP, meaning that messages can't be encrypted between receiving clients.  If you consider that a privacy concern, consider using Gajim, Psi, or a similar Jabber client.
 
+[new]
+Is there a plan to save history for groupchat too? --DanielDehennin
+
 ----
 CategoryChatClient

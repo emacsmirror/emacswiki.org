@@ -11,7 +11,6 @@ RichardRiley : With emacs 23 simply do something like
 
 <pre>
 #!/bin/bash
-export GDK_NATIVE_WINDOWS=1
 exec emacsclient --alternate-editor="" -c "$@"
 </pre>
 

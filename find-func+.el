@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  7 14:17:06 2008 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 09:28:47 2011 (-0800)
+;; Last-Updated: Wed Jun 15 09:47:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 20
+;;     Update #: 24
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-func+.el
 ;; Keywords: emacs-lisp, functions, variables
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -32,6 +32,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/06/15 dadams
+;;     find-library-other-window: Require find-func.el.
 ;; 2008/09/07 dadams
 ;;     Created.  Added find-library-other-window.
 ;;
@@ -56,25 +58,25 @@
 ;; 
 ;;; Code:
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
 (defun find-library-other-window (library)
   "Find the Emacs-Lisp source of LIBRARY in another window."
   (interactive
-   (let* ((path (cons (or find-function-source-path load-path)
-		      (find-library-suffixes)))
-	  (def (if (eq (function-called-at-point) 'require)
-		   (save-excursion (backward-up-list)
-                                   (forward-char)
-                                   (backward-sexp -2)
-                                   (thing-at-point 'symbol))
-		 (thing-at-point 'symbol))))
-     (when def (setq def (and (locate-file-completion def path 'test) def)))
-     (list (completing-read "Library name: " 'locate-file-completion
-                            path nil nil nil def))))
-  (let ((buf (find-file-noselect (find-library-name library))))
+   (progn (require 'find-func)
+          (let* ((path  (cons (or find-function-source-path load-path)
+                              (find-library-suffixes)))
+                 (def   (if (eq (function-called-at-point) 'require)
+                            (save-excursion (backward-up-list)
+                                            (forward-char)
+                                            (backward-sexp -2)
+                                            (thing-at-point 'symbol))
+                          (thing-at-point 'symbol))))
+            (when def (setq def  (and (locate-file-completion def path 'test) def)))
+            (list (completing-read "Library name: " 'locate-file-completion
+                                   path nil nil nil def)))))
+  (let ((buf  (find-file-noselect (find-library-name library))))
     (pop-to-buffer buf 'other-window)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
