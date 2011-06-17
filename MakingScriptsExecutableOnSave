@@ -33,7 +33,7 @@ To avoid having to remember to do chmod u+x to set FileModes after saving a perl
 
 ----
 
-Or in Emacs 21:
+Or in Emacs 21 or later:
 
  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 

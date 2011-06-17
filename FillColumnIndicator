@@ -1,9 +1,6 @@
-Many modern editors and IDEs can graphically indicate the location of the fill column, either by shading the area to the right of the fill column or by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  The package [[fill-column-indicator.el]] (by AlpAker) implements both of these facilities in Emacs.
+Many modern editors and IDEs can graphically indicate the location of the fill column by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  The package [[fill-column-indicator.el]] (by AlpAker) implements this facility in Emacs:
 
-The two different styles of fill-column indication look like this:
-
-|| [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
-|| Shading style || Rule style ||
+[[image:FciRuleStyle]] 
 
 == Installation and Activation ==
 
@@ -13,24 +10,14 @@ To toggle graphical indication of the fill column in a buffer, use the command #
 
 == Customization ==
 
-<b>Specifying Rule or Shading.</b> By default, ##fci-mode## uses shading to indicate the fill column.  The style of indication is controlled by the variable ##fci-style##; the recognized values are ##shading## and ##rule##.  To use a rule instead of shading, put:
+<b>Color</b>. The color of the rule is controlled by the variable ##fci-rule-color##, whose value can be any valid color name.  The default value is ##nil##, which means that ##fci-mode## will try to select an appropriate color automatically. 
 
-  (setq fci-style 'rule)
-
-in your ##.emacs##.  Buffer-local values are supported, so one can use different styles in different buffers.
-
-<b>Customizing Shading.</b> The appearance of the shading is controlled by the face ##fci-shading##, whose attributes can be set like those of any face.  Adding the following code to your init file, for example, will set the backround color of the shading to light gray:
-
-  (set-face-background 'fci-shading "light gray")
-
-When customizing colors, it may be helpful to use ##M-x list-colors-display## to see a list of defined [http://www.gnu.org/software/emacs/elisp/html_node/Color-Names.html color names].
-
-<b>Customizing the Rule.</b> The appearance of the rule is controlled by the variables ##fci-rule-width## and ##fci-rule-color##.  By default, the rule is 2 pixels wide.  The default value of ##fci-rule-color## is nil, which means that ##fci-mode## will try to select an appropriate color automatically.  To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
+<b>Width</b>.  On graphical terminals the rule is drawn using bitmap images.  Its width (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 2.   To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
 
   (setq fci-rule-width 1)
   (setq fci-rule-color "darkblue")
 
-<b>Images vs. Characters for Rule Style</b>.  If bitmap images aren't available (e.g., when running on a character terminal), ##fci-mode## draws the fill-column rule using characters.  By default it uses `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
+<b>Drawing the Rule with Characters</b>.  On non-graphical displays (where images aren't available), the rule is drawn using textual characters.  The default is to use `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
 
 == Further Customization Examples==
 
@@ -59,6 +46,14 @@ If you're curious about the color scheme in the screenshots above, the settings 
 * MarginMode
 * EightyColumnRule
 
+== Legacy Version == 
+
+Fci-mode previously offerred another way of indicating the fill column, viz. shading the area of the window to the right of the fill-column:
+
+[[image:FciShadingStyle]]
+
+This mode of operation turned out to be both less popular than the rule-style indicator and more difficult (read: well-nigh impossible) to implement in such a way as to avoid conflicts with other packages.  An earlier version of the package that offers both styles of indicator is still available at FillColumnIndicatorLegacy.   (I'll fix minor bugs in this older version, but don't plan on making any major changes to it.)  
+
 ==Discussion==
 
 ===Problems when Using Emacs as a Daemon===
@@ -78,7 +73,7 @@ I've just spotted a small problem. In order to use with EmacsAsDaemon one needs 
 
 [new:AlpAker:2011-04-15 22:59 UTC]
 
-As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   (One problematic edge case remains:  If you invoke the mode while on a character terminal then visit the same buffer on a graphical terminal using the same Emacs instance, the textual rule will be displayed on both.  I haven't decided on the best way to detect and handle this case.  The reverse scenario--opening on a graphical terminal then visiting on character terminal--shouldn't be a problem.  I imagine these cases arise quite infrequently.) --AA
+As of 1.52, the package should be able to handle daemon mode gracefully, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   --AA
 
 ===Problem using dabbrev-expand===
 [new]

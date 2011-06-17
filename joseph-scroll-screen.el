@@ -6,9 +6,9 @@
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-03-01
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; URL: http://www.emacswiki.org/joseph-scroll-screen.el
-;; Keywords: scroll screen 
+;; Keywords: scroll screen
 ;; Compatibility: (Test on GNU Emacs 23.2.1).
 ;;
 ;;; This file is NOT part of GNU Emacs
@@ -53,7 +53,7 @@
 ;;  (autoload 'joseph-scroll-half-screen-up "joseph-scroll-screen" "scroll half screen up" t)
 ;;  (global-set-key "\C-v" 'joseph-scroll-half-screen-down)
 ;;  (global-set-key "\M-v" 'joseph-scroll-half-screen-up)
-;;   
+;;
 
 ;;}}}
 ;;{{{ Commands and Customizable Options
@@ -63,11 +63,21 @@
 ;;
 ;; Below are complete command list:
 ;;
+;;  `joseph-scroll-half-screen-down'
+;;    scroll half screen down
+;;  `joseph-scroll-half-screen-up'
+;;    scroll half screen up
 ;;
 ;;; Customizable Options:
 ;;
 ;; Below are customizable option list:
 ;;
+;;  `joseph-scroll-half-screen-up-hook'
+;;
+;;    default = nil
+;;  `joseph-scroll-half-screen-down-hook'
+;;
+;;    default = nil
 ;;  `joseph-scroll-screen-line-num'
 ;;    after scroll ,point will be keeped on this line of screen
 ;;    default = 5
@@ -76,7 +86,13 @@
 ;;    default = 0.3
 
 ;;}}}
-;;; Codes 
+;;; Codes
+(defcustom  joseph-scroll-half-screen-up-hook nil
+  ""
+  :type 'hook)
+(defcustom  joseph-scroll-half-screen-down-hook nil
+  ""
+  :type 'hook)
 (defcustom joseph-scroll-screen-line-num 5
   "after scroll ,point will be keeped on this line of screen"
   :group 'scroll-screen
@@ -99,7 +115,7 @@
   "Font Lock mode face used to highlight tags.
   (borrowed from etags-select.el)"
   :group 'scroll-screen)
-        
+
 (defun joseph-scroll-highlight (beg end)
   "Highlight a region temporarily.
    (borrowed from etags-select.el)"
@@ -113,27 +129,42 @@
       (sit-for joseph-scroll-highlight-delay)
       (delete-overlay ov))))
 
-;;{{{ scroll up down 
-
+(defvar joseph-scroll-screen-previous-point nil)
+;;{{{ scroll up down
+;;;###autoload'
 (defun joseph-scroll-half-screen-down()
   "scroll half screen down"
   (interactive)
-  (let ((b (point-at-bol) )(e (1+ (point-at-eol)) ))
-  (forward-line  (round (/ (frame-height) 1.5) ))
-  (recenter joseph-scroll-screen-line-num);;keep point on this line.
-;;  (joseph-scroll-highlight b e)
-  (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol)))
-  ))
+  (let ((old-position joseph-scroll-screen-previous-point))
+    (setq joseph-scroll-screen-previous-point (point-marker))
+    (if (and (not (equal (marker-position old-position) (point)))
+             (equal last-command 'joseph-scroll-half-screen-up))
+        (goto-char (marker-position old-position))
+      (forward-line  (round (/ (frame-height) 1.5) ))
+      )
+    (when (and (member  major-mode '(dired-mode wdired-mode))
+               (equal  (point-max) (point)) )
+      (dired-previous-line 1)
+      )
+    (recenter joseph-scroll-screen-line-num);;keep point on this line.
+    (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol))))
+  (run-hooks 'joseph-scroll-half-screen-down-hook))
 
 (defun joseph-scroll-half-screen-up()
   "scroll half screen up"
   (interactive)
-  (let ((b (point-at-bol) )(e (1+ (point-at-eol)) ))
-  (forward-line (- 0 (round (/(frame-height) 1.5))))
-  (recenter joseph-scroll-screen-line-num)
-;;  (joseph-scroll-highlight b e)
-  (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol)))
-  ))
+  (let ((old-position joseph-scroll-screen-previous-point))
+    (setq joseph-scroll-screen-previous-point (point-marker))
+    (if (and (not (equal (marker-position old-position) (point)))
+             (equal last-command 'joseph-scroll-half-screen-down))
+        (goto-char (marker-position old-position))
+      (forward-line (- 0 (round (/(frame-height) 1.5)))))
+    (when (and (member  major-mode '(dired-mode wdired-mode))
+               (equal  (point-min) (point)))
+      (dired-next-line 2))
+    (recenter joseph-scroll-screen-line-num)
+    (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol))))
+  (run-hooks 'joseph-scroll-half-screen-up-hook))
 
 ;;}}}
 

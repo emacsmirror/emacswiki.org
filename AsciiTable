@@ -31,6 +31,9 @@ There are commands for octal, decimal, and hexadecimal codes.
                         (setq i (+ 32 i)) i (single-key-description i)
                         (setq i (+ 32 i)) i (single-key-description i)))
         (setq i (- i 96))))))
+
+[new]
+I like Rick's solution.
 ----
 See also
 * AsciiMode -- an ascii table highlighting the char at point

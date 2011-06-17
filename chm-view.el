@@ -186,9 +186,13 @@ This is necessary spend time to start sub-process."
 
 (defun chm-view-get-unique-number ()
   "Get a unique number."
-  (let (time-now buffer)
-    (setq time-now (current-time))
-    (format "%s" (nth 2 time-now))))
+  (let (number buffer)
+    (setq number '-1)
+    (while (and (= number -1) (< number 49152))
+      (setq number (nth 2 (current-time)))
+      (while (> number '65535)
+        (setq number (/ number '2))))
+    (format "%s" number)))
 
 (provide 'chm-view)
 
