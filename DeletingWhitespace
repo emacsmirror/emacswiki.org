@@ -35,9 +35,11 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
 : or you can add this hook locally for particular mode:
 
         (add-hook 'c-mode-common-hook
-                  (lambda()
-                    (add-hook 'before-save-hook
-                    'delete-trailing-whitespace nil t)))
+           (lambda()
+             (add-hook 'local-write-file-hooks
+                   '(lambda()
+                      (save-excursion
+                        (delete-trailing-whitespace))))))
 
 * PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
 

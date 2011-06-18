@@ -1,16 +1,17 @@
-;;; joseph-autopair.el  Another autopair or skeleton. 
+;;; joseph-autopair.el  Another autopair or skeleton.
 
 ;; Filename: joseph-autopair.el
-;; Description:   Another autopair or skeleton. 
+;; Description:   Another autopair or skeleton.
 ;; Author: Joseph <jixiuf@gmail.com>
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-03-02
-;; Updated: 2010-03-04
-;; Version: 0.1.2
+;; Updated: 2011-6-17 22:39:00
+;; Version: 0.1.3
 ;; URL: http://www.emacswiki.org/joseph-autopair.el
 ;; Keywords: autopair parentheses skeleton
 ;; Compatibility: (Test on GNU Emacs 23.2.1).
+;; it only work on Gui ,bug when you paste something on Console
 ;;
 ;;
 ;;; This file is NOT part of GNU Emacs
@@ -63,7 +64,7 @@
 ;;  `backward-delete-char-untabify' `delete-backward-char'.
 ;;
 ;;
-;;  Actually: 
+;;  Actually:
 ;;  a pair like this in `joseph-autopair-alist':
 ;;                    ("[" "]")
 ;;   equals to:
@@ -71,11 +72,11 @@
 ;;
 ;;  but a litter difference exists :
 ;;  when the "tail" is `string' then I can get the length of tail
-;;  eazyly, so that I can delete or skip it depending
+;;  easyly, so that I can delete or skip it depending
 ;;  on the length of "tail".
 ;;  that means only string type "tail" can be skipped
 ;   and auto deleted .
-;;  
+;;
 ;;
 ;;
 ;;; Install:
@@ -90,7 +91,7 @@
 ;; (require 'joseph-autopair)
 ;; and custom joseph-autopair-alist if you want ,
 ;; (joseph-autopair-toggle-autopair) ;;enable joseph-autopair.
-;; 
+;;
 
 ;;; Commands:
 ;;
@@ -132,7 +133,7 @@ things you defined in pairs."
                      ("'" "'")
                      ("(" ")" )
                      ("[" "]" )
-                     ("{" (joseph-autopair-newline-indent-insert "}")) 
+                     ("{" (joseph-autopair-newline-indent-insert "}"))
                      ))
          (java-mode . (
                        ("\"" "\"")
@@ -184,7 +185,7 @@ new line and indent the region."
 (defun joseph-autopair-delete-backward-char
   ( N &optional KILLP)
   (interactive "*p\nP")
-  (when (and (boundp 'major-mode)
+  (if (and (boundp 'major-mode)
              (member major-mode (mapcar 'car joseph-autopair-alist)))
     (let* ((mode-pair (cdr (assoc major-mode joseph-autopair-alist)))
            (heads (mapcar 'car mode-pair))
@@ -198,7 +199,9 @@ new line and indent the region."
                          ))
           ))
       (joseph-autopair-origin-delete-backward-char  N KILLP)
-      ))  
+      )
+    (joseph-autopair-origin-delete-backward-char  N KILLP)
+    )
   )
 
 (defun joseph-autopair-backward-delete-char-untabify
@@ -233,7 +236,7 @@ new line and indent the region."
             (head (joseph-autopair-editing-find-head heads))
             tail)
       (if (and head
-               (not (and (stringp (setq tail (nth 1 (assoc head mode-pair)))) 
+               (not (and (stringp (setq tail (nth 1 (assoc head mode-pair))))
                          (string-equal head tail)
                          (looking-at (regexp-quote head)))))
           (joseph-autopair-insert-or-eval-tail (assoc head mode-pair));;insert tail
@@ -247,7 +250,7 @@ new line and indent the region."
         tail)
     (joseph-autopair-origin-backward-delete-char-untabify (length new-inserted))
     (setq head   (joseph-autopair-editing-find-head heads))
-    (if head 
+    (if head
         (progn
           (setq tail (nth 1 (assoc head mode-pair)))
           (if (and (stringp tail)

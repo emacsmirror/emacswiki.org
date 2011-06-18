@@ -7,18 +7,17 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Jun 15 13:47:00 2011 (-0700)
+;; Last-Updated: Fri Jun 17 10:54:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2564
+;;     Update #: 2567
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `files+', `frame-cmds', `frame-fns', `hexrgb',
-;;   `misc-fns', `oneonone', `strings', `thingatpt', `thingatpt+',
-;;   `zoom-frm'.
+;;   `avoid', `cl', `frame-cmds', `frame-fns', `hexrgb', `misc-fns',
+;;   `oneonone', `strings', `thingatpt', `thingatpt+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -571,6 +570,9 @@ Note: This is not used if `1on1-minibuffer-frame-flag' is nil.")
 ;;;###autoload
 (defcustom 1on1-minibuffer-frame-flag t
   "*Non-nil means use a separate, specialized frame for the minibuffer.
+Note that a non-nil value for this option also causes option
+`pop-up-frames' to be set to `t'.  That is, it causes `display-buffer' to generally use a separate frame.
+
 If you change this variable, you will need to restart Emacs for it to
 take effect."
   :type 'boolean :group 'One-On-One)

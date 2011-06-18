@@ -104,6 +104,7 @@ Note that if all you want is to disable syntax hilighting use instead:
 
 It would be nice to be able to toggle colors off and on dynamically, e.g. to use syntax hilighting to get a quick syntax check.  If you know how to do this please add to this entry.
 
+(I just stick with fundamental-mode nearly all the time, going into a highlighting mode just once in a while.  Doing this, it "toggles colors dynamically", as you ask.  TomBaker)
 
 ----
 CategoryFaces

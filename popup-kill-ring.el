@@ -171,7 +171,7 @@ Default value is `popup-kill-ring-pos-tip-show'.")
 See docstring of `pos-tip-show'.")
 
 (defvar popup-kill-ring-interactive-insert nil
-  "*Non-nil means that insert selected item of `poup-menu*' interactively.")
+  "*Non-nil means that insert selected item of `popup-menu*' interactively.")
 
 (defvar popup-kill-ring-isearch t
   "*Non-nil means that passes `t' to `isearch' option of `popup-menu*'")

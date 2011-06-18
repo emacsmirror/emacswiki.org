@@ -18,34 +18,8 @@ HtmlFontify will hopefully also be part of GNU Emacs soon.
 [new:PhilHagelberg:2008-04-03 02:48 UTC]
 YannHodique: of course; why didn't I think of that? Then we get Windows compatibility for free. I will also check out HtmlFontify; if that's going to be included in Emacs then it makes sense to incorporate it. Thanks!
 
-[new:VegardVesterheim:2009-05-15 07:38 UTC]
-A small patch to allow pasting of the region as well
-
-<pre>
-*** scpaste.el	15 May 2009 07:30:40 -0000	1.1
---- scpaste.el	15 May 2009 07:30:01 -0000
-***************
-*** 108,114 ****
-  (defun scpaste (original-name)
-    "Paste the current buffer via `scp' to `scpaste-http-destination'."
-    (interactive "MName (defaults to buffer name): ")
-!   (let* ((b (htmlize-buffer))
-           (name (url-hexify-string (if (equal "" original-name)
-                                        (buffer-name)
-                                      original-name)))
---- 108,119 ----
-  (defun scpaste (original-name)
-    "Paste the current buffer via `scp' to `scpaste-http-destination'."
-    (interactive "MName (defaults to buffer name): ")
-!   (scpaste-region (point-min) (point-max) original-name))
-! 
-! (defun scpaste-region (start end original-name)
-!   "Paste the current buffer via `scp' to `scpaste-http-destination'."
-!   (interactive  "r\nMName (defaults to buffer name): ")
-!   (let* ((b (htmlize-region start end))
-           (name (url-hexify-string (if (equal "" original-name)
-                                        (buffer-name)
-                                      original-name)))
-
-
-</pre>
+[new:PhilHagelberg:2011-06-17 18:53 UTC]
+scpaste 0.5 now uses htmlfontify. I have tramp turned off because it
+was interfering with some basic Emacs operations at some point, but
+perhaps that bug has been fixed; would be happy to see a patch that
+switches to using tramp rather than shelling out.

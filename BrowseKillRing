@@ -50,6 +50,27 @@ To get the "M-y immediately pulls up the kill ring" behavior, you need to run M-
 [new]
 Not that anyone here will believe me, but I am the NickHurley referenced above. I can safely say that I have abandoned browse-kill-ring.el (which is now hosted on GitHub: https://github.com/todesschaf/browse-kill-ring for those who are interested). Enjoy.
 
+[new]
+I adapted popup-kill-ring to replace a potential previous yank like the default M-y does (yank-pop).
+
+{{{
+diff --git a/libs/popup-kill-ring.el b/libs/popup-kill-ring.el
+--- a/libs/popup-kill-ring.el
++++ b/libs/popup-kill-ring.el
+@@ -280,6 +280,8 @@ and `pos-tip.el'"
+                                            :scroll-bar t
+                                            :isearch popup-kill-ring-isearch))
+                    (when item
++                     (when (or (eq last-command 'cua--paste-rectangle) (eq last-command 'yank))
++                       (undo))
+                      (setq num (popup-kill-ring-get-index item))
+                      (when num
+                        (let ((kill-ring-item (nth num kill-ring)))
+}}}
+
+
+-- ArneBab
+
 
 ----
 
