@@ -1,13 +1,14 @@
-;;; sunrise-x-mirror.el --- Full read/write access to compressed archives for the Sunrise Commander File Manager.
+;;; sunrise-x-mirror.el --- full read/write access to compressed archives for the Sunrise Commander File Manager
 
 ;; Copyright (C) 2008-2011 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 350 $
-;; Keywords: Sunrise Commander Emacs File Manager Extension Archives Read/Write
+;; RCS Version: $Rev: 374 $
+;; Keywords: sunrise commander, archives read/write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
 
@@ -15,54 +16,54 @@
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
-;; Foundation,  either  version  3 of the License, or (at your option) any later
+;; Foundation, either version 3 of the License, or (at your option) any later
 ;; version.
 ;;
-;; This  program  is distributed in the hope that it will be useful, but WITHOUT
+;; This program is distributed in the hope that it will be useful, but WITHOUT
 ;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-;; FOR  A  PARTICULAR  PURPOSE.  See the GNU General Public License for more de-
+;; FOR A PARTICULAR PURPOSE. See the GNU General Public License for more de-
 ;; tails.
 
-;; You  should have received a copy of the GNU General Public License along with
+;; You should have received a copy of the GNU General Public License along with
 ;; this program. If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
 ;; This is an extension for the Sunrise Commander file manager (for more details
 ;; visit http://www.emacswiki.org/emacs/Sunrise_Commander), that allows browsing
-;; compressed  archives  in  full  read-write mode. Sunrise does offer means for
-;; transparent browsing archives (using AVFS), but they just  provide  read-only
+;; compressed archives in full read-write mode. Sunrise does offer means for
+;; transparent browsing archives (using AVFS), but they just provide read-only
 ;; navigation -- if you want to edit a file inside the virtual filesystem, copy,
-;; remove, or rename anything, you still have to uncompress the archive, do  the
+;; remove, or rename anything, you still have to uncompress the archive, do the
 ;; stuff and compress it back yourself.
 
-;; It  uses one of funionfs or unionfs-fuse to create a writeable overlay on top
-;; of the read-only filesystem provided by AVFS. You can freely add,  remove  or
-;; modify  anything  inside  the  resulting union filesystem (a.k.a. the "mirror
-;; area"), and then commit all modifications (or not) to  the  original  archive
+;; It uses one of funionfs or unionfs-fuse to create a writeable overlay on top
+;; of the read-only filesystem provided by AVFS. You can freely add, remove or
+;; modify anything inside the resulting union filesystem (a.k.a. the "mirror
+;; area"), and then commit all modifications (or not) to the original archive
 ;; with a single keystroke. There is no preliminary uncompressing of the archive
-;; and nothing happens if you don't make changes (or if you don't commit  them).
-;; On  commit,  the contents of the union fs are compressed to create an updated
+;; and nothing happens if you don't make changes (or if you don't commit them).
+;; On commit, the contents of the union fs are compressed to create an updated
 ;; archive to replace the original one (optionally after making a backup copy of
 ;; it, just in case).
 
 ;; Navigating outside a mirror area will automatically close it, so if you do it
 ;; you may be asked whether to commit or not to the archive all your changes. In
 ;; nested archives (e.g. a jar inside a zip inside a tgz), partial modifications
-;; are committed silently on the fly if moving out from a  modified  archive  to
-;; one  that  contains it. Only if you leave the topmost mirror area you will be
+;; are committed silently on the fly if moving out from a modified archive to
+;; one that contains it. Only if you leave the topmost mirror area you will be
 ;; asked for confirmation whether to modify the resulting archive.
 
 ;; Be warned, though, that this method may be impractical for very large or very
-;; deeply nested archives  with  strong  compression,  since  the  uncompressing
-;; happens  in  the  final stage and requires multiple access operations through
+;; deeply nested archives with strong compression, since the uncompressing
+;; happens in the final stage and requires multiple access operations through
 ;; AVFS. What this means is that probably you'll have to wait a looooong time if
-;; you  try  to  commit  changes  to  a  tar.bz2  file  with several hundreds of
+;; you try to commit changes to a tar.bz2 file with several hundreds of
 ;; megabytes in size, or under five or six other layers of strong compression.
 
 ;; For this extension to work you must have:
 
-;; 1) FUSE + AVFS support in your Sunrise Commander.  If you can navigate (read-
+;; 1) FUSE + AVFS support in your Sunrise Commander. If you can navigate (read-
 ;; only) inside compressed archives you already have this.
 
 ;; 2) One of funionfs or unionfs-fuse. Debian lenny (stable distribution) offers
@@ -71,48 +72,48 @@
 
 ;; 3) Programs required for repacking archives -- at least zip and tar.
 
-;; 4)  Your AVFS mount point (and the value of variable sr-avfs-root) must be in
-;; a directory where you have writing access.
+;; 4) Your AVFS mount point (and the value of variable `sr-avfs-root') must be
+;; in a directory where you have writing access.
 
-;; All  this means is that most probably this extension will work out-of-the-box
-;; on Linux (or MacOS, or other unices), but you'll have a hard time to make  it
-;; work  on  Windows.  It was written on GNU Emacs 23 on Linux and tested on GNU
+;; All this means is that most probably this extension will work out-of-the-box
+;; on Linux (or MacOS, or other unices), but you'll have a hard time to make it
+;; work on Windows. It was written on GNU Emacs 23 on Linux and tested on GNU
 ;; Emacs 22 and 23 for Linux.
 
-;; This is version 2 $Rev: 350 $ of the Sunrise Commander Mirror Extension.
+;; This is version 2 $Rev: 374 $ of the Sunrise Commander Mirror Extension.
 
 ;;; Installation and Usage:
 
-;; 1) Put this file somewhere in your emacs load-path.
+;; 1) Put this file somewhere in your Emacs `load-path'.
 
-;; 2)  Add a (require 'sunrise-x-mirror) to your .emacs file, anywhere after the
+;; 2) Add a (require 'sunrise-x-mirror) to your .emacs file, anywhere after the
 ;; (require 'sunrise-commander) sexp.
 
-;; 3) Evaluate the new expression, or reload your .emacs file, or restart emacs.
+;; 3) Evaluate the new expression, or reload your .emacs file, or restart Emacs.
 
-;; 4)  Customize  the  variable sr-mirror-unionfs-impl and select your preferred
+;; 4) Customize the variable `sr-mirror-unionfs-impl' and select your preferred
 ;; unionfs implementation (either funionfs or unionfs-fuse).
 
-;; 5)  Run  the Sunrise Commander (M-x sunrise), select (or navigate inside) any
-;; compressed directory in  the  active  pane  and  press  C-c  C-b.  This  will
-;; automatically  take  you to the mirror area for the selected archive. You can
-;; make any modifications you want to the contents of the archive,  or  navigate
-;; inside  directories or other compressed archives inside it. When you're done,
-;; press again C-c C-b anywhere inside the mirror area, or simply  navigate  out
+;; 5) Run the Sunrise Commander (M-x sunrise), select (or navigate inside) any
+;; compressed directory in the active pane and press C-c C-b. This will
+;; automatically take you to the mirror area for the selected archive. You can
+;; make any modifications you want to the contents of the archive, or navigate
+;; inside directories or other compressed archives inside it. When you're done,
+;; press again C-c C-b anywhere inside the mirror area, or simply navigate out
 ;; of it. If there are any changes to commit (*and* if you confirm) the original
-;; archive will be replaced with a new one with the contents of the mirror  area
-;; you've  just  been working on. If you don't change the defaults, the original
+;; archive will be replaced with a new one with the contents of the mirror area
+;; you've just been working on. If you don't change the defaults, the original
 ;; will be renamed with a ".bak" extension added.
 
-;; 6)  You  can add support for new archive formats by adding new entries to the
-;; sr-mirror-pack-commands-alist  custom  variable,  which  contains  a  regular
-;; expression  to  match against the name of the archive and a string containing
-;; the shell command to  execute  for  packing  back  the  mirror  area  into  a
+;; 6) You can add support for new archive formats by adding new entries to the
+;; `sr-mirror-pack-commands-alist' custom variable, which contains a regular
+;; expression to match against the name of the archive and a string containing
+;; the shell command to execute for packing back the mirror area into a
 ;; compressed archive.
 
-;; 7)  Once  you've  gained enough confidence using this extension you can reset
-;; the sr-mirror-keep-backups flag to get rid of all the backup copies  produced
-;; by it.
+;; 7) Once you've gained enough confidence using this extension you can reset
+;; the `sr-mirror-keep-backups' flag to get rid of all the backup copies
+;; produced by it.
 
 ;; 8) Enjoy ;)
 
@@ -121,8 +122,7 @@
 (eval-when-compile (require 'sunrise-commander))
 
 (defcustom sr-mirror-keep-backups t
-  "Flag that indicates whether backup files are to be kept whenever the mirror
-  of a read-only archive is modified and committed."
+  "If non-nil, keep backup files when committing changes to read-only archives."
   :group 'sunrise
   :type 'boolean)
 
@@ -133,11 +133,13 @@
     ("\\.\\(?:tar\\.gz\\|tgz\\)$" . "tar cvzf %f *")
     ("\\.tar\\.bz2$" .              "tar cvjf %f *")
    )
-  "List of shell commands to repack the contents of the current mirror area into
-  a compressed archive of the appropriate type. Use %f as a placeholder for  the
-  name  of  the  resulting  archive. If no repacking command has been registered
-  here for a file (usu. a file extension),  Sunrise  will  refuse  to  create  a
-  mirror area for it even if it is normally browseable through AVFS."
+  "List of shell commands to repack particular archive contents.
+Used when repacking contents from a mirror area into a compressed
+archive of the appropriate type. Use %f as a placeholder for the
+name of the resulting archive. If no repacking command has been
+registered here for a file (usually a file extension), Sunrise
+will refuse to create a mirror area for it even if it is normally
+browseable through AVFS."
   :group 'sunrise
   :type 'alist)
 
@@ -153,23 +155,26 @@
   :group 'sunrise)
 
 (defvar sr-mirror-home nil
-  "Root directory of all mirror areas. This is set automatically by the function
-  sr-mirror-enable and reset by sr-mirror-disable to keep the mirror home  path,
-  as  well  as  to  indicate  mirroring  support  is on/off. Do not mess with it
-  directly - if you need to change the name of your mirror home dir then  modify
-  sr-mirror-enable.")
+  "Root directory of all mirror areas.
+Set automatically by the function `sr-mirror-enable' and reset by
+`sr-mirror-disable' to keep the mirror home path, as well as to
+indicate mirroring support is on/off. Do not mess with it
+directly - if you need to change the name of your mirror home
+dir, modify `sr-mirror-enable'.")
 
 (defvar sr-mirror-divert-goto-dir t
-  "Variable used to avoid infinite recursion when diverting sr-goto-dir calls to
-  sr-mirror-goto-dir. Do not touch, or else.")
+  "Internal variable used to avoid infinite recursion.
+Used when diverting `sr-goto-dir' calls to `sr-mirror-goto-dir'.
+Do not touch, or else.")
 
 (if (boundp 'sr-mode-map)
     (define-key sr-mode-map "\C-c\C-b" 'sr-mirror-toggle))
 
 (defun sr-mirror-enable ()
-  "Enables  sunrise  mirror  support by setting the sr-mirror-home variable to a
-  non-nil value and activating all advice necessary for mirror operations.  This
-  method is called every time a new mirror area is created."
+  "Enable Sunrise mirror support.
+Sets the variable `sr-mirror-home' to a non-nil value and
+activates all advice necessary for mirror operations. This method
+is called every time a new mirror area is created."
   (unless sr-mirror-home
     (setq sr-mirror-home (concat sr-avfs-root "#mirror#/"))
     (ad-activate 'make-directory)
@@ -177,9 +182,10 @@
     (ad-activate 'sr-goto-dir)))
 
 (defun sr-mirror-disable ()
-  "Disables   sunrise   mirror  support  by  resetting  the  sr-mirror-home  and
-  deactivating all advice used in mirror operations. This method is called after
-  the last mirror area in the current mirror home is closed."
+  "Disable Sunrise mirror support.
+Resets `sr-mirror-home' and deactivates all advice used in mirror
+operations. This method is called after the last mirror area in
+the current mirror home is closed."
   (when sr-mirror-home
     (setq sr-mirror-home nil)
     (ad-deactivate 'make-directory)
@@ -187,10 +193,11 @@
     (ad-deactivate 'sr-goto-dir)))
 
 (defun sr-mirror-open ()
-  "Uses  funionfs to create a writeable filesystem overlay over the AVFS virtual
-  fs of the selected compressed archive and displays it in the current pane. The
-  result  is  a  mirror  of  the  contents of the original archive that is fully
-  writeable."
+  "Set up a mirror area in the current pane.
+Uses funionfs to create a writeable filesystem overlay over the
+AVFS virtual filesystem of the selected compressed archive and
+displays it in the current pane. The result is a mirror of the
+contents of the original archive that is fully writeable."
   (interactive)
   (let ((path (or (dired-get-filename nil t)
                   (concat (expand-file-name (dired-current-directory)) "/.")))
@@ -223,21 +230,22 @@
     t ))
 
 (defun sr-mirror-mount (path)
-  "Creates  and  mounts  (if necessary) all the directories needed to mirror the
-  compressed archive identified by the given file path and returns the file path
-  to its corresponding mirror area."
+  "Create and mount (if necessary) all the directories needed to mirror PATH.
+PATH identifies the compressed archive. Returns the path to the
+corresponding mirror area."
   (let* ((base (sr-mirror-mangle path))
          (virtual (sr-mirror-full-demangle path))
          (mirror (concat sr-mirror-home base))
          (overlay (concat sr-mirror-home "." base))
          (command
-          (cond ((eq 'funionfs sr-mirror-unionfs-impl)
-                 (concat "cd ~; funionfs " overlay " " mirror
-                         " -o dirs=" virtual "=ro"))
+          (case sr-mirror-unionfs-impl
+            (funionfs
+             (concat "cd ~; funionfs " overlay " " mirror
+                     " -o dirs=" virtual "=ro"))
 
-                ((eq 'unionfs-fuse sr-mirror-unionfs-impl)
-                 (concat "cd ~; unionfs-fuse -o cow,kernel_cache -o allow_other "
-                         overlay "=RW:" virtual "=RO " mirror)))))
+            (unionfs-fuse
+             (concat "cd ~; unionfs-fuse -o cow,kernel_cache -o allow_other "
+                     overlay "=RW:" virtual "=RO " mirror)))))
     (if (null virtual)
         (error (concat "Sunrise: sorry, don't know how to mirror " path)))
     (unless (file-directory-p mirror)
@@ -247,10 +255,11 @@
     mirror))
 
 (defun sr-mirror-close (&optional do-commit local-commit moving)
-  "Destroys  the  current mirror area by unmounting and deleting the directories
-  it was built upon. Tries to automatically repack the mirror and substitute the
-  original  archive  with  a  new  one  containing the modifications made to the
-  mirror."
+  "Destroy the current mirror area.
+Unmounts and deletes the directories it was built upon. Tries to
+automatically repack the mirror and substitute the original
+archive with a new one containing the modifications made to the
+mirror."
   (interactive)
   (unless sr-mirror-home
     (error (concat "Sunrise: sorry, can't mirror " (dired-get-filename))))
@@ -294,10 +303,11 @@
   t)
 
 (defun sr-mirror-commit (mirror overlay)
-  "Commits  all  modifications  made  to  the  given mirror in the given overlay
-  directory by replacing the mirrored archive with a  new  one  built  with  the
-  current  contents of the mirror. Keeps a backup of the original archive if the
-  sr-mirror-backup variable is not nil (as set by default)."
+  "Commit all modifications made to MIRROR in directory OVERLAY.
+Replaces the mirrored archive with a new one built with the
+current contents of the mirror. Keeps a backup of the original
+archive if the variable `sr-mirror-backup' is non-nil (the
+default)."
   (condition-case err
       (let ((repacked (sr-mirror-repack mirror))
             (target (dired-get-filename)))
@@ -314,8 +324,8 @@
                  (error err))))))
 
 (defun sr-mirror-unmount (mirror overlay)
-  "Unmounts  and  deletes  all directories used for mirroring a given compressed
-  archive."
+  ;; FIXME explain the arguments
+  "Unmount and delete all directories used for mirroring given compressed archive."
   (let* ((command (concat "cd ~; fusermount -u " sr-mirror-home mirror))
          (err (shell-command-to-string command)))
     (if (or (null err) (string= err ""))
@@ -323,11 +333,10 @@
           (dired-delete-file (concat sr-mirror-home mirror) 'always)
           (dired-delete-file (concat sr-mirror-home overlay) 'always)
           (revert-buffer))
-      (error (concat "Sunrise: Error unmounting mirror: " err)))))
+      (error (concat "Sunrise: error unmounting mirror: " err)))))
 
 (defun sr-mirror-toggle ()
-  "Opens  a new mirror area or destroys the current one, depending on the actual
-  context."
+  "Open new or destroy the current mirror area, depending on context."
   (interactive)
   (let ((open-ok) (close-ok) (err-msg))
     (condition-case err1
@@ -343,8 +352,9 @@
       (sr-highlight))))
 
 (defun sr-mirror-repack (mirror)
-  "Tries  to repack the given mirror. On success returns a string containing the
-  full path to the newly packed archive, on failure throws an error."
+  "Try to repack the given MIRROR.
+On success, returns a string containing the full path to the
+newly packed archive, otherwise throws an error."
   (message "Sunrise: repacking mirror, please wait...")
   (let* ((target-home (concat sr-mirror-home ".repacked/"))
          (archive (replace-regexp-in-string "#[a-z0-9]*$" "" mirror))
@@ -366,18 +376,17 @@
     target))
 
 (defun sr-mirror-mangle (path)
-  "Transforms  the  given  filesystem  path  into  a  string  that  can  be used
-  internally as the name of a new mirror area."
+  "Transform PATH into a string naming a new mirror area."
   (let ((handler (assoc-default path sr-avfs-handlers-alist 'string-match)))
-    (if (equal ?/ (string-to-char path))
+    (if (eq ?/ (string-to-char path))
         (setq path (substring path 1)))
     (concat (replace-regexp-in-string
              "/" "+"
              (replace-regexp-in-string "\\+" "{+}" path)) handler)))
 
 (defun sr-mirror-demangle (path)
-  "Does  the  opposite of sr-mirror-mangle, ie. transforms the given mirror area
-  name into a regular filesystem path."
+  "Transform the given mirror area name into a regular filesystem path.
+Opposite of `sr-mirror-mangle'."
   (concat "/"
           (replace-regexp-in-string
            "{\\+}" "+" (replace-regexp-in-string
@@ -385,9 +394,9 @@
                                                 "#[a-z0-9]*$" "" path)))))
 
 (defun sr-mirror-full-demangle (path)
-  "Demangles recursively the given path, so as to obtain the current path of the
-   originally reflected archive. This is necessary because reflecting an archive
-   that is itself a reflection causes deadlocks in FUSE."
+  "Demangle PATH recursively to obtain the current path of the original archive.
+This is necessary because reflecting an archive that is itself a
+reflection causes deadlocks in FUSE."
   (let ((reflected path)
         (home-len (length sr-mirror-home))
         (handler (assoc-default path sr-avfs-handlers-alist 'string-match))
@@ -401,8 +410,7 @@
     reflected))
 
 (defun sr-mirror-files (directory)
-  "Returns a list with the names of files and directories that can be considered
-  as mirror modifications inside an overlay directory."
+  "Return list of pathnames constituting mirror modifications inside overlay DIRECTORY."
   (if (not (file-directory-p directory))
       (ignore)
     (let ((files (directory-files directory)))
@@ -411,9 +419,10 @@
       files)))
 
 (defun sr-mirror-overlay-redir (dirname &optional force-root)
-  "Analyses  the  given  directory  path  and rewrites it (if necessary) to play
-  nicely with the mirror fs the given path  belongs  to.  If  the  path  is  not
-  inside any mirror fs then it is returned unmodified."
+  "Adjust DIRNAME for use with a mirror filesystem.
+Analyses the given directory path and rewrites it (if necessary)
+to play nicely with the mirror fs the given path belongs to. If
+the path is not inside any mirror fs, it is returned unmodified."
   (if (null sr-avfs-root)
       dirname
     (let ((xpdir (expand-file-name dirname))
@@ -428,14 +437,13 @@
                   (setq mirror (substring mirror 0 pos))))
             (if (and target
                      (or (> (length target) 0) force-root)
-                     (not (equal ?. (string-to-char mirror))))
+                     (not (eq ?. (string-to-char mirror))))
                 (concat sr-mirror-home "." mirror "/" target)
               dirname))
         dirname))))
 
 (defun sr-mirror-surface (dir)
-  "Returns the surface  (ie. the topmost parent of  DIR under sr-mirror-home) of
-  the mirror area containing DIR, if there is any."
+  "Return the topmost parent of DIR under `sr-mirror-home', if any."
   (if (and sr-mirror-home
            (sr-overlapping-paths-p sr-mirror-home dir)
            (not (sr-equal-dirs sr-mirror-home dir)))
@@ -444,8 +452,9 @@
         (match-string 1 local-dir))))
 
 (defun sr-mirror-overlapping-p (mirror1 mirror2)
-  "Determines whether the  surface of MIRROR1 mirrors a  parent of the directory
-  mirrored by the surface of MIRROR2."
+  ;; FIXME
+  "Determine whether the surface of MIRROR1 mirrors a parent of
+the directory mirrored by the surface of MIRROR2."
   (let ((surface1 (sr-mirror-surface mirror1))
         (surface2 (sr-mirror-surface mirror2))
         top)
@@ -454,8 +463,8 @@
       (sr-overlapping-paths-p top (sr-mirror-demangle surface2)))))
 
 (defun sr-mirror-goto-dir (target)
-  "Enhances to sr-goto-dir with  transparent navigation inside mirror areas. All
-  calls to sr-goto-dir are diverted to this function."
+  "Enhance `sr-goto-dir' with transparent navigation inside mirror areas.
+All calls to `sr-goto-dir' are diverted to this function."
   (let* ((here (expand-file-name default-directory))
          (target (expand-file-name (or target ".")))
          (surface-here (sr-mirror-surface here))
@@ -483,26 +492,26 @@
     (sr-highlight)))
 
 (defun sr-mirror-on-kill-buffer ()
-  "Handles those cases of navigation out of a mirror area, in which the function
-  sr-goto-dir is never called (e.g. bookmark jumps and pane synchronizations)."
+  "Handle navigation out of a mirror area other than through `sr-goto-dir'.
+This includes e.g. bookmark jumps and pane synchronizations."
   (when (and sr-mirror-home (eq major-mode 'sr-mode)
            (null (sr-mirror-surface sr-this-directory))
            (sr-mirror-surface (dired-current-directory)))
       (sr-mirror-goto-dir sr-this-directory)
       (kill-local-variable 'sr-current-path-face)))
 
-;; This diverts all sr-goto-dir calls to sr-mirror-goto-dir
 (defadvice sr-goto-dir
   (around sr-mirror-advice-sr-goto-dir (dir))
+  "Divert all `sr-goto-dir' calls to `sr-mirror-goto-dir'."
   (if sr-mirror-divert-goto-dir
       (sr-mirror-goto-dir dir)
     ad-do-it))
 
-;; This redirects all sr-copy operations to the right path under the overlay
-;; directory:
 (defadvice sr-clone-files
   (around sr-mirror-advice-sr-clone-files
           (file-path-list target-dir clone-op progress &optional do-overwrite))
+"Redirect all `sr-copy' operations to the right path under the
+overlay directory."
   (if (null sr-mirror-home)
       ad-do-it
     (let ((orig target-dir))
@@ -512,19 +521,19 @@
       ad-do-it)))
 (ad-activate 'sr-clone-files)
 
-;; This redirects directory creation operations to the right path under the
-;; overlay directory:
 (defadvice make-directory
   (around sr-mirror-advice-make-directory (dirname &optional parents))
+  "Redirect directory creation operations to the right path under
+the overlay directory."
   (setq dirname (sr-mirror-overlay-redir dirname))
   (setq parents t)
   ad-do-it)
 
-;; This creates all the subdirectories needed (and sets their permissions) in
-;; order to make possible the redirection of buffer saving operations to the
-;; right path under the overlay directory:
 (defadvice save-buffer
   (around sr-mirror-advice-save-buffer (&optional args))
+  "Create all the subdirectories (and set their permissions)
+needed for enabling the redirection of buffer saving operations
+to the right path under the overlay directory."
   (let* ((orig (buffer-file-name))
          (target (sr-mirror-overlay-redir orig)))
     (if (> (length target) (length orig))
@@ -535,9 +544,9 @@
           (write-file target nil))
       ad-do-it)))
 
-;; This toggles the read-only flag in all buffers opened inside a mirror area,
-;; so they are always writeable by default:
 (defun sr-mirror-toggle-read-only ()
+  "Toggle the read-only flag in all buffers opened inside a mirror area,
+so they are always writeable by default."
   (if sr-mirror-home
       (let* ((orig (buffer-file-name))
              (target (sr-mirror-overlay-redir orig)))
@@ -545,8 +554,11 @@
             (toggle-read-only -1)))))
 (add-hook 'find-file-hook 'sr-mirror-toggle-read-only)
 
+(defun sunrise-x-mirror-unload-function ()
+  (sr-ad-disable "^sr-mirror-"))
+
 (provide 'sunrise-x-mirror)
 
 ;;;###autoload (require 'sunrise-x-mirror)
 
-;;; sunrise-x-mirror.el ends here.
+;;; sunrise-x-mirror.el ends here

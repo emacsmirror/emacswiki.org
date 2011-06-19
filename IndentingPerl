@@ -237,5 +237,18 @@ Peter; it looks like the more args you put on a line, the farther it indents; i.
 
 --SteveSanbeg
 
+Above one by SteveSanbeg works fine and portable except the continued statement inside parentheses goes left from the opening parenthesis, so I made my hack into a function and also added a part to prevent continuation inside parentheses from being indented. This indents much like CC Mode.
+  
+ (require 'cperl-mode)
+ (defun cperl-backward-to-start-of-continued-exp (lim)
+   (goto-char containing-sexp)
+   (let ((sexp-start (following-char)))
+     (forward-char)
+     (skip-chars-forward " \t\n")
+     (if (memq sexp-start (append "([" nil)) ; this hack is for continued statements inside parentheses
+         (backward-char cperl-continued-statement-offset))))
+
+--KukiYomanai
+
 ----
 CategoryIndentation

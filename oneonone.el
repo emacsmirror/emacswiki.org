@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Jun 17 10:54:39 2011 (-0700)
+;; Last-Updated: Sat Jun 18 08:18:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2567
+;;     Update #: 2574
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -260,7 +260,7 @@
 ;;; Change Log:
 ;;
 ;; 2011/06/15 dadams
-;;     Moved soft requre of files+.el (switch-to-buffer-other-frame no longer used).
+;;     Removed soft require of files+.el (switch-to-buffer-other-frame no longer used).
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defgroup, defcustom, and commands.
 ;; 2010/11/30 dadams
@@ -571,7 +571,8 @@ Note: This is not used if `1on1-minibuffer-frame-flag' is nil.")
 (defcustom 1on1-minibuffer-frame-flag t
   "*Non-nil means use a separate, specialized frame for the minibuffer.
 Note that a non-nil value for this option also causes option
-`pop-up-frames' to be set to `t'.  That is, it causes `display-buffer' to generally use a separate frame.
+`pop-up-frames' to be set to `t'.  That is, it causes `display-buffer'
+to generally use a separate frame.
 
 If you change this variable, you will need to restart Emacs for it to
 take effect."

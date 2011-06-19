@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 20
-;; Last-Updated: Tue Apr 19 16:14:22 2011 (-0700)
+;; Last-Updated: Sat Jun 18 10:08:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 89
+;;     Update #: 94
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-sort-menu+.el
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,6 +44,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/06/18 dadams
+;;     Updated T prefix-key bindings, because added more in dired+.el.
 ;; 2011/04/19 dadams
 ;;     Restore Dired+ bindings on prefix key T.
 ;; 2011/04/16 dadams
@@ -95,21 +97,34 @@
 (when (fboundp 'diredp-rename-this-file)
   (define-key dired-mode-map "b"       'diredp-byte-compile-this-file)
   (define-key dired-mode-map "r"       'diredp-rename-this-file)
-  (define-key dired-mode-map "T"       nil)
-  (define-key dired-mode-map "T+"      'diredp-tag-this-file)
-  (define-key dired-mode-map "T-"      'diredp-untag-this-file)
-  (define-key dired-mode-map "T>+"     'diredp-do-tag)
-  (define-key dired-mode-map "T>-"     'diredp-do-untag)
-  (define-key dired-mode-map "Tm*"     'diredp-mark-files-tagged-all)
-  (define-key dired-mode-map "Tm%"     'diredp-mark-files-tagged-regexp)
-  (define-key dired-mode-map "Tm+"     'diredp-mark-files-tagged-some)
-  (define-key dired-mode-map "Tm~*"    'diredp-mark-files-tagged-not-all)
-  (define-key dired-mode-map "Tm~+"    'diredp-mark-files-tagged-none)
-  (define-key dired-mode-map "Tu*"     'diredp-unmark-files-tagged-all)
-  (define-key dired-mode-map "Tu%"     'diredp-unmark-files-tagged-regexp)
-  (define-key dired-mode-map "Tu+"     'diredp-unmark-files-tagged-some)
-  (define-key dired-mode-map "Tu~*"    'diredp-unmark-files-tagged-not-all)
-  (define-key dired-mode-map "Tu~+"    'diredp-unmark-files-tagged-none))
+  (define-key dired-mode-map "T"       nil) ; For Emacs20
+  (define-key dired-mode-map "T+"      'diredp-tag-this-file) ; `T +'
+  (define-key dired-mode-map "T-"      'diredp-untag-this-file) ; `T -'
+  (define-key dired-mode-map "T0"      'diredp-remove-all-tags-this-file) ; `T 0'
+  (define-key dired-mode-map "Tc"      'diredp-copy-tags-this-file) ; `T c'
+  (define-key dired-mode-map "Tp"      'diredp-paste-add-tags-this-file) ; `T p'
+  (define-key dired-mode-map "Tq"      'diredp-paste-replace-tags-this-file) ; `T q'
+  (define-key dired-mode-map "Tv"      'diredp-set-tag-value-this-file) ; `T v'
+  (define-key dired-mode-map "T\M-w"   'diredp-copy-tags-this-file) ; `T M-w'
+  (define-key dired-mode-map "T\C-y"   'diredp-paste-add-tags-this-file) ; `T C-y'
+  (define-key dired-mode-map "T>+"     'diredp-do-tag) ; `T > +'
+  (define-key dired-mode-map "T>-"     'diredp-do-untag) ; `T > -'
+  (define-key dired-mode-map "T>0"     'diredp-do-remove-all-tags) ; `T > 0'
+  (define-key dired-mode-map "T>p"     'diredp-do-paste-add-tags) ; `T > p'
+  (define-key dired-mode-map "T>q"     'diredp-do-paste-replace-tags) ; `T > q'
+  (define-key dired-mode-map "T>v"     'diredp-do-set-tag-value) ; `T > v'
+  (define-key dired-mode-map "T>\C-y"  'diredp-do-paste-add-tags) ; `T > C-y'
+  (define-key dired-mode-map "Tm%"     'diredp-mark-files-tagged-regexp) ; `T m %'
+  (define-key dired-mode-map "Tm*"     'diredp-mark-files-tagged-all) ; `T m *'
+  (define-key dired-mode-map "Tm+"     'diredp-mark-files-tagged-some) ; `T m +'
+  (define-key dired-mode-map "Tm~*"    'diredp-mark-files-tagged-not-all) ; `T m ~ *'
+  (define-key dired-mode-map "Tm~+"    'diredp-mark-files-tagged-none) ; `T m ~ +'
+  (define-key dired-mode-map "Tu%"     'diredp-unmark-files-tagged-regexp) ; `T u %'
+  (define-key dired-mode-map "Tu*"     'diredp-unmark-files-tagged-all) ; `T u *'
+  (define-key dired-mode-map "Tu+"     'diredp-unmark-files-tagged-some) ; `T u +'
+  (define-key dired-mode-map "Tu~*"    'diredp-unmark-files-tagged-not-all) ; `T u ~ *'
+  (define-key dired-mode-map "Tu~+"    'diredp-unmark-files-tagged-none) ; `T u ~ +'
+  )
 
 ;; Use "|", not "r".
 (define-key dired-mode-map "|" 'dired-sort-menu-toggle-reverse)
@@ -132,9 +147,8 @@
 ;;; Functions -----------------------------
 
 
-
-
-;; REPLACES ORIGINAL in `dired-sort-menu.el'
+;; REPLACE ORIGINAL in `dired-sort-menu.el'.
+;;
 ;; 1. Fit frame.
 ;; 2. Removed `dired-sort-dialogue-auto-kill-1' from `kill-buffer-hook'.
 ;;
@@ -322,9 +336,8 @@ This command *must* be run in the Dired buffer!"
             'dired-sort-dialogue-auto-kill-2))
 
 
-
-
-;; REPLACES ORIGINAL in `dired-sort-menu.el'
+;; REPLACE ORIGINAL in `dired-sort-menu.el'.
+;;
 ;; Redefined to just `kill-buffer'. My other libraries take care of the rest.
 ;;
 (defun dired-sort-dialogue-close (&rest ignore)
@@ -343,9 +356,8 @@ This command *must* be run in the Dired buffer!"
 ;;;     (select-window (get-buffer-window dired-buffer))))
 
 
-
-
-;; REPLACES ORIGINAL in `dired-sort-menu.el'
+;; REPLACE ORIGINAL in `dired-sort-menu.el'.
+;;
 ;; Protect in case buffer-name is nil.
 ;;
 (defadvice handle-delete-frame

@@ -369,6 +369,10 @@ scrolling long dirs.
 to any directory in the file system using a tree-like hierarchical view like the
 one offered by navigator-style file managers.
 
+*  Install  the  [Lisp:sunrise-x-tabs.el sunrise-x-tabs] extension to be able to
+put pane buffers in tabs and to keep them around with all their marks and  state
+untouched (tabs can be persisted across sessions using the [[DeskTop]] feature.)
+
 * Use the listings of recent files (C-c C-r) and recent directories (C-c C-d) to
 reuse the paths to already visited  files  and  directories.  Recent  files  are
 managed  by  recentf  and  automatically persisted across emacs sessions. If you
@@ -404,10 +408,6 @@ it as a directory like any other, where  you  can  copy,  rename,  delete,  etc.
 file system too! to remove a line only from your virtual dir just mark  it  (m),
 kill  it (k) and save the file. You can create as many files like this for work,
 hobbies and whatnot and keep them at hand in you home directory.
-
-*  Install  the  [Lisp:sunrise-x-tabs.el sunrise-x-tabs] extension to be able to
-put pane buffers in tabs and to keep them around with all their marks and  state
-untouched (tabs can be persisted across sessions using the [[DeskTop]] feature.)
 
 * Use //path projection// to quickly navigate within similar directory trees. If
 you have, say, the trunk version of a project from SVN in directory  trunk/  and

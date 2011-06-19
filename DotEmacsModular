@@ -25,6 +25,18 @@ which supports soft-linking correctly in its startup file.  In order to set the 
 }}}
 For multi-file packages, there is unfortunately no convention to indicate to the user which file is the Right File to symlink.
 
+[new:ThomasKoch:2011-06-18 15:05 UTC]
+
+Debian already included a method like the mentioned <tt>my-site-start</tt>: It's called <tt>debian-run-directories</tt> defined in file /usr/share/emacs/site-lisp/debian-startup.el in package emacsen-common. So I put in my .emacs.d/init.el
+
+{{{
+(setq dotfiles-dir (file-name-directory (or load-file-name (buffer-file-name))))
+
+(let ((user-site-start-dir (concat dotfiles-dir "/site-start.d")))
+    (debian-run-directories user-site-start-dir))
+}}}
+
+
 ----------
 
 CategoryDotEmacs

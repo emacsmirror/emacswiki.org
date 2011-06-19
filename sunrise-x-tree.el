@@ -1,13 +1,14 @@
-;;; sunrise-x-tree.el --- Tree View for the Sunrise Commander File Manager.
+;;; sunrise-x-tree.el --- Tree View for the Sunrise Commander File Manager
 
 ;; Copyright (C) 2010 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 345 $
-;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
+;; RCS Version: $Rev: 374 $
+;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
 
@@ -15,49 +16,49 @@
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
-;; Foundation,  either  version  3 of the License, or (at your option) any later
+;; Foundation, either version 3 of the License, or (at your option) any later
 ;; version.
 ;;
-;; This  program  is distributed in the hope that it will be useful, but WITHOUT
+;; This program is distributed in the hope that it will be useful, but WITHOUT
 ;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-;; FOR  A  PARTICULAR  PURPOSE.  See the GNU General Public License for more de-
+;; FOR A PARTICULAR PURPOSE. See the GNU General Public License for more de-
 ;; tails.
 
-;; You  should have received a copy of the GNU General Public License along with
+;; You should have received a copy of the GNU General Public License along with
 ;; this program. If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
-;; This  extension adds to the Sunrise Commander file manager a directories-only
-;; tree view that can be used for fast navigation, as well as for several  basic
-;; operations  on  files and directories. It uses the excellent "tree-widget.el"
+;; This extension adds to the Sunrise Commander file manager a directories-only
+;; tree view that can be used for fast navigation, as well as for several basic
+;; operations on files and directories. It uses the excellent "tree-widget.el"
 ;; library written by David Ponce and works the same in text consoles as well as
 ;; in graphical environments, using either the mouse or just the keyboard.
 
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 345 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 374 $ of the Sunrise Commander Tree Extension.
 
-;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
+;; It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
 
 ;;; Installation:
 
-;; 1) Put this file somewhere in your emacs load-path.
+;; 1) Put this file somewhere in your Emacs `load-path'.
 
-;; 2)  Add  a (require ’sunrise‐x‐tree) expression to your .emacs file somewhere
-;; after the (require ’sunrise‐commander) one.
+;; 2) Add a (require 'sunrise‐x‐tree) expression to your .emacs file somewhere
+;; after the (require 'sunrise‐commander) one.
 
-;; 3) Evaluate the new expression, or reload your .emacs file, or restart emacs.
+;; 3) Evaluate the new expression, or reload your .emacs file, or restart Emacs.
 
-;; 4) You may have to customize the tree-widget-image-enable variable if all you
-;; get are text-only icons (e.g. "[+]" and "[X]") in your graphical environment,
-;; while you'd rather prefer looking at pretty graphical ones.
+;; 4) You may have to customize the `tree-widget-image-enable' variable if all
+;; you get are text-only icons (e.g. "[+]" and "[X]") in your graphical
+;; environment, while you'd rather prefer looking at pretty graphical ones.
 
 ;; WARNING: If you use Slime be aware that some versions of this package include
 ;; an older version of tree-widget.el that may clobber the one in Emacs and make
-;; this extension work improperly.  At least that's the case in Debian for i386:
+;; this extension work improperly. At least that's the case in Debian for i386:
 ;; slime comes with version 21.4 of tree-widget, but the extension requires 22.1
 ;; or better.
 
@@ -78,10 +79,10 @@
 ;;   of a broader tree, is called BLURRING the folder.
 ;; * Finally, to EXPLODE a given folder means to open it, then all its children,
 ;;   then all the children of its children and so on, as many times as the value
-;;   of the sr-tree-explosion-ratio option (which can be customized). This is an
-;;   additive operation, what means that exploding the same directory many times
-;;   will open more of its descendants deeper and deeper until the tree runs out
-;;   of closed folders in that branch.
+;;   of  the   `sr-tree-explosion-ratio'  option   (which  can   be  customized)
+;;   specifies. This  is an additive  operation, which means that  exploding the
+;;   same directory  many times  will open  more of  its descendants  deeper and
+;;   deeper until the tree runs out of closed folders in that branch.
 
 ;; The Sunrise Tree View mode offers three different ways of navigating the file
 ;; system: with the mouse (for rodent lovers), with the arrow keys (for rookies)
@@ -118,7 +119,7 @@
 
 ;; 3. With alphanumeric keys:
 
-;; * C-t + Space (alternatively C-t + Return) - switch between modes.
+;; * C-t Space (alternatively C-t Return) - switch between modes.
 ;; * n, p - move cursor up/down.
 ;; * Space, Return - open closed folder / browse already open folder.
 ;; * Backspace - close open folder / jump to parent of already closed folder.
@@ -130,29 +131,30 @@
 ;;   happens to be at that moment.
 ;; * C-c C-c - dismiss tree view and return to normal mode.
 
-;; * C-q - is simply another binding for the usual pane synchonization (C-c C-z)
-;;   already present in Sunrise Commander  Core, which in tree mode performs the
-;;   "Quick View" operation required by the OFM standard.
+;; * C-q -  is simply another  binding for  the usual pane  synchronization (C-c
+;;   C-z) already present in Sunrise Commander Core, which in tree mode performs
+;;   the "Quick View" operation required by the OFM standard.
 
 ;; * C-u C-s, C-u C-r - "sticky" interactive search. This works like the regular
-;; iseach, but when the current search is finished with a Return, the folder the
-;; cursor ends on is automatically opened and a new (forward) isearch starts, so
-;; one can continue searching among the children of that folder. This allows for
-;; extremely fast navigation across lengthy paths of directories with just a few
-;; keystrokes. To terminate a sticky search, press C-g or (once  again)  Return.
-;; Sticky searches can be made default in tree panes by customizing the variable
-;; sr-tree-isearch-always-sticky - when set prefix the command to make a regular
-;; (non-sticky) interactive search.
+;; isearch, but when the current search is finished with a Return, the folder
+;; the cursor ends on is automatically opened and a new (forward) Isearch
+;; starts, so one can continue searching among the children of that folder. This
+;; allows for extremely fast navigation across lengthy paths of directories with
+;; just a few keystrokes. To terminate a sticky search, press C-g or (once
+;; again) Return. Sticky searches can be made default in tree panes by
+;; customizing the variable `sr-tree-isearch-always-sticky' - when set, prefix
+;; the command to start a regular (non-sticky) interactive search.
 
-;; *  When AVFS support is active, press "#" to toggle the display of compressed
+;; * When AVFS support is active, press "#" to toggle the display of compressed
 ;; archives in Tree View panes.
 
-;; Additionally,  most of the original keybindings from Sunrise apply (of course
-;; wherever it makes sense). For instance switching/transposing/laying out panes
-;; (Tab, M-Tab, C-c, C-s), showing / hiding hidden directories (C-o), jumping to
-;; parent/arbitrary directory (J, j) and many more, including the following file
-;; manipulation  commands:  copy (C), clone (K), rename (R), delete (D), symlink
-;; (S), relative symlink (Y), create a new directory (+) and show file size (y).
+;; Additionally, most of the original keybindings from Sunrise apply (wherever
+;; it makes sense, of course). For instance switching/transposing/laying out
+;; panes (Tab, M-Tab, C-c, C-s), showing / hiding hidden directories (C-o),
+;; jumping to parent/arbitrary directory (J, j) and many more, including the
+;; following file manipulation commands: copy (C), clone (K), rename (R), delete
+;; (D), symlink (S), relative symlink (Y), create a new directory (+) and show
+;; file size (y).
 
 ;; All directory commands from the Sunrise Buttons extension are also supported.
 ;; It is required to upgrade the Buttons extension to version 1R293 or better to
@@ -167,8 +169,8 @@
 (eval-when-compile (require 'desktop))
 
 (defcustom sr-tree-explosion-ratio 3
-  "Maximum number of directory levels for the sr-tree-explode-branch function to
-  open recursively on every evaluation."
+  "Maximum number of directory levels to recursively open at a time.
+Used by the command `sr-tree-explode-branch'."
   :group 'sunrise
   :type 'integer)
 
@@ -191,17 +193,20 @@
   "List of paths to all the directories open in the current tree view.")
 
 (defvar sr-tree-avfs-seen nil
-  "List of paths to big compressed archives visited through AVFS")
+  "List of paths to big compressed archives visited through AVFS.")
 
 (defvar sr-tree-cursor nil
-  "Cons cell in which the CAR contains the label, and the CDR contains the file
-  path to the selected directory in the current tree view.")
+  ;; FIXME better docstring -- what about LABEL?
+  "Cons cell of the from (LABEL . FILEPATH).
+FILEPATH is the path to the selected directory in the current
+tree view.")
 
 (defvar sr-tree-mode-map (make-sparse-keymap)
   "Keymap for the Sunrise Commander Tree View.")
 
 (defvar sr-buttons-command-adapter nil
-  "(Compiler pacifier) See sr-buttons-command-adapter in sunrise-x-buttons.el")
+  "Compiler pacifier.
+See `sr-buttons-command-adapter' in sunrise-x-buttons.el.")
 
 (defvar sr-tree-omit-archives t "")
 
@@ -231,8 +236,7 @@
   (widget-get (sr-tree-get-button) :parent))
 
 (defun sr-tree-get-cursor ()
-  "Construct a new cons cell containing the tree label and the file path of the
-  currently selected node in the tree representation of the file system."
+  "Return a cursor as documented in `sr-tree-cursor'."
   (let* ((cursor-node (sr-tree-get-button))
          (cursor-tree (if cursor-node (widget-get cursor-node :parent)))
          (cursor-node (widget-get cursor-node :node))
@@ -241,9 +245,9 @@
     (and cursor-tag cursor-path (cons cursor-tag cursor-path))))
 
 (defun sr-tree-update-cursor ()
-  "Update the internal representation of the directory currently selected in the
-  tree and all graphical elements of the interface, depending on the position of
-  the point."
+  "Update the cursor (cf. `sr-tree-cursor').
+Also updates other graphical elements of the interface, depending
+on the position of the point."
   (setq sr-tree-cursor (sr-tree-get-cursor))
   (when sr-tree-cursor
     (setq sr-this-directory (cdr sr-tree-cursor))
@@ -271,9 +275,10 @@
   (sr-highlight))
 
 (defun sr-tree-refresh-branch (&optional prefix)
-  "Revert the currently selected branch in the directory tree. If no branch is
-  selected, then select the root node and revert the whole tree. If PREFIX is
-  not nil, close first all open subdirectories in the tree."
+  "Revert the currently selected branch in the directory tree.
+If no branch is selected, then select the root node and revert
+the whole tree. If PREFIX is non-nil, close all open
+subdirectories in the tree first."
   (interactive "P")
   (if prefix
       (setq sr-tree-open-paths nil))
@@ -289,8 +294,9 @@
   (sr-tree-refresh-branch))
 
 (defun sr-tree-widget (e &optional open)
-  "Return a widget to display directory E. With a non-nil optional argument
-  OPEN, display the widget as open from the start."
+  "Return a widget to display directory E.
+With a non-nil optional argument OPEN, display the widget as open
+initially."
   (let ((is-open (or open (member e sr-tree-open-paths)))
         (tag (replace-regexp-in-string "/?$" "" e)))
     (setq tag (file-name-as-directory (file-name-nondirectory tag)))
@@ -303,8 +309,7 @@
       :path ,e)))
 
 (defun sr-tree-path-line (&optional path)
-  "Transform PATH into a suitable path line for displaying at the top of the
-  pane."
+  "Transform PATH into a suitable path line for displaying at the pane top."
   (let ((path (expand-file-name (or path (cdr sr-tree-cursor) ""))))
     (replace-regexp-in-string "/?$" "" path)))
 
@@ -323,8 +328,8 @@
       (sr-highlight))))
 
 (defun sr-tree-check-virtual-size (entry)
-  "Allow user to abort before trying to access a large compressed archive
-  through avfs." ;; TODO: use function abort-if-file-too-large instead:
+  "Allow user to abort before trying to access a large archive through AVFS."
+  ;; TODO: use function abort-if-file-too-large instead:
   (if (and sr-avfs-root
            (sr-overlapping-paths-p sr-avfs-root entry)
            (string-match "^\\([^#]+\\)#" entry))
@@ -350,22 +355,22 @@
 
       (cond ((eq ?. (string-to-char (substring entry -1)))
              (ignore))
-            
+
             ((and dired-omit-mode (eq ?. (string-to-char rel-entry)))
              (ignore))
-            
+
             ((file-directory-p entry)
              (setq dirs (cons entry dirs)))
-            
+
             ((and (not sr-tree-omit-archives) (sr-avfs-directory-p entry))
              (setq dirs (cons (sr-tree-avfs-dir entry) dirs)))
-            
+
             (t (ignore))))
     (nreverse dirs)))
 
 (defun sr-tree-avfs-dir (filename)
-  "Return the virtual path for accessing FILENAME through avfs in Tree View
-  panes, or nil if avfs cannot manage this kind of file."
+  "Return the virtual path for accessing FILENAME through AVFS in Tree View panes.
+Returns nil if AVFS cannot manage this kind of file."
   (let* ((handler
           (or (assoc-default filename sr-tree-avfs-handlers-alist 'string-match)
               (assoc-default filename sr-avfs-handlers-alist 'string-match)))
@@ -375,7 +380,7 @@
     (sr-tree-path-line vdir)))
 
 (defun sr-tree-expand-dir (tree)
-  "Return TREE widget children. Reuse :args cache if exists."
+  "Return TREE widget children. Reuse :args cache if it exists."
   (or (widget-get tree :args)
       (let ((dir (widget-get tree :path)))
         (message "Reading directory '%s'..." dir)
@@ -389,8 +394,7 @@
            nil)))))
 
 (defun sr-tree-register-path (widget)
-  "Add the path in WIDGET to the list of open paths in the current Sunrise Tree
-  buffer."
+  "Add path from WIDGET to the current Sunrise Tree buffer's list of open paths."
   (let ((path (sr-tree-path-line (widget-get widget :path))))
     (setq sr-tree-open-paths
           (if (widget-get widget :open)
@@ -434,8 +438,8 @@
      (sr-tree-mode))))
 
 (defun sr-tree-goto-dir (root &optional keep-state)
-  "Implementation of the sr-goto-dir function for buffers in Sunrise Tree
-  mode. See also variable sr-goto-dir-function."
+  "`sr-goto-dir' replacement for buffers in Sunrise Tree mode.
+See also the variable `sr-goto-dir-function'."
   (interactive)
   (setq root (expand-file-name root))
   (let ((cursor sr-tree-cursor)
@@ -501,8 +505,9 @@
 
 (defun sr-tree-toggle-branch (&optional action)
   "Open/close (graphically) the node selected in the current Sunrise Tree pane.
-  Optional ACTION is one of the symbols 'open or 'close and allows to specify
-  whether the node has to be open only if closed, or closed only if open."
+Optional ACTION is one of the symbols `open' or `close' and
+allows to specify whether the node has to be open only if closed,
+or closed only if open."
   (interactive)
   (let* ((branch (sr-tree-get-branch))
          (is-open (widget-get branch :open))
@@ -519,22 +524,24 @@
       t)))
 
 (defun sr-tree-open-branch ()
-  "Unfold (graphically) the directory selected in the current Sunrise Tree pane,
-  displaying the subdirectories directly under it."
+  "Unfold (graphically) the directory selected in the current Sunrise Tree pane.
+Displays the subdirectories directly under it."
   (interactive)
   (if (widget-get (sr-tree-get-branch) :open)
       (sr-tree-advertised-find-file)
     (sr-tree-toggle-branch 'open)))
 
 (defun sr-tree-close-branch ()
-  "Fold the selected directory, hiding all subdirectories being displayed under
-  it or any of its subdirectories."
+  "Fold the selected directory.
+Hides all subdirectories being displayed under it or any of its
+subdirectories."
   (interactive)
   (sr-tree-toggle-branch 'close))
 
 (defun sr-tree-collapse-branch ()
-  "If the current folder is open, close it. If it is closed, move to its parent
-  directory, building a new tree if necessary."
+  "If the current folder is open, close it.
+If it is closed, move to its parent directory, building a new
+tree if necessary."
   (interactive)
   (let ((branch (sr-tree-get-branch)))
     (if (widget-get branch :open)
@@ -544,9 +551,10 @@
         (sr-tree-close-branch)))))
 
 (defun sr-tree-explode-branch (&optional level branch)
-  "Open the selected directory and all its open subdirectories recursively, down
-  to the number of levels determined by variable sr-tree-explosion-ratio. LEVEL
-  and BRANCH optional arguments are used only internally to control recursion."
+  "Open the selected directory and all its open subdirectories recursively.
+The number of levels is determined by the variable
+`sr-tree-explosion-ratio'. LEVEL and BRANCH optional arguments
+are used only internally to control recursion."
   (interactive)
   (unless (or level branch)
     (recenter (truncate (/ (window-body-height) 10.0))))
@@ -561,9 +569,9 @@
         (sr-tree-explode-branch level child)))))
 
 (defun sr-tree-search-cursor (&optional init-cursor recursing)
-  "Try to move the point to the node represented by INIT-CURSOR. If this is nil
-  use the value of sr-tree-cursor instead. On failure put the point at the top
-  of the pane."
+  "Try to move the point to the node represented by INIT-CURSOR.
+If it is nil, use the value of `sr-tree-cursor' instead. On
+failure, put the point at the top of the pane."
   (let ((cursor (or init-cursor sr-tree-cursor)) new-cursor)
     (if (null cursor)
         (sr-tree-beginning-of-buffer)
@@ -577,7 +585,7 @@
           (sr-tree-update-cursor))))))
 
 (defun sr-tree-isearch-prompt ()
-  "Displays the message that appears when a sticky search is launched."
+  "Display the message that appears when a sticky search is launched."
   (message (propertize "Sunrise Tree sticky I-search (C-g to exit): "
                        'face 'minibuffer-prompt)))
 
@@ -597,14 +605,14 @@
     ([3 right]   . 'sr-tree-explode-branch)
     ("\C-c\C-m"  . 'sr-tree-explode-branch)
 
-    ) "keybindings installed in isearch-mode during a sticky search.")
+    ) "Keybindings installed in `isearch-mode' during a sticky search.")
 
 (defsubst sr-tree-isearch-command (binding)
   `(lambda () (interactive) (sr-tree-post-isearch ,(cdr binding))))
 
 (defun sr-tree-isearch-setup ()
-  "Set up isearch to perform sticky searches in Sunrise Tree panes. To be added
-  to `isearch-mode-hook'"
+  "Set up Isearch to perform sticky searches in Sunrise Tree panes.
+Used from `isearch-mode-hook'."
   (add-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
   (set (make-local-variable 'search-nonincremental-instead) nil)
   (define-key isearch-mode-map "\C-c" (make-sparse-keymap))
@@ -616,7 +624,7 @@
   (run-hooks 'sr-refresh-hook))
 
 (defun sr-tree-isearch-done ()
-  "Clean up the isearch hook and keymap after a sticky search."
+  "Clean up the Isearch hook and keymap after a sticky search."
   (remove-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
   (kill-local-variable 'search-nonincremental-instead)
   (mapc (lambda (binding)
@@ -627,9 +635,9 @@
   (setq isearch-mode-end-hook-quit t))
 
 (defun sr-tree-isearch-forward (&optional prefix)
-  "Prefixable version of isearch-forward used in Sunrise Tree mode. With PREFIX
-  starts a new isearch-forward immediately after the previous one exits as long
-  as C-g is not pressed."
+  "Prefixable version of `isearch-forward' used in Sunrise Tree mode.
+With PREFIX, starts a new `isearch-forward' immediately after the
+previous one exits as long as C-g is not pressed."
   (interactive "P")
   (if (or (and prefix (not sr-tree-isearch-always-sticky))
           (and (not prefix) sr-tree-isearch-always-sticky))
@@ -637,18 +645,18 @@
     (isearch-forward nil t)))
 
 (defun sr-tree-sticky-isearch-forward ()
-  "Concatenates isearch operations to allow  fast  navigation through long paths
-  in the file system, until C-g is pressed (to abort) or Return is pressed twice
-  on a folder (to dismiss tree view and visit that folder)."
+  "Chain Isearch operations to allow fast navigation through long file paths.
+Press C-g to abort, or Return twice on a folder to dismiss Tree
+View and visit that folder."
   (interactive)
   (sr-tree-isearch-setup)
   (isearch-forward nil t)
   (run-with-idle-timer 0.01 nil 'sr-tree-isearch-prompt))
 
 (defun sr-tree-isearch-backward (&optional prefix)
-  "Prefixable version of isearch-backward used in Sunrise Tree mode. With PREFIX
-  starts a new isearch-forward immediately after the previous search exits until
-  C-g not pressed."
+  "Prefixable version of `isearch-backward' used in Sunrise Tree mode.
+With PREFIX, starts a new `isearch-forward' immediately after the
+previous search exits until C-g is pressed."
   (interactive "P")
   (if (or (and prefix (not sr-tree-isearch-always-sticky))
           (and (not prefix) sr-tree-isearch-always-sticky))
@@ -657,16 +665,15 @@
   (run-with-idle-timer 0.01 nil 'sr-tree-isearch-prompt))
 
 (defun sr-tree-sticky-isearch-backward ()
-  "Concatenates isearch operations to allow  fast  navigation through long paths
-  in the file system, until C-g is pressed (to abort) or Return is pressed twice
-  on a folder (to dismiss tree view and visit that folder)."
+  "Chain Isearch operations to allow fast navigation through long file paths.
+Press C-g to abort, or Return twice on a folder to dismiss Tree
+View and visit that folder."
   (interactive)
   (sr-tree-isearch-setup)
   (isearch-backward nil t))
 
 (defun sr-tree-post-isearch (&optional command)
-  "Function installed in isearch-mode-end-hook during sticky isearch operations
-  in Sunrise Tree View mode."
+  "Installed in `isearch-mode-end-hook' during sticky Isearch operations."
   (sr-tree-update-cursor)
   (cond (command (sr-tree-isearch-command-loop command))
         (isearch-mode-end-hook-quit (sr-tree-isearch-done))
@@ -680,7 +687,7 @@
 
 (defun sr-tree-isearch-command-loop (command)
   (funcall command)
-  (let* ((msg "Sunrise Tree: sticky I-search (C-g to exit)")
+  (let* ((msg "Sunrise Tree: sticky Isearch (C-g to exit)")
          (key (read-key-sequence msg))
          (next-command (lookup-key sr-tree-mode-map key)))
     (while (memq next-command '(sr-tree-explode-branch
@@ -693,16 +700,14 @@
     (setq isearch-mode-end-hook-quit nil)))
 
 (defun sr-tree-focus-branch ()
-  "Replace the current tree with a new one having the selected directory as its
-  root node."
+  "Replace the current tree with a new one rooted in the selected directory."
   (interactive)
   (unless (eq (sr-tree-get-branch) sr-tree-root)
     (sr-tree-goto-dir (cdr sr-tree-cursor) t)
     (if sr-tree-open-paths (revert-buffer))))
 
 (defun sr-tree-blur-branch ()
-  "Replace the current tree with a new one having the parent of the current root
-  directory as its root, keeping the cursor at its current position."
+  "Change root of the current tree to its parent, keeping the cursor position."
   (interactive)
   (let ((cursor sr-tree-cursor))
     (unless (eq (sr-tree-get-branch) sr-tree-root)
@@ -713,7 +718,7 @@
   (recenter))
 
 (defun sr-tree-omit-mode (&optional force)
-  "Toggle dired-omit-mode in the current Sunrise Tree View pane."
+  "Toggle `dired-omit-mode' in the current Sunrise Tree View pane."
   (interactive)
   (setq dired-omit-mode (or force (not dired-omit-mode)))
   (revert-buffer))
@@ -729,8 +734,8 @@
         (recenter (truncate (/ (window-body-height) 10.0))))))
 
 (defun sr-tree-handle-mouse-event (e handler)
-  "Handle mouse event E by calling function HANDLER after updating the cursor at
-  point. Return t if the event was successfully handled."
+  "Handle mouse event E by updating point and calling HANDLER.
+Return t if the event was successfully handled."
   (when (and e (eq major-mode 'sr-tree-mode))
     (mouse-set-point e)
     (when (sr-tree-get-button)
@@ -739,25 +744,25 @@
       t)))
 
 (defun sr-tree-mouse-toggle-branch (e)
-  "Open/close (graphically) the folder clicked with the mouse. Also handle the
-  case when the click occurs on the path line."
+  "Open/close (graphically) the folder clicked with the mouse.
+Also handle the case when the click occurs on the path line."
   (interactive "e")
   (or (sr-tree-handle-mouse-event e 'sr-tree-toggle-branch)
       (sr-mouse-advertised-find-file e)))
 
 (defun sr-tree-mouse-focus-branch (e)
-  "Version of sr-tree-focus-branch (which see) for the mouse."
+  "Version of `sr-tree-focus-branch' (which see) for the mouse."
   (interactive "e")
   (sr-tree-handle-mouse-event e 'sr-tree-focus-branch))
 
 (defun sr-tree-mouse-blur-branch (e)
-  "Version of sr-tree-blur-branch (which see) for the mouse."
+  "Version of `sr-tree-blur-branch' (which see) for the mouse."
   (interactive "e")
   (or (sr-tree-handle-mouse-event e 'sr-tree-blur-branch)
       (sr-tree-blur-branch)))
 
 (defun sr-tree-mouse-explode-branch (e)
-  "Version of sr-tree-explode-branch (which see) for the mouse."
+  "Version of `sr-tree-explode-branch' (which see) for the mouse."
   (interactive "e")
   (sr-tree-handle-mouse-event e 'sr-tree-explode-branch))
 
@@ -765,8 +770,9 @@
 ;;; File system navigation functions:
 
 (defun sr-tree-prev-subdir (&optional keep-state)
-  "Move to the parent of the currently selected directory in Sunrise Tree View
-  mode, resetting the list of open directories unless KEEP-STATE is not nil."
+  "Move to the parent of currently selected directory in Tree View mode.
+Resets the list of open directories unless KEEP-STATE is not
+nil."
   (interactive)
   (let* ((branch (sr-tree-get-branch))
          (parent (widget-get branch :parent)))
@@ -805,8 +811,7 @@
   (sr-tree-handle-mouse-event e 'sr-tree-advertised-find-file))
 
 (defun sr-tree-advertised-find-file-other ()
-  "In Sunrise Tree View mode, visit the currently selected file or directory in
-  the passive pane."
+  "Visit the currently selected file or directory in the passive pane."
   (interactive)
   (let ((target (cdr sr-tree-cursor)) (side (sr-other)))
     (sr-tree-check-virtual-size target)
@@ -819,7 +824,7 @@
       (if (fboundp 'sr-tabs-refresh) (sr-tabs-refresh)))))
 
 (defun sr-tree-sync ()
-  "Toggles the synchronized navigation feature in Sunrise Tree View panes."
+  "Toggle the synchronized navigation feature in Sunrise Tree View panes."
   (interactive)
   (sr-sync)
   (sr-tree-update-cursor))
@@ -827,9 +832,10 @@
 ;;; ============================================================================
 ;;; File system manipulation functions:
 
-(defmacro sr-tree-adapt-dired-command (command)
-  "Redefines locally a few dired functions, so the basic dired commands for file
-  manipulation can work in Sunrise Tree View mode."
+(defmacro sr-tree-adapt-dired-command (form)
+  "Evaluate FORM with a few Dired functions locally redefined.
+Necessary so the basic Dired file manipulation commands can work
+in Sunrise Tree View mode."
   `(let ((ad-redefinition-action 'accept))
      (ad-deactivate 'dired-get-filename)
      (flet
@@ -839,37 +845,34 @@
                              (message
                               "%s: directory"
                               (directory-file-name (car sr-tree-cursor)))))
-       ,command)
+       ,form)
      (ad-activate 'dired-get-filename)))
 
 (defun sr-tree-do-copy ()
-  "Copy recursively all selected files and directories from the active pane to
-  the passive one when one of the panes (or both) is in Sunrise Tree View mode."
+  "Recursively copy all selected files and directories between panes.
+Copies files from the active to the passive pane."
   (interactive)
   (sr-tree-adapt-dired-command (sr-do-copy)))
 
 (defun sr-tree-do-clone ()
-  "Clone recursively all selected files and directories from the active pane to
-  the passive one when one of the panes (or both) is in Sunrise Tree View mode."
+  "Recursively clone all selected files and directories between panes.
+Clones files from active to the passive pane."
   (interactive)
   (sr-tree-adapt-dired-command (sr-do-clone)))
 
 (defun sr-tree-do-symlink ()
-  "Make symbolic links in the passive pane to all selected files and directories
-  in the active one when one of the panes (or both) is a Sunrise Tree View."
+  "Create symbolic links in the passive pane to selected files in the active pane."
   (interactive)
   (sr-tree-adapt-dired-command (sr-do-symlink)))
 
 (defun sr-tree-do-relsymlink ()
-  "Make relative symbolic links in the passive pane to all selected files and
-  directories in the active one when one of the panes (or both) is in Sunrise
-  Tree View mode."
+  "Make relative symbolic links in the passive pane to selected files in the active pane."
   (interactive)
   (sr-tree-adapt-dired-command (sr-do-relsymlink)))
 
 (defun sr-tree-do-rename ()
-  "Move recursively all selected files and directories from the active pane to
-  the passive one when one of the panes (or both) is in Sunrise Tree View mode."
+  "Recursively move all selected files and directories between panes.
+Moves files from the active pane to the passive pane."
   (interactive)
   (sr-tree-adapt-dired-command (sr-do-rename))
   (unless (file-exists-p (cdr sr-tree-cursor))
@@ -885,7 +888,7 @@
     (sr-tree-refresh-branch)))
 
 (defun sr-tree-show-files-info ()
-  "Version of sr-show-files-info (which see) for Sunrise Tree View panes."
+  "Version of `sr-show-files-info' (which see) for Sunrise Tree View panes."
   (interactive)
   (sr-tree-adapt-dired-command (sr-show-files-info)))
 
@@ -928,8 +931,9 @@
 ;;; Sunrise Core + Tabs + Mode Line integration:
 
 (defun sr-tree-view (&optional desktop-mode)
-  "Make the transition from Sunrise normal mode to Tree View. If DESKTOP-MODE is
-  not nil, do not kill the current buffer (necessary during desktop-read)."
+  "Switch from Sunrise normal mode to Tree View.
+If DESKTOP-MODE is non-nil, do not kill the current
+buffer (necessary during `desktop-read')."
   (interactive)
   (let ((default-directory (or (dired-default-directory) default-directory)))
     (sr-save-aspect
@@ -945,13 +949,13 @@
     (sr-force-passive-highlight)))
 
 (defun sr-tree-mouse-view (e)
-  "Make the transition from Sunrise normal mode to Tree View using the mouse."
+  "Switch from Sunrise normal mode to Tree View using the mouse."
   (interactive "e")
   (sr-mouse-change-window e)
   (sr-tree-view))
 
 (defun sr-tree-dismiss ()
-  "Make the transition from Tree View to normal mode."
+  "Switch from Tree View to normal mode."
   (interactive)
   (let ((target (widget-get sr-tree-root :path))
         (sr-goto-dir-function nil))
@@ -959,7 +963,7 @@
      (sr-alternate-buffer (sr-goto-dir target)))))
 
 (defun sr-tree-mouse-dismiss (e)
-  "Make the transition from Tree View to normal mode using the mouse."
+  "Switch from Tree View to normal mode using the mouse."
   (interactive "e")
   (sr-mouse-change-window e)
   (sr-tree-dismiss))
@@ -995,9 +999,9 @@
     ) "Sunrise Buttons-to-Tree commands translation table.")
 
 (defun sr-tree-buttons-command-adapter (command)
-  "Execute the given buttons command in the current Sunrise Tree View pane. If
-  the command doesn't make sense in the current context, switch first to normal
-  mode, then execute."
+  "Execute the given buttons command in the current Sunrise Tree View pane.
+If the command doesn't make sense in the current context, first
+switch to normal mode, then execute."
   (let ((translation (cdr (assq command sr-tree-button-commands))))
     (if translation
         (call-interactively translation)
@@ -1008,24 +1012,21 @@
 ;;; Tree Widget adapter functions:
 
 (defun sr-tree-widget-forward (arg)
-  "Replaces function widget-forward in tree-widget-button-keymap to change its
-  behavior only in Sunrise Tree View mode."
+  "`widget-forward' replacement for use in `tree-widget-button-keymap'."
   (interactive "p")
   (if (eq major-mode 'sr-tree-mode)
       (sr-change-window)
     (widget-forward arg)))
 
 (defun sr-tree-widget-button-press (pos &optional event)
-  "Replaces function widget-button-press in tree-widget-button-keymap to change
-  its behavior only in Sunrise Tree View mode."
+  "`widget-button-press' replacement for use in `tree-widget-button-keymap'."
   (interactive "@d")
   (if (eq major-mode 'sr-tree-mode)
       (sr-tree-open-branch)
     (widget-button-press pos event)))
 
 (defun sr-tree-widget-button-click (event)
-  "Replaces function widget-button-click in tree-widget-button-keymap to change
-  its behavior only in Sunrise Tree View mode."
+  "`widget-button-click' replacement for use in `tree-widget-button-keymap'."
   (interactive "e")
   (unless (eq major-mode 'sr-tree-mode)
     (tree-widget-button-click event)))
@@ -1138,7 +1139,7 @@
 ;;; Bootstrap:
 
 (defun sr-tree-menu-init ()
-  "Initializes the Sunrise Tree extension menu."
+  "Initialize the Sunrise Tree extension menu."
 
   (unless (lookup-key sr-mode-map [menu-bar Sunrise])
     (define-key sr-mode-map [menu-bar Sunrise]
@@ -1161,12 +1162,14 @@
 
 (add-hook 'sr-start-hook 'sr-tree-menu-init)
 
+(defun sunrise-x-tree-unload-function ()
+  (sr-ad-disable "^sr-tree-"))
+
 ;;; ============================================================================
 ;;; Desktop support:
 
 (defun sr-tree-desktop-save-buffer (desktop-dirname)
-  "Returns the additional data for saving a sunrise tree buffer to a desktop
-  file."
+  "Return additional data for saving a Sunrise tree buffer to a desktop file."
   (append `((root . ,(widget-get sr-tree-root :path))
             (open-paths . ,sr-tree-open-paths)
             (cursor ,sr-tree-cursor)
@@ -1179,7 +1182,7 @@
 (defun sr-tree-desktop-restore-buffer (desktop-buffer-file-name
                                        desktop-buffer-name
                                        desktop-buffer-misc)
-  "Restores a sunrise tree buffer from a description in a desktop file."
+  "Restore a Sunrise tree buffer from a description in a desktop file."
   (sr-tree-view t)
   (setq sr-tree-open-paths (cdr (assoc 'open-paths desktop-buffer-misc)))
   (setq dired-omit-mode (cdr (assoc 'omit-mode desktop-buffer-misc)))
@@ -1203,4 +1206,4 @@
 
 ;;;###autoload (require 'sunrise-x-tree)
 
-;;; sunrise-x-tree.el ends here.
+;;; sunrise-x-tree.el ends here

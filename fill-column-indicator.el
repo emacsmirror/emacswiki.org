@@ -379,7 +379,7 @@ troubleshooting.)"
                   fci-limit (if fci-newline-sentinel
                                 (1+ (- fill-column (length fci-saved-eol)))
                               fill-column))
-            (fci-make-before-strings)
+            (fci-make-overlay-strings)
             ;; In case we were already in fci-mode and are resetting the
             ;; indicator, clear out any existing overlays.
             (when fci-local-vars-set
@@ -502,7 +502,7 @@ troubleshooting.)"
                       . ,(propertize str 'cursor cursor))
                     (space :width 0))))))
 
-(defun fci-make-before-strings ()
+(defun fci-make-overlay-strings ()
   (let* ((color (fci-get-rule-color))
          (str (fci-make-rule-string color))
          (spec (fci-make-rule-spec fci-rule-width color))
@@ -639,8 +639,8 @@ troubleshooting.)"
   (let (o cc)
     (while (search-forward "\n" end t)
       (goto-char (match-beginning 0))
-      (setq cc (current-column))
-      (setq o (make-overlay (match-beginning 0) (match-beginning 0)))
+      (setq cc (current-column)
+						o (make-overlay (match-beginning 0) (match-beginning 0)))
       (overlay-put o 'fci t)
       (cond 
        ((< cc fci-limit)
@@ -650,11 +650,6 @@ troubleshooting.)"
        (t
         (overlay-put o 'after-string fci-post-limit-string)))
       (goto-char (match-end 0)))))
-
-(defun fci-get-col (pos)
-  (save-excursion
-    (goto-char pos)
-    (current-column)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Entry Points to Drawing/Undrawing
@@ -689,7 +684,7 @@ troubleshooting.)"
 
 (defun fci-put-overlays-buffer ()
   (fci-sanitize-actions
-   (overlay-recenter (point-min))
+   (overlay-recenter (point-max))
    (fci-put-overlays-region (point-min) (point-max))))
 
 (defun fci-delete-overlays-buffer ()

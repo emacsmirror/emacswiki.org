@@ -154,9 +154,9 @@ Shouldn't this work?
      
 == Switch between Term-mode and Shell-mode ==
 
-Bellow it's a function which allows you to to switch between Term mode and Shell mode, in the same buffer. 
+Below is a function which allows you to switch between Term mode and Shell mode, in the same buffer. 
 
-Notice that it works properly only if started from an term buffer (started with `ansi-term') which properly initialize bash for the work in a terminal.
+Notice that it works properly only if started from an term buffer (started with `ansi-term') which properly initializes bash for working in a terminal.
 
  (require 'shell)
  (require 'term)
@@ -180,7 +180,7 @@ Notice that it works properly only if started from an term buffer (started with 
         (term-send-raw-string (kbd "C-l"))
         )))
 
-I bound it to C-j to easelly switch between the two modes:
+I bound it to C-j to easily switch between the two modes:
 
   (define-key term-raw-map (kbd "C-j") 'term-switch-to-shell-mode)
 

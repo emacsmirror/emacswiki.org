@@ -2,6 +2,9 @@ This page is about package '''[::Dired+]''' (library <tt>[[dired+.el]]</tt>), wh
 
 == Dired+ Features ==
 
+For help about '''Dired+''' you can use `h' (or `C-h m') in DiredMode, or `M-x diredp-dired-plus-help' anywhere.
+
+
 Here are some of the things '''Dired+''' does:
 
 * Changes some key bindings and enhances some menus.

@@ -1,13 +1,14 @@
-;;; sunrise-x-loop.el --- Asynchronous execution of filesystem operations for the Sunrise Commander File Manager.
+;;; sunrise-x-loop.el --- asynchronous execution of filesystem operations for the Sunrise Commander File Manager
 
 ;; Copyright (C) 2008-2010 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 27 Jun 2008
 ;; Version: 3
-;; RCS Version: $Rev: 315 $
-;; Keywords: Sunrise Commander Emacs File Manager Background Copy Rename Move
+;; RCS Version: $Rev: 374 $
+;; Keywords: sunrise commander, background copy rename move
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-loop.el
 ;; Compatibility: GNU Emacs 22+
 
@@ -15,66 +16,66 @@
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
-;; Foundation,  either  version  3 of the License, or (at your option) any later
+;; Foundation, either version 3 of the License, or (at your option) any later
 ;; version.
 ;;
-;; This  program  is distributed in the hope that it will be useful, but WITHOUT
+;; This program is distributed in the hope that it will be useful, but WITHOUT
 ;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-;; FOR  A  PARTICULAR  PURPOSE.  See the GNU General Public License for more de-
+;; FOR A PARTICULAR PURPOSE. See the GNU General Public License for more de-
 ;; tails.
 
-;; You  should have received a copy of the GNU General Public License along with
+;; You should have received a copy of the GNU General Public License along with
 ;; this program. If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
-;; This  extension  adds  to  the Sunrise Commander the capability of performing
-;; copy and rename operations in the background. It provides prefixable  drop-in
-;; replacements  for  the  sr-do-copy and sr-do-rename commands and uses them to
-;; redefine their bindings in the sr-mode-map keymap. When invoked the usual way
-;; (by  pressing C or R), these new functions work exactly as the old ones, i.e.
-;; they simply pass the control flow to the logic already provided  by  Sunrise,
-;; but  when  prefixed (by pressing C-u C or C-u R) they launch a separate elisp
-;; intepreter in the background, delegate to it the  execution  of  all  further
-;; operations  and  return immediately, so the emacs UI remains fully responsive
-;; while any potentially long-running copy or move tasks can  be  let  alone  to
-;; eventually reach their completion in the background.
+;; This extension adds to the Sunrise Commander the capability of performing
+;; copy and rename operations in the background. It provides prefixable drop-in
+;; replacements for the `sr-do-copy' and `sr-do-rename' commands and uses them
+;; to redefine their bindings in the `sr-mode-map' keymap. When invoked the
+;; usual way (by pressing C or R), these new functions work exactly as the old
+;; ones, i.e. they simply pass the control flow to the logic already provided by
+;; Sunrise, but when prefixed (by pressing C-u C or C-u R) they launch a
+;; separate Elisp intepreter in the background, delegate to it the execution of
+;; all further operations and return immediately, so the Emacs UI remains fully
+;; responsive while any potentially long-running copy or move tasks can be let
+;; alone to eventually reach their completion in the background.
 
-;; After  all  requested actions have been performed, the background interpreter
-;; remains active for a short period of time (30 seconds by default, but it  can
+;; After all requested actions have been performed, the background interpreter
+;; remains active for a short period of time (30 seconds by default, but it can
 ;; be customized), after which it shuts down automatically.
 
 ;; At any moment you can abort all tasks scheduled and under execution and force
-;; the background interpreter to shut down by invoking the sr-loop-stop  command
-;; (M-x sr-loop-stop).
+;; the background interpreter to shut down by invoking the `sr-loop-stop'
+;; command (M-x sr-loop-stop).
 
-;; If  you  need to debug something or are just curious about how this extension
-;; works, you can set the variable sr-loop-debug to t to  have  the  interpreter
-;; launched  in  debug  mode.  In  this  mode all input and output of background
-;; operations are sent to a buffer named *SUNRISE-LOOP*.  To  return  to  normal
-;; mode set back sr-loop-debug to nil and use sr-loop-stop to kill the currently
-;; running interpreter.
+;; If you need to debug something or are just curious about how this extension
+;; works, you can set the variable `sr-loop-debug' to t to have the interpreter
+;; launched in debug mode. In this mode all input and output of background
+;; operations are sent to a buffer named *SUNRISE-LOOP*. To return to normal
+;; mode set `sr-loop-debug' back to nil and use `sr-loop-stop' to kill the
+;; currently running interpreter.
 
 ;; The extension disables itself and tries to do its best to keep out of the way
-;; when working with remote directories through FTP (e.g. when using  ange-ftp),
+;; when working with remote directories through FTP (e.g. when using ange-ftp),
 ;; since in these cases the execution of file transfers in the background should
 ;; be managed directly by the FTP client.
 
-;; This is version 3 $Rev: 315 $ of the Sunrise Commander Loop Extension.
+;; This is version 3 $Rev: 374 $ of the Sunrise Commander Loop Extension.
 
-;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
-;; for Linux and on EmacsW32 (version 22) for  Windows.
+;; It was written on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
+;; for Linux and on EmacsW32 (version 22) for Windows.
 
 ;;; Installation and Usage:
 
-;; 1) Put this file somewhere in your emacs load-path.
+;; 1) Put this file somewhere in your Emacs `load-path'.
 
-;; 2)  Add  a (require 'sunrise-x-loop) expression to your .emacs file somewhere
+;; 2) Add a (require 'sunrise-x-loop) expression to your .emacs file somewhere
 ;; after the (require 'sunrise-commander) one.
 
-;; 3) Evaluate the new expression, or reload your .emacs file, or restart emacs.
+;; 3) Evaluate the new expression, or reload your .emacs file, or restart Emacs.
 
-;; 4)  The  next  time  you  need to copy of move any big files, just prefix the
+;; 4) The next time you need to copy of move any big files, just prefix the
 ;; appropriate command with C-u.
 
 ;; 5) Enjoy ;-)
@@ -84,23 +85,24 @@
 (eval-when-compile (require 'sunrise-commander))
 
 (defcustom sr-loop-debug nil
-  "Activates  debug mode in the Sunrise Loop extension. When set, the background
-  elisp interpreter is launched in such a way  that  all  background  input  and
-  output  are  sent  to  a  buffer  named *SUNRISE LOOP* and automatic lifecycle
-  management is disabled (i.e. you have to kill the interpreter  manually  using
-  sr-loop-stop to get rid of it)."
+  "Activate debug mode in the Sunrise Loop extension.
+When set, the background elisp interpreter is launched in such a
+way that all background input and output are sent to a buffer
+named *SUNRISE LOOP* and automatic lifecycle management is
+disabled (i.e. you have to kill the interpreter manually using
+sr-loop-stop to get rid of it)."
   :group 'sunrise
   :type 'boolean)
 
 (defcustom sr-loop-timeout 30
-  "Time  to  wait (in seconds) while idle before automatically shutting down the
-  Sunrise Loop elisp interpreter after executing one or more operations  in  the
-  background."
+  "Number of seconds to wait while idle before shutting down the interpreter.
+After executing one or more operations in the background, the
+Sunrise Loop Elisp interpreter will be killed automatically after
+this amount of time."
   :group 'sunrise)
 
 (defcustom sr-loop-use-popups t
-  "Instructs  Sunrise  Loop  to  display  a  pop‐up  notification every time its
-  internal execution queue is emptied."
+  "When non-nil, display pop‐up notification when execution queue is emptied."
   :group 'sunrise
   :type 'boolean)
 
@@ -115,9 +117,10 @@
   (define-key sr-mode-map "R" 'sr-loop-do-rename))
 
 (defun sr-loop-start ()
-  "Launches   and   initiates  a  new  background  elisp  interpreter.  The  new
-  interpreter runs in batch mode and inherits all  functions  from  the  Sunrise
-  Commander (sunrise-commander.el) and from this file."
+  "Launch and initiate a new background Elisp interpreter.
+The new interpreter runs in batch mode and inherits all functions
+from the Sunrise Commander (sunrise-commander.el) and from this
+file."
   (let ((process-connection-type nil)
         (sr-main (symbol-file 'sr-mode))
         (sr-loop (symbol-file 'sr-loop-cmd-loop))
@@ -137,30 +140,32 @@
     (setq sr-loop-queue nil)))
 
 (defun sr-loop-disable-timer ()
-  "Disables  the automatic shutdown timer. This is done every time we send a new
-  task to the background interpreter, lest it gets nuked before  completing  its
-  queue."
+  "Disable the automatic shutdown timer.
+This is done every time we send a new task to the background
+interpreter, lest it gets nuked before completing its queue."
   (if sr-loop-timer
       (progn
         (cancel-timer sr-loop-timer)
         (setq sr-loop-timer nil))))
 
 (defun sr-loop-enable-timer ()
-  "Enables  the  automatic  shutdown  timer.  This is done every time we receive
-  confirmation from the background interpreter that all the tasks  delegated  to
-  it  have  been  completed. Once this function is executed, if no new tasks are
-  enqueued before sr-loop-timeout seconds, the interpreter is killed."
+  "Enable the automatic shutdown timer.
+This is done every time we receive confirmation from the
+background interpreter that all the tasks delegated to it have
+been completed. Once this function is executed, if no new tasks
+are enqueued before `sr-loop-timeout' seconds, the interpreter is
+killed."
   (sr-loop-disable-timer)
   (setq sr-loop-timer (run-with-timer sr-loop-timeout nil 'sr-loop-stop)))
 
 (defun sr-loop-stop (&optional interrupt)
-  "Shuts down the background elisp interpreter and cleans up after it."
+  "Shut down the background Elisp interpreter and clean up after it."
   (interactive "p")
   (sr-loop-disable-timer)
   (if sr-loop-queue
       (if interrupt
           (progn
-            (sr-loop-notify "Aborted. Some operations may remain unfinished")
+            (sr-loop-notify "Aborted. Some operations may remain unfinished.")
             (setq sr-loop-queue nil))
         (sr-loop-enable-timer)))
   (unless sr-loop-queue
@@ -168,19 +173,17 @@
     (setq sr-loop-process nil)))
 
 (defun sr-loop-notify (msg)
-  "Notifies  the  user  about  an event, possibly in a more conspicuous way than
-  just (message)ing about it."
+  "Notify the user about an event."
   (if (and window-system sr-loop-use-popups)
       (x-popup-dialog t (list msg '("OK")) t)
     (message (concat "[[" msg "]]"))))
 
 (defun sr-loop-filter (process output)
-  "Process filter used to intercept and manage all the notifications produced by
-  the background interpreter."
+  "Process filter for the background interpreter."
   (mapc (lambda (line)
           (cond ((string-match "^\\[\\[\\*\\([^\]\*]+\\)\\*\\]\\]$" line)
                  (sr-loop-notify (match-string 1 line)))
-                 
+
                 ((and (or (string-match "^\\[\\[" line)
                           (string-match "^Sunrise Loop: " line))
                       (< 0 (length line)))
@@ -197,8 +200,8 @@
         (split-string output "\n")))
 
 (defun sr-loop-enqueue (form)
-  "Delegates  the  execution of the given form to the background interpreter. If
-  no such interpreter is currently running, then launches first a new one."
+  "Delegate evaluation of FORM to the background interpreter.
+If no such interpreter is currently running, launches a new one."
   (sr-loop-disable-timer)
   (unless sr-loop-process
     (sr-loop-start))
@@ -208,7 +211,7 @@
     (process-send-string sr-loop-process "\n")))
 
 (defun sr-loop-cmd-loop ()
-  "Main execution loop for the background elisp interpreter."
+  "Main execution loop for the background Elisp interpreter."
   (sr-loop-disengage)
   (defun read-char nil ?y) ;; Always answer "yes" to any prompt
   (let ((command) (signature))
@@ -227,15 +230,15 @@
         (message "^%s" signature))))
 
 (defun sr-loop-applicable-p ()
-  "Determines  whether  a  given  operation  may  be  safely  delegated  to  the
-  background elisp interpreter."
+  "Return non-nil if an operation is suitable for the background interpreter."
   (and (null (string-match "^/ftp:" dired-directory))
        (null (string-match "^/ftp:" sr-other-directory))))
 
 (defun sr-loop-do-copy (&optional arg)
-  "Drop-in  prefixable replacement for the sr-do-copy command. When invoked with
-  any prefix, sets a flag that is used later by  advice  to  decide  whether  to
-  delegate further copy operations to the background interpreter."
+  "Drop-in prefixable replacement for the `sr-do-copy' command.
+When invoked with a prefix argument, sets a flag that is used
+later by advice to decide whether to delegate further copy
+operations to the background interpreter."
   (interactive "P")
   (if (and arg (sr-loop-applicable-p))
       (let ((sr-loop-scope t))
@@ -243,9 +246,10 @@
     (sr-do-copy)))
 
 (defun sr-loop-do-clone (&optional arg)
-  "Drop-in prefixable replacement for the sr-do-clone command. When invoked with
-  any prefix,  sets a flag  that is  used later by  advice to decide  whether to
-  delegate further copy operations to the background interpreter."
+  "Drop-in prefixable replacement for the `sr-do-clone' command.
+When invoked with a prefix argument, sets a flag that is used
+later by advice to decide whether to delegate further copy
+operations to the background interpreter."
   (interactive "P")
   (if (and arg (sr-loop-applicable-p))
       (let ((sr-loop-scope t))
@@ -253,9 +257,10 @@
     (call-interactively 'sr-do-clone)))
 
 (defun sr-loop-do-rename (&optional arg)
-  "Drop-in  prefixable  replacement  for  the sr-do-rename command. When invoked
-  with any prefix, sets a flag that is used later by advice to decide whether to
-  delegate further rename operations to the background interpreter."
+  "Drop-in  prefixable  replacement  for  the `sr-do-rename' command.
+When invoked with a prefix argument, sets a flag that is used
+later by advice to decide whether to delegate further rename
+operations to the background interpreter."
   (interactive "P")
   (if (and arg (sr-loop-applicable-p))
       (let ((sr-loop-scope t))
@@ -263,33 +268,33 @@
     (sr-do-rename)))
 
 (defun sr-progress-prompt (op-name)
-  "Replaces sr-progress-prompt in sunrise-commander.el"
+  "Replacement for `sr-progress-prompt' from sunrise-commander.el."
   (if sr-loop-scope
       (concat "Sunrise Loop: " op-name "... ")
     (concat "Sunrise: " op-name "... ")))
 
-;; This modifies all confirmation request messages inside a loop scope:
 (defadvice y-or-n-p
   (before sr-loop-advice-y-or-n-p (prompt))
+  "Modify all confirmation request messages inside a loop scope."
   (when sr-loop-scope
     (setq prompt (replace-regexp-in-string
                   "\?" " in the background? (overwrites ALWAYS!)" prompt))))
 
-;; This modifies all queries from dired inside a loop scope:
 (defadvice dired-mark-read-file-name
   (before sr-loop-advice-dired-mark-read-file-name
           (prompt dir op-symbol arg files &optional default))
+  "Modify all queries from Dired inside a loop scope."
   (if sr-loop-scope
       (setq prompt (replace-regexp-in-string
                     "^\\([^ ]+\\) ?\\(.*\\)"
                     "\\1 (in background - overwrites ALWAYS!) \\2" prompt))))
 
-;; This delegates to the background interpreter all copy and rename operations
-;; triggered by dired-do-copy inside a loop scope:
 (defadvice dired-create-files
   (around sr-loop-advice-dired-create-files
           (file-creator operation fn-list name-constructor
                         &optional marker-char))
+  "Delegate to the background interpreter all copy and rename operations
+triggered by `dired-do-copy' inside a loop scope."
   (if sr-loop-scope
       (with-no-warnings
         (sr-loop-enqueue
@@ -300,29 +305,29 @@
                                 ,name-constructor nil))))
     ad-do-it))
 
-;; This delegates to the background interpreter all copy operations triggered by
-;; sr-do-copy inside a loop scope:
 (defadvice sr-clone-files
   (around sr-loop-advice-sr-clone-files
           (file-path-list target-dir clone-op progress &optional do-overwrite))
+  "Delegate to the background interpreter all copy operations
+triggered by `sr-do-copy' inside a loop scope."
   (if sr-loop-scope
       (sr-loop-enqueue
        `(sr-clone-files
          (quote ,file-path-list) ,target-dir #',clone-op ',progress 'ALWAYS))
     ad-do-it))
 
-;; This  delegates to the background interpreter all rename operations triggered
-;; by sr-do-rename inside a loop scope:
 (defadvice sr-move-files
   (around sr-loop-advice-sr-move-files
           (file-path-list target-dir progress &optional do-overwrite))
+  "Delegate to the background interpreter all rename operations triggered by `sr-do-rename' inside
+a loop scope."
   (if sr-loop-scope
       (sr-loop-enqueue
        `(sr-move-files (quote ,file-path-list) ,target-dir ',progress 'ALWAYS))
     ad-do-it))
 
 (defun sr-loop-engage ()
-  "Activates all advice used by the Sunrise Loop extension."
+  "Activate all advice used by the Sunrise Loop extension."
   (mapc 'ad-activate '(y-or-n-p
                        dired-mark-read-file-name
                        dired-create-files
@@ -330,16 +335,19 @@
                        sr-move-files)))
 
 (defun sr-loop-disengage ()
-  "Deactivates all advice used by the Sunrise Loop extension."
+  "Deactivate all advice used by the Sunrise Loop extension."
   (mapc 'ad-deactivate '(y-or-n-p
                          dired-mark-read-file-name
                          dired-create-files
                          sr-clone-files
                          sr-move-files)))
 
+(defun sunrise-x-loop-unload-function ()
+  (sr-ad-disable "^sr-loop-"))
+
 (sr-loop-engage)
 (provide 'sunrise-x-loop)
 
 ;;;###autoload (require 'sunrise-x-loop)
 
-;;; sunrise-x-loop.el ends here.
+;;; sunrise-x-loop.el ends here
