@@ -58,13 +58,23 @@ Try this:
 
 This will start gnus if it's not already running, btw.  -- JamesFelixBlack
 
-
 === Use M-x locate to use Spotlight for searching ===
 
 Apple's Spotlight search facility has its command-line version in the mdfind command (man mdfind). It wouldn't be too hard to write up an Emacs Lisp interface to it, but Emacs' own locate interface makes it even easier - just bind the variable 'locate-command' to mdfind, and you're done; now you can get your Spotlight searches straight in your Emacs buffer.
 
 KamenNedev
 
+== OS X Lion Tips / Workarounds ==
+
+=== How to disable "Press and Hold" ===
+
+OS X lion has introduced a new input feature known as "Press and Hold", where you hold a letter and are prompted with a popup menu allowing you to choose which accent/version of the vowel you want to type.  Unfortunately, as of Emacs 23 (OS X build, x11 / terminal / maybe others not affected) this is not only enabled by default but also completely broken.  With the exception of vowels (AEIOU) and Y, if you press a alphanumeric key and hold it, rather than it repeating according to your OS keyboard repeat rate setting, it sends the key once and then stops all together (does not apply when keyboard modifier is pressed in combination with key).  This is especially problematic if you use gnus mode, viper mode, or any mode that encourages the use of navigation via the alphanumeric keys on the keyboard.
+
+Fortunately, there is a work-around, revealed by hober of #emacs.  To disable, place the following at the top of your emacs config:
+
+    (ns-set-resource nil "ApplePressAndHoldEnabled" "NO")
+
+It seems that it must be run before the frame is initialized, so evaluating it while Emacs is running will have no effect. Naturally, restart will be required.
 
 == Fink Tips ==
 

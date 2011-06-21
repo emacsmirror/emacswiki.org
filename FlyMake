@@ -83,6 +83,7 @@ Then, the <tt>flymake.mk</tt> file, would look something like:
 
 * ''Note'': I've only added support for checking the syntax on C and C++ files, but others should be similarly handled.
 * ''Warning'': This will only work for files that are compiled using the automake-provided compilation rules.
+* ''Warning'': This only includes the compiler flags. So if you are passing include directories with CPPFLAGS (i.e. foo_CPPFLAGS=-I $pathToIncludeDir) you need to replace for example the line ''"elif [ "$$s" = ".cpp" ]; then $(call get_cs_cmdline,CXX) $(CHK_SOURCES);\"'' by   ''"elif [ "$$s" = ".cpp" ]; then $(call get_cs_cmdline,CXX) $(call get_cs_cmdline,CPP) $(CHK_SOURCES);\"''.
 
 -- Lluís
 

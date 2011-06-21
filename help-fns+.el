@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Tue Jun 14 08:39:35 2011 (-0700)
+;; Last-Updated: Mon Jun 20 10:04:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 660
+;;     Update #: 711
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -83,6 +83,12 @@
 ;;  `describe-face'.
 ;;
 ;;
+;;  ***** NOTE: The following function defined in `package.el'
+;;              has been REDEFINED HERE:
+;;
+;;  `describe-package'.
+;;
+;;
 ;;  Put this in your initialization file (`~/.emacs'):
 ;;
 ;;    (require 'help-fns+)
@@ -96,6 +102,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/20 dadams
+;;     Info(-any)-index-occurrences(-p): Fix pattern: remove arbitrary prefix [^\n]*.
+;;     Added, for Emacs 24+: describe-package.
 ;; 2011/06/14 dadams
 ;;     Added, for Emacs 23.2+: describe-mode.
 ;;     Info-make-manuals-xref: Added optional arg NO-NEWLINES-AFTER-P.
@@ -241,6 +250,10 @@
 (defvar help-window-point-marker)
 (defvar Info-indexed-nodes)             ; In `info.el'
 (defvar help-cross-reference-manuals)   ; For Emacs < 23.2
+(defvar package-alist)
+(defvar package-archive-contents)
+(defvar package--builtins)
+(defvar package--initialized)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -292,7 +305,7 @@ Each element is (NODENAME STRING MATCHES), where:
 
 This has the same structure as `Info-apropos-nodes', but the search
 was made by `Info-index-occurrences', not by `Info-apropos-matches',
-so that matches are exact.")
+so that matches are exact (ignoring case).")
 
   (defun Info-indexed-find-file (filename &optional _noerror)
     "Index-search implementation of `Info-find-file'."
@@ -356,20 +369,19 @@ newlines after the cross reference."
 
   (defun Info-index-entries-across-manuals (string &optional manuals)
     "Look up STRING in indexes of Info MANUALS on your system.
-Looks for exact matches: STRING is expected to be an index entry.
-Build an Info menu of the possible matches.
+Looks for exact matches (ignoring case): STRING is expected to be an
+index entry.  Build an Info menu of the possible matches.
 MANUALS has the form of `help-cross-reference-manuals'."
     (let ((nodes  Info-indexed-nodes)
           nodename)
-      (while (and nodes (not (equal string (nth 1 (car nodes)))))
-        (setq nodes  (cdr nodes)))
+      (while (and nodes (not (equal string (nth 1 (car nodes)))))  (setq nodes  (cdr nodes)))
       (if nodes
           (Info-find-node Info-indexed-file (car (car nodes)))
         (setq nodename  (format "Index for `%s'" string))
         (push (list nodename string (Info-index-occurrences string manuals)) Info-indexed-nodes)
         (Info-find-node Info-indexed-file nodename))))
 
-  ;; Similar to `Info-apropos-matches', but using exact matches. 
+  ;; Similar to `Info-apropos-matches', but using exact matches (ignoring case). 
   (defun Info-index-occurrences (index-entry &optional manuals)
     "Collect occurrences of INDEX-ENTRY in MANUALS.
 MANUALS has the form of `help-cross-reference-manuals'.
@@ -379,7 +391,7 @@ Return a list of the form ((FILE INDEX-ENTRY NODE LINE)), where:
  LINE is the line number of the INDEX-ENTRY occurrence in that node."
     (unless (string= index-entry "")
       ;; Unlike `Info-apropos-matches', we match only the exact string as an index entry.
-      (let ((pattern  (format "\n\\* +\\([^\n]*%s\\):[ \t]+\\([^\n]+\\)\
+      (let ((pattern  (format "\n\\* +\\(%s\\):[ \t]+\\([^\n]+\\)\
 \\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
                               (regexp-quote index-entry)))
             matches index-nodes node)
@@ -424,7 +436,7 @@ Return a list of the form ((FILE INDEX-ENTRY NODE LINE)), where:
 MANUALS has the form of `help-cross-reference-manuals'."
     (and (not (string= index-entry ""))
          ;; Unlike `Info-apropos-matches', we match only the exact string as an index entry.
-         (let ((pattern  (format "\n\\* +\\([^\n]*%s\\):[ \t]+\\([^\n]+\\)\
+         (let ((pattern  (format "\n\\* +\\(%s\\):[ \t]+\\([^\n]+\\)\
 \\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
                                  (regexp-quote index-entry)))
                (any?     nil)
@@ -1871,7 +1883,6 @@ before you call this function."
 ;;
 ;; Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
 ;;
-;;;###autoload
 (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 1)))
   (defun describe-face (face &optional frame)
     "Display the properties of face FACE on FRAME.
@@ -2103,6 +2114,37 @@ Completion is available for the keymap name."
         (princ doc) (terpri) (terpri))
       ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
       (with-current-buffer "*Help*" (insert (substitute-command-keys (concat "\\{" name "}")))))))
+
+
+;; REPLACE ORIGINAL in `package.el':
+;;
+;; Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
+;;
+(when (fboundp 'describe-package)       ; Emacs 24+
+  (defun describe-package (package)
+    "Display the full documentation of PACKAGE (a symbol)."
+    (interactive
+     (let* ((guess  (function-called-at-point))
+            packages val)
+       (require 'finder-inf nil t)
+       ;; Load the package list if necessary (but don't activate them).
+       (unless package--initialized (package-initialize t))
+       (setq packages  (append (mapcar 'car package-alist) (mapcar 'car package-archive-contents)
+                               (mapcar 'car package--builtins)))
+       (unless (memq guess packages) (setq guess  nil))
+       (setq packages  (mapcar 'symbol-name packages))
+       (setq val  (completing-read (if guess
+                                       (format "Describe package (default %s): " guess)
+                                     "Describe package: ")
+                                   packages nil t nil nil guess))
+       (list (if (equal val "") guess (intern val)))))
+    (if (or (null package) (not (symbolp package)))
+        (message "No package specified")
+      (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
+      (with-help-window (help-buffer) (with-current-buffer standard-output
+                                        (describe-package-1 package)
+                                        (Info-make-manuals-xref
+                                         (concat (symbol-name package) " package")))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

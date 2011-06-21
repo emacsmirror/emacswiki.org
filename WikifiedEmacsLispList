@@ -1,4 +1,4 @@
-Timestamp: Mon May 30 11:16:02 BST 2011
+Timestamp: Mon Jun 20 07:57:35 BST 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -524,7 +524,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://josefsson.org/dig.el dig.el] --- Domain Name System dig interface (by Simon Josefsson)
 
-[http://primate.net/~itz/public/dig-browser.el dig-browser.el] --- a dired-style DNS zone browser (by Ian Zimmerman)
+[http://github.com/nobrowser/dig-browser dig-browser.el] --- a dired-style DNS zone browser (by Ian Zimmerman)
 
 [http://www.eskimo.com/~seldon/diminish.el diminish.el] --- Diminished modes are minor modes with no modeline display (by Will Mengarini)
 
@@ -2584,7 +2584,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://groups.google.com/groups?selm=lu672trqan.fsf%40stest.ch&output=gplain y2k-mode.el] --- Mode to highlights words like "date", "time", etc for year 2000 code walkthroughs. (by Christian Egli)
 
-[http://primate.net/~itz/packages/yaham/ yaham.el] --- Yet Another HAskell Mode for GNU Emacs (by Ian Zimmerman)
+[https://github.com/nobrowser/yaham yaham.el] --- Yet Another HAskell Mode for GNU Emacs (by Ian Zimmerman)
 
 [http://www.yatex.org/ yatex.el] --- Yet Another TeX mode for Emacs (by HIROSE Yuuji)
 
