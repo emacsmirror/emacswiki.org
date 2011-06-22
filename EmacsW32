@@ -1311,6 +1311,11 @@ Do you plan to upload a new patched binary some time soon? If not, would it be b
 
 -- AlexeyRomanov
 [new]
+Hi Alexey, I plan to upload new versions, but unfortunately the merging takes me quite a lot of time. There is a lot of things I want to go into Emacs, but I have no time to send the patches currently.
+
+The code at launchpad is mostly what is currently used in the latest beta of /EmacsW32/+Emacs so you may want to try the latest beta.
+
+[new]
 
 
 Related subjects
