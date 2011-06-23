@@ -125,7 +125,7 @@ CategoryWriting
 			 (m (string-to-number (substring journal-file 4 6)))
 			 (d (string-to-number (substring journal-file 6 8))))
 		     (list m d y)))
-		   (directory-files journal-dir nil "[0-9]\\{8\\}" nil)))
+		   (directory-files journal-dir nil "^[0-9]\\{8\\}$" nil)))
   (calendar-redraw))
 
 (defun journal-mark-entries nil "Mark days in the calendar for which a diary entry is present"

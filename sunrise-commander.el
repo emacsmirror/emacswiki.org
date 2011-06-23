@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 375 $
+;; RCS Version: $Rev: 376 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2748,7 +2748,7 @@ Otherwise returns nil."
             (sr-insert-directory file sr-virtual-listing-switches))
           fileset)
     (unwind-protect
-        (kill-line)
+        (delete-region (point) (line-end-position))
       (progn
         (revert-buffer)
         (sr-change-window)
@@ -3657,7 +3657,7 @@ by `sr-clex-start'."
                             (t nil))))
           (if expansion
               (progn
-                (kill-backward-chars 2)
+                (delete-char -2)
                 (insert expansion)))))))
 
 (defvar sr-term-keys '(([M-up]        . sr-ti-previous-line)

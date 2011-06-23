@@ -4,6 +4,13 @@ Magit is an emacs mode for interacting with the [[Git]] version control system. 
 * Bugs to project page on github: http://github.com/magit/magit/issues
 * Manual: http://magit.github.com/magit/magit.html
 
+== Quick Tips ==
+* M-x magit-status to see git status
+* s to stage files
+* c to commit (type in your commit message then C-c C-c to save the message and commit)
+* P P to do a git push
+* F F to do a git pull
+
 [new:RodrigoWanderley:dt jun  30 21:25:37 CEST 2008]
 Had to change magit-escape-for-shell to:
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Jun 20 10:04:13 2011 (-0700)
+;; Last-Updated: Wed Jun 22 12:47:57 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 711
+;;     Update #: 721
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -102,6 +102,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/22 dadams
+;;     Info-make-manuals-xref: Added optional arg MANUALS.
 ;; 2011/06/20 dadams
 ;;     Info(-any)-index-occurrences(-p): Fix pattern: remove arbitrary prefix [^\n]*.
 ;;     Added, for Emacs 24+: describe-package.
@@ -335,25 +337,30 @@ so that matches are exact (ignoring case).")
                                      ;; (slow . t) ; $$$$$$ Useless here?
                                      ))
 
-  (defun Info-make-manuals-xref (symbol &optional no-newlines-after-p)
+  (defun Info-make-manuals-xref (symbol &optional no-newlines-after-p manuals)
     "Create a cross-ref link for index entries for SYMBOL in manuals.
-`help-cross-reference-manuals' controls which manual(s) are searched.
-Do nothing if its car is `nil' (no manuals to search).
-If its cdr is `nil' then create the link without first searching any
-manuals.  Otherwise, create the link only if there are search hits in
-the manuals.
 Non-`nil' optional arg NO-NEWLINES-AFTER-P means do not add two
-newlines after the cross reference."
-    (when (car help-cross-reference-manuals) ; Create no link if no manuals to search.
-      (let ((manuals       (car help-cross-reference-manuals))
-            (search-now-p  (cdr help-cross-reference-manuals))
+newlines after the cross reference.
+
+Optional arg MANUALS controls which manuals to search.  It has the
+same form as option `help-cross-reference-manuals', and it defaults to
+the value of that option.
+
+Do nothing if the car of MANUALS is nil (no manuals to search).  If
+its cdr is `nil' then create the link without first searching any
+manuals.  Otherwise, create the link only if there are search hits in
+the manuals."
+    (unless manuals (setq manuals  help-cross-reference-manuals))
+    (when (car manuals) ; Create no link if no manuals to search.
+      (let ((books         (car manuals))
+            (search-now-p  (cdr manuals))
             (symb-name     (if (stringp symbol) symbol (symbol-name symbol))))
         (when (or (not search-now-p)
-                  (save-current-buffer (Info-any-index-occurrences-p symb-name manuals)))
+                  (save-current-buffer (Info-any-index-occurrences-p symb-name books)))
           (let ((buffer-read-only  nil))
             (insert (format "\n\nFor more information %s the "
-                            (if (cdr help-cross-reference-manuals) "see" "check")))
-            (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name manuals)
+                            (if (cdr manuals) "see" "check")))
+            (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name books)
             (insert ".")
             (unless no-newlines-after-p (insert "\n\n")))))))
 
@@ -473,6 +480,7 @@ MANUALS has the form of `help-cross-reference-manuals'."
                                nil)))
              (error nil))
            any?)))
+  
   (defun describe-mode (&optional buffer)
     "Display documentation of current major mode and minor modes.
 A brief summary of the minor modes comes first, followed by the
@@ -971,7 +979,6 @@ Same as using a prefix arg with `describe-function'."
   (describe-function function t))
 
 
-
 ;; REPLACE ORIGINAL in `help.el':
 ;;
 ;; With a prefix argument, candidates are user variables (options) only.
@@ -1210,7 +1217,6 @@ Select help window if the actual value of the user option
        ;; Reset `help-window' to nil to avoid confusing future calls of
        ;; `help-mode-finish' with plain `with-output-to-temp-buffer'.
        (setq help-window nil))))
-
 
 
 ;; REPLACE ORIGINAL in `help.el':

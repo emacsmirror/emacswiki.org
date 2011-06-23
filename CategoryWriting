@@ -21,7 +21,6 @@ Clicking the title heading to search for pages about writing in natural language
 * WriteOrDieMode -- Minor mode emulating some of the behaviour from [http://lab.drwicked.com/writeordie.html Dr. Wicked's webapp] of the same name.
 * RefdbMode -- Insert and look up citations stored in a SQL database
 * MemoPop -- Helps you pop up and pop out a specific file buffer easily.
-* CopyeditMode -- Tweak editing commands for handling prose.
 
 ''Note: This page overlaps with material at CategoryEducation, and occasionally may need to synchronize.''
 
