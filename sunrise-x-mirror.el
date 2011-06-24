@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 374 $
+;; RCS Version: $Rev: 378 $
 ;; Keywords: sunrise commander, archives read/write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
@@ -119,7 +119,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'sunrise-commander))
+(require 'sunrise-commander)
+(eval-when-compile (require 'cl))
 
 (defcustom sr-mirror-keep-backups t
   "If non-nil, keep backup files when committing changes to read-only archives."
@@ -202,6 +203,7 @@ contents of the original archive that is fully writeable."
   (let ((path (or (dired-get-filename nil t)
                   (concat (expand-file-name (dired-current-directory)) "/.")))
         (sr-mirror-divert-goto-dir nil)
+		(sr-avfs-root (expand-file-name sr-avfs-root))
         fname vpaths)
     (if (sr-overlapping-paths-p sr-avfs-root path)
         (unless (and sr-mirror-home (sr-overlapping-paths-p sr-mirror-home path))
@@ -319,7 +321,7 @@ default)."
         (delete-file repacked)
         t)
     (error (progn
-             (setq err (second err))
+             (setq err (cadr err))
              (if (not (yes-or-no-p (concat err ". OK to continue? ")))
                  (error err))))))
 
@@ -344,9 +346,9 @@ default)."
       (error (condition-case err2
                  (progn
                    (setq close-ok (sr-mirror-close))
-                   (setq err-msg (second err1)))
+                   (setq err-msg (cadr err1)))
                (error
-                  (setq err-msg (second err2))) )) )
+                  (setq err-msg (cadr err2))) )) )
     (if (and (not open-ok) (not close-ok))
         (error err-msg)
       (sr-highlight))))

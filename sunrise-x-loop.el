@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 27 Jun 2008
 ;; Version: 3
-;; RCS Version: $Rev: 374 $
+;; RCS Version: $Rev: 378 $
 ;; Keywords: sunrise commander, background copy rename move
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-loop.el
 ;; Compatibility: GNU Emacs 22+
@@ -35,7 +35,7 @@
 ;; to redefine their bindings in the `sr-mode-map' keymap. When invoked the
 ;; usual way (by pressing C or R), these new functions work exactly as the old
 ;; ones, i.e. they simply pass the control flow to the logic already provided by
-;; Sunrise, but when prefixed (by pressing C-u C or C-u R) they launch a
+;; Sunrise, but when prefixed (e.g. by pressing C-u C or C-u R) they launch a
 ;; separate Elisp intepreter in the background, delegate to it the execution of
 ;; all further operations and return immediately, so the Emacs UI remains fully
 ;; responsive while any potentially long-running copy or move tasks can be let
@@ -80,9 +80,12 @@
 
 ;; 5) Enjoy ;-)
 
+;; 6) You can use `unload-feature' to get rid of the provided functionality
+;; completely.
+
 ;;; Code:
 
-(eval-when-compile (require 'sunrise-commander))
+(require 'sunrise-commander)
 
 (defcustom sr-loop-debug nil
   "Activate debug mode in the Sunrise Loop extension.
@@ -110,11 +113,6 @@ this amount of time."
 (defvar sr-loop-timer nil)
 (defvar sr-loop-scope nil)
 (defvar sr-loop-queue nil)
-
-(when (boundp 'sr-mode-map)
-  (define-key sr-mode-map "C" 'sr-loop-do-copy)
-  (define-key sr-mode-map "K" 'sr-loop-do-clone)
-  (define-key sr-mode-map "R" 'sr-loop-do-rename))
 
 (defun sr-loop-start ()
   "Launch and initiate a new background Elisp interpreter.
@@ -212,7 +210,7 @@ If no such interpreter is currently running, launches a new one."
 
 (defun sr-loop-cmd-loop ()
   "Main execution loop for the background Elisp interpreter."
-  (sr-loop-disengage)
+  (sr-ad-disable "^sr-loop-")
   (defun read-char nil ?y) ;; Always answer "yes" to any prompt
   (let ((command) (signature))
     (while t
@@ -267,22 +265,25 @@ operations to the background interpreter."
         (sr-do-rename))
     (sr-do-rename)))
 
-(defun sr-progress-prompt (op-name)
-  "Replacement for `sr-progress-prompt' from sunrise-commander.el."
-  (if sr-loop-scope
-      (concat "Sunrise Loop: " op-name "... ")
-    (concat "Sunrise: " op-name "... ")))
+(defadvice sr-progress-prompt (around sr-loop-advice-sr-progress-prompt
+                                      activate)
+  "Display \"Sunrise Loop\" instead of \"Sunrise\" in the prompt."
+  (setq ad-return-value
+        (concat (if sr-loop-scope "Sunrise Loop: " "Sunrise: ")
+                (ad-get-arg 0)
+                "...")))
 
-(defadvice y-or-n-p
-  (before sr-loop-advice-y-or-n-p (prompt))
+(defadvice y-or-n-p (before sr-loop-advice-y-or-n-p activate)
   "Modify all confirmation request messages inside a loop scope."
   (when sr-loop-scope
-    (setq prompt (replace-regexp-in-string
-                  "\?" " in the background? (overwrites ALWAYS!)" prompt))))
+    (setq (ad-get-arg 0)
+          (replace-regexp-in-string
+           "\?" " in the background? (overwrites ALWAYS!)" (ad-get-arg 0)))))
 
 (defadvice dired-mark-read-file-name
   (before sr-loop-advice-dired-mark-read-file-name
-          (prompt dir op-symbol arg files &optional default))
+          (prompt dir op-symbol arg files &optional default)
+          activate)
   "Modify all queries from Dired inside a loop scope."
   (if sr-loop-scope
       (setq prompt (replace-regexp-in-string
@@ -292,13 +293,14 @@ operations to the background interpreter."
 (defadvice dired-create-files
   (around sr-loop-advice-dired-create-files
           (file-creator operation fn-list name-constructor
-                        &optional marker-char))
+                        &optional marker-char)
+          activate)
   "Delegate to the background interpreter all copy and rename operations
 triggered by `dired-do-copy' inside a loop scope."
   (if sr-loop-scope
       (with-no-warnings
         (sr-loop-enqueue
-         `(let ((target ,target))
+         `(let ((target ,target))       ; cf. `dired-do-create-files'
             (dired-create-files (function ,file-creator)
                                 ,operation
                                 (quote ,fn-list)
@@ -307,7 +309,8 @@ triggered by `dired-do-copy' inside a loop scope."
 
 (defadvice sr-clone-files
   (around sr-loop-advice-sr-clone-files
-          (file-path-list target-dir clone-op progress &optional do-overwrite))
+          (file-path-list target-dir clone-op progress &optional do-overwrite)
+          activate)
   "Delegate to the background interpreter all copy operations
 triggered by `sr-do-copy' inside a loop scope."
   (if sr-loop-scope
@@ -318,34 +321,25 @@ triggered by `sr-do-copy' inside a loop scope."
 
 (defadvice sr-move-files
   (around sr-loop-advice-sr-move-files
-          (file-path-list target-dir progress &optional do-overwrite))
-  "Delegate to the background interpreter all rename operations triggered by `sr-do-rename' inside
-a loop scope."
+          (file-path-list target-dir progress &optional do-overwrite)
+          activate)
+  "Delegate to the background interpreter all rename operations
+triggered by `sr-do-rename' inside a loop scope."
   (if sr-loop-scope
       (sr-loop-enqueue
        `(sr-move-files (quote ,file-path-list) ,target-dir ',progress 'ALWAYS))
     ad-do-it))
 
-(defun sr-loop-engage ()
-  "Activate all advice used by the Sunrise Loop extension."
-  (mapc 'ad-activate '(y-or-n-p
-                       dired-mark-read-file-name
-                       dired-create-files
-                       sr-clone-files
-                       sr-move-files)))
-
-(defun sr-loop-disengage ()
-  "Deactivate all advice used by the Sunrise Loop extension."
-  (mapc 'ad-deactivate '(y-or-n-p
-                         dired-mark-read-file-name
-                         dired-create-files
-                         sr-clone-files
-                         sr-move-files)))
+(define-key sr-mode-map "C" 'sr-loop-do-copy)
+(define-key sr-mode-map "K" 'sr-loop-do-clone)
+(define-key sr-mode-map "R" 'sr-loop-do-rename)
 
 (defun sunrise-x-loop-unload-function ()
-  (sr-ad-disable "^sr-loop-"))
+  (sr-ad-disable "^sr-loop-")
+  (define-key sr-mode-map "C" 'sr-do-copy)
+  (define-key sr-mode-map "K" 'sr-do-clone)
+  (define-key sr-mode-map "R" 'sr-do-rename))
 
-(sr-loop-engage)
 (provide 'sunrise-x-loop)
 
 ;;;###autoload (require 'sunrise-x-loop)

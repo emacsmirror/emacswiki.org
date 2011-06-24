@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 376 $
+;; RCS Version: $Rev: 378 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1576,7 +1576,8 @@ Returns nil if AVFS cannot manage this kind of file."
     (unless (and (eq major-mode 'sr-mode) (sr-equal-dirs dir default-directory))
       (if (and sr-avfs-root
                (null (posix-string-match "#" dir)))
-          (setq dir (replace-regexp-in-string sr-avfs-root "" dir)))
+          (setq dir (replace-regexp-in-string
+					 (expand-file-name sr-avfs-root) "" dir)))
       (sr-save-aspect
        (sr-within dir (sr-alternate-buffer (dired dir))))
       (sr-history-push default-directory)
@@ -1620,7 +1621,7 @@ Very useful inside Sunrise VIRTUAL buffers."
     (setq target-file (file-name-nondirectory target-path))
 
     (when target-dir ;; <-- nil in symlinks to other files in same directory:
-      (setq target-dir (replace-regexp-in-string "/$" "" target-dir))
+      (setq target-dir (sr-chop ?/ target-dir))
       (sr-goto-dir target-dir))
     (sr-focus-filename target-file)))
 
@@ -1640,16 +1641,20 @@ Very useful inside Sunrise VIRTUAL buffers."
       (if target-file (sr-focus-filename target-file)))))
 
 (defun sr-project-path ()
-  ;; FIXME
-  "Find a directory with a path similar to the one in the active pane,
-but under the directory currently displayed in the passive pane.
-On success, displays the contents of that directory in the passive
-pane. When alternative projections of the directory exist,
-repeated invocations of this command allow to visit all matches
-consecutively."
+  "Locate interactively all descendants of the directory in the passive pane
+that have a path similar to the directory in the active pane.
+
+For instance, if the active pane is displaying directory /a/b/c and the passive
+one is displaying /x/y, this command will check for the existence of any of the
+following: /x/y/a/b/c, /x/y/b/c, /x/y/c and /x/y. Each (existing) directory
+located according to this schema will be known hereafter as a 'projection of
+the directory /a/b/c over /x/y'.
+
+If many projections of the active directory over the passive one exist, one can
+rotate among all of them by invoking `sr-project-path' repeatedly : they will be
+visited in order, from longest path to shortest."
   (interactive)
-  (let* ((path (expand-file-name (dired-current-directory)))
-         (path (replace-regexp-in-string "/*$" "" path))
+  (let* ((path (sr-chop ?/ (expand-file-name (dired-current-directory))))
          (pos (if (< 0 (length path)) 1)) (candidate) (next-key))
     (while pos
       (setq candidate (concat sr-other-directory (substring path pos))
@@ -1674,10 +1679,8 @@ consecutively."
            (len (length hist)))
       (if (>= len sr-history-length)
           (nbutlast hist (- len sr-history-length)))
-      (if (< 1 (length element))
-          (setq element (abbreviate-file-name
-                         (replace-regexp-in-string "/?$" "" element))))
-      (setq hist (delete element hist))
+      (setq element (abbreviate-file-name (sr-chop ?/ element))
+            hist (delete element hist))
       (push element hist)
       (setcdr pane hist))))
 
@@ -1818,8 +1821,7 @@ and add it to your `load-path'" name name))))
   (if (and dired-omit-mode
            (string-match (dired-omit-regexp) filename))
       (dired-omit-mode -1))
-  (let ((expr filename))
-    (setq expr (replace-regexp-in-string "/$" "" expr))
+  (let ((expr (sr-chop ?/ filename)))
     (cond ((file-symlink-p filename)
            (setq expr (concat (regexp-quote expr) " ->")))
           ((file-directory-p filename)
@@ -1939,10 +1941,11 @@ If the buffer is non-virtual the backup buffer is killed."
 
 (defun sr-quick-view (&optional arg)
   "Quickly view the currently selected item.
-On regular files, opens the file in quick-view mode (see
-`sr-quick-view-file' for more details), on directories, visits
-the selected directory in the passive pane, and on symlinks
-follows the file the link points to in the passive pane."
+On regular files, opens the file in quick-view mode (see `sr-quick-view-file'
+for more details), on directories, visits the selected directory in the passive
+pane, and on symlinks follows the file the link points to in the passive pane.
+With optional argument kills the last quickly viewed file without opening a new
+buffer."
   (interactive "P")
   (if arg
       (sr-quick-view-kill)
@@ -1972,11 +1975,8 @@ follows the file the link points to in the passive pane."
       (error "Sunrise: file is a symlink to a nonexistent target"))))
 
 (defun sr-quick-view-file ()
-  ;; FIXME what "optional argument"?
   "Open the selected file on the viewer window without selecting it.
-Kills any other buffer opened previously the same way. With
-optional argument kills the last quick view buffer without
-opening a new one."
+Kills any other buffer opened previously the same way."
   (let ((split-width-threshold (* 10 (window-width)))
         (filename (expand-file-name (dired-get-filename nil t))))
     (save-selected-window
@@ -2218,8 +2218,7 @@ alphabetical. SORT-LISTS is a list of positions obtained from
        (mapcar
         (lambda (x)
           (let* ((key (buffer-substring-no-properties (car x) (cddr x)))
-                 (key (replace-regexp-in-string "/?$" "" key))
-                 (key (replace-regexp-in-string " -> .*$" "" key))
+                 (key (sr-chop ?/ (replace-regexp-in-string " -> .*$" "" key)))
                  (attrs (assoc-default key attributes))
                  (index))
             (when attrs
@@ -2645,7 +2644,7 @@ FILE-PATHS should be a list of full paths."
       (sr-progress-reporter-update progress (nth 7 (file-attributes f)))
       (let* ((name (file-name-nondirectory f))
              (target-file (concat target-dir name))
-             (symlink-to (file-symlink-p (replace-regexp-in-string "/*$" "" f)))
+             (symlink-to (file-symlink-p (sr-chop ?/ f)))
              (clone-args (list f target-file t)))
         (cond
          (symlink-to
@@ -2719,7 +2718,7 @@ IN-DIR/D => TO-DIR/D using CLONE-OP to clone the files."
       (error "Cannot link files to a VIRTUAL buffer, try (C)opying instead.")
     (dired-create-files creator action (dired-get-marked-files nil)
                         (lambda (from)
-                          (setq from (replace-regexp-in-string "/$" "" from))
+                          (setq from (sr-chop ?/ from))
                           (if (file-directory-p from)
                               (setq from (sr-directory-name-proper from))
                             (setq from (file-name-nondirectory from)))
@@ -2743,8 +2742,8 @@ Otherwise returns nil."
     (goto-char (point-max))
     (mapc (lambda (file)
             (insert-char 32 2)
-            (setq file (dired-make-relative file default-directory))
-            (setq file (replace-regexp-in-string "/$" "" file))
+            (setq file (dired-make-relative file default-directory)
+                  file (sr-chop ?/ file))
             (sr-insert-directory file sr-virtual-listing-switches))
           fileset)
     (unwind-protect
@@ -2824,10 +2823,7 @@ Broken links are *not* considered regular files."
     (reverse res-list)))
 
 (defun sr-directory-name-proper (file-path)
-  "Return the proper name of the directory FILE-PATH, without initial path.
-FILE-PATH should be an absolute or relative, forward slash
-terminated path to a directory. The remaining part of FILE-PATH
-can be accessed by the function `parent-directory'." ;FIXME huh?
+  "Return the proper name of the directory FILE-PATH, without initial path."
   (if file-path
       (let (
             (file-path-1 (substring file-path 0 (- (length file-path) 1)))
@@ -3097,9 +3093,9 @@ items (as opposed to the current default directory). Removes itself from the
     (apply operation args)))
 
 (defun sr-flatten-branch (&optional mode)
-  ;; FIXME
-  "Display a partial branch view of selected items in the
-current directory and all its subdirectories in the active pane."
+  "Display a flat view of the items contained in the current directory and all
+its subdirectories, sub-subdirectories and so on (recursively) in the active
+pane."
   (interactive "cFlatten branch showing: (E)verything, (D)irectories,\
  (N)on-directories or (F)iles only?")
   (if (and mode (>= mode 97)) (setq mode (- mode 32)))
@@ -3256,8 +3252,8 @@ Used to notify about the termination status of the process."
      (dolist (dir hist)
        (condition-case nil
            (when dir
-             (setq dir (replace-regexp-in-string "\\(.\\)/?$" "\\1" dir))
-             (setq beg (point))
+             (setq dir (sr-chop ?/ (expand-file-name dir))
+                   beg (point))
              (sr-insert-directory dir switches nil nil))
          (error (ignore))))
      (sr-virtual-mode))))
@@ -3354,8 +3350,7 @@ file)."
               (run-with-idle-timer 0.01 nil 'sr-sticky-isearch-prompt)))))))
 
 (defun sr-show-files-info (&optional deref-symlinks)
-  ;; FIXME why does `dired-show-file-type' below not linkify?
-  "Enhanced version of `dired‐show‐file‐type' from dired‐aux.
+  "Enhanced version of `dired-show-file-type' from dired‐aux.
 If at most one item is marked, print the filetype of the current
 item according to the \"file\" command, including its size in bytes.
 If more than one item is marked, print the total size in
@@ -3811,8 +3806,8 @@ layout switching."
     (set (sr-symbol side 'buffer) (window-buffer window))))
 
 (defun sr-scrollable-viewer (buffer)
-  ;; FIXME
-  "Set the `other-window-scroll-buffer' variable to BUFFER."
+  "Set the `other-window-scroll-buffer' variable to BUFFER.
+Doing so allows to scroll the given buffer directly from the active pane."
   (setq other-window-scroll-buffer buffer)
   (if buffer
       (message "QUICK VIEW: Press C-e/C-y to scroll, Space/M-Space to page, and C-u v (or C-u o) to dismiss")))
@@ -3883,6 +3878,13 @@ when any of the options -p or -F is used with ls."
         '(sr-listing-switches sr-virtual-listing-switches))
   (remove-hook 'sr-init-hook 'sr-fix-listing-switches))
 (add-hook 'sr-init-hook 'sr-fix-listing-switches)
+
+(defun sr-chop (char path)
+  "Remove all trailing instances of character CHAR from the string PATH."
+  (while (and (< 1 (length path))
+              (eq (string-to-char (substring path -1)) char))
+    (setq path (substring path 0 -1)))
+  path)
 
 ;;; ============================================================================
 ;;; Advice

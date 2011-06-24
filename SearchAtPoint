@@ -2,7 +2,7 @@ Vim has the mighty `*' and `#' keys that do an IncrementalSearch for the label u
 
 So let's say your cursor is in the middle of "anotherVeryLongIdentifier" (like after the first letter "I").
 
-In Emacs using C++-Mode (See CPlusPlusMode) and using CamelCase you would need `M-b M-b M-b M-b C-s C-W C-W C-W C-W C-s' or slightly better `M-b M-b M-b M-b M-@ C-s M-y C-s' instead of Vim's `*'.
+In Emacs using C++-Mode (See CPlusPlusMode) and using CamelCase you would need `M-b M-b M-b M-b C-s C-W C-W C-W C-W C-s' or slightly better <code>M-b M-b M-b M-b M-@ C-s M-y C-s</code> instead of Vim's `*'.
 
 Here are some ways of implementing Vim's `*' and `#' in Emacs.
 

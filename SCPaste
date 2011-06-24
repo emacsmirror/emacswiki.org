@@ -7,9 +7,18 @@ Lisp:scpaste.el
 It uses Lisp:htmlize.el to convert font-lock coloring to HTML and then
 copies the file via SCP. See http://p.hagelb.org.
 
+[new]
+A version using tramp-mode is available here:
+https://github.com/metaperl/scpaste/blob/master/scpaste.el#L90
+
+It does completely work, but I have no desire to continue with scpaste because it lacks line numbers for files.
+-- TerrenceBrannon
+
 [new:YannHodique:2008-04-02 20:47 UTC]
 Hi, you may be interested in using TrampMode for dealing with transport (and generalizing it). For example, something like 
 <code>(htmlize-file "~/.emacs" "/ssh:host:dotemacs.html")</code> would not be that far from what you're doing.
+
+
 
 [new]
 You might consider using HtmlFontify which can take care of a bit more fontification than [[Htmlize]].

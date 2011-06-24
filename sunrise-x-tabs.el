@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 374 $
+;; RCS Version: $Rev: 378 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -392,7 +392,7 @@ nil = inactive, t = active. Creates new labels when needed."
   (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
       (let ((tab-set (cdr (assq sr-selected-window sr-tabs)))
             (tab-line (if (or (cdar sr-tabs)
-                              (cdadr sr-tabs)) "" nil))
+                              (cdr (cadr sr-tabs))) "" nil))
             (current-name (buffer-name)))
         (mapc (lambda (x)
                 (let ((is-current (equal current-name x)))

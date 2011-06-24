@@ -18,6 +18,9 @@ http://ourcomments.org/Emacs/EmacsW32.html'''.
 === Info about latest version ===
 Go to the download page http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl or CategoryWThirtyTwo.
 
+"Beta" versions are availabe here: http://ourcomments.org/Emacs/DL/EmacsW32/test/.
+
+
 === 2006-12-15 Nxhtml/Nxml Modes Included ===
 NxhtmlMode (and previously also NxmlMode, but this is now in Emacs itself) are distributed together with %%EmacsW32%% from %%EmacsW32%% version 1.18.
 
@@ -1316,8 +1319,12 @@ Hi Alexey, I plan to upload new versions, but unfortunately the merging takes me
 The code at launchpad is mostly what is currently used in the latest beta of /EmacsW32/+Emacs so you may want to try the latest beta.
 
 [new]
+Where can I find the beta version? It isn't mentioned anywhere else on this page, or at http://ourcomments.org/Emacs/EmacsW32.html. Unless you mean "latest EmacsW32+Emacs patched", but it isn't referred to as beta on that page either.
 
+[new]
+I just added info about where to download beta version.
 
+----
 Related subjects
 CategoryKeys
 CategoryPorts

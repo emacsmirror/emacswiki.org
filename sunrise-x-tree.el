@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 376 $
+;; RCS Version: $Rev: 377 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -38,10 +38,8 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 376 $ of the Sunrise Commander Tree Extension.
-
-;; It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
-;; for Linux, and on EmacsW32 (version 23) for Windows.
+;; This extension was developed on GNU Emacs 24 on Linux and tested on GNU Emacs
+;; 22 and 24 for Linux, and on EmacsW32 (version 23) for Windows.
 
 ;;; Installation:
 
@@ -298,7 +296,7 @@ subdirectories in the tree first."
 With a non-nil optional argument OPEN, display the widget as open
 initially."
   (let ((is-open (or open (member e sr-tree-open-paths)))
-        (tag (replace-regexp-in-string "/?$" "" e)))
+        (tag (sr-chop ?/ e)))
     (setq tag (file-name-as-directory (file-name-nondirectory tag)))
     `(sr-tree-dir-widget
       :open ,is-open
@@ -310,8 +308,7 @@ initially."
 
 (defun sr-tree-path-line (&optional path)
   "Transform PATH into a suitable path line for displaying at the pane top."
-  (let ((path (expand-file-name (or path (cdr sr-tree-cursor) ""))))
-    (replace-regexp-in-string "\\(..*\\)/$" "\\1" path)))
+  (sr-chop ?/ (expand-file-name (or path (cdr sr-tree-cursor) ""))))
 
 (defun sr-tree-highlight ()
   "Set up the path line in the current Sunrise Tree buffer."
