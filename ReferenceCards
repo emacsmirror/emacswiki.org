@@ -13,5 +13,37 @@ An alternate Emacs reference card is available at http://www.mitchr.me/ as a PDF
 I generated an Emacs 22 reference card from refcard.tex. Available at http://marc-abramowitz.com/archives/2006/04/10/emacs-22-reference-card/
 
 ----
+
+Emacs 23 comes with a number of refcards, in tex and pdf format.
+Most of them can be located from inside emacs with <code>M-x locate refcard</code>.
+These cards are meant to be printed and folded so as to provide a quick reference
+sheet to the most common shortcuts of emacs and its extensions.
+
+* the emacs reference card in several languages (one sheet, 3-fold)
+
+  refcard.pdf -- english
+  fr-refcard.pdf -- french
+  de-refcard.pdf -- german
+  pl-refcard.pdf -- polish
+  ru-refcard.pdf -- russian
+  cs-refcard.pdf -- czech
+  pt-br-refcard.pdf -- portuguese
+ 
+* Mode specific reference cards 
+
+  survival.tex -- another reference card for emacs (2-fold)
+  dired-ref.pdf -- reference card for dired
+  calccard.pdf -- reference card for calc mode
+  orgcard.pdf -- reference card for org mode
+  gnus-refcard.pdf -- reference card for gnus
+  gnus-booklet.pdf -- extended list of shortcuts for gnus
+  vipcard.tex -- reference card for VIP, also known as vi-mode
+  vipercard.tex -- reference card for viper mode
+  tex-ref.pdf.gz -- reference card for auctex
+
+Other refcards include {fr,sk,cs}-dired-ref.pdf, {fr,sk,cs}-survival.tex.
+
+
+----
 CategoryDocumentation
 CategoryReferenceSheet

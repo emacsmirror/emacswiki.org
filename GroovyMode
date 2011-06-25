@@ -1,13 +1,13 @@
-See http://groovy.codehaus.org/Emacs+Plugin.
+See http://groovy.codehaus.org/Emacs+Mode.
 
 Be sure to also read informations inside inf-groovy.el. Here is environment juggling that I use in order to make it work.
 
 <pre>
 ;environment
 (defvar utils-dir "/home/sagasu/utils")
-(setenv "JAVA_HOME" (concat utils-dir "/java/jdk1.6.0_01"))
-(setenv "GROOVY_HOME" (concat utils-dir "/groovy/groovy-1.1-BETA-1"))
-(setenv "MAVEN_HOME" (concat utils-dir "/worek/maven/maven-2.0.6"))
+(setenv "JAVA_HOME" (concat utils-dir "/java/jdk1.6.0_26"))
+(setenv "GROOVY_HOME" (concat utils-dir "/groovy/groovy-1.8.0"))
+(setenv "MAVEN_HOME" (concat utils-dir "/worek/maven/maven-2.2.1"))
 
 (setenv "PATH" (concat (getenv "PATH")
 		       ":" (getenv "JAVA_HOME") "/bin"

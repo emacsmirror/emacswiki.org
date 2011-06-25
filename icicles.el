@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:54:18 2011 (-0700)
+;; Last-Updated: Fri Jun 24 11:39:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22904
+;;     Update #: 22914
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1244,6 +1244,22 @@
 ;;  `repeat-complex-command' - Use `completing-read' to read command.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
+;;
+;;  ******************
+;;  NOTE: Whenever you update Icicles (i.e., download new versions of
+;;  Icicles source files), I recommend that you do the following:
+;;
+;;      1. Delete all existing byte-compiled Icicles files
+;;         (icicles*.elc).
+;;      2. Load Icicles (`load-library' or `require').
+;;      3. Byte-compile the source files.
+;;
+;;  In particular, always load `icicles-mac.el' (not
+;;  `icicles-mac.elc') before you byte-compile new versions of the
+;;  files, in case there have been any changes to Lisp macros (in
+;;  `icicles-mac.el').
+;;  ******************
+
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1274,12 +1290,11 @@
 
 ;;; Load other Icicles files (except documentation) ------------------
 
-(require 'icicles-opt)
-(require 'icicles-var)
+(require 'icicles-mac)
 (require 'icicles-face)
-
-(require 'icicles-fn) ;; Requires opt, var
-(require 'icicles-mac) ;; Requires var
+(require 'icicles-opt)  ;; Requires face
+(require 'icicles-var)  ;; Requires opt
+(require 'icicles-fn)   ;; Requires mac, opt, var
 (require 'icicles-mcmd) ;; Requires opt, var, fn, mac
 (require 'icicles-cmd1) ;; Requires mac, opt, var, fn, mcmd
 (require 'icicles-cmd2) ;; Requires mac, opt, var, fn, mcmd, cmd1

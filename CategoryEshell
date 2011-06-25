@@ -43,6 +43,7 @@ More information about eshell :
 * EshellWishList -- wish list and questions.
 * EshellWThirtyTwo -- snippets that make a w32 user's day brighter
 ** EshellLnkFileSupport -- support for Windows shortcut
+* EshellAndEmacsServer -- Use eshell like a shell in a terminal-emulator
 
 A somewhat similar project -- [[oneliner]]:
 * http://sourceforge.net/projects/oneliner-elisp/ , http://oneliner-elisp.sourceforge.net/ : "Oneliner integrates UNIX shell with Emacs text editor. Oneliner provides various syntax for integration. (e.g. You can connect 'shell pipe' and 'Emacs buffer' directly with simple syntax.)"

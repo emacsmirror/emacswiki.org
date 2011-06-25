@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 20:50:36 2011 (-0700)
+;; Last-Updated: Fri Jun 24 11:39:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 677
+;;     Update #: 678
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -52,6 +52,21 @@
 ;;  in your code.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
+;;
+;;  ******************
+;;  NOTE: Whenever you update Icicles (i.e., download new versions of
+;;  Icicles source files), I recommend that you do the following:
+;;
+;;      1. Delete all existing byte-compiled Icicles files
+;;         (icicles*.elc).
+;;      2. Load Icicles (`load-library' or `require').
+;;      3. Byte-compile the source files.
+;;
+;;  In particular, always load `icicles-mac.el' (not
+;;  `icicles-mac.elc') before you byte-compile new versions of the
+;;  files, in case there have been any changes to Lisp macros (in
+;;  `icicles-mac.el').
+;;  ******************
  
 ;;(@> "Index")
 ;;

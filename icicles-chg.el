@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  5 09:25:07 2011 (-0700)
+;; Last-Updated: Fri Jun 24 11:42:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6606
+;;     Update #: 6607
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5536,6 +5536,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2011/06-24 dadams
+;;     Updated load order: mac, face, opt, var, fn, mcmd, cmd1, cmd2, mode.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2009/05/22 dadams

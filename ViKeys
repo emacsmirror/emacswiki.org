@@ -26,6 +26,8 @@ For the vi user:
 
 * If you miss "'''##z##'''", "'''##z.##'''" or "'''##z-##'''", see RecenterLikeVi.
 
+* If you miss "'''##:q!##'''", use `M-x kill-emacs'.  See also ViQuit
+
 See also ViEmacsTable.
 
 [ViAndEmacs vi and Emacs] have different philosophies when it comes to keystrokes. Emacs has long keystrokes involving special modifier keys, such as Meta and Control (see EscapeMetaAltControlShift :)). This is analogous to a Very Long Instruction Word (VLIW) architecture.

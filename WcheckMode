@@ -1,4 +1,4 @@
-Lisp:wcheck-mode.el
+Download: https://github.com/tlikonen/wcheck-mode
 
 == Introduction ==
 
@@ -22,7 +22,7 @@ The motivation behind Wcheck mode is to offer more general-purpose and configura
 
 == Install and configure ==
 
-Put Lisp:wcheck-mode.el file to some directory in your Emacs's `load-path' and add the following lines to Emacs's initialization file (##~/.emacs##):
+Put `wcheck-mode.el' file to some directory in your Emacs's `load-path' and add the following lines to Emacs's initialization file (##~/.emacs##):
 
     (autoload 'wcheck-mode "wcheck-mode"
       "Toggle wcheck-mode." t)
