@@ -1641,18 +1641,21 @@ Very useful inside Sunrise VIRTUAL buffers."
       (if target-file (sr-focus-filename target-file)))))
 
 (defun sr-project-path ()
-  "Locate interactively all descendants of the directory in the passive pane
-that have a path similar to the directory in the active pane.
+  "Find projections of the active directory over the passive one.
+
+Locates interactively all descendants of the directory in the passive pane that
+have a path similar to the directory in the active pane.
 
 For instance, if the active pane is displaying directory /a/b/c and the passive
 one is displaying /x/y, this command will check for the existence of any of the
 following: /x/y/a/b/c, /x/y/b/c, /x/y/c and /x/y. Each (existing) directory
-located according to this schema will be known hereafter as a 'projection of
-the directory /a/b/c over /x/y'.
+located according to this schema will be known hereafter as a 'projection of the
+directory /a/b/c over /x/y'.
 
 If many projections of the active directory over the passive one exist, one can
 rotate among all of them by invoking `sr-project-path' repeatedly : they will be
 visited in order, from longest path to shortest."
+
   (interactive)
   (let* ((path (sr-chop ?/ (expand-file-name (dired-current-directory))))
          (pos (if (< 0 (length path)) 1)) (candidate) (next-key))

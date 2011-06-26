@@ -80,8 +80,6 @@
 ;; work on Windows. It was written on GNU Emacs 23 on Linux and tested on GNU
 ;; Emacs 22 and 23 for Linux.
 
-;; This is version 2 $Rev: 374 $ of the Sunrise Commander Mirror Extension.
-
 ;;; Installation and Usage:
 
 ;; 1) Put this file somewhere in your Emacs `load-path'.
@@ -259,9 +257,15 @@ corresponding mirror area."
 (defun sr-mirror-close (&optional do-commit local-commit moving)
   "Destroy the current mirror area.
 Unmounts and deletes the directories it was built upon. Tries to
-automatically repack the mirror and substitute the original
-archive with a new one containing the modifications made to the
-mirror."
+automatically repack the mirror and substitute the original archive
+with a new one containing the modifications made to the mirror.
+
+If optional argument DO-COMMIT is set, then all changes made to the
+mirror are unconditionally committed to the archive. If
+LOCAL-COMMIT is set, then the commit is considered local (changes
+effect a mirror nested inside another mirror). MOVING means that
+this operation was triggered by the user moving outside of the
+current mirror area (the current buffer will be killed soon)."
   (interactive)
   (unless sr-mirror-home
     (error (concat "Sunrise: sorry, can't mirror " (dired-get-filename))))
@@ -326,8 +330,10 @@ default)."
                  (error err))))))
 
 (defun sr-mirror-unmount (mirror overlay)
-  ;; FIXME explain the arguments
-  "Unmount and delete all directories used for mirroring given compressed archive."
+  "Unmount and delete all directories used for mirroring a compressed archive.
+MIRROR is the union of the AVFS directory that holds the contents
+of the archive (read-only) with OVERLAY, which contains all the
+modifications made to the union in the current session."
   (let* ((command (concat "cd ~; fusermount -u " sr-mirror-home mirror))
          (err (shell-command-to-string command)))
     (if (or (null err) (string= err ""))
@@ -355,8 +361,8 @@ default)."
 
 (defun sr-mirror-repack (mirror)
   "Try to repack the given MIRROR.
-On success, returns a string containing the full path to the
-newly packed archive, otherwise throws an error."
+On success, returns a string containing the full path to the newly
+packed archive, otherwise throws an error."
   (message "Sunrise: repacking mirror, please wait...")
   (let* ((target-home (concat sr-mirror-home ".repacked/"))
          (archive (replace-regexp-in-string "#[a-z0-9]*$" "" mirror))
@@ -454,9 +460,8 @@ the path is not inside any mirror fs, it is returned unmodified."
         (match-string 1 local-dir))))
 
 (defun sr-mirror-overlapping-p (mirror1 mirror2)
-  ;; FIXME
-  "Determine whether the surface of MIRROR1 mirrors a parent of
-the directory mirrored by the surface of MIRROR2."
+  "Return non-nil if the surface of MIRROR2 maps an archive nested
+inside the archive mapped by the surface of MIRROR1."
   (let ((surface1 (sr-mirror-surface mirror1))
         (surface2 (sr-mirror-surface mirror2))
         top)

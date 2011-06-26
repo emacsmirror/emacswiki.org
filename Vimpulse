@@ -32,6 +32,14 @@ Bug reports, patches or other feedback is welcome on the mailing list (see below
 
 You can also just edit this page.
 
+== History ==
+
+Vimpulse prehistory started with [http://common-lisp.net/project/vial/darcs/extended-viper/ extended-viper], by Brad Beveridge. Alessandro Piras took extended-viper and enhanced it into a codebase called vimper, which isn't available online.
+
+Vimpulse history began when Jason Spiro split vimper into two parts to make two projects: viper-in-more-modes 0.1 and Vimpulse 0.1.
+
+Jason was maintainer of Vimpulse from 0.1 (May 2007) until he passed the maintainership on. Alessandro inherited the maintainership from him in June 2009.[http://thread.gmane.org/gmane.emacs.vim-emulation/39] Vegard Øye inherited it from Alessandro in April 2010.[http://thread.gmane.org/gmane.emacs.vim-emulation/309]
+
 == External links ==
 
 * [http://gitorious.org/vimpulse Gitorious project]
