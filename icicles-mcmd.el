@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:48:04 2011 (-0700)
+;; Last-Updated: Sun Jun 26 20:09:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16968
+;;     Update #: 16975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -371,6 +371,8 @@
 (require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
+(when (> emacs-major-version 22) (require 'help-fns+ nil t)) ;; (no error if not found):
+                                                             ;; help-commands-to-key-buttons
 
 (eval-when-compile (require 'fit-frame nil t)) ;; (no error if not found): fit-frame
 (eval-when-compile
@@ -1752,7 +1754,8 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
           (princ "\nFor alt action, use `C-S-' instead of `C-', but use `C-|' or `M-|',\n\
      instead of `C-!' or `M-!', to act on all.\n")))
       (if icicle-completing-p
-          (princ (concat "\n" (icicle-help-string-completion)))
+          (with-current-buffer standard-output
+            (insert (concat "\n" (icicle-help-string-completion))))
         (princ (icicle-help-string-non-completion))))
     ;; Don't bother to do this for Emacs 21.3.  Its `help-insert-xref-button' signature is different.
     (when (and (> emacs-major-version 21)
@@ -1770,7 +1773,10 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
             (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
             (insert "\n\n")
             (goto-char (point-max))
-            (insert (substitute-command-keys
+            (insert (funcall
+                     (if (fboundp 'help-commands-to-key-buttons) ; In `help-fns.el'.
+                         #'help-commands-to-key-buttons
+                       #'substitute-command-keys)
                      "\n\nSend an Icicles bug report: `\\[icicle-send-bug-report]'.\n\n"))
             (help-insert-xref-button "[Icicles Help on the Web]" 'icicle-help-button)
             (insert "                        ")
@@ -1788,7 +1794,10 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
 (defun icicle-help-string-completion ()
   "Update the bindings within the Icicles completion help string."
   (icicle-S-iso-lefttab-to-S-TAB
-   (substitute-command-keys
+   (funcall
+    (if (fboundp 'help-commands-to-key-buttons) ; In `help-fns+.el'.
+        #'help-commands-to-key-buttons
+      #'substitute-command-keys)
     (concat
      (format "\\<minibuffer-local-completion-map> 
 

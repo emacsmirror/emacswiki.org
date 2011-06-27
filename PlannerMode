@@ -1,3 +1,10 @@
+<em style="background-color:yellow; color:black; font-size:150%;">Abandonware Warning</em>
+
+<em style="background-color:yellow; color:black;">As of Sunday, June 26, 2011, the last version of PlannerMode that can be found is dated 19-May-2008. This can be found at http://download.gna.org/planner-el/. The development repository http://repo.or.cz/r/planner-el.git has the same version.
+
+If you know of a newer version, please update this page appropriately.
+</em>
+
 Planner is a PersonalInformationManager (PIM) by JohnWiegley. You can use it to manage your tasks, schedule, notes,
 and anything else you want to store in a free-text richly-hyperlinked personal information manager integrated into
 Emacs. Because it's in Emacs, it can easily be tweaked to support your particular way of planning, and it
@@ -17,7 +24,8 @@ If you're new to Planner, here's a good way to get started:
 * PlannerModeWishlist - What can make Planner a better fit for you?
 * PlannerModeMobile - Making Planner work on mobile devices like the OpenMoko Neo FreeRunner.
 
-* The current maintainer's webpage for Planner is at http://wjsullivan.net/PlannerMode.html.
+* The current maintainer's webpage for Planner is at http://wjsullivan.net/PlannerMode.html. <em style="background-color:yellow; color:black;">(As of Sunday, June 26, 2011, this home page for PlannerMode points to an online repository 
+that has had some recent, automated changes made to it but it is still the same version of PlannerMode that is there is from May-2008)</em>
 * Join our mailing list (see https://gna.org/mail/?group=planner-el)! We love getting questions, requests, comments, bug reports...
 * Want to help develop Planner?  See the PlannerDevelopment page for details!
 
@@ -27,9 +35,9 @@ There is a good intro on how to use the PlannerMode in the planner.el file.
 
 The current version is at 
 
-* http://download.gna.org/planner-el/
+* http://download.gna.org/planner-el/ <em style="background-color:yellow; color:black;">(as of Sunday, June 26, 2011 this was last updated on 19-May-2008)</em>
 
-You can get the latest development snapshot at 
+You can get the latest development snapshot at <em style="background-color:yellow; color:black;">(as of Sunday, June 26, 2011 these links are dead - http://mwolson.org/static/dist/planner/ exists with several versions of planner in it - the newest is dated 27-Jun-2006)</em>
 
 * http://www.mwolson.org/static/dist/planner-latest.tar.gz
 * http://www.mwolson.org/static/dist/planner-latest.zip
@@ -37,7 +45,7 @@ You can get the latest development snapshot at
 See the PlannerModeQuickStart page for more specific directions on
 getting Planner.
 
-The Planner manual is available on-line in several forms at http://wjsullivan.net/static/doc/planner/.
+The Planner manual is available on-line in several forms at http://wjsullivan.net/static/doc/planner/. <em style="background-color:yellow; color:black;"></em>
 
 Older version is at
 

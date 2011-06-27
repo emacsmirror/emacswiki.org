@@ -78,6 +78,21 @@ One of the best features of AnsiTerm mode is its remote directory tracking. What
 
 Note that the above code may not work if /etc/hosts does not contain the fully qualified domain name (eg. it contains example instead of www.example.com).  This is the case by default on Ubuntu when it is installed using the live CD and can be fixed by editing /etc/hosts.  Tested on FreeBSD, Ubuntu and SunOS.
 
+[new]
+If you are using Zsh, you will notice setting the variable PROMPT_COMMAND doesn't work. You can define the precmd function instead :
+
+    precmd() {
+        echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
+        echo -e "\033AnSiTc" "$(pwd)"
+        if [ $(uname) = "SunOS" ]; then
+	    # The -f option does something else on SunOS and is not needed anyway.
+       	    hostname_options="";
+        else
+            hostname_options="-f";
+        fi
+        echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can cause problems on some OSes.
+    }
+
 == Remote Term Type ==
 
 The local eterm-color term type provided with emacs works great for

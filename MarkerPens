@@ -9,6 +9,9 @@ Save the file called "markerpen.el" in a directory in your load-path and add (lo
 
 * Lisp:markerpen.el
 
+
+See also HighlightTemporarily for a comparison of similar libraries.
+
 ----
 I think it is rude to `define-key' when the file is loaded.
 
@@ -30,10 +33,14 @@ To change markerpen with sequence of calls, depends on RepeatKeyDifferentBehavio
     (markerpen-mark-region (1+ (seq-times 'markerpen-mark-region-seq 10)))))
 </pre>
 
+----
+
 [new:NeilSmithline:2011-06-26 05:21 UTC]
 I think it is important to state on this page that the markings are not saved with the file. They are only good until the buffer holding the file is exited. That being said it is a nice library. Handy for some quick scribbling. 
 
 I think that if you want persist highlights then [[Bookmark+]] provides this functionality. I'm sure that several other of DrewAdams' [[DrewsElispLibraries | packages] provide this functionality. I generally assume that I need some a clever add-on, I can find a package to do it in DrewsElispLibraries or get it install [[Icicles]] as that seems to do everything in one package. -- NeilSmithline at June 26, 2011 at 01:42 ET (GMT-04:00)
+
+
 
 ----
 CategoryFaces HighlightTemporarily

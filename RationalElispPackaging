@@ -163,3 +163,7 @@ Among other things, it provides a major mode to manage local configuration for i
 = Pases =
 
 [[Pases]] is my attempt at a packaging system for Emacs. Documentation is a little sparse right now. Basically a "package" is a .tar.gz file with the extension .pases. It should be intsallable by Emacs alone. Doesn't do much in the way of version management, dependencies, etc. right now, but does handle a) byte-compiling, b) load-path installation, c) info load path installation. Do let me know if you have any comments or suggestions! -- ErikHetzner
+
+= el-get =
+
+See [[el-get]] (author is [[DimitriFontaine]])

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Thu Feb 24 15:09:51 2011 (-0800)
+;; Last-Updated: Sun Jun 26 20:16:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1676
+;;     Update #: 1694
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -190,6 +190,12 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/26 dadams
+;;     list-faces-display:
+;;       If available, use help-commands-to-key-buttons, not substitute-command-keys.
+;;       Added \\<help-mode-map> to help string (see Emacs bug #8939).
+;;       Removed print-help-return-message (updated per newer vanilla Emacs).
+;;     Soft-require help-fns+.el (Emacs 23+), for help-commands-to-key-buttons.
 ;; 2011/02/15 dadams
 ;;     Added: facemenup-copy-tree (Emacs 20-21).  Use in facemenu-mouse-menu.
 ;;                                                Removed require of cl.el for copy-tree.
@@ -318,7 +324,10 @@
 
 (require 'easymenu) ;; easy-menu-add-item, easy-menu-create-menu,
 (when (> emacs-major-version 21) (require 'help-mode)) ;; help-xref (button type)
+
+;; No error if these are not found - soft-requires:
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; read-face-name
+(when (> emacs-major-version 22) (require 'help-fns+ nil t)) ;; help-commands-to-key-buttons
 
 ;; Quiet the byte-compiler.
 (defvar palette-action) ;; Defined in `palette.el'.
@@ -1241,7 +1250,8 @@ FACE is determined as follows:
       (facemenu-add-face face start end)))
 
 
-  ;; REPLACES ORIGINAL in `faces.el':
+  ;; REPLACES ORIGINAL in `faces.el'.
+  ;;
   ;; When you click the face's sample text, the face is applied to the previous buffer.
   ;;
   (defun list-faces-display (&optional regexp)
@@ -1286,8 +1296,11 @@ faces with matching names are displayed."
         (save-excursion
           (set-buffer standard-output)
           (setq truncate-lines  t)
-          (insert (substitute-command-keys
-                   (concat "Use "
+          (insert (funcall
+                   (if (fboundp 'help-commands-to-key-buttons) ; In `help-fns.el'.
+                       #'help-commands-to-key-buttons
+                     #'substitute-command-keys)
+                   (concat "Use \\<help-mode-map>"
                            (if (display-mouse-p) "\\[help-follow-mouse] or ")
                            "\\[help-follow]:\n"
                            " * on a face's sample text to set the region to that face, or\n"
@@ -1324,8 +1337,7 @@ faces with matching names are displayed."
               (while (not (eobp))
                 (insert-char ?  max-length) ; ?\s won't byte-compile in Emacs 20.
                 (forward-line 1))))
-          (goto-char (point-min)))
-        (print-help-return-message))
+          (goto-char (point-min))))
       ;; If the *Faces* buffer appears in a different frame,
       ;; copy all the face definitions from FRAME,
       ;; so that the display will reflect the frame that was selected.
@@ -1336,6 +1348,7 @@ faces with matching names are displayed."
             (while faces
               (copy-face (car faces) (car faces) frame disp-frame)
               (setq faces  (cdr faces)))))))
+
 
   (define-button-type 'help-facemenu-set-face
       :supertype 'help-xref

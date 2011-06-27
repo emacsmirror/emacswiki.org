@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 24 11:42:46 2011 (-0700)
+;; Last-Updated: Sun Jun 26 20:18:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6607
+;;     Update #: 6614
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2418,6 +2418,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/06/26 dadams
+;;     icicle-minibuffer-help: Use insert, not princ, with icicle-help-string-completion.
+;;     icicle-minibuffer-help, icicle-help-string-completion:
+;;       Use help-commands-to-key-buttons, not substitute-command-keys, if available.
+;;     Soft-require help-fns+.el for help-commands-to-key-buttons.
 ;; 2011/06/03 dadams
 ;;     icicle-next-candidate-per-mode:
 ;;       Set this-command according to direction, per NTH.  If NTH is nil set it to 1.  For Icomplete+.
