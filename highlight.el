@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Thu May  5 17:50:32 2011 (-0700)
+;; Last-Updated: Mon Jun 27 08:31:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2624
+;;     Update #: 2653
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,17 +44,18 @@
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
-;;    (@* "Library `facemenu+.el' Puts Highlight on the Menu")
-;;    (@* "User Option `hlt-use-overlays-flag'")
-;;    (@* "Commands")
-;;    (@* "User Option `hlt-act-on-any-face-flag'")
-;;    (@* "Hiding and Showing Text")
-;;    (@* "What Gets Highlighted: Region, Buffer, New Text You Type")
-;;    (@* "Interference by Font Lock")
-;;    (@* "Suggested Bindings")
-;;    (@* "Relation to Hi-Lock Mode")
-;;    (@* "Commands That Won't Work in Emacs 20")
-;;    (@* "To Do")
+;;    (@> "Library `facemenu+.el' Puts Highlight on the Menu")
+;;    (@> "User Option `hlt-use-overlays-flag'")
+;;    (@> "Temporary or Permanent Highlighting")
+;;    (@> "Commands")
+;;    (@> "User Option `hlt-act-on-any-face-flag'")
+;;    (@> "Hiding and Showing Text")
+;;    (@> "What Gets Highlighted: Region, Buffer, New Text You Type")
+;;    (@> "Interference by Font Lock")
+;;    (@> "Suggested Bindings")
+;;    (@> "Relation to Hi-Lock Mode")
+;;    (@> "Commands That Won't Work in Emacs 20")
+;;    (@> "To Do")
 ;;  (@> "Change log")
 ;;  (@> "Menu-Bar Region Menu")
 ;;  (@> "Variables and Faces")
@@ -160,6 +161,46 @@
 ;;  You can toggle the value of `hlt-use-overlays-flag' at any time
 ;;  between nil and its previous non-nil value, using command
 ;;  `hlt-toggle-use-overlays-flag'.
+;;
+;;(@* "Temporary or Permanent Highlighting")
+;; ** "Temporary or Permanent Highlighting" **
+;;
+;;  Generally, highlighting you add is temporary: it is not saved when
+;;  you write your buffer todisk.  However, Emacs has a curious and
+;;  unfamiliar feature called "formatted" or "enriched" text mode,
+;;  which does record highlighting permanently.  See the Emacs manual,
+;;  node `Requesting Formatted Text'.
+;;
+;;  To save highlighting permanently, do the following:
+;;
+;;  1. `M-x enriched-mode', to put your file buffer in minor mode
+;;     `enriched-mode'.  You will see `Enriched' in the mode line.
+;;
+;;  2. Choose text-property highlighting, not overlay highlighting, by
+;;     setting option `hlt-use-overlays-flag' to `nil'.  To do this
+;;     using Customize, choose menu item `Highlight using text
+;;     properties, not overlays'.
+;;
+;;  3. Choose the highlight face to use:
+;;     `M-x hlt-choose-default-face'.
+;;
+;;  4. Highlight in any way provided by library `highlight.el'.  For
+;;     example, use `hlt-highlighter' (I bind it to `C-x mouse-2') to
+;;     drag-highlight as if using a marker pen.
+;;
+;;  5. Save your file.
+;;
+;;     Note that, although highlighting in enriched-text mode modifies
+;;     the buffer, it does not appear modified (check the beginning of
+;;     the mode line), so if you make no other changes then using `C-x
+;;     C-s' will not save your highlighting changes.  To remedy this,
+;;     just do something besides highlighting - e.g., add a space and
+;;     delete it - so that `C-x C-s' will save to disk.
+;;
+;;  When you reopen your file later, it will automatically be in
+;;  enriched mode, and your highlighting will show.  However, be aware
+;;  that font-locking interferes with enriched mode, so you will
+;;  probably want to use it on files where you don't use font-locking.
 ;;
 ;;(@* "Commands")
 ;;  ** Commands **

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Sun Jun 26 20:16:04 2011 (-0700)
+;; Last-Updated: Mon Jun 27 09:24:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1694
+;;     Update #: 1698
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -190,6 +190,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/27 dadams
+;;     Just soft-require palette.el - if not available then hard-require eyedropper.el.
 ;; 2011/06/26 dadams
 ;;     list-faces-display:
 ;;       If available, use help-commands-to-key-buttons, not substitute-command-keys.
@@ -315,9 +317,11 @@
 (require 'hexrgb nil t) ;; (no error if not found, but hard-required anyway for Emacs 22+,
                         ;; by `palette.el' and `eyedropper.el'.
                         ;; hexrgb-read-color, hexrgb-hex-to-int, hexrgb-hex-to-(rgb|hsv)
+
+;; eyedrop-pick-*-at-*, eyedrop-face-at-point:
 (if (fboundp 'defvaralias) ;; Emacs 22+
-    (require 'palette) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point, palette
-  (require 'eyedropper)) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point
+    (or (require 'palette nil t) (require 'eyedropper))
+  (require 'eyedropper))
 
 ;; (require 'icicles nil t) ;; (no error if not found):
                             ;; icicle-read-color, icicle-read-string-completing

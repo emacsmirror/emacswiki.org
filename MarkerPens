@@ -40,7 +40,8 @@ I think it is important to state on this page that the markings are not saved wi
 
 I think that if you want persist highlights then [[Bookmark+]] provides this functionality. I'm sure that several other of DrewAdams' [[DrewsElispLibraries | packages] provide this functionality. I generally assume that I need some a clever add-on, I can find a package to do it in DrewsElispLibraries or get it install [[Icicles]] as that seems to do everything in one package. -- NeilSmithline at June 26, 2011 at 01:42 ET (GMT-04:00)
 
-
+[new:DrewAdams:2011-06-27 15:28 UTC]
+: That is because MarkerPens uses only [[overlay]]s, not text properties.  Library <tt>[[highlight.el]]</tt> also provides marker-pen drag highlighting.  If you use ##highlight.el## then you can use either overlay or text-property highlighting, and with the latter you can [[HighLight#PermanentHighlighting|save the highlighting]] with the file. -- DrewAdams
 
 ----
 CategoryFaces HighlightTemporarily

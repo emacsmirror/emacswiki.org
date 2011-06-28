@@ -22,6 +22,12 @@ Overlays are independent from the text itself.  They are not
 picked up when you copy and paste text.  By default, highlighting
 uses overlays.
 
+
+
+
+
+
+[:hlt-use-overlays-flag]
 == User Option `hlt-use-overlays-flag' ==
 
 Although highlighting recognizes only `nil' and non-`nil' values for
@@ -45,6 +51,53 @@ unhighlighting, unless you change the value back again.
 You can toggle the value of `hlt-use-overlays-flag' at any time
 between `nil' and its previous non-`nil' value, using command
 '''`hlt-toggle-use-overlays-flag''''.
+
+
+
+
+
+
+[:PermanentHighlighting]
+== Temporary or Permanent Highlighting ==
+
+Generally, highlighting you add is temporary: it is not saved when
+you write your buffer todisk.  However, Emacs has a curious and
+unfamiliar feature called "formatted" or "enriched" text mode,
+which does record highlighting permanently.  See [[Manual:Requesting Formatted Text]].
+
+To save highlighting permanently, do the following:
+
+# `M-x enriched-mode', to put your file buffer in [[minor mode]]
+   `enriched-mode'.  You will see '''`Enriched'''' in the [[mode line]].
+
+# Choose text-property highlighting, not overlay highlighting, by
+   setting option '''`<tt>[[#hlt-use-overlays-flag]]</tt>''''
+ to `nil'.  To do this using [[Customize]], choose menu item '''Highlight using text properties, not
+   overlays'''.
+
+# Choose the highlight face to use:
+   '''`M-x hlt-choose-default-face''''.
+
+# Highlight in any way provided by library ##highlight.el##.  For example,
+   use `hlt-highlighter' (I bind it to `C-x mouse-2') to
+   drag-highlight as if using a marker pen.
+
+# Save your file.  Note that, although highlighting in enriched-text mode modifies
+   the buffer, it does not ''appear'' modified to Emacs (check the beginning of the mode line), so if you make no other
+   changes then using `C-x C-s' will ''not'' save your highlighting
+   changes.  To remedy this, just do something besides highlighting --- e.g., add
+   a space and delete it --- so that `C-x C-s' will save to disk.
+
+When you reopen your file later, it will automatically be in
+enriched mode, and your highlighting will show.  However, be aware
+that [[FontLock|font-locking]] interferes with enriched mode, so you will
+probably want to use it on files where you don't use font-locking.
+
+
+
+
+
+
 
 
 [:HighlightingCommands]

@@ -12,7 +12,7 @@ You can use these libraries to highlight text in a buffer:
 * %%HighLight%% and %%MarkerPens%% can highlight (or unhighlight) the ''region''.
 * %%HighLight%% and Icicles search can highlight a ''regexp'' throughout the ''region''.
 * %%HighLight%% can apply a [[face]] as property `mouse-face', instead of as property `face'. (A mouse face becomes visible only when the [[pointer]] is over it.)
-* %%HiLock%% uses ''text properties'', %%MarkerPens%% and Icicles search use ''overlays'', and %%HighLight%% can use either one (option '''`highlight-use-overlays-flag''''). When overlays are used, copying and pasting buffer text will not also paste the highlighting.
+* %%HiLock%% uses ''text properties'', %%MarkerPens%% and Icicles search use ''overlays'', and %%HighLight%% can use either one (option '''`highlight-use-overlays-flag''''). When overlays are used, copying and pasting buffer text will not also paste the highlighting.  When text properties are used, you can ''save'' your highlighting permanently, using enriched mode (see [[HighLight#PermanentHighlighting| Permanent Highlighting]] and [[Manual:Requesting Formatted Text]]).
 * %%HiLock%% uses font-lock mode: its highlighting is visible only when `font-lock-mode' is turned on. %%HighLight%%, %%MarkerPens%%, and Icicles search are independent of font-lock mode.
 * %%HighLight%% can replace highlighting in a given face by another face, throughout the region or buffer.
 * %%HighLight%% can unhighlight a given highlighting face (only), throughout the region or buffer.

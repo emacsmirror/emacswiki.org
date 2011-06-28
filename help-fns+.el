@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Jun 26 20:12:49 2011 (-0700)
+;; Last-Updated: Mon Jun 27 09:34:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1016
+;;     Update #: 1024
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -306,10 +306,11 @@ Non-nil optional arg ADD-HELP-BUTTONS does that, adding buttons to key
 descriptions, which link to the key's command help."
 
     ;; REPEAT:
-    ;;  Search for first occurrence of any of  \[...], \{...}, or \<...>.
-    ;;  If it is a keymap, use it from then on.
-    ;;  If it is a command then (a) substitute its key description and (b) put a button on it.
-    ;;  If it is a bindings spec (\{...}) then just substitute the usual text.
+    ;;  Search for first occurrence of any of the patterns: \[...], \{...}, or \<...>.
+    ;;  Handle escaping via \=, if present before the pattern.
+    ;;  If pattern is a keymap (\<...>): use it from then on.
+    ;;  If pattern is a command (\[...]): (a) substitute its key description, (b) put a button on it.
+    ;;  If pattern is a bindings spec (\{...}): just substitute the usual text.
     (with-syntax-table emacs-lisp-mode-syntax-table
       (let* ((strg          (copy-sequence string))
              (len-strg      (length strg))

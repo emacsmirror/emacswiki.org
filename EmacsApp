@@ -87,6 +87,14 @@ Some useful resources: http://en.wikipedia.org/wiki/Keyboard_layout &nbsp;&nbsp;
 
 I have tried outlining 3 basic options for European users in a blog post/video [[http://blog.enqueue.eu/emacs_mac_2 here]]. I do not have a clue about Asian character input, though. Open to comment.
 
+== Map the ALT and the META key close to a "normal" Unix behavior ==
+
+To map the the *left alt key with META* and the *right alt key with ALT*, on the Mac OS X version of GNU Emacs, I use:
+
+    (setq mac-option-key-is-meta t)
+    (setq mac-right-option-modifier nil)
+
+It should do the job for the behavior you expect. -- jbcarre
 
 == Questions ==
 
