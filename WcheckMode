@@ -1,115 +1,297 @@
-Download: https://github.com/tlikonen/wcheck-mode
+== Download ==
+
+Download the code from [https://github.com/tlikonen/wcheck-mode Github] repository.
+
+Note: There have been some backward-incompatible changes in 2011-06-29
+and some of the configuration options used in previous versions do not
+work anymore. The previous "spelling suggestions" feature has been
+generalized to "actions" feature. Now user can configure any kind of
+actions for marked text, not just spelling suggestions. Please read the
+documentation of variable `wcheck-language-data' and README text in the
+source repository.
+
 
 == Introduction ==
 
-Wcheck mode is a general-purpose text-checker interface for Emacs. It's a minor mode for on-the-fly (spell-)checking and marking words or other text elements in Emacs buffers.
+Wcheck mode is a general-purpose text-checker interface for Emacs text
+editor. Wcheck mode a minor mode which provides an on-the-fly text
+checker. It checks the visible text area, as you type, and possibly
+highlights some parts of it. What is checked and how are all
+configurable.
 
-Wcheck mode can use external programs or Emacs Lisp functions for checking text. For example, Wcheck mode can be used with spell-checker programs such as Enchant, Ispell and Hunspell, but actually any tool that can receive text from standard input stream and send text to standard output can be used. Wcheck sends parts of buffer's content to an external program or an Emacs Lisp function and, based on their output, decides if some parts of text should be marked in the buffer.
+Wcheck mode can use external programs or Emacs Lisp functions for
+checking text. For example, Wcheck mode can be used with spell-checker
+programs such as Ispell, Enchant and Hunspell, but actually any tool
+that can receive text from standard input stream and send text to
+standard output can be used. Wcheck mode sends parts of buffer's content
+to an external program or an Emacs Lisp function and, based on their
+output, decides if some parts of text should be marked in the buffer.
+
 
 == Features ==
 
-In terms of spelling checker and user interface Wcheck mode is an on-the-fly checker which can also offer spelling suggestions (corrections) when asked. In Wcheck mode different configuration units are called languages. They don't have to be human languages, though. Language is just a configuration unit for certain kind of text checking purpose.
+In Wcheck mode's configuration different configuration units are called
+"languages". In terms of a spelling checker it is natural to think of
+them as different human languages. Wcheck mode is not limited to that,
+though. Language is just a configuration unit for certain kind of text
+checking purpose.
 
-Each language can use its own checker engine (external program or a function), command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. The on-the-fly checker can use different program than the spelling correction feature. User can choose which "face" is used to mark text elements in buffer. All the settings are language-specific and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean. When using Wcheck mode as a spelling checker we usually think of marked words as misspellings.
+Each language can use its own checker engine (external program or a
+function), command-line arguments and other settings, such as the
+regular expressions and syntax table that are used to match words (or
+other text elements) in Emacs buffer. User can choose which "face" is
+used to mark text elements in buffer.
 
-User can create language and major mode specific settings defining which "faces" to read or skip in buffers. A typical use for this feature is to spell-check only those areas in buffer which are written in human language. For example, in email messages usually the message body and Subject header are important enough to spell-check. In programming modes user could spell-check only documentation strings and comments (or the opposite if you want to use Wcheck mode to check keywords and syntax of the programming language itself).
+User can create language-specific and major mode specific settings
+defining which "faces" to read or skip in buffers. A typical use for
+this feature is to spell-check only those areas in buffer which are
+written in the target language. For example, in email messages usually
+the message body and Subject header are important enough to spell-check.
+In programming modes user could spell-check only documentation strings
+and comments (or the opposite if you want to use Wcheck mode to check
+keywords and syntax of the programming language itself).
+
+Wcheck mode can also be configured to offer any kind of actions for
+marked text. Actions are presented to user through a menu which is
+activated either by (1) clicking the right mouse button on a marked text
+or (2) executing interactive command `wcheck-actions' while the cursor
+(the point) is on a marked text.
+
+If you use Wcheck mode as a spelling checker then it's natural to
+configure an action menu that offers spelling suggestions for the
+misspelled word. The action menu could also have an option to add the
+marked word to spell-checker's dictionary, so that the word is
+recognized in the future. That's only one application for Wcheck mode,
+though. Wcheck mode can be configured to find almost any kind of text
+elements from buffer, mark them, and offer any kind of actions for
+marked text.
+
 
 == How does it compare to other spell-checkers? ==
 
-The open design makes Wcheck mode (internally) quite different from spell-checkers like [[FlySpell]] and [[SpeckMode]]. They are specific tools for spell-checking through Ispell or compatible program and are therefore very much tied to Ispell's features and command-line interface. This can be useful if you want to use Ispell or fully compatible program for spell-checking natural languages. However, not all human languages can be supported through Ispell and there can also be other kind of text-checking needs.
+The open design makes Wcheck mode (internally) quite different from
+spell-checkers like Flyspell mode and Speck mode. They are specific
+tools for spell-checking through Ispell or compatible program and are
+therefore very much tied to Ispell's features and command-line
+interface. This can be useful if you want to use Ispell or fully
+compatible program for spell-checking natural languages. However, not
+all human languages can be supported through Ispell and there can also
+be other kind of text-checking needs.
 
-The motivation behind Wcheck mode is to offer more general-purpose and configurable interface for text checking. It can be configured to work with almost anything: user's custom shell, awk or perl scripts, Lisp functions or other checkers and text filters. Even if you only need a spelling checker for human languages Wcheck mode can be a good choice. It has more configuration possibilities than other spell-checkers and the on-the-fly checker performs very well. It's a true real-time checker.
+The motivation behind Wcheck mode is to offer more general-purpose and
+configurable interface for text checking. It can be configured to work
+with almost anything: user's custom shell, Awk or Perl scripts, Lisp
+functions or other checkers and text filters. Even if you only need a
+spelling checker for human languages Wcheck mode can be a good choice.
+It has more configuration possibilities than other spell-checkers and
+the on-the-fly checker performs very well. It's a true real-time
+checker.
 
-== Install and configure ==
 
-Put `wcheck-mode.el' file to some directory in your Emacs's `load-path' and add the following lines to Emacs's initialization file (##~/.emacs##):
+== Install ==
+
+Put wcheck-mode.el file to some directory in your Emacs's `load-path'
+and add the following lines to Emacs's initialization file (~/.emacs):
 
     (autoload 'wcheck-mode "wcheck-mode"
       "Toggle wcheck-mode." t)
     (autoload 'wcheck-change-language "wcheck-mode"
       "Switch wcheck-mode languages." t)
-    (autoload 'wcheck-spelling-suggestions "wcheck-mode"
-      "Spelling suggestions." t)
+    (autoload 'wcheck-actions "wcheck-mode"
+      "Open actions menu." t)
     (autoload 'wcheck-jump-forward "wcheck-mode"
       "Move point forward to next marked text area." t)
     (autoload 'wcheck-jump-backward "wcheck-mode"
       "Move point backward to previous marked text area." t)
 
-See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the text-checker in the current buffer. Command `wcheck-change-language' is used to switch languages and command `wcheck-spelling-suggestions' (or right mouse button) gives spelling suggestion for marked text (if the suggestion program is properly configured). Commands `wcheck-jump-forward' and `wcheck-jump-backward' jump to next or previous marked text area.
 
-It might be convenient if Wcheck commands are bound to some easily accessible keys, for example:
+== Configuration and basic usage ==
+
+The internal documentation of variable `wcheck-language-data' has a
+complete description on how to configure Wcheck mode language data. For
+easy configuration you can use the options in the customize group named
+"wcheck" (M-x customize-group RET wcheck RET).
+
+It might be convenient to bind Wcheck mode commands to some easily
+accessible keys, for example:
 
     (global-set-key (kbd "C-c s") 'wcheck-mode)
     (global-set-key (kbd "C-c l") 'wcheck-change-language)
-    (global-set-key (kbd "C-c c") 'wcheck-spelling-suggestions)
+    (global-set-key (kbd "C-c c") 'wcheck-actions)
     (global-set-key (kbd "C-c n") 'wcheck-jump-forward)
     (global-set-key (kbd "C-c p") 'wcheck-jump-backward)
 
-Below is an example configuration for spell-checking languages Finnish (using Enchant) and British English (using Ispell). The default language will be "Finnish". There are also two non-human languages: "Trailing whitespace" is a checker which highlights trailing whitespace characters in lines and "Highlight FIXMEs" highlights FIXME words if they appear in comments in `emacs-lisp-mode' or `c-mode' (or anywhere in other modes). The example also configures some global defaults for all languages. For example, text-checkers will read only certain buffer areas (faces) in `emacs-lisp-mode', `c-mode' and `message-mode'.
+Interactive command `wcheck-mode' toggles the text-checker for the
+current buffer. Command `wcheck-change-language' is used to switch
+languages and command `wcheck-actions' (or the right mouse button) opens
+an actions menu for marked text. Commands `wcheck-jump-forward' and
+`wcheck-jump-backward' jump to next or previous marked text area.
 
-    (setq-default
 
-     wcheck-language "Finnish"
+== Examples ==
 
-     wcheck-language-data
-     '(("Finnish"
-        (program . "/usr/bin/enchant")
-        (args  "-l" "-d" "fi")
-        (syntax . my-finnish-syntax-table)
-        (suggestion-program . "/usr/bin/enchant")
-        (suggestion-args "-a" "-d" "fi")
-        (suggestion-parser . wcheck-parser-ispell-suggestions))
-       ("British English"
-        (program . "/usr/bin/ispell")
-        (args "-l" "-d" "british")
-        (suggestion-program . "/usr/bin/ispell")
-        (suggestion-args "-a" "-d" "british")
-        (suggestion-parser . wcheck-parser-ispell-suggestions))
-       ("Trailing whitespace"
-        (program . identity)
-        (suggestion-program . (lambda (string) (list "")))
-        (face . highlight)
-        (regexp-start . "")
-        (regexp-body . "[ \t]+")
-        (regexp-end . "$")
-        (regexp-discard . "")
-        (read-or-skip-faces
-         (nil)))
-       ("Highlight FIXMEs"
-        (program . (lambda (strings)
-                     (when (member "FIXME" strings)
-                       (list "FIXME"))))
-        (face . highlight)
-        (read-or-skip-faces
-         ((emacs-lisp-mode c-mode) read font-lock-comment-face)
-         (nil))))
+Here are some examples on how you can fill the `wcheck-language-data'
+variable. The value is a list of language configurations:
 
-     wcheck-language-data-defaults
-     '((parser . wcheck-parser-lines)
-       (suggestion-parser . wcheck-parser-ispell-suggestions)
-       (connection . nil)
-       (face . wcheck-default-face)
-       (syntax . text-mode-syntax-table)
-       (regexp-start . "\\<'*")
-       (regexp-body . "\\w+?")
-       (regexp-end . "'*\\>")
-       (regexp-discard . "\\`'+\\'")
-       (case-fold . nil)
-       (read-or-skip-faces
-        ((emacs-lisp-mode c-mode) read
-         font-lock-comment-face font-lock-doc-face)
-        (message-mode read
-         nil message-header-subject message-cited-text))))
+    (setq wcheck-language-data
+          '(("language"
+             ...)
+            ("another language"
+             ...)))
 
-== Questions and Other Things ==
+Perhaps the most common use for `wcheck-mode' is to spell-check human
+languages with Ispell (or compatible) spelling checker. Let's start with
+examples on how to configure that.
 
-Are there any grammar checkers available that you can use with this?
+The following settings configure two languages which are named "British
+English" and "Finnish". The former language uses Ispell program as the
+spell-checker engine. The latter uses Enchant which has an
+Ispell-compatible command-line interface. Both languages use
+`wcheck-mode's actions feature to offer spelling suggestions for
+misspelled words. Since both spelling checkers print spelling
+suggestions in the Ispell format we use built-in function
+`wcheck-parser-ispell-suggestions' to parse the output and populate the
+actions (spelling suggestions) menu for user.
 
-Suggestion: Write your example using `( ... ) so that you can for example write ,ispell-program-name instead of "/usr/bin/ispell".
+    ("British English"
+     (program . "/usr/bin/ispell")
+     (args "-l" "-d" "british")
+     (action-program . "/usr/bin/ispell")
+     (action-args "-a" "-d" "british")
+     (action-parser . wcheck-parser-ispell-suggestions))
 
-[new]
+    ("Finnish"
+     (program . "/usr/bin/enchant")
+     (args  "-l" "-d" "fi")
+     (syntax . my-finnish-syntax-table)
+     (action-program . "/usr/bin/enchant")
+     (action-args "-a" "-d" "fi")
+     (action-parser . wcheck-parser-ispell-suggestions))
 
-: Using variable `ispell-program-name' with ##`()## construct may be a good idea for some individuals' configuration but, in my opinion, not as a general example. The reason is that the variable is not defined by default: it exists only after Emacs ispell package is loaded.
+The "Finnish" language above used a special syntax table called
+my-finnish-syntax-table. It could be defined like this:
+
+    (defvar my-finnish-syntax-table
+      (copy-syntax-table text-mode-syntax-table))
+
+    (modify-syntax-entry ?- "w" my-finnish-syntax-table)
+
+It copies `text-mode-syntax-table' (which `wcheck-mode' uses by default)
+and sets the syntactic meaning of the ASCII hyphen character (-) to a
+word character ("w"). `wcheck-mode' and its regular expression search
+will use that syntax table when scanning buffers' content in that
+language.
+
+Below is an example on how to add an "Add to dictionary" feature to the
+actions menu, among spelling suggestions. First, there's the language
+configuration. The example is similar to the "British English"
+configuration above except that `action-parser' function is a bit more
+complicated. It's a lambda expression which calls
+`wcheck-parser-ispell-suggestions' and then adds "Add to dictionary"
+option in the front of the spelling suggestions list. Choosing that
+option from the actions menu will call function add-word-to-dictionary
+(which doesn't exist yet).
+
+    ("British English"
+     (program . "/usr/bin/ispell")
+     (args "-l" "-d" "british")
+     (action-program . "/usr/bin/ispell")
+     (action-args "-a" "-d" "british")
+     (action-parser . (lambda (marked-text)
+                        (cons (cons "[Add to dictionary]"
+                                    'add-word-to-dictionary)
+                              (wcheck-parser-ispell-suggestions)))))
+
+Now we need to define the function add-word-to-dictionary. Below is an
+incomplete example. To make it complete you'll have to find out how and
+where your spelling checker stores user dictionaries. Then write code
+that adds a new string to the dictionary.
+
+    (defun add-word-to-dictionary (marked-text)
+      ;; MARKED-TEXT is a vector returned by
+      ;; `wcheck-marked-text-at' function.
+
+      (let ((word (aref marked-text 0))
+            (language (aref marked-text 4)))
+
+        ;; Do the actual job here. That is, write code that adds
+        ;; the string stored in variable "word" to the
+        ;; appropriate dictionary.
+
+        (message "Added word \"%s\" to the %s dictionary"
+                 word language)))
+
+Spell-checking human languages is not the only application for
+`wcheck-mode'. The following configuration adds language called
+"Trailing whitespace" which finds and marks all trailing whitespace
+characters (spaces and tabs) on buffer's lines. It uses regular
+expressions to match the whitespace. The checker program is the Emacs
+Lisp function `identity' which just returns its argument unchanged. The
+`action-program' feature is used to build an action menu with just one
+option: remove the whitespace. It replaces the original whitespace
+string with empty string.
+
+    ("Trailing whitespace"
+     (program . identity)
+     (action-program . (lambda (marked-text)
+                         (list (cons "Remove whitespace" ""))))
+     (face . highlight)
+     (regexp-start . "")
+     (regexp-body . "[ \t]+")
+     (regexp-end . "$")
+     (regexp-discard . "")
+     (read-or-skip-faces
+      (nil)))
+
+Sometimes it's useful to highlight only a small number of keywords in
+buffer. The following example adds a language called "Highlight FIXMEs"
+to mark "FIXME" words. FIXME is some programmers' convention to put
+reminders in source code that some parts are not complete yet and will
+be fixed or completed later. In source code files such keywords are
+written in program's comments only, not in the actual code, so we use
+`read-or-skip-faces' feature to scan only the comments. This example
+configures it for `emacs-lisp-mode' and `c-mode'. In all other major
+modes FIXMEs are marked everywhere.
+
+     ("Highlight FIXMEs"
+      (program . (lambda (strings)
+                   (when (member "FIXME" strings)
+                     (list "FIXME"))))
+      (face . highlight)
+      (read-or-skip-faces
+       ((emacs-lisp-mode c-mode) read font-lock-comment-face)
+       (nil)))
+
+The following example adds a language "email" for highlighting email
+addresses from buffer and creating an action menu which has option to
+start composing mail to that address. Here's the language configuration:
+
+    ("email"
+     (program . email-address-detect)
+     (face . highlight)
+     (regexp-start . "\\<")
+     (regexp-body . "\\S-+@\\S-+")
+     (regexp-end . "\\>")
+     (action-program . email-action-menu)
+     (read-or-skip-faces
+      (nil)))
+
+Then the needed functions:
+
+    (defun email-address-detect (strings)
+      (let (addresses)
+        (dolist (string strings addresses)
+          (when (string-match "\\<[a-z.-]+\\>@\\<[a-z.-]+\\>" string)
+            (push (match-string-no-properties 0 string) addresses)))))
+
+    (defun email-action-menu (marked-text)
+      (list (cons (concat "Mail to <" (aref marked-text 0) ">")
+                  (lambda (marked-text)
+                    (compose-mail (aref marked-text 0))))))
+
+Note that detecting all valid email addresses is difficult and a much
+more advanced parser is needed for that. Feel free to replace the
+detection function with a better one.
 
 ----
 CategorySpelling

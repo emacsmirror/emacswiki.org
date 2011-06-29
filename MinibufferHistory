@@ -34,6 +34,17 @@ Naturally, these keys work only during minibuffer input.
 Press `C-r' in minibuffer, narrow the list by typing some patterns(multiple patterns are space-delimited string),
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter.
 
+== Improving the definition of "history" ==
+
+Switching back to a buffer that has been killed doesn't seem useful, so killing a buffer should remove it from the minibuffer history (actually from ''buffer-name-history'').  This seems to do the trick:
+
+  (add-hook 'kill-buffer-hook
+   (lambda nil
+    (setq buffer-name-history
+          (delete*
+           (buffer-name)
+           buffer-name-history :test 'string=))))
+
 
 ----
 CategoryCommands

@@ -36,9 +36,10 @@ Killing next word or sexp can be done with <code>C-M-SPC C-w</code>, or better w
      
      (defun copy-thing (begin-of-thing end-of-thing &optional arg)
        "copy thing between beg & end into kill ring"
-        (let ((beg (get-point begin-of-thing 1))
-     	 (end (get-point end-of-thing arg)))
-          (copy-region-as-kill beg end))
+        (save-excursion
+          (let ((beg (get-point begin-of-thing 1))
+         	 (end (get-point end-of-thing arg)))
+            (copy-region-as-kill beg end)))
      )
      
      (defun paste-to-mark(&optional arg)
@@ -62,7 +63,7 @@ Killing next word or sexp can be done with <code>C-M-SPC C-w</code>, or better w
       "Copy words at point into kill-ring"
        (interactive "P")
        (copy-thing 'backward-word 'forward-word arg)
-       (paste-to-mark arg)
+       ;;(paste-to-mark arg)
      )
 
 

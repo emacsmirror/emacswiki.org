@@ -21,3 +21,6 @@ functions that take one argument FILENAME and, say, check the file out then
 back in. 
 
 * Lisp:grep-ed.el
+
+[new]
+This fancy tool needs some fix for skipping on the read-only text, i.e. file name and position. When I try all *-replace-* functions for whole buffer, it stops on such regions. No way to make big changes in one query... :( -- Kiwon Um
