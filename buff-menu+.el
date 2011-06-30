@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Mon May  2 12:53:25 2011 (-0700)
+;; Last-Updated: Wed Jun 29 13:26:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2716
+;;     Update #: 2730
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -141,6 +141,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/29 dadams
+;;     Buffer-menu-buffer+size: Corrected SPC syntax (for Emacs 20) from ?\s  to ?\ .
 ;; 2011/05/02 dadams
 ;;     buffer-menu-font-lock-keywords, Buffer-menu(-mouse)-execute, list-buffers-noselect,
 ;;       Buffer-menu-mouse-unmark:
@@ -580,8 +582,8 @@ Update `buffer-menu-font-lock-keywords' accordingly."
     :set 'buffer-menu-set-default-value)  
 
 
-
-  ;; REPLACES ORIGINAL in `buff-menu.el'.
+  ;; REPLACE ORIGINAL in `buff-menu.el'.
+  ;;
   ;; A user option now.  It must be numeric.  Initial value is 1, not nil.
   ;;
   (defcustom Buffer-menu-sort-column 1
@@ -600,7 +602,8 @@ Click a column heading to sort by that field and update this option."
   (setq Buffer-menu-sort-column  (or Buffer-menu-sort-column 1))
 
 
-  ;; REPLACES ORIGINAL in `buff-menu.el'.
+  ;; REPLACE ORIGINAL in `buff-menu.el'.
+  ;;
   ;; Use `Buffer-menu-buffer+size-computed-width', not `Buffer-menu-buffer+size-width'.
   ;;
   (defun Buffer-menu-buffer+size (name size &optional name-props size-props)
@@ -623,7 +626,7 @@ Click a column heading to sort by that field and update this option."
     (concat name (make-string (- Buffer-menu-buffer+size-computed-width
                                  (length name)
                                  (length size))
-                              ?\s-  )
+                              ?\  )     ; ?\  instead of ?\s, so can be byte-compiled in Emacs 20.
             size))
   )
 
@@ -789,8 +792,7 @@ Click a column heading to sort by that field and update this option."
 (when (fboundp 'undefine-killer-commands) (undefine-killer-commands Buffer-menu-mode-map))
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el'.
+;; REPLACE ORIGINAL in `buff-menu.el'.
 ;;
 ;; Protect `Buffer-menu-files-only' with boundp (for Emacs 20).
 ;;
@@ -835,8 +837,7 @@ Click a column heading to sort by that field and update this option."
 (add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el'.
+;; REPLACE ORIGINAL in `buff-menu.el'.
 ;;
 ;; Treat Emacs 20 too.
 ;;
@@ -846,13 +847,17 @@ Click a column heading to sort by that field and update this option."
     (forward-line)))
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el':
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;;   1. Different help message.
 ;;   2. Prefix ARG =< 0 now means list all buffers alphabetically.
 ;;      (It used to mean the same as ARG > 0.)
 ;;      Prefix ARG >= 0 means list just file buffers.
 ;;   3. Use `pop-to-buffer' instead of `switch-to-buffer'.
+;;      This means that the buffer menu is shown in a different window.
+;;      If you prefer to show it in the current window, then just do this:
+;;          (add-to-list 'same-window-buffer-names "*Buffer List*")
+;;
 ;;;###autoload
 (defun buffer-menu (&optional arg)
   "Show a menu to let you save, delete or select buffers.
@@ -882,8 +887,8 @@ Type `q' there to quit the buffer menu."
 Save/Delete: x;   Misc: g,~,%%,t"))
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el':
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;; 1. Doc string reflects new bindings.
 ;; 2. mouse-face on whole line, not just buffer name.
 ;; 3. Compatible with Emacs prior to Emacs 22 also.
@@ -1006,8 +1011,8 @@ Bindings in Buffer Menu mode:
       (run-hooks 'buffer-menu-mode-hook))))
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el':
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;; 1. Doc string reflects new bindings.
 ;; 2. mouse-face on whole line, not just buffer name.
 ;;
@@ -1169,8 +1174,8 @@ You can mark a buffer for deletion (`D') using command `\\<Buffer-menu-mode-map>
       (Buffer-menu-revert-function nil nil))))
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el':
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;; 1. Deletes frame when kills buffer.
 ;; 2. Compatible with Emacs prior to Emacs 22 also.
 ;; 3. Accommodate `frame-bufs.el'.
@@ -1212,8 +1217,8 @@ Buffers can be so marked using commands `\\<Buffer-menu-mode-map>\
             (unless (bobp) (forward-char -1))))))))
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el':
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;; When Buffer Menu is `window-dedicated-p', uses `pop-to-buffer' to display.
 ;;
 ;;;###autoload
@@ -1261,8 +1266,8 @@ else, all windows previously in the frame are replaced by this one."
              (other-window 1))))))      ;back to the beginning!      ; Back to the beginning.
 
 
-
-;; REPLACES ORIGINAL in `buff-menu.el'.
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;; Allow negative COLUMN.  Allow COLUMN = 1 or -1.
 ;; When COLUMN = `Buffer-menu-sort-column', then flip `Buffer-menu-sort-column'.
 ;; Message at end.
@@ -1315,7 +1320,8 @@ Consecutive executions of the same COLUMN reverse the sort order."
              (if (natnump Buffer-menu-sort-column) ", ascending" ", descending"))))
 
 
-;; REPLACES ORIGINAL in `buff-menu.el'.
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
 ;; If same column as last sort, then flip direction of sort.
 ;; CRM is indicated by COLUMN = 1, not by nil COLUMN.
 ;; Apply different face to sort column heading, depending on direction.
@@ -1348,7 +1354,7 @@ see `Buffer-menu-use-frame-buffer-list'"))
                   'keymap Buffer-menu-sort-button-map))))
 
 
-;; REPLACES ORIGINAL in `buff-menu.el'
+;; REPLACE ORIGINAL in `buff-menu.el'.
 ;;
 ;; 1. Compute longest buffer name + size combination, and use when indenting file name.
 ;; 2. Add sort buttons for CRM and Time also.

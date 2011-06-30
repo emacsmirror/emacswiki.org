@@ -10,6 +10,16 @@ Use `C-x w p' to highlight a string in the current buffer.
  C-x w l         highlight-lines-matching-regexp
  C-x w i         hi-lock-find-patterns
 
+Starting with emacs 23.1, the hi-lock shortcuts are now:
+
+ M-s h w         hi-lock-write-interactive-patterns
+ M-s h u         unhighlight-regexp
+ M-s h r         highlight-regexp
+ M-s h p         highlight-phrase
+ M-s h l         highlight-lines-matching-regexp
+ M-s h f         hi-lock-find-patterns
+
+The shortcut M-s h r now also works in isearch mode. 
 
 See also: HighlightTemporarily.
 

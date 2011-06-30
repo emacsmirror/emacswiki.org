@@ -34,17 +34,23 @@ Naturally, these keys work only during minibuffer input.
 Press `C-r' in minibuffer, narrow the list by typing some patterns(multiple patterns are space-delimited string),
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter.
 
-== Improving the definition of "history" ==
+== Removing Killed Buffers from the History  ==
 
-Switching back to a buffer that has been killed doesn't seem useful, so killing a buffer should remove it from the minibuffer history (actually from ''buffer-name-history'').  This seems to do the trick:
+Commands such as `switch-to-buffer' (`C-x b') create a new buffer of the given name if no such buffer exists.  Killing a buffer does not automatically remove it from the buffer-name minibuffer history, `buffer-name-history'.  That means that when you try to use that name later, a new buffer with that name is created.  This might not be what you want most of the time.
+
+This code removes a buffer name from `buffer-name-history' when the buffer is killed:
 
   (add-hook 'kill-buffer-hook
-   (lambda nil
+   (lambda ()
     (setq buffer-name-history
           (delete*
            (buffer-name)
            buffer-name-history :test 'string=))))
 
+
+[new:DrewAdams:2011-06-29 13:15 UTC]
+You can just use EmacsLisp's `delete' here and drop the `##:test string=##', instead of requiring the CommonLisp library code (##cl-seq.el##) at runtime for `delete*'.
+`delete' uses `equal', which does the same thing here (uses `string='), and about as efficiently. -- DrewAdams
 
 ----
 CategoryCommands

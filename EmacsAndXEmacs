@@ -38,7 +38,8 @@ decision making process is suggested for helping you choose:
 
 * Use the one your neighbour or co-worker uses
 * Both feature MultiTTYSupport.
-* Use Emacs if non-ASCII support is important to you (see XEmacsAndNonAsciiCharacters).
+* Both feature non-ASCII support, but Emacs does it better (see XEmacsAndNonAsciiCharacters).
+* Use Emacs (23+) if anti-aliased Freetype fonts are important to you
 * Use Emacs if you agree with RichardStallman
 * Try both, and use whichever feels better
 * Roll a die

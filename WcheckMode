@@ -1,13 +1,13 @@
 == Download ==
 
-Download the code from [https://github.com/tlikonen/wcheck-mode Github] repository.
+Download the code from [https://github.com/tlikonen/wcheck-mode GitHub] repository.
 
 Note: There have been some backward-incompatible changes in 2011-06-29
 and some of the configuration options used in previous versions do not
 work anymore. The previous "spelling suggestions" feature has been
 generalized to "actions" feature. Now user can configure any kind of
 actions for marked text, not just spelling suggestions. Please read the
-documentation of variable `wcheck-language-data' and README text in the
+documentation of variable `wcheck-language-data' and ##README## text in the
 source repository.
 
 
@@ -90,8 +90,8 @@ checker.
 
 == Install ==
 
-Put wcheck-mode.el file to some directory in your Emacs's `load-path'
-and add the following lines to Emacs's initialization file (~/.emacs):
+Put ##wcheck-mode.el## file to some directory in your Emacs's `load-path'
+and add the following lines to Emacs's initialization file (##~/.emacs##):
 
     (autoload 'wcheck-mode "wcheck-mode"
       "Toggle wcheck-mode." t)
@@ -110,7 +110,7 @@ and add the following lines to Emacs's initialization file (~/.emacs):
 The internal documentation of variable `wcheck-language-data' has a
 complete description on how to configure Wcheck mode language data. For
 easy configuration you can use the options in the customize group named
-"wcheck" (M-x customize-group RET wcheck RET).
+##wcheck## (##M-x customize-group RET wcheck RET##).
 
 It might be convenient to bind Wcheck mode commands to some easily
 accessible keys, for example:
@@ -214,7 +214,7 @@ that adds a new string to the dictionary.
       (let ((word (aref marked-text 0))
             (language (aref marked-text 4)))
 
-        ;; Do the actual job here. That is, write code that adds
+        ;; Do the actual work here. That is, write code that adds
         ;; the string stored in variable "word" to the
         ;; appropriate dictionary.
 

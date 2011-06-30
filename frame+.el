@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 09:38:41 2011 (-0800)
+;; Last-Updated: Wed Jun 29 14:04:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 179
+;;     Update #: 214
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame+.el
 ;; Keywords: frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,10 +28,12 @@
 ;;  ***** NOTE: The following function defined in `frame.el' has been
 ;;              REDEFINED HERE:
 ;;
-;;  `special-display-popup-frame' - 1. Calls `make-frame' while BUFFER
-;;                                     is current, so frame hooks use
-;;                                     BUFFER.
-;;                                  2. Calls `fit-frame'.
+;;  `special-display-popup-frame' (Emacs 20-23) - Call `fit-frame'.
+;;
+;;  Note: Starting with Emacs 24, they moved
+;;  `special-display-popup-frame' to `window.el' from `frame.el'.  So
+;;  for my enhancement of it for Emacs 24+ you will need library
+;;  `window+.el', not `frame+.el'.
 ;;
 ;;
 ;;  This file should be loaded after loading the standard GNU file
@@ -42,6 +44,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/06/29 dadams
+;;     Restricted special-display-popup-frame definition here to Emacs < 24.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookie from non-interactive function.
 ;; 2005/05/31 dadams
@@ -93,55 +97,57 @@
 ;;    (e.g. `after-make-frame-functions') will use BUFFER, not the previously
 ;;    current buffer.  This fix is only needed prior to Emacs 21.
 ;; 2. Calls `fit-frame'.
-(defun special-display-popup-frame (buffer &optional args)
-  "Display BUFFER in its own frame, reusing an existing window if any.
-Return the window chosen.  Window is not selected within its frame.
+(when (< emacs-major-version 24)        ; Emacs 20-23.
+  (defun special-display-popup-frame (buffer &optional args)
+    "Display BUFFER in a special frame and return the window chosen.
+If BUFFER is already displayed in a visible or iconified frame, raise
+that frame.  Otherwise, display BUFFER in as specified by optional
+argument ARGS.
 
-If a new frame is needed, then `make-frame' is called to create it,
-with BUFFER as the current buffer.
+If ARGS is an alist, use it as a list of frame parameters.  If these
+parameters contain \(same-window . t), display BUFFER in the selected
+window.  If they contain \(same-frame . t), display BUFFER in a window
+on the selected frame.
 
-If ARGS is an alist, use it as a list of frame parameter specs.
 If ARGS is a list whose car is a symbol, use (car ARGS) as a function
-to do the work.  Pass it BUFFER as first arg, and (cdr ARGS) as the
-rest of its args."
-  (if (and args (symbolp (car args)))
-      (let* ((window (apply (car args) buffer (cdr args)))
-             (frame (window-frame window)))
-        (when (fboundp 'fit-frame) (fit-frame (window-frame window)))
-        (raise-frame frame)
-        window)                         ; Return the window.
-    (let ((window (get-buffer-window buffer 0)))
-      (or
-       ;; If we have a window already, make it visible.
-       (when window
-         (let ((frame (window-frame window)))
-           (make-frame-visible frame)
-           (raise-frame frame)
-           (when (fboundp 'fit-frame) (fit-frame frame))
-           window))                     ; Return the window.
-       ;; Reuse the current window if the user requested it.
-       (when (cdr (assq 'same-window args))
-         (condition-case nil
-             (progn (switch-to-buffer buffer) (selected-window))
-           (error nil)))
-       ;; Stay on the same frame if requested.
-       (when (or (cdr (assq 'same-frame args)) (cdr (assq 'same-window args)))
-         (let* ((pop-up-frames nil) (pop-up-windows t)
-                special-display-regexps special-display-buffer-names
-                (window (display-buffer buffer)))
-           ;; Only do it if this is a new window:
-           ;; (set-window-dedicated-p window t)
-           window))                     ; Return the window.
-
-       ;; If no window yet, make one in a new frame.
-       (let ((frame (with-current-buffer buffer
-                      (make-frame (append args special-display-frame-alist)))))
-         (when (and (fboundp 'fit-frame)
-                    (not (memq 'fit-frame after-make-frame-functions)))
-           (with-current-buffer buffer (fit-frame frame)))
-         (set-window-buffer (frame-selected-window frame) buffer)
-         (set-window-dedicated-p (frame-selected-window frame) t)
-         (frame-selected-window frame)))))) ; Return the window.
+to do the work.  Pass it BUFFER as first argument, and (cdr ARGS) as
+the rest of the arguments."
+    (if (and args (symbolp (car args)))
+        (let* ((window  (apply (car args) buffer (cdr args)))
+               (frame   (window-frame window)))
+          (when (fboundp 'fit-frame) (fit-frame (window-frame window)))
+          (raise-frame frame)
+          window)                       ; Return the window.
+      (let ((window  (get-buffer-window buffer 0)))
+        (or
+         ;; If we have a window already, make it visible.
+         (when window
+           (let ((frame  (window-frame window)))
+             (make-frame-visible frame)
+             (raise-frame frame)
+             (when (fboundp 'fit-frame) (fit-frame frame))
+             window))                   ; Return the window.
+         ;; Reuse the current window if the user requested it.
+         (when (cdr (assq 'same-window args))
+           (condition-case nil
+               (progn (switch-to-buffer buffer) (selected-window))
+             (error nil)))
+         ;; Stay on the same frame if requested.
+         (when (or (cdr (assq 'same-frame args)) (cdr (assq 'same-window args)))
+           (let* ((pop-up-windows  t)
+                  (pop-up-frames   nil)
+                  (window          (display-buffer buffer))
+                  special-display-buffer-names special-display-regexps)
+             (display-buffer buffer)))  ; Return the window.
+         ;; If no window yet, make one in a new frame.
+         (let ((frame (with-current-buffer buffer
+                        (make-frame (append args special-display-frame-alist)))))
+           (when (and (fboundp 'fit-frame)
+                      (not (memq 'fit-frame after-make-frame-functions)))
+             (with-current-buffer buffer (fit-frame frame)))
+           (set-window-buffer (frame-selected-window frame) buffer)
+           (set-window-dedicated-p (frame-selected-window frame) t)
+           (frame-selected-window frame))))))) ; Return the window.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

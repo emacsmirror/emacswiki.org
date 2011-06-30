@@ -9,6 +9,10 @@ Each of these libraries provides enhancements to the standard Emacs library of t
 
 
 
+
+
+
+[:LinksToManuals]
 == Help Commands Provide Links to Manuals ==
 
 Pretty much all of the standard help commands (`describe-face', `describe-function', `describe-variable',...), as well as the new help commands described [[#NewHelpCommands|below]] (`describe-keymap',...), are enhanced by <tt>[[help-fns+.el]]</tt> (starting with Emacs version 23.2) so that the `##*Help*##' window also has a link to the locations in the various manuals ([[Info]]) where the given help target is indexed.
@@ -33,6 +37,27 @@ If, for example, you customize `help-cross-reference-manuals' so that it searche
 Obviously, searching the indexes of all manuals takes more time.
 
 Option `help-cross-reference-manuals' also controls whether to check for manual entries before adding the ##For more information check the manuals.## link.  By default, there is no check: the link is added even if there might not be any manual entries for the help target.  This saves time.  When you click the link the target is looked up in the manual indexes, in any case.
+
+
+
+
+
+
+[:KeyLinks]
+== Keys in Help are Linked to Their Doc ==
+
+Often, key descriptions (names) appearing in help output were provided initially as their associated command names.  This provides flexibility, since it is the command that is most important.  If a command `foobar' is rebound from its default key then we want the doc to mention the new key.
+
+For instance, a [[doc string]] that uses ##"the key `\\[forward-char]' does..."## results in the output ##the key `C-f' does...##, if [[command]] `forward-char' is bound to [[key]] `C-f'.
+
+This association between key and command is lost in the output, however.  Starting with Emacs 23, library <tt>[[help-fns+.el]]</tt> enhances such key names by turning them into links to the doc for the corresponding commands.  In the above doc string example, the key name `C-f' is a link you can click (or hit `RET' on), to see its doc, that is, the doc for command `forward-char'.
+
+This enhancement affects only key names derived using the special doc-string construction `##\\[...]##'.  It has no effect on key names that are hard-coded.
+
+
+
+
+
 
 
 
