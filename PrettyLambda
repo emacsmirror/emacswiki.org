@@ -37,6 +37,10 @@ I stopped using this hack [http://fresh.homeunix.net/~luke/misc/emacs/pretty-lam
 
 This library defines a minor mode that uses font-lock and overlays to display `lambda' as the Greek letter:  http://dishevelled.net/elisp/lambda-mode.el.
 
+[new]
+I use the misc-fixed font instead of the default, so lambda-mode displayed what looked like a Korean character. You can fix it by adding to your .emacs:
+    
+    (setq lambda-symbol (string #x1d77a))
 
 == Using an Image ==
 
