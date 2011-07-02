@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Apr 24 16:34:23 2011 (-0700)
+;; Last-Updated: Fri Jul  1 14:51:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 766
+;;     Update #: 771
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3436,7 +3436,8 @@ With a prefix arg, reverse the current sort order."
               bmkp-sort-comparer  (cdr (assoc next-order bmkp-sort-orders-for-cycling-alist))))
       (message "Sorting...")
       (bookmark-bmenu-surreptitiously-rebuild-list)
-      (bmkp-bmenu-goto-bookmark-named current-bmk) ; Put cursor back on the right line.
+      (when current-bmk                 ; Put cursor back on the right line.
+        (bmkp-bmenu-goto-bookmark-named current-bmk))
       (when (interactive-p) (bmkp-msg-about-sort-order next-order)))))
 
 ;; This is a general command.  It is in this file because it is used only by the bmenu code.
@@ -3450,7 +3451,8 @@ If you combine this with \\<bookmark-bmenu-mode-map>\
   (setq bmkp-reverse-sort-p  (not bmkp-reverse-sort-p))
   (let ((current-bmk  (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list)
-    (bmkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
+    (when current-bmk                   ; Put cursor back on the right line.
+      (bmkp-bmenu-goto-bookmark-named current-bmk)))
   (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
 ;; This is a general command.  It is in this file because it is used only by the bmenu code.
@@ -3493,7 +3495,8 @@ use it."
   (setq bmkp-reverse-multi-sort-p  (not bmkp-reverse-multi-sort-p))
   (let ((current-bmk  (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list)
-    (bmkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
+    (when current-bmk                   ; Put cursor back on the right line.
+      (bmkp-bmenu-goto-bookmark-named current-bmk)))
   (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
 

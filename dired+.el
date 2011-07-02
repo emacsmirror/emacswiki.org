@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Jun 18 14:15:24 2011 (-0700)
+;; Last-Updated: Fri Jul  1 06:53:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4145
+;;     Update #: 4148
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,8 +22,7 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
 ;;   `info', `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `pp',
-;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser',
-;;   `widget'.
+;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -255,6 +254,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/07/01 dadams
+;;     Fixed typo: dired-toggle-find-file-reuse-dir -> ...diredp....  Thx to pasja on Emacs Wiki.
 ;; 2011/06/18 dadams
 ;;     Added: diredp-describe-mode, diredp-dired-plus-help(-link), diredp-help-button,
 ;;            diredp-dired-plus-description(+links), diredp-send-bug-report.
@@ -3125,9 +3126,9 @@ Unlike `dired-find-alternate-file' this does not use
       (find-file (file-name-sans-versions file t)))))
 
 ;;;###autoload
-(defalias 'toggle-dired-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)
+(defalias 'toggle-diredp-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)
 ;;;###autoload
-(defun dired-toggle-find-file-reuse-dir (force-p) ; Not bound
+(defun diredp-toggle-find-file-reuse-dir (force-p) ; Not bound
   "Toggle whether Dired `find-file' commands reuse directories.
 A prefix arg specifies directly whether or not to reuse.
  If its numeric value is non-negative then reuse; else do not reuse.
@@ -3135,7 +3136,7 @@ A prefix arg specifies directly whether or not to reuse.
 To set the behavior as a preference (default behavior), put this in
 your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 
- (dired-toggle-find-file-reuse-dir VALUE)"
+ (diredp-toggle-find-file-reuse-dir VALUE)"
   (interactive "P")
   (if force-p                           ; Force.
       (if (natnump (prefix-numeric-value force-p))

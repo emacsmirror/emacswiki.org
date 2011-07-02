@@ -1,3 +1,4 @@
+[[de:English]]
 ;;; -*- Mode: Emacs-Lisp ; Coding: utf-8 -*-
 
 ;;; trans-ej.el --- English-Japanese translator using web translation service

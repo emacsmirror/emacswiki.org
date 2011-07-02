@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May  8 11:53:22 2011 (-0700)
+;; Last-Updated: Fri Jul  1 14:54:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13705
+;;     Update #: 13712
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -323,6 +323,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/07/01 dadams
+;;     bmkp-bmenu-change-sort-order, bmkp(-multi)-reverse-sort-order: Handle null CURRENT-BMK.
 ;; 2011/04/24 dadams
 ;;     Added to Tags menu: Purge Autofiles with No Tags.
 ;; 2011/04/23 dadams

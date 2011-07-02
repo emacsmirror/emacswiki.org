@@ -347,3 +347,16 @@ DavidReitter: should work fine in Aquamacs 2.1
 
 [new]
 Aquamacs is very nice. Am I mistaken, or does it not play nice with X11? For example, if I ssh into my mac box and then try to get a frame on my local X server it simply does not work (always opens as if -nw). Is there any way (or plan) to get to "old" X11 behavior in such a case?
+
+[new:NeilSmithline:2011-07-01 20:14 UTC]
+I'm not an AquamacsEmacs expert, nor have I done anything with other Emacs on Macs. That being said, My understanding is that the goal of AquamacsEmacs is to integrate with the MacOSX look-and-feel called called [[MacOSX#toc2|Aqua]]. AquamacsCompatibilityPhilosophy seems to imply that AquamacsEmacs doesn't play nicely with X11. 
+
+Have you tried just building  vanilla X11 Emacs from its [[EmacsForMacOS#toc9|tarball]]. I think that should work fine. You'll just have to be careful as they will share most of their EmacsLisp configuration files but some settings won't work the same and other settings will almost certainly prevent X11 Emacs from starting. While many Emacs ports are just an attempt to make it work on a different system, AquamacsEmacs has made many changes and added extensive code to make it a true MacOSX application.
+
+Hope this helps... -- NeilSmithline on July 01, 2011 at 16:38 ET (GMT-04:00)
+
+----
+AquamacsEmacs
+EmacsForMacOS
+
+

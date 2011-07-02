@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Jun 15 15:08:31 2011 (-0700)
+;; Last-Updated: Fri Jul  1 10:32:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3372
+;;     Update #: 3442
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -32,41 +32,53 @@
 ;;    1. Menus "Search", "Frames" and "Do Re Mi" were added.
 ;;    2. Menus "File", "Edit", & "Help" were changed.
 ;;    3. Menu order was changed.
-;;    3. Buffer-local menus are separated from global menus via "||".
+;;    4. Buffer-local menus are separated from global menus via "||".
 ;;
-;;  Functions defined here:
 ;;
-;;    `describe-menubar', `fill-paragraph-ala-mode',
-;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window',
-;;    `menu-bar-word-search-backward', `menu-bar-word-search-forward',
-;;    `nonincremental-repeat-search-backward',
-;;    `nonincremental-repeat-search-forward'
-;;    `nonincremental-repeat-word-search-backward',
-;;    `nonincremental-repeat-word-search-forward'.
+;;  User options defined here:
+;;
+;;    `menu-barp-select-buffer-function'.
+;;
+;;  Commands defined here:
+;;
+;;    `describe-menubar', `menu-bar-create-directory',
+;;    `menu-bar-next-tag-other-window', `menu-bar-select-frame' (Emacs
+;;    20), `menu-bar-word-search-backward' (Emacs 22+),
+;;    `menu-bar-word-search-forward' (Emacs 22+),
+;;    `nonincremental-repeat-search-backward' (Emacs 22+),
+;;    `nonincremental-repeat-search-forward' (Emacs 22+),
+;;    `nonincremental-repeat-word-search-backward' (Emacs < 22),
+;;    `nonincremental-repeat-word-search-forward' (Emacs < 22),
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `fill-paragraph-ala-mode'.
 ;;
 ;;  Macros defined here:
 ;;
 ;;    `menu-bar-make-toggle-any-version'.
 ;;
-;;  Menu variables defined here:
+;;  Variables defined here:
 ;;
 ;;    `menu-bar-apropos-menu', `menu-bar-describe-menu',
-;;    `menu-bar-divider-menu', `menu-bar-edit-fill-menu',
-;;    `menu-bar-edit-region-menu', `menu-bar-edit-sort-menu',
-;;    `menu-bar-emacs-lisp-manual-menu', `menu-bar-emacs-manual-menu',
-;;    `menu-bar-frames-menu', `menu-bar-print-menu',
+;;    `menu-bar-divider-menu', `menu-bar-doremi-menu',
+;;    `menu-bar-edit-fill-menu', `menu-bar-edit-region-menu',
+;;    `menu-bar-edit-sort-menu', `menu-bar-emacs-lisp-manual-menu',
+;;    `menu-bar-emacs-manual-menu', `menu-bar-frames-menu',
+;;    `menu-bar-i-search-menu' (Emacs < 22), `menu-bar-print-menu',
 ;;    `menu-bar-search-replace-menu', `menu-bar-search-tags-menu',
-;;    `menu-bar-whereami-menu'.
+;;    `menu-bar-whereami-menu', `yank-menu'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `menu-bar.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `kill-this-buffer' -        Deletes buffer's windows as well, if
-;;                              `sub-kill-buffer-and-its-windows'.
+;;  `kill-this-buffer' - Deletes buffer's windows as well, if
+;;                       `sub-kill-buffer-and-its-windows'.
+;;
 ;;  `menu-bar-options-save' - Added options are saved (>= Emacs 21).
 ;;
-;;  `menu-bar-select-buffer' - Uses -other-frame.
+;;  `menu-bar-select-buffer' (Emacs 20-22) - Uses -other-frame.
 ;;
 ;;  `menu-bar-select-frame' - Use Emacs 22 version for Emacs 20.
 ;;
@@ -88,6 +100,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/07/01 dadams
+;;     Added: option menu-barp-select-buffer-function.
+;;     Following fix to Emacs bug #8876, use new var menu-bar-select-buffer-function.
 ;; 2011/06/15 dadams
 ;;     menu-bar-select-buffer: Use pop-to-buffer-other-frame for Emacs 24.
 ;; 2011/01/04 dadams
@@ -333,14 +348,22 @@
 ;; To quiet the Emacs 20 byte compiler
 (defvar menu-bar-goto-menu)
 (defvar menu-bar-last-search-type)
+(defvar menu-bar-select-buffer-function)
+(unless (> emacs-major-version 23) (defvar menu-barp-select-buffer-function))
 
 ;;;;;;;;;;;;;;;;;;;;
 
 
+(when (> emacs-major-version 23)
+  (defcustom menu-barp-select-buffer-function 'pop-to-buffer-other-frame
+    "*Function to use as `menu-bar-select-buffer-function'."
+    :type 'function :group 'menu))
 
-;; REPLACES ORIGINAL in `menu-bar.el':
-;; Use Emacs 22 definition.
-;; Emacs 20 version fails when last-command-event is the name of the frame.
+
+;; REPLACE ORIGINAL in `menu-bar.el'.
+;;
+;; Use Emacs 22 definition.  Emacs 20 version fails when `last-command-event'
+;; is the name of the frame.
 ;;
 (when (< emacs-major-version 21)
   (defun menu-bar-select-frame ()
@@ -356,22 +379,24 @@
       (select-frame frame))))
 
 
-;; REPLACES ORIGINAL in `menu-bar.el':
-;; Uses -other-frame.
+;; REPLACE ORIGINAL in `menu-bar.el'.
 ;;
-;; Note: Starting with Emacs 23, this is no longer used by `menu-bar-update-buffers', so this
-;;       no longer has any effect on the menu.  See Emacs bug #8876.
+;; Use `switch-to-buffer-other-frame' (Emacs 20, 21).
 ;;
-;;;###autoload
-(defun menu-bar-select-buffer ()
-  "Switch to `last-command-event' buffer in other frame."
-  (interactive)
-  (if (fboundp 'pop-to-buffer-other-frame) ; Emacs 24+.
-      (pop-to-buffer-other-frame last-command-event)
-    (switch-to-buffer-other-frame last-command-event))) ;`files+.el'
+;; Note: Starting with Emacs 23, function `menu-bar-select-buffer' is no longer used by
+;;       `menu-bar-update-buffers', so redefining it has no effect on the menu.
+;;       See Emacs bug #8876.  The fix to bug #8876, which is for Emacs 24, uses a new
+;;       variable, `menu-bar-select-buffer-function'.  We provide a user option for this.
+;;
+(if (< emacs-major-version 24)
+    (defun menu-bar-select-buffer ()
+      "Switch to `last-command-event' buffer in other frame."
+      (interactive)
+      (switch-to-buffer-other-frame last-command-event)) ;`files+.el'
+  (setq menu-bar-select-buffer-function  menu-barp-select-buffer-function))
 
 
-;; REPLACES ORIGINAL MENU-BAR.
+;; REPLACE ORIGINAL MENU-BAR -------------------------------------
 
 ;;; Main MENU-BAR entries.
 ;; Divider before standard menus.
@@ -408,13 +433,13 @@ submenu of the \"Help\" menu."))
       (buffer-string))))                ; Return the text we displayed.
 
 
-;; REPLACES ORIGINAL defined in `menu-bar.el'.
+;; REPLACE ORIGINAL defined in `menu-bar.el'.
 (setq menu-bar-edit-menu (make-sparse-keymap "Edit"))
 (define-key global-map [menu-bar edit] (cons "Edit" menu-bar-edit-menu))
 
 
-;; REPLACES ORIGINAL menuus defined in `menu-bar.el'.
-;; These are all moved to new top-level Search menu.
+;; REPLACE ORIGINAL menuus defined in `menu-bar.el'.
+;; These are all moved to new top-level `Search' menu.
 (if (< emacs-major-version 21)
     (global-unset-key [menu-bar search])
   (global-unset-key [menu-bar edit search])
@@ -445,7 +470,7 @@ submenu of the \"Help\" menu."))
               '(help-menu)
               (and (fboundp 'show-tool-bar-for-one-command) '(pop-up-tool-bar))))
 
-;;; FRAMES menu.
+;;; `Frames' menu.
 (when (and (featurep 'fit-frame) (not (featurep 'frame-cmds)) (eq window-system 'w32))
   (define-key menu-bar-frames-menu [maximize-frame]
     '(menu-item "Maximize Frame" maximize-frame :help "Maximize the selected frame")))
@@ -497,7 +522,7 @@ submenu of the \"Help\" menu."))
     '(menu-item "Hide Frames / Show Buffers" show-hide
       :help "Show, if only one frame visible; else hide.")))
 
-;;; DO RE MI menu.
+;;; `Do Re Mi' menu.
 (when (featurep 'doremi-cmd)
   (define-key menu-bar-doremi-menu [doremi-global-marks+]
     '(menu-item "Global Marks" doremi-global-marks+
@@ -607,7 +632,7 @@ submenu of the \"Help\" menu."))
       :enable (not (one-window-p)))))
 
 
-;;; FILES menu.
+;;; `Files' menu.
 ;;
 (when (< emacs-major-version 21)
   ;; Use `dlgopen-open-files' if available; else use `find-file-other-frame'.
@@ -661,8 +686,10 @@ submenu of the \"Help\" menu."))
     :help "Save unsaved buffers, then exit") 'separator-execute)
 
 
-;; REPLACES ORIGINAL in `menu-bar.el':
-;; Deletes buffer's windows as well.
+;; REPLACE ORIGINAL in `menu-bar.el'.
+;;
+;; Delete buffer's windows as well.
+;;
 ;;;###autoload
 (defun kill-this-buffer ()
 "Delete the current buffer and delete all of its windows."
@@ -674,7 +701,7 @@ submenu of the \"Help\" menu."))
     (kill-buffer (current-buffer))))    ; <-- original defn.
 
 
-;; EDIFF submenu of TOOLS
+;; `Ediff' submenu of `Tools' menu.
 (when (fboundp 'vc-ediff)
   (define-key menu-bar-tools-menu [compare]
     '(menu-item "Compare" menu-bar-ediff-menu ; Remove "(Ediff)".
@@ -786,7 +813,7 @@ submenu of the \"Help\" menu."))
 (define-key-after menu-bar-edit-menu [sort]
   (cons "Sort Region" menu-bar-edit-sort-menu) 'region)
 
-;; EDIT FILL submenu.
+;; `Edit' > `Fill' submenu.
 (define-key menu-bar-edit-fill-menu [fill-nonuniform-para]
   '(menu-item "Fill Non-Uniform ¶s" fill-nonuniform-paragraphs
     :help "Fill paragraphs in selection, allowing varying indentation"
@@ -814,7 +841,7 @@ ARG means justify as well as fill."
         (funcall (lookup-key (current-global-map) "\M-q") arg)
         (fill-paragraph arg))))
 
-;; EDIT REGION submenu.
+;; `Edit' > `Region' submenu.
 (when (fboundp 'unaccent-region)
   (define-key menu-bar-edit-region-menu [unaccent-region]
     '(menu-item "Unaccent" unaccent-region ; Defined in `unaccent'.
@@ -867,7 +894,7 @@ ARG means justify as well as fill."
     :help "Run keyboard macro at start of each line in selection"
     :enable (and last-kbd-macro mark-active (not buffer-read-only))))
 
-;; EDIT SORT submenu.
+;; `Edit' > `Sort' submenu.
 (define-key menu-bar-edit-sort-menu [sort-regexp-fields]
   '(menu-item "Regexp Fields..." sort-regexp-fields :help "Sort the selection lexicographically"
     :enable (and last-kbd-macro mark-active (not buffer-read-only))))
@@ -897,7 +924,7 @@ ARG means justify as well as fill."
   '(menu-item "Reverse" reverse-region :help "Reverse the order of the selected lines"
     :enable (and mark-active (not buffer-read-only))))
 
-;;; SEARCH menu.
+;;; `Search' menu.
 (when (< emacs-major-version 22)
   (defun nonincremental-repeat-word-search-forward ()
     "Search forward for the previous search string."
@@ -1095,7 +1122,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Search forward for a string")))
 
 
-;;; SEARCH TAGS submenu.
+;;; `Search' > `Tags' submenu.
 (define-key menu-bar-search-tags-menu [set-tags-name]
   '(menu-item "Set Tags File Name..." visit-tags-table
     :help "Tell Tags commands which tag table file to use"))
@@ -1129,7 +1156,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   '(menu-item "Find Tag..." find-tag-other-window
     :help "Find tag whose name matches input string"))
 
-;; REPLACE submenu
+;; `Replace' submenu
 (define-key menu-bar-search-replace-menu [replace-regexp]
   '(menu-item "       Regexp..." replace-regexp
     :help "Replace things after cursor that match regexp"
@@ -1162,7 +1189,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     :enable (not buffer-read-only)))
 
 
-;;; HELP menu.
+;;; `Help' menu.
 
 ;;; General help
 (define-key menu-bar-help-menu [separator-genl-help] '("--"))
@@ -1192,7 +1219,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-help-menu [emacs-news] nil)
 
 
-;;; Whoops!? submenu
+;;; `Whoops!?' submenu
 (defvar menu-bar-whereami-menu (make-sparse-keymap "Whoops!?"))
 (define-key menu-bar-help-menu [whereami]
   (cons "Whoops!?" menu-bar-whereami-menu))
@@ -1203,7 +1230,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-whereami-menu [keyboard-quit]
   '(menu-item "Cancel Current Action" keyboard-quit :help "Quit any operation in progress"))
 
-;;; Apropos submenu
+;;; `Apropos' submenu
 (defvar menu-bar-apropos-menu (make-sparse-keymap "Apropos"))
 (define-key-after menu-bar-help-menu [apropos] (cons "Apropos" menu-bar-apropos-menu)
                   'separator-genl-help)
@@ -1240,7 +1267,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-apropos-menu [emacs-index-search] nil)
 (define-key menu-bar-apropos-menu [emacs-glossary] nil)
 
-;;; Describe submenu
+;;; `Describe' submenu
 (define-key-after menu-bar-help-menu [describe] (cons "Describe" menu-bar-describe-menu)
                   'apropos)
 (if (not (fboundp 'describe-command))
@@ -1333,11 +1360,12 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
           'describe-current-display-table
         'list-keybindings))))
 
-;;; Manuals submenu.
+;;; `Manuals' submenu.
 
-;; REPLACES ORIGINAL defined in `menu-bar.el'.
-;; Remove some default bindings.
-;; Name changes.
+;; REPLACE ORIGINAL defined in `menu-bar.el'.
+;;
+;; Remove some default bindings.  Name changes.
+;;
 (defconst menu-bar-manuals-menu (make-sparse-keymap "Learn More"))
 (define-key-after menu-bar-help-menu [manuals]
   (cons "Learn More" menu-bar-manuals-menu) 'describe)
@@ -1360,7 +1388,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-manuals-menu [command] nil)
 
 
-;;; Emacs Lisp submenu of Manuals submenu.
+;;; `Emacs Lisp' submenu of `Manuals' submenu.
 (defvar menu-bar-emacs-lisp-manual-menu (make-sparse-keymap "Emacs Lisp"))
 (define-key menu-bar-manuals-menu [emacs-lisp-manual]
   (cons "Emacs Lisp" menu-bar-emacs-lisp-manual-menu))
@@ -1390,7 +1418,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Read an introduction to Emacs Lisp programming")))
 
 
-;;; Emacs submenu of Manuals submenu.
+;;; `Emacs' submenu of `Manuals' submenu.
 (defvar menu-bar-emacs-manual-menu (make-sparse-keymap "Emacs"))
 (define-key menu-bar-manuals-menu [emacs-manual] (cons "Emacs" menu-bar-emacs-manual-menu))
 (when (>= emacs-major-version 21)
@@ -1428,7 +1456,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     '(menu-item "Manual" info-emacs-manual :help "Read the Emacs manual")))
 
 
-;;; OPTIONS menu.
+;;; `Options' menu.
 
 (defmacro menu-bar-make-toggle-any-version (name variable doc message help &rest body)
   "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
