@@ -217,6 +217,24 @@ Sunrise instead, do the following:
 4. Press the "Save for future sessions" button in the customization GUI.
 
 ----
+[:UseSunriseWithIdo]
+==How to use Sunrise with Ido?==
+
+If you use [InteractivelyDoThings IDO] and want to have Sunrise instead of plain
+Dired used, then append the following snippet to your .emacs file:
+
+    (defun ido-sunrise ()
+      "Call `sunrise' the ido way.
+    The directory is selected interactively by typing a substring.
+    For details on keybindings, see `ido-find-file'."
+      (interactive)
+      (let ((ido-report-no-match nil)
+        (ido-auto-merge-work-directories-length -1))
+        (ido-file-internal 'sr-dired 'sr-dired nil "Sunrise: " 'dir)))
+
+    (define-key (cdr (assoc 'ido-mode minor-mode-map-alist)) [remap dired] 'ido-sunrise)
+
+----
 [:HighlightingPermissions]
 ==Highlighting files with inappropriate permissions.==
 

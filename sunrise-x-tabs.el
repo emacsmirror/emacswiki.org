@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 378 $
+;; RCS Version: $Rev: 379 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -77,8 +77,6 @@
 ;; this than to customize tabbar to behave exactly like I wanted inside the
 ;; Sunrise panes. It's meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
-
-;; This is version 1 $Rev: 374 $ of the Sunrise Commander Tabs Extension.
 
 ;; It was written on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for Windows.

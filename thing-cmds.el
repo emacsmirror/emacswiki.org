@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Tue May 24 11:32:49 2011 (-0700)
+;; Last-Updated: Sat Jul  2 16:32:16 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 656
+;;     Update #: 661
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/07/02 dadams
+;;     Removed autoload cookie from thing-types.  Thx to Michael Heerdegen.
 ;; 2011/05/24 dadams
 ;;     thgcmd-invisible-p: Use invisible-p if available (Emacs 22+).
 ;; 2011/05/14 dadams
@@ -149,7 +151,6 @@
         (functionp bounds-fn)
         (functionp thing-fn))))
 
-;;;###autoload
 (defcustom thing-types (let ((types  ()))
                          (mapatoms
                           (lambda (tt)
