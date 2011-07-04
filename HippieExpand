@@ -263,7 +263,7 @@ The following is an approach for obtaining the complete list of possible expansi
     (defun my-ido-hippie-expand (selection)
       "Offer ido-based completion for the word at point."
       (interactive
-       (let* ((options (my-hippie-expand-completions)))
+       (let ((options (my-hippie-expand-completions)))
          (list (ido-completing-read "Completions: " options))))
       (he-substitute-string selection))
 

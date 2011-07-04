@@ -8,16 +8,20 @@ Put the package file in your load path and put ##(require 'fill-column-indicator
 
 To toggle graphical indication of the fill column in a buffer, use the command ##fci-mode##.  
 
-== Customization ==
+== Customization  ==
 
-<b>Color</b>. The color of the rule is controlled by the variable ##fci-rule-color##, whose value can be any valid color name.  The default value is ##nil##, which means that ##fci-mode## will try to select an appropriate color automatically. 
+On graphical displays the fill-column rule is drawn using bitmap images.
 
-<b>Width</b>.  On graphical terminals the rule is drawn using bitmap images.  Its width (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 2.   To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
+<b>Color</b>. The color of the rule on graphical displays is controlled by the variable ##fci-rule-color##, whose value can be any valid color name. 
+
+<b>Width</b>.  The width of the rule (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 2.   To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
 
   (setq fci-rule-width 1)
   (setq fci-rule-color "darkblue")
 
-<b>Drawing the Rule with Characters</b>.  On non-graphical displays (where images aren't available), the rule is drawn using textual characters.  The default is to use `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
+<b>Image Format</b>.  The image formats fci-mode can use are XPM, PBM, and XBM.  If Emacs has been compiled with the appropriate library it uses XPM images by default; if not it uses PBM images, which are natively supported.  You can specify a particular format by setting ##fci-rule-image-format## to either ##xpm##, ##xpm##, or ##xbm##.
+
+<b>Drawing the Rule with Characters</b>.  On non-graphical displays (where images aren't available), the rule is drawn using textual characters.  The default is to use `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   The color of the rule on character terminals is controlled by the variable ##fci-rule-character-color##, whose value should be either ##nil## or a color name.  If ##nil## (the default), the value of fci-rule-color (or the closest approximation thereto that the terminal is capable of) is used.  To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
 
 == Further Customization Examples==
 
@@ -29,8 +33,8 @@ in your ##.emacs##.
 
 To enable fci-mode as a global minor mode, add the following code to your init file:
 
-  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode t)))
-  (global-fci-mode t)
+  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+  (global-fci-mode 1)
 
 == Miscellany ==
 

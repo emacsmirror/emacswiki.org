@@ -130,7 +130,7 @@ an actions menu for marked text. Commands `wcheck-jump-forward' and
 
 == Examples ==
 
-See the [https://github.com/tlikonen/wcheck-mode/blob/master/README 
+See the [https://github.com/tlikonen/wcheck-mode/blob/master/README.org 
 README] file for configuration examples.
 
 ----

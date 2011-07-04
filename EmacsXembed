@@ -32,13 +32,11 @@ Im now able to have a gtk button move with the text in emacs, just like an image
 
 Its very cool!
 
-== getting the patch ==
-
-I've mailed it to emacs-devel.
-
-See also http://github.com/jave/emacs/tree/xembed
+== getting the code ==
 
 I've now created an "xwidget" branch in the savannah emacs bzr repo, and the code will live there now.
+
+http://bzr.savannah.gnu.org/lh/emacs/xwidget/files
 
 == The interface ==
 
@@ -46,13 +44,12 @@ Heres stuff from my elisp test code:
 
 (insert "xwidgetdemo<<< a button. another button\n")
 (goto-char (point-min))
-(put-text-property (point) (+ 1 (point)) 'display '(xwidget :xwidget-id 1 :type 1 :title "1" :width 40 :height 50))
+(put-text-property (point) (+ 1 (point)) 'display '(xwidget :xwidget-id 1 :type 'webkit-osr :title "1" :width 40 :height 50))
 
-xwidget-id must be a unique integer. type identifies the widget class, and should be a symbol instead.
+xwidget-id must be a unique integer. type identifies the widget class.
 
-Theres no callback interface yet, but I'm thinking it would look like:
 
-... :callback (lambda (xwidget-id message &optional message-params) ...) ...
+Callbacks are handled with the Emacs even system.
 
 == Notes and Status ==
 
@@ -64,23 +61,23 @@ aims to be toolkit agnostic. I dont aim to make every GTK widget an Xwidget, jus
 subset suitable to implement certain types of GUI:s currently difficult to do with Emacs,
 for instance slider widgets, embedded applications, etc.
 
-Implementing this patch was kind of straightforward, until it became unexpectedly difficult.
-It's harder to make the widgets go away than putting them on screen.
 
 Currently the patch allows for:
-* inserting xwidgets
+* inserting xwidgets: button, toggle button, slider, xembed socket, webkit view, and some rudimentary canvas experiments(clutter, goocanvas)
 * moving them by inserting text, just like images
 * an emacs event based callback interface
-* one live xwidget window, the other windows shows phantom xwidgets
+* an MVC model for sliders. Each time you split a window you get new sliders on screen. they are kept in sync
+* an offscreen rendering webkit xwidget. so, you can have a decent html renderer inside Emacs.
 
 Current issues:
-* theres a problem with clipping on emacs-window borders
+* theres a problem with clipping on emacs-window borders(topmost. left and bottom seems ok now
 * xwidgets are not garbed currently, they are just hidden.
 * theres just a fixed array of xwidgets, not a proper list
 
 These issues appear difficult but not unsolveable.
 
 
+I seem to code on this on yearly sprints. 2011 has been fruitful for xwidgets. 
 
 
 -- JoakimVerona
