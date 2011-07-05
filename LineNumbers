@@ -1,4 +1,4 @@
-This page is about ''displaying'' line numbers in a buffer, or otherwise indicating line numbers, ''without'' actually changing the buffer content.
+This page is about ''displaying'' line numbers in a buffer, or otherwise indicating line numbers, ''without'' actually changing the buffer content. If you just want to work on a specific part of the file and you are accustomed to doing that by showing line numbers in the margin, try BasicNarrowing instead.
 
 '''See Also:''' The code on this page just ''displays'' line numbers without actually changing the buffer content. NumberLines will add the line numbers to the buffer content.
 

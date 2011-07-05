@@ -297,7 +297,12 @@ Key bindings:
   nil
   nil
   :keymap my-flymake-minor-mode-map)
+
+;; Enable this keybinding (my-flymake-minor-mode) by default
+;; Added by Hartmut 2011-07-05
+(add-hook 'haskell-mode-hook 'my-flymake-minor-mode)
 </pre>
+
 
 [new]
 To use in console/tty emacs you could try the following:

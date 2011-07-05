@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  2 16:21:32 2011 (-0700)
+;; Last-Updated: Mon Jul  4 09:49:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6618
+;;     Update #: 6620
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -406,6 +406,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/04 dadams
+;;     icicle-search-in-context-default-fn:
+;;       Bound icicle-last-completion-candidate, icicle-completion-candidates.  Thx to M. Heerdegen.
 ;; 2011/07/02 dadams
 ;;     Added: icicle-defined-thing-p.
 ;;     icicle-things-alist: Use icicle-defined-thing-p.  Thx to Michael Heerdegen.

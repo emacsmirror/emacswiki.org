@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  2 16:11:08 2011 (-0700)
+;; Last-Updated: Mon Jul  4 09:47:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3333
+;;     Update #: 3334
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2752,7 +2752,9 @@ display string as in `icicle-search-action'."
             (setq icicle-nb-of-other-cycle-candidates  (length icicle-completion-candidates))
             (icicle-insert-cand-in-minibuffer icicle-last-completion-candidate t)
             (icicle-show-help-in-mode-line icicle-last-completion-candidate))))))
-  (let ((icicle-candidate-nb  icicle-candidate-nb))
+  (let ((icicle-candidate-nb               icicle-candidate-nb)
+        (icicle-last-completion-candidate  icicle-last-completion-candidate)
+        (icicle-completion-candidates      icicle-completion-candidates))
     (icicle-complete-again-update)))
 
 ;; Free var here: `icicle-search-ecm' is bound in `icicle-search'.

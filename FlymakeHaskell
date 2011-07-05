@@ -58,7 +58,7 @@ have to install perl itself, too. See the following page for more information: h
 The following checker passes '-Wall' to ghc to display every warnings. If you
 don't want to notice some warning, then reedit the script.
 
-Don't forget the perl script to set executable itself as a command.
+Don't forget the perl script to set executable itself as a command. (This can be done in Linux e.g. with "chmod a+x flycheck_haskell.pl")
 
 <pre>
 #!/usr/bin/env perl

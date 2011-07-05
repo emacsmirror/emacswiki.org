@@ -1,40 +1,36 @@
-[[Narrowing]], as seen in the GNU Emacs, is a simple method of restricting
-actions to a given part of the buffer.  This area is a simple,
-continuous block, specified either by the ''region'', a ''defun'', or a ''page''
-usually separated by PageBreaks on a line by themselves.
-When narrowing is in effect, the excluded portions seems
-to not exist at all, and the commands only operate that visible area.
-When saving, the entire file is written, though, so nothing will be
-lost.
+[[Narrowing]] shows only part of the [[buffer]] -- a contiguous block of text, hiding the rest.  The part showing can be specified by the [[region]], a `defun, or a [[page]].
 
-This feature is among the DisabledCommands as it sure can confuse
-users who don't know it, thus it must be undisabled before use.  You
-can use either the `enable-command' command, or use the following EmacsLisp:
+When narrowing is in effect, the excluded portions of the buffer are not seen, and some commands ignore them altogether.
+When saving, the entire buffer is written.
 
-    (put 'narrow-to-defun 'disabled nil)
-    (put 'narrow-to-page 'disabled nil)
+See Also:
+
+* [[Narrowing]]
+* MultipleNarrowings -- Widen to any of the set of past narrowings (or the entire buffer).
+* Manual:Narrowing
+
+
+
+== Narrowing and Widening Commands ==
+
+
+
+The narrowing commands are DisabledCommands because they can confuse
+users who are unfamiliar with narrowing.  You can enable them by using command `enable-command' or by putting the following EmacsLisp code in your [[init file]]:
+
+    (put 'narrow-to-defun  'disabled nil)
+    (put 'narrow-to-page   'disabled nil)
     (put 'narrow-to-region 'disabled nil)
 
-See other ways to deal with these at DisabledCommands.
+Each of these narrowing commands is bound to a key with prefix `C-x n'.
 
-So, the narrowing can be set to the current region, page or defun, and
-each of these has it's own command.  By default the narrowing-commands
-are behind `C-x n' prefix.  When narrowing is in effect,
-the ModeLine states so in the MinorMode portion.  To cancel it, either
-click the word "Narrow" in the modeline with MouseButton 2, or run the
-`widen' command with `C-x n w'.
+When the buffer is narrowed, the [[mode line]] indicates this with the word `Narrow' in the MinorMode portion.
 
-This isn't the most useful way to exclude stuff, as there's the region
-for limiting commands, and then there's the whole CategoryOutline to
-properly not see portions of a buffer.  If the commands to jump from
-page to page (`forward-page' and `backward-page') overrided narrowing,
-then texts with formfeeds as page separators could be viewed page at a
-time.
+To widen the buffer (cancel the narrowing), click `Narrow' in the mode line with `mouse-2', or invoke command `widen', using `C-x n w'.  Widening always exposes the whole buffer (but see MultipleNarrowings).
 
-See the EmacsManual node "Narrowing".
 
-The InfoMode also uses narrowing, by page.  You see, the nodes are
-separated by formfeeds.
+
+
 
 == Narrowing Example ==
 
