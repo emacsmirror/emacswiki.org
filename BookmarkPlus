@@ -2808,12 +2808,19 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 
 
 
-----
-----
 
+
+
+
+
+
+
+
+
+----
+----
 
 == Discussion ==
-
 
 ----
 
@@ -3122,6 +3129,23 @@ Recent changes in bookmark.el (bzr emacs) broke bookmark+, i just see empty list
 
 [new:DrewAdams:2010-12-10 17:50 UTC]
 Thanks for the heads-up.  That should be fixed now.  Emacs Dev, in its infinite wisdom, gratuitously renamed function `##bookmark-name-from##<tt>__-full__</tt>##-record##' to `bookmark-name-from-record' -- presumably to save 5 chars!  Naturally, that breaks any 3rd-party code that uses this very basic function.  Sheesh! -- DrewAdams
+
+
+
+
+
+----
+[new]
+1. is there a source code repo for Bookmark+? It's somewhat onerous to download 7 files manually. 
+
+2. I know you are frame-oriented, but from my perspective, Bookmark+ is the necessary compliment to WorkgroupsForWindows because it allows me to have one tag per workgroup. Maybe I can write a hook to automatically load the bookmark+ bookmarks with the same name as a particular workgroup name. -- TerrenceBrannon
+
+
+[new:DrewAdams:2011-07-05 13:04 UTC]
+1. No.  But you could perhaps create a download script, by copying and adapting one of these scripts for downloading the '''[[Icicles]]''' files:
+[[Icicles - Libraries#BulkIciclesDownload]].
+
+2. I'm not familiar with WorkgroupsForWindows, but why not?  There is nothing [[frame]]-oriented about '''Bookmark+''', BTW.  You're right that I personally use it with frame-oriented code such as OneOnOneEmacs, but '''Bookmark+''' should work fine without such an orientation.  If you run into a problem, please let me know. -- DrewAdams
 
 
 ----

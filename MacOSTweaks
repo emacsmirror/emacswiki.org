@@ -353,6 +353,8 @@ Ticking Preferences->Keyboard->Use option as meta key makes C-M combination work
 
 1 - How can I use Emacspeak on Mac OS X?
 
+Emacspeak now has a speech server that works on mac.
+
 2 - How do you tell the carbon CVS emacs what fonts are available and how do I include them into the shift-mouse-left menu? -- Dirk
 
 you can modify the shift-mouse-left menu manually -- PhilipF:
