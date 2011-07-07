@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  2 16:16:23 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:32:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22915
+;;     Update #: 22916
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -625,7 +625,6 @@
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
-;;    `icicle-Completions-frame-at-right-flag',
 ;;    `icicle-Completions-mouse-3-menu-entries',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
@@ -675,8 +674,8 @@
 ;;    `icicle-modal-cycle-up-action-keys',
 ;;    `icicle-modal-cycle-up-alt-action-keys',
 ;;    `icicle-modal-cycle-up-help-keys', `icicle-mode',
-;;    `icicle-mode-hook', `icicle-no-match-hook',
-;;    `icicle-option-type-prefix-arg-list',
+;;    `icicle-mode-hook', `icicle-move-Completions-frame',
+;;    `icicle-no-match-hook', `icicle-option-type-prefix-arg-list',
 ;;    `icicle-point-position-in-candidate',
 ;;    `icicle-populate-interactive-history-flag',
 ;;    `icicle-pp-eval-expression-print-length',

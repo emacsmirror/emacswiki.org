@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 16:07:37 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:37:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28035
+;;     Update #: 28039
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4859,14 +4859,17 @@
 ;;    in the source code (`icicles-opt.el'), because Customize does
 ;;    not pretty-print them.
 ;;
-;;  * User option `icicle-Completions-frame-at-right-flag' controls
-;;    whether `icicle-candidate-action' moves the frame showing buffer
-;;    `*Completions*' to the right, out of the way of other frames.
-;;    This can be useful if you use one-buffer-per-frame (non-`nil'
-;;    `pop-up-frames').  In that case, I recommend that you also try
-;;    my library `oneonone.el'.
-;;    See (@> "Note on Non-`nil' `pop-up-frames' on MS Windows") for
-;;    more advice about non-`nil' `pop-up-frames'.
+;;  * Non-`nil' user option `icicle-move-Completions-frame' means that
+;;    `icicle-candidate-action' moves the frame showing buffer
+;;    `*Completions*' to the edge of the display, out of the way of
+;;    other frames.  The possible non-`nil' values are `right' and
+;;    `left', specifying the display edge to use.
+;;
+;;    This option can be useful if you use one-buffer-per-frame
+;;    (non-`nil' `pop-up-frames').  In that case, I recommend that you
+;;    also try my library `oneonone.el'.  See
+;;    (@> "Note on Non-`nil' `pop-up-frames' on MS Windows") for more
+;;    advice about non-`nil' `pop-up-frames'.
 ;;
 ;;  * User option `icicle-Completions-window-max-height' is the
 ;;    maximum height of the `*Completions*' window, in lines.  The
@@ -6115,7 +6118,7 @@
 ;;                                      of a given set of tags
 ;;  `icicle-search-all-tags-regexp-bookmark' - Search bookmarks all of
 ;;                                     whose tags match a given regexp
-;;  `icicle-search-autofile-bookmark' - Search autofile bookmars only
+;;  `icicle-search-autofile-bookmark' - Search autofile bookmarks only
 ;;  `icicle-search-bookmark' - Search bookmarks
 ;;  `icicle-search-bookmark-list-bookmark' - bookmark-list bookmarks
 ;;  `icicle-search-bookmarks-together' - Search bookmarks together

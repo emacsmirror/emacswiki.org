@@ -166,9 +166,10 @@ completion.  See also the related help-cycling commands, `icicle-next-candidate-
 If you use one-[[buffer]]-per-[[frame]] (`pop-up-frames' non-`nil'), then displaying `*Help*' in one
 frame might interfere with viewing `*Completions*' in another.  For
 that reason, the `*Completions*' frame is raised to the front.
-Also, if user option '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-frame-at-right-flag|icicle-Completions-frame-at-right-flag]]</tt>'''' is
-non-`nil' (default value: `t'), then the `*Completions*' frame is moved to the right, out
-of the way, whenever you access help on a candidate.
+Also, if user option '''`<tt>[[Icicles - Customization and General Tips#icicle-move-Completions-frame|icicle-move-Completions-frame]]</tt>'''' is
+non-`nil' then the `*Completions*' frame is moved to the edge of the display, out
+of the way, whenever you access help on a candidate.  (Default value:
+`right', meaning move it to the right).
 
 
 

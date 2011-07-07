@@ -244,6 +244,8 @@ If you use paredit or something to add closing parens then hippie expand line ca
 
 -- ScottJaderholm
 
+-----
+
 == Expansion menu ==
 
 The following is an approach for obtaining the complete list of possible expansions from hippie-expand, and letting the user select the one they want via the ido interface.
@@ -253,21 +255,51 @@ The following is an approach for obtaining the complete list of possible expansi
     The optional argument can be generated with `make-hippie-expand-function'."
       (let ((this-command 'my-hippie-expand-completions)
             (last-command last-command)
+            (buffer-modified (buffer-modified-p))
             (hippie-expand-function (or hippie-expand-function 'hippie-expand)))
-        (while (progn
-                 (funcall hippie-expand-function nil)
-                 (setq last-command 'my-hippie-expand-completions)
-                 (not (equal he-num -1))))
-        he-tried-table))
-
-    (defun my-ido-hippie-expand (selection)
+        (flet ((ding)) ; avoid the (ding) when hippie-expand exhausts its options.
+          (while (progn
+                   (funcall hippie-expand-function nil)
+                   (setq last-command 'my-hippie-expand-completions)
+                   (not (equal he-num -1)))))
+        ;; Evaluating the completions modifies the buffer, however we will finish
+        ;; up in the same state that we began, and (save-current-buffer) seems a
+        ;; bit heavyweight in the circumstances.
+        (set-buffer-modified-p buffer-modified)
+        ;; Provide the options in the order in which they are normally generated.
+        (delete he-search-string (reverse he-tried-table))))
+     
+    (defmacro my-ido-hippie-expand-with (hippie-expand-function)
+      "Generate an interactively-callable function that offers ido-based completion
+    using the specified hippie-expand function."
+      `(call-interactively
+        (lambda (&optional selection)
+          (interactive
+           (let ((options (my-hippie-expand-completions ,hippie-expand-function)))
+             (if options
+                 (list (ido-completing-read "Completions: " options)))))
+          (if selection
+              (he-substitute-string selection t)
+            (message "No expansion found")))))
+     
+    (defun my-ido-hippie-expand ()
       "Offer ido-based completion for the word at point."
-      (interactive
-       (let ((options (my-hippie-expand-completions)))
-         (list (ido-completing-read "Completions: " options))))
-      (he-substitute-string selection))
-
+      (interactive)
+      (my-ido-hippie-expand-with 'hippie-expand))
+     
     (global-set-key (kbd "C-c /") 'my-ido-hippie-expand)
+
+[new]
+This can easily be adapted to custom selections of hippie-expand compatible expansion functions:
+
+    (defun my-ido-hippie-expand-filename ()
+      "Offer ido-based completion for the filename at point."
+      (interactive)
+      (my-ido-hippie-expand-with
+       (make-hippie-expand-function '(try-complete-file-name))))
+
+    (global-set-key (kbd "C-c C-f") 'my-ido-hippie-expand-filename)
+
 
 == BUGS ==
 

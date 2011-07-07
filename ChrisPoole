@@ -4,6 +4,12 @@ I use Emacs, heavily since 2007.
 [new:DrewAdams:2011-02-22 17:39 UTC]
 Welcome to the wiki. -- DrewAdams
 
+== Python ==
+
+Completion for python without rope or anything like that: http://chrispoole.com/project/ac-python
+
+Works with [[ProgrammingWithPythonDotEl|python.el]], [[ProgrammingWithPythonModeDotEl|python-mode.el]] etc.
+
 
 ----
 

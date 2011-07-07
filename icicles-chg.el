@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  4 09:49:34 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:54:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6620
+;;     Update #: 6630
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -814,6 +814,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/07/06 dadams
+;;     icicle-fit-completions-window:
+;;       Emacs 22/23 fix: do not call fit-window-to-buffer.  Thx to Michael Heerdegen.
+;;     icicle-read-face-name: Added version for Emacs 24+.
 ;; 2011/06/05 dadams
 ;;     icicle-unsorted(-file-name)-prefix-candidates, icicle-prefix-any(-file-name)-candidates-p:
 ;;       Add METADATA arg to icicle-completion-(try|all)-completion(s) calls.
@@ -2424,6 +2428,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/07/06 dadams
+;;     Applied renaming of icicle-Completions-frame-at-right-flag to icicle-move-Completions-frame.
+;;     icicle-raise-Completions-frame: Handle left value of icicle-move-Completions-frame also.
 ;; 2011/06/26 dadams
 ;;     icicle-minibuffer-help: Use insert, not princ, with icicle-help-string-completion.
 ;;     icicle-minibuffer-help, icicle-help-string-completion:
@@ -4635,6 +4642,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/07/06 dadams
+;;     Renamed icicle-Completions-frame-at-right-flag to icicle-move-Completions-frame.
+;;     icicle-move-Completions-frame: Allow for moving frame to the left also.
 ;; 2011/06/03 dadams
 ;;     Renamed icicle-help-in-mode-line-flag to icicle-help-in-mode-line-delay and changed to 5 secs.
 ;; 2011/05/24 dadams
@@ -5219,6 +5229,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/07/06 dadams
+;;     Applied renaming of icicle-Completions-frame-at-right-flag to icicle-move-Completions-frame.
 ;; 2011/05/03 dadams
 ;;     icicle-general-help-string: Mention icicle-toggle-highlight-saved-candidates.
 ;; 2011/04/29 dadams

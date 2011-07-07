@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:36:58 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:32:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4358
+;;     Update #: 4363
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -80,7 +80,6 @@
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
-;;    `icicle-Completions-frame-at-right-flag',
 ;;    `icicle-Completions-mouse-3-menu-entries',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
@@ -129,7 +128,8 @@
 ;;    `icicle-modal-cycle-up-keys',
 ;;    `icicle-modal-cycle-up-action-keys',
 ;;    `icicle-modal-cycle-up-alt-action-keys',
-;;    `icicle-modal-cycle-up-help-keys', `icicle-no-match-hook',
+;;    `icicle-modal-cycle-up-help-keys',
+;;    `icicle-move-Completions-frame', `icicle-no-match-hook',
 ;;    `icicle-option-type-prefix-arg-list',
 ;;    `icicle-point-position-in-candidate',
 ;;    `icicle-populate-interactive-history-flag',
@@ -1005,12 +1005,17 @@ multi-completions is always horizontal."
   :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(defcustom icicle-Completions-frame-at-right-flag t
-  "*Non-nil means move `*Completions*' frame to right edge of display.
+(defcustom icicle-move-Completions-frame 'right
+  "*Non-nil means move `*Completions*' frame to the edge of the display.
 This is done by `icicle-candidate-action'.
 It only happens if `*Completions*' is alone in its frame.
-This can be useful to make `*Completions*' more visible."
-  :type 'boolean :group 'Icicles-Completions-Display)
+This can be useful to make `*Completions*' more visible.
+Possible values are `right', `left', and nil (do not move)."
+  :type '(choice
+          (const :tag "Move to right edge"  right)
+          (const :tag "Move to right edge"  left)
+          (const :tag "Do not move"         nil))
+  :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-Completions-mouse-3-menu-entries `(,icicle-Completions-this-candidate-submenu

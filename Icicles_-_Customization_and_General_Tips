@@ -798,13 +798,13 @@ in the source code (<tt>[[icicles-opt.el]]</tt>), because [[Customize]] does not
 
 
 ----
-[:icicle-Completions-frame-at-right-flag]
-==== Option icicle-Completions-frame-at-right-flag ====
+[:icicle-move-Completions-frame]
+==== Option icicle-move-Completions-frame ====
 
-User option '''`icicle-Completions-frame-at-right-flag'''' controls
-whether `icicle-candidate-action' moves the frame showing buffer
-`*Completions*' to the right, out of the way of other frames.
-This can be useful if you use one-buffer-per-frame (non-`nil'
+Non-`nil' user option '''`icicle-move-Completions-frame'''' means that `icicle-candidate-action' moves the frame showing buffer
+`*Completions*' to the edge of the display, out of the way of other frames.   The possible non-`nil' values are `right' and
+`left', specifying the display edge to use.
+This option can be useful if you use one-[[buffer]]-per-[[frame]] (non-`nil'
 `pop-up-frames').  In that case, I recommend that you also try my
 library '''<tt>[[oneonone.el]]</tt>'''.  See [[Icicles - pop-up-frames on MS Windows]] for more advice about
 non-`nil' `pop-up-frames'.

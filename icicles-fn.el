@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  5 09:18:27 2011 (-0700)
+;; Last-Updated: Wed Jul  6 13:24:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12354
+;;     Update #: 12379
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1735,7 +1735,7 @@ candidate `*point face name*' to use the face at point."
                     (eyedrop-face-at-point))
                    (proxy (symbol-value (intern (substring proxy 1 (1- (length proxy))))))
                    (t (intern face)))))))
-      (t                                ; Emacs 22+
+      ((< emacs-major-version 24)       ; Emacs 22-23
        (defun icicle-read-face-name (prompt &optional string-describing-default multiple)
          "Read a face name with completion and return its face symbol
 By default, use the face(s) on the character after point.  If that
@@ -1850,7 +1850,114 @@ choose proxy candidate `*point face name*' to use the face at point."
                     (let ((proxy  (car (member face icicle-proxy-candidates))))
                       (if proxy
                           (symbol-value (intern (substring proxy 1 (1- (length proxy)))))
-                        (intern face))))))))))
+                        (intern face)))))))))
+      (t
+       (defun icicle-read-face-name (prompt &optional default multiple)
+         "Read a face name with completion and return its face symbol.
+By default, use the face(s) on the character after point.  If that
+character has the property `read-face-name', that overrides the `face'
+property.
+
+PROMPT should be a string that describes what the caller will do with the face;
+  it should not end in a space.
+Optional arg DEFAULT provides the value to display in the minibuffer
+prompt.  If not a string then it is also what is returned if the user
+just hits `RET' (empty input).  If a string then `nil' is returned.
+
+If MULTIPLE is non-nil, return a list of faces (possibly only one).
+Otherwise, return a single face.
+
+If option `icicle-add-proxy-candidates-flag' is non-nil, then you can
+also enter the name of a face-name variable - its value is returned.
+A face-name variable is a variable with custom-type `face'.
+
+If library `palette.el' or `eyedropper.el' is used, then you can also
+choose proxy candidate `*point face name*' to use the face at point."
+         (or (require 'palette nil t) (require 'eyedropper nil t))
+         (let ((faceprop       (or (get-char-property (point) 'read-face-name)
+                                   (get-char-property (point) 'face)))
+               (aliasfaces     ())
+               (nonaliasfaces  ())
+               (icicle-proxy-candidates
+                (and icicle-add-proxy-candidates-flag
+                     (let ((ipc  ()))
+                       (mapatoms
+                        (lambda (cand)
+                          (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                            (push `,(concat "'" (symbol-name cand) "'") ipc))))
+                       ipc)))
+               faces)
+           ;; Undo vanilla Emacs brain-dead treatment of PROMPT arg.
+           (when (save-match-data (string-match ": $" prompt))
+             (setq prompt  (substring prompt 0 -2)))
+           ;; Try to get a face name from the buffer.
+           (when (memq (intern-soft (thing-at-point 'symbol)) (face-list))
+             (setq faces  (list (intern-soft (thing-at-point 'symbol)))))
+           ;; Add the named faces that the `face' property uses.
+           (if (and (consp faceprop)
+                    ;; Don't treat an attribute spec as a list of faces.
+                    (not (keywordp (car faceprop)))
+                    (not (memq (car faceprop) '(foreground-color background-color))))
+               (dolist (f faceprop) (when (symbolp f) (push f faces)))
+             (when (and faceprop (symbolp faceprop)) (push faceprop faces)))
+           (delete-dups faces)
+           (cond (multiple
+                  ;; We leave this branch as it is.  Icicles does nothing special with
+                  ;; `completing-read-multiple'.
+                  (require 'crm)
+                  (mapatoms (lambda (s) (when (custom-facep s) ; Build up the completion tables.
+                                          (if (get s 'face-alias)
+                                              (push (symbol-name s) aliasfaces)
+                                            (push (symbol-name s) nonaliasfaces)))))
+                  (let* ((input   (completing-read-multiple ; Read the input.
+                                   (if (or faces default)
+                                       (format "%s (default `%s'): "
+                                               prompt (if faces
+                                                          (mapconcat 'symbol-name faces ",")
+                                                        default))
+                                     (format "%s: " prompt))
+                                   (completion-table-in-turn nonaliasfaces aliasfaces)
+                                   nil t nil (if (boundp 'face-name-history)
+                                                 'face-name-history
+                                               'icicle-face-name-history)
+                                   (and faces (mapconcat 'symbol-name faces ","))))
+                         (output  (cond ((or (equal input "") (equal input '(""))) ; Canonicalize.
+                                         (or faces (and (not (stringp default)) default)))
+                                        ((stringp input)
+                                         (mapcar 'intern (split-string input ", *" t)))
+                                        ((listp input)
+                                         (mapcar 'intern input))
+                                        (input))))
+                    output))            ; Return the list of faces
+                 (t
+                  (when (consp faces) (setq faces  (list (car faces))))
+                  (let ((icicle-list-nth-parts-join-string  ": ")
+                        (icicle-list-join-string            ": ")
+                        (icicle-list-end-string             "")
+                        (icicle-list-use-nth-parts          '(1))
+                        (face-list                          (face-list))
+                        (def                                (if faces
+                                                                (mapconcat 'symbol-name faces ",")
+                                                              (and (not (stringp default)) default)))
+                        face)
+                    (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
+                    (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+                    (while (equal "" (setq face  (icicle-transform-multi-completion
+                                                  (completing-read
+                                                   (if def
+                                                       (format "%s (default `%s'): " prompt def)
+                                                     (format "%s: " prompt))
+                                                   (mapcar #'icicle-make-face-candidate face-list)
+                                                   nil (not (stringp icicle-WYSIWYG-Completions-flag))
+                                                   nil (if (boundp 'face-name-history)
+                                                           'face-name-history
+                                                         'icicle-face-name-history)
+                                                   def)))))
+                    (let ((proxy  (car (member face icicle-proxy-candidates))))
+                      (if proxy
+                          (symbol-value (intern (substring proxy 1 (1- (length proxy)))))
+                        (intern face))))))
+))))
 
 (defun icicle-make-face-candidate (face)
   "Return a completion candidate for FACE.
@@ -2971,16 +3078,17 @@ Optional ARG determines what the effect is, as follows:
 Text size scaling uses `icicle-Completions-text-scale-decrease' and is
 only available for Emacs 23+.  (Do not scale in any case if using
 `oneonone.el' with a `*Completions*' frame.)."
-  (unless (eq arg 'scale-only)
-    (let ((window-min-height  1)) ; Prevent deletion of other windows.
-      (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
-        (let ((win  (get-buffer-window "*Completions*" 0)))
-          (unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
-            (fit-window-to-buffer
-             win
-             (or (and (symbolp icicle-last-top-level-command)
-                      (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
-                 icicle-Completions-window-max-height)))))))
+  (unless (or (eq arg 'scale-only)
+              (= emacs-major-version 23) ; `fit-window-to-buffer' is broken before 24: removes windows.
+              (= emacs-major-version 22))
+    (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
+      (let ((win  (get-buffer-window "*Completions*" 0)))
+        (unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
+          (fit-window-to-buffer
+           win
+           (or (and (symbolp icicle-last-top-level-command)
+                    (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
+               icicle-Completions-window-max-height))))))
   (unless (eq arg 'fit-only)
     (when (and (boundp 'icicle-Completions-text-scale-decrease) ; Emacs 23+
                (eq major-mode 'completion-list-mode)

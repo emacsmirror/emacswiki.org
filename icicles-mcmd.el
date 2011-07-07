@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 26 20:09:55 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:40:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16975
+;;     Update #: 16979
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -342,7 +342,7 @@
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-assoc-delete-all, icicle-define-sort-command
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-alternative-sort-comparer, icicle-Completions-frame-at-right-flag,
+  ;; icicle-alternative-sort-comparer, icicle-move-Completions-frame,
   ;; icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
   ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match-flag,
   ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-flag, icicle-input-string,
@@ -5035,9 +5035,9 @@ Optional arg TYPE is the type of object that FUNCTION applies to."
   "Raise `*Completions*' frame, if displayed.
 This helps keep `*Completions*' on top.
 
-If `icicle-Completions-frame-at-right-flag' is non-nil and
-`*Completions*' is in its own frame, then move that frame to the
-right, out of the way.
+If `icicle-move-Completions-frame' is non-nil and `*Completions*' is
+in its own frame, then move that frame to the display edge, out of the
+way.
 
 Non-nil optional args MOUSE-COL and MOUSE-ROW move the mouse pointer
 to column MOUSE-COL and row MOUSE-ROW.  Do this because
@@ -5049,10 +5049,12 @@ which can position mouse pointer on a standalone minibuffer frame."
       (save-window-excursion
         (select-window compl-win)
         ;; Move frame to the right, out of the way.
-        (when (and (one-window-p t) icicle-Completions-frame-at-right-flag)
+        (when (and (one-window-p t) icicle-move-Completions-frame)
           (modify-frame-parameters
            (selected-frame)             ; Hard-code 7 here - what does it depend on?
-           `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7)))))
+           (if (eq icicle-move-Completions-frame 'left)
+               '((left . 0))
+             `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7))))))
           (raise-frame)
           (when (and (integerp mouse-col) (integerp mouse-row))
             (set-mouse-position (selected-frame) mouse-col mouse-row)))))))

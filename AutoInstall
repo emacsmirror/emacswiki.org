@@ -295,5 +295,14 @@ when auto-install is required."
 }}}
 
 Damn. I also seem to have trouble updating, ie: doing auto-install-from-emacswiki for a package that I've already done that with. 
- 
+
 -- [[NicFerrier]]
+
+==AutoInstall Suggestions (with code to help)==
+I like AutoInstall but I'd like it to be a bit more powerful ("bit more powerful" is secret code for "complaining"). So, having learned that complaining means volunteering, I'd like to make some suggestions and offer some code. It's your package [[rubikitch]] so no offense if you don't like my ideas, don't have time to use them, etc... And definitely feel free to delete this from your page or reword it. If you do leave it, please reword it to something that is more appropriate. This is more of an invitation for you to come over to the AutoInstallPlayGround  than something that belongs on the page long-term.
+
+--NeilSmithline
+
+PS: No category on the page bottom...
+ 
+

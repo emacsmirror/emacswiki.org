@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:18:27 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:34:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26067
+;;     Update #: 26069
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -115,7 +115,7 @@
 ;;    icicle-send-bug-report'.
 ;;
 ;;    Whenever you update Icicles (i.e., download new versions of
-;;    Icicle source files), I recommend that you do the following:
+;;    Icicles source files), I recommend that you do the following:
 ;;
 ;;      1. Delete all existing byte-compiled Icicles files
 ;;         (icicles*.elc).
@@ -3996,9 +3996,11 @@
 ;;  displaying `*Help*' in one frame might interfere with viewing
 ;;  `*Completions*' in another.  For that reason, the `*Completions*'
 ;;  frame is raised to the front.  Also, if user option
-;;  `icicle-Completions-frame-at-right-flag' is non-`nil' (default
-;;  value: `t'), then the `*Completions*' frame is moved to the right,
-;;  out of the way, whenever you access help on a candidate.
+;;  `icicle-move-Completions-frame' is non-`nil' then the
+;;  `*Completions*' frame is moved to the edge of the display, out of
+;;  the way, whenever you access help on a candidate.  (Default value:
+;;  `right', meaning move it to the right).
+;; 
 ;;
 ;;(@* "Other Icicles Apropos Commands")
 ;;  ** Other Icicles Apropos Commands **

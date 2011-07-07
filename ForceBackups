@@ -14,7 +14,6 @@ This code will have Emacs backup each time you save. Mix this with a separate Ba
 
   (add-hook 'before-save-hook  'force-backup-of-buffer)
 
-
 See also BackupEachSave which is probably similar but has more features and is maybe more stable.
 
 [new]
@@ -22,6 +21,31 @@ The above function force-backup-of-buffer doesn't preserve file permissions.  As
 
   (defun force-backup-of-buffer ()
     (setq buffer-backed-up nil))
+
+[new]
+Keeping the ''N'' new and ''N'' old versions of the file is kind of
+brain dead.  Here's a simulation in Emacs Lisp of 8 saves using lists,
+showing what backups are available after each save when ''N'' is 2.
+
+  (let ((saves (number-sequence 1 8))
+        (backups '()))
+    (while (car saves)
+      (setq backups (cons (car saves) backups))
+      (pp backups)
+      (unless (< (length backups) (+ kept-old-versions kept-new-versions))
+        (setq backups
+              (append (butlast backups (- (1+ (length backups)) kept-new-versions))
+                      (last backups kept-old-versions))))
+      (setq saves (cdr saves))))
+  =>
+  (1)
+  (2 1)
+  (3 2 1)
+  (4 3 2 1)
+  (5 4 2 1)
+  (6 5 2 1)
+  (7 6 2 1)
+  (8 7 2 1)
 
 ----
 CategoryFiles

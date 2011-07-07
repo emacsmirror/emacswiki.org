@@ -15,6 +15,12 @@ Direct download [[https://ac-math.googlecode.com/svn/trunk/ac-math.el|ac-math.el
 
 == Python ==
 
+Completion for python without rope or anything like that: http://chrispoole.com/project/ac-python
+
+Works with [[ProgrammingWithPythonDotEl|python.el]], [[ProgrammingWithPythonModeDotEl|python-mode.el]] etc.
+
+-- [[ChrisPoole]]
+
 Completion for python using [[http://code.google.com/p/pysmell/|PySmell]].
 
 <pre>

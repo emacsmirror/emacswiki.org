@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  3 15:52:47 2011 (-0700)
+;; Last-Updated: Wed Jul  6 14:41:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1504
+;;     Update #: 1505
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -539,7 +539,7 @@ noted in parentheses.
 * `icicle-Completions-display-min-input-chars'- Remove `*Completions*'
                                            if fewer chars input
 * `icicle-completions-format'            - `*Completions*' layout
-* `icicle-Completions-frame-at-right-flag'- `*Completions*' at right?
+* `icicle-move-Completions-frame'        - `*Completions*' at edge?
 * `icicle-Completions-text-scale-decrease'- `*Completions*' shrink
 * `icicle-Completions-window-max-height' - Max lines, `*Completions*'
 * `icicle-customize-save-flag'           - Save some options on quit?
