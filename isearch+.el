@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jun  3 09:56:57 2011 (-0700)
+;; Last-Updated: Thu Jul  7 20:11:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 610
+;;     Update #: 638
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,8 +44,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `isearchp-fail-pos', `isearchp-set-region',
-;;    `isearchp-update-edit-init-commands' (Emacs 22+).
+;;    `isearchp-fail-pos', `isearchp-highlight-lighter',
+;;    `isearchp-set-region', `isearchp-update-edit-init-commands'
+;;    (Emacs 22+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -59,7 +60,8 @@
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
 ;;                          echo area, in face `isearch-fail'.
-;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'
+;;  `isearch-toggle-case-fold' - Show case sensitivity in mode-line.
+;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'.
 ;;
 ;;
 ;;  The following bindings are made here for incremental search mode
@@ -97,6 +99,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/07/07 dadams
+;;     Added: isearchp-highlight-lighter, isearch-toggle-case-fold (redefinition).
+;;     Put isearchp-highlight-lighter on isearch-update-post-hook.
 ;; 2011/06/03 dadams
 ;;     isearchp-initiate-edit-commands: Added left-word.
 ;; 2011/05/27 dadams
@@ -370,6 +375,41 @@ This is used only for Transient Mark mode."
     (when isearch-word (setq isearch-regexp nil)) ; Added to Juri's code by Stefan.
     (setq isearch-success t isearch-adjusted t)
     (isearch-update)))
+
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; Update minor-mode mode-line lighter to reflect case sensitivity.
+;;
+(defun isearch-toggle-case-fold ()
+  "Toggle case folding in searching on or off.
+The minor-mode lighter is `ISEARCH' for case-insensitive, `Isearch'
+for case-sensitive."
+  (interactive)
+  (setq isearch-case-fold-search  (if isearch-case-fold-search nil 'yes))
+  (let ((message-log-max  nil))
+    (message "%s%s [case %ssensitive]" (isearch-message-prefix nil nil isearch-nonincremental)
+	     isearch-message (if isearch-case-fold-search "in" "")))
+  (setq isearch-success   t
+        isearch-adjusted  t)
+  (isearchp-highlight-lighter)
+  ;; (sit-for 1)
+  (isearch-update))
+
+(defun isearchp-highlight-lighter ()
+  "Update minor-mode mode-line lighter to reflect case sensitivity."
+  (let ((case-fold-search  isearch-case-fold-search))
+    (when (and (eq case-fold-search t) search-upper-case)
+      (setq case-fold-search  (isearch-no-upper-case-p isearch-string isearch-regexp)))
+    (setq minor-mode-alist  (delete '(isearch-mode " ISEARCH") minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " Isearch") minor-mode-alist))
+    (add-to-list 'minor-mode-alist `(isearch-mode ,(if case-fold-search " ISEARCH" " Isearch"))))
+  (condition-case nil
+      (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
+    (error nil)))
+
+(add-hook 'isearch-update-post-hook 'isearchp-highlight-lighter)
 
 
 

@@ -82,11 +82,14 @@ In order to trigger CHANGE-SMTP before every SMTPMAIL-VIA-SMTP call, we introduc
   
   (ad-activate 'smtpmail-via-smtp)
 
+
 --- Volkan YAZICI
 
 [new:GáborVida:]
 You may have to consider two more variables if your MTA checks your mail address specified in "MAIL FROM:" SMTP header line to decide whether you are allowed to send mail (Exchange does this). By default `smtpmail-mail-address' is used if it is specified, otherwise `user-mail-address'. However, you probably don't set `smtpmail-mail-address' and your `user-mail-address' contains your default e-mail address that is different from the one you use for a particular SMTP server. If you want to direct smtpmail.el to use the From field of the mail, set `mail-specify-envelope-from' to <code>t</code> and `mail-envelope-from' to <code>header</code>.
 
+[new:LeonidasTsampros:2011-07-07 12:28 UTC]
+I think the above snippet will not work on a recent Emacs 24 from the bzr trunk since smtpmail.el has been rewritten. I think this is the relevant change: http://lists.gnu.org/archive/html/emacs-diffs/2011-06/msg00226.html
 ----
 
 This version is a bit simpler than the above because it only has two SMTP accounts and no SSL. --tzz

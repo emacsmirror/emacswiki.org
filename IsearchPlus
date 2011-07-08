@@ -39,6 +39,8 @@ Features:
 
 * A [[user option]], '''`isearchp-initiate-edit-commands'''', that specifies [[command]]s whose [[key]]s will not exit Isearch but will instead initiate editing of the search string.  For example, if `backward-char' is included in the list then `C-b' and `left' will just move the [[cursor]] backward over the search string so you can change, delete, or insert chars in the middle somewhere.  This makes the search string more [[minibuffer]]-like.
 
+* Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
+
 '''See Also:'''
 
 * '''ReplacePlus''' for related extensions to Emacs' standard `query-replace'. In particular, the ability to select (put the [[region]] around) the last replacement.

@@ -53,7 +53,7 @@ Calendar arithmetic and motion:
 * DiaryMode
 * PlannerMode
 * GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
-
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] Calendar framework for emacs (looks like iCal on OS X)
 ----
 CategoryPersonalInformationManager
 CategoryCalendar

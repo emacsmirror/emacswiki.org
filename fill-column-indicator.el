@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.65
+;; Version: 1.67
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -143,6 +143,8 @@
 ;; o Accommodate non-nil values of `hl-line-sticky-flag' and similar cases.
 
 ;; o Accommodate linum-mode more robustly.
+
+;; o Compatibility with non-nil `show-trailing-whitespace.'
 
 ;;; Code:
 
@@ -287,8 +289,6 @@ the range U+E000-U+F8FF, inclusive)."
 
 ;; Data used in setting the fill-column rule that only need to be
 ;; occasionally updated in a given buffer.
-(defvar fci-img-descriptor nil)
-(defvar fci-buffer-windows nil)
 (defvar fci-limit nil)
 (defvar fci-pre-limit-string nil)
 (defvar fci-at-limit-string nil)
@@ -307,8 +307,6 @@ the range U+E000-U+F8FF, inclusive)."
                               fci-tab-width
                               fci-char-width
                               fci-char-height
-                              fci-img-descriptor
-                              fci-buffer-windows
                               fci-limit
                               fci-pre-limit-string
                               fci-at-limit-string
@@ -349,6 +347,7 @@ the range U+E000-U+F8FF, inclusive)."
          (< c 507904))))
 
 (defun fci-get-buffer-windows ()
+  "Return a list of windows displaying the current buffer."
   (get-buffer-window-list (current-buffer) 'no-minibuf t))
 
 ;;; ---------------------------------------------------------------------
@@ -384,7 +383,6 @@ file.  (See the latter for tips on troubleshooting.)"
                   fci-limit (if fci-newline-sentinel
                                 (1+ (- fill-column (length fci-saved-eol)))
                               fill-column))
-            (fci-make-img-descriptor)
             (fci-make-overlay-strings)
             (fci-full-update))
         (error
@@ -466,28 +464,27 @@ file.  (See the latter for tips on troubleshooting.)"
 
 (defun fci-make-img-descriptor ()
   "Make an image descriptor for the fill-column rule."
-  (if fci-always-use-textual-rule
-      (setq  fci-img-descriptor nil)
+  (unless fci-always-use-textual-rule
     (let ((frame (if (display-graphic-p)
                      (selected-frame)
                    (catch 'found-graphic
                      (dolist (win (fci-get-buffer-windows))
                        (when (display-images-p (window-frame win))
                          (throw 'found-graphic (window-frame win))))))))
-      (setq  fci-char-width (frame-char-width frame)
-             fci-char-height (frame-char-height frame))
+      (setq fci-char-width (frame-char-width frame)
+            fci-char-height (frame-char-height frame))
       (if frame
-          (setq fci-img-descriptor (cond
-                                    ((eq fci-rule-image-format 'xbm)
-                                     (fci-make-xbm-img))
-                                    ((eq fci-rule-image-format 'pbm)
-                                     (fci-make-pbm-img))
-                                    (t
-                                     (fci-make-xpm-img))))))))
+          (cond
+           ((eq fci-rule-image-format 'xbm)
+            (fci-make-xbm-img))
+           ((eq fci-rule-image-format 'pbm)
+            (fci-make-pbm-img))
+           (t
+            (fci-make-xpm-img)))))))
 
 (defun fci-make-xbm-img ()
   "Return an image descriptor for the fill-column rule in XBM format."
-  (let* ((img-width (+ fci-char-width (- 8 (% fci-char-width 8))))
+  (let* ((img-width (* 8 (/ (+ fci-char-width 7) 8)))
          (row-pixels (make-bool-vector img-width nil))
          (raster (make-vector fci-char-height row-pixels))
          (rule-width (min fci-rule-width fci-char-width))
@@ -576,6 +573,7 @@ file.  (See the latter for tips on troubleshooting.)"
 (defun fci-make-overlay-strings ()
   "Generate the overlay strings used to display the fill-column rule."
   (let* ((str (fci-make-rule-string))
+         (img (fci-make-img-descriptor))
          (blank (char-to-string fci-blank-char))
          (eol-str (char-to-string fci-eol-char))
          (end-cap (propertize blank 'display '(space :width 0)))
@@ -583,14 +581,8 @@ file.  (See the latter for tips on troubleshooting.)"
                           'cursor 1
                           'display (propertize eol-str 'cursor 1)))
          (padding (propertize blank 'display fci-padding-display))
-         (before-rule (fci-rule-display blank 
-                                        fci-img-descriptor
-                                        str
-                                        t))
-         (at-rule (fci-rule-display blank 
-                                    fci-img-descriptor 
-                                    str 
-                                    fci-newline-sentinel))
+         (before-rule (fci-rule-display blank img str t))
+         (at-rule (fci-rule-display blank img str fci-newline-sentinel))
          (at-eol (if fci-newline-sentinel eol "")))
     (setq fci-pre-limit-string (concat eol padding before-rule)
           fci-at-limit-string (concat at-eol at-rule)
@@ -653,7 +645,7 @@ file.  (See the latter for tips on troubleshooting.)"
   (let ((olays (fci-get-overlays-region (point-min) (point-max)))
         (ranges (mapcar #'(lambda (w) 
                             (cons (window-start w) (window-end w t)))
-                        fci-buffer-windows))
+                        (fci-get-buffer-windows)))
         pos)
     (dolist (o olays)
       (setq pos (overlay-start o))
@@ -718,7 +710,7 @@ file.  (See the latter for tips on troubleshooting.)"
         (let ((lossage 0)
               (max-end 0)
               win-end)
-          (dolist (win fci-buffer-windows)
+          (dolist (win (fci-get-buffer-windows))
             ;; Do not ask for an updated value of window-end.
             (setq win-end (window-end win))
             (when (and (< 0 (- (min win-end end) 
@@ -748,14 +740,13 @@ file.  (See the latter for tips on troubleshooting.)"
   "Redraw the fill-column rule in all windows on this buffer."
   (remove-hook 'post-command-hook #'fci-full-update t)
   (overlay-recenter (point-max))
-  (setq fci-buffer-windows (fci-get-buffer-windows)) 
   (fci-delete-unneeded)
   (let (start end)
     (fci-sanitize-actions 
      ;; If some windows on this buffer overlap, we end up redrawing the rule
      ;; in the overlapped area multiple times, but it's faster to do that
      ;; than do the computations needed to avoid such redrawing.
-     (dolist (win fci-buffer-windows)
+     (dolist (win (fci-get-buffer-windows))
        (setq start (window-start win)
              end (window-end win t))
        (fci-delete-overlays-region start end)

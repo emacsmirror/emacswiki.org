@@ -27,6 +27,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 7-July-2011    Zigler Zhang
+;;    Quote local variable to avoid "Symbol nil may not be buffer-local"
+;;    when start process of ESS
 ;; 23-Mar-2011    Timothy C. Harper
 ;;    Hook up R documentation in completion popup.
 ;; 22-Oct-2010    Matthew L. Fidler  
@@ -208,12 +211,12 @@ completions are listed [__UNIMPLEMENTED__]."
 (add-hook 'ess-mode-hook
         (lambda ()
           (add-to-list 'ac-sources 'ac-source-R)
-          (make-local-variable ac-ignore-case)
+          (make-local-variable 'ac-ignore-case)
           (setq ac-ignore-case nil)))
 (add-hook 'inferior-ess-mode-hook
         (lambda ()
           (add-to-list 'ac-sources 'ac-source-R)
-          (make-local-variable ac-ignore-case)
+          (make-local-variable 'ac-ignore-case)
           (setq ac-ignore-case nil)))
 
 (provide 'ac-R)

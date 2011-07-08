@@ -5,3 +5,6 @@ There are two "official versions" of zenburn-for-emacs - the first is the new Ze
 The other widely used zenburn for Emacs is maintained by DanielBrockman, but it seems that it's not that actively maintained these days, in favour of the new emacs-24 zenburn theme:
 
 The zenburn-theme has also been ported to (unreleased, development version) Emacs-24 'deftheme' system, you can find this here: [https://github.com/djcb/elisp/blob/master/themes/zenburn-theme.el on github]. 
+
+[new]
+BozhidarBatsov doesn't seem to maintain the zenburn-legacy anymore. -- Kiwon

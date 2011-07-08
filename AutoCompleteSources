@@ -64,6 +64,27 @@ in the
 
 section near the end. I think this is harmless, but I don't know lisp well enough to be sure. It works but if someone has a better solution I'd love to hear it.
 
+[new:Zigler Zhang:2011-07-07 10:57 UTC] make-local-variable should accept a quote instead var. otherwise, it would introduce error as "Symbol nil may not be buffer-local" and fail to start ESS process. Please modified
+
+    (make-local-variable ac-ignore-case)
+
+with 
+
+     (make-local-variable 'ac-ignore-case)
+
+for both occurs.
+
+      (require 'ac-R)
+
+and then start R manullay which would active the autocomplete thing.
+and you may find it would be helpful to keeps lines below in your .emacs too.
+
+     (require 'ess-eldoc) 
+     (setq ess-eval-visibly-p nil) 
+
+Have a dog day, cheers!
+
+
 == DynamicAbbreviations ==
 
 Lisp:ac-dabbrev.el (0.0.4)
