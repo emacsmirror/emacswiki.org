@@ -34,7 +34,7 @@ A picture is worth a thousand words. Well, maybe a thumbnail is worth only 50 wo
 
 ; '''''Can I use <tt>[[thumb-frm.el]]</tt> to view images (e.g. photos) as thumbnails?''''': No, it shrinks only text, not graphics -- a thumbnail of a displayed image just shows a tiny part of the image at full size. To create and view image thumbnails, see ThumbsMode.  
 
-; '''''What _good_ is a thumbnail frame?''''': You can see what is in it, but it doesn't take up much room. It's as easy to thumbify and dethumbify a frame as it is to iconify and deiconify it. Thumbnail frames are stacked (arranged) along an edge of your display for access and reference. They aren't quite as out-of-the-way as icons, and they provide more info and content access than icons.
+; '''''What _good_ is a thumbnail frame?''''': You can see what is in it, but it doesn't take up much room. It's as easy to thumbify and dethumbify a frame as it is to iconify and deiconify it. Thumbnail frames can be stacked (arranged) along an edge of your display for access and reference. They aren't quite as out-of-the-way as icons, and they provide more info and content access than icons.
 
 : You can, for instance, search through or monitor the progress of their buffers. Put a progressive-output buffer (make, grep, shell, communication) in a thumbnail frame to monitor its progress, then blow it up when something interesting happens. Or use a thumbnail when you want a buffer to be current but not in your face -- click to choose a buffer without fanfare.
 

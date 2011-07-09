@@ -6,7 +6,10 @@ A project to make Emacs more frame-oriented is introduced. Discussion
 of the problem and suggestions of solutions are invited. An existing
 implementation is described.
 
-= Problem: Emacs Is Biased Toward Windows, Not Frames =
+
+
+
+== Problem: Emacs Is Biased Toward Windows, Not Frames ==
 
 Several major versions ago, Emacs introduced '''[[frame]]s''', which
 correspond to window-manager windows. A frame is tiled into one or
@@ -48,8 +51,7 @@ them. Very handy.
 buffers), frames proliferate. And how do you iconify a lot of frames
 all at once? Lots of raised frames can be a mess to manage.
 * Key sequences bound to commands to access frames are, by default,
-more contorted: `C-x 5 f' to visit a file, `C-x 5
-0' to delete a frame, and so on. Bindings are easily changed,
+more contorted: `C-x 5 f' to visit a file, `C-x 5 0' to delete a frame, and so on. Bindings are easily changed,
 of course, but other things tend to make you want to keep the simple
 bindings (`C-x f', `C-x 0') for Emacs
 windows, not frames. As long as you have to use windows most of the
@@ -58,7 +60,15 @@ time, you want windows command bindings to be short.
 There are in fact several Emacs functions, some built-in, that
 manipulate windows and are not at all geared toward frames.
 
-= Goal: Make Emacs More Frame-Oriented =
+
+
+
+
+
+
+
+
+== Goal: Make Emacs More Frame-Oriented ==
 
 Given this state of affairs, is there any sense in trying to use
 Emacs in a primarily frame-oriented fashion? To me, it's worth trying
@@ -68,7 +78,7 @@ windows.
 So, when frames first came out, I set about customizing my Emacs, to
 try to take advantage of window-manager windows (frames)...
 
-First, of course, I set `pop-up-frames' to non-nil, so
+First, of course, I set `pop-up-frames' to non-`nil', so
 `display-buffer' would use a new frame each time. That's
 when I came to know the various ways in which a window bias was
 built-in. Little by little, I tried to overcome this bias, and I
@@ -85,7 +95,15 @@ default). The idea is not to do away with window operations, but just
 to make it more natural to use frames instead of Emacs windows for
 most things.
 
-= How I've Tackled the Problem =
+
+
+
+
+
+
+
+
+== How I've Tackled the Problem ==
 
 I describe here how I've approached the problem. After that
 (see [[#OneOnOneEmacsLibraries]]), I describe the individual Emacs Lisp libraries for my implementation of One-On-One Emacs, in case you want to try it out. Enhancements and
@@ -112,7 +130,7 @@ In addition to those major changes, I changed a few other standard Emacs functio
 
 * `dired-simultaneous-find-file': Redefined to use
 separate frames instead of windows if `pop-up-frames' is
-non-nil.
+non-`nil'.
 * Various <code>*Help*</code> buffer functions, like
 `locate-library', make the <code>*Help*</code> frame
 invisible when you're through with it.
@@ -121,10 +139,21 @@ invisible when you're through with it.
 `switch-to-buffer'.
 * `switch-to-completions': Selects
 <code>*Completions*</code> window even if it is on another frame.
-* `count-windows': Only uses the optional MINIBUF argument
+* `count-windows': Only uses the optional ##MINIBUF## argument
 if the current frame has a minibuffer.
 
-'''See Libraries:''' Lisp:dired+.el, Lisp:help+.el, Lisp:menu-bar+.el, Lisp:simple+.el, Lisp:window+.el
+'''See Libraries:''' <tt>[[dired+.el]]</tt>, <tt>[[help+.el]]</tt>, <tt>[[menu-bar+.el]]</tt>, <tt>[[simple+.el]]</tt>, <tt>[[window+.el]]</tt>
+
+
+
+
+
+
+
+
+
+
+
 
 [:OneOnOneEmacsLibraries]
 == One-On-One Emacs Libraries ==
@@ -135,30 +164,40 @@ Each library has `require' code that lets you know which other libraries it uses
 
 These are the libraries for (my version of) One-On-One Emacs:
 
-* Lisp:autofit-frame.el -- automatically fit each one-window frame to its window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
-* Lisp:buff-menu+.el -- extensions to standard library `buff-menu'; see also '''BufferMenuPlus'''
-* Lisp:compile-.el, Lisp:compile+.el and Lisp:grep+.el -- extensions to standard libraries `compile' and `grep'; see also '''GrepMode'''
-* Lisp:dired+.el -- extensions to standard libraries `dired', `dired-aux', and `dired-x'; see also '''DiredPlus'''
-* Lisp:fit-frame.el -- fit a frame to its selected window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
-* Lisp:frame-cmds.el -- frame and window commands (interactive functions); see also '''[[Frame Tiling Commands]]''', '''[[Iconifying, Deiconifying, and Hiding Frames]]''', '''[[Delete Frames Easily - But Not Too Easily]]''', and '''FrameModes'''
-* Lisp:frame-fns.el -- non-interactive frame and window functions
-* Lisp:frame+.el -- extensions to standard library `frame'
-* Lisp:help+.el -- extensions to standard library `help'; see also '''HelpPlus'''
-* Lisp:info+.el -- extensions to standard library `info'; see also '''InfoMode'''
-* Lisp:menu-bar+.el -- extensions to standard library `menu-bar'; see also '''MenuBar''' and '''HelpMenuBarPlus'''
-* Lisp:mouse+.el -- extensions to standard library `mouse'
-* Lisp:oneonone.el -- define a special multi-frame setup; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
-* Lisp:setup-keys.el -- some key bindings
-* Lisp:simple+.el -- extensions to standard library `simple'
-* Lisp:thumb-frm.el -- use thumbnail frames in addition to or instead of frame icons
-* Lisp:window+.el -- extensions to standard library `window'
+* <tt>[[autofit-frame.el]]</tt> -- automatically fit each one-window frame to its window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
+* <tt>[[buff-menu+.el]]</tt> -- extensions to standard library `buff-menu'; see also '''BufferMenuPlus'''
+* <tt>[[compile-.el]]</tt>, <tt>[[compile+.el]]</tt> and <tt>[[grep+.el]]</tt> -- extensions to standard libraries `compile' and `grep'; see also '''GrepMode'''
+* <tt>[[dired+.el]]</tt> -- extensions to standard libraries `dired', `dired-aux', and `dired-x'; see also '''DiredPlus'''
+* <tt>[[fit-frame.el]]</tt> -- fit a frame to its selected window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
+* <tt>[[frame-cmds.el]]</tt> -- frame and window commands (interactive functions); see also '''[[Frame Tiling Commands]]''', '''[[Iconifying, Deiconifying, and Hiding Frames]]''', '''[[Delete Frames Easily - But Not Too Easily]]''', and '''FrameModes'''
+* <tt>[[frame-fns.el]]</tt> -- non-interactive frame and window functions
+* <tt>[[frame+.el]]</tt> -- extensions to standard library `frame'
+* <tt>[[help+.el]]</tt> -- extensions to standard library `help'; see also '''HelpPlus'''
+* <tt>[[info+.el]]</tt> -- extensions to standard library `info'; see also '''InfoMode'''
+* <tt>[[menu-bar+.el]]</tt> -- extensions to standard library `menu-bar'; see also '''MenuBar''' and '''HelpMenuBarPlus'''
+* <tt>[[mouse+.el]]</tt> -- extensions to standard library `mouse'
+* <tt>[[oneonone.el]]</tt> -- define a special multi-frame setup; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
+* <tt>[[setup-keys.el]]</tt> -- some key bindings
+* <tt>[[simple+.el]]</tt> -- extensions to standard library `simple'
+* <tt>[[thumb-frm.el]]</tt> -- use thumbnail frames in addition to or instead of frame icons
+* <tt>[[window+.el]]</tt> -- extensions to standard library `window'
 
-All of the libraries I've posted at EmacsWiki are listed at '''DrewsElispLibraries'''. Putting all of them in a directory pointed to by variable `drews-lisp-dir', and using Lisp:emacs-init.el as is, you live Emacs more or less as I do.
+All of the libraries I've posted at EmacsWiki are listed at '''DrewsElispLibraries'''. Putting all of them in a directory pointed to by variable `drews-lisp-dir', and using <tt>[[emacs-init.el]]</tt> as is, you live Emacs more or less as I do.
 
-= Comments (Log) =
+
+
+
+
+
+----
+
+== Comments (Log) ==
 
 This space is for chronological comments (interaction).
-----
+
+
+
+
 
 [new]
 LiuJin: When tiling multiple frames, wouldn't multiple frame borders, title bars, menubars and toolbars consume too much screen space?
@@ -174,10 +213,10 @@ LiuJin: When tiling multiple frames, wouldn't multiple frame borders, title bars
 [new:DrewAdams:2004-04-19]
 : Not sure I understand you. Perhaps you mean that you like the general idea but you don't like the particular default frame look?  `default-frame-background' and such are user variables, which you can set in your init file to get the look you want. They are used to define the standard variable `default-frame-alist'. 
 
-: Perhaps you mean that this doesn't play well with library Lisp:color-theme.el.gz. If so, you may be right; I haven't used color-theme. Looking at its code (version 6.5.4), I see that it prepends some settings to `default-frame-alist'. Perhaps you need only change the order of loading libraries Lisp:color-theme.el.gz. and Lisp:oneonone.el.
+: Perhaps you mean that this doesn't play well with library <tt>[[color-theme.el.gz]]</tt>. If so, you may be right; I haven't used color-theme. Looking at its code (version 6.5.4), I see that it prepends some settings to `default-frame-alist'. Perhaps you need only change the order of loading libraries <tt>[[color-theme.el.gz]]</tt>. and <tt>[[oneonone.el]]</tt>.
 
-: The doc string for function `color-theme-install-frame-params' (in Lisp:color-theme.el.gz) says that "the value of `initial-frame-alist' is not
-modified."  In Lisp:oneonone.el, I do this:
+: The doc string for function `color-theme-install-frame-params' (in <tt>[[color-theme.el.gz]]</tt>) says that "the value of `initial-frame-alist' is not
+modified."  In <tt>[[oneonone.el]]</tt>, I do this:
 
   (setq initial-frame-alist default-frame-alist).
 
@@ -326,11 +365,11 @@ I wonder if I'm not getting your modules running in the proper way. In the top o
 
 (require 'fit-frame)
 
-However, I notice that when you call for that same thing in frame+.el, your command is
+However, I notice that when you call for that same thing in [[frame+.el]], your command is
 
  (require 'fit-frame nil t) 
 
-What is "nil t"?  Should I use that in ~/.emacs when trying to activate things? -- pj
+What is `nil t' here?  Should I use that in ##~/.emacs## when trying to activate things? -- pj
 
 
 

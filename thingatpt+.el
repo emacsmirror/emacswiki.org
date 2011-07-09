@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue May 24 14:56:38 2011 (-0700)
+;; Last-Updated: Fri Jul  8 17:07:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1252
+;;     Update #: 1266
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -36,18 +36,23 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `bounds-of-form-at-point', `bounds-of-form-nearest-point',
+;;    `bounds-of-list-at-point', `bounds-of-list-nearest-point',
+;;    `bounds-of-sexp-at-point', `bounds-of-sexp-nearest-point',
 ;;    `bounds-of-string-at-point', `bounds-of-symbol-at-point',
 ;;    `bounds-of-symbol-nearest-point',
 ;;    `bounds-of-thing-nearest-point', `form-at-point-with-bounds',
 ;;    `form-nearest-point', `form-nearest-point-with-bounds',
 ;;    `forward-char-same-line', `forward-whitespace-&-newlines',
-;;    `list-at/nearest-point', `list-nearest-point',
+;;    `list-at/nearest-point-with-bounds',
+;;    `list-at-point-with-bounds', `list-nearest-point',
+;;    `list-nearest-point-with-bounds',
 ;;    `list-nearest-point-as-string', `non-nil-symbol-name-at-point',
 ;;    `non-nil-symbol-name-nearest-point',
 ;;    `non-nil-symbol-nearest-point', `number-at-point-decimal',
 ;;    `number-at-point-hex', `number-nearest-point',
 ;;    `region-or-word-at-point', `region-or-word-nearest-point',
-;;    `sentence-nearest-point', `sexp-nearest-point',
+;;    `sentence-nearest-point', `sexp-at-point-with-bounds',
+;;    `sexp-nearest-point', `sexp-nearest-point-with-bounds',
 ;;    `string-at-point', `string-nearest-point',
 ;;    `symbol-at-point-with-bounds', `symbol-name-nearest-point',
 ;;    `symbol-nearest-point', `symbol-nearest-point-with-bounds',
@@ -86,6 +91,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/07/08 dadams
+;;     Removed: list-at/nearest-point.
+;;     Added: (list|sexp)-(at|nearest)-point-with-bounds,
+;;            bounds-of-(list|sexp)-(at|nearest)-point, list-at/nearest-point-with-bounds.
+;;     (unquoted-)list-(at|nearest)-point(-as-string):
+;;       Redefined using list-(at|nearest)-point-with-bounds.
+;;     (put 'list 'bounds-of-thing-at-point 'bounds-of-list-at-point) - not nil.
 ;; 2011/05/24 dadams
 ;;     Added: (bounds-of-)string-at-point, string-nearest-point.
 ;; 2011/05/21 dadams
@@ -246,7 +258,7 @@ symbol as a valid THING."
     (bounds-of-thing-at-point-1 thing)))
 
 
-;; This is the original `bounds-of-thing-at-point', but with bug # #8667 fixed.
+;; This is the original `bounds-of-thing-at-point', but with bug #8667 fixed.
 (defun bounds-of-thing-at-point-1 (thing)
   "Helper for `bounds-of-thing-at-point'.
 Do all except handle the optional SYNTAX-TABLE arg."
@@ -404,7 +416,7 @@ SYNTAX-TABLE is a syntax table to use."
   (let ((thing+bds  (thing-nearest-point-with-bounds thing syntax-table)))
     (and thing+bds (car thing+bds))))
  
-;;; FORMS ------------------------------------------------------------
+;;; FORMS, SEXPS -----------------------------------------------------
 
 (defun form-at-point-with-bounds (&optional thing pred syntax-table)
   "Return (FORM START . END), START and END the char positions of FORM.
@@ -422,6 +434,13 @@ Optional arguments:
              (cons sexp bounds)))
     (error nil)))
 
+;; Essentially an alias for the default case.
+(defun sexp-at-point-with-bounds (&optional pred syntax-table)
+  "Return (SEXP START . END), boundaries of the `sexp-at-point'.
+Return nil if no sexp is found.
+Optional args are the same as for `form-at-point-with-bounds'."
+  (form-at-point-with-bounds 'sexp pred syntax-table))
+
 (defun bounds-of-form-at-point (&optional thing pred syntax-table)
   "Return (START . END), with START and END of `form-at-point'.
 
@@ -431,6 +450,12 @@ Optional arguments:
   SYNTAX-TABLE is a syntax table to use."
   (let ((form+bds  (form-at-point-with-bounds thing pred syntax-table)))
     (and form+bds (cdr form+bds))))
+
+;; Essentially an alias for the default case.
+(defun bounds-of-sexp-at-point (&optional pred syntax-table)
+  "Return (START . END), with START and END of `sexp-at-point'.
+Optional args are the same as for `bounds-of-form-at-point'."
+  (bounds-of-form-at-point 'sexp pred syntax-table))
 
 
 ;; REPLACE ORIGINAL in `thingatpt.el'.
@@ -464,6 +489,13 @@ Optional arguments:
   (thing/form-nearest-point-with-bounds
    #'form-at-point-with-bounds thing pred syntax-table))
 
+;; Essentially an alias for the default case.
+(defun sexp-nearest-point-with-bounds (&optional pred syntax-table)
+  "Return (SEXP START . END), boundaries of the `sexp-nearest-point'.
+Return nil if no sexp is found.
+Optional args are the same as for `form-nearest-point-with-bounds'."
+  (form-nearest-point-with-bounds 'sexp pred syntax-table))
+
 (defun bounds-of-form-nearest-point (&optional thing pred syntax-table)
   "Return (START . END) with START and END of `form-nearest-point'.
 Return nil if no such form is found.
@@ -474,6 +506,12 @@ Optional arguments:
   SYNTAX-TABLE is a syntax table to use."
   (let ((form+bds  (form-nearest-point-with-bounds thing pred syntax-table)))
     (and form+bds (cdr form+bds))))
+
+;; Essentially an alias for the default case.
+(defun bounds-of-sexp-nearest-point (&optional pred syntax-table)
+  "Return (START . END), with START and END of `sexp-nearest-point'.
+Optional args are the same as for `bounds-of-form-nearest-point'."
+  (bounds-of-form-nearest-point 'sexp pred syntax-table))
 
 (defun form-nearest-point (&optional thing pred syntax-table)
   "Return the form nearest to the cursor, if any, else return nil.
@@ -591,15 +629,78 @@ Note that these last three functions return strings, not symbols."
  
 ;;; LISTS ------------------------------------------------------------
 
-;;; This simple definition is nowhere near as good as the one below.
-;;;
-;;; (defun list-nearest-point (&optional syntax-table)
-;;;   "Return the list nearest to point, if any, else nil.
-;;; This does not distinguish between finding no list and finding
-;;; the empty list.  \"Nearest\" to point is determined as for
-;;; `thing-nearest-point'.
-;;; SYNTAX-TABLE is a syntax table to use."
-;;;   (form-nearest-point 'list 'listp syntax-table))
+(defun list-at/nearest-point-with-bounds (at/near &optional up unquotedp)
+  "Helper for `list-at-point-with-bounds' and similar functions.
+AT/NEAR is a function called to grab the initial list and its bounds.
+UP (default: 0) is the number of list levels to go up to start with.
+Non-nil UNQUOTEDP means remove the car if it is `quote' or
+ `backquote-backquote-symbol'.
+Return (LIST START . END) with START and END of the non-empty LIST.
+Return nil if no non-empty list is found."
+  (save-excursion
+    (unless (eq at/near 'sexp-at-point-with-bounds)
+      (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
+            ((looking-at "\\s)\\s-*") (skip-syntax-backward "-"))))
+    (let ((sexp+bnds  (funcall at/near)))
+      (condition-case nil               ; Handle an `up-list' error.
+          (progn
+            (when up
+              (up-list (- up))
+              (setq sexp+bnds  (sexp-at-point-with-bounds)))
+            (while (not (consp (car sexp+bnds)))
+              (up-list -1)
+              (setq sexp+bnds  (sexp-at-point-with-bounds)))
+            (when (and unquotedp (consp (car sexp+bnds))
+                       (memq (caar sexp+bnds) (list backquote-backquote-symbol 'quote)))
+              (cond ((eq 'quote (caar sexp+bnds))
+                     (setq sexp+bnds  (cons (cadr (car sexp+bnds))
+                                            (cons (+ 5 (cadr sexp+bnds)) (cddr sexp+bnds)))))
+                    ((eq backquote-backquote-symbol (caar sexp+bnds))
+                     (setq sexp+bnds  (cons (cadr (car sexp+bnds))
+                                            (cons (+ 1 (cadr sexp+bnds)) (cddr sexp+bnds)))))))
+
+            (while (not (consp (car sexp+bnds)))
+              (up-list -1)
+              (setq sexp+bnds  (sexp-at-point-with-bounds))))
+        (error (setq sexp+bnds  nil)))
+      sexp+bnds)))
+
+(defun list-at-point-with-bounds (&optional up unquotedp)
+  "Return (LIST START . END), boundaries of the `list-at-point'.
+Return nil if no non-empty list is found.
+UP (default: 0) is the number of list levels to go up to start with.
+Non-nil UNQUOTEDP means remove the car if it is `quote' or
+ `backquote-backquote-symbol'."
+  (list-at/nearest-point-with-bounds 'sexp-at-point-with-bounds up unquotedp))
+
+(defun list-nearest-point-with-bounds (&optional up unquotedp)
+  "Return (LIST START . END), boundaries of the `list-nearest-point'.
+Return nil if no non-empty list is found.
+UP (default: 0) is the number of list levels to go up to start with.
+Non-nil UNQUOTEDP means remove the car if it is `quote' or
+ `backquote-backquote-symbol'."
+  (list-at/nearest-point-with-bounds 'sexp-nearest-point-with-bounds up unquotedp))
+
+
+(put 'list 'bounds-of-thing-at-point 'bounds-of-list-at-point)
+(defun bounds-of-list-at-point (&optional up unquotedp)
+  "Return (START . END), boundaries of the `list-at-point'.
+Return nil if no non-empty list is found.
+UP (default: 0) is the number of list levels to go up to start with.
+Non-nil UNQUOTEDP means remove the car if it is `quote' or
+ `backquote-backquote-symbol'."
+  (let ((thing+bds  (list-at-point-with-bounds up unquotedp)))
+    (and thing+bds (cdr thing+bds))))
+
+(defun bounds-of-list-nearest-point (&optional up unquotedp)
+  "Return (START . END), boundaries of the `list-nearest-point'.
+Return nil if no non-empty list is found.
+UP (default: 0) is the number of list levels to go up to start with.
+Non-nil UNQUOTEDP means remove the car if it is `quote' or
+ `backquote-backquote-symbol'."
+  (let ((thing+bds  (list-nearest-point-with-bounds up unquotedp)))
+    (and thing+bds (cdr thing+bds))))
+
 
 
 ;; REPLACE ORIGINAL defined in `thingatpt.el'.
@@ -609,7 +710,6 @@ Note that these last three functions return strings, not symbols."
 ;; 3. Let the regular `bounds-of-thing-at-point' do its job.
 ;;
 (put 'list 'thing-at-point 'list-at-point)
-(put 'list 'bounds-of-thing-at-point nil) ;   See Emacs bug #8628.
 (defun list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.
 If inside a list, return the enclosing list.
@@ -621,7 +721,9 @@ Note: If point is inside a string that is inside a list:
  This can sometimes return an incorrect list value if the string or
  nearby strings contain parens.
  (These are limitations of function `up-list'.)"
-  (list-at/nearest-point 'sexp-at-point up))
+  (let ((list+bds  (list-at-point-with-bounds up)))
+    (and list+bds (car list+bds))))
+
 
 (put 'unquoted-list 'thing-at-point 'unquoted-list-at-point)
 (defun unquoted-list-at-point (&optional up)
@@ -629,40 +731,54 @@ Note: If point is inside a string that is inside a list:
 Same as `list-at-point', but removes the car if it is `quote' or
  `backquote-backquote-symbol' (\`).
 UP (default: 0) is the number of list levels to go up to start with."
-  (list-at/nearest-point 'sexp-at-point up 'UNQUOTED))
+  (let ((list+bds  (list-at-point-with-bounds up 'UNQUOTED)))
+    (and list+bds (car list+bds))))
+
+;;; This simple definition is nowhere near as good as the one below.
+;;;
+;;; (defun list-nearest-point (&optional syntax-table)
+;;;   "Return the list nearest to point, if any, else nil.
+;;; This does not distinguish between finding no list and finding
+;;; the empty list.  \"Nearest\" to point is determined as for
+;;; `thing-nearest-point'.
+;;; SYNTAX-TABLE is a syntax table to use."
+;;;   (form-nearest-point 'list 'listp syntax-table))
 
 (defun list-nearest-point (&optional up)
   "Return the non-nil list nearest point, or nil if none.
 Same as `list-at-point', but returns the nearest list.
 UP (default: 0) is the number of list levels to go up to start with."
-  (list-at/nearest-point 'sexp-nearest-point up))
+  (let ((list+bds  (list-nearest-point-with-bounds up)))
+    (and list+bds (car list+bds))))
 
 (defun unquoted-list-nearest-point (&optional up)
   "Return the non-nil list nearest point, or nil if none.
 UP (default: 0) is the number of list levels to go up to start with.
 Same as `list-nearest-point', but removes the car if it is `quote' or
 `backquote-backquote-symbol' (\`)."
-  (list-at/nearest-point 'sexp-nearest-point up 'UNQUOTED))
+  (let ((list+bds  (list-nearest-point-with-bounds up 'UNQUOTED)))
+    (and list+bds (car list+bds))))
 
-(defun list-at/nearest-point (at/near &optional up unquotedp)
-  "Helper for `list-at-point', `list-nearest-point' and similar functions.
-AT/NEAR is a function that is called to grab the initial sexp.
-UP (default: 0) is the number of list levels to go up to start with..
-Non-nil UNQUOTEDP means remove the car if it is `quote' or
- `backquote-backquote-symbol'."
-  (save-excursion
-    (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
-          ((looking-at "\\s)\\s-*") (skip-syntax-backward "-")))
-    (let ((sexp  (funcall at/near)))
-      (condition-case nil               ; Handle an `up-list' error.
-          (progn (when up (up-list (- up)) (setq sexp  (sexp-at-point)))
-                 (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point)))
-                 (when (and unquotedp (consp sexp)
-                            (memq (car sexp) (list backquote-backquote-symbol 'quote)))
-                   (setq sexp  (cadr sexp)))
-                 (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point))))
-        (error (setq sexp  nil)))
-      sexp)))
+;;; $$$$$$
+;;; (defun list-at/nearest-point (at/near &optional up unquotedp)
+;;;   "Helper for `list-at-point', `list-nearest-point' and similar functions.
+;;; AT/NEAR is a function that is called to grab the initial sexp.
+;;; UP (default: 0) is the number of list levels to go up to start with..
+;;; Non-nil UNQUOTEDP means remove the car if it is `quote' or
+;;;  `backquote-backquote-symbol'."
+;;;   (save-excursion
+;;;     (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
+;;;           ((looking-at "\\s)\\s-*") (skip-syntax-backward "-")))
+;;;     (let ((sexp  (funcall at/near)))
+;;;       (condition-case nil               ; Handle an `up-list' error.
+;;;           (progn (when up (up-list (- up)) (setq sexp  (sexp-at-point)))
+;;;                  (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point)))
+;;;                  (when (and unquotedp (consp sexp)
+;;;                             (memq (car sexp) (list backquote-backquote-symbol 'quote)))
+;;;                    (setq sexp  (cadr sexp)))
+;;;                  (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point))))
+;;;         (error (setq sexp  nil)))
+;;;       sexp)))
 
 
 ;; The following functions return a string, not a list.
@@ -673,14 +789,16 @@ Non-nil UNQUOTEDP means remove the car if it is `quote' or
 If not \"\", the list in the string is what is returned by
  `list-nearest-point'.
 UP (default: 0) is the number of list levels to go up to start with."
-  (format "%s" (list-at/nearest-point 'sexp-nearest-point up)))
+  (let ((list+bds  (list-nearest-point-with-bounds up)))
+    (if list+bds (format "%s" (car list+bds)) "")))
 
 (defun unquoted-list-nearest-point-as-string (&optional up)
   "Return a string of the non-nil list nearest point, or \"\" if none.
 If not \"\", the list in the string is what is returned by
  `unquoted-list-nearest-point'.
 UP (default: 0) is the number of list levels to go up to start with."
-  (format "%s" (list-at/nearest-point 'sexp-nearest-point up 'UNQUOTED)))
+  (let ((list+bds  (list-nearest-point-with-bounds up 'UNQUOTED)))
+    (if list+bds (format "%s" (car list+bds)) "")))
  
 ;;; MISC: SYMBOL NAMES, WORDS, SENTENCES, etc. -----------------------
 
@@ -819,7 +937,8 @@ Return nil if no such string is found."
 ;;; COMMANDS ---------------------------------------------------------
 
 ;;;###autoload
-(intern "whitespace-&-newlines") ; To have the symbol, e.g., for `thing-types' in `thing-cmds.el'.
+;; This `intern' is in order to have the symbol, e.g., for `thing-types' in `thing-cmds.el'.
+(intern "whitespace-&-newlines")
 (defun forward-whitespace-&-newlines (arg)
   "Move forward over contiguous whitespace to non-whitespace.
 Unlike `forward-whitespace', this moves over multiple contiguous

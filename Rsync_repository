@@ -9,9 +9,9 @@ List what's available:
 
     rsync 201.238.193.36::
 
-Here's how to get or update a copy into your current directory:
+Here's how to get or update a copy into the ##emacswiki## directory:
 
-    rsync -avz 201.238.193.36::emacswiki .
+    rsync -avz --no-perms 201.238.193.36::emacswiki emacswiki
 
 Alternatively, get a copy of the raw text files via the [[SVN repository]].
 Or if you're just interested in source files, get them via the [[CVS repository]].

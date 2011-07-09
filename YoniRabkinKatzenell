@@ -2,7 +2,7 @@
 
 My name is Yoni Rabkin. I've been using GNU/Emacs ever since I've started using GNU/Linux years ago and have never looked back. I used Emacs to edit my first Linux file when I tried to connect my new GNU/Linux box to the Internet for the first time. I had first read about Emacs in Philip Greenspun's book "Philip and Alex's guide to Web publishing".
 
-I keep a livejournal at http://www.livejournal.com/users/yrk where you can find a lot of my GNU/Emacs and Lisp related ramblings.
+I keep a blog at http://yrk.rabkins.net/ where you can find a lot of my GNU/Emacs and Lisp related ramblings.
 
 You can occasionally find me on #emacs as [::yrk].
 
@@ -14,11 +14,11 @@ I have a few patches in GNU/Emacs.
 
 I contribute to the [[EMMS]] project, I wrote parts of it and use it daily. I also (re)wrote most of the Emms manual and designed the logo.
 
-I organize my daily tasks with the spartan [[doit-mode.el]].
+I organize my life using text files in GNU/Emacs and a few simple rules. I'd write more about my technique if anyone asked.
 
-I use [http://gitorious.org/wireless wireless.el] for wireless status information.
+I wrote, and use [http://gitorious.org/wireless wireless.el] for wireless status information.
 
-[http://yrk.nfshost.com/repos/analog-clock/analog-clock.el analog-clock.el] is an animated analog clock (Seven-Segment or turny) for your temporal enjoyment.
+I wrote [http://yrk.nfshost.com/repos/analog-clock/analog-clock.el analog-clock.el]. It is an animated analog clock (Seven-Segment or turny) for your temporal enjoyment. It should be in GNU/Emacs proper.
 
 I wrote [http://yrk.nfshost.com/repos/vernacular-time/vernacular-time.el vernacular-time.el] to display times stamps in Emacs in the vernacular. It has a useful Dired mode to transform "ls" time stamps. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/vernacular-time/.
 
@@ -28,7 +28,9 @@ If you have a VOIP account you can use [http://yrk.nfshost.com/repos/diamondsms/
 
 SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/slime-cl-pitfalls/.
 
-rt-liberation.el is an interface to the [http://bestpractical.com/rt/ RT] system. Get it with: git clone http://yrk.nfshost.com/repos/rt-liberation.git/
+I wrote and use rt-liberation.el every day. It is an interface to the [http://bestpractical.com/rt/ RT] system. Get it with: git clone http://yrk.nfshost.com/repos/rt-liberation.git/
+
+Some of the Emacs Lisp hacks I wrote to facilitate Android hacking in Emacs found their way into emacs-android.el. You can get a copy with: git clone http://yrk.nfshost.com/repos/emacs-android.git
 
 Bug reports and patches are welcome. Happy hacking.
 

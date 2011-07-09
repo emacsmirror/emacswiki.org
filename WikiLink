@@ -2,23 +2,23 @@ The code on this page allows you to use an extended link pattern for WikiMode.  
 
 Examples: 
 
-<pre>
+{{{
     Extended Link           Resulting HTML         
     -----------------------------------------------------
     [[LINK]]                <a href="LINK">LINK</a>
     [[LINK][NAME]]          <a href="LINK">NAME</a>
-</pre>
+}}}
 
-In order to do this, you must customize wiki-pub-rules.  Add the following rules ''after wiki-replace-links''.
+In order to do this, you must ##M-x customize-option## the list of formatting rules, `wiki-pub-rules'.
+Add the following two rules at the end:
 
-The rule for the [[LINK][NAME]] pattern:
+{{{
+INS DEL Choice: Value Menu Rule:
+            Choice: Value Menu Search a regexp: \[\[\([^]]+\)\]\[\([^]]+\)\]\]
+            Choice: Value Menu Insert or replace a string: <a href="\1">\2</a>
+INS DEL Choice: Value Menu Rule:
+            Choice: Value Menu Search a regexp: \[\[\([^]]+\)\]\]
+            Choice: Value Menu Insert or replace a string: <a href="\1">\1</a>
+}}}
 
-    Regexp:      \[\[<a href="\([^]]+\)">[^]]+</a>\]\[\([^]]+\)\]\]
-    Replacement: <a href="\1">\2</a>
-
-The rule for the [[LINK]] pattern:
-
-    Regexp:      \[\[<a href="\([^]]+\)">[^]]+</a>\]\]
-    Replacement: <a href="\1">\1</a>
-
-Note how both rules just rearrange the HTML links produced by wiki-replace-links.
+This doesn't change `wiki-name-regexp' and thus `wiki-next-reference' and friends will not work.
