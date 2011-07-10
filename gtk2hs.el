@@ -256,7 +256,16 @@ And C function name match regexp : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
   (while (and (search-forward-regexp "^$" nil t)
               (not (eobp)))
     ;; Just comment when current blank line not last line.
-    (insert comment-start)))
+    (insert comment-start))
+  ;; Replace "-- " with "--"
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "^--\s+$" nil t)
+        (let (temp-str version-str)
+          (setq temp-str (match-string 0))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert "--"))
+      (goto-char (point-max)))))
 
 (defun gtk2hs-format-docs-internal ()
   "Internal functions for format document."
@@ -343,6 +352,16 @@ And C function name match regexp : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
           (delete-region (point) (- (point) (length temp-str)))
           (insert (concat "'" type-name "'")))
       (goto-char (point-max))))
+  ;; Convert version string.
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "^Since\s\\([0-9\.]+\\)" nil t)
+        (let (temp-str version-str)
+          (setq temp-str (match-string 0))
+          (setq version-str (match-string 1))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "* Available since Gtk+ version " version-str "\n")))
+      (goto-char (point-max))))
   ;; Replace type.
   (dolist (type gtk2hs-replace-type-list)
     (goto-char (point-min))
@@ -387,4 +406,3 @@ And C function name match regexp : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
 (provide 'gtk2hs)
 
 ;;; gtk2hs.el ends here
-

@@ -51,5 +51,49 @@ Here's an example of what I'm talking about:
 17:30|          |          |          |          |          |##########|          |
 -----------------------------------------------------------------------------------
 </pre>
+
+
+=Show only when appointment is there=
+
+* modifiation
+
+fancy-diary-display-week-graph shows each time when I save a buffer,
+I have copied code from function fancy-schedule-display-desk-calendar of cal-desk-calendar.el
+checked for if any appointment is present then only show weekly view.
+
+
+
+
+    (defun fancy-diary-display-week-graph-if-appt ()
+      "Show weekly view only when appointments is there."
+      (if (or (not diary-entries-list)
+              (and (not (cdr diary-entries-list))
+                   (string-equal (car (cdr (car diary-entries-list))) "")))
+    
+          (let* ((holiday-list (if holidays-in-diary-buffer
+                                   (check-calendar-holidays original-date)))
+                 (msg (format "No diary entries for %s %s"
+                              (concat date-string (if holiday-list ":" ""))
+                              (mapconcat 'identity holiday-list "; "))))
+            (if (<= (length msg) (frame-width))
+                (message msg)
+              (set-buffer (get-buffer-create holiday-buffer))
+              (setq buffer-read-only nil)
+              (calendar-set-mode-line date-string)
+              (erase-buffer)
+              (insert (mapconcat 'identity holiday-list "\n"))
+              (goto-char (point-min))
+              (set-buffer-modified-p nil)
+              (setq buffer-read-only t)
+              (display-buffer holiday-buffer)
+              (message  "No diary entries for %s" date-string)))
+    
+          (fancy-diary-display-week-graph)))
+    
+    (require 'weekly-view)
+    (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt)
+
+
+
 ----
 CategoryPersonalInformationManager CategoryCalendar

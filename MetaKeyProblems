@@ -3,8 +3,7 @@
 If your Emacs does not recognize your Alt key as the Meta key anymore,
 then you probably have some other key bound to Meta.  In some
 distributions, this is the Windows key, or a Penguin key on some
-keyboards.[http://www.essayhelppros.co.uk/uk-essay-writing.php Essay writing]
-On Macintoshes meta is often the <code>Option</code> key,
+keyboards.  On Macintoshes meta is often the <code>Option</code> key,
 which often is caught for other purposes.
 
 The <code>ESC</code> key can be used as a prefix, and often works
@@ -56,7 +55,7 @@ This will make your Windows/Penguin key the Super key.  Thus, Emacs
 notices that no key will be Meta and accepts Alt instead of Meta.
 
 This is because Meta and Alt are different and you can bind things to
-M-a and to A-a and they should not be confused.[http://www.customessayhelp.com/ essay help] But in the case where
+M-a and to A-a and they should not be confused.  But in the case where
 there is no Meta binding, it's preferable to treat Alt as Meta since
 Alt bindings are much more rare than Meta bindings in Emacs.
 
@@ -78,7 +77,7 @@ following result:
 
 Meta_L is in mod4... that's not good. Just clear it by adding 'clear
 mod4' to .Xmodmap or running the command 'xmodmap -e "clear mod4"'.
-And now everything is fine.[http://www.headlicetreatmentworld.com/ head lice treatment]
+And now everything is fine.
 
 === xmodmap background ===
 
@@ -121,7 +120,7 @@ list of keysyms for the keycodes assigned to that modifier.  For
 example upon receiving a key press event with mod1, if mod1's
 keycode list includes a keycode with a mapping to Alt_L, this
 would mean mod1 is the Alt modifier.  Some applications instead
-follow static mapping conventions.[http://www.logodesignmaestro.com/ Logo design]  For example mod1 might be
+follow static mapping conventions.  For example mod1 might be
 treated as Meta regardless of the assigned keysym.  This used to
 be true of Emacs, so you will see lots of advice about putting
 Alt, Meta, or Super on specific modifiers.  This shouldn't matter
@@ -291,7 +290,7 @@ In /etc/wscons.conf i add these lines near the bottom:
 
 I guess this may be more correctly solved by changing the wscons
 terminal types to something better than vt100, but I've not been able
-to figure out the correct naming.[http://www.essayhelppros.co.uk/university-essays.php university essays]
+to figure out the correct naming.
 
 === OpenBSD console ===
 
@@ -310,8 +309,7 @@ doesn't work, it may have to do with your .inputrc assuming the
 console sends 8-bit characters.  Take a look at the dumpkeys man page
 and friends.  You will find that for most Linux kernels, some
 combinations of keys and modifiers are defined, but not for all --
-because the kernel will only take around 256 different events.[http://www.essayhelppros.co.uk/write-my-essay.php write my essay]
-
+because the kernel will only take around 256 different events.
 
 === XTerm ===
 
