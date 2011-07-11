@@ -515,7 +515,28 @@ I also use thumbnail frames (FisheyeWithThumbs) a lot.  I would love to be able 
 
 Anyway, I enjoyed your post.  -- DrewAdams
 
+[new:::]
+Curse you Drew. Today I decided to give OneOneOneEmacs a try. My real objection to solution such as OOOE is not that they are inherently wrong. The problem is that none of them is enough. Emacs, despite the claims of some, cannot be your window manager. 
 
+25 years ago, back when you had a single 80x24 green-on-black terminal, many people made Emacs their login shell. Didn't seem a good idea to me then because, even after terminal emulator came out, you really couldn't run some programs inside of Emacs (ie: NetHack). 
+
+I would be very happy, like jumping up and clicking my heels happy, if Emacs could be my desktop/window manager. But for 25 years people are complaining about it being single-threaded. Now they have done some amazing things with a single threaded process, but I'm not going to make my desktop single-threaded.
+
+Apple's solution to their single-threaded OS was to buy another OS and make it look like Mac OS (albeit there was incest as Steve Jobs bought his own company).
+
+And I can't stomach the layers of key bindings and behaviors. Starting at the bottom, you have the BIOS with the power button and the Ctrl-Alt-Del. Then you have the basic window keyboard shortcuts and mouse actions. Then you have app specific bindings. You also have tools that sit on top of everything (eg: MacroExpress, screen snapshot tools, copy-paste histories) that add new functionality. Everything is just a big jumble.
+
+And, in terms of customizability, nothing really rivals Emacs.
+
+My general feeling is that things aren't getting better. Sure the processors are faster and the graphics sexier and "Wired Magazine" seemed cool name for about 2 years until it looked dumb not being named "Wireless".
+
+But there still is the fragmentation across the layers of the machine. The original Lisp machines from MIT and its spawn (where Emacs began) was a well integrated device. I used to get confused sometimes forgetting that I was in the command sell and not the editor. There was so little difference.
+
+Just general crankiness about the lack of progress I've seen in OSs in general.
+
+-- NeilSmithline at July 11, 2011 at 02:03 ET (GMT-04:00)   
+
+PS: Aquamacs comes with OneBufferOneFrame (OBOF). Never tried it but it may work.
 
 
 

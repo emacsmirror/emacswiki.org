@@ -662,3 +662,11 @@ Just because the awfulness of that perl script has been bugging me for ages:
 
 ----
 FlyMake
+----
+== Troubleshooting ==
+
+=== Flymake don't show up errors on single Haskell files ===
+(Hartmut 2011-07-11)
+
+Set flymake log-level to 3: In .emacs configuration enter after the "(custom-set-variables" statement: '(flymake-log-level 3)    or do a M-x customize-group flymake and set the log level to 3.
+After doing a erroneous change to a Haskell source file, do have a look at emacs' Messages buffer - if there appears "received 1 byte(s) of output from process ..." (only 1 Byte! that is the point, receiving 1 byte is only ok if there are no errors) then I guess you have space characters in your Haskell source file. After renaming your source file, the flymake runs as a charm. (I am using the "Alternative Perl script to use Cabal", see above).

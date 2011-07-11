@@ -104,25 +104,9 @@ I tried with ##emacs -Q## using only the source files (##*.el##), and I tried ag
 
 Also, be sure you have all the latest '''Icicles''' files. I'm not responsible for <tt>[[icicles-install.el]]</tt>, so I cannot tell you whether it always does the right thing. I assume it does, but to be sure you might want to compare the dates or the ##Update## numbers in the file headers of each file downloaded with those currently posted on the wiki at the ElispArea. Sorry for your trouble. -- DrewAdams
 
+: This just happened to me while trying out the outdated bazar repo.  Using auto-install to get the latest version probed successful. -- Chemtox
 
-
-
-
-
-
-
-
-
-
-
-<pre>
-
-</pre>
 ----
-<pre>
-
-</pre>
-
 
 I have a problem with apropos completion, as described in IciclesIssuesClosed, but I do not quite understand the discussion there. I would appreciate any help or a suggestion of where to look for help, and I can move this question to the thread in the Closed Issues page. 
 

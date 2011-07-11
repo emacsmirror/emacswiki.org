@@ -1,6 +1,6 @@
-Click the page title to find all pages related to undoing.
+タイトルをクリックしてアンドゥに関連するすべてのページを探してください。
 
-In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page includes discussion of related ways to "undo" other aspects of your Emacs session.
+In Emacs, ''undo'' means undoing changes to buffers. However, this page includes discussion of related ways to "undo" other aspects of your Emacs session.
 
 = Undoing Buffer Changes =
 

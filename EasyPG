@@ -17,6 +17,14 @@ See AutoEncryption for alternatives.
 
 == Using symmetric encryption always ==
 
+To prevent EPG from prompting for a key every time you save a file, put the following at the top of your file:
+
+    -*- epa-file-encrypt-to: ("your@email.address") -*-
+
+EPA will prompt for the key only the first time you save the file, assuming you have the email address you specified in your keyring.
+
+The following comments are outdated as of Emacs 23:
+
 epa-file will prompt for which key to use for encryption each time you save a .gpg file.  The following patch will stop it prompting, and cause it to always use symmetric encryption:
 
 {{{
@@ -42,8 +50,6 @@ epa-file will prompt for which key to use for encryption each time you save a .g
 }}}
 
 The above patch appears to be included in Emacs 23.
-
-Other people suggested using `epa-file-encrypt-to' instead, but that doesn't get rid of the prompt.
 
 == Comments ==
 
