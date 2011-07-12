@@ -104,7 +104,8 @@ I tried with ##emacs -Q## using only the source files (##*.el##), and I tried ag
 
 Also, be sure you have all the latest '''Icicles''' files. I'm not responsible for <tt>[[icicles-install.el]]</tt>, so I cannot tell you whether it always does the right thing. I assume it does, but to be sure you might want to compare the dates or the ##Update## numbers in the file headers of each file downloaded with those currently posted on the wiki at the ElispArea. Sorry for your trouble. -- DrewAdams
 
-: This just happened to me while trying out the outdated bazar repo.  Using auto-install to get the latest version probed successful. -- Chemtox
+[new]
+: 2011-07-10 --- This just happened to me while trying out the outdated bazar repo.  Using auto-install to get the latest version probed successful. -- Chemtox
 
 ----
 

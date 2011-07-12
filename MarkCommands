@@ -1,17 +1,15 @@
 Here are some common commands for manipulating and using the [[mark]], in particular, for selecting things.
 
-
-
-
 [:set-mark-command]
 == set-mark-command (`C-SPC') ==
 
-A nice feature that not all know about is what happens if you feed it with a universal argument: `C-u C-SPC'.  It's an easy way to navigate back to your previous editing spots by jumping to the positions stored in the buffer's local mark ring. Repeated calls will ''cycle through the ring of marks''.
+Use `C-SPC' to set the mark, and  `C-x C-x' to go back.  A nice but often unknown feature is using universal argument: `C-u C-SPC'.  It's an easy way to navigate back to your previous editing spots by jumping to the positions stored in the buffer's local mark ring. Repeated calls will ''cycle through the ring of marks''.
 
-If you use TransientMarkMode and you want to set the mark but don't want to subsequently see the [[region]] highlighting, you can use `C-SPC C-g' to set the mark and then deactivate it. -- MyrkraVerk
+If you use TransientMarkMode and you want to set the mark but don't want to subsequently see the [[region]] highlighting, you can use `C-SPC C-g' to set the mark and then deactivate it.
 
+Unfortunately, traversing the mark ring with `C-u C-SPC' can make you lose your last point if it is different from the mark.  This happens when you fail to set the mark with `C-SPC' before hitting `C-u C-SPC'. 
 
-
+There is no way to traverse the mark ring in reverse nor skip ''N'' entries in the ring with a numeric PrefixArgument.
 
 [:pop-global-mark]
 == pop-global-mark (`C-x C-SPC') ==
@@ -31,9 +29,6 @@ you have been in, and, for each buffer, a place where you set the mark.
 and position of the latest entry in the global mark ring.  It also rotates
 the ring, so that successive uses of `C-x C-SPC' take you to earlier
 and earlier buffers.
-
-
-
 
 [:IciclesGoToMarker]
 == Icicles Commands to Go To a Marker ==
@@ -68,10 +63,6 @@ default, they constitute the completion candidates for #1.
 
 See: [[Icicles - Tripping]].
 
-
-
-
-
 [:mark-thing]
 [:cycle-thing-region]
 [:thing-region]
@@ -84,9 +75,6 @@ You can use library <tt>[[thing-cmds.el]]</tt> to quickly mark (select) various 
 * `thing-region' -- Select a thing near point. You are prompted for the type of thing.
 
 See ThingAtPointCommands.
-
-
-
 
 [:mark-word]
 [:my-mark-current-word]
@@ -119,7 +107,6 @@ When this and other bugs are worked out a more intricate version should be writt
 
 [new:DrewAdams:2008-11-29 19:12 UTC]
 Just use [[#mark-thing]] (above) with `word' as the type of thing. The whole word is selected, and you can repeat to select successive (whole) words. -- DrewAdams
-
 
 [:mark-a-word-or-thing]
 == Mark Word or Thing ==
@@ -234,12 +221,9 @@ I also note that the previous version has a conceptual bug: (skip-syntax-backwar
 [new:DrewAdams:2008-11-29 20:00 UTC]
 I don't see any advantage of this over [[#mark-thing]] or [[#cycle-thing-region]]. `word' is already the default thing type.  And you can change that default by customizing option `thing-types': whatever is first in that list is the default type. -- DrewAdams
 
-
 == Showing the Mark ==
 
 MakingMarkVisible describes how to show the mark as a cursor. This is convenient when you need visible feedback what your region looks like. --[[Patrick Gundlach]]
-
-
 
 [:Automark]
 == Automark ==
@@ -248,4 +232,3 @@ Try AutoMark if you are tired of setting the mark manually.
 
 ----
 CategoryEditing
-

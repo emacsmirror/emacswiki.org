@@ -12,7 +12,7 @@ Please let me know if there are any steps missing from here or anything is incom
 
 == Basic Installation == 
 
-Experts will note that these "steps" are not all necessary, they are geared towards emacs newbies who are using debian.  ~ refers to /home/mybot throughout this section.
+The following are geared towards emacs newbies who are using debian.  ~ refers to /home/mybot throughout this section.
 
 
 <b> X/Emacs versions: Erbot is developed on and for the stable debian emacs: (21.4.1 as of dec, 2005).  It works on later emacsen, but some googling does not work on Emacs 22.1 ATM.  SebastianFreundt has ensured that erbot works on xemacs too -- 21.4 and 21.5 </b>
@@ -80,6 +80,8 @@ Place all these files in ~/elisp/.
 **   (setq erc-auto-query t)
 **   (setq erc-server-flood-penalty 2)
 **   (setq erc-server-flood-margin 10)
+**   (setq erbot-paranoid-p nil)
+**   (setq erbn-url-functions-p t)
 
 * Optionally, if you want to use the alternative method of wiki training (see below), add the following line, <code>(require 'erburl)</code> in ~/.emacs immediately after <code>(require 'erball)</code> line.  Technically, it needs to be added before <code>(erbot-install)</code> so the <code>ffi-*</code> functions are mapped to the appropriate <code>ff-*</code> functions.  This library uses the <code>url</code> package which can be found in this debian package: <code>apt-get install w3-url-e21</code>.
 
