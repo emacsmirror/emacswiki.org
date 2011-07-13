@@ -494,6 +494,27 @@ While I would like this feature, I do feel that it is important for the less Ema
 
 -- NeilSmithline 2011-06-06 01:47 UTC 
 
+[new:NeilSmithline:2011-07-12 19:23 UTC]
+I may have mentioned before that I think our wiki could have better usability. I've been working on some ideas for that on my own that I can discuss when I actually have something that works. But today, I needed to lookup something in the Common Lisp Reference Manual. A quick Google search and looking at the first two hits I found a masterpiece of Web documentation. Before giving links, let me say that language references and wikis have lots of overlap in terms of their goals, but that they many differences as well. IMO, the biggest difference is that a language reference is supposed to be immutable while a wiki does its very best to be mutable. That being said, I think there are still ideas here that can help.
+
+The spec is at [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™]. While I never thought of EmacsWiki's home page as having too much data, I am now questioning wondering if it does. A quick way to get a feel for the site is to select the master index, pick a letter, and use the forward and backward arrows to move through the pages of the index. It is simple, very accessible, and wickedly fast. Let's just assume that the speed is due to their hosting expenses and not something we should even try to compete with. 
+
+But those navigation arrows are wonderful. I like that up-arrow too. Being a wiki doesn't mean you can't have an index or hierarchy of pages. I'm not arguing that a hierarchy should be enforced or even created on the EmacsWiki, just that I think that a hierarchy is really useful. I think some serious thought needs to be given into adding a hierarchy to the EmacsWiki. Even if someone came up with a brilliant idea, I don't think I would want to mandate that all pages use it. But that's OK. Some pages will just be easier to find than others.
+
+I think that the Wikipedia has an index model that is along the lines of what would be good for the EmacsWiki. At the bottom of Wikipedia pages such as [[WikiPedia:Emacs]] are those little blue bars. For Emacs they are labeled /Emacs/ and /GNU Project/. This type of multi-index seems more appropriate for the EmacsWiki than does the type used in the Lisp reference. 
+
+I haven't thought about what that index should look like, but I think that, largely due to its largeness (sorry - couldn't resist the pun), the EmacsWiki needs better navigation than it did in times past. The Wikipedia didn't have those blue bars when it first started. It added them as it grew. 
+
+While I've used two specific examples, [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™], and the Wikipedia, I'm not actually arguing that we follow either of their models. But I think both models have good ideas behind them and are ?evidence? that the EmacsWiki can be indexed. While I believe that indexing would greatly help the EmacsWiki, that is more a matter of opinion.
+
+-- NeilSmithline at July 12, 2011 at 15:47 ET (GMT-04:00)
+
+[new:NeilSmithline:2011-07-12 20:00 UTC]
+I know, two back-to-back comments. The indexing one is a big topic and I didn't want this little topic to get lost in the indexing issues. I think that [http://jtra.cz/stuff/lisp/sclr/index.html this cheat sheet for Common Lisp] is simply brilliant. I don't have a top-10 list of hyperlink technologies, but if I did, this would probably be on it. 
+
+It is very limited in scope, but it is simple, not-intimidating, and links to useful summary pages which, in turn, link to the [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™]. I think that the EmacsWiki as well as Emacs' Info would benefit from something of this sort.
+
+-- NeilSmithline at July 12, 2011 at 16:01 ET (GMT-04:00)
 
 ----
 CategoryEmacsWikiSite

@@ -41,6 +41,21 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
                       (save-excursion
                         (delete-trailing-whitespace))))))
 
+== Remove even the last trailing newline ==
+
+       (defun my-other-delete-trailing-blank-lines ()
+          "Deletes all blank lines at the end of the file, even the last one"
+          (interactive)
+          (save-excursion
+            (save-restriction
+              (widen)
+              (goto-char (point-max))
+              (delete-blank-lines)
+              (let ((trailnewlines (abs (skip-chars-backward "\n\t"))))
+                (if (> trailnewlines 0)
+                    (progn
+                      (delete-char trailnewlines)))))))
+
 * PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
 
 * `M-x nuke-trailing-whitespace'
