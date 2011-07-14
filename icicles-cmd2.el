@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  4 09:47:11 2011 (-0700)
+;; Last-Updated: Wed Jul 13 17:12:03 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3334
+;;     Update #: 3336
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2978,7 +2978,7 @@ Use this only with a `minibuffer-completion-table' derived from an alist."
                   props)
               (while (< ii len-old)
                 (setq props  (text-properties-at ii old-cand))
-                (when (<= ii len-rep) (add-text-properties ii (1+ ii) props rep-cand))
+                (when (< ii len-rep) (add-text-properties ii (1+ ii) props rep-cand))
                 (setq ii  (1+ ii)))
               (let ((last-props  (text-properties-at (1- len-old) old-cand)))
                 (when (> len-rep len-old)

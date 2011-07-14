@@ -472,8 +472,8 @@ You are right in that the initial ##[ new::]## will get expanded before any te
 
 [new:DrewAdams:2011-05-23 13:21 UTC]
 : I use ##[ new::]## and would like to continue to do so.  Having the timestamps is helpful to me. -- DrewAdams
-[new]
 
+[new:AlexSchroeder:2011-05-23 08:10 UTC]
 As for wiki reorganization: I think it works just like a wish list for an open source project. If it doesn't scratch someone's itch, nobody is going to add it. I think it's a fundamental issue with our business model: there is no pay for boring stuff. Plus, 
 documentation is of no direct use for anything -- unlike code. Thus, people are mostly motivated to keep their own code and its documentation up to date. I don't think there is anything we can do about that. That's why the MissionStatement does not mention organization and quality.
 
@@ -515,6 +515,21 @@ I know, two back-to-back comments. The indexing one is a big topic and I didn't 
 It is very limited in scope, but it is simple, not-intimidating, and links to useful summary pages which, in turn, link to the [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™]. I think that the EmacsWiki as well as Emacs' Info would benefit from something of this sort.
 
 -- NeilSmithline at July 12, 2011 at 16:01 ET (GMT-04:00)
+
+[new:AlexSchroeder:2011-07-13 12:41 UTC]
+I'd be willing to invest some time in writing code to help with an automatic hierarchy. I had code that would start at the SiteMap, follow every link to a category page and use those as the top level entries, and use all the bullet list items on the category pages as the second level entries… And we could use Self:action=index or Self:action=printable-index as a basis for forward and backward linking. But essentially the category pages are supposed to be our top level list of commented (and thus value-added) indexes to subtopics.
+
+If you have an idea of how to automatically extract Emacs-relevant keywords from wiki pages – maybe using the actual concept index of the manual as a list of terms to search for? – let's discuss it. :) 
+
+As for dates, I guess with some appropriate CSS you could extract and display the date available in the kind of comment markup I'm using (instead of relying on mouse hovering):
+
+##[new‌‍​::]## -> ##[new:AlexSchroeder:2011-07-13 12:41 UTC]## -> ##<div class="color one level0"><div class="portrait"><p><a class="newauthor" title="2007-08-12 08:19 UTC" href="http://www.emacswiki.org/emacs/AlexSchroeder"><img class="portrait" src="http://www.emacswiki.org/alex/pics/alex-drinking-coffee-48-bw.jpg" alt="new: 2007-08-12 08:19 UTC" /></a> <br /> <a class="local" href="http://www.emacswiki.org/emacs/AlexSchroeder">AlexSchroeder</a></p></div>##
+
+The reason for making dates less prominent is that I used to believe in the /Wiki Now/:
+
+: If the pages are well written, it doesn't matter.  Every page is still relevant.  Unlike a blog or a newspaper, the articles written on a wiki are not only intended for the /current/ readers.  Instead, a wiki can be thought of as a one-way communication-channel to the future.  Temporal context will be lost to future readers.  Adding timestamps will not help, because we need more -- we need the /relevant/ context: Did the author write it because C# was hot?  Because of the war in Iraq?  Which war in Iraq?  Writing well for future reads is therefore important on a wiki. -- WikiNow
+
+I'm not sure whether the thinking regarding the /Wiki Now/ is still relevant when it comes to the _Emacs Wiki_.
 
 ----
 CategoryEmacsWikiSite

@@ -2,12 +2,6 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 
 Try the EmacsTutorial, or read one of the BooksAboutEmacs.
 
-Most people learn best by doing and not just by reading over a list of
-[[command]]s and trying to memorize them.  Get yourself a text file
-to play around with. Make a backup copy if you're nervous about
-losing it. But don't worry -- Emacs makes it
-hard to lose your work, and it has a great undo command: `##C-/##' or `##C-_##'.
-
 * Learn using Emacs's SelfDocumentation.
 
 * Learn with Emacs's AproposMode.
@@ -17,6 +11,43 @@ hard to lose your work, and it has a great undo command: `##C-/##' or `##C-_##'.
 * Learn Emacs while you LearnEmacsLisp.
 
 * Watch EmacsScreencasts of how experienced users use Emacs.
+
+Most people learn best by doing and not just by reading over a list of
+[[command]]s and trying to memorize them.  Get yourself a text file
+to play around with. Make a backup copy if you're nervous about
+losing it. But don't worry -- Emacs makes it
+hard to lose your work, and it has a great undo command: `##C-/##' or `##C-_##'.
+
+Emacs [[key binding]]s can be intimidating at first since they are quite
+distinct from those used in other applications and platforms.  Keep
+the following advice in mind.
+
+# Try to memorize the most commonly used commands in the tutorial.
+
+# Use [[AproposMode|apropos]] or [[SelfDocumentation|help]] to find commands to accomplish a task.
+
+# Run the command for a task with `M-x' and typing it in.
+
+# Run the command again by using `M-x M-p' or by typing it in again.
+
+# On the third time, see if the command is bound to a key binding with
+`C-h w'.
+
+# If you forget a key binding (sometimes you forget even the basic
+keys introduced in the tutorial), try `C-h w M-p' to peek at it
+again or use `C-h b' to browse the bindings available in the current [[buffer]].
+
+# If you can't burn a key binding into your brain with this approach,
+then you might not be using it enough to matter.  Don't worry about it.
+
+# If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different, unused key.  But not before.
+
+Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean
+avoiding to learn Emacs and spending more time configuring.
+Competency with `M-x' and help are core Emacs skills for
+life.  `M-x' should become your command line in Emacs.
+
+
 
 == Emacs-Lisp Libraries and Snippets that Can Help You Learn Emacs ==
 

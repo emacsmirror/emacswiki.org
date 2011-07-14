@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:54:01 2011 (-0700)
+;; Last-Updated: Wed Jul 13 17:14:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6630
+;;     Update #: 6631
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -406,6 +406,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/13 dadams
+;;     icicle-search-replace-cand-in-mct: Changed <= to < for len-rep.  Thx to M. Heerdegen.
 ;; 2011/07/04 dadams
 ;;     icicle-search-in-context-default-fn:
 ;;       Bound icicle-last-completion-candidate, icicle-completion-candidates.  Thx to M. Heerdegen.

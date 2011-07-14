@@ -9,7 +9,7 @@
 ;; Copyright (C) 2009, Juanma Barranquero, all rights reserved.
 ;; Copyright (C) 2010, Niels Widger, all rights reserved.
 ;; Created: 2009-01-14 08:13:15
-;; Version: 0.5.4
+;; Version: 0.5.5
 ;; Last-Updated: 2009-02-13 10:33:22
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/irfc.el
@@ -188,6 +188,25 @@
 
 ;;; Change log:
 ;;
+;; 2011/07/12
+;;   * Juanma Barranquero:
+;;      * Fixed let-binding in `irfc-render-buffer'.
+;;      * Use `string-to-number' instead of `string-to-int'.
+;;      * Use `when' whenever appropriate.
+;;      * Lowercase arg of `irfc-current-head'.
+;;      * Remove unused local variable in `irfc-rfc-link-prev'.
+;;      * Add leading underscore to unused parameters in `irfc-fill-tables'
+;;        (that removes bytecompiler warnings if compiled under lexical
+;;        binding in Emacs 24+).
+;;      * Remove `function' from lambda expressions in
+;;        `irfc-overlay-put-alist' and `irfc-overlay-remove-all', and use
+;;        `mapc' instead of `mapcar'.
+;;      * Use `nconc' in `irfc-overlay-remove-all' to avoid a bit of
+;;        unnecessary consing when dealing with temporary lists.
+;;      * Remove unused local variable in `irfc-get-buffer' and simplify
+;;        format call (no need to pass as argument a constant string).
+;;      * Several fixes in docstrings and error messages.
+;;
 ;; 2010/09/28
 ;;   * Niels Widger:
 ;;      * Added new mappings: "f" to `irfc-head-goto' and "F"
@@ -319,7 +338,7 @@
   :group 'edit)
 
 (defcustom irfc-assoc-mode nil
-  "If t, RFC documents are associated with `irfc-mode'.
+  "If non-nil, RFC documents are associated with `irfc-mode'.
 Default is nil."
   :type 'boolean
   :set (lambda (symbol value)
@@ -342,13 +361,14 @@ Default is nil."
   :group 'irfc)
 
 (defcustom irfc-buffer-name-includes-title t
-  "If t, buffer names for RFC documents will include the RFC title.
-If t, format for buffer name will be 'RFCTITLE (RFCNUM.TXT)'.  Default is t."
+  "If non-nil, buffer names for RFC documents will include the RFC title.
+The format for the buffer name will be 'RFCTITLE (RFCNUM.TXT)'.
+If nil, the buffer name is just RFCNUM.TXT.  Default is t."
   :type 'boolean
   :group 'irfc)
 
 (defcustom irfc-highlight-requirement-keywords t
-  "If t, requirement keywords specified by
+  "If non-nil, requirement keywords specified by
 `irfc-requirement-keywords' list will be highlighted using the
 face specified by `irfc-requirement-keyword-face'.
 Default is t."
@@ -356,7 +376,7 @@ Default is t."
   :group 'irfc)
 
 (defcustom irfc-highlight-references t
-  "If t, RFC document references specified by the
+  "If non-nil, RFC document references specified by the
 `irfc-reference-regex' regular expression will be highlighted
 using the face specified by `irfc-reference-face'.  Default is
 t."
@@ -444,7 +464,7 @@ t."
 (defvar irfc-page-number-overlay nil
   "Overlay for page number.")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar irfc-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "j") 'next-line)
@@ -571,7 +591,7 @@ reference.")
   (make-local-variable 'irfc-heading-names-list)
   (make-local-variable 'irfc-heading-numbers-list)
   (make-local-variable 'irfc-heading-names-table)
-  (make-local-variable 'irfc-heading-numbers-table)  
+  (make-local-variable 'irfc-heading-numbers-table)
   (setq irfc-heading-names-table (make-hash-table :test 'equal))
   (setq irfc-heading-numbers-table (make-hash-table :test 'equal))
   (setq irfc-heading-names-list nil)
@@ -586,12 +606,12 @@ reference.")
     (let ((case-fold-search nil)
           (top-point (point-min))
           (title-line-point nil)
-          temp-point))
+          temp-point)
       ;; Clean up overlays.
       (irfc-overlay-remove-all)
       ;; Hide whitespace at start of file.
       (setq temp-point (irfc-render-buffer-hide-whitespace-at-start))
-      (if temp-point (setq top-point temp-point))
+      (when temp-point (setq top-point temp-point))
       ;; Hide any extraneous blank lines.
       (setq title-line-point (irfc-render-buffer-hide-blank-line top-point))
       ;; Add overlays for page headers and footers.
@@ -610,14 +630,14 @@ reference.")
       (irfc-render-buffer-overlay-head title-line-point)
       ;; Add overlay for requirement keywords.
       (when irfc-highlight-requirement-keywords
-	  (irfc-render-buffer-overlay-requirement-keyword top-point))
+        (irfc-render-buffer-overlay-requirement-keyword top-point))
       ;; Add overlay for references.
       (when irfc-highlight-references
-	  (irfc-render-buffer-overlay-reference top-point))
+        (irfc-render-buffer-overlay-reference top-point))
       ;; Rename buffer
       (irfc-rename-buffer title-line-point)
       ;; Fill heading names/numbers tables
-      (irfc-fill-tables title-line-point)))
+      (irfc-fill-tables title-line-point))))
 
 (defun irfc-render-toggle ()
   "Toggle RFC buffer render status."
@@ -680,12 +700,14 @@ You can jump to the corresponding content when you are at table."
                ;; Get head name and page number.
                (end-of-line)
                (setq match-list (irfc-head-move t))
-               (setq head-name (buffer-substring-no-properties (nth 2 match-list) (nth 3 match-list)))
+               (setq head-name (buffer-substring-no-properties (nth 2 match-list)
+                                                               (nth 3 match-list)))
                (setq page-number (irfc-current-page))
                ;; Jump table.
                (irfc-page-table)
                ;; Search head.
-               (re-search-forward (concat (regexp-quote head-name) "[\\. ]+" (regexp-quote (number-to-string page-number))))
+               (re-search-forward (concat (regexp-quote head-name) "[\\. ]+"
+                                          (regexp-quote (number-to-string page-number))))
                ;; Indent.
                (back-to-indentation))))
     ;; Do nothing when haven't table in this RFC document.
@@ -731,8 +753,7 @@ found."
       nil
     (let* ((match (buffer-substring (match-beginning 0) (match-end 0)))
 	   (len (length match)))
-      (string-to-int (substring match 1 (1- len))))))
-
+      (string-to-number (substring match 1 (1- len))))))
 
 (defun irfc-read-heading-name ()
   "Read heading name as a string."
@@ -762,8 +783,8 @@ not found."
          ;; Move beginning of buffer when page number
          ;; is equal or below 1.
          (call-interactively 'beginning-of-buffer)
-         (if (< number 1)
-             (message "Reach top page.")))
+         (when (< number 1)
+           (message "Top page reached.")))
         (t
          ;; Move special page.
          (let ((original-position (point))
@@ -778,7 +799,9 @@ not found."
            (irfc-render-turn-off)
            ;; Search page number.
            (goto-char (point-min))
-           (if (re-search-forward (concat "\\[Page " (regexp-quote (number-to-string (1- number))) "\\]$")
+           (if (re-search-forward (concat "\\[Page "
+                                          (regexp-quote (number-to-string (1- number)))
+                                          "\\]$")
                                   nil t)
                ;; Move special page when search successful.
                (progn
@@ -789,7 +812,7 @@ not found."
                  ;; Recenter when reach bottom page.
                  (when reach-bottom-p
                    (recenter 0)
-                   (message "Reach bottom page.")))
+                   (message "Bottom page reached.")))
              ;; Restore original position when search failed.
              (goto-char original-position))
            ;; Revert render status.
@@ -837,7 +860,7 @@ does not exist in `irfc-directory'."
     (if rfc-file-name
         ;; Open RFC document.
         (irfc-open rfc-file-name)
-      (message "Not found valid RFC link at cursor."))))
+      (message "No valid RFC link found at cursor."))))
 
 (defun irfc-visit (&optional rfc-number)
   "Open RFC document RFC-NUMBER.
@@ -885,7 +908,7 @@ does not exist in `irfc-directory'."
       (goto-char original-position)
       (message "No previous heading."))))
 
-(defun irfc-current-head (&optional PRINT)
+(defun irfc-current-head (&optional print)
   "Returns name of the current heading.
 If optional argument PRINT is non-nil, print the name before returning it."
   (interactive)
@@ -893,8 +916,8 @@ If optional argument PRINT is non-nil, print the name before returning it."
     (irfc-head-prev)
     (re-search-forward "^\\([0-9]+\\.\?\\)+[ \t]+" (line-end-position) t)
     (let ((name (buffer-substring (point) (line-end-position))))
-      (if PRINT
-	  (message "%s" name))
+      (when print
+        (message "%s" name))
       name)))
 
 (defun irfc-head-number-goto (NAME)
@@ -920,37 +943,36 @@ If optional argument PRINT is non-nil, print the name before returning it."
   "Move the point to the next RFC link."
   (interactive)
   (let ((original-point (point)))
-    (if (re-search-forward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)
-        (catch 'match
-          (while (and (not (string-match "\\[\\(RFC-?[0-9]+\\)\\]" (irfc-get-symbol-non-blank)))
-                      (or (not (irfc-title-rfc-link-p)) ;not valid RFC link number
-                          (eolp)                        ;number at end of line is invalid RFC number
-                          ))
-            (unless (re-search-forward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)
-              (goto-char original-point)
-              (message "No next RFC link.")
-              (throw 'match "Match last one.")))))))
+    (when (re-search-forward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)
+      (catch 'match
+        (while (and (not (string-match "\\[\\(RFC-?[0-9]+\\)\\]" (irfc-get-symbol-non-blank)))
+                    (or (not (irfc-title-rfc-link-p)) ;not valid RFC link number
+                        (eolp)))                      ;number at end of line is invalid RFC number
+          (unless (re-search-forward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)
+            (goto-char original-point)
+            (message "No next RFC link.")
+            (throw 'match "Match last one.")))))))
 
 (defun irfc-rfc-link-prev ()
   "Move the point to the previous RFC link."
   (interactive)
-  (let ((original-point (point)))
-    (if (re-search-backward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)
-        (catch 'match
-          (while
-              ;; Not match [RFCnnn] format.
-              (not (string-match "\\[\\(RFC-?[0-9]+\\)\\]" (irfc-get-symbol-non-blank)))
-            (skip-chars-forward " ")
-            (if (and (irfc-title-rfc-link-p) ;is valid RFC link number
-                     (save-excursion         ;skip number at end of line.
-                       (search-forward-regexp "[0-9]+" nil t)
-                       (not (eolp))))
-                (progn
-                  (if (string-match "^request for comments:[ \t]+$"
-                                    (buffer-substring-no-properties (line-beginning-position) (point)))
-                      (message "No previous RFC link."))
-                  (throw 'match "Match title RFC link."))
-              (re-search-backward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)))))))
+  (when (re-search-backward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t)
+    (catch 'match
+      (while
+          ;; Not match [RFCnnn] format.
+          (not (string-match "\\[\\(RFC-?[0-9]+\\)\\]" (irfc-get-symbol-non-blank)))
+        (skip-chars-forward " ")
+        (if (and (irfc-title-rfc-link-p)                    ;is valid RFC link number
+                 (save-excursion                            ;skip number at end of line.
+                   (search-forward-regexp "[0-9]+" nil t)
+                   (not (eolp))))
+            (progn
+              (when (string-match "^request for comments:[ \t]+$"
+                                  (buffer-substring-no-properties (line-beginning-position)
+                                                                  (point)))
+                (message "No previous RFC link."))
+              (throw 'match "Match title RFC link."))
+          (re-search-backward "\\(\\B\\[RFC-?[0-9]+\\]\\B\\|[ \t]+[0-9]+\\)" nil t))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun irfc-open (rfc-file-name)
@@ -1104,14 +1126,13 @@ we have to do a perfect job of identifying the first non-title line
 always identify).
 Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
   (goto-char title-line-point)
-  (if (re-search-forward (concat
-                          "\\([^ \t\f\r\n].*[^ \t\f\r\n]\\)"
-                          "\\(\r?\n[ \t]*[^ \t\f\r\n].*[^ \t\f\r\n]\\)*"))
-      ;; Overlay title.
-      (irfc-overlay-add (match-beginning 0)
-                        (match-end       0)
-                        'irfc-title-overlay)
-    ))
+  (when (re-search-forward (concat
+                            "\\([^ \t\f\r\n].*[^ \t\f\r\n]\\)"
+                            "\\(\r?\n[ \t]*[^ \t\f\r\n].*[^ \t\f\r\n]\\)*"))
+    ;; Overlay title.
+    (irfc-overlay-add (match-beginning 0)
+                      (match-end       0)
+                      'irfc-title-overlay)))
 
 (defun irfc-render-buffer-overlay-head (title-line-point)
   "Overlay heading.
@@ -1119,11 +1140,11 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
   (goto-char title-line-point)
   (let (match-list)
     (while (setq match-list (irfc-head-move))
-      (if (and (nth 0 match-list) (nth 1 match-list))
-          ;; Overlay heading number.
-          (irfc-overlay-add (nth 0 match-list)
-                            (nth 1 match-list)
-                            'irfc-head-number-overlay))
+      (when (and (nth 0 match-list) (nth 1 match-list))
+        ;; Overlay heading number.
+        (irfc-overlay-add (nth 0 match-list)
+                          (nth 1 match-list)
+                          'irfc-head-number-overlay))
       ;; Overlay heading name.
       (irfc-overlay-add (nth 2 match-list)
                         (nth 3 match-list)
@@ -1172,8 +1193,7 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
     ;; Set buffer name
     (if irfc-buffer-name-includes-title
 	(rename-buffer (concat rfc-title " (" rfc-txt ")"))
-      (rename-buffer rfc-txt))
-    ))
+      (rename-buffer rfc-txt))))
 
 (defun irfc-fill-tables (title-line-point)
   "Fill heading names/numbers tables and lists.
@@ -1186,17 +1206,17 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
   (let (match-list)
     ;; Populate irfc-heading-numbers-table and irfc-heading-names-table
     (while (setq match-list (irfc-head-move))
-      (if (and (nth 0 match-list) (nth 1 match-list))
-	  (puthash (buffer-substring (nth 0 match-list) (nth 1 match-list))
-		   (nth 0 match-list) irfc-heading-numbers-table))
+      (when (and (nth 0 match-list) (nth 1 match-list))
+        (puthash (buffer-substring (nth 0 match-list) (nth 1 match-list))
+                 (nth 0 match-list) irfc-heading-numbers-table))
       (puthash (buffer-substring (nth 2 match-list) (nth 3 match-list))
 	       (nth 2 match-list) irfc-heading-names-table))
     ;; Generate irfc-heading-numbers-list
-    (maphash (lambda (number point)
+    (maphash (lambda (number _point)
 	       (setq irfc-heading-numbers-list (cons number irfc-heading-numbers-list)))
 	     irfc-heading-numbers-table)
     ;; Generate irfc-heading-names-list
-    (maphash (lambda (name point)
+    (maphash (lambda (name _point)
 	       (setq irfc-heading-names-list (cons name irfc-heading-names-list)))
 	     irfc-heading-names-table)))
 
@@ -1204,7 +1224,7 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
   "Move to special heading.
 Return heading list for overlay.
 Default is to move to next heading;
-move to previous heading if REVERSE is `non-nil'."
+move to previous heading if REVERSE is non-nil."
   (let ((case-fold-search t)
         ;; Note: We can't just look for lines that begin in column 0, since
         ;; some RFCs put source code, ASCII-art, description list headings,
@@ -1279,18 +1299,18 @@ move to previous heading if REVERSE is `non-nil'."
   "Put special overlay prop with value.
 SYMBOL is overlay variable.
 ALIST contain special properties for overlay."
-  (mapcar (function (lambda (cell)
-                      (put symbol (nth 0 cell) (cdr cell))))
-          alist))
+  (mapc (lambda (cell)
+          (put symbol (nth 0 cell) (cdr cell)))
+        alist))
 
 (defun irfc-overlay-remove-all ()
   "Remove all overlays from current buffer."
-  (mapcar (function (lambda (lst)
-                      (while lst
-                        (delete-overlay (car lst))
-                        (setq lst (cdr lst)))))
-          (let ((lists (overlay-lists)))
-            (list (car lists) (cdr lists)))))
+  (mapc (lambda (lst)
+          (while lst
+            (delete-overlay (car lst))
+            (setq lst (cdr lst))))
+        (let ((lists (overlay-lists)))
+          (nconc (car lists) (cdr lists)))))
 
 (defun irfc-overlay-add (begin end category)
   "Add overlay.
@@ -1377,7 +1397,9 @@ URL is download URL that base on `irfc-download-base-url'."
     (with-current-buffer (get-buffer download-buffer-name)
       ;; Bind download url with local buffer.
       (setq irfc-download-url url)
-      (setq irfc-download-buffer (url-retrieve parsed-url 'irfc-download-callback (list download-buffer-name))))))
+      (setq irfc-download-buffer (url-retrieve parsed-url
+                                               'irfc-download-callback
+                                               (list download-buffer-name))))))
 
 (defun irfc-download-callback (&optional redirect download-buffer-name)
   "Callback for `irfc-download'.
@@ -1414,16 +1436,14 @@ DOWNLOAD-BUFFER-NAME is the buffer name for handling download content."
 (defun irfc-get-buffer ()
   "Get a buffer for temporary storage of downloaded content.
 Uses `current-time' to make buffer name unique."
-  (let (time-now buffer)
-    (setq time-now (current-time))
-    (get-buffer-create (format "*%s<%s-%s-%s>*"
-                               "irfc"
+  (let ((time-now (current-time)))
+    (get-buffer-create (format "*irfc<%s-%s-%s>*"
                                (nth 0 time-now) (nth 1 time-now) (nth 2 time-now)))))
 
 (defun irfc-get-rfc-filename ()
   "Return filename for RFC file.
 Look at point and extract an RFC number: either a string `[RFCnnn]',
-or a RFC Number in a standard header field (`Updates:', etc.).
+or a RFC number in a standard header field (`Updates:', etc.).
 In that case, return `rfcnnn.txt'; otherwise return nil."
   (let (case-fold-search
         (symbol (irfc-get-symbol-non-blank)))
@@ -1458,11 +1478,10 @@ Otherwise return nil."
       (search-forward-regexp " \\|$" nil t)
       (skip-chars-backward " ")
       (setq end (point))
-      (if (and start
-               end
-               (>= end start))
-          (buffer-substring-no-properties start end)
-        nil))))
+      (and start
+           end
+           (>= end start)
+           (buffer-substring-no-properties start end)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Overlay setup.
@@ -1488,7 +1507,7 @@ Otherwise return nil."
     (when (eq major-mode 'irfc-mode)
       (irfc-render-turn-off)
       (text-mode)))
-  ;; `nil' mean continue standard unloading.
+  ;; `nil' means continue standard unloading.
   nil)
 
 (provide 'irfc)
