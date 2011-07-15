@@ -2,7 +2,7 @@ Inspired by zap-to-char, this library defines different routines operating on th
 
 For example, META-s (jump-to-char-forward) highlights the next occurrences of each character and prompts for one.  Once the user picks a char, the point is moved to that position.  Subsequent invocations of META-s before picking a character increases N, that is, the second, third, etc. occurrences are highlighted and targeted.
 
-The sprint-forward/backward commands apply iterative jumping until return/C-G is hit, making it possible to reach any point of the text with just a few keystrokes.
+The sprint-forward/backward commands apply iterative jumping until return/C-g is hit, making it possible to reach any point of the text with just a few keystrokes.
 
 To use it, simply put Lisp:fastnav.el under <tt>~/.emacs.d/</tt>, and add something like this to your emacs initialization file:
 

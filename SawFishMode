@@ -1,6 +1,6 @@
 Sawfish is a window manager that can be extended using a Lisp dialect.  See ExtensibleSoftware and http://sawfish.wikia.com
 
-[http://git.gnome.org/browse/sawfish/tree/sawfish.el sawfish.el] provides a major mode "sawfish-mode" to edit Sawfish
+[http://git.tuxfamily.org/sawfish/main.git?p=gitroot/sawfish/main.git;a=blob_plain;f=sawfish.el;hb=HEAD sawfish.el] provides a major mode "sawfish-mode" to edit Sawfish
 source lisp files. There, you can use `C-x C-e' to run `sawfish-eval-last-sexp', just like `eval-last-sexp' of elisp modes.
 
 From Sawfish-1.7.0, it is included in the Sawfish window manager, and

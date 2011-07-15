@@ -77,12 +77,16 @@
 
 ;; Batch mode can be used with this shell script (el-expectations).
 ;; Of course, EMACS/OPTIONS/OUTPUT can be customized.
+;;
+;; First, you must install save-load-path.el because it saves `load-path'.
+;; You are free from setting `load-path' manually.
+;; http://www.emacswiki.org/cgi-bin/wiki/download/save-load-path.el
 
 ;; ATTENTION! This script is slightly changed since v1.32.
 
 ;; #!/bin/sh
 ;; EMACS=emacs
-;; OPTIONS="-L . -L $HOME/emacs/lisp"
+;; OPTIONS="-l $HOME/.emacs.d/saved-load-path.el"
 ;; OUTPUT=/tmp/.el-expectations
 ;; $EMACS -q --no-site-file --batch $OPTIONS -l el-expectations -f batch-expectations $OUTPUT "$@"
 ;; ret=$?

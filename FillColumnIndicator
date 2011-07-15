@@ -10,18 +10,32 @@ To toggle graphical indication of the fill column in a buffer, use the command #
 
 == Customization  ==
 
-On graphical displays the fill-column rule is drawn using bitmap images.
+The following are the basic configuration options.  For further advanced options, see the headers in the package file.  Buffer-local values of the following are supported (so one can, e.g., use a rule of different appearance in different buffers).
 
-<b>Color</b>. The color of the rule on graphical displays is controlled by the variable ##fci-rule-color##, whose value can be any valid color name. 
+=== Graphical Displays ===
 
-<b>Width</b>.  The width of the rule (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 2.   To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
+On graphical displays (displays that can display images) the fill-column rule is drawn using bitmap images.
+
+<b>Width</b>.  The width of the rule (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 2.   
+
+<b>Color</b>. The color of the rule is controlled by the variable ##fci-rule-color##, whose value can be any valid color name. 
+
+To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
 
   (setq fci-rule-width 1)
   (setq fci-rule-color "darkblue")
 
 <b>Image Format</b>.  The image formats fci-mode can use are XPM, PBM, and XBM.  If Emacs has been compiled with the appropriate library it uses XPM images by default; if not it uses PBM images, which are natively supported.  You can specify a particular format by setting ##fci-rule-image-format## to either ##xpm##, ##xpm##, or ##xbm##.
 
-<b>Drawing the Rule with Characters</b>.  On non-graphical displays (where images aren't available), the rule is drawn using textual characters.  The default is to use `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   The color of the rule on character terminals is controlled by the variable ##fci-rule-character-color##, whose value should be either ##nil## or a color name.  If ##nil## (the default), the value of fci-rule-color (or the closest approximation thereto that the terminal is capable of) is used.  To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
+=== Character Terminals ===
+
+On non-graphical displays (where images aren't available), the rule is drawn using textual characters.  
+
+<b>Character for Drawing</b>.  The default character used to draw the rule on character terminals is `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   
+
+<b>Color</b>.  The color of the rule on character terminals is controlled by the variable ##fci-rule-character-color##, whose value should be either ##nil## or a color name.  If ##nil## (the default), the value of fci-rule-color (or the closest approximation thereto that the terminal is capable of) is used.  
+
+<b>Using Characters Everywhere</b>.  To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t## (or any non-nil value).
 
 == Further Customization Examples==
 
