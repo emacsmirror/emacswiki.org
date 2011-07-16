@@ -4,6 +4,8 @@ wiki markup.
 
 * Download: http://www.emacswiki.org/elisp/wikipedia-mode.el
 
+**wikipedia-mode is not maintained any more.** Try mediawiki.el at: https://launchpad.net/mediawiki-el
+
 See [WikiPedia:Wikipedia:Text_editor_support general text editor support for wikipedia] and this [WikiPedia:Wikipedia:Wikipedia-mode.el wikipedia page about  Wikipedia-mode]
 
 You should also download LongLines to get Emacs to handle soft word wrapping, which is the standard for Wikipedia, unless you use Emacs 23 in which case it's already included.

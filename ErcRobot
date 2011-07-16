@@ -3,7 +3,7 @@ The following is code that implements a simple robot for ERC.  Four things are r
 * some lisp to hook the robot into ERC,
 * an alist definition which describes the commands that your robot understands.
 
-The first of these, the lisp, is available from http://www.hollytree-house.co.uk/dme/emacs/erc-robot.el.
+The first of these, the lisp, is available from http://www.hollytree-house.co.uk/dme/emacs/erc-robot.el. ← This link is dead [http://www.emacswiki.org/emacs/aurelien Aurélien].
 
 The code to hook the robot into ERC is simple:
      (load-library "erc-robot")
