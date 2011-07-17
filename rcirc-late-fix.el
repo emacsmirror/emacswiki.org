@@ -1,5 +1,6 @@
 ;;; rcirc-late-fix.el -- Replace s/wrong/right strings on rcirc buffers
 ;; Copyright 2007  Hugo Schmitt <hugows@gmail.com>
+;; Copyright 2011  Elias Pipping <pipping@exherbo.org>
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -25,6 +26,13 @@
 ;; Please mail me (hugows@gmail.com) about any improvements or bug
 ;; reports you have regarding this file.
 
+;;; Changes (16/07/2011) by Elias Pipping
+;; [x] Use rcirc-response-formats for building the name string
+;; [x] Support s/word// and s/word//g for removing matching text
+;; [x] s/a/b/g bug for input "aaaaaa" fixed
+;;
+;; plus some cleanup/improvements
+
 ;;; Changes (31/01/2011) Fix two warnings
 
 ;;; Changes (11/12/2007) (Tks tsdh for the suggestions)
@@ -38,12 +46,6 @@
 ;; just concat "<" word ">")
 ;; [ ] Support s/word// and s/word//g for removing matching text
 
-;;; Bugs :
-
-;; This fails, probably caused by some missed detail about overlapping overlays:
-;; Having the line aaaaaaaa and the replacement s/a/b/g results in a
-;; _single_ b.
-
 ;;; Code:
 
 (eval-when-compile (require 'cl))
@@ -56,33 +58,25 @@
   "Face for showing fixed words on the channel buffer."
   :group 'rcirc-faces)
 
-(defun rcirc-late-fix-apply (beg end string)
-  (save-excursion
-    (let ((overlay (make-overlay beg end (current-buffer) nil t)))
-      (overlay-put overlay 'face 'rcirc-late-fix-face)
-      (overlay-put overlay 'display string))))
-
 (defun rcirc-late-fix-hook (process sender response target text)
   (save-excursion
     (when (string-equal response "PRIVMSG")
-      (let (from to global matches)
-        (when (or (and (string-match "^s/\\(.+\\)/\\(.+\\)/g" text)
-                       (setq from (match-string 1 text)
-                             to (match-string 2 text)
-                             global t))
-                  (and (string-match "^s/\\(.+\\)/\\([^/]+\\)" text)
-                       (setq from (match-string 1 text)
-                             to (match-string 2 text))))
-          (set-buffer (rcirc-late-fix-matching-buffer target))
-          (goto-char (point-max))
-          (when (search-backward (concat "<" sender ">") nil t 2)
-            (goto-char (match-end 0)) ;; skip nickname
-            (while (search-forward from (point-at-eol) t) ;; make a list of the points from each match
-              (setf matches (cons (list (match-beginning 0) (match-end 0)) matches)))
-            (when (not (null matches)) ;; there was at least one match
-              (if global               ;; global = replace all matches
-                  (mapc '(lambda (x) (rcirc-late-fix-apply (car x) (cadr x) to)) matches)
-                  (rcirc-late-fix-apply (caar matches) (cadar matches) to)))))))))
+      (when (string-match "s/\\([^/]+\\)/\\([^/]*\\)/\\(g?\\)" text)
+	(let ((from (match-string 1 text))
+	      (to (propertize
+		   (if (string= "" (match-string 2 text)) "_" (match-string 2 text))
+		   'face 'rcirc-late-fix-face))
+	      (global (not (string= "" (match-string 3 text)))))
+	  (set-buffer (rcirc-late-fix-matching-buffer target))
+	  (goto-char (point-max))
+	  (when (search-backward-regexp
+		 (rcirc-format-response-string process sender "PRIVMSG" target "\\(.*\\)") nil t 2)
+	    (if (not global)
+		(if (search-forward from (save-excursion (search-forward "\n")) t)
+		    (replace-match to))
+	      (while (search-forward from (save-excursion (search-forward "\n")) t)
+		(replace-match to)))))))))
+
 
 (defun rcirc-late-fix-matching-buffer (name)
   "Find buffer (channel) that starts with NAME."

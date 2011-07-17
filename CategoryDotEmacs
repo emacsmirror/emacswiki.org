@@ -52,6 +52,7 @@ Some complete [[InitFile]]s:
 * [http://github.com/mina86/dot-files/tree/master/dot-emacs mina86's .emacs] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions.
 * ChrisForno's [http://jekor.com/emacs/dot-emacs.pdf .emacs] is a literate program written in Noweb.
 * [http://code.google.com/p/dea/ DEA] DEA stands for "Dot emacs of ahei", its target is provide powerful emacs profile for emacser. 
+* [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file].
 
 .emacs on Windows: MsWindowsDotEmacs
 
@@ -59,6 +60,7 @@ There's lots more at:
 
 * http://www.dotemacs.de/
 * http://dotfiles.org/.emacs 
+* [https://github.com/search?type=Repositories&q=Emacs GitHub Search: Emacs]
 
 Some Complete Init packages:
 

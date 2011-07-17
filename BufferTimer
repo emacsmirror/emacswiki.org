@@ -43,6 +43,8 @@ CategoryTimeTracking
 
 == History ==
 
+Version 0.5, released in July 2011 is really the first version that works well on Emacs.
+
 Originally written for XEmacs, with a pretty "top (gutter) bar" it has
 since migrated to Emacs where it still is missing some of the original
 functionality.  The button code and "top bar" functionality needs to

@@ -1,3 +1,27 @@
+== Editing OSX Plist Files ==
+
+To edit OSX binary and xml plist files, use the compressed file framework and the plutil provided with OSX. Emacs provides jka-compr which decompresses a file to stdout for reading, and compresses the data from stdin to write the file back out again.
+
+<pre>
+;; Allow editing of binary .plist files.
+(add-to-list 'jka-compr-compression-info-list
+             ["\\.plist$"
+              "converting text XML to binary plist"
+              "plutil"
+              ("-convert" "binary1" "-o" "-" "-")
+              "converting binary plist to text XML"
+              "plutil"
+              ("-convert" "xml1" "-o" "-" "-")
+              nil nil "bplist"])
+
+;;It is necessary to perform an update!
+(jka-compr-update)
+</pre>
+
+--KevinLynch
+
+== Use environment.plist For Emacs Environment ==
+
 [http://edward.oconnor.cx/elisp/osx-plist.el osx-plist.el] is an Emacs lisp parser for MacOSX's plist files.
 
 If you'd like Emacs to update its environment based on the contents of ~/.MacOSX/environment.plist, install this library and add the following to your .emacs file:
