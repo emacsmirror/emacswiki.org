@@ -61,7 +61,7 @@
 (defun rcirc-late-fix-hook (process sender response target text)
   (save-excursion
     (when (string-equal response "PRIVMSG")
-      (when (string-match "s/\\([^/]+\\)/\\([^/]*\\)/\\(g?\\)" text)
+      (when (string-match "^s/\\([^/]+\\)/\\([^/]*\\)/\\(g?\\)$" text)
 	(let ((from (match-string 1 text))
 	      (to (propertize
 		   (if (string= "" (match-string 2 text)) "_" (match-string 2 text))
@@ -76,7 +76,6 @@
 		    (replace-match to))
 	      (while (search-forward from (save-excursion (search-forward "\n")) t)
 		(replace-match to)))))))))
-
 
 (defun rcirc-late-fix-matching-buffer (name)
   "Find buffer (channel) that starts with NAME."

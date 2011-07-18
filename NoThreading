@@ -107,3 +107,8 @@ While I think threading along with transition to a more modern language substrat
 ----
 
 Why not going down the route of node.js instead and use a single-threaded approach with consequent support for non-blocking io? Most blocking situations I encounter in emacs come from io (think tramp), not from computation.  This could be introduced gradually by providing callback-based variants of io calls and leave it up to packages when they will migrate -- StefanPlantikow
+
+[new]
+See my [[Elnode]] for an implementation.
+
+Now Emacs has lexical scope one simple use of threads could be to process a stream in parallel. A stream function is one that delivers values, like popping a list. Threads would be useful attached to streams as you could move a ton of processing into a separate thread.
