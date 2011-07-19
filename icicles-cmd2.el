@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 13 17:12:03 2011 (-0700)
+;; Last-Updated: Mon Jul 18 11:41:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3336
+;;     Update #: 3337
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3458,9 +3458,6 @@ NOTE:
    behaves incorrectly in such cases, for Emacs prior to version 23.
 6. Prior to Emacs 21 there is no possibility of ignoring comments."
   (interactive (icicle-search-thing-args))
-  (unless beg (setq beg  (point-min)))
-  (unless end (setq end  (point-max)))
-  (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (setq icicle-search-context-level  0)
   (icicle-search beg end 'icicle-search-thing-scan require-match where thing predicate))
 
@@ -3588,6 +3585,9 @@ by `icicle-next-visible-thing-and-bounds'."
     (unless buffer (setq buffer  (current-buffer)))
     (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
       (with-current-buffer buffer
+        (unless beg (setq beg  (point-min)))
+        (unless end (setq end  (point-max)))
+        (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
         (icicle-with-comments-hidden
          beg end
          (condition-case icicle-search-thing-scan

@@ -16,10 +16,11 @@ Emacs and restored when you start a new session.
   [[register]]s, and buffer positions; does not reload visited files
   like DeskTop does.
 * FrameRestorePackage -- Save and restore frame configurations.
+* [http://scottfrazersblog.blogspot.com/2009/12/emacs-named-desktop-sessions.html my-desktop] -- Named desktop sessions.
 * PolicySwitch -- Save and restore window configurations using policies.
 * SaveHist -- Save [[minibuffer]] histories and optionally other variables.
 * SavePlace -- Restore [[point]].
-* TinyDesk -- Save and restore list of saved files (or current Emacs session).
+* [http://git.savannah.gnu.org/cgit/emacs-tiny-tools.git/plain/lisp/tiny/tinydesk.el tinydesk.el] -- Save and restore list of saved files (or current Emacs session).
   Part of TinyTools.
 * [[WThreeMSession]] -- Manage W3M sessions.
 * WcyDesktop -- Like DeskTop, but faster loading.

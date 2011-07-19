@@ -1,5 +1,26 @@
 For a complete Emacs editing experience use one or more of the following wallpapers on your desktop until Emacs has transparent buffers.
 
+==1920x1200==
+''16:10 aspect ratio''
+
+http://kinlok-labs.nu/wallpaper-4-thumb.jpg
+
+[http://kinlo-labs.nu/gnu_wallpaper_4_1920.png Levitating GNU with Emacs source code] (1920x1200 PNG by Macduff, 2010; [http://kinlok-labs.nu/gnu_wallpaper_3_1920.png alternate version])
+
+==1920x1080==
+''16:9 aspect ratio''
+
+http://i.imgur.com/DRYgT.png
+
+[http://i.imgur.com/RxlwP.png Emacs Reference] (1920x1080 PNG by RupertPupkin, Dec 2010)
+
+==1600x1200==
+''4:3 aspect ratio''
+
+http://omploader.org/vNTY5ZA/emacs_wallpaper-thumb.png
+
+[http://omploader.org/vNTY5Yw/emacs_wallpaper.png Emacs black simple wallpaper] (1600x1200 PNG by BleakGadfly ([http://omploader.org/vNTY5OA Nokia N900-version] 800x480))
+
 ==1024x768==
 ''4:3 aspect ratio''
 
@@ -22,18 +43,6 @@ http://www.ee.ryerson.ca/~elf/emacs/logo/tn/wp3.png
 http://salug.it/~fabioviola/emacs/wallpaper/emacs-wallpaper-preview.png
 
 [http://salug.it/~fabioviola/emacs/wallpaper/emacs-wallpaper.png Emacs simple wallpaper] (1024x768 PNG by FabioViola)
-==1600x1200==
-''4:3 aspect ratio''
-
-http://omploader.org/vNTY5ZA/emacs_wallpaper-thumb.png
-
-[http://omploader.org/vNTY5Yw/emacs_wallpaper.png Emacs black simple wallpaper] (1600x1200 PNG by BleakGadfly ([http://omploader.org/vNTY5OA Nokia N900-version] 800x480))
-==1920x1200==
-''16:10 aspect ratio''
-
-http://kinlok-labs.nu/wallpaper-4-thumb.jpg
-
-[http://kinlo-labs.nu/gnu_wallpaper_4_1920.png Levitating GNU with Emacs source code] (1920x1200 PNG by Macduff, 2010; [http://kinlok-labs.nu/gnu_wallpaper_3_1920.png alternate version])
 
 ==1024x600==
 ''10:6 (netbook) aspect ratio''
@@ -42,9 +51,3 @@ http://kinlok-labs.nu/wallpaper-7-thumb.png
 
 [http://kinlok-labs.nu/gnu-emacs-wallpaper-1024x600.png Levitating GNU with Emacs source code - netbook version] (1024x600 PNG by Macduff, 2010; designed for Lemote Yeeloong)
 
-==1920x1080==
-''16:9 aspect ratio''
-
-http://i.imgur.com/DRYgT.png
-
-[http://i.imgur.com/RxlwP.png Emacs Reference] (1920x1080 PNG by RupertPupkin, Dec 2010)

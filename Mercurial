@@ -8,9 +8,26 @@ Mercurial is available from http://www.selenic.com/mercurial/wiki/index.cgi/Merc
 * [[VC]] -- supports Mercurial.
 * [[DVC]] -- supports Mercurial.
 * MercurialMode -- A user interface specific to Mercurial.
+* [https://es.fbk.eu/people/griggio/ahg.html aHg] -- A simple Mercurial UI inspired by DVC
+* [https://github.com/ananthakumaran/monky monky] -- A Mercurial interface that imitates [[Magit]]
 
 [new]
 vc-hg-push and vc-hg-pull are broken in vc-hg.el (emacs23). vc-hg-command has to be called via an apply.
+
+== Using diff-mode for MQ patches ==
+
+Mercurial's MQ extension uses patch files which are more convenient to
+read with [[DiffMode]]. diff-mode can not, however, guess the
+correct base directory, so applying and reverting hunks won't work out
+of the box. Here's a hook that fixes the problem:
+
+  (add-to-list 'auto-mode-alist '("\\.hg/patches\\(?:-[^/]+\\)?/" . diff-mode))
+
+  (defun mq-patch-set-default-directory ()
+    (when (string= ".hg" (nth 2 (reverse (split-string default-directory "/"))))
+      (setq default-directory (expand-file-name (concat default-directory "../../")))))
+  (add-hook 'diff-mode-hook 'mq-patch-set-default-directory)
+
 
 == Emacs from Mercurial ==
 
