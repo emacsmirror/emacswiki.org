@@ -18,3 +18,4 @@ for all pages related to todo lists.
 * TodoListMode -- Provides color highlighting for a numbered todo list file.
 * [https://github.com/0x4b/org-camp/ org-camp] --  Provides functions to import Basecamp todo items into org-mode 
 * [http://www.datenterrorist.de/index.php?itemid=1437 TODO comment buffer] -- Get a buffer with all TODO, FIXME and XXX comments and their filenames
+* TodoStack -- a stack as a todo list.  Don't laugh.  Once you get used to it, it can have its uses.

@@ -4,6 +4,19 @@ Update, 2011-05-31: I've been struggling to set up the USB version of the XKeys 
 
 See also http://shorttalk-emacs.sourceforge.net/ShortStep/index.html
 
+[new]
+I have bought one 3-pedal switches from http://www.pcsensor.com/index.php?_a=viewCat&catId=2
+and two 1-pedal switches. On ebay they are even cheaper.
+I assigned Ctrl, Shift and Enter keys to the 3-pedal foot switches. It works fine except two pedals pressed at the same time do not give the combination (for example Ctrl+Shift). Only the last pressed pedal is active. Perhaps this is the problem of a setting program (http://www.pcsensor.com/index.php?_a=viewDoc&docId=6).
+
+On the other hand I have a problem with assigning Ctrl or Shift key to the 1-pedal switch, perhaps it is a bug in the software. The problem is that the software fails to set the key properly. That is it send Ctrl or Shif key pressed when the pedal is not pressed and when the pedal is pressed, the Ctrl/Shift key is inactive. I wrote a few emails to PC Sensor informing about the problem, however so far no reply :(
+
+I will also try to make custom pedals/buttons as described and shown here
+http://blog.makezine.com/archive/2011/04/the-awesome-button.html
+however instead of the teensy USB controller I'm planning to use a cheap USB numeric keyboard or a USB keyboard as advised before. I will also need to find a good easy button replacement because those buttons are only available in UK [1] :( Any suggestions?
+
+[1] http://www.staples.com/sbd/cre/marketing/easybutton/easybutton.html?cm_sp=creative-_-easy%20button_workgr01-_-easybutton
+
 ----
 
 CategoryAccessibility

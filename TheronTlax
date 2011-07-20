@@ -2,7 +2,7 @@ Aka, Evans Winner
 
 The obligatory blog: [http://thorne.posterous.com/ Ttlaxia-Verlag]...Email: **ego111 at the usual google email address**.
 
-* Latest: Lisp:todostack.el --- keep a to-do list as a stack.  I actually have gotten some mileage out of this; I use it every day at my sysadmin day job.  See the headers comments for info, or [http://thorne.posterous.com/todostackel-keep-a-to-do-list-as-a-simple-sta this blog post].
+* Latest: TodoStack (Lisp:todostack.el) --- keep a to-do list as a stack.  I actually have gotten some mileage out of this; I use it every day at my sysadmin day job.  See the headers comments for info, or [http://thorne.posterous.com/todostackel-keep-a-to-do-list-as-a-simple-sta this blog post].
 
 * RepWords -- Lisp:rep-words.el --- find repeat words that repeat too much -- rep-words.el looks for places where you have used the same word too many times in a short stretch of text.  See the header comments for more.
 

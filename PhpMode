@@ -290,5 +290,8 @@ How do I make a file for etags? I tried a file with all of the functions on sepa
 [new]
 There is a patch of php-mode to handle name spaces and # char comment : http://www.piprime.fr/1401/patch-of-php-mode-for-emacs-in-order-to-handle-namespaces/
 
+[new]
+Can we get instructions for '''semantic-php-simplest-grammar.by'''? I've found [http://cedet.sourceforge.net/ lots of related info] but can't identify what is/isn't relevant! [http://cedet.sourceforge.net/addlang.shtml This] shows promise but only explains how to start a new language not how to use/activate them in ECB. Naturally there is a page already [http://www.emacswiki.org/emacs/HowToSetUpSemanticBovinatorForANewLanguage#toc3 here on the wiki] but this page is pretty much identical to CEDET's pages referring to reading "further" in the manual.
+
 ----
 CategoryModes

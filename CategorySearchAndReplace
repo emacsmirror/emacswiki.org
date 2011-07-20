@@ -15,6 +15,7 @@ Is there a way to get a search that will work across line boundaries as if they 
 ----
 
 * '''IncrementalSearch''' -- aka ‘isearch’. ‘C-s’ and `C-M-s'.
+* [[AceJump]] -- a minor mode for Emacs, enabling direct cursor-moving in current view.
 * AcmeSearch -- Simple right-click searching.
 * BuffersMisc
 * IsearchPlus -- Extensions to Emacs' standard IncrementalSearch.

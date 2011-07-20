@@ -5,7 +5,7 @@ This page is about Emacs '''[::bookmark]s'''. Bookmarks record locations so you 
 * `C-x r l' -- list all of your bookmarks
 * `M-x bookmark-delete' -- delete a bookmark by name
 
-Your own personal bookmark file, `##~/.emacs.bmk##', is maintained
+Your own personal bookmark file is set by the `bookmark-file' variable, which defaults to `##~/.emacs.bmk##'. This is maintained
 automatically by Emacs.
 
 
