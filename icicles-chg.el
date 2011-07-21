@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jul 18 11:44:01 2011 (-0700)
+;; Last-Updated: Wed Jul 20 22:03:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6636
+;;     Update #: 6644
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -819,6 +819,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/07/20 dadams
+;;     icicle-mctized-full-candidate: Don't change icicle-completions-format-internal to horizontal.
+;;     icicle-insert-candidates: If any candidate is multiline then use only one column.
+;;     Thx to Michael Heerdegen.
 ;; 2011/07/06 dadams
 ;;     icicle-fit-completions-window:
 ;;       Emacs 22/23 fix: do not call fit-window-to-buffer.  Thx to Michael Heerdegen.

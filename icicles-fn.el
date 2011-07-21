@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 13:24:52 2011 (-0700)
+;; Last-Updated: Wed Jul 20 21:47:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12379
+;;     Update #: 12397
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1001,8 +1001,9 @@ See the source code for details."
            (cond ((and (consp cand)     ; Multi-completion: (("aa" "bb") . cc) ->
                        (consp (car cand)) ; ("aa^G\nbb\n\n" ("aa" "bb") . cc)
                        (stringp (caar cand)))
-                  (when (string-match "\n" icicle-list-join-string)
-                    (setq icicle-completions-format-internal  'horizontal)) ; Override
+                  ;; $$$$$$
+                  ;; (when (string-match "\n" icicle-list-join-string)
+                  ;;   (setq icicle-completions-format-internal  'horizontal)) ; Override
                   (cons (concat (mapconcat #'identity (car cand) icicle-list-join-string)
                                 icicle-list-end-string)
                         cand))
@@ -2980,12 +2981,19 @@ The optional second arg is ignored."
 (defun icicle-insert-candidates (candidates)
   "Insert completion candidates from list CANDIDATES into the current buffer."
   (when (consp candidates)
-    (let* ((max-cand-len  (apply #'max (mapcar (lambda (cand)
-                                                 (if (consp cand)
-                                                     (+ (length (car cand)) (length (cadr cand)))
-                                                   (length cand)))
-                                               candidates)))
-           (comp-win      (get-buffer-window (current-buffer) 0))
+    (let* ((multilinep       #'(lambda (cand)
+                                 (if (consp cand)
+                                     (or (string-match "\n" (car cand)) (string-match "\n" (cdr cand)))
+                                   (string-match "\n" cand))))
+           (any-multiline-p  (loop for cand in candidates
+                                   if (funcall multilinep cand) return t
+                                   finally return nil))
+           (max-cand-len     (apply #'max (mapcar (lambda (cand)
+                                                    (if (consp cand)
+                                                        (+ (length (car cand)) (length (cadr cand)))
+                                                      (length cand)))
+                                                  candidates)))
+           (comp-win         (get-buffer-window (current-buffer) 0))
            (wwidth
             (let ((spcl-frame-params  (special-display-p (buffer-name))))
               (cond ((and spcl-frame-params ; Special-buffer.  Use its default frame width.
@@ -2995,15 +3003,17 @@ The optional second arg is ignored."
                               (cdr (assq 'width default-frame-alist)))))
                     (comp-win (1- (window-width comp-win))) ; Width picked by `display-buffer'.
                     (t 40))))           ; Failsafe.
-           (nb-cands      (length candidates))
-           (columns       (max 1 (min (/ (* 100 wwidth) (* icicle-candidate-width-factor max-cand-len))
-                                      nb-cands)))
-           (colwidth      (/ wwidth columns))
-           (column-nb     0)
-           (rows          (/ nb-cands columns))
- 	   (row           0)
+           (nb-cands         (length candidates))
+           (columns          (if any-multiline-p
+                                 1
+                               (max 1 (min (/ (* 100 wwidth)
+                                              (* icicle-candidate-width-factor max-cand-len))
+                                           nb-cands))))
+           (colwidth         (/ wwidth columns))
+           (column-nb        0)
+           (rows             (ceiling nb-cands columns))
+ 	   (row              0)
            startpos endpos string)
-      (unless (= nb-cands (* rows columns)) (setq rows (1+ rows)))
       (dolist (cand  candidates)
         (setq endpos  (point))
         (cond ((eq icicle-completions-format-internal 'vertical) ; Vertical layout.
@@ -3064,7 +3074,8 @@ The optional second arg is ignored."
         (if (not (eq icicle-completions-format-internal 'vertical))
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
-          (setq row  (1+ row)))))))
+          (setq row  (1+ row)))
+        (when (and any-multiline-p (not (string-match "\n$" cand))) (insert "\n"))))))
 
 ;; ARG is not used yet/currently.
 (defun icicle-fit-completions-window (&optional arg)

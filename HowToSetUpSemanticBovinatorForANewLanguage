@@ -45,3 +45,9 @@ Next, assemble the analyzers into a lexer with <code>define-lex</code>.
 This likely will go hand-in-hand with writing a lexer.  Read (grammar-fw)Overview to get an idea how the Emacs programming environment for grammar files works.
 
 The specifics for writing a parser is way to complex for a wiki page.  Continue reading through (grammar-fw)Top and the node (wisent)Top for specific details on writing a grammar.  For a quick-and-dirty view, look at the CEDET file cogre/wisent-dot.wy, and cogre/wisent-dot.el as a very simple example of a wisent grammar for parsing DOT graph files.
+
+
+== Discussion ==
+
+[new]
+The question remains: Once we have a tag-parser, how do we setup semantic to use the file?

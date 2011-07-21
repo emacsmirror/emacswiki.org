@@ -1,17 +1,28 @@
-This page is about Emacs '''[::bookmark]s'''. Bookmarks record locations so you can return to them later.  Here are some commands to get you started:
+This page is about Emacs '''[::bookmark]s'''. Bookmarks record locations so you can return to them later.  
+
+
+
+
+== Introduction ==
+
+Some commands to get you started:
 
 * `C-x r m' -- set a bookmark at the current location (e.g. in a file)
 * `C-x r b' -- jump to a bookmark
-* `C-x r l' -- list all of your bookmarks
+* `C-x r l' -- list your bookmarks
 * `M-x bookmark-delete' -- delete a bookmark by name
 
-Your own personal bookmark file is set by the `bookmark-file' variable, which defaults to `##~/.emacs.bmk##'. This is maintained
-automatically by Emacs.
+Your personal bookmark file is defined by [[option]] `bookmark-default-file', which defaults to `##~/.emacs.bmk##'.  The file is maintained automatically by Emacs as you create, change, and delete bookmarks.
+
+([[Bookmark+]] makes it easy to have multiple bookmark files -- different sets of bookmarks for different uses.)
+
+
+
 
 
 == `*Bookmark List*' ==
 
-The bookmark list (buffer `##*Bookmark List*##') is like [[DiredMode|Dired]] or BufferMenu for bookmarks.  You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list", a misnomer.)
+The bookmark list (buffer `##*Bookmark List*##') is like [[DiredMode|Dired]] or BufferMenu for bookmarks.  You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list", which is a misnomer.)
 
 Some keys in `##*Bookmark List*##':
 
@@ -136,7 +147,7 @@ You can bookmark [[Info]] nodes.  As an alternative, you can use [[Info+]] to cr
 
 * DoReMi command `doremi-bookmarks' lets you cycle among bookmarks using the up and down arrow keys or a mouse wheel.
 
-* Icicles command `icicle-bookmark' lets you [[Icicles - Cycling Completions|cycle]] cycle among bookmarks.  Narrow the candidates using [[completion]].
+* [[Icicles]] command `icicle-bookmark' lets you [[Icicles - Cycling Completions|cycle]] cycle among bookmarks.  Narrow the candidates using [[completion]].
 
 * Lisp:bookmark-add.el lets you cycle among bookmarks.
 
@@ -146,7 +157,7 @@ You can bookmark [[Info]] nodes.  As an alternative, you can use [[Info+]] to cr
 == See Also ==
 
 * [[Anything]] -- `M-x anything-for-files', `M-x anything-bookmark-ext'.
-* [:BookmarkPlus] [[Bookmark+]] enhances vanilla Emacs bookmarks in many ways. Sort, mark, cycle, highlight,...
+* [:BookmarkPlus] [[Bookmark+]] enhances vanilla Emacs bookmarks in many ways.  Sort, mark, cycle, highlight, organize,...
 * [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions] is a fork of an old (2009) version of Bookmark+.
 * BookMarkIteratorPackage -- iterate through your bookmarks
 * [[BreadcrumbForEmacs]] Breadcrumb for Emacs.  Leaves breadcrumb bookmarks in file buffers.
