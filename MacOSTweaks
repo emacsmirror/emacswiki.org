@@ -68,13 +68,18 @@ KamenNedev
 
 === How to disable "Press and Hold" ===
 
-OS X lion has introduced a new input feature known as "Press and Hold", where you hold a letter and are prompted with a popup menu allowing you to choose which accent/version of the vowel you want to type.  Unfortunately, as of Emacs 23 (OS X build, x11 / terminal / maybe others not affected) this is not only enabled by default but also completely broken.  With the exception of vowels (AEIOU) and Y, if you press a alphanumeric key and hold it, rather than it repeating according to your OS keyboard repeat rate setting, it sends the key once and then stops all together (does not apply when keyboard modifier is pressed in combination with key).  This is especially problematic if you use gnus mode, viper mode, or any mode that encourages the use of navigation via the alphanumeric keys on the keyboard.
+OS X lion has introduced a new input feature known as "Press and Hold", where you hold a letter and are prompted with a popup menu allowing you to choose which accent/version of the vowel you want to type.  Unfortunately, as of Emacs 23 (OS X build, x11 / terminal / maybe others not affected) this is not only enabled by default but also completely broken.  With the exception of vowels (AEIOU) and Y, if you press a alphanumeric key and hold it, rather than it repeating according to your OS keyboard repeat rate setting, it sends the key once and then stops all together (does not apply when keyboard modifier is pressed in combination with key).  [http://goo.gl/PKsQv Funny jokes] this is especially problematic if you use gnus mode, viper mode, or any mode that encourages the use of navigation via the alphanumeric keys on the keyboard.
 
 Fortunately, there is a work-around, revealed by hober of #emacs.  To disable, place the following at the top of your emacs config:
 
     (ns-set-resource nil "ApplePressAndHoldEnabled" "NO")
 
 It seems that it must be run before the frame is initialized, so evaluating it while Emacs is running will have no effect. Naturally, restart will be required.
+
+Also, if you want to disable it system wide run the following in the terminal:
+    
+    defaults write -g ApplePressAndHoldEnabled -bool false
+
 
 == Fink Tips ==
 
@@ -183,7 +188,7 @@ in your .emacs (or type it in the scratch buffer and press C-x C-e after it to e
 
 Before OSX.3, there was a bug in OSX's handling of pseudo terminals, which meant that output from certain commands could be lost [http://members.shaw.ca/akochoi-emacs/031022.html].  Apple fixed the bug in OSX.3 [http://members.shaw.ca/akochoi-emacs/031030.html].
 
-As a workaround, process-connection-type is set to nil by default when Emacs CVS after the end of January 2005 is built on OSX.2 or lower [http://lists.gnu.org/archive/html/emacs-devel/2005-01/msg00811.html].  Before that date, process-connection-type was set to nil by default whatever the OS version.  This breaks a number of other things (eg ssh and TrampMode).  
+As a workaround, process-connection-type is set to nil by default when Emacs CVS after the end of January 2005 is built on OSX.2 or lower [http://lists.gnu.org/archive/html/emacs-devel/2005-01/msg00811.html].  Before that date, process-connection-type was set to nil by default whatever the OS version.  This breaks a number of other things (eg ssh and TrampMode).  [http://bit.ly/dt3ruz funny quotes]
 
 If you are running on OSX.3 or higher, try setting process-connection-type back to t.
 [http://lists.gnu.org/archive/html/help-gnu-emacs/2004-06/msg00012.html]

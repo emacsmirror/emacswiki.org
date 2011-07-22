@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:32:46 2011 (-0700)
+;; Last-Updated: Thu Jul 21 17:49:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22916
+;;     Update #: 22917
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -925,7 +925,7 @@
 ;;    `icicle-mouse-candidate-action-1',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-sort', `icicle-nb-Completions-cols',
-;;    `icicle-nb-of-candidate-in-Completions',
+;;    `icicle-nb-of-cand-at-Completions-pos',
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate',
 ;;    `icicle-next-single-char-property-change',

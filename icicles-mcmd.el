@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:40:19 2011 (-0700)
+;; Last-Updated: Thu Jul 21 17:50:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16979
+;;     Update #: 16980
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -250,7 +250,7 @@
 ;;    `icicle-markers-to-readable',
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-mouse-candidate-action-1', `icicle-nb-Completions-cols',
-;;    `icicle-nb-of-candidate-in-Completions',
+;;    `icicle-nb-of-cand-at-Completions-pos',
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-prefix-complete-1', `icicle-raise-Completions-frame',
 ;;    `icicle-remove-cand-from-lists',
@@ -638,7 +638,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
     ;; $$$$$ (if (eq icicle-orig-buff (get-buffer "*Completions*"))
     ;;    (icicle-remove-Completions-window)
     ;;    (save-selected-window (icicle-remove-Completions-window)))
-    (setq icicle-candidate-nb  (icicle-nb-of-candidate-in-Completions (posn-point (event-start event))))
+    (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos (posn-point (event-start event))))
     (when (and (icicle-file-name-input-p) insert-default-directory
                (or (not (member choice icicle-extra-candidates))
                    icicle-extra-candidates-dir-insert-p))
@@ -651,7 +651,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
     (choose-completion-string choice buffer base-size))
   icicle-candidate-nb)
 
-(defun icicle-nb-of-candidate-in-Completions (position)
+(defun icicle-nb-of-cand-at-Completions-pos (position)
   "Return number of candidate at POSITION in `*Completions*'.
 POSITION is a buffer position."
   (let ((hor-nb  (icicle-nb-of-cand-in-Completions-horiz position)))
@@ -4385,7 +4385,7 @@ performed: display help on the candidate - see
       (select-window (active-minibuffer-window))
       (delete-region (icicle-minibuffer-prompt-end) (point-max))
       (insert choice))
-    (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions posn-pt)
+    (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos posn-pt)
           icicle-last-completion-candidate  choice)
     (if (not fn-var)
         (icicle-help-on-candidate)      ; Doesn't `icicle-raise-Completions-frame'.
@@ -4453,7 +4453,7 @@ See `icicle-remove-candidate' for more information."
         ;; being just part of the display in columns.
         (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
           (setq end  (1+ end)))
-        (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions posn-pt)
+        (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos posn-pt)
               icicle-last-completion-candidate  (buffer-substring beg end)))))
   (icicle-remove-candidate-display-others))
 
@@ -4987,7 +4987,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
           (setq beg     (previous-single-property-change beg 'mouse-face)
                 end     (or (next-single-property-change end 'mouse-face)(point-max))
                 choice  (buffer-substring-no-properties beg end)))))
-    (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions
+    (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos
                                              (posn-point (event-start event)))
           icicle-last-completion-candidate  choice)
     (let ((icicle-whole-candidate-as-text-prop-p  nil)
@@ -5083,7 +5083,7 @@ which can position mouse pointer on a standalone minibuffer frame."
           (setq beg       (previous-single-property-change beg 'mouse-face)
                 end       (or (next-single-property-change end 'mouse-face)(point-max))
                 candidate (buffer-substring-no-properties beg end)))))
-    (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions
+    (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos
                                              (posn-point (event-start event)))
           icicle-last-completion-candidate  candidate)
     (let* ((menus   `((keymap "Completion" ,@(icicle-substitute-keymap-vars
@@ -5808,7 +5808,7 @@ If the candidate is already saved, then unsave it; otherwise, save it."
           (setq beg     (previous-single-property-change beg 'mouse-face)
                 end     (or (next-single-property-change end 'mouse-face)(point-max))
                 choice  (buffer-substring-no-properties beg end)))))
-    (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions
+    (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos
                                              (posn-point (event-start event)))
           icicle-last-completion-candidate  choice)
     (cond ((member icicle-last-completion-candidate icicle-saved-completion-candidates)
@@ -6026,8 +6026,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
               (while (and (<= end eob) (get-text-property end 'mouse-face)) (setq end  (1+ end)))
               (setq beg          (1+ beg)
                     end          (1- end)
-                    beg-cand-nb  (icicle-nb-of-candidate-in-Completions beg)
-                    end-cand-nb  (icicle-nb-of-candidate-in-Completions end))
+                    beg-cand-nb  (icicle-nb-of-cand-at-Completions-pos beg)
+                    end-cand-nb  (icicle-nb-of-cand-at-Completions-pos end))
               (when (> beg-cand-nb end-cand-nb) ; Swap them
                 (setq beg-cand-nb  (prog1 end-cand-nb (setq end-cand-nb  beg-cand-nb))))
               (while (<= beg-cand-nb end-cand-nb)

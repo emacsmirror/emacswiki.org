@@ -1,6 +1,6 @@
 [[image/smiley:XWEM:logo.png]] <strong>X Window Emacs Manager</strong>
 
-[::XWEM] is window manager written in Emacs lisp. 
+[::XWEM] is window manager written in Emacs lisp. State: very alpha
 
 It is an attempt to make use of all Emacs power in window managing. The main principle of XWEM is to make window managing like as Emacs manages buffers. It will try to hide real nature of things and represent all kind of data structures in Emacs way, i.e. keyboard grabbing and keypress processing is similar to how Emacs do things, creates keypress event, lookup command from global and local keymaps and execute it, XWEM do the same - Emacs keymaps for XWEM is registred(grabbed) in X server, and when keypress occurs it behaves very much like Emacs. This is the same for XWEM frames and frames windows, one different from Emacs frame window is that XWEM window holds X client window(X application) not buffer as Emacs window.
 

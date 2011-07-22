@@ -1,7 +1,7 @@
 fdb, the Flex Debugger, is available in the Flex 2 SDK (same 'bin' directory that contains mxmlc etc). Because fdb is modeled
 after gdb (the gnu debugger), emacs already supports it to some degree through gud-mode.
 
-Within emacs, enter M-x gdb ENTER. Emacs will request a command that will be used to start the debugger. I use: fdb -f path/to/my_project.swf
+Within emacs, enter M-x gud-gdb ENTER. Emacs will request a command that will be used to start the debugger. I use: fdb -f path/to/my_project.swf
 
 Now emacs should create a new buffer to control fdb and automatically connect to your swf.
 

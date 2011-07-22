@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 20 22:03:53 2011 (-0700)
+;; Last-Updated: Thu Jul 21 17:52:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6644
+;;     Update #: 6647
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2437,6 +2437,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/07/21 dadams
+;;     Renamed: icicle-nb-of-candidate-in-Completions to icicle-nb-of-cand-at-Completions-pos.
 ;; 2011/07/06 dadams
 ;;     Applied renaming of icicle-Completions-frame-at-right-flag to icicle-move-Completions-frame.
 ;;     icicle-raise-Completions-frame: Handle left value of icicle-move-Completions-frame also.

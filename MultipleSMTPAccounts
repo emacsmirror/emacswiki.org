@@ -90,6 +90,10 @@ You may have to consider two more variables if your MTA checks your mail address
 
 [new:LeonidasTsampros:2011-07-07 12:28 UTC]
 I think the above snippet will not work on a recent Emacs 24 from the bzr trunk since smtpmail.el has been rewritten. I think this is the relevant change: http://lists.gnu.org/archive/html/emacs-diffs/2011-06/msg00226.html
+
+[new:pank:2011-07-21]
+I upgraded to emacs bzr rev. 105301 yesterday. It still works with Volkan's smtp function. Lars did a good job it seems. 
+
 ----
 
 This version is a bit simpler than the above because it only has two SMTP accounts and no SSL. --tzz
@@ -157,6 +161,10 @@ If a non-standard port is required, the above could easily be extended
 using a servername:port pattern.
 
 --- Marcus Harnisch
+
+
+[new:pank:2011-07-21]
+That is very elegant and intriguing! I tried it but it didn't work quite as well as Volkan's function, unfortunately. For some reason it did not read .authinfo.gpg. Furthermore it only worked with one of my smtp out-of-the-box. I didn't have time to investigate, but the problem must be in the advice. However, I totally believe that Marcus' idea is the way to go. It is much more intuitive and easier to extent.
 
 ----
 CategoryGnus
