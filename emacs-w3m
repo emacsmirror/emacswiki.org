@@ -113,7 +113,7 @@ emacs-w3m allows users to filter content, and this feature can be used to downca
 <pre>
 
 (setq w3m-use-filter t)
-;; send all pages through one filter                                                 
+;; send all pages through one filter
 (setq w3m-filter-rules `(("\\`.+" w3m-filter-all)))
 
 (defun w3m-filter-all (url)
@@ -152,7 +152,7 @@ emacs-w3m allows users to filter content, and this feature can be used to downca
       (setq list (cdr list))))))
 </pre>
 
-So far this has helped rid my browser of "?" substitutions. Obviously there are many more I have not felt the need to add here (yet). I will edit this list over time as my needs demand. 
+So far this has helped rid my browser of "?" substitutions. Obviously there are many more I have not felt the need to add here (yet). I will edit this list over time as my needs demand.
 
 - BradClawsie (May 2008)
 
@@ -338,7 +338,7 @@ If you use debian sid or testing you will not have w3mmee and w3mee-img but you 
 RichardRiley
 
 Below is some code from Andy Stewart (lazycat DOT manatee AT gmail.com) I requested to integrate w3m html buffers with org-mode. Bind the code to a suitable key
-and now you can copy the w3m html region into the clipboard in org-mode format so that pasting into org-mode buffers retains 
+and now you can copy the w3m html region into the clipboard in org-mode format so that pasting into org-mode buffers retains
 all html links.
 
 <pre>
@@ -468,7 +468,7 @@ With `TAB' actions can be selected if the selected bookmark has more than one po
 With `C-z' the contents of bookmark is displayed without quitting anything session.
 
 * Regular Emacs bookmarks to URLs, for W3M.
-** [[Bookmark+]] 
+** [[Bookmark+]]
 ** BookmarkExtension
 
 * Bookmark to delicious using `curl' and Lisp:anything-delicious.el (see `auth-source' to configure).
@@ -533,7 +533,7 @@ With `C-z' the contents of bookmark is displayed without quitting anything sessi
 [new]
 ::: Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
 I have updated it. -- ThierryVolpiatto
- 
+
 = w3m in Emacs 23 (on Debian and Ubuntu 9.10) =
 
 The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.
@@ -567,7 +567,29 @@ add this into the configuraion file of the emacs, it would make the emacs work a
     (other-window 1)
     (w3m-browse-url url newwin)))
 </pre>
+
+DennyZhang:
+Please note, emacs23 has the functions of ffap-other-window/ffap-other-frame.
+If you always browse url in w3m, I think these functions are good enough.
+
+However, I usually leverage external web browser, and sometimes I may use w3m for some simple web pages.
+
+So my variable of browse-url-browser-function is not set as w3m way.
+Thus, I define below standalone function, for the case that we want to browse url in a seperate window of *w3m* mode.
+
+<pre>
+(defun ffap-w3m-other-window (url &optional new-session)
+  "Browse url in w3m.
+  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url new-session)))
+</pre>
+
 ----
 CategoryExternalUtilities
 CategoryHypermedia
-

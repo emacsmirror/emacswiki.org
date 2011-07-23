@@ -1,6 +1,6 @@
 ;;; usage-memo.el --- integration of Emacs help system and memo
 
-;; $Id: usage-memo.el,v 1.16 2010/05/09 21:36:21 rubikitch Exp $
+;; $Id: usage-memo.el,v 1.17 2011/07/22 15:51:41 rubikitch Exp $
 
 ;; Copyright (C) 2007, 2010  rubikitch
 
@@ -118,6 +118,9 @@
 ;;; History:
 
 ;; $Log: usage-memo.el,v $
+;; Revision 1.17  2011/07/22 15:51:41  rubikitch
+;; Added new command `umemo-electric-quit'. Thanks to thierry!
+;;
 ;; Revision 1.16  2010/05/09 21:36:21  rubikitch
 ;; * unbind letter chars in `usage-memo-mode-map'
 ;; * Store major mode when `usage-memo-mode' is turned on.
@@ -177,6 +180,7 @@
 ;;; Code:
 (require 'cl)
 (require 'font-lock)
+(require 'view)
 (defvar umemo-base-directory "~/memo/umemo"
   "Directory where memo files are placed.
 You need not create directory when it does not exist.
@@ -306,6 +310,12 @@ variable. But it is probaby rare case.")
   (interactive)
   (umemo-fall-back-to-global-key-binding-in-memo-area "\r"))
 
+(defun umemo-electric-quit ()
+  (interactive)
+  (if (umemo-point-is-in-memo-area-p (point))
+       (call-interactively (global-key-binding "q"))
+       (and (view-mode 1) (View-quit))))
+
 ;;;; define API
 (defvar buffer-fmt)
 (defmacro define-usage-memo (command category nth-arg buffer-fmt &optional name-converter-function)
@@ -397,6 +407,7 @@ See also `umemo-initialize' definition.
 (defvar usage-memo-mode-map (make-sparse-keymap))
 (define-key usage-memo-mode-map "\C-x\C-s" 'umemo-save)
 (define-key usage-memo-mode-map "\r" 'umemo-electric-return)
+(define-key usage-memo-mode-map "q" 'umemo-electric-quit)
 ;; (loop for c from ?  to ?~ do
 ;;      (define-key usage-memo-mode-map (char-to-string c) 'self-insert-command))
       

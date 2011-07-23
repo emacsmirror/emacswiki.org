@@ -35,6 +35,19 @@ this at the top of your script file:
 #!/usr/bin/emacs --script
 }}}
 
+==Error codes==
+
+One use of batch scripting is to run a predicate over a collection of files. For example, to use 'check-parens' and exit with an error code 1 if 'check-parens' throws an exception:
+
+{{{
+emacs file --batch --eval="(condition-case nil (check-parens) (error (kill-emacs 1)))"
+}}}
+
+Easily turned into a shell script to print out the names of files with detected imbalances:
+
+{{{
+for file in *.txt; do emacs "$file" --batch --eval="(condition-case nil (check-parens) (error (kill-emacs 1)))" &> /dev/null || echo $file; done
+}}}
 
 ==Indenting C files==
 

@@ -11,7 +11,7 @@ X11 Emacs is the "original" emacs running under X11 (installed by default in rec
 If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
 If you've used Emacs before and already have your own emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
 
-[http://goo.gl/PKsQv Auf Deutsch] (in German).
+[http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Auf Deutsch] (in German).
 
 === OS X Binary Vanilla builds ===
 
@@ -42,7 +42,7 @@ These builds are based on the BZR version of GNU Emacs and do not contain any ad
       (load "auctex.el" nil t t)
       (load "preview-latex.el" nil t t)
 </pre>
-:: Auctex and preview-latex should work now. One thing to keep in mind: with older versions of Auctex, the ps pathway seems to work better than pdf; if preview-latex images aren't appearing with the error "/typecheck in --setfileposition--", try disabling "Generate PDF" via "Menu Bar -> Command -> TeXing option". [http://bit.ly/dt3ruz funny quotes]
+:: Auctex and preview-latex should work now. One thing to keep in mind: with older versions of Auctex, the ps pathway seems to work better than pdf; if preview-latex images aren't appearing with the error "/typecheck in --setfileposition--", try disabling "Generate PDF" via "Menu Bar -> Command -> TeXing option".
 
 
 
@@ -180,7 +180,7 @@ and even AucTeX!
 
 === Homebrew ===
 
-[http://mxcl.github.com/homebrew/ Homebrew] has an Emacs 23.2 (as of 2010-08-27) package. A Cocoa-specific Emacs.app can be build using the --cocoa switch. The following is copied from the Homebrew info on [http://dentaldentistsolutions.blogspot.com/2009/10/process-and-pictures-dental-implants.html dental implants]
+[http://mxcl.github.com/homebrew/ Homebrew] has an Emacs 23.2 (as of 2010-08-27) package. A Cocoa-specific Emacs.app can be build using the --cocoa switch. The following is copied from the Homebrew info
 
 <pre>
 $ brew info emacs
@@ -271,7 +271,7 @@ In shell-mode, the [C-up] and [C-down] key-bindings do not work as expected to b
 is that Terminal.app does not properly send these control sequences. To fix this behavior, open Terminal.app
 Preferences>>Settings>>Keyboard. Select the "+" button and you will see that you can add bindings to the "cursor down" 
 key with the "control" modifier. Select "send string to shell", and enter "ESCp", i.e., emacs M-p. Similarly,
-define control cursor up to send "ESCn" to the shell. [http://itshumour.blogspot.com/2009/07/funny-nursery-rhymes-remixed.html nursery rhymes]
+define control cursor up to send "ESCn" to the shell.
 
 === Emacs keybindings in Cocoa Apps ===
 

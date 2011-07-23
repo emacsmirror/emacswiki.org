@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 379 $
+;; RCS Version: $Rev: 380 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1961,11 +1961,13 @@ buffer."
 
 (defun sr-quick-view-kill ()
   "Kill the last buffer opened using quick view (if any)."
-  (let ((buf other-window-scroll-buffer))
+  (let ((buf other-window-scroll-buffer) (window-configuration))
     (when (and (buffer-live-p buf)
                (y-or-n-p (format "Kill buffer %s? " (buffer-name buf))))
-      (setq other-window-scroll-buffer nil)
-      (kill-buffer buf))))
+      (setq window-configuration (current-window-configuration)
+            other-window-scroll-buffer nil)
+      (kill-buffer buf)
+      (set-window-configuration window-configuration))))
 
 (defun sr-quick-view-directory (name)
   "Open the directory NAME in the passive pane."
@@ -3121,12 +3123,6 @@ pane."
       (beginning-of-line)))
   (dired-do-kill-lines))
 
-(eval-and-compile
-  (unless (featurep 'locate)
-    (defvar locate-command nil)
-    (defun locate-prompt-for-search-string ()
-      (error "Sunrise: Locate feature not available!"))))
-
 (defun sr-locate-filter (locate-buffer search-string)
   "Return a filter function for the background `locate' process."
   `(lambda (process output)
@@ -3160,10 +3156,20 @@ Used to notify about the termination status of the process."
   (message (propertize "Sunrise locate (C-c C-k to kill)"
                        'face 'minibuffer-prompt)))
 
+(defun sr-locate-prompt-for-search-string ()
+  "Do `locate-prompt-for-search-string' if the `locate' feature is available."
+  (if (not (featurep 'locate))
+      (error "Sunrise: Locate feature not available!")
+    (eval '(defun sr-locate-prompt-for-search-string ()
+             (locate-prompt-for-search-string)))
+    (sr-locate-prompt-for-search-string)))
+
 (defun sr-locate (search-string &optional filter arg)
   "Run locate asynchronously and display the results in Sunrise virtual mode."
-  (interactive (list (locate-prompt-for-search-string) nil current-prefix-arg))
-  (let ((locate-buffer (create-file-buffer "*Sunrise Locate*"))
+  (interactive
+   (list (sr-locate-prompt-for-search-string) nil current-prefix-arg))
+  (let ((locate-command (if (featurep 'locate) (symbol-value 'locate-command)))
+        (locate-buffer (create-file-buffer "*Sunrise Locate*"))
         (process-connection-type nil)
         (locate-process nil))
     (sr-save-aspect

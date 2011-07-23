@@ -531,5 +531,32 @@ The reason for making dates less prominent is that I used to believe in the /Wik
 
 I'm not sure whether the thinking regarding the /Wiki Now/ is still relevant when it comes to the _Emacs Wiki_.
 
+[new:NeilSmithline:2011-07-23 03:54 UTC]
+First, it is very cool that my picture, though hard to figure out how to set it up, is retroactive to my previous posts. And the photo is retroactive too as it is 5 years old. I'm just getting younger by the minute :-)
+
+Second, I was looking at some of Google Labs' [http://www.googlelabs.com projects] and saw that they have a [http://pagespeed.googlelabs.com/ web site optimization tool]. It focuses on the efficiency of the data that is sent to the browser. Not on the server performance or browser redering. I ran it against a few pages that were in my browser history. One was [http://en.wikipedia.org/wiki/Stemming Stemming] (I've been looking at new-fangled search tools as I think the single biggest improvement to the EmacsWiki is new search technology). That gave these [http://pagespeed.googlelabs.com/#url=http_3A_2F_2Fen.wikipedia.org_2Fwiki_2FStemming&mobile=false results]. I also tried the [[Icicles]] page. I was most impressed by Oddmuse's [http://pagespeed.googlelabs.com/#url=http_3A_2F_2Fwww.emacswiki.org_2Femacs_2FIcicles&mobile=false performance]. 
+
+I tried several pages and there was some minor variation in the numbers for both Wikis but the lowest I saw was 89 on the EmacsWiki SiteMap. While I know that 2 points is insignificant, I was quite entertained that Icicles beat the SiteMap. Who'd have thunk! 
+
+The [http://pagespeed.googlelabs.com/ web site optimization tool] groups problems it finds into three severity levels. The only problems the tool found were classified as /Low/ severity. In the few pages I tried the tool didn't find a single issues ranked /Medium/ or /High/. I'm not a big fan of Wikis and I think there are too many of them. But I do think you've done a great job with OddMuse. If I had a hat I'd tip it to you. 
+
+As far as the Wiki organization goes, I've been thinking about it quite a bit, I've prototyped some ideas (eg: improved searching), and I've tried to figure who the target audience(s) are and how the EmacsWiki is trying to help them. While I know that quoting existing terminology always runs the risk of bringing too much baggage with it, but I think we need a few [http://en.wikipedia.org/wiki/User_story user stories] before we decide to make any time-consuming changes. I think 
+
+My feeling is that once we have identified the 4, maybe 5, user stories we want to help, the rest says easy. For example, if we are catering to total Emacs noobs, then perhaps the best front page would say [http://en.wikipedia.org/wiki/Don%27t_Panic_%28The_Hitchhiker%27s_Guide_to_the_Galaxy%29#Don.27t_Panic DON'T PANIC] followed by "Start Here". I think that we probably want a total Emacs noob story but we want other stories as well. 
+
+Once we decide on the stories, something which I'm happy to discuss but think that there are others who are more qualified and deserving to actually decide on what they should be, then I think we should consider a hierarchy. I know I suggested a hierarchy but my ideas have been slowly simmering in the back of my head and I'm starting to think I have a rough idea as to what the problem is. Note that in this instance I'm using "problem" to mean something I don't like and think others won't like either.
+
+While I'm still developing it, I think the problem with the EmacsWiki is that while it has the information to meet many user stories, it does not provide appropriate guidance to help a user fulfill their needs. 
+
+As I've been developing a better understanding of what I think the EmacsWiki needs, I think it is likely that some kind of categorization, page threading, labeling, etc... is the solution. I'm just not sure what. 
+
+It's late so I'm going to sign off, but when I'm more awake I think I'll start a new page for more detailed discussions.
+
+As a parting comment, the more I understand what I think is missing, the more I think that what is here is great.
+
+-- NeilSmithline at July 23, 2011 at 01:39 ET (GMT-04:00)
+
+PS: Alex, I think that WikiNow is relevant to the EmacsWiki but the EmacsWiki doesn't just distribute information, it also distributes code. Downloading code that stopped working three releases ago or reading about bugs that happened 5 years ago before two major rewrites of the package is a place where history is helpful but can't outweigh the need for accessibility to the current state. Perhaps some means of archiving is appropriate? Dunno. I agree with the principle of WikiNow but see that EmacsWiki has other needs that must coexist with WikiNow.
+ 
 ----
 CategoryEmacsWikiSite
