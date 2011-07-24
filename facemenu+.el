@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Mon Jun 27 09:24:24 2011 (-0700)
+;; Last-Updated: Sat Jul 23 22:39:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1698
+;;     Update #: 1711
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -190,6 +190,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/07/23 dadams
+;;     facemenup-highlight-menu: Added hlt-copy-props, hlt-yank-props.
 ;; 2011/06/27 dadams
 ;;     Just soft-require palette.el - if not available then hard-require eyedropper.el.
 ;; 2011/06/26 dadams
@@ -371,10 +373,15 @@ palette using `x'."
     "Highlight"
     (append
      '(["Highlight Region/Buffer" hlt-highlight-region t]
-       ["Highlight Regexp in Region/Buffer" hlt-highlight-regexp-region t]
+       ["Highlight Regexp in Region/Buffer..." hlt-highlight-regexp-region t]
        ["Highlight Regexp to End" hlt-highlight-regexp-to-end t]
        ["Unhighlight Region/Buffer" hlt-unhighlight-region t]
        ["Unhighlight Region/Buffer for Face" hlt-unhighlight-region-for-face t]
+       "--"
+       ["Copy Text Properties" hlt-copy-props t]
+       ["Paste Text Properties to Region" hlt-yank-props
+        (and mark-active (not buffer-read-only))]
+       "--"
        ["Highlighter Pen" hlt-highlighter-mouse t]
        ["Eraser" hlt-eraser-mouse t])
      (and (fboundp 'hlt-show-only)
@@ -390,7 +397,8 @@ palette using `x'."
      (and (fboundp 'hlt-toggle-act-on-any-face-flag)
           '(["Toggle Highlighting Arbritrary Faces" hlt-toggle-act-on-any-face-flag t]))
      (and (fboundp 'hlt-next-highlight)
-          '(["Go To Next Highlight" hlt-next-highlight t]
+          '("--"
+            ["Go To Next Highlight" hlt-next-highlight t]
             ["Go To Previous Highlight" hlt-previous-highlight t]))))
   "Highlight submenu of Text Properties menu.")
 

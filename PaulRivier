@@ -1,9 +1,12 @@
 Page wiki emacs de Paul Rivier, adresse '''''paul * rivier # gmail * com''''' après avoir pris soin de remplacer les * par des . et le # par un @, sans espace bien sûr.
 
-== TODO : renseigner cette page avec des infos à jour ==
+== Usage d'Emacs ==
 
-en ce moment je travaille sur un système de gestion de configuration pour emacs. Selon le résultat obtenu, j'en ferai un package et une page sur ce wiki.
-Plus d'infos à venir.
+Edition de code avec les modes Ruby, LaTeX et Haskell.
+Lecture des newsgroups avec Gnus.
+
+Je me détourne de plus en plus d'Emacs à cause de EmacsLisp, que je ne veux plus utiliser. Le futur appartient aux langages fonctionnels purs à typage statique, tels que Haskell.
+Emacs 2 reposera, j'espère, sur un tel langage :)
 
 
 == Messages ==

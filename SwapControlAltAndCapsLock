@@ -70,6 +70,9 @@ I have set both Super_R (Windows) & Menu to Alt_R, as some laptop
 Menu. I only use Super keys for window manager shortcuts anyway,
 YMMV.
 
+Setting CapsLock as Alt_L also makes some of the C-M keystrokes
+easier.
+
 === *nix ===
 
 Xmodmap file for *nix:
@@ -80,6 +83,7 @@ Xmodmap file for *nix:
 ! Use to set keycodes correctly below. List reordered to match
 ! keys from left to right.
 
+! keycode  66 = CapsLock
 ! keycode  37 = Control_L NoSymbol Control_L
 ! keycode 133 = Super_L NoSymbol Super_L
 ! keycode  64 = Alt_L Meta_L Alt_L Meta_L
@@ -94,6 +98,7 @@ clear control
 clear mod1
 clear mod4
 
+keycode  66 = Alt_L Meta_L
 keycode  37 = Super_L
 keycode 133 = Alt_L Meta_L
 keycode  64 = Control_L

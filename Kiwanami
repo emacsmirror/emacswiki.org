@@ -4,6 +4,7 @@ Masashi Sakurai (Japan).
 
 * DeferredTask
 * InertialScrolling
+* calfw : A calendar framework [https://github.com/kiwanami/emacs-calfw github site]
 * e2wm.el : Equilibrium Emacs Window Manager
 * skype.el : skype UI for emacs users (Linux only)
 * id-manager.el : password management

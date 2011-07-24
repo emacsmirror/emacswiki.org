@@ -9,11 +9,13 @@ available on a '''Highlight''' submenu in the '''Text Properties''' menus. See F
 
 
 
+
+
 [:Description]
 == General Description ==
 
 You can highlight text in two ways using ##highlight.el##, depending
-on the value of user option '''`hlt-use-overlays-flag'''':
+on the value of [[user option]] '''`hlt-use-overlays-flag'''':
 
 * non-`nil' means to highlight using [[overlay]]s
 * `nil' means to highlight using [[text property|text properties]]
@@ -71,7 +73,7 @@ To save highlighting permanently, do the following:
    `enriched-mode'.  You will see '''`Enriched'''' in the [[mode line]].
 
 # Choose text-property highlighting, not overlay highlighting, by
-   setting option '''`<tt>[[#hlt-use-overlays-flag]]</tt>''''
+   setting [[option]] '''`<tt>[[#hlt-use-overlays-flag]]</tt>''''
  to `nil'.  To do this using [[Customize]], choose menu item '''Highlight using text properties, not
    overlays'''.
 
@@ -184,6 +186,58 @@ Command '''`hlt-highlight-single-quotations'''' highlights single-quoted text in
 
 [:hlt-mouse-face-each-line]
 Command '''`hlt-mouse-face-each-line'''' puts a `mouse-face' property on each line of the region.
+
+
+
+
+
+
+
+
+[:hlt-copy-props]
+[:hlt-yank-props]
+== Copy and Yank (Paste) Text Properties ==
+
+You can highlight or unhighlight text by simply copying existing
+highlighting (or lack of any highlighting) from anywhere in Emacs
+and yanking (pasting) it anywhere else.
+
+Put differently, you can copy and yank a set of text properties.
+You can use these commands to copy and yank any text properties,
+not just `face' or `mouse-face'.
+
+To copy the text properties at a given position, use command
+'''`hlt-copy-props''''.  You can then use command '''`hlt-yank-props'''' to
+yank those properties to the active region anywhere.  If the set
+of properties that you copy is empty, then yanking means
+effectively ''removing all'' text properties.
+
+User [[option]] '''`hlt-default-copy/yank-props'''' controls which text
+properties to copy and yank, by default.  The default value of the
+option includes only `face', which means that only property `face'
+is copied and pasted.  That is typically what you want, for
+highlighting purposes.
+
+You can further control which text properties are copied or yanked
+when you use the commands, by using a [[prefix argument]].  A plain or
+non-negative prefix arg means copy or yank all available text
+properties.  A negative prefix arg (e.g. `C--') means you are
+prompted for which text properties to use, among those available.
+
+For copying, the available properties are those among
+`hlt-default-copy/yank-props' that are present at the copy
+position.  For yanking, the available properties are those among
+`hlt-default-copy/yank-props' that have previously (last) been copied.
+
+
+
+
+
+
+
+
+
+
 
 
 == User Option `hlt-act-on-any-face-flag' ==
@@ -299,7 +353,7 @@ the mouse.
 
 Hiding and showing faces also provides a "''conditional text''"
 feature similar to that available in desktop publishing
-applications such as Adobe's Framemaker.  Publishers often use
+applications such as Adobe Framemaker.  Publishers often use
 such a feature to produce different output documents from the same
 source document ("''single sourcing''").  You can use this feature
 similarly, if you have an application (printing is one example)
