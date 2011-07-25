@@ -227,6 +227,9 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-bookmark-w3m-other-window]
 [:icicle-buffer-config]
 [:icicle-buffer-list]
+[:icicle-choose-faces]
+[:icicle-choose-visible-faces]
+[:icicle-choose-invisible-faces]
 [:icicle-clear-history]
 [:icicle-color-theme]
 [:icicle-comint-command]
@@ -240,6 +243,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-frame-bg]
 [:icicle-frame-fg]
 [:icicle-fundoc]
+[:icicle-hide-faces]
+[:icicle-hide-only-faces]
 [:icicle-imenu-command]
 [:icicle-imenu-non-interactive-function]
 [:icicle-increment-option]
@@ -300,6 +305,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-xml-element]
 [:icicle-select-window]
 [:icicle-set-option-to-t]
+[:icicle-show-faces]
+[:icicle-show-only-faces]
 [:icicle-toggle-option]
 [:icicle-vardoc]
 [:toggle]
@@ -337,6 +344,9 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
  -- Jump to W3M bookmarks
 * `icicle-buffer-config' -- Pick options for '''Icicles''' buffer commands
 * `icicle-buffer-list'  -- Choose a [[list]] of buffer names
+* `icicle-choose-faces' -- Choose a list of [[face]] names
+* `icicle-choose-invisible-faces' -- Choose names of invisible faces
+* `icicle-choose-visible-faces' -- Choose names of visible-faces
 * `icicle-clear-history' -- Clear [[minibuffer]] histories
 * `icicle-color-theme'  -- Change the current ColorTheme
 * `icicle-completing-yank' -- [[yank|Yank]] text using [[completion]]
@@ -351,6 +361,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-frame-bg'     -- Change the frame background color
 * `icicle-frame-fg'     -- Change the frame foreground color
 * `icicle-fundoc'       -- Display the doc of a [[function]]
+* `icicle-hide-faces' -- Hide a set of faces you choose
+* `icicle-hide-only-faces' -- Hide a set of faces you choose; show all others
 * `icicle-increment-option' -- Increment numeric [[option]]s using '''[[DoReMi|Do Re Mi]]'''
 * `icicle-increment-variable' -- Increment [[variable]]s using '''[[DoReMi|Do Re Mi]]'''
 * `icicle-Info-virtual-book' -- Open [[Info]] on a virtual book
@@ -406,6 +418,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-w3m-bookmark' -- Search [[w3m|W3M]] bookmarks
 * `icicle-select-window' -- Select a [[window]] by its buffer name
 * `icicle-set-option-to-t' -- Set value of binary option to `t'
+* `icicle-show-faces' -- Show a set of invisible faces you choose
+* `icicle-show-only-faces' -- Show a set of invisible faces you choose; hide all others
 * `icicle-toggle-option' -- Toggle the value of a binary [[option]]
 * `icicle-vardoc'       -- Display the doc of a [[variable]]
 * `toggle' (alias)      -- Toggle the value of a binary option

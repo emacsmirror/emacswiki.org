@@ -22,18 +22,6 @@ I recently added a glossary entry for `macro'.  I added this link: Manual:macros
 It would be good to be able to somehow specify the manual: `(elisp)'. E.g. ##[[Manual (elisp):macros]]## or some such.  Being able to specify more than one manual would be a nice-to-have (without it one would just create multiple links). -- DrewAdams
 
 
-== Glossary Link in Page Header/Footer ==
-
-It is not obvious where to find the glossary, and it is quite helpful, especially for newbies.  I suggest we add a '''[[CategoryGlossary|Glossary]]''' link to the header and footer of each page. -- DrewAdams
-
-
-
-== Text-based Captcha for use with Emacs/w3m ==
-
-Hi, I just realized I had to leave Emacs to edit the Emacs Wiki (so I could solve the Captcha).  It would be cool to supply a math problem captcha if you detect a User Agent like Emacs/w3m or Emacs/w3.  Either that or get a non-Javascript-based version of ReCaptcha (but also note this! http://www.allspammedup.com/2011/01/google-recaptcha-cracked/). --jcorneli
-
-[new]
-Using w3m with EmacsWiki is documented at the EmacsWikiProblems page.
 
 == Elisp files status ==
 
@@ -558,5 +546,11 @@ As a parting comment, the more I understand what I think is missing, the more I 
 
 PS: Alex, I think that WikiNow is relevant to the EmacsWiki but the EmacsWiki doesn't just distribute information, it also distributes code. Downloading code that stopped working three releases ago or reading about bugs that happened 5 years ago before two major rewrites of the package is a place where history is helpful but can't outweigh the need for accessibility to the current state. Perhaps some means of archiving is appropriate? Dunno. I agree with the principle of WikiNow but see that EmacsWiki has other needs that must coexist with WikiNow.
  
+[new:AlexSchroeder:2011-07-24 22:21 UTC]
+Thank you for the kind words. Looking forward to some user stories. :)
+
+
+
+
 ----
 CategoryEmacsWikiSite

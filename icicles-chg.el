@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 21 17:52:49 2011 (-0700)
+;; Last-Updated: Sun Jul 24 18:55:03 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6647
+;;     Update #: 6668
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -406,6 +406,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/24 dadams
+;;     Moved here from palette.el, and renamed with prefix icicle-:
+;;       icicle-pick-color-by-name, icicle-pick-color-by-name-action
+;;     Moved here from highlight.el, and renamed with prefix icicle- (from hlt-) and suffix -faces:
+;;       icicle-(hide|show)(-only)-faces, icicle-choose(-(in)visible)-faces.
+;;     Added: icicle-invisible-face-p.
+;;     icicle-choose(-(in)visible)-faces: Corrected:
+;;       Lax if icicle-WYSIWYG-Completions-flag.  Put icicle-fancy-candidates on prompt.
+;;       Use icicle-list-*, for multi-completions.  Use icicle-invisible-face-p to test invisibility.
+;;     Added eval-when-compile with soft requires for bookmark+.el and highlight.el.
 ;; 2011/07/18 dadams
 ;;     icicle-search-thing, icicle-search-thing-scan:
 ;;       Moved normalizing BEG, END to *-scan, for multiple buffers case.  Thx to M. Heerdegen.
@@ -5240,6 +5250,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/07/24 dadams
+;;     Updated icicle-general-help-string for new commands.
 ;; 2011/07/06 dadams
 ;;     Applied renaming of icicle-Completions-frame-at-right-flag to icicle-move-Completions-frame.
 ;; 2011/05/03 dadams

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Sat Jul 23 22:39:47 2011 (-0700)
+;; Last-Updated: Sun Jul 24 10:18:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1711
+;;     Update #: 1741
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -190,6 +190,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/07/24 dadams
+;;     facemenu-remove-(face-props|all): Add them to Edit > Region menu, if available.
+;;                                       Disable them if no active region (Emacs bug #9162).
+;;     
 ;; 2011/07/23 dadams
 ;;     facemenup-highlight-menu: Added hlt-copy-props, hlt-yank-props.
 ;; 2011/06/27 dadams
@@ -440,8 +444,24 @@ argument VECP, this copies vectors as well as conses."
 
 ;; For Emacs 20, rename "List Properties" to "Describe Properties" in menu-bar menu.
 (unless (fboundp 'describe-text-properties)
-  (define-key facemenu-menu [dp]
-    (cons (purecopy "Describe Properties") 'list-text-properties-at)))
+  (define-key facemenu-menu [dp] '(menu-item "Describe Properties" list-text-properties-at)))
+
+;; `facemenu-remove-all' and `facemenu-remove-face-props'.
+;; Add them to `Edit' > `Region' submenu, if it exists.
+(when (boundp 'menu-bar-edit-region-menu) ; Defined in `menu-bar+.el'.
+  (define-key menu-bar-edit-region-menu [ra]
+    '(menu-item "Remove Text Properties" facemenu-remove-all))
+  (define-key facemenu-menu [rm]
+    '(menu-item "Remove Face Properties" facemenu-remove-face-props)))
+;; Disable them if no active region.  Mention `from Region' in name.  This is for Emacs bug #9162.
+(define-key facemenu-menu [ra]
+  '(menu-item "Remove Text Properties from Region" facemenu-remove-all :enable mark-active))
+(define-key facemenu-menu [rm]
+  '(menu-item "Remove Face Properties from Region" facemenu-remove-face-props :enable mark-active))
+(define-key facemenu-mouse-menu [ra]
+  '(menu-item "Remove Text Properties from Region" facemenu-remove-all :enable mark-active))
+(define-key facemenu-mouse-menu [rm]
+  '(menu-item "Remove Face Properties from Region" facemenu-remove-face-props :enable mark-active))
 
 ;; Add a separator before "Describe Properties": it and the items that
 ;; follow it do not apply to the region like the items before them do.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Jul 23 22:36:35 2011 (-0700)
+;; Last-Updated: Sun Jul 24 17:49:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2983
+;;     Update #: 3041
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -50,6 +50,7 @@
 ;;    (@> "Commands")
 ;;    (@> "User Option `hlt-act-on-any-face-flag'")
 ;;    (@> "Hiding and Showing Text")
+;;      (@> "Hiding and Showing Text - Icicles Multi-Commands")
 ;;    (@> "What Gets Highlighted: Region, Buffer, New Text You Type")
 ;;    (@> "Interference by Font Lock")
 ;;    (@> "Suggested Bindings")
@@ -57,11 +58,10 @@
 ;;    (@> "Commands That Won't Work in Emacs 20")
 ;;    (@> "To Do")
 ;;  (@> "Change log")
-;;  (@> "Menu-Bar Region Menu")
+;;  (@> "Menus")
 ;;  (@> "Variables and Faces")
 ;;  (@> "Misc Functions - Emacs 20+")
 ;;  (@> "Misc Functions - Emacs 21+")
-;;  (@> "Functions for Use with Icicles - Emacs 21+")
 ;;  (@> "Functions for Highlighting Propertized Text - Emacs 21+")
 ;;  (@> "General functions")
  
@@ -72,10 +72,8 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `hlt-choose-default-face', `hlt-choose-faces',
-;;    `hlt-choose-invisible-faces', `hlt-choose-visible-faces',
-;;    `hlt-copy-props', `hlt-eraser', `hlt-eraser-mouse', `hlt-hide',
-;;    `hlt-hide-default-face', `hlt-hide-only', `hlt-highlight',
+;;    `hlt-choose-default-face', `hlt-copy-props', `hlt-eraser',
+;;    `hlt-eraser-mouse', `hlt-hide-default-face', `hlt-highlight',
 ;;    `hlt-highlight-all-prop', `hlt-highlighter',
 ;;    `hlt-highlighter-mouse', `hlt-highlight-property-with-value',
 ;;    `hlt-highlight-regexp-region', `hlt-highlight-regexp-to-end',
@@ -83,8 +81,7 @@
 ;;    `hlt-mouse-copy-props', `hlt-mouse-face-each-line',
 ;;    `hlt-next-highlight', `hlt-paste-props',
 ;;    `hlt-previous-highlight', `hlt-replace-highlight-face',
-;;    `hlt-show', `hlt-show-default-face', `hlt-show-only',
-;;    `hlt-toggle-act-on-any-face-flag',
+;;    `hlt-show-default-face', `hlt-toggle-act-on-any-face-flag',
 ;;    `hlt-toggle-link-highlighting',
 ;;    `hlt-toggle-property-highlighting',
 ;;    `hlt-toggle-use-overlays-flag', `hlt-unhighlight-all-prop',
@@ -362,7 +359,7 @@
 ;;  1. The `invisible' property of the text or overlay at that
 ;;     position is updated to include `foo'.  If there are no other
 ;;     faces that have been applied to this text and then hidden, the
-;;     `invisible' property is just (`foo').
+;;     `invisible' property is just `(foo)'.
 ;;
 ;;  2. `buffer-invisibility-spec' is also updated to include `foo'.
 ;;     This hides all text properties and overlay properties with
@@ -383,35 +380,43 @@
 ;;  change the default highlighting face at any time using command
 ;;  `hlt-choose-default-face'.
 ;;
+;;(@* "Hiding and Showing Text - Icicles Multi-Commands")
+;;  *** Hiding and Showing Text - Icicles Multi-Commands ***
+;;
 ;;  The other hide and show commands depend on your also using
 ;;  Icicles, which is a set of libraries that offer enhanced
-;;  completion.  The Icicles-dependent commands are the following:
+;;  completion.  Complete information about Icicles is here:
+;;  `http://www.emacswiki.org/emacs/Icicles'.  You can obtain Icicles
+;;  here: `http://www.emacswiki.org/emacs/Icicles_-_Libraries'.
 ;;
-;;  `hlt-choose-faces', `hlt-choose-invisible-faces',
-;;  `hlt-choose-visible-faces', `hlt-hide', `hlt-hide-only',
-;;  `hlt-show', `hlt-show-only'.
+;;  The Icicles commands defined for `highlight.el' are the following:
+;;
+;;  `icicle-choose-faces', `icicle-choose-invisible-faces',
+;;  `icicle-choose-visible-faces', `icicle-hide-faces',
+;;  `icicle-hide-only-faces', `icicle-show-faces',
+;;  `icicle-show-only-faces'.
 ;;
 ;;  These are all Icicles multi-commands, which means that they each
 ;;  let you choose multiple completion candidates or all candidates
 ;;  that match your current input (a regexp).  To use them you must
-;;  also use Icicles.  You can use command `hlt-hide' to hide any
-;;  number of visible faces.  Any text is hidden that has that face as
-;;  a text property or an overlay property, depending on the value of
-;;  `hlt-use-overlays-flag'.
+;;  also use Icicles.  You can use command `icicle-hide-faces' to hide
+;;  any number of visible faces.  Any text is hidden that has that
+;;  face as a text property or an overlay property, depending on the
+;;  value of `hlt-use-overlays-flag'.
 ;;
-;;  Command `hlt-show' is the opposite of `hlt-hide': it shows
-;;  invisible text that has the faces you choose.  Neither `hlt-hide'
-;;  nor `hlt-show' has any effect on other faces, besides those you
-;;  choose to hide or show, respectively; they each do only one thing,
-;;  hide or show.
+;;  Command `icicle-show-faces' is the opposite of
+;;  `icicle-hide-faces': it shows invisible text that has the faces
+;;  you choose.  Neither `icicle-hide-faces' nor `icicle-show-faces'
+;;  has any effect on other faces, besides those you choose to hide or
+;;  show, respectively; they each do only one thing, hide or show.
 ;;
-;;  Command `hlt-hide-only' hides the faces you choose, and shows all
-;;  other faces, and command `hlt-show-only' does the opposite.  You
-;;  can thus use these commands to specify exactly what faces should
-;;  be invisible and visible.  Empty input means none: If you choose
-;;  no faces to hide (that is, hit `RET' with an empty minibuffer),
-;;  then all faces will be made visible; if you choose no faces to
-;;  show, then all will be hidden.
+;;  Command `icicle-hide-only-faces' hides the faces you choose, and
+;;  shows all other faces, and command `icicle-show-only-faces' does
+;;  the opposite.  You can thus use these commands to specify exactly
+;;  what faces should be invisible and visible.  Empty input means
+;;  none: If you choose no faces to hide (that is, hit `RET' with an
+;;  empty minibuffer), then all faces will be made visible; if you
+;;  choose no faces to show, then all will be hidden.
 ;;
 ;;  Currently, face attributes for highlighting are combined when
 ;;  overlays overlap, but the same is not true for text properties.
@@ -505,12 +510,10 @@
 ;;  The following commands and options work only for Emacs versions
 ;;  more recent than Emacs 20:
 ;;
-;;  `hlt-act-on-any-face-flag', `hlt-choose-faces',
-;;  `hlt-choose-invisible-faces', `hlt-choose-visible-faces',
-;;  `hlt-hide', `hlt-hide-default-face', `hlt-hide-only',
+;;  `hlt-act-on-any-face-flag', `hlt-hide-default-face',
 ;;  `hlt-highlight-property-with-value', `hlt-next-highlight',
-;;  `hlt-previous-highlight', `hlt-show', `hlt-show-default-face',
-;;  `hlt-show-only', `hlt-toggle-act-on-any-face-flag'.
+;;  `hlt-previous-highlight', `hlt-show-default-face',
+;;  `hlt-toggle-act-on-any-face-flag'.
 ;;
 ;;(@* "To Do")
 ;;  ** To Do **
@@ -536,6 +539,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/07/24 dadams
+;;     Moved to icicles-cmd2.el, renamed with prefix icicle- from hlt-, and corrected them:
+;;       hlt-(hide|show)(-only)-faces, hlt-choose(-(in)visible)-faces.
+;;     menu-bar-edit-menu, facemenu(-mouse)-menu: Added hlt-(copy|yank)-props.
 ;; 2011/07/23 dadams
 ;;     Added: hlt-((mouse-)copy|yank|paste)-props, hlt-copied-props, hlt-subplist,
 ;;            hlt-default-copy/yank-props, hlt-read-props-completing, hlt-props-to-copy/yank.
@@ -718,8 +725,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
-
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; (no error if not found):
                                                           ;; read-face-name
@@ -734,15 +739,26 @@
 (defvar hlt-act-on-any-face-flag)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
-;;(@* "Menu-Bar Region Menu")
+;;(@* "Menus")
 
-;;; Menu-Bar Region Menu --------------------------------
+;;; Menu-Bar `Edit' Menu ---------------------------------------------
+
+(define-key-after menu-bar-edit-menu [hlt-copy-props]
+  '(menu-item "Copy Text Properties" hlt-copy-props
+    :help "Copy text properties at point, for subsequent pasting") 'paste)
+(define-key-after menu-bar-edit-menu [hlt-yank-props]
+    '(menu-item "Paste Text Properties" hlt-yank-props
+      :help "Paste previously copied text properties to text in region"
+      :enable (and mark-active (not buffer-read-only)))
+    'hlt-copy-props)
+
+;;; Menu-Bar `Edit' > `Region' Menu ----------------------------------
 
 (when (boundp 'menu-bar-edit-region-menu) ; Defined in `menu-bar+.el'.
   (define-key menu-bar-edit-region-menu [separator-highlight] '("--"))
   (define-key menu-bar-edit-region-menu [hlt-yank-props]
     '(menu-item "Paste Text Properties" hlt-yank-props
-      :help "Yank previously copied text properties to text in region"
+      :help "Paste previously copied text properties to text in region"
       :enable (and mark-active (not buffer-read-only))))
   (define-key menu-bar-edit-region-menu [hlt-unhighlight-region-for-face]
     '(menu-item "Unhighlight for Face..." hlt-unhighlight-region-for-face
@@ -756,10 +772,23 @@
   (define-key menu-bar-edit-region-menu [hlt-highlight-region]
     '(menu-item "Highlight" hlt-highlight-region
       :help "Highlight all text in the region")))
+
+;;; Facemenu `Text Properties' Menu ----------------------------------
+(when (boundp 'facemenu-mouse-menu)
+  (easy-menu-add-item facemenu-mouse-menu ()
+                      ["Paste Text Properties" hlt-yank-props
+                                               (and mark-active (not buffer-read-only))] 'dp)
+  (easy-menu-add-item facemenu-mouse-menu ()
+                      ["Copy Text Properties" hlt-copy-props t] 'dp))
+(easy-menu-add-item facemenu-menu ()
+                    ["Paste Text Properties" hlt-yank-props
+                                             (and mark-active (not buffer-read-only))] 'dp)
+(easy-menu-add-item facemenu-menu () ["Copy Text Properties" hlt-copy-props t] 'dp)
+
  
 ;;(@* "Variables and Faces")
 
-;;; Variables and Faces --------------------------------
+;;; Variables and Faces ----------------------------------------------
 
 (defgroup highlight nil
   "Highlighting."
@@ -1781,169 +1810,6 @@ Only highlighting faces are included, that is, faces associated with a
                  "Highlight actions now apply to any face, not just a highlighting face"
                "Highlight actions now apply only to a highlighting face")))
   )
- 
-;;(@* "Functions for Use with Icicles - Emacs 21+")
-
-;;; Functions for Use with Icicles - Emacs 21+ -----------------------
-
-(when (and (featurep 'icicles)          ; These are Icicles multi-commands.
-           (fboundp 'next-single-char-property-change)) ; Don't bother, for Emacs 20.
-
-  (icicle-define-command hlt-choose-faces
-    "Choose a list of face names.
-Option `hlt-act-on-any-face-flag' determines whether only highlighting
-faces in the buffer are candidates.  The list of names (strings) is
-returned."
-    (lambda (name) (push name face-names)) ; Action function
-    "Choose face (`RET' when done): "   ; `completing-read' args
-    (mapcar #'icicle-make-face-candidate
-            (if hlt-act-on-any-face-flag
-                (face-list)
-              (hlt-highlight-faces-in-buffer (point-min) (point-max))))
-    nil t nil (cond ((boundp 'face-name-history) 'face-name-history)
-                    ((boundp 'icicle-face-name-history) 'icicle-face-name-history)
-                    (t 'face-name-history))
-    nil nil
-    ((face-names nil))                  ; Additional bindings
-    nil nil                             ; First sexp and undo sexp
-    (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
-      (when (interactive-p) (message "Faces: %S" face-names))))
-
-  (icicle-define-command hlt-choose-invisible-faces
-    "Choose a list of face names from those currently invisible.
-Option `hlt-act-on-any-face-flag' determines whether only highlighting
-faces in the buffer are candidates.  The list of names (strings) is
-returned."
-    (lambda (name) (push name face-names)) ; Action function
-    "Choose face (`RET' when done): "   ; `completing-read' args
-    (mapcar #'icicle-make-face-candidate
-            (icicle-remove-if-not (lambda (x) (memq x buffer-invisibility-spec))
-                                  (if hlt-act-on-any-face-flag
-                                      (face-list)
-                                    (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
-    nil t nil (cond ((boundp 'face-name-history) 'face-name-history)
-                    ((boundp 'icicle-face-name-history) 'icicle-face-name-history)
-                    (t 'face-name-history))
-    nil nil
-    ((face-names nil))                  ; Additional bindings
-    nil nil                             ; First sexp and undo sexp
-    (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
-      (when (interactive-p) (message "Faces: %S" face-names))))
-
-  (icicle-define-command hlt-choose-visible-faces
-    "Choose a list of face names from those currently visible.
-Option `hlt-act-on-any-face-flag' determines whether only highlighting
-faces in the buffer are candidates.  The list of names (strings) is
-returned."
-    (lambda (name) (push name face-names)) ; Action function
-    "Choose face (`RET' when done): "   ; `completing-read' args
-    (mapcar #'icicle-make-face-candidate
-            (icicle-remove-if (lambda (x) (memq x buffer-invisibility-spec))
-                              (if hlt-act-on-any-face-flag
-                                  (face-list)
-                                (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
-    nil t nil (cond ((boundp 'face-name-history) 'face-name-history)
-                    ((boundp 'icicle-face-name-history) 'icicle-face-name-history)
-                    (t 'face-name-history))
-    nil nil
-    ((face-names nil))                  ; Additional bindings
-    nil nil                             ; First sexp and undo sexp
-    (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
-      (when (interactive-p) (message "Faces: %S" face-names))))
-  
-  (defun hlt-show-only (&optional start end faces)
-    "Show only the faces you choose, hiding all others.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-faces.  Nil means choose only from among faces used to highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-    (interactive `(,@(hlt-region-or-buffer-limits)
-                   ,(mapcar #'intern (hlt-choose-faces)))) ; An Icicles multi-command
-    (dolist (face (if hlt-act-on-any-face-flag
-                      (face-list)
-                    (hlt-highlight-faces-in-buffer start end)))
-      (if (memq face faces)
-          (hlt-show-default-face face)
-        (hlt-hide-default-face start end face))))
-  
-  (defun hlt-hide-only (&optional start end faces)
-    "hide only the faces you choose, showing all others.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-faces.  Nil means choose only from among faces used to highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-    (interactive `(,@(hlt-region-or-buffer-limits)
-                   ,(mapcar #'intern (hlt-choose-faces)))) ; An Icicles multi-command
-    (dolist (face (if hlt-act-on-any-face-flag
-                      (face-list)
-                    (hlt-highlight-faces-in-buffer start end)))
-      (if (memq face faces)
-          (hlt-hide-default-face start end face)
-        (hlt-show-default-face face))))
-
-  (defun hlt-show (faces)
-    "Show invisible faces that you choose.  Do nothing to other faces.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-invisible faces.  Nil means choose only from among invisible faces
-used to highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-    (interactive
-     (list (let ((fs  (icicle-remove-if-not
-                       (lambda (x) (memq x buffer-invisibility-spec))
-                       (if hlt-act-on-any-face-flag
-                           (face-list)
-                         (hlt-highlight-faces-in-buffer (point-min) (point-max))))))
-             (if fs
-                 (mapcar #'intern (hlt-choose-invisible-faces))
-               (error "No%s faces are invisible"
-                      (if hlt-act-on-any-face-flag "" " highlight"))))))
-    (dolist (face faces) (hlt-show-default-face face)))
-  
-  (defun hlt-hide (&optional start end faces)
-    "Hide visible faces that you choose.  Do nothing to other faces.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-visible faces.  Nil means choose only from among visible faces used to
-highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-    (interactive `(,@(hlt-region-or-buffer-limits)
-                   ,(mapcar #'intern (hlt-choose-faces)))) ; An Icicles multi-command
-    (dolist (face faces) (hlt-hide-default-face start end face)))
-  )
-
  
 ;;(@* "Functions for Highlighting Propertized Text - Emacs 21+")
 

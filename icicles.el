@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 21 17:49:40 2011 (-0700)
+;; Last-Updated: Sun Jul 24 18:54:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22917
+;;     Update #: 22928
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -179,9 +179,11 @@
 ;;    `icicle-buffer-config', `icicle-buffer-list',
 ;;    `icicle-buffer-other-window',
 ;;    `icicle-change-alternative-sort-order',
-;;    `icicle-change-history-variable', `icicle-clear-history',
-;;    `icicle-clear-current-history', `icicle-color-theme',
-;;    `icicle-comint-command', `icicle-comint-dynamic-complete',
+;;    `icicle-change-history-variable', `icicle-choose-faces',
+;;    `icicle-choose-invisible-faces', `icicle-choose-visible-faces',
+;;    `icicle-clear-history', `icicle-clear-current-history',
+;;    `icicle-color-theme', `icicle-comint-command',
+;;    `icicle-comint-dynamic-complete',
 ;;    `icicle-comint-dynamic-complete-filename',
 ;;    `icicle-comint-replace-by-expanded-filename',
 ;;    `icicle-comint-search', `icicle-command-abbrev',
@@ -243,6 +245,7 @@
 ;;    `icicle-goto-marker', `icicle-goto-marker-or-set-mark-command',
 ;;    `icicle-grep-saved-file-candidates',
 ;;    `icicle-gud-gdb-complete-command', `icicle-handle-switch-frame',
+;;    `icicle-hide-faces', `icicle-hide-only-faces',
 ;;    `icicle-hide/show-comments', `icicle-ido-like-mode',
 ;;    `icicle-imenu', `icicle-imenu-command',
 ;;    `icicle-imenu-non-interactive-function',
@@ -259,7 +262,8 @@
 ;;    `icicle-locate-file-no-symlinks-other-window',
 ;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
-;;    `icicle-occur', `icicle-other-window-or-frame', `icicle-plist',
+;;    `icicle-occur', `icicle-other-window-or-frame',
+;;    `icicle-pick-color-by-name-multi', `icicle-plist',
 ;;    `icicle-pop-tag-mark', `icicle-pp-eval-expression',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
 ;;    `icicle-read-kbd-macro', `icicle-recent-file',
@@ -307,7 +311,8 @@
 ;;    `icicle-set-TAB-methods-for-command',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
-;;    `icicle-shell-dynamic-complete-filename', `icicle-sit-for',
+;;    `icicle-shell-dynamic-complete-filename', `icicle-show-faces',
+;;    `icicle-show-only-faces', `icicle-sit-for',
 ;;    `icicle-skip-this-command', `icicle-sort-alphabetical',
 ;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
@@ -891,9 +896,10 @@
 ;;    `icicle-insert-Completions-help-string', `icicle-insert-dot',
 ;;    `icicle-insert-for-yank', `icicle-insert-input',
 ;;    `icicle-insert-thesaurus-entry-cand-fn', `icicle-insert-thing',
-;;    `icicle-invisible-p', `icicle-isearch-complete-past-string',
-;;    `icicle-join-nth-parts', `icicle-key-description',
-;;    `icicle-keys+cmds-w-prefix', `icicle-kill-a-buffer',
+;;    `icicle-invisible-face-p', `icicle-invisible-p',
+;;    `icicle-isearch-complete-past-string', `icicle-join-nth-parts',
+;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
+;;    `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
 ;;    `icicle-kmacro-action', `icicle-last-modified-first-p',
 ;;    `icicle-levenshtein-match', `icicle-levenshtein-one-match',
@@ -936,8 +942,9 @@
 ;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
 ;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
-;;    `icicle-place-cursor', `icicle-place-overlay',
-;;    `icicle-position', `icicle-prefix-any-candidates-p',
+;;    `icicle-pick-color-by-name-action', `icicle-place-cursor',
+;;    `icicle-place-overlay', `icicle-position',
+;;    `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
 ;;    `icicle-prefix-keys-first-p',

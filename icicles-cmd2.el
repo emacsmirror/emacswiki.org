@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jul 18 11:41:12 2011 (-0700)
+;; Last-Updated: Sun Jul 24 19:04:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3337
+;;     Update #: 3483
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -59,9 +59,10 @@
 ;;    (+)`icicle-apply', `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-variable', `icicle-apropos-zippy',
-;;    (+)`icicle-comint-command', (+)`icicle-comint-search',
-;;    (+)`icicle-compilation-search', (+)`icicle-complete-keys',
-;;    `icicle-complete-thesaurus-entry',
+;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
+;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
+;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
+;;    (+)`icicle-complete-keys', `icicle-complete-thesaurus-entry',
 ;;    (+)`icicle-describe-option-of-type', (+)`icicle-doc',
 ;;    (+)`icicle-exchange-point-and-mark', (+)`icicle-font',
 ;;    (+)`icicle-frame-bg', (+)`icicle-frame-fg', (+)`icicle-fundoc',
@@ -69,6 +70,7 @@
 ;;    (+)`icicle-goto-global-marker-or-pop-global-mark',
 ;;    (+)`icicle-goto-marker',
 ;;    (+)`icicle-goto-marker-or-set-mark-command',
+;;    (+)`icicle-hide-faces', (+)`icicle-hide-only-faces',
 ;;    `icicle-hide/show-comments', (+)`icicle-imenu',
 ;;    (+)`icicle-imenu-command',
 ;;    (+)`icicle-imenu-non-interactive-function',
@@ -80,11 +82,11 @@
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-keyword-list',
 ;;    (+)`icicle-map', `icicle-next-visible-thing',
 ;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-plist',
-;;    `icicle-previous-visible-thing', `icicle-read-color',
-;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
-;;    `icicle-save-string-to-variable', (+)`icicle-search',
-;;    (+)`icicle-search-all-tags-bookmark',
+;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
+;;    (+)`icicle-plist', `icicle-previous-visible-thing',
+;;    `icicle-read-color', `icicle-read-kbd-macro',
+;;    (+)`icicle-regexp-list', `icicle-save-string-to-variable',
+;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-bookmark',
@@ -121,7 +123,8 @@
 ;;    (+)`icicle-search-xml-element', (+)`icicle-select-frame',
 ;;    `icicle-select-frame-by-name',
 ;;    `icicle-set-S-TAB-methods-for-command',
-;;    `icicle-set-TAB-methods-for-command', (+)`icicle-tags-search',
+;;    `icicle-set-TAB-methods-for-command', (+)`icicle-show-faces',
+;;    (+)`icicle-show-only-faces', (+)`icicle-tags-search',
 ;;    (+)`icicle-vardoc', (+)`icicle-where-is', (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -157,11 +160,13 @@
 ;;    `icicle-Info-build-node-completions-1',
 ;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
 ;;    `icicle-Info-index-action', `icicle-Info-read-node-name',
-;;    `icicle-insert-thesaurus-entry-cand-fn', `icicle-invisible-p',
+;;    `icicle-insert-thesaurus-entry-cand-fn',
+;;    `icicle-invisible-face-p', `icicle-invisible-p',
 ;;    `icicle-keys+cmds-w-prefix', `icicle-marker+text',
 ;;    `icicle-markers', `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
+;;    `icicle-pick-color-by-name-action',
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-single-key-description',
@@ -224,6 +229,7 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "Icicles Top-Level Commands, Part 2")
+;;    (@> "Icicles Commands for Other Packages")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -272,7 +278,17 @@
   ;; apropos-command, apropos-function, apropos-option, apropos-variable
 (require 'hexrgb nil t)  ;; (no error if not found): hexrgb-color-name-to-hex, hexrgb-read-color
 (require 'strings nil t) ;; (no error if not found): read-number (my version)
-
+(eval-when-compile (require 'bookmark+ nil t)) ;; (no error if not found):
+  ;; bmkp-bmenu-barf-if-not-in-menu-list, bmkp-bmenu-get-marked-files, bmkp-bookmark-last-access-cp,
+  ;; bmkp-buffer-last-access-cp, bmkp-describe-bookmark, bmkp-describe-bookmark-internals,
+  ;; bmkp-file-alpha-cp, bmkp-get-buffer-name, bmkp-get-end-position, bmkp-get-tags, bmkp-gnus-cp,
+  ;; bmkp-handler-cp, bmkp-info-cp, bmkp-local-file-accessed-more-recently-cp,
+  ;; bmkp-local-file-size-cp, bmkp-local-file-type-cp, bmkp-local-file-updated-more-recently-cp,
+  ;; bmkp-marked-cp, bmkp-non-file-filename, bmkp-read-tags-completing, bmkp-region-alist-only,
+  ;; bmkp-region-bookmark-p, bmkp-sorted-alist, bmkp-sort-omit, bmkp-url-cp, bmkp-visited-more-cp
+(eval-when-compile (require 'highlight nil t)) ;; (no error if not found):
+  ;; hlt-act-on-any-face-flag, hlt-hide-default-face, hlt-highlight-faces-in-buffer,
+  ;; hlt-region-or-buffer-limits, hlt-show-default-face
 (eval-when-compile
  (or (condition-case nil
          (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
@@ -323,6 +339,7 @@
 (defvar apropos-do-all)                 ; In `apropos.el'
 (defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'
+(defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar replace-count)                  ; In `replace.el'.
@@ -335,6 +352,10 @@
 (defvar cookie-cache)
 (defvar Info-menu-entry-name-re)        ; In `info.el'
 (defvar Info-read-node-completion-table) ; In `info.el'
+(defvar palette-current-color)          ; In `palette.el'
+(defvar palette-last-color)             ; In `palette.el'
+(defvar palette-mode-map)               ; In `palette.el'
+(defvar palette-popup-map)              ; In `palette.el'
 (defvar synonyms-obarray)               ; In `synonyms.el'
 (defvar tags-case-fold-search)          ; In `etags.el'
 (defvar yow-after-load-message)
@@ -3648,6 +3669,11 @@ by `icicle-next-visible-thing-and-bounds'."
           prop
         (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec))))))
 
+(defun icicle-invisible-face-p (face)
+  "Return non-nil if FACE is currently invisibile."
+  (and (consp buffer-invisibility-spec)
+       (or (memq face buffer-invisibility-spec) (assq face buffer-invisibility-spec))))
+
 (defun icicle-next-visible-thing-and-bounds (thing start end)
   "Return the next visible THING and its bounds.
 Start at BEG and end at END, when searching for THING.
@@ -6007,6 +6033,227 @@ Null ARG means advise and enable."
            (ad-activate command)
            (when msgp (message "`%s' %s: %s" command type
                                (if (consp (car methods)) (mapcar #'car methods) methods)))))))
+
+
+;;(@* "Icicles Commands for Other Packages")
+;;; ** Icicles Commands for Other Packages **
+
+;;; Library `highlight.el' - Icicles multi-commands.  Emacs 21+.
+;;;
+(when (and (featurep 'highlight)
+           (fboundp 'next-single-char-property-change)) ; Don't bother, for Emacs 20.
+
+  (icicle-define-command icicle-choose-faces
+    "Choose a list of face names (strings).
+Option `hlt-act-on-any-face-flag' determines whether only highlighting
+faces in the buffer are candidates.  The list of names (strings) is
+returned."
+    (lambda (name) (push name face-names)) ; Action function
+    prompt                              ; `completing-read' args
+    (mapcar #'icicle-make-face-candidate
+            (if hlt-act-on-any-face-flag
+                (face-list)
+              (hlt-highlight-faces-in-buffer (point-min) (point-max))))
+    nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
+    (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
+    ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
+     (icicle-list-join-string            ": ")
+     (icicle-list-end-string             "")
+     (icicle-list-use-nth-parts          '(1))
+     (prompt                             (copy-sequence "Choose face (`RET' when done): "))
+     (face-names                         ()))
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+    nil                                 ; Undo code.
+    (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+      (when (interactive-p) (message "Faces: %S" face-names))))
+
+  (icicle-define-command icicle-choose-invisible-faces
+    "Choose a list of face names (strings) from currently invisible faces.
+Option `hlt-act-on-any-face-flag' determines whether only highlighting
+faces in the buffer are candidates.  The list of names (strings) is
+returned."
+    (lambda (name) (push name face-names)) ; Action function
+    prompt                              ; `completing-read' args
+    (mapcar #'icicle-make-face-candidate
+            (icicle-remove-if-not #'icicle-invisible-face-p
+                                  (if hlt-act-on-any-face-flag
+                                      (face-list)
+                                    (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
+    nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
+    (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
+    ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
+     (icicle-list-join-string            ": ")
+     (icicle-list-end-string             "")
+     (icicle-list-use-nth-parts          '(1))
+     (prompt                             (copy-sequence "Choose face (`RET' when done): "))
+     (face-names                         ()))
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+    nil                                 ; Undo code.
+    (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+      (when (interactive-p) (message "Faces: %S" face-names))))
+
+  (icicle-define-command icicle-choose-visible-faces
+    "Choose a list of face names (strings) from currently visible faces.
+Option `hlt-act-on-any-face-flag' determines whether only highlighting
+faces in the buffer are candidates.  The list of names (strings) is
+returned."
+    (lambda (name) (push name face-names)) ; Action function
+    prompt                              ; `completing-read' args
+    (mapcar #'icicle-make-face-candidate
+            (icicle-remove-if #'icicle-invisible-face-p
+                              (if hlt-act-on-any-face-flag
+                                  (face-list)
+                                (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
+    nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
+    (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
+    ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
+     (icicle-list-join-string            ": ")
+     (icicle-list-end-string             "")
+     (icicle-list-use-nth-parts          '(1))
+     (prompt                             (copy-sequence "Choose face (`RET' when done): "))
+     (face-names                         ()))
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+    nil                                 ; Undo code.
+    (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+      (when (interactive-p) (message "Faces: %S" face-names))))
+  
+  (defun icicle-show-only-faces (&optional start end faces)
+    "Show only the faces you choose, hiding all others.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+faces.  Nil means choose only from among faces used to highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+    (interactive `(,@(hlt-region-or-buffer-limits)
+                   ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
+    (dolist (face (if hlt-act-on-any-face-flag
+                      (face-list)
+                    (hlt-highlight-faces-in-buffer start end)))
+      (if (memq face faces)
+          (hlt-show-default-face face)
+        (hlt-hide-default-face start end face))))
+  
+  (defun icicle-hide-only-faces (&optional start end faces)
+    "Hide only the faces you choose, showing all others.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+faces.  Nil means choose only from among faces used to highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+    (interactive `(,@(hlt-region-or-buffer-limits)
+                   ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
+    (dolist (face (if hlt-act-on-any-face-flag
+                      (face-list)
+                    (hlt-highlight-faces-in-buffer start end)))
+      (if (memq face faces)
+          (hlt-hide-default-face start end face)
+        (hlt-show-default-face face))))
+
+  (defun icicle-show-faces (faces)
+    "Show invisible faces that you choose.  Do nothing to other faces.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+invisible faces.  Nil means choose only from among invisible faces
+used to highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+    (interactive
+     (list (let ((fs  (icicle-remove-if-not #'icicle-invisible-face-p
+                                            (if hlt-act-on-any-face-flag
+                                                (face-list)
+                                              (hlt-highlight-faces-in-buffer
+                                               (point-min) (point-max))))))
+             (if fs
+                 (mapcar #'intern (icicle-choose-invisible-faces)) ; An Icicles multi-command
+               (error "No%s faces are invisible"
+                      (if hlt-act-on-any-face-flag "" " highlight"))))))
+    (dolist (face faces) (hlt-show-default-face face)))
+  
+  (defun icicle-hide-faces (&optional start end faces)
+    "Hide visible faces that you choose.  Do nothing to other faces.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+visible faces.  Nil means choose only from among visible faces used to
+highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+    (interactive `(,@(hlt-region-or-buffer-limits)
+                   ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
+    (dolist (face faces) (hlt-hide-default-face start end face)))
+  )
+
+
+;;; Library `palette.el' - Icicles multi-commands.
+;;;
+(when (featurep 'palette)
+
+  (icicle-define-command icicle-pick-color-by-name ; Bound to `c' in color palette.
+    "Set the current color to a color you name.
+Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
+where each X is a hex digit.  The number of Xs must be a multiple of
+3, with the same number of Xs for each of red, green, and blue.
+If you enter an empty color name, then a color is picked randomly.
+The new current color is returned."     ; Doc string
+    icicle-pick-color-by-name-action    ; Action function
+    "Color (name or #R+G+B+): "         ; `completing-read' arguments
+    (hexrgb-defined-colors-alist) nil nil nil nil nil nil
+    ((completion-ignore-case t)))
+
+  (defun icicle-pick-color-by-name-action (color)
+    "Action function for `icicle-pick-color-by-name'."
+    (if (string= "" color)
+        (let* ((colors  (hexrgb-defined-colors))
+               (rand    (random (length colors)))) ; Random color.
+          (setq color  (elt colors rand)))
+      (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
+        (when (and hex-string (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
+        (if (not (or hex-string (if (fboundp 'test-completion) ; Not defined in Emacs 20.
+                                    (test-completion color (hexrgb-defined-colors-alist))
+                                  (try-completion color (hexrgb-defined-colors-alist)))))
+            (error "No such color: %S" color)
+          (setq color  (hexrgb-color-name-to-hex color))))
+      (setq palette-last-color  palette-current-color)
+      (save-selected-window
+        (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
+        (palette-set-current-color color)
+        (palette-where-is-color color)
+        (palette-brightness-scale)
+        (palette-swatch))
+      palette-current-color))
+
+  (define-key palette-mode-map "c"  'icicle-pick-color-by-name)
+  (define-key palette-popup-map [pick-color-by-name] ; Use same name as in `palette.el'.
+    `(menu-item "Choose Color By Name" icicle-pick-color-by-name
+      :help "Set the current color to a color you name"))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

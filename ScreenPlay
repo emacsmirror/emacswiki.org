@@ -1,6 +1,7 @@
-There are two screenplay libraries known.  Both share the same filename.  :(
+There are three screenplay libraries known, two of which share the same name :(
 
 * http://www.nongnu.org/screenplay/ -- by VanceSimpson
+* http://www.nongnu.org/screenwriter/ -- improved fork of VanceSimpson's screenplay.el
 * Lisp:screenplay.el -- by AlexSchroeder
 
 There is also a LaTeX Document Class called "plari" by Antti-Juhani Kaijanaho for screen plays.
@@ -62,21 +63,18 @@ Notably, there are a few conventions in screenplays that are considered more tra
 * (Dialogue direction) - when a screenwriter wishes to specify how an actor says a line if it is not immediately obvious; this appears after the character name and before the dialogue.
 ** This can be manually entered but .
 
-* Transitions - editor notes such as CUT TO:, FADE IN:, FADE OUT., DISSOLVE:, and so on.  These should appear near the right margin in all caps.  They aren't usually used with the expectation of these editing decisions actually being implemented in the final movie, but are sometimes used as visual punctuation to an important scene or to convey a certain mood of a scene (such as inserting a CUT TO: to show an abrupt end to a scene, or a DISSOLVE: to indicate a slow lingering end to a pensive or romantic scene).  FADE IN: and FADE OUT. almost always appear as the first and last lines of a script.
-** A patch implementing transitions (assigned to TAB-TAB-TAB-TAB-RET) exists at http://www.slackermedia.info/tools/transitions.patch
+== Screenwriter.el ==
 
-== Alternate Key-bindings ==
+This is an improved fork of screenplay.el by VanceSimpson, including transitions (editor notes such as CUT TO:, FADE IN:, FADE OUT., DISSOLVE:, and so on).
 
-The TAB-TAB-RET convention works well but some users lose count of how many TABS they are using, or forget how many TABS provide which element.  This is the set of custom keybindings currently used at Pittsburgh Filmmakers Institute:
+It also remaps the keybindings to the simpler
 
-(global-set-key (kbd "<f1>")   'screenplay-mode)
-(global-set-key (kbd "C-c s") 'screenplay-slugline)
-(global-set-key (kbd "C-c a") 'screenplay-action-block)
-(global-set-key (kbd "C-c d") 'screenplay-dialog-block)
-(global-set-key (kbd "C-c t") 'screenplay-transition)
-;; automagically open foo.scp and foo.screenplay in screenplay-mode
-(setq auto-mode-alist (cons '("\\.scp" . screenplay-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.screenplay" . screenplay-mode) auto-mode-alist))
+* M-s prompts for a Slug line (a scene heading, such as INT. CAFE - DAY)
+* M-a drops into an Action block (also known as "scene direction", in which action is described)
+* M-d enters a Dialog block (actors' lines)
+* M-t prompts for a Transition (CUT TO:, FADE OUT., etc)
+
+The download also includes a set of shell scripts called screenplay-tools that will assist the screenwriter in generating an industry-standard title page, numbering pages and scenes, generating location and character reports, and printing.
 
 ----
 MarkupModes

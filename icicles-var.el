@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:41:56 2011 (-0700)
+;; Last-Updated: Sun Jul 24 17:31:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1505
+;;     Update #: 1508
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -719,6 +719,9 @@ input prompt is prefixed by `+'.
 + `icicle-buffer-list'                 - Choose a list of buffer names
   `icicle-change-alternative-sort-order' - Choose an alternative sort
   `icicle-change-sort-order'           - Choose a sort order
++ `icicle-choose-faces'                - Choose a list of face names
++ `icicle-choose-invisible-faces'      - Choose invisible face names
++ `icicle-choose-visible-faces'        - Choose visible face names
 + `icicle-clear-current-history'       - Clear current history entries
 + `icicle-clear-history'               - Clear entries from a history
 + `icicle-color-theme'                 - Change color theme
@@ -760,6 +763,8 @@ input prompt is prefixed by `+'.
 + `icicle-fundoc'                      - Show function description
 + `icicle-goto-global-marker'          - Go to a global marker
 + `icicle-goto-marker'                 - Go to a marker in this buffer
++ `icicle-hide-faces'                  - Hide faces you choose
++ `icicle-hide-only-faces'             - Hide some faces; show others
 + `icicle-imenu*'                      - Navigate among Imenu entries
   `icicle-increment-option'            - Increment a numeric option
   `icicle-increment-variable'          - Increment a numeric variable
@@ -816,6 +821,8 @@ input prompt is prefixed by `+'.
 + `icicle-select-window'               - Select window by buffer name
   `icicle-send-bug-report'             - Send Icicles bug report
 + `icicle-set-option-to-t'             - Set binary option to t
++ `icicle-show-faces'                  - Show chosen invisible faces
++ `icicle-show-only-faces'             - Show some faces; hide others
   `icicle-toggle-~-for-home-dir'       - Toggle using `~' for $HOME
   `icicle-toggle-alternative-sorting'  - Swap alternative sort
   `icicle-toggle-angle-brackets'       - Toggle using angle brackets

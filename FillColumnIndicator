@@ -20,7 +20,7 @@ On graphical displays (displays that can display images) the fill-column rule is
 
 <b>Color</b>. The color of the rule is controlled by the variable ##fci-rule-color##, whose value can be any valid color name. 
 
-To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
+To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your [[init file]]:
 
   (setq fci-rule-width 1)
   (setq fci-rule-color "darkblue")
@@ -39,13 +39,15 @@ On non-graphical displays (where images aren't available), the rule is drawn usi
 
 == Further Customization Examples==
 
-To turn on fci-mode automatically for certain kinds of files, add ##'fci-mode## to the appropriate mode hook.  For example, to turn it on automatically when visiting a file with C code, put: 
+To turn on fci-mode automatically for certain kinds of files, add ##'fci-mode## to the appropriate mode hook.  For example, to turn it on automatically when visiting a file with C code, put the following line in your init file: 
 
   (add-hook 'c-mode-hook 'fci-mode)
 
-in your ##.emacs##.
+To turn on fci-mode automatically for all files, put the following line in your init file:
 
-To enable fci-mode as a global minor mode, add the following code to your init file:
+  (add-hook 'after-change-major-mode-hook 'fci-mode)
+
+To enable fci-mode as a global minor mode, put the following code to your init file:
 
   (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
   (global-fci-mode 1)

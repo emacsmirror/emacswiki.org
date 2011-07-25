@@ -9,6 +9,20 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 ----
+
+== Glossary - Wrong Page is Linked ==
+
+Thanks for adding the link to the Glossary in the page headers.  However, the link goes nowhere (new page).  It needs to go to this page: CategoryGlossary. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
 == Search Flooded with Source Code ==
 
 No idea how much control you have over the search. However, currently searches often are useless to me, because they show only source code files. Try searching for "defmacro", for instance; maybe that is because it isn't discussed anywhere on the wiki, but I have no way of finding out. Please allow to exclude sources from the search results. -- OlafB

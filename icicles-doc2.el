@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:37:06 2011 (-0700)
+;; Last-Updated: Sun Jul 24 17:29:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28039
+;;     Update #: 28042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6074,6 +6074,9 @@
 ;;  `icicle-bookmark-w3m-other-window' - Jump to W3M bookmarks
 ;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
+;;  `icicle-choose-faces' - Choose a list of face names
+;;  `icicle-choose-invisible-faces' - Choose invisible face names
+;;  `icicle-choose-visible-faces' - Choose visible face names
 ;;  `icicle-clear-history' - Clear minibuffer histories
 ;;  `icicle-color-theme'  - Change color theme
 ;;  `icicle-completing-yank' - Yank text using completion
@@ -6091,6 +6094,8 @@
 ;;  `icicle-frame-bg'     - Change the frame background color
 ;;  `icicle-frame-fg'     - Change the frame foreground color
 ;;  `icicle-fundoc'       - Display the doc of a function
+;;  `icicle-hide-faces'   - Hide a set of faces you choose
+;;  `icicle-hide-only-faces' - Hide a set of faces; show all others
 ;;  `icicle-increment-option' - Increment numeric options (Do Re Mi)
 ;;  `icicle-increment-variable' - Increment variables (Do Re Mi)
 ;;  `icicle-Info-virtual-book' - Open Info on a virtual book
@@ -6157,6 +6162,8 @@
 ;;  `icicle-search-xml-element' - Search the contents of XML elements
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to `t'
+;;  `icicle-show-faces'   - Show invisible faces you choose
+;;  `icicle-show-only-faces' - Show some invisible faces; hide others
 ;;  `icicle-toggle-option' - Toggle the value of a binary option
 ;;  `icicle-vardoc'       - Display the doc of a variable
 ;;  `toggle' (alias)      - Toggle the value of a binary option

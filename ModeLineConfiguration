@@ -31,7 +31,7 @@ The mode line normally looks something like this:
 
 which may be cryptic to new users, so to make it like this:
 
-    Lisp Interaction: bufffer *scratch*, line 5 -- user: alice
+    Lisp Interaction: buffer *scratch*, line 5 -- user: alice
 
 use:
 

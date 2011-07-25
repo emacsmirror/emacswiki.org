@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Jul  1 10:32:43 2011 (-0700)
+;; Last-Updated: Sun Jul 24 10:21:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3442
+;;     Update #: 3448
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -100,6 +100,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/07/24 dadams
+;;     menu-bar-(edit|sort)-region-menu: Disable these submenus if region is not active.
+;;     Removed old Emacs19 commented code.
 ;; 2011/07/01 dadams
 ;;     Added: option menu-barp-select-buffer-function.
 ;;     Following fix to Emacs bug #8876, use new var menu-bar-select-buffer-function.
@@ -804,14 +807,17 @@ submenu of the \"Help\" menu."))
   'separator-edit-select-all)
 (define-key-after menu-bar-edit-menu [fill]
   (cons "Fill" menu-bar-edit-fill-menu) 'props)
+
 (defvar menu-bar-edit-region-menu (make-sparse-keymap "Edit Region"))
 (defalias 'menu-bar-edit-region-menu (symbol-value 'menu-bar-edit-region-menu))
 (define-key-after menu-bar-edit-menu [region]
-  (cons "Edit Region" menu-bar-edit-region-menu) 'fill)
+  '(menu-item "Edit Region" menu-bar-edit-region-menu :enable mark-active)
+  'fill)
 (defvar menu-bar-edit-sort-menu (make-sparse-keymap "Sort Region"))
 (defalias 'menu-bar-edit-sort-menu (symbol-value 'menu-bar-edit-sort-menu))
 (define-key-after menu-bar-edit-menu [sort]
-  (cons "Sort Region" menu-bar-edit-sort-menu) 'region)
+  '(menu-item "Sort Region" menu-bar-edit-sort-menu :enable mark-active)
+  'region)
 
 ;; `Edit' > `Fill' submenu.
 (define-key menu-bar-edit-fill-menu [fill-nonuniform-para]
@@ -1586,206 +1592,6 @@ setting the variable and displaying a status message (not MESSAGE)."
            ;; Save if we changed anything.
            (when need-save
              (custom-save-all))))))
-
-
-
-;;;@@@Emacs19 (autoload 'show-calendar "calendar+"
-;;;@@@Emacs19   "Show *Calendar* buffer, generating it if not already present." t)
-;;;@@@Emacs19 (autoload 'calendar "calendar+"
-;;;@@@Emacs19   "Display a 3-month calendar in another window." t)
-;;;@@@Emacs19  ;; Autoloaded from `calendar+.el': calendar, show-calendar
-
-;;; ---------------------------
-
-;;;@@@Emacs19 (defvar menu-bar-help-menu (make-sparse-keymap "Help")) ; Wipe out original.
-;;;@@@Emacs19 (define-key global-map [menu-bar help-menu] (cons "?" menu-bar-help-menu))
-
-
-;;; TOOLS menu.
-;;;@@@Emacs19 ;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar tools separator-print])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools ps-print-region])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools ps-print-buffer])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools print-region])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools print-buffer])
-;;;@@@Emacs19
-;;;@@@Emacs19 (defvar menu-bar-print-menu (make-sparse-keymap "Print"))
-;;;@@@Emacs19 (define-key menu-bar-tools-menu [print] (cons "Print" menu-bar-print-menu))
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [separator-print] '("--") 'print)
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [separator-cal] '("--") 'rmail)
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [show-calendar]
-;;;@@@Emacs19                 '("Show Calendar" . show-calendar) 'separator-cal)
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [calendar]
-;;;@@@Emacs19                 '("Calendar and Reminders" . calendar) 'calendar)
-
-;;;@@@Emacs19 ;; PRINT submenu of TOOLS
-;;;@@@Emacs19 ;; The `*-declp-*' commands are defined in `misc-cmds.el'.
-;;;@@@Emacs19 (define-key menu-bar-print-menu [ps-print-region]
-;;;@@@Emacs19   '("Region as Postscript" . ps-print-region-with-faces))
-;;;@@@Emacs19 ;(put 'declp-region-w-switches 'menu-enable 'mark-active)
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [declp-region-w-switches]
-;;;@@@Emacs19 ;  '("Region with Switches..." . declp-region-w-switches))
-;;;@@@Emacs19 ;(put 'pr-declp-region 'menu-enable 'mark-active)
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-paged-region]
-;;;@@@Emacs19 ;  '("Paged Region..." . pr-declp-region))
-;;;@@@Emacs19 ;(put 'declp-region 'menu-enable 'mark-active)
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-region]
-;;;@@@Emacs19 ;  '("Region..." . declp-region))
-;;;@@@Emacs19 ;;--------------------
-;;;@@@Emacs19 (define-key menu-bar-print-menu [separator-print-buffer] '("--"))
-;;;@@@Emacs19 (define-key menu-bar-print-menu [ps-print-buffer]
-;;;@@@Emacs19   '("Buffer as Postscript" . ps-print-buffer-with-faces))
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [declp-buffer-w-switches]
-;;;@@@Emacs19 ;  '("Buffer with Switches..." . declp-buffer-w-switches))
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-paged-buffer]
-;;;@@@Emacs19 ;  '("Paged Buffer..." . pr-declp-buffer))
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-buffer]
-;;;@@@Emacs19 ;  '("Buffer..." . declp-buffer))
-
-;;;@@@Emacs19 ;;; VERSION CONTROL submenu of TOOLS
-;;;@@@Emacs19 (when (boundp 'vc-menu-map)
-;;;@@@Emacs19 ;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar tools vc separator1])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools vc separator2])
-;;;@@@Emacs19 (define-key vc-menu-map [vc-status-here] '("Files Here" . vc-status-here)))
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-directory] '("Files Below" . vc-directory)
-;;;@@@Emacs19                   'vc-status-here)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-dir-separator1] '("--") 'vc-directory)
-;;;@@@Emacs19 (define-key-after vc-menu-map [ediff-revision]
-;;;@@@Emacs19                   '("Compare with Version..." . vc-ediff) 'vc-dir-separator1)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-diff]
-;;;@@@Emacs19              '("Compare Last Version using Diff" . vc-diff) 'ediff-revision)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-version-other-window]
-;;;@@@Emacs19   '("Show Other Version..." . vc-version-other-window) 'vc-diff)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-dir-separator2] '("--")
-;;;@@@Emacs19                   'vc-version-other-window)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-rename-file]
-;;;@@@Emacs19                   '("Rename File..." . vc-rename-file)
-;;;@@@Emacs19   'vc-register)
-;;;@@@Emacs19 (define-key vc-menu-map [vc-check-out] '("Check In/Out" . vc-toggle-read-only))
-;;;@@@Emacs19
-;;;@@@Emacs19 (put 'vc-diff 'menu-enable
-;;;@@@Emacs19      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-ediff 'menu-enable
-;;;@@@Emacs19                '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-version-other-window 'menu-enable
-;;;@@@Emacs19                  '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-toggle-read-only 'menu-enable '(or vc-mode vc-dired-mode))
-;;;@@@Emacs19 (put 'vc-insert-headers 'menu-enable '(or vc-mode vc-dired-mode))
-;;;@@@Emacs19 ;;; vc-dired-mode is OK (e.g. Unregistered).
-;;;@@@Emacs19 (put 'vc-register 'menu-enable '(not vc-mode))
-;;;@@@Emacs19 (put 'vc-rename-file 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-revert-buffer 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-cancel-version 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-print-log 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-update-change-log 'menu-enable
-;;;@@@Emacs19  '(or (eq (vc-buffer-backend) 'RCS) vc-dired-mode (eq 'dired-mode major-mode)))
-
-
-;;; EDIT menu
-;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar edit separator-edit])
-
-;;;@@@Emacs19 (define-key menu-bar-edit-menu [undo] '("Undo" . advertised-undo))
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [separator-edit-undo] '("--") 'undo)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [cut]
-;;;@@@Emacs19                   '("Cut" . kill-region) 'separator-edit-undo)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [copy]
-;;;@@@Emacs19                   '("Copy" . menu-bar-kill-ring-save) 'cut)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [paste] '("Paste" . yank) 'copy)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [select-paste]
-;;;@@@Emacs19                   '("Select and Paste" . yank-menu)
-;;;@@@Emacs19   'paste)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [clear]
-;;;@@@Emacs19                   '("Clear" . delete-region) 'select-paste)
-
-
-;;;@@@Emacs19 (defalias 'menu-bar-edit-fill-menu (symbol-value 'menu-bar-edit-fill-menu))
-
-;;;@@@Emacs19 (when (fboundp 'start-process)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [spell]
-;;;@@@Emacs19                   '("Spell" . ispell-menu-map) 'sort))
-
-
-;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar help emacs-news])
-;;;@@@Emacs19 (global-unset-key [menu-bar help emacs-faq])
-
-;;;@@@Emacs19 (define-key menu-bar-help-menu [help-on-click]
-;;;@@@Emacs19   '("What's This?..." . help-on-click/key))       ; Defined in `help+.el'.
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [help-for-help]
-;;;@@@Emacs19   '("Help on Help..." . help-for-help) 'help-on-click)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-menubar]
-;;;@@@Emacs19   '("Describe Menu Bar" . describe-menubar) 'help-for-help)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-help-click] '("--")
-;;;@@@Emacs19   'view-lossage)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-mode]
-;;;@@@Emacs19   '("Describe Mode" . describe-mode) 'separator-help-click)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-syntax]
-;;;@@@Emacs19   '("Describe Mode Syntax" . describe-syntax) 'describe-mode)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-variable]
-;;;@@@Emacs19   '("Describe Variable..." . describe-variable) 'describe-syntax)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [edit-options]
-;;;@@@Emacs19   '("Show/Set Variables" . edit-options) 'describe-variable)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-function]
-;;;@@@Emacs19   '("Describe Function..." . describe-function) 'edit-options)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [where-is]
-;;;@@@Emacs19   '("Where is Command..." . where-is) 'describe-function)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [Info-goto-emacs-command-node]
-;;;@@@Emacs19   '("`Info' on Command..." . Info-goto-emacs-command-node) 'where-is)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-key]
-;;;@@@Emacs19   '("Describe Key/Menu..." . describe-key) 'Info-goto-emacs-command-node)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [Info-goto-emacs-key-command-node]
-;;;@@@Emacs19   '("`Info' on Key/Menu..." . Info-goto-emacs-key-command-node) 'describe-key)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [list-keybindings]
-;;;@@@Emacs19   '("Show Key/Menu Bindings" . describe-bindings)
-;;;@@@Emacs19   'Info-goto-emacs-key-command-node)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-manuals] '("--")
-;;;@@@Emacs19   'apropos-doc%%%%%%%%%%%%%)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [info] '("`Info' (online manuals)" . info)
-;;;@@@Emacs19   'separator-manuals)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [man]
-;;;@@@Emacs19   '("Unix Manual..." . manual-entry) 'info)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-emacs] '("--") 'man)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-tutorial]
-;;;@@@Emacs19   '("Emacs Tutorial" . help-with-tutorial) 'separator-emacs)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-faq]
-;;;@@@Emacs19   '("Emacs FAQ" . view-emacs-FAQ) 'emacs-tutorial)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-news]
-;;;@@@Emacs19   '("Emacs Changes" . view-emacs-news) 'emacs-faq)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-lispdoc] '("--")
-;;;@@@Emacs19   'emacs-news)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [finder-by-keyword]
-;;;@@@Emacs19   '("Lisp Libraries by Keyword" . finder-by-keyword) ; Defined in `finder.el'.
-;;;@@@Emacs19   'separator-lispdoc)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [locate-library] ; Defined in `help.el'.
-;;;@@@Emacs19   '("Locate Lisp Library..." . locate-library) 'finder-by-keyword)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-Lisp-News]
-;;;@@@Emacs19   '("Emacs Lisp Changes" . view-emacs-lisp-news) ; Defined in `help.el'.
-;;;@@@Emacs19   'locate-library)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-about] '("--")
-;;;@@@Emacs19   'emacs-Lisp-News)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-version]
-;;;@@@Emacs19   '("Show Version" . emacs-version) 'separator-about)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [report-emacs-bug]
-;;;@@@Emacs19   '("Send Bug Report..." . report-emacs-bug) 'emacs-version)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-help-buffer] '("--")
-;;;@@@Emacs19   'report-emacs-bug)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [save-*Help*-buffer]
-;;;@@@Emacs19   '("Save *Help* Buffer" . save-*Help*-buffer) 'separator-help-buffer)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [show-*Help*-buffer]
-;;;@@@Emacs19   '("Show *Help* Buffer" . show-*Help*-buffer) 'save-*Help*-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
