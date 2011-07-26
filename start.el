@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue May 10 18:53:00 2011 (-0700)
+;; Last-Updated: Mon Jul 25 14:48:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2872
+;;     Update #: 2887
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -35,14 +35,14 @@
 ;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
 ;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
 ;;   `frame+', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `highlight', `icicles',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
-;;   `icicles-var', `icomplete', `icomplete+', `image-dired',
-;;   `imenu', `imenu+', `info', `info+', `isearch+', `iso-transl',
-;;   `kmacro', `lacarte', `levenshtein', `lib-requires',
-;;   `lisp-float-type', `lisp-mnt', `loadhist', `local-lpr',
-;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
+;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
+;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-mode',
+;;   `icicles-opt', `icicles-var', `icomplete', `icomplete+',
+;;   `image-dired', `imenu', `imenu+', `info', `info+', `isearch+',
+;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `lib-requires', `lisp-float-type', `lisp-mnt', `loadhist',
+;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
 ;;   `mouse+', `mouse3', `mwheel', `occur-schroeder', `oneonone',
@@ -90,6 +90,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2011/07/25 dadams
+;;     Moved to start-opt.el: Savehist settings, color-moccur settings.
 ;; 2011/05/10 dadams
 ;;     Call thgcmd-bind-keys to bind thing-cmds.el default keys.
 ;; 2010/11/20 dadams
@@ -507,53 +509,39 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (setq dmoccur-use-list t)
 (setq dmoccur-list '(("dir" default-directory (".*") dir)))
 (require 'color-moccur nil t)
-(when (fboundp 'dired-do-moccur) (define-key dired-mode-map "E" 'dired-do-moccur))
-(when (fboundp 'Buffer-menu-moccur) (define-key Buffer-menu-mode-map "E" 'Buffer-menu-moccur))
-(when (fboundp 'occur-by-moccur)
-  (global-set-key "\C-x\C-o" 'occur-by-moccur)) ; was `delete-blank-lines'
-(when (fboundp 'moccur) (global-set-key "\C-c\C-x\C-o" 'moccur))
-(when (fboundp 'grep-buffers) (global-set-key "\C-cg" 'grep-buffers))
-(when (fboundp 'search-buffers) (global-set-key "\C-c\C-o" 'search-buffers))
 (require 'moccur-edit nil t)            ; Edit files by editing the Moccur buffer.
 
 (when (fboundp 'define-minor-mode) (require 'linkd nil t)) ; Hyperlinks.
 
-(autoload 'ispell-word "ispell"
-  "Check spelling of word at or before point" t)
-(autoload 'ispell-complete-word "ispell"
-  "Complete word at or before point" t)
-(autoload 'ispell-region "ispell"
-  "Check spelling of every word in the region" t)
-(autoload 'ispell-buffer "ispell"
-  "Check spelling of every word in the buffer" t)
+(autoload 'ispell-word "ispell" "Check spelling of word at or before point" t)
+(autoload 'ispell-complete-word "ispell" "Complete word at or before point" t)
+(autoload 'ispell-region "ispell" "Check spelling of every word in the region" t)
+(autoload 'ispell-buffer "ispell" "Check spelling of every word in the buffer" t)
 
-(autoload 'make-regexp "make-regexp"
-  "Return a regexp to match a string item in STRINGS.")
-(autoload 'make-regexps "make-regexp"
-  "Return a regexp to REGEXPS.")
+(autoload 'make-regexp "make-regexp" "Return a regexp to match a string item in STRINGS.")
+(autoload 'make-regexps "make-regexp" "Return a regexp to REGEXPS.")
 
 (autoload 'apropos-user-options "apropos+" "Show user options that match REGEXP." t)
 (autoload 'erase-nonempty-inactive-minibuffer "strings"
   "Erase the minibuffer, if inactive and `minibuffer-empty-p'." t)
 (autoload 'update-file-autoloads "autoload+"
   "Update the autoloads for FILE in `generated-autoload-file'" t)
+
 (autoload 'unaccent-word "unaccent"
   "Move curseur forward NUM (prefix arg) words, removing accents." t)
 (autoload 'unaccent-region "unaccent"
   "Replace accented chars between START and END by unaccented chars." t)
 (autoload 'unaccent-char "unaccent"
   "Replace accented char at curser by corresponding unaccented char(s)." t)
-(autoload 'kill-region-wimpy "wimpy-del"
-  "Kill region, with confirmation if > `wimpy-delete-size'." t)
+
+(autoload 'kill-region-wimpy "wimpy-del" "Kill region, with confirmation if > `wimpy-delete-size'." t)
 (autoload 'clipboard-kill-region-wimpy "wimpy-del"
   "Kill region, with confirmation if > `wimpy-delete-size'." t)
-(autoload 'auto-make-header "header2"
-  "Call `make-header' if current buffer is empty." t)
+
+(autoload 'auto-make-header "header2" "Call `make-header' if current buffer is empty." t)
 (autoload 'update-file-header "header2" "Update file header." t)
-(autoload 'make-header "header2"
-  "Insert (mode-dependent) header comment at beginning of file." t)
-(autoload 'make-revision "header2"
-  "Prepare for a new history comment." t)
+(autoload 'make-header "header2" "Insert (mode-dependent) header comment at beginning of file." t)
+(autoload 'make-revision "header2" "Prepare for a new history comment." t)
 
 (autoload 'boxquote-title  "boxquote" "Set the title of the current boxquote." t)
 (autoload 'boxquote-region "boxquote" "Draw a box around the region." t)
@@ -629,9 +617,6 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (require 'dired-sort-menu+ nil t))    ; Menu/dialogue for dired sort options
 (require 'dired-details+ nil t)         ; Make file details hideable in dired
 (require 'savehist-20+ nil t)           ; Save your history lists.
-(if (fboundp 'savehist-mode)
-    (savehist-mode 1)
-  (when (fboundp 'savehist-load) (savehist-load))) ; Load your saved history lists.
 (eval-after-load "faces" '(require 'faces+ nil t)) ; Extensions to `faces.el'.
 (autoload 'menu-bar-read-lispref "info+" "Access the Emacs Lisp manual via `Info'." t)
 (autoload 'info-emacs-manual "info+" "Access the Emacs manual via \"Info\"." t)
@@ -664,6 +649,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (autoload 'display-line-numbers "line-num"
   "Temporarily display line numbers in left margin of current buffer." t)
 (autoload 'setup-training-cc "training-cc" "Set up for code display with projector." t)
+
 (autoload 'toggle-show-tabs-show-ws "show-wspace" "Toggle highlighting of TABs." t)
 (autoload 'show-ws-toggle-show-tabs "show-wspace" "Toggle highlighting of TABs." t)
 (autoload 'toggle-show-hard-spaces-show-ws "show-wspace"
@@ -674,21 +660,24 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   "Toggle highlighting of trailing whitespace." t)
 (autoload 'show-ws-toggle-show-trailing-whitespace "show-wspace"
   "Toggle highlighting of trailing whitespace." t)
+
 (autoload 'joc-cursor-type-set-hook "cursors" "Make cursor reflect insert/overwrite mode." t)
+
 (autoload 'ascii-on        "ascii" "Turn on ASCII code display."   t)
 (autoload 'ascii-off       "ascii" "Turn off ASCII code display."  t)
 (autoload 'ascii-display   "ascii" "Toggle ASCII code display."    t)
 (autoload 'ascii-customize "ascii" "Customize ASCII code display." t)
 (eval-after-load "ascii" '(progn (copy-face 'region 'ascii-ascii-face)
                                  (copy-face 'secondary-selection 'ascii-non-ascii-face)))
+
 (autoload 'blank-mode-on "blank-mode" "Turn on blank visualization."   t)
 (autoload 'blank-mode-off "blank-mode" "Turn off blank visualization."  t)
 (autoload 'blank-mode "blank-mode" "Toggle blank visualization."    t)
 (autoload 'blank-mode-customize "blank-mode" "Customize blank visualization." t)
+
 (autoload 'setnu-mode "setnu+" "Toggle setnu-mode on/off." t)
 (autoload 'linum-mode "linum" "Toggle display of line numbers." t)
-(when (require 'browse-kill-ring nil t)
-  (require 'browse-kill-ring+ nil t))
+(when (require 'browse-kill-ring nil t) (require 'browse-kill-ring+ nil t))
 
 (when (> emacs-major-version 20)
   (autoload 'column-marker-1 "column-marker" "Highlight a column." t))

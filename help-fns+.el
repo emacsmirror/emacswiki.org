@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Jun 27 09:34:02 2011 (-0700)
+;; Last-Updated: Mon Jul 25 15:27:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1024
+;;     Update #: 1028
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -105,6 +105,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/07/25 dadams
+;;     describe-mode:
+;;       Put call to help-documentation inside let for maj: else major-mode gets changed to help-mode.
 ;; 2011/06/26 dadams
 ;;     Added: help-commands-to-key-buttons, help-documentation(-property),
 ;;            help-key-button-string, help-substitute-command-keys (Emacs 23+).
@@ -641,79 +644,79 @@ descriptions of the minor modes, each on a separate page.
 For this to work correctly for a minor mode, the mode's indicator
 variable \(listed in `minor-mode-alist') must also be a function
 whose documentation describes the minor mode."
-  (interactive "@")
-  (unless buffer (setq buffer  (current-buffer)))
-  (help-setup-xref (list #'describe-mode buffer) (called-interactively-p 'interactive))
-  ;; For the sake of `help-do-xref' and `help-xref-go-back', do not switch buffers
-  ;; before calling `help-buffer'.
-  (with-help-window (help-buffer)
-    (with-current-buffer buffer
-      (let (minor-modes)
-        ;; Older packages do not register in minor-mode-list but only in `minor-mode-alist'.
-        (dolist (x minor-mode-alist)
-          (setq x  (car x))
-          (unless (memq x minor-mode-list) (push x minor-mode-list)))
-        (dolist (mode minor-mode-list) ; Find enabled minor mode we will want to mention.
-          ;; Document minor mode if listed in `minor-mode-alist', non-nil, and has a function def.
-          (let ((fmode  (or (get mode :minor-mode-function) mode)))
-            (and (boundp mode) (symbol-value mode) (fboundp fmode)
-                 (let ((pretty-minor-mode  (if (string-match "\\(\\(-minor\\)?-mode\\)?\\'"
-                                                             (symbol-name fmode))
-                                               (capitalize (substring (symbol-name fmode)
-                                                                      0 (match-beginning 0)))
-                                             fmode)))
-                   (push (list fmode pretty-minor-mode
-                               (format-mode-line (assq mode minor-mode-alist)))
-                         minor-modes)))))
-        (setq minor-modes  (sort minor-modes (lambda (a b) (string-lessp (cadr a) (cadr b)))))
-        (when minor-modes
-          (princ "Enabled minor modes:\n")
-          (make-local-variable 'help-button-cache)
-          (with-current-buffer standard-output
-            (dolist (mode  minor-modes)
-              (let ((mode-function      (nth 0 mode))
-                    (pretty-minor-mode  (nth 1 mode))
-                    (indicator          (nth 2 mode)))
-                (add-text-properties 0 (length pretty-minor-mode) '(face bold) pretty-minor-mode)
-                (save-excursion
-                  (goto-char (point-max))
-                  (princ "\n\f\n")
-                  (push (point-marker) help-button-cache)
-                  ;; Document the minor modes fully.
-                  (insert pretty-minor-mode)
-                  (princ (format " minor mode (%s):\n" (if (zerop (length indicator))
-                                                           "no indicator"
-                                                         (format "indicator%s" indicator))))
-                  (with-current-buffer standard-output
-                    (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
-                  (Info-make-manuals-xref mode-function t)) ; Link to manuals.
-                (insert-button pretty-minor-mode 'action (car help-button-cache)
-                               'follow-link t 'help-echo "mouse-2, RET: show full information")
-                (newline)))
-            (forward-line -1)
-            (fill-paragraph nil)
-            (forward-line 1))
-          (princ "\n(Information about these minor modes follows the major mode info.)\n\n"))
-        (let ((mode  mode-name))        ; Document the major mode.
-          (with-current-buffer standard-output
-            (let ((start  (point)))
-              (insert (format-mode-line mode nil nil buffer))
-              (add-text-properties start (point) '(face bold)))))
-        (princ " mode")
-        (let* ((mode       major-mode)
-               (file-name  (find-lisp-object-file-name mode nil)))
-          (when file-name
-            (princ (concat " defined in `" (file-name-nondirectory file-name) "'"))
-            (with-current-buffer standard-output ; Make a hyperlink to the library.
-              (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
-                              (help-xref-button 1 'help-function-def mode file-name)))))
-        (princ ":\n")
-        (with-current-buffer standard-output
-          (insert (help-documentation major-mode nil 'ADD-HELP-BUTTONS)))
-        (let ((maj  major-mode))
-          (with-current-buffer standard-output (Info-make-manuals-xref maj t)))))) ; Link to manuals.
-  ;; For the sake of IELM and maybe others
-  nil))
+    (interactive "@")
+    (unless buffer (setq buffer  (current-buffer)))
+    (help-setup-xref (list #'describe-mode buffer) (called-interactively-p 'interactive))
+    ;; For the sake of `help-do-xref' and `help-xref-go-back', do not switch buffers
+    ;; before calling `help-buffer'.
+    (with-help-window (help-buffer)
+      (with-current-buffer buffer
+        (let (minor-modes)
+          ;; Older packages do not register in minor-mode-list but only in `minor-mode-alist'.
+          (dolist (x minor-mode-alist)
+            (setq x  (car x))
+            (unless (memq x minor-mode-list) (push x minor-mode-list)))
+          (dolist (mode minor-mode-list) ; Find enabled minor mode we will want to mention.
+            ;; Document minor mode if listed in `minor-mode-alist', non-nil, and has a function def.
+            (let ((fmode  (or (get mode :minor-mode-function) mode)))
+              (and (boundp mode) (symbol-value mode) (fboundp fmode)
+                   (let ((pretty-minor-mode  (if (string-match "\\(\\(-minor\\)?-mode\\)?\\'"
+                                                               (symbol-name fmode))
+                                                 (capitalize (substring (symbol-name fmode)
+                                                                        0 (match-beginning 0)))
+                                               fmode)))
+                     (push (list fmode pretty-minor-mode
+                                 (format-mode-line (assq mode minor-mode-alist)))
+                           minor-modes)))))
+          (setq minor-modes  (sort minor-modes (lambda (a b) (string-lessp (cadr a) (cadr b)))))
+          (when minor-modes
+            (princ "Enabled minor modes:\n")
+            (make-local-variable 'help-button-cache)
+            (with-current-buffer standard-output
+              (dolist (mode  minor-modes)
+                (let ((mode-function      (nth 0 mode))
+                      (pretty-minor-mode  (nth 1 mode))
+                      (indicator          (nth 2 mode)))
+                  (add-text-properties 0 (length pretty-minor-mode) '(face bold) pretty-minor-mode)
+                  (save-excursion
+                    (goto-char (point-max))
+                    (princ "\n\f\n")
+                    (push (point-marker) help-button-cache)
+                    ;; Document the minor modes fully.
+                    (insert pretty-minor-mode)
+                    (princ (format " minor mode (%s):\n" (if (zerop (length indicator))
+                                                             "no indicator"
+                                                           (format "indicator%s" indicator))))
+                    (with-current-buffer standard-output
+                      (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
+                    (Info-make-manuals-xref mode-function t)) ; Link to manuals.
+                  (insert-button pretty-minor-mode 'action (car help-button-cache)
+                                 'follow-link t 'help-echo "mouse-2, RET: show full information")
+                  (newline)))
+              (forward-line -1)
+              (fill-paragraph nil)
+              (forward-line 1))
+            (princ "\n(Information about these minor modes follows the major mode info.)\n\n"))
+          (let ((mode  mode-name))      ; Document the major mode.
+            (with-current-buffer standard-output
+              (let ((start  (point)))
+                (insert (format-mode-line mode nil nil buffer))
+                (add-text-properties start (point) '(face bold)))))
+          (princ " mode")
+          (let* ((mode       major-mode)
+                 (file-name  (find-lisp-object-file-name mode nil)))
+            (when file-name
+              (princ (concat " defined in `" (file-name-nondirectory file-name) "'"))
+              (with-current-buffer standard-output ; Make a hyperlink to the library.
+                (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
+                                (help-xref-button 1 'help-function-def mode file-name)))))
+          (princ ":\n")
+          (let ((maj  major-mode))
+            (with-current-buffer standard-output
+              (insert (help-documentation maj nil 'ADD-HELP-BUTTONS))
+              (Info-make-manuals-xref maj t)))))) ; Link to manuals.
+    ;; For the sake of IELM and maybe others
+    nil))
 
 
 ;; REPLACE ORIGINAL in `help-fns.el':

@@ -9,6 +9,48 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+===How to Program/Customize Emacs Commands?===
+
+I apologize for this note. I've been using the basic features of Emacs for many years, but am trying to implement some more advanced features. I found this site through Google and would like to implement the code to remove duplicate lines (http://www.emacswiki.org/emacs/DuplicateLines). Unfortunately that page provides no context (where to put this code, etc.) I've been hunting around the site for some time and have yet to find such information anywhere. The site is set up for people with a certain minimum knowledge of the Emacs terminology. The documents for newbies are so voluminous that it would take me forever to go through and figure out what I need to know. 
+
+Thanks for your patience in reading.
+
+
+
+[new:DrewAdams:2011-07-25 16:39 UTC]
+1. You put EmacsLisp code that you write to customize Emacs in your [[init file]], which is ##~/.emacs## by default.  Use `##C-x f ~/.emacs##' to create or access (edit) your init file.
+
+2. For customization of [[face]]s and [[user option]]s, you need not write EmacsLisp code if you don't want to.  Instead, use `M-x customize-face' and `M-x customize-option'.  The [[Customize]] user interface takes a little getting used to, but using it instead of hand-coding EmacsLisp is generally preferable (type-checking, safer initialization and updating).
+
+3. When you use [[Customize]], your preferences are saved by default to your [[init file]].  If you also have hand-coded code in the same file, this can be asking for trouble (error prone).  You can instead have [[Customize]] use a separate file, by setting [[variable]] `custom-file' and then adding this to your [[init file]] (typically at the end):
+
+  (load-file custom-file)
+
+To set `custom-file', put this in your [[init file]] (before the `load-file'):
+
+  (setq custom-file  "/the/path/to/my-emacs-custom-file.el")
+
+Variable `custom-file' is an [[option]], but it is (exceptionally) usually better to set it using Lisp code (in your [[init file]].  The reason is that [[Customize]] will save its value to your `custom-file'!  IOW, chicken & egg: `custom-file' tells Emacs where your customizations are saved, but if you save the value of `custom-file' itself only in that file then Emacs still won't know where it is!
+
+
+4. As an alternative to putting a lot of code in your [[init file]], you can put it in another Lisp file (extension ##.el##) and then load that file from your [[init file]].  For example, put the code from DuplicateLines in a file ##my-emacs-code.el## and then add this to your [[init file]]:
+
+  (load-file "/the/path/to/my-emacs-code.el")
+
+5. You can also set [[variable]] `load-path' to a directory to search for Lisp code, and then use `load-library' with just the library name (`my-emacs-code'), instead of using `load-file' with an absolute file name.
+
+6. If you end up with a large Lisp file (e.g. `my-emacs-code.el'), you can byte-compile it.  If you use `load-library' the byte-compiled version (e.g. `my-emacs-code.elc') will be loaded instead, and when invoked that code will be faster.
+
+7. Emacs doc and help are your friends.  In particular, `C-h i', choose `Emacs', then `i' to look things up in the index.  Using `i', look up, for instance, `##init file##' ([[Manual:Init File]]) and `custom-file' ([[Manual:Saving Customizations]]).
+
+HTH -- DrewAdams
+
+
+
+
+
+
+
 == gunzip in dired no longer working in ubuntu 10.10 builds of emacs ==
 [new]
 In Ubuntu 10.10 I have install via their repository 23.1.1 . It seems at least since this (ubuntu) release I can 

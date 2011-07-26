@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Jan  4 13:59:48 2011 (-0800)
+;; Last-Updated: Mon Jul 25 13:28:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 994
+;;     Update #: 1071
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/07/25 dadams
+;;     Use eval-after-load where appropriate (e.g. instead of featurep/fboundp/boundp).
 ;; 2010/04/22 dadams
 ;;     Bound C-M-y to isearch-yank-secondary in isearch-mode-map.
 ;; 2010/02/24 dadams
@@ -351,67 +353,78 @@
 (global-set-key [C-M-mouse-3] 'mouse-secondary-save-then-kill) ; In `second-sel.el'.
 (global-set-key [C-M-mouse-2] 'mouse-yank-secondary) ; In `mouse+.el' or `mouse.el'.
 
-(when (fboundp 'mouse-flash-position-or-M-x) ; Defined in `mouse+.el'. Highlight yank position
-  (global-set-key [down-mouse-2] 'mouse-flash-position-or-M-x) ; or call `M-x' in echo area.
-  (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:)) ; Highlight line or `M-:'.
+(eval-after-load "mouse+"
+  '(progn                               ; Highlight yank position or call `M-x' in echo area.
+    (global-set-key [down-mouse-2]   'mouse-flash-position-or-M-x)
+    (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:))) ; Highlight line or `M-:'.
 
-(when (fboundp 'secondary-dwim)         ; Defined in `second-sel.el'.
-  (global-set-key [(control meta ?y)]    'secondary-dwim)
-  (define-key esc-map "y"                'yank-pop-commands)
-  (define-key isearch-mode-map "\C-\M-y" 'isearch-yank-secondary))
+(eval-after-load "second-sel"
+  '(progn
+    (global-set-key [(control meta ?y)]    'secondary-dwim)
+    (define-key esc-map "y"                'yank-pop-commands)
+    (define-key isearch-mode-map "\C-\M-y" 'isearch-yank-secondary)))
 
 ;; Because M-C is being used for secondary.
-(setq foldout-mouse-modifiers '(meta shift)) ; Defined in `foldout.el'.
+(eval-after-load "foldout"
+  '(setq foldout-mouse-modifiers '(meta shift)))
 
-(when (and (boundp '1on1-minibuffer-frame) ; Defined in `oneonone.el'.
-           (framep 1on1-minibuffer-frame))
-  (define-key minibuffer-local-map "\C-o" '1on1-fit-minibuffer-frame)
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key minibuffer-local-must-match-map "\C-o" '1on1-fit-minibuffer-frame)
-    (define-key minibuffer-local-completion-map "\C-o" '1on1-fit-minibuffer-frame)))
+(eval-after-load "oneonone"
+  '(when (framep 1on1-minibuffer-frame) ; Standalone minibuffer frame.
+    (define-key minibuffer-local-map "\C-o" '1on1-fit-minibuffer-frame)
+    (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
+      (define-key minibuffer-local-must-match-map "\C-o" '1on1-fit-minibuffer-frame)
+      (define-key minibuffer-local-completion-map "\C-o" '1on1-fit-minibuffer-frame))
+    (when (boundp 'minibuffer-local-filename-completion-map)
+      (define-key minibuffer-local-filename-completion-map "\C-o"
+        '1on1-fit-minibuffer-frame))
+    (when (boundp 'minibuffer-local-must-match-filename-map) ; Emacs 22
+      (define-key minibuffer-local-must-match-filename-map "\C-o"
+        '1on1-fit-minibuffer-frame))
+    (when (boundp 'minibuffer-local-filename-must-match-map) ; Emacs 23+
+      (define-key minibuffer-local-filename-must-match-map "\C-o"
+        '1on1-fit-minibuffer-frame))))
 
-;; These are defined in `frame-cmds.el'.
-(when (featurep 'frame-cmds)
-  (global-set-key [(meta up)]    'move-frame-up)
-  (global-set-key [(meta down)]  'move-frame-down)
-  (global-set-key [(meta left)]  'move-frame-left)
-  (global-set-key [(meta right)] 'move-frame-right)
-  (global-set-key [(control meta up)]    'shrink-frame)
-  (global-set-key [(control meta down)]  'enlarge-frame)
-  (global-set-key [(control meta left)]  'shrink-frame-horizontally)
-  (global-set-key [(control meta right)] 'enlarge-frame-horizontally)
-  (global-set-key [(control ?z)] 'iconify/map-frame) ; Replaces`iconify-or-deiconify-frame'.
-  ;; $$$$ (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
-  (global-set-key [(shift control meta ?z)] 'show-hide)
-  (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)
-  (global-set-key [S-down-mouse-1] nil) ; Get rid of `mouse-set-font'.
-  
-  ;;(global-set-key [vertical-line mouse-1] 'ignore)
-  (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
-  ;;(global-set-key [vertical-line C-mouse-1] 'ignore)
-  (global-set-key [vertical-line S-down-mouse-1] 'iconify-everything)
-  ;;(global-set-key [vertical-line S-mouse-1] 'ignore)
+(eval-after-load "frame-cmds"
+  '(progn
+    (global-set-key [(meta up)]    'move-frame-up)
+    (global-set-key [(meta down)]  'move-frame-down)
+    (global-set-key [(meta left)]  'move-frame-left)
+    (global-set-key [(meta right)] 'move-frame-right)
+    (global-set-key [(control meta up)]    'shrink-frame)
+    (global-set-key [(control meta down)]  'enlarge-frame)
+    (global-set-key [(control meta left)]  'shrink-frame-horizontally)
+    (global-set-key [(control meta right)] 'enlarge-frame-horizontally)
+    (global-set-key [(control ?z)] 'iconify/map-frame) ; Replaces`iconify-or-deiconify-frame'.
+    ;; $$$$ (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
+    (global-set-key [(shift control meta ?z)] 'show-hide)
+    (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)
+    (global-set-key [S-down-mouse-1] nil) ; Get rid of `mouse-set-font'.
+    ;;(global-set-key [vertical-line mouse-1] 'ignore)
+    (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
+    ;;(global-set-key [vertical-line C-mouse-1] 'ignore)
+    (global-set-key [vertical-line S-down-mouse-1] 'iconify-everything)
+    ;;(global-set-key [vertical-line S-mouse-1] 'ignore)
+    ;; [mode-line mouse-3] as deletion (Emacs std) is too hazardous.  Iconify instead.
+    (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
+    (global-set-key [mode-line C-mouse-3] 'mouse-remove-window)))
 
-  ;; [mode-line mouse-3] as deletion (Emacs std) is too hazardous.  Iconify instead.
-  (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
-  (global-set-key [mode-line C-mouse-3] 'mouse-remove-window)
-  )
+(eval-after-load "framemove"
+  '(progn
+    (global-set-key [(shift meta up)]    'fm-up-frame)
+    (global-set-key [(shift meta down)]  'fm-down-frame)
+    (global-set-key [(shift meta left)]  'fm-left-frame)
+    (global-set-key [(shift meta right)] 'fm-right-frame)))
 
-(when (featurep 'framemove)
-  (global-set-key [(shift meta up)]    'fm-up-frame)
-  (global-set-key [(shift meta down)]  'fm-down-frame)
-  (global-set-key [(shift meta left)]  'fm-left-frame)
-  (global-set-key [(shift meta right)] 'fm-right-frame))
-
-(when (featurep 'zoom-frm)              ; `zoom-frm.el' requires `frame-cmds.el'.
-  (global-set-key [S-mouse-1] 'zoom-in)
-  (global-set-key [C-S-mouse-1] 'zoom-out)
-  (global-set-key (if (boundp 'mouse-wheel-down-event)
-                      (vector (list 'control mouse-wheel-down-event))
-                    [C-mouse-wheel])    ; Emacs 20, 21
-                  'zoom-in)
-  (when (boundp 'mouse-wheel-up-event)
-    (global-set-key (vector (list 'control mouse-wheel-up-event)) 'zoom-out)))
+(eval-after-load "zoom-frm"             ; `zoom-frm.el' requires `frame-cmds.el'.
+  '(progn
+    (global-set-key [S-mouse-1] 'zoom-in)
+    (global-set-key [C-S-mouse-1] 'zoom-out)
+    (global-set-key (if (boundp 'mouse-wheel-down-event)
+                        (vector (list 'control mouse-wheel-down-event))
+                      [C-mouse-wheel])  ; Emacs 20, 21
+     'zoom-in)
+    (when (boundp 'mouse-wheel-up-event)
+      (global-set-key (vector (list 'control mouse-wheel-up-event)) 'zoom-out))))
 
 ;;;   ;; These [nil] bindings are no doubt a HACK, based on an undocumented handy "feature".
 ;;;   ;; (This works in Emacs 19.34.6, but it doesn't work in Emacs 20.6.)
@@ -424,17 +437,19 @@
 ;;;   (global-set-key [nil S-down-mouse-1] 'iconify-everything)
 ;;;   (global-set-key [nil S-mouse-1] 'ignore)
 
-(when (featurep 'mouse+)
-  (global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window))
+(eval-after-load "mouse+"
+  '(global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window))
 
 ;; These are defined in `fit-frame.el'.
-(when (featurep 'fit-frame)
-  (global-set-key [(control ?x) (control ?_)] 'fit-frame)
-  (global-set-key [vertical-line down-mouse-1] 'fit-frame-or-mouse-drag-vertical-line))
+(eval-after-load "fit-frame"
+  '(progn
+    (global-set-key [(control ?x) (control ?_)] 'fit-frame)
+    (global-set-key [vertical-line down-mouse-1] 'fit-frame-or-mouse-drag-vertical-line)))
 
-(when (featurep 'iedit)                 ; `iedit.el'
-  (define-key global-map       (kbd "C-;") 'iedit-mode)
-  (define-key isearch-mode-map (kbd "C-;") 'iedit-mode))
+(eval-after-load "iedit"
+  '(progn
+    (define-key global-map       (kbd "C-;") 'iedit-mode)
+    (define-key isearch-mode-map (kbd "C-;") 'iedit-mode)))
 
 ;;; Put *Help* buffer in `help-minor-mode'.
 ;;(save-excursion (set-buffer (get-buffer-create "*Help*")) (help-minor-mode 1))
@@ -462,134 +477,166 @@
   (define-key comparison-map "e" 'ediff-files) ; Defined in `ediff.el'.
   (define-key comparison-map "f" 'ediff-files) ; Defined in `ediff.el'.
   (define-key comparison-map "d" 'diff) ; Defined in `diff+.el'.
-  (define-key comparison-map "w" 'compare-windows) ; Defined in `compare-w.el'.
-  )
+  (define-key comparison-map "w" 'compare-windows)) ; Defined in `compare-w.el'.
 
 ;; Completions (non-minibuffer).
 ;(global-set-key "\M-\r" 'complete)      ; Defined in `completion.el':
 ;(global-set-key [?\C-\r] 'complete)
 ;(define-key function-key-map [C-return] [?\C-\r])
 
-(define-key text-mode-map [(meta ?j)] 'fill-individual-paragraphs) ; Defined in `fill.el'.
-(global-set-key [(meta ?$)] 'ispell-complete-word)
-(global-set-key [(meta ?_)] 'forward-whitespace) ; Defined in `thingatpt.el'
-(unless (lookup-key global-map [(meta ?s)]) ; Emacs 23 co-opts `M-s-' as a prefix key.
-  (global-set-key [(meta ?s)] 'forward-symbol)) ; Defined in `thingatpt.el'
+(eval-after-load "fill"
+  '(define-key text-mode-map [(meta ?j)] 'fill-individual-paragraphs))
+
+(eval-after-load "ispell"
+  '(global-set-key [(meta ?$)] 'ispell-complete-word))
+
+(eval-after-load "thingatpt"
+  '(progn
+    (global-set-key [(meta ?_)] 'forward-whitespace)
+    (unless (lookup-key global-map [(meta ?s)]) ; Emacs 23 co-opts `M-s-' as a prefix key.
+      (global-set-key [(meta ?s)] 'forward-symbol)))) ; Defined in `thingatpt.el'
 
 ;; These replace the bindings for `mark-sexp' and `mark-word'.  Defined in `thing-cmds.el'.
-(global-set-key [(control meta ? )] 'mark-thing)
-(global-set-key [(meta ?@)] 'cycle-thing-region)
+(eval-after-load "thing-cmds"
+  '(progn
+    (global-set-key [(control meta ? )] 'mark-thing)
+    (global-set-key [(meta ?@)] 'cycle-thing-region)))
 
-(when (fboundp 'crosshairs-mode)
-  (global-set-key [(control ?+)] 'crosshairs-mode)) ;  Defined in `crosshairs.el'.
+(eval-after-load "crosshairs"
+  '(global-set-key [(control ?+)] 'crosshairs-mode))
 
-(when (featurep 'unaccent)
-  (global-set-key [(meta ?\")] 'unaccent-word) ; Defined in `unaccent.el'.
-  (define-key ctl-x-map [\"] 'unaccent-region)) ; Defined in `unaccent.el'.
+(eval-after-load "unaccent"
+  '(progn
+    (global-set-key [(meta ?\")] 'unaccent-word)
+    (define-key ctl-x-map [\"] 'unaccent-region)))
 
 ;;; Do Re Mi commands
-(when (featurep 'doremi-frm)
-  (unless (fboundp 'doremi-prefix)
-    (defalias 'doremi-prefix (make-sparse-keymap))
-    (defvar doremi-map (symbol-function 'doremi-prefix)
-      "Keymap for Do Re Mi commands."))
-  (define-key global-map "\C-xt" 'doremi-prefix)
-  (define-key doremi-map "a" 'doremi-all-faces-fg+) ; "All"
-  (define-key doremi-map "c" 'doremi-bg+) ; "Color"
-  (define-key doremi-map "f" 'doremi-face-fg+) ; Face"
-  (define-key doremi-map "h" 'doremi-frame-height+)
-  (define-key doremi-map "k" 'doremi-face-bg+) ; bacKground"
-  (define-key doremi-map "t" 'doremi-font+) ; "Typeface"
-  (define-key doremi-map "u" 'doremi-frame-configs+) ; "Undo"
-  (define-key doremi-map "x" 'doremi-frame-horizontally+)
-  (define-key doremi-map "y" 'doremi-frame-vertically+)
-  (define-key doremi-map "z" 'doremi-frame-font-size+)) ; "Zoom"
-(when (featurep 'doremi-cmd)
-  (unless (fboundp 'doremi-prefix)
-    (defalias 'doremi-prefix (make-sparse-keymap))
-    (defvar doremi-map (symbol-function 'doremi-prefix)
-      "Keymap for Do Re Mi commands."))
-  (define-key global-map "\C-xt"  'doremi-prefix)
-  (define-key doremi-map "b" 'doremi-buffers+)
-  (define-key doremi-map "g" 'doremi-global-marks+)
-  (define-key doremi-map "m" 'doremi-marks+)
-  (define-key doremi-map "r" 'doremi-bookmarks+) ; `r' for Reading books
-  (define-key doremi-map "s" 'doremi-color-themes+) ; `s' for color Schemes
-  (define-key doremi-map "w" 'doremi-window-height+))
+(eval-after-load "doremi-frm"
+  '(progn
+    (unless (fboundp 'doremi-prefix)
+      (defalias 'doremi-prefix (make-sparse-keymap))
+      (defvar doremi-map (symbol-function 'doremi-prefix)
+        "Keymap for Do Re Mi commands."))
+    (define-key global-map "\C-xt" 'doremi-prefix)
+    (define-key doremi-map "a" 'doremi-all-faces-fg+) ; "All"
+    (define-key doremi-map "c" 'doremi-bg+) ; "Color"
+    (define-key doremi-map "f" 'doremi-face-fg+) ; Face"
+    (define-key doremi-map "h" 'doremi-frame-height+)
+    (define-key doremi-map "k" 'doremi-face-bg+) ; bacKground"
+    (define-key doremi-map "t" 'doremi-font+) ; "Typeface"
+    (define-key doremi-map "u" 'doremi-frame-configs+) ; "Undo"
+    (define-key doremi-map "x" 'doremi-frame-horizontally+)
+    (define-key doremi-map "y" 'doremi-frame-vertically+)
+    (define-key doremi-map "z" 'doremi-frame-font-size+))) ; "Zoom"
 
-(when (featurep 'frame-cmds)
-  (unless (fboundp 'doremi-prefix)
-    (defalias 'doremi-prefix (make-sparse-keymap))
-    (defvar doremi-map (symbol-function 'doremi-prefix)
-      "Keymap for Do Re Mi commands."))
-  (define-key global-map "\C-xt"  'doremi-prefix)
-  (define-key doremi-map "." 'save-frame-config))
-(when (fboundp 'thumfr-thumbify-other-frames)  ; These are defined in `thumb-frm.el'
-  (global-set-key [(shift mouse-3)]         'thumfr-toggle-thumbnail-frame)
-  (global-set-key [(shift control mouse-3)] 'thumfr-thumbify-other-frames)
-  (global-set-key [(shift control ?z)]      'thumfr-thumbify-other-frames)
-  (global-set-key [(shift control ?n)]      'thumfr-fisheye-next-frame)
-  (global-set-key [(shift control ?p)]      'thumfr-fisheye-previous-frame)
-  (global-set-key [(control meta ?z)]       'thumfr-really-iconify-or-deiconify-frame)
-  (define-key global-map "\C-xte" 'thumfr-doremi-thumbnail-frames+) ; `e' for eye (fisheye)
-  ;; Make window-manager "minimize" button thumbify instead of iconify.
-  ;; (define-key special-event-map [iconify-frame] 'thumfr-thumbify-frame-upon-event)
-  )
+(eval-after-load "doremi-cmd"
+  '(progn
+    (unless (fboundp 'doremi-prefix)
+      (defalias 'doremi-prefix (make-sparse-keymap))
+      (defvar doremi-map (symbol-function 'doremi-prefix)
+        "Keymap for Do Re Mi commands."))
+    (define-key global-map "\C-xt"  'doremi-prefix)
+    (define-key doremi-map "b" 'doremi-buffers+)
+    (define-key doremi-map "g" 'doremi-global-marks+)
+    (define-key doremi-map "m" 'doremi-marks+)
+    (define-key doremi-map "r" 'doremi-bookmarks+) ; `r' for Reading books
+    (define-key doremi-map "s" 'doremi-color-themes+) ; `s' for color Schemes
+    (define-key doremi-map "w" 'doremi-window-height+)))
+
+(eval-after-load "frame-cmds"
+  '(progn
+    (unless (fboundp 'doremi-prefix)
+      (defalias 'doremi-prefix (make-sparse-keymap))
+      (defvar doremi-map (symbol-function 'doremi-prefix)
+        "Keymap for Do Re Mi commands."))
+    (define-key global-map "\C-xt"  'doremi-prefix)
+    (define-key doremi-map "." 'save-frame-config)))
+
+(eval-after-load "thumb-frm"
+  '(progn
+    (global-set-key [(shift mouse-3)]         'thumfr-toggle-thumbnail-frame)
+    (global-set-key [(shift control mouse-3)] 'thumfr-thumbify-other-frames)
+    (global-set-key [(shift control ?z)]      'thumfr-thumbify-other-frames)
+    (global-set-key [(shift control ?n)]      'thumfr-fisheye-next-frame)
+    (global-set-key [(shift control ?p)]      'thumfr-fisheye-previous-frame)
+    (global-set-key [(control meta ?z)]       'thumfr-really-iconify-or-deiconify-frame)
+    (define-key global-map "\C-xte" 'thumfr-doremi-thumbnail-frames+) ; `e' for eye (fisheye)
+    ;; Make window-manager "minimize" button thumbify instead of iconify.
+    ;; (define-key special-event-map [iconify-frame] 'thumfr-thumbify-frame-upon-event)
+    ))
 
 (define-key help-map "\C-\M-f" 'describe-face)
 
 ;; `C-x' stuff.
 (define-key ctl-x-map [(control ?z)] 'delete-window) ; So you can do it with one hand.
-(define-key ctl-x-map [(control ?\;)] 'comment-region) ; Defined in `simple+.el'.
-(define-key ctl-x-map [home] 'mark-buffer-before-point) ; Defined in `misc-cmds.el'.
-(define-key ctl-x-map [end]  'mark-buffer-after-point) ; Defined in `misc-cmds.el'.
-(define-key ctl-x-map "\M-f" 'region-to-file) ; Defined in `misc-cmds.el'.
+(define-key ctl-x-map [(control ?\;)] 'comment-region) ; Defined in `simple.el'.
+
+(eval-after-load "misc-cmds"
+  '(progn
+    (define-key ctl-x-map [home] 'mark-buffer-before-point)
+    (define-key ctl-x-map [end]  'mark-buffer-after-point)
+    (define-key ctl-x-map "\M-f" 'region-to-file)
+    (define-key ctl-x-map "L"    'goto-longest-line)))
 (define-key ctl-x-map [(meta ?x)] 'repeat-matching-complex-command) ; `chistory.el'.
 (define-key ctl-x-map "c" 'font-lock-mode)
-(define-key ctl-x-map "L" 'goto-longest-line) ; Defined in `misc-cmds.el'.
-(when (fboundp 'other-window-or-frame)
-  (define-key ctl-x-map "o" 'other-window-or-frame)) ; Defined in `frame-cmds.el'.
-(when (fboundp 'hlt-highlighter)  ; Defined in `highlight.el'.
-  (define-key ctl-x-map [(control ?y)] 'hlt-highlight)
-  (define-key ctl-x-map [(down-mouse-2)] 'hlt-highlighter)
-  (define-key ctl-x-map [(mouse-2)] 'ignore)
-  (define-key ctl-x-map [(S-down-mouse-2)] 'hlt-eraser)
-  (when (fboundp 'next-single-char-property-change) ; Emacs 21+
-    (global-set-key [(shift control ?p)] 'hlt-previous-highlight)
-    (global-set-key [(shift control ?n)] 'hlt-next-highlight)))
-(define-key ctl-x-map [(control ?j)] 'dired-jump) ; Defined in `dired-x.el'.
 
-(define-key ctl-x-4-map [(control ?j)] 'dired-jump-other-window) ; In `dired-x.el'.
-(when (fboundp 'delete-other-frames)    ; Defined in `frame-cmds.el'.
-  (define-key ctl-x-4-map "1" 'delete-other-frames)
-  (define-key ctl-x-5-map "h" 'show-*Help*-buffer)) ; Defined in `frame-cmds.el'.
+(eval-after-load "frame-cmds"
+  '(define-key ctl-x-map "o" 'other-window-or-frame))
+
+(eval-after-load "highlight"
+  '(progn
+    (define-key ctl-x-map [(control ?y)] 'hlt-highlight)
+    (define-key ctl-x-map [(down-mouse-2)] 'hlt-highlighter)
+    (define-key ctl-x-map [(mouse-2)] 'ignore)
+    (define-key ctl-x-map [(S-down-mouse-2)] 'hlt-eraser)
+    (when (fboundp 'next-single-char-property-change) ; Emacs 21+
+      (global-set-key [(shift control ?p)] 'hlt-previous-highlight)
+      (global-set-key [(shift control ?n)] 'hlt-next-highlight))))
+
+(eval-after-load "dired-x"
+  '(progn
+    (define-key ctl-x-map   [(control ?j)] 'dired-jump)
+    (define-key ctl-x-4-map [(control ?j)] 'dired-jump-other-window)))
+
+(eval-after-load "frame-cmds"
+  '(progn
+    (define-key ctl-x-4-map "1" 'delete-other-frames)
+    (define-key ctl-x-5-map "h" 'show-*Help*-buffer)))
 
 ;; [f1] function key.
-(when (fboundp 'help-on-click/key)
-  (global-set-key [f1] 'help-on-click/key)) ; Standard binding is `help-command'
-(global-set-key [C-S-f1] 'region-to-buffer) ; Defined in `misc-cmds.el'.
+(eval-after-load "help+"
+  '(global-set-key [f1] 'help-on-click/key)) ; Standard binding is `help-command'
+(eval-after-load "help+20"
+  '(global-set-key [f1] 'help-on-click/key)) ; Standard binding is `help-command'
+
+(eval-after-load "misc-cmds"
+  '(global-set-key [C-S-f1] 'region-to-buffer))
+
 (global-set-key [M-S-f1] 'insert-buffer) ; Defined in `simple.el'.
 (global-set-key [C-M-f1] 'font-lock-fontify-buffer) ; Defined in `font-lock.el'
 (global-set-key [C-M-S-f1] 'rename-buffer)
 
 ;; [f3] function key.
-(when (fboundp 'bm-toggle)
-  (global-set-key (kbd "<S-f3>") 'bm-toggle)
-  (global-set-key (kbd "<C-f3>") 'bm-next)
-  (global-set-key (kbd "<M-f3>") 'bm-previous))
+(eval-after-load "bm"
+  '(progn
+    (global-set-key (kbd "<S-f3>") 'bm-toggle)
+    (global-set-key (kbd "<C-f3>") 'bm-next)
+    (global-set-key (kbd "<M-f3>") 'bm-previous)))
 
 ;; [f5] function key - a la MS Windows.
-(if (fboundp 'revert-buffer-no-confirm) ; Defined in `misc-cmds.el'.
-    (global-set-key [f5] 'revert-buffer-no-confirm)
-  (global-set-key [f5] 'revert-buffer))
+(global-set-key [f5] 'revert-buffer)
+(eval-after-load "misc-cmds"
+  '(global-set-key [f5] 'revert-buffer-no-confirm))
 
 ;; [insert] key.  [C-insert] is `kill-ring-save'.  [S-insert] is `yank'.
 (global-set-key [M-insert] 'yank-pop) ; Defined in `simple.el'.
 (global-set-key [C-S-insert] 'insert-buffer) ; Defined in `simple.el'.
 (global-set-key [M-S-insert] 'yank-rectangle)
 (global-set-key [C-M-insert] 'lisp-complete-symbol)
-(when (fboundp 'lisp-spell-symbol)      ; Defined in `fuzzy-match.el'.
-  (global-set-key "\M-#" 'lisp-spell-symbol))
+
+(eval-after-load "fuzzy-match"
+  '(global-set-key "\M-#" 'lisp-spell-symbol))
+
 (global-set-key [C-M-S-insert] 'insert-file)
 
 ;; [delete] key.
@@ -604,7 +651,10 @@
 
 ;; [backspace] key.
 (global-set-key [C-backspace] 'backward-kill-paragraph) ; In `paragraphs.el'.
-(global-set-key [C-S-backspace] 'region-to-file) ; Defined in `misc-cmds.el'.
+
+(eval-after-load "misc-cmds"
+  '(global-set-key [C-S-backspace] 'region-to-file))
+
 (global-set-key [M-S-backspace] 'clear-rectangle) ; Defined in `rect.el'.
 ; This was standard in Emacs 20:
 (global-set-key [C-M-backspace] 'backward-kill-sexp) ; In  `lisp.el'.
@@ -615,7 +665,7 @@
 
 ;; Better than the standard bindings `C-x <right>' and `C-x <right>',
 ;; because you can hold these down to repeat: cycle through buffers.
-(when (> emacs-major-version 21)
+(when (fboundp 'next-buffer)            ; Emacs 21+.
   (global-set-key [C-pause] 'previous-buffer)
   (global-set-key [M-pause] 'next-buffer))
 
@@ -662,13 +712,14 @@
 ;(global-set-key [M-end] 'eob-other-window) ; (defsubst) In `s-region+.el'.
 ;(s-region-bind (list [prior] [C-prior] [M-prior]))
 
-(when (fboundp 'swiss-move-line-up)     ; Defined in `swiss-move.el'.
-  (global-set-key [S-prior] 'swiss-move-line-up)
-  (global-set-key [S-next]  'swiss-move-line-down))
+(eval-after-load "swiss-move"
+  '(progn
+    (global-set-key [S-prior] 'swiss-move-line-up)
+    (global-set-key [S-next]  'swiss-move-line-down)))
 
 ;; [up], [down], [left], [right] keys.
-(global-set-key [S-down] '(lambda () (interactive)(scroll-up 1)))
-(global-set-key [S-up] '(lambda () (interactive)(scroll-down 1)))
+(global-set-key [S-down] '(lambda () (interactive) (scroll-up 1)))
+(global-set-key [S-up] '(lambda () (interactive) (scroll-down 1)))
 ;;(global-set-key [M-up] (lookup-key esc-map "p")) ; Probably not defined.
 ;;(global-set-key [M-down] (lookup-key esc-map "n")) ; Probably not defined.
 ;;(global-set-key [M-left] (lookup-key esc-map "b")) ; Predefined.
@@ -710,36 +761,34 @@ by `query-replace-w-options', everywhere."))
 by `delete-windows-for', everywhere."))
 
 
-;; Do this *after* load `menu-bar+.el', since that sets original bindings.
-(when (and (fboundp 'delete-windows-for) sub-delete-windows-for)
-  (substitute-key-definition 'delete-window ; Defined in `frame-cmds.el'.
-                             'delete-windows-for global-map))
-(when (and (fboundp 'query-replace-w-options) sub-query-replace-w-options)
-  (substitute-key-definition 'query-replace ; Defined in `replace+.el'.
-                             'query-replace-w-options global-map))
-(when (and (fboundp 'kill-buffer-and-its-windows) sub-kill-buffer-and-its-windows)
-  (substitute-key-definition 'kill-buffer ; Defined in `misc-cmds.el'.
-                             'kill-buffer-and-its-windows global-map))
-(when sub-pp-evals
-  (substitute-key-definition 'eval-last-sexp
-                             'pp-eval-last-sexp global-map) ; In `pp.el'.
-  (substitute-key-definition 'eval-expression
-                             'pp-eval-expression global-map)) ; In `pp+.el'.
+;;; Do these all *after* load `menu-bar+.el', since that sets original bindings.
 
+(eval-after-load "frame-cmds"
+  '(when sub-delete-windows-for
+    (substitute-key-definition 'delete-window 'delete-windows-for global-map)))
+(eval-after-load "replace+"
+  '(when sub-query-replace-w-options
+    (substitute-key-definition 'query-replace 'query-replace-w-options global-map)))
+(eval-after-load "misc-cmds"
+  '(when sub-kill-buffer-and-its-windows
+    (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)))
+(eval-after-load "pp+"
+  '(when sub-pp-evals
+    (substitute-key-definition 'eval-last-sexp 'pp-eval-last-sexp global-map)
+    (substitute-key-definition 'eval-expression 'pp-eval-expression global-map)))
 (when (fboundp 'buffer-menu)
-  (substitute-key-definition 'list-buffers ; Redefined in `buff-menu+.el'.
-                             'buffer-menu global-map))
-
-(when (and sub-*-of-line (fboundp 'beginning-of-line+)) ; Defined in `misc-cmds.el'.
-  (cond ((fboundp 'move-beginning-of-line)
-         (substitute-key-definition 'move-beginning-of-line 'beginning-of-line+ global-map)
-         (substitute-key-definition 'move-end-of-line 'end-of-line+ global-map))
-        (t
-         (substitute-key-definition 'beginning-of-line 'beginning-of-line+ global-map)
-         (substitute-key-definition 'end-of-line 'end-of-line+ global-map))))
-
-(when (and sub-recenter-top-bottom (fboundp 'recenter-top-bottom)) ; Defined in `misc-cmds.el'.
-  (substitute-key-definition 'recenter 'recenter-top-bottom global-map))
+  (substitute-key-definition 'list-buffers 'buffer-menu global-map)) ; In `buff-menu+.el'.
+(eval-after-load "misc-cmds"
+  '(progn
+    (when sub-*-of-line
+      (cond ((fboundp 'move-beginning-of-line)
+             (substitute-key-definition 'move-beginning-of-line 'beginning-of-line+ global-map)
+             (substitute-key-definition 'move-end-of-line 'end-of-line+ global-map))
+            (t
+             (substitute-key-definition 'beginning-of-line 'beginning-of-line+ global-map)
+             (substitute-key-definition 'end-of-line 'end-of-line+ global-map))))
+    (when sub-recenter-top-bottom
+      (substitute-key-definition 'recenter 'recenter-top-bottom global-map))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

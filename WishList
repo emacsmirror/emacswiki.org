@@ -296,6 +296,7 @@ These are wishes about Emacs lisp or generally extending Emacs.
 ** 2. This doesn't give you a list of '''''un'''''bound key sequences in the current major mode, but it at least gives you a list of ''bound'' key sequences, so it is better than `C-h k': `'''<code>describe-bindings</code>''''. -- DrewAdams
 ** Could you automate this fishing?  A cartesian join of possible key combinations in a database to come up with a Hugh Jass table, and a dash of code? --ChristopherSmith
 *** I've implemented this (with combinations determined by variables) as Lisp:unbound.el.  The interesting bit in the request is the word "simple", really.  --DavisHerring
+* guile2 instead of core elisp
 
 === Mode Wishes ===
 

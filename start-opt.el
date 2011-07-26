@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:11:22 2011 (-0800)
+;; Last-Updated: Mon Jul 25 14:46:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1884
+;;     Update #: 1925
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -56,6 +56,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/07/25 dadams
+;;     Moved here from start.el: Savehist settings, color-moccur settings.
+;;     Use eval-after-load where appropriate (e.g. instead of featurep/fboundp/boundp).
 ;; 2010/08/07 dadams
 ;;     Removed - use Customize instead:
 ;;       bookmark-save-flag, global-font-lock-mode, font-lock-verbose, font-lock-maximum-size,
@@ -205,11 +208,11 @@
 
 ;;; Some settings I use.  I removed them from this file so you can use Customize to set them.
 ;;;
-;;; (eval-after-load "bookmark" (setq bookmark-save-flag 1))
+;;; (eval-after-load "bookmark" '(setq bookmark-save-flag 1))
 ;;; (global-font-lock-mode t)            ; Turn on font-lock-mode, generally.
 ;;; (setq font-lock-verbose 50000)       ; "Fontifying...done" only if big buffer.
 ;;; (setq font-lock-maximum-size 512000) ; Double the default size.
-;;; (eval-after-load "apropos" (setq apropos-do-all t)) ; Set to nil for 2-3 times faster.
+;;; (eval-after-load "apropos" '(setq apropos-do-all t)) ; Set to nil for 2-3 times faster.
 ;;; (setq Info-fontify-maximum-menu-size 500000)
 ;;; (when (boundp 'isearch-resume-in-command-history)
 ;;;   (setq isearch-resume-in-command-history t)) ; Be able to repeat searches as commands.
@@ -221,8 +224,8 @@
 ;;; (when (>= emacs-major-version 21)
 ;;;   (setq display-buffer-reuse-frames t)
 ;;;   (setq view-remove-frame-by-deleting t))
-;;; (eval-after-load "time" (progn (setq display-time-24hr-format t) ; 24-hour clock.
-;;;                                (display-time)))  ; Put time in mode-line.
+;;; (eval-after-load "time" '(progn (setq display-time-24hr-format t) ; 24-hour clock.
+;;;                                 (display-time)))  ; Put time in mode-line.
 ;;; (setq list-command-history-max 1000) ; 32 is the default.  In `chistory.el'.
 
 
@@ -259,48 +262,48 @@
 ;;; (defun set-ediff-control-position () "@@@@@@@@@@"
 ;;;   (modify-frame-parameters ediff-control-frame '((name . "TEST Ediff") (top . 0))))
 (eval-after-load "ediff"
-  (progn
-    (setq-default ediff-ignore-similar-regions t)
-    (setq-default ediff-auto-refine-limit 10000)
-    (setq ediff-grab-mouse 'maybe)      ; Nil -> no grab, t -> grab.
+  '(progn
+    (setq-default ediff-ignore-similar-regions  t)
+    (setq-default ediff-auto-refine-limit       10000)
+    (setq ediff-grab-mouse                      'maybe) ; Nil -> no grab, t -> grab.
 ;;; (setq ediff-after-setup-control-frame-hook 'set-ediff-control-position)
-    '(when (fboundp 'ediff-set-face)
-       (ediff-set-face 'foreground ediff-even-diff-face-A "White")
-       (ediff-set-face 'foreground ediff-even-diff-face-B "White")
-       (ediff-set-face 'foreground ediff-even-diff-face-C "White")
-       (ediff-set-face 'foreground ediff-even-diff-face-Ancestor "White")
-       (ediff-set-face 'background ediff-even-diff-face-A "Gray")
-       (ediff-set-face 'background ediff-even-diff-face-B "Gray")
-       (ediff-set-face 'background ediff-even-diff-face-C "Gray")
-       (ediff-set-face 'background ediff-even-diff-face-Ancestor "Gray")
+    ;;     (when (fboundp 'ediff-set-face)
+    ;;       (ediff-set-face 'foreground ediff-even-diff-face-A "White")
+    ;;       (ediff-set-face 'foreground ediff-even-diff-face-B "White")
+    ;;       (ediff-set-face 'foreground ediff-even-diff-face-C "White")
+    ;;       (ediff-set-face 'foreground ediff-even-diff-face-Ancestor "White")
+    ;;       (ediff-set-face 'background ediff-even-diff-face-A "Gray")
+    ;;       (ediff-set-face 'background ediff-even-diff-face-B "Gray")
+    ;;       (ediff-set-face 'background ediff-even-diff-face-C "Gray")
+    ;;       (ediff-set-face 'background ediff-even-diff-face-Ancestor "Gray")
 
-       (ediff-set-face 'foreground ediff-odd-diff-face-A "Black")
-       (ediff-set-face 'foreground ediff-odd-diff-face-B "Black")
-       (ediff-set-face 'foreground ediff-odd-diff-face-C "Black")
-       (ediff-set-face 'foreground ediff-odd-diff-face-Ancestor "Black")
-       (ediff-set-face 'background ediff-odd-diff-face-A "LightGray")
-       (ediff-set-face 'background ediff-odd-diff-face-B "LightGray")
-       (ediff-set-face 'background ediff-odd-diff-face-C "LightGray")
-       (ediff-set-face 'background ediff-odd-diff-face-Ancestor "LightGray")
+    ;;       (ediff-set-face 'foreground ediff-odd-diff-face-A "Black")
+    ;;       (ediff-set-face 'foreground ediff-odd-diff-face-B "Black")
+    ;;       (ediff-set-face 'foreground ediff-odd-diff-face-C "Black")
+    ;;       (ediff-set-face 'foreground ediff-odd-diff-face-Ancestor "Black")
+    ;;       (ediff-set-face 'background ediff-odd-diff-face-A "LightGray")
+    ;;       (ediff-set-face 'background ediff-odd-diff-face-B "LightGray")
+    ;;       (ediff-set-face 'background ediff-odd-diff-face-C "LightGray")
+    ;;       (ediff-set-face 'background ediff-odd-diff-face-Ancestor "LightGray")
 
-       (ediff-set-face 'foreground ediff-current-diff-face-A "Black")
-       (ediff-set-face 'foreground ediff-current-diff-face-B "Black")
-       (ediff-set-face 'foreground ediff-current-diff-face-C "Black")
-       (ediff-set-face 'foreground ediff-current-diff-face-Ancestor "Black")
-       (ediff-set-face 'background ediff-current-diff-face-A "SkyBlue")
-       (ediff-set-face 'background ediff-current-diff-face-B "SkyBlue")
-       (ediff-set-face 'background ediff-current-diff-face-C "SkyBlue")
-       (ediff-set-face 'background ediff-current-diff-face-Ancestor "SkyBlue")
+    ;;       (ediff-set-face 'foreground ediff-current-diff-face-A "Black")
+    ;;       (ediff-set-face 'foreground ediff-current-diff-face-B "Black")
+    ;;       (ediff-set-face 'foreground ediff-current-diff-face-C "Black")
+    ;;       (ediff-set-face 'foreground ediff-current-diff-face-Ancestor "Black")
+    ;;       (ediff-set-face 'background ediff-current-diff-face-A "SkyBlue")
+    ;;       (ediff-set-face 'background ediff-current-diff-face-B "SkyBlue")
+    ;;       (ediff-set-face 'background ediff-current-diff-face-C "SkyBlue")
+    ;;       (ediff-set-face 'background ediff-current-diff-face-Ancestor "SkyBlue")
 
-       (ediff-set-face 'foreground ediff-fine-diff-face-A "Black")
-       (ediff-set-face 'foreground ediff-fine-diff-face-B "Black")
-       (ediff-set-face 'foreground ediff-fine-diff-face-C "Black")
-       (ediff-set-face 'foreground ediff-fine-diff-face-Ancestor "Black")
-       (ediff-set-face 'background ediff-fine-diff-face-A "Cyan")
-       (ediff-set-face 'background ediff-fine-diff-face-B "Cyan")
-       (ediff-set-face 'background ediff-fine-diff-face-C "Cyan")
-       (ediff-set-face 'background ediff-fine-diff-face-Ancestor "Cyan")
-       )))
+    ;;       (ediff-set-face 'foreground ediff-fine-diff-face-A "Black")
+    ;;       (ediff-set-face 'foreground ediff-fine-diff-face-B "Black")
+    ;;       (ediff-set-face 'foreground ediff-fine-diff-face-C "Black")
+    ;;       (ediff-set-face 'foreground ediff-fine-diff-face-Ancestor "Black")
+    ;;       (ediff-set-face 'background ediff-fine-diff-face-A "Cyan")
+    ;;       (ediff-set-face 'background ediff-fine-diff-face-B "Cyan")
+    ;;       (ediff-set-face 'background ediff-fine-diff-face-C "Cyan")
+    ;;       (ediff-set-face 'background ediff-fine-diff-face-Ancestor "Cyan"))
+    ))
 
 ;;; `ediff+.el' requires `ediff.el', which defines ediff-control-buffer'.
 ;;; (eval-when-compile (require 'ediff+))
@@ -311,7 +314,7 @@
 ;;;                        (delete-1-window-frames-on ediff-control-buffer)))))
 ;;; (setq ediff-split-window-function 'ediff-use-separate-frames)
 
-(when (featurep 'icomplete+) (icomplete-mode 99))
+(eval-after-load "icomplete+" '(icomplete-mode 99))
 
 ;;; VC stuff.  I no longer use VC.
 ;;; (eval-after-load "vc"
@@ -326,13 +329,12 @@
 ;;; Search and replace stuff:
 (copy-face 'secondary-selection 'query-replace) ; For replacement highlighting.
 (if (facep 'isearch)
-    (set-face-attribute 'isearch nil
-                        :foreground "Black" :background "Green" :inverse-video nil)
+    (set-face-attribute 'isearch nil :foreground "Black" :background "Green" :inverse-video nil)
   (defface isearch '((t (:foreground "Black" :background "Green")))
     "Face for highlighting Isearch matches." :group 'isearch))
-(setq-default case-fold-search nil)     ; Case sensitive by default.
-;;; (setq search-ring-max 1000)
-;;; (setq regexp-search-ring-max 1000)
+(setq-default case-fold-search  nil)     ; Case sensitive by default.
+;;; (setq search-ring-max  1000)
+;;; (setq regexp-search-ring-max  1000)
 
 ;; Use `tool-bar-pop-up-mode'.
 (when (and (>= emacs-major-version 22) (fboundp 'tool-bar-pop-up-mode))
@@ -352,7 +354,12 @@
 ;; Use TAGS file for Drew's Lisp library.
 ;; (`drews-lisp-dir' should be defined in your init file: `~/.emacs'.
 ;; It should point to the directory containing this file, `start-opt.el'.)
-(and (boundp 'drews-lisp-dir) drews-lisp-dir (setq tags-file-name drews-lisp-dir))
+(and (boundp 'drews-lisp-dir) drews-lisp-dir (setq tags-file-name  drews-lisp-dir))
+
+;; Savehist.
+(if (fboundp 'savehist-mode)
+    (savehist-mode 1)
+  (when (fboundp 'savehist-load) (savehist-load))) ; Load your saved history lists.
 
 ;;; Hilit stuff.  Defined in `hilit19.el'.  I no longer use this.
 ;;; (setq hilit-auto-highlight nil)         ; Don't hilit when `find-file'.
@@ -383,27 +390,28 @@
 ;;; (setq save-abbrevs t)                   ; Defined in `files.el'.
 ;;; (setq display-time-day-and-date nil)    ; No date in modeline.  In `time.el'.
 
-(setq-default indent-tabs-mode nil)     ; SPCs only (no TABs), when indenting.
+(setq-default indent-tabs-mode  nil)    ; SPCs only (no TABs), when indenting.
 
 ;;; The defcustom's in Francis Wright's `ls-lisp.el' cannot take
 ;;; effect, because `ls-lisp.el' is a standard library, preloaded.
 ;;; So, make the assignments here.
-(when (featurep 'ls-lisp)
-  (setq ls-lisp-emulation
-        (cond ((memq system-type '(windows-nt ms-dos emx)) 'Microsoft)
-              ;; FJW: not sure about how to handle emx!
-              ((memq system-type '(hpux dgux usg-unix-v unisoft-unix rtu irix berkeley-unix))
-               'UNIX)))
-  (setq ls-lisp-ignore-case
-        ;; Name change for consistency with other option names.
-        (or (eq ls-lisp-emulation 'Microsoft)
-            (and (boundp 'ls-lisp-dired-ignore-case) ls-lisp-dired-ignore-case)))
-  (setq ls-lisp-dirs-first (eq ls-lisp-emulation 'Microsoft))
-  (setq ls-lisp-verbosity
-        (cond ((eq ls-lisp-emulation 'Microsoft)
-               (if (getenv "SystemRoot") '(links))) ; distinguish NT/2K from 9x
-              ((eq ls-lisp-emulation 'UNIX) '(links uid)) ; UNIX ls
-              (t '(links uid gid)))))   ; GNU ls
+(eval-after-load "ls-lisp"
+  '(progn
+    (setq ls-lisp-emulation  (cond ((memq system-type '(windows-nt ms-dos emx)) 'Microsoft)
+                                   ;; FJW: not sure about how to handle emx!
+                                   ((memq system-type '(hpux dgux usg-unix-v unisoft-unix
+                                                        rtu irix berkeley-unix))
+                                    'UNIX)))
+    (setq ls-lisp-ignore-case
+     ;; Name change for consistency with other option names.
+     (or (eq ls-lisp-emulation 'Microsoft)
+      (and (boundp 'ls-lisp-dired-ignore-case) ls-lisp-dired-ignore-case)))
+    (setq ls-lisp-dirs-first  (eq ls-lisp-emulation 'Microsoft))
+    (setq ls-lisp-verbosity  (cond ((eq ls-lisp-emulation 'Microsoft)
+                                    ;; Distinguish NT/2K from 9x
+                                    (and (getenv "SystemRoot") '(links)))
+                                   ((eq ls-lisp-emulation 'UNIX) '(links uid)) ; UNIX ls
+                                   (t '(links uid gid)))))) ; GNU ls
 
 (setq auto-mode-alist  (append (list    ; Defined in `files.el'.
                                 '("\\.te?xt\\'" . indented-text-mode)
@@ -423,16 +431,18 @@
                                 '("\\.sql\\'" . sql-mode))
                                auto-mode-alist))
 
-(add-hook 'tex-mode-hook 'imenu-add-menubar-index)
-;;; Auto-fill by default for text modes.
-(add-hook 'text-mode-hook 'turn-on-auto-fill t)
-(add-hook 'latex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
-(add-hook 'plain-tex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
-(add-hook 'tex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
-(add-hook 'slitex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
+(eval-after-load "tex-mode"
+  '(progn
+    (add-hook 'tex-mode-hook       'imenu-add-menubar-index)
+    ;; Auto-fill by default for text modes.
+    (add-hook 'text-mode-hook      'turn-on-auto-fill t)
+    (add-hook 'latex-mode-hook     'turn-on-auto-fill t)
+    (add-hook 'plain-tex-mode-hook 'turn-on-auto-fill t)
+    (add-hook 'tex-mode-hook       'turn-on-auto-fill t)
+    (add-hook 'slitex-mode-hook    'turn-on-auto-fill t)))
 
 ;;; Frame title: buffer name.
-(setq frame-title-format '(multiple-frames "%b" "%b"))
+(setq frame-title-format  '(multiple-frames "%b" "%b"))
 
 ;;; Mode line.
 (eval-after-load "time" (display-time)) ; Put time in mode line.
@@ -506,6 +516,17 @@
                                   (define-key command-history-map "m"
                                     'repeat-matching-complex-command)))) ; `chistory.el'.
 
+(eval-after-load "color-moccur"
+  '(progn
+    (when (fboundp 'dired-do-moccur) (define-key dired-mode-map "E" 'dired-do-moccur))
+    (when (fboundp 'Buffer-menu-moccur)
+      (define-key Buffer-menu-mode-map "E" 'Buffer-menu-moccur))
+    (when (fboundp 'occur-by-moccur)
+      (global-set-key "\C-x\C-o" 'occur-by-moccur)) ; was `delete-blank-lines'
+    (when (fboundp 'moccur) (global-set-key "\C-c\C-x\C-o" 'moccur))
+    (when (fboundp 'grep-buffers) (global-set-key "\C-cg" 'grep-buffers))
+    (when (fboundp 'search-buffers) (global-set-key "\C-c\C-o" 'search-buffers))))
+
 ;;; Use speedbar, but without images
 ;;; (setq speedbar-use-images nil)
 ;;; (require 'speedbar)
@@ -514,8 +535,8 @@
 ;;; This is a hack because in Emacs 22 speedbar creates the speedbar frame before it fills
 ;;; the buffer, and speedbar provides no appropriate hook for doing this at the right time.
 ;;; Bug filed.
-(when (fboundp 'fit-frame)              ; Defined in `fit-frame.el'.
-  (let ((win  (get-buffer-window " SPEEDBAR" t)))
+(eval-after-load "fit-frame"
+  '(let ((win  (get-buffer-window " SPEEDBAR" t)))
     (when win (save-window-excursion (select-window win) (fit-frame)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -527,57 +548,58 @@
 
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
 
-(when (fboundp 'kill-region-wimpy)      ; In `wimpy-del.el'.
-  (substitute-key-definition 'kill-region 'kill-region-wimpy global-map)
-  (substitute-key-definition 'clipboard-kill-region 'clipboard-kill-region-wimpy global-map))
+(eval-after-load "wimpy-del"
+  '(progn
+    (substitute-key-definition 'kill-region           'kill-region-wimpy global-map)
+    (substitute-key-definition 'clipboard-kill-region 'clipboard-kill-region-wimpy global-map)))
 
 ;;; These have already been done once in `setup-keys.el'.
 ;;; Repeat here in case someone has made some more of these bindings.
 ;;; Do this *after* load `menu-bar+.el', since that sets original bindings.
-(when (and (boundp 'sub-delete-windows-for)
-           sub-delete-windows-for
-           (fboundp 'delete-windows-for))
-  (substitute-key-definition 'delete-window 'delete-windows-for global-map)) ; `frame-cmds.el'.
-(when (and (boundp 'sub-query-replace-w-options)
-           sub-query-replace-w-options
-           (fboundp 'query-replace-w-options))
-  (substitute-key-definition 'query-replace 'query-replace-w-options global-map)) ;`replace+.el'
-(when (and (boundp 'sub-kill-buffer-and-its-windows)
-           sub-kill-buffer-and-its-windows
-           (fboundp 'kill-buffer-and-its-windows))
-  (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)) ;`misc-cmds'
-(when (and (boundp 'sub-pp-evals)
-           sub-pp-evals)
-  (when (fboundp 'pp-eval-last-sexp)
-    (substitute-key-definition 'eval-last-sexp 'pp-eval-last-sexp global-map)) ; In `pp.el'.
-  (when (fboundp 'pp-eval-expression)
-    (substitute-key-definition 'eval-expression 'pp-eval-expression global-map))) ; In `pp+.el'.
-(when (fboundp 'buffer-menu)
-  (substitute-key-definition 'list-buffers 'buffer-menu global-map)) ; Redef in `buff-menu+.el'.
+(eval-after-load "frame-cmds"
+  '(when (and (boundp 'sub-delete-windows-for) sub-delete-windows-for)
+    (substitute-key-definition 'delete-window 'delete-windows-for global-map)))
+
+(eval-after-load "replace+"
+  '(when (and (boundp 'sub-query-replace-w-options) sub-query-replace-w-options)
+    (substitute-key-definition 'query-replace 'query-replace-w-options global-map)))
+
+(eval-after-load "misc-cmds"
+  '(when (and (boundp 'sub-kill-buffer-and-its-windows) sub-kill-buffer-and-its-windows)
+    (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)))
+
+(eval-after-load "pp"                   ; Also in `pp+.el'.
+  '(when (and (boundp 'sub-pp-evals) sub-pp-evals)
+    (substitute-key-definition 'eval-last-sexp  'pp-eval-last-sexp  global-map)
+    (substitute-key-definition 'eval-expression 'pp-eval-expression global-map)))
+
+(eval-after-load "buff-menu"            ; Also in `buff-menu+.el'.
+  '(substitute-key-definition 'list-buffers 'buffer-menu global-map))
 
 ;;; Undefine some bindings that would try to modify buffers like Dired.
 ;;; Their key sequences will then appear to the user as available for
 ;;; local definition.  This may have been done before, in `dired+.el' etc.,
 ;;; but it may help to do it again, since we have defined more bindings here.
-(when (fboundp 'undefine-killer-commands) ; Defined in `misc-fns.el'.
-  (when (boundp 'dired-mode-map) (undefine-killer-commands dired-mode-map))
-  (when (boundp 'Buffer-menu-mode-map) (undefine-killer-commands Buffer-menu-mode-map)))
+(eval-after-load "misc-fns"
+  '(progn
+    (when (boundp 'dired-mode-map)       (undefine-killer-commands dired-mode-map))
+    (when (boundp 'Buffer-menu-mode-map) (undefine-killer-commands Buffer-menu-mode-map))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Do things this way because there is no `fundamental-mode-hook'.
 
-;; `auto-make-header' is defined in `header2.el'.
-(when (fboundp 'auto-make-header)
-  (add-hook 'emacs-lisp-mode-hook       'auto-make-header)
-  (add-hook 'ccl-mode-hook              'auto-make-header)
-  (add-hook 'lisp-mode-hook             'auto-make-header)
-  (add-hook 'cmulisp-mode-hook          'auto-make-header)
-  (add-hook 'c-mode-hook                'auto-make-header)
-  (add-hook 'c++-mode-hook              'auto-make-header)
-  (add-hook 'c-mode-common-hook         'auto-make-header)
-  (add-hook 'idl-mode-hook              'auto-make-header)
-  (add-hook 'fortran-mode-hook          'auto-make-header))
+(eval-after-load "header2"
+  '(progn
+    (add-hook 'emacs-lisp-mode-hook       'auto-make-header)
+    (add-hook 'ccl-mode-hook              'auto-make-header)
+    (add-hook 'lisp-mode-hook             'auto-make-header)
+    (add-hook 'cmulisp-mode-hook          'auto-make-header)
+    (add-hook 'c-mode-hook                'auto-make-header)
+    (add-hook 'c++-mode-hook              'auto-make-header)
+    (add-hook 'c-mode-common-hook         'auto-make-header)
+    (add-hook 'idl-mode-hook              'auto-make-header)
+    (add-hook 'fortran-mode-hook          'auto-make-header)))
 
 (add-hook 'emacs-lisp-mode-hook (function (lambda () (require 'lisp-mnt))))
 

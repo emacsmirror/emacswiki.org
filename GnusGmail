@@ -23,6 +23,14 @@ with a line like the following one in your ~/.authinfo
 machine imap.gmail.com login username@gmail.com password secret port 993
 </pre>
 
+If you prefer enable Gmail as primary select method:
+<pre>
+(setq gnus-select-method '(nnimap "gmail"
+				  (nnimap-address "imap.gmail.com")
+				  (nnimap-server-port 993)
+				  (nnimap-stream ssl)))
+</pre>
+
 Also, if you want to take advantage of using gmail's SMTP server (so gmail keeps track of your sent mail), you can use the following settings:
 
 <pre>
