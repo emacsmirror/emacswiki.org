@@ -1476,11 +1476,10 @@ versions 21 and later.
 
 ----
 [:icicle-list-join-string]
-[:icicle-list-end-string]
 [:icicle-list-nth-parts-join-string]
-==== Options icicle-list-join-string, icicle-list-end-string, icicle-list-nth-parts-join-string ====
+==== Options icicle-list-join-string, icicle-list-nth-parts-join-string ====
 
-User options '''`icicle-list-join-string'''', '''`icicle-list-end-string'''', and '''`icicle-list-nth-parts-join-string'''' are described in [[Icicles - Multi-Completions]] and [[Icicles - Programming Multi-Completions]].  Option `icicle-list-join-string' is the separator string that joins
+User options '''`icicle-list-join-string'''' and '''`icicle-list-nth-parts-join-string'''' are described in [[Icicles - Multi-Completions]] and [[Icicles - Programming Multi-Completions]].  Option `icicle-list-join-string' is the separator string that joins
 together the parts of a multi-completion.  The end string is
 appended to each multi-completion candidate.  Option
 `icicle-list-nth-parts-join-string' specifies how the

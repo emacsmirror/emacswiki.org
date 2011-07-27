@@ -1,4 +1,4 @@
-`M-x reverse-region' will reverse the lines a region.  To get the word-based reversal use the command:
+The command `M-x reverse-region' will reverse the lines a region.  To get the word-based reversal use the command by EvaluatingExpressions or by adding to your InitFile:
 
   (defun reverse-words (beg end)
     "Reverse the order of words in region."

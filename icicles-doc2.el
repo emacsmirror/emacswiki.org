@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 24 17:29:32 2011 (-0700)
+;; Last-Updated: Tue Jul 26 15:53:42 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28042
+;;     Update #: 28052
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3543,17 +3543,6 @@
 ;;  special character.  I use an orange background with a blue
 ;;  foreground for this face.
 ;;
-;;  Because multi-completions often extend over multiple lines, and
-;;  candidates in buffer `*Completions*' appear one right after the
-;;  other, it's helpful to add additional separation between
-;;  multi-completion candidates.  That is the purpose of user option
-;;  `icicle-list-end-string', whose default value is "^J^J" (two
-;;  newline characters).  It is automatically appended to each
-;;  candidate, for purposes of both display and matching.  Remember
-;;  that it is part of each multi-completion candidate, especially if
-;;  you use a regexp that ends in `$', matching the end of the
-;;  candidate.
-;;
 ;;(@* "Multi-Completions Let You Match Multiple Things in Parallel")
 ;;  ** Multi-Completions Let You Match Multiple Things in Parallel **
 ;;
@@ -5362,14 +5351,12 @@
 ;;    explicitly for a multi-line dot (`.').  A `nil' value works only
 ;;    for Emacs versions 21 and later.
 ;;
-;;  * User options `icicle-list-join-string',
-;;    `icicle-list-end-string', and
+;;  * User options `icicle-list-join-string' and
 ;;    `icicle-list-nth-parts-join-string' are described in sections
-;;    (@> "Multi-Completions") and
-;;    (@> "Programming Multi-Completions").  Option
-;;    `icicle-list-join-string' is the separator string that joins
-;;    together the parts of a multi-completion.  The end string is
-;;    appended to each multi-completion candidate.  Option
+;;    (@> "Multi-Completions") and (@> "Programming Multi-Completions").
+;;    Option `icicle-list-join-string' is the separator string that
+;;    joins together the parts of a multi-completion.  The end string
+;;    is appended to each multi-completion candidate.  Option
 ;;    `icicle-list-nth-parts-join-string' specifies how the
 ;;    multi-completion extracted parts are joined back together when a
 ;;    user chooses a multi-completion.
@@ -6997,20 +6984,18 @@
 ;;  This section is for Emacs-Lisp programmers.
 ;;
 ;;  Multi-completions are completion candidates that are composed of
-;;  parts separated by `icicle-list-join-string' and terminated by
-;;  `icicle-list-end-string'.  See (@> "Multi-Completions") for
-;;  information about how users interact with multi-completions.
+;;  parts separated by `icicle-list-join-string'.  See
+;;  (@> "Multi-Completions") for information about how users interact
+;;  with multi-completions.
 ;;
 ;;  Multi-completions are examples of fancy candidates.
 ;;  See (@> "Programming with Fancy Candidates").
 ;;
 ;;  You can define your own Icicles commands that use
-;;  multi-completions.  You can bind `icicle-list-join-string' or
-;;  `icicle-list-end-string' to any strings you like, depending on
-;;  your needs.  See
+;;  multi-completions.  You can bind `icicle-list-join-string' to any
+;;  string you like, depending on your needs.  See
 ;;  (@file :file-name "icicles-doc1.el" :to "Key Completion") for an
-;;  example where `icicle-list-join-string' is bound to "  =  " and
-;;  `icicle-list-end-string' is "".  This section describes two
+;;  example where it is bound to " = ".  This section describes two
 ;;  additional variables that you can bind to affect the appearance
 ;;  and behavior of multi-completions.
 ;;
@@ -7865,16 +7850,6 @@
 ;;  * Library `synonyms.el', which uses `icicle-define-command' to
 ;;    define command `synonyms'.  This command lets you use Icicles
 ;;    completion on input regexps when you search a thesaurus.
-;;
-;;  * Library `palette.el', which uses `icicle-define-command' to
-;;    define command `palette-pick-color-by-name-multi'.  This command
-;;    lets you use Icicles completion on input regexps when you choose
-;;    a palette color by name.
-;;
-;;  * Library `highlight.el', which uses `icicle-define-command' to
-;;    defined commands `hlt-choose-faces', `hlt-choose-visible-faces',
-;;    and `hlt-choose-invisible-faces'.  These commands let you choose
-;;    a set of faces.
  
 ;;(@* "Defining Icicles Tripping Commands")
 ;;
@@ -8156,8 +8131,8 @@
 ;;  * `icicle-keyword-list' - keywords (regexps), selected from those
 ;;    you have previously entered
 ;;
-;;  * `hlt-choose-faces', `hlt-choose-visible-faces',
-;;    `hlt-choose-invisible-faces' - face names, selected from the
+;;  * `icicle-choose-faces', `icicle-choose-visible-faces',
+;;    `icicle-choose-invisible-faces' - face names, selected from the
 ;;    (visible/invisible) highlighting faces in the buffer
 ;;
 ;;  Such commands can be used on their own, or they can be used in the

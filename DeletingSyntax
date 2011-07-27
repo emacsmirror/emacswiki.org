@@ -12,7 +12,7 @@ If you could delete by *syntax*, you'd see the following (-!- is point):
     something-!-
     -!-
 
-And here's the code:
+Try the following code by EvaluatingExpressions in Emacs or by adding it to your InitFile:
 
 {{{
 (defun kill-syntax-forward ()

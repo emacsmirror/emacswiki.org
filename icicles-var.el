@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 24 17:31:20 2011 (-0700)
+;; Last-Updated: Tue Jul 26 15:52:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1508
+;;     Update #: 1511
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -579,8 +579,7 @@ noted in parentheses.
 * `icicle-keymaps-for-key-completion'    - `S-TAB' = key-complete maps
 * `icicle-kmacro-ring-max'               - Icicles `kmacro-ring-max'
 * `icicle-levenshtein-distance'          - Levenshtein match distance
-* `icicle-list-end-string', `icicle-list-join-string'
-                                         - Multi-completion join/end
+* `icicle-list-join-string'              - Multi-completion join
 * `icicle-list-nth-parts-join-string'    - Join split-candidate parts
 * `icicle-mark-position-in-candidate'    - Mark position in cycling
 * `icicle-menu-items-to-history-flag'    - Add menus to history?
@@ -784,6 +783,7 @@ input prompt is prefixed by `+'.
   `icicle-next-TAB-completion-method'  - Next `TAB' method (`C-(')
 + `icicle-occur'                       - Incremental `occur' (`C-c '')
 + `icicle-other-window-or-frame'       - Other window/frame (`C-x o')
++ `icicle-pick-color-by-name'          - Pick a color name in palette
 + `icicle-plist'                       - Show symbols, property lists
 + `icicle-recent-file'(`-other-window') - Open recently used file
   `icicle-recompute-shell-command-candidates' - Update from $PATH

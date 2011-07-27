@@ -14,6 +14,16 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Cross-referencing basic Lisp info ==
+
+Someone who had been using Emacs for some time came across an EmacsWiki page and complained on OpenQuestions that the Lisp code didn't have instructions how to use it.  It's a fair criticism.  We had a similar criticism awhile back that resulted in improving the InstallingPackages page.
+
+I'm adding something like "Run this code by EvaluatingExpressions in Emacs or by adding it to your InitFile for Emacs" and hoping it's sufficient.
+
+It's going to be a big pain to add them to every single Emacs Lisp code listing. -- AaronHawley
+
+[new]
+if you have the admin password there is a way to do global search and replace operations using Perl regular expressions -- if you want to try that? -- AlexSchroeder
 
 == Be Able To Specify Which Manual, for `Manual:' Links ==
 

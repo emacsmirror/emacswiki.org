@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:32:12 2011 (-0700)
+;; Last-Updated: Tue Jul 26 09:14:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4363
+;;     Update #: 4365
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -117,8 +117,8 @@
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
 ;;    `icicle-keymaps-for-key-completion', `icicle-kmacro-ring-max',
-;;    `icicle-levenshtein-distance', `icicle-list-end-string',
-;;    `icicle-list-join-string', `icicle-list-nth-parts-join-string',
+;;    `icicle-levenshtein-distance', `icicle-list-join-string',
+;;    `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
 ;;    `icicle-menu-items-to-history-flag',
 ;;    `icicle-minibuffer-setup-hook', `icicle-modal-cycle-down-keys',
@@ -1901,28 +1901,28 @@ some substring of the second.
 This option is used only if you have library `levenshtein.el'."
   :type 'integer :group 'Icicles-Matching)
 
-;;;###autoload
-(defcustom icicle-list-end-string "
+;;; $$$$$$
+;;; (defcustom icicle-list-end-string "
 
-"
-  "*String appended to a completion candidate that is a list of strings.
-When a completion candidate is a list of strings, they are joined
-pairwise using `icicle-list-join-string', and `icicle-list-end-string'
-is appended to the joined strings.  The result is what is displayed as
-a completion candidate in buffer `*Completions*', and that is what is
-matched by your minibuffer input.
+;;; "
+;;;   "*String appended to a completion candidate that is a list of strings.
+;;; When a completion candidate is a list of strings, they are joined
+;;; pairwise using `icicle-list-join-string', and `icicle-list-end-string'
+;;; is appended to the joined strings.  The result is what is displayed as
+;;; a completion candidate in buffer `*Completions*', and that is what is
+;;; matched by your minibuffer input.
 
-The purpose of `icicle-list-end-string' is to allow some separation
-between the displayed completion candidates.  Candidates that are
-provided to input-reading functions such as `completing-read' as lists
-of strings are often displayed using multiple lines of text.  If
-`icicle-list-end-string' is \"\", then the candidates appear run
-together, with no visual separation.
+;;; The purpose of `icicle-list-end-string' is to allow some separation
+;;; between the displayed completion candidates.  Candidates that are
+;;; provided to input-reading functions such as `completing-read' as lists
+;;; of strings are often displayed using multiple lines of text.  If
+;;; `icicle-list-end-string' is \"\", then the candidates appear run
+;;; together, with no visual separation.
 
-It is important to remember that `icicle-list-end-string' is part of
-each completion candidate in such circumstances.  This matters if you
-use a regexp that ends in `$', matching the end of the candidate."
-  :type 'string :group 'Icicles-Completions-Display)
+;;; It is important to remember that `icicle-list-end-string' is part of
+;;; each completion candidate in such circumstances.  This matters if you
+;;; use a regexp that ends in `$', matching the end of the candidate."
+;;;   :type 'string :group 'Icicles-Completions-Display)
 
 ;; Note: If your copy of this file does not have the two-character string "^G^J"
 ;; (Control-G, Control-J) or, equivalently, \007\012, as the default value, you will want

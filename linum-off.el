@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Sep 20 08:50:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Tue Feb  8 10:41:27 2011 (-0600)
-;;           By: Matthew L. Fidler
-;;     Update #: 42
+;; Last-Updated: Wed Jul 27 01:45:27 2011 (+0900)
+;;           By: Nos
+;;     Update #: 43
 ;; URL:  http://www.emacswiki.org/emacs/auto-indent-mode.el 
 ;; Keywords: Line Numbering
 ;; Compatibility: Unknown.
@@ -23,6 +23,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 27-Jul-2011
+;;    Last-Updated: Wed Jul 27 01:45:27 2011 (+0900) #43 (Nos)
+;;    fixed that linum-disable-starred-buffers didn't work
 ;; 29-Sep-2010    Matthew L. Fidler  
 ;;    Last-Updated: Wed Sep 29 09:35:10 2010 (-0500) #39 (Matthew L. Fidler)
 ;;    Added Dired mode
@@ -74,7 +77,7 @@
   "* When linum is running globally, disable line number in modes defined in `linum-disabled-modes-list'. Changed by linum-off. Also turns off numbering in starred modes like *scratch*"
 
   (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)
-              (string-match "*" (buffer-name))
+              (and linum-disable-starred-buffers (string-match "*" (buffer-name)))
               )
     (linum-mode 1)))
 

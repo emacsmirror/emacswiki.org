@@ -380,12 +380,6 @@ this to your library that defines multi-commands:
 command lets you use '''Icicles''' completion on input regexps when you
 search a thesaurus.
 
-* '''[[ColorPalette]]''', where library '''<tt>[[palette.el]]</tt>''' uses `icicle-define-command' to define command `palette-pick-color-by-name-multi'.  This command lets you use '''Icicles''' completion on input regexps when you choose a palette color by name.
-
-* '''[[HighLight]]''', where library '''<tt>[[highlight.el]]</tt>''' uses `icicle-define-command' to define commands `hlt-choose-faces', `hlt-choose-visible-faces', and `hlt-choose-invisible-faces'.  These commands let you choose a set of faces.
-
-* '''[[Bookmarks#BookmarkPlus|BookmarkPlus]]''', where library '''<tt>[[bookmark+.el]]</tt>''' defines a deletion action function for each of the standard bookmark commands.  This lets you use `S-delete' during completion to delete individual bookmarks.
-
 ----
 
 

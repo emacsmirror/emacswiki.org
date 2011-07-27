@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 20 21:47:20 2011 (-0700)
+;; Last-Updated: Tue Jul 26 09:47:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12397
+;;     Update #: 12423
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -283,11 +283,10 @@
   ;; icicle-expand-input-to-common-match-flag, icicle-highlight-historical-candidates-flag,
   ;; icicle-highlight-input-initial-whitespace-flag, icicle-ignore-space-prefix-flag,
   ;; icicle-incremental-completion-delay, icicle-incremental-completion-flag,
-  ;; icicle-incremental-completion-threshold, icicle-default-value, icicle-list-end-string,
-  ;; icicle-list-join-string, icicle-mark-position-in-candidate, icicle-point-position-in-candidate,
-  ;; icicle-regexp-quote-flag, icicle-require-match-flag,
-  ;; icicle-show-Completions-help-flag, icicle-sort-comparer, icicle-special-candidate-regexp,
-  ;; icicle-transform-function, icicle-use-~-for-home-dir-flag
+  ;; icicle-incremental-completion-threshold, icicle-default-value, icicle-list-join-string,
+  ;; icicle-mark-position-in-candidate, icicle-point-position-in-candidate, icicle-regexp-quote-flag,
+  ;; icicle-require-match-flag, icicle-show-Completions-help-flag, icicle-sort-comparer,
+  ;; icicle-special-candidate-regexp, icicle-transform-function, icicle-use-~-for-home-dir-flag
 (require 'icicles-var)
   ;; icicle-candidate-nb, icicle-candidate-action-fn, icicle-candidate-properties-alist,
   ;; icicle-cmd-calling-for-completion, icicle-common-match-string, icicle-complete-input-overlay,
@@ -815,12 +814,12 @@ In Icicle mode, the car of an alist entry can also be a list of
 strings.  In this case, the completion candidate is a
 multi-completion.  The strings are joined pairwise with
 `icicle-list-join-string' to form the completion candidate seen by the
-user, which is terminated by `icicle-list-end-string'.  You can use
-variable `icicle-candidate-properties-alist' to control the appearance
-of multi-completions in buffer `*Completions*'.  You can use variables
-`icicle-list-use-nth-parts' and `icicle-list-nth-parts-join-string' to
-control the minibuffer behavior of multi-completions.  See the Icicles
-documentation for more information.
+user.  You can use variable `icicle-candidate-properties-alist' to
+control the appearance of multi-completions in buffer `*Completions*'.
+You can use variables `icicle-list-use-nth-parts' and
+`icicle-list-nth-parts-join-string' to control the minibuffer behavior
+of multi-completions.  See the Icicles documentation for more
+information.
 
 PREDICATE limits completion to a subset of COLLECTION.
 
@@ -1004,9 +1003,9 @@ See the source code for details."
                   ;; $$$$$$
                   ;; (when (string-match "\n" icicle-list-join-string)
                   ;;   (setq icicle-completions-format-internal  'horizontal)) ; Override
-                  (cons (concat (mapconcat #'identity (car cand) icicle-list-join-string)
-                                icicle-list-end-string)
-                        cand))
+                  ;; $$$$$$ (cons (concat (mapconcat #'identity (car cand) icicle-list-join-string)
+                  ;;                      icicle-list-end-string) ; $$$$$$
+                  (cons (mapconcat #'identity (car cand) icicle-list-join-string) cand))
                  ((and (consp cand) (stringp (car cand))) ; ("aa" . cc) -> ("aa" "aa" . cc)
                   (cons (copy-sequence (car cand)) cand))
                  ((stringp cand)        ; "aa" -> ("aa" "aa")
@@ -1664,7 +1663,7 @@ candidate `*point face name*' to use the face at point."
          (require 'eyedropper nil t)
          (let ((icicle-list-nth-parts-join-string  ": ")
                (icicle-list-join-string            ": ")
-               (icicle-list-end-string             "")
+               ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
                (icicle-proxy-candidates
                 (and icicle-add-proxy-candidates-flag
@@ -1704,7 +1703,7 @@ candidate `*point face name*' to use the face at point."
          (require 'eyedropper nil t)
          (let ((icicle-list-nth-parts-join-string  ": ")
                (icicle-list-join-string            ": ")
-               (icicle-list-end-string             "")
+               ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
                (icicle-proxy-candidates
                 (and icicle-add-proxy-candidates-flag
@@ -1828,7 +1827,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                   (when (consp faces) (setq faces  (list (car faces))))
                   (let ((icicle-list-nth-parts-join-string  ": ")
                         (icicle-list-join-string            ": ")
-                        (icicle-list-end-string             "")
+                        ;; $$$$$$ (icicle-list-end-string             "")
                         (icicle-list-use-nth-parts          '(1))
                         (face-list                          (face-list))
                         (def                                (if faces
@@ -1934,7 +1933,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                   (when (consp faces) (setq faces  (list (car faces))))
                   (let ((icicle-list-nth-parts-join-string  ": ")
                         (icicle-list-join-string            ": ")
-                        (icicle-list-end-string             "")
+                        ;; $$$$$$ (icicle-list-end-string             "")
                         (icicle-list-use-nth-parts          '(1))
                         (face-list                          (face-list))
                         (def                                (if faces
@@ -1958,7 +1957,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                       (if proxy
                           (symbol-value (intern (substring proxy 1 (1- (length proxy)))))
                         (intern face))))))
-))))
+           ))))
 
 (defun icicle-make-face-candidate (face)
   "Return a completion candidate for FACE.
@@ -3075,7 +3074,8 @@ The optional second arg is ignored."
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
           (setq row  (1+ row)))
-        (when (and any-multiline-p (not (string-match "\n$" cand))) (insert "\n"))))))
+        (when (and any-multiline-p (not (string-match "\n\'" cand)))
+          (insert (if (eq 'vertical icicle-completions-format-internal) "\n" "\n\n")))))))
 
 ;; ARG is not used yet/currently.
 (defun icicle-fit-completions-window (&optional arg)
@@ -4140,7 +4140,9 @@ Return the possibly transformed candidate."
       (if icicle-list-use-nth-parts
           (icicle-join-nth-parts parts) ; Join mult-completion parts per `icicle-list-use-nth-parts'.
         ;; Multi-completion, but no joining specified.  Reconstitute the display candidate.
-        (concat (mapconcat #'identity parts icicle-list-join-string) icicle-list-end-string)))))
+        ;; $$$$$$        (concat (mapconcat #'identity parts icicle-list-join-string)
+        ;;                       icicle-list-end-string) ; $$$$$$ 
+        (mapconcat #'identity parts icicle-list-join-string)))))
 
 (defun icicle-file-name-directory (file)
   "Like `file-name-directory', but backslash is not a directory separator.
@@ -5373,8 +5375,9 @@ If FILTER-KEYS is empty, then ALIST is returned, not a copy."
       (icicle-remove-if-not
        (lambda (item)
          (member (if (consp (car item))
-                     (concat (mapconcat #'identity (car item) icicle-list-join-string)
-                             icicle-list-end-string)
+                     ;; $$$$$$  (concat (mapconcat #'identity (car item) icicle-list-join-string)
+                     ;;                 icicle-list-end-string) ; $$$$$$
+                     (mapconcat #'identity (car item) icicle-list-join-string)
                    (car item))
                  filter-keys))
        alist)
@@ -5410,10 +5413,13 @@ the concatenated multi-completion parts, joined by
         (setq res  nil)
       (while (and candidates (not res))
         (when (or (and (consp (caar candidates)) ; Multi-completion candidate
-                       (save-match-data (string-match (regexp-quote cand)
-                                                      (concat (mapconcat #'identity (caar candidates)
-                                                                         icicle-list-join-string)
-                                                              icicle-list-end-string))))
+                       (save-match-data
+                         (string-match (regexp-quote cand)
+                                       ;; $$$$$$ (concat (mapconcat #'identity (caar candidates)
+                                       ;;                           icicle-list-join-string)
+                                       ;;                icicle-list-end-string) ; $$$$$$
+                                       (mapconcat #'identity (caar candidates)
+                                                  icicle-list-join-string))))
                   (equal cand (caar candidates)))
           (setq res  (car candidates)))
         (setq candidates  (cdr candidates))))
@@ -5636,8 +5642,7 @@ Return STRING, whether propertized or not."
 ;; Free vars here: `icicle-prompt', `icicle-candidate-help-fn', `completion-ignore-case',
 ;;                 `icicle-transform-function', `icicle-sort-orders-alist',
 ;;                 `icicle-list-nth-parts-join-string', `icicle-list-join-string',
-;;                 `icicle-list-end-string', `icicle-proxy-candidate-regexp', `icicle-named-colors',
-;;                 `icicle-proxy-candidates'.
+;;                 `icicle-proxy-candidate-regexp', `icicle-named-colors', `icicle-proxy-candidates'.
 (defun icicle-color-completion-setup ()
   "Set up for color-name/RGB-value completion (helper function).
 Sets these variables, which are assumed to be already `let'-bound:
@@ -5648,7 +5653,6 @@ Sets these variables, which are assumed to be already `let'-bound:
   `icicle-sort-orders-alist'
   `icicle-list-nth-parts-join-string'
   `icicle-list-join-string'
-  `icicle-list-end-string'
   `icicle-proxy-candidate-regexp'
   `icicle-named-colors'
   `icicle-proxy-candidates'
@@ -5682,7 +5686,7 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
         ;; candidates in `*Completions*'.
         icicle-list-nth-parts-join-string  ": "
         icicle-list-join-string            ": "
-        icicle-list-end-string             ""
+        ;; $$$$$$ icicle-list-end-string             ""
         icicle-proxy-candidate-regexp      "^[*'].+[*']"
 
         icicle-named-colors                (mapcar #'icicle-make-color-candidate
@@ -5690,8 +5694,9 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
         icicle-proxy-candidates
         (mapcar                         ; Convert multi-completions to strings.
          (lambda (entry)
-           (concat (mapconcat #'identity (car entry) icicle-list-join-string)
-                   icicle-list-end-string))
+           ;; $$$$$$ (concat (mapconcat #'identity (car entry) icicle-list-join-string)
+           ;;                icicle-list-end-string) ; $$$$$$
+           (mapconcat #'identity (car entry) icicle-list-join-string))
          (append
           (and (fboundp 'eyedrop-foreground-at-point)
                (append

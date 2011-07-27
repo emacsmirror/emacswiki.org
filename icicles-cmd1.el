@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 12:36:48 2011 (-0700)
+;; Last-Updated: Tue Jul 26 09:15:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21941
+;;     Update #: 21943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1639,7 +1639,7 @@ Same as `icicle-customize-face' except it uses a different window."
   "Open Customize buffer on all faces in list FACES."
   (let ((icicle-list-nth-parts-join-string  ": ")
         (icicle-list-join-string            ": ")
-        (icicle-list-end-string             "")
+        ;; $$$$$$ (icicle-list-end-string             "")
         (icicle-list-use-nth-parts          '(1)))
     (custom-buffer-create
      (custom-sort-items
@@ -5582,7 +5582,7 @@ Save the updated option."               ; Doc string
   ((prompt                                "Choose face (`RET' when done): ") ; Bindings
    (icicle-list-nth-parts-join-string     ": ")
    (icicle-list-join-string               ": ")
-   (icicle-list-end-string                "")
+   ;; $$$$$$ (icicle-list-end-string                "")
    (icicle-list-use-nth-parts             '(1))
    (icicle-use-candidates-only-once-flag  t)
    (icicle-candidate-alt-action-fn

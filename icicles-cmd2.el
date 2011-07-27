@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 24 19:04:30 2011 (-0700)
+;; Last-Updated: Tue Jul 26 10:00:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3483
+;;     Update #: 3501
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -496,8 +496,8 @@ This command is intended only for use in Icicle mode." ; Doc string
 
    icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
    icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-   icicle-list-end-string       icicle-proxy-candidate-regexp      icicle-named-colors
-   icicle-proxy-candidates)
+   ;; $$$$$$ icicle-list-end-string
+   icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
 
   (icicle-color-completion-setup)       ; First code
   (modify-frame-parameters icicle-orig-frame (list (cons 'background-color orig-bg))) ; Undo code
@@ -523,8 +523,8 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
 
    icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
    icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-   icicle-list-end-string       icicle-proxy-candidate-regexp      icicle-named-colors
-   icicle-proxy-candidates)
+   ;; $$$$$$ icicle-list-end-string
+   icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
 
   (icicle-color-completion-setup)       ; First code
   (modify-frame-parameters icicle-orig-frame (list (cons 'foreground-color orig-bg))) ; Undo code
@@ -1109,9 +1109,12 @@ This is used as the value of `minibuffer-completion-table'."
     ;; Change alist entries to multi-completions: "op^G^Jtp".  Add short help for mode-line, tooltip.
     (setq result
           (mapcar #'(lambda (entry)
-                      (let* ((opt+typ-string  (concat (mapconcat #'(lambda (e) (pp-to-string e))
-                                                                 entry icicle-list-join-string)
-                                                      icicle-list-end-string))
+                      (let* ((opt+typ-string
+                              ;; $$$$$$ (concat (mapconcat #'(lambda (e) (pp-to-string e))
+                              ;;                           entry icicle-list-join-string)
+                              ;;                icicle-list-end-string)) ; $$$$$$
+                              (mapconcat #'(lambda (e) (pp-to-string e)) entry
+                                         icicle-list-join-string))
                              (doc       ; Don't bother to look up doc, if user won't see it.
                               (and (or (> icicle-help-in-mode-line-delay 0)
                                        (and (boundp 'tooltip-mode) tooltip-mode))
@@ -1862,7 +1865,7 @@ marker's buffer, to facilitate orientation."
   (interactive)
   (let ((icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
-        (icicle-list-end-string             "")
+        ;; $$$$$$ (icicle-list-end-string             "")
         (icicle-sort-orders-alist
          (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
                icicle-sort-orders-alist))
@@ -2323,7 +2326,7 @@ This command is intended for use only in Icicle mode."
         (icicle-current-input               "")
         (icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
-        (icicle-list-end-string             "")
+        ;; $$$$$$ (icicle-list-end-string             "")
         (icicle-list-use-nth-parts          '(1))
         (icicle-sort-comparer               nil)
 
@@ -5915,8 +5918,9 @@ used with `C-u', with Icicle mode turned off)."
             icicle-candidate-help-fn           completion-ignore-case
             icicle-transform-function          icicle-sort-orders-alist
             icicle-list-nth-parts-join-string  icicle-list-join-string
-            icicle-list-end-string             icicle-proxy-candidate-regexp
-            icicle-named-colors                icicle-proxy-candidates)
+            ;; $$$$$$ icicle-list-end-string
+            icicle-proxy-candidate-regexp      icicle-named-colors
+            icicle-proxy-candidates)
         ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
         ;; Use `icicle-prompt' from now on, since that's what `icicle-color-completion-setup' sets up.
         (setq icicle-prompt  (copy-sequence (or prompt "Color: ")))
@@ -5924,9 +5928,10 @@ used with `C-u', with Icicle mode turned off)."
         (setq icicle-proxy-candidates
               (append icicle-proxy-candidates
                       (mapcar           ; Convert multi-completions to strings.
-                       #'(lambda (entry)
-                           (concat (mapconcat #'identity (car entry) icicle-list-join-string)
-                                   icicle-list-end-string))
+                       ;; $$$$$$ #'(lambda (entry)
+                       ;;           (concat (mapconcat #'identity (car entry) icicle-list-join-string)
+                       ;;                   icicle-list-end-string)) ; $$$$$$
+                       #'(lambda (entry) (mapconcat #'identity (car entry) icicle-list-join-string))
                        '((("*mouse-2 foreground*")) (("*mouse-2 background*")))))
               color  (icicle-transform-multi-completion
                       (let ((icicle-orig-window  (selected-window))
@@ -5953,7 +5958,7 @@ used with `C-u', with Icicle mode turned off)."
         (when mouse-pseudo-color-p
           (let ((icicle-list-nth-parts-join-string  ": ")
                 (icicle-list-join-string            ": ")
-                (icicle-list-end-string             "")
+                ;; $$$$$$ (icicle-list-end-string             "")
                 (icicle-list-use-nth-parts
                  (or (and arg (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
                      icicle-list-use-nth-parts ; Bound externally by program.
@@ -6058,7 +6063,7 @@ returned."
     (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
     ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
      (icicle-list-join-string            ": ")
-     (icicle-list-end-string             "")
+     ;; $$$$$$ (icicle-list-end-string             "")
      (icicle-list-use-nth-parts          '(1))
      (prompt                             (copy-sequence "Choose face (`RET' when done): "))
      (face-names                         ()))
@@ -6083,7 +6088,7 @@ returned."
     (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
     ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
      (icicle-list-join-string            ": ")
-     (icicle-list-end-string             "")
+     ;; $$$$$$ (icicle-list-end-string             "")
      (icicle-list-use-nth-parts          '(1))
      (prompt                             (copy-sequence "Choose face (`RET' when done): "))
      (face-names                         ()))
@@ -6108,7 +6113,7 @@ returned."
     (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
     ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
      (icicle-list-join-string            ": ")
-     (icicle-list-end-string             "")
+     ;; $$$$$$ (icicle-list-end-string             "")
      (icicle-list-use-nth-parts          '(1))
      (prompt                             (copy-sequence "Choose face (`RET' when done): "))
      (face-names                         ()))

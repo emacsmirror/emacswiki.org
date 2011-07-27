@@ -1,20 +1,65 @@
-This page is about Evaluating Emacs-Lisp '''S-expressions''', or '''sexps'''.  A [[Sexp]] is any readable Lisp expression -- code enclosed in parentheses, a string enclosed in double quotes, a variable name, a quoted expression, a number, and so on. 
+This page is about evaluating EmacsLisp '''S-expressions''', or '''sexps'''.  A [[sexp]] is any readable Lisp expression -- code enclosed in parentheses, a string enclosed in double quotes, a variable name, a quoted expression, a numeral, and so on.
+
+See also the sections "How to Evaluate" in the EmacsLispIntro and "Evaluating Emacs Lisp Expressions" in the EmacsManual.
 
 
-== M-: - eval-expression ==
 
-You can evaluate any Lisp sexp using `M-:' (command `eval-expression'). 
-One can do this by pressing 3 keys : M , Shift and ':' together.
-This prompts you to type an expression into the MiniBuffer, which is then
-evaluated. The result is displayed in the echo area (or inserted to
-current buffer if a prefix argument is supplied).  This is especially
-useful when you are coding and testing, because this allows you to
-quickly call non-interactive functions.  This saves you from typing
-them into a buffer and using `C-x C-e'.
+== M-: - `eval-expression' ==
 
+You can evaluate any sexp using `M-:' (command `eval-expression', by default). 
+(`M-:' means Press these 3 keys at once: Meta (typically Alt), Shift and `##:##'.)
+
+This prompts you to type an EmacsLisp [[sexp]] in the [[minibuffer]]. The sexp is evaluated and the result is shown in the [[echo area]] (or inserted into the 
+current buffer if you use a [[prefix argument]]). 
+
+This is especially
+useful when you are coding and testing, because it lets you 
+quickly invoke non-interactive functions (non-[[command]]s).  It saves you from typing them into a buffer and using `C-x C-e' to evaluate them.
+
+
+[:PrettyPrintEvalExpression]
+=== Making `M-:' Pretty-Print the Result ===
+
+You can make `M-:' pretty-print the result of evaluation, by evaluating this [[sexp]].  For example, put it in your [[init file]]:
+
+  (substitute-key-definition 'eval-expression
+                             'pp-eval-expression global-map)
+
+
+== C-x C-e - `eval-last-sexp' ==
+
+When looking at EmacsLisp code, put point after a [[sexp]], and hit `C-x C-e' (command `eval-last-sexp').  This will print
+the value of the sexp in the [[echo area]].  If you need to look at
+the result again later, you can find it in [[buffer]] `*Messages*' (for a while).
+
+You can insert the result of an evaluation into the current buffer at point
+by using a [[prefix argument]]: `C-u C-x C-e'.  This can be useful if you are writing some code that uses the result.
+
+== Lisp Modes ==
+
+Some people like to use InferiorEmacsLispMode -- `M-x ielm'.  This creates a buffer much like a shell buffer.  Whatever Lisp
+expressions you type are evaluated and the result is printed into
+the buffer.
+
+Similarly, you can use buffer `##*scratch*##' much as you would a buffer in Emacs-Lisp mode. However, by default the mode of `##*scratch*##' is Lisp-Interaction mode, which is slightly different from Emacs-Lisp mode.  In particular, `C-j' acts quite differently.
+
+== C-M-x - `eval-defun' ==
+
+When writing EmacsLisp code, you can use
+`C-M-x' (command `eval-defun') which evaluates the defun at point. If 
+the [[cursor]] is inside or immediately after a [[variable]] declaration, then this function, unlike `C-x C-e', resets the variable to the value
+contained in the declaration.
+
+== `M-x set-variable' ==
+
+You can set [[user option]]s using ‘M-x set-variable’. This can be quicker than evaluating an assignment sexp: `##M-: (setq my-variable some-value)##'.
+
+== C-h v - `describe-variable' ==
+
+If you just want to check the current value of a variable, the easiest way is to use `C-h v' (command `describe-variable').  This prints the [[variable]]'s [[doc string]] and [[symbol value|value]].
 
 [:PpPlus]
-=== Pp+ ===
+== Pretty-Printing for Evaluation, Generally ==
 
 Do this, to make `M-:' more useful:
 
@@ -23,12 +68,12 @@ Do this, to make `M-:' more useful:
   (substitute-key-definition 'eval-expression
                              'pp-eval-expression global-map)
 
-This replaces all bindings for `eval-'* by the corresponding `pp-eval-'*.  This means that the result of a sexp evaluation is pretty-printed in a separate buffer, `<code>*Pp Eval Output*</code>'. You can edit the definition there, or copy it into other Lisp code.
+This replaces all bindings for `eval-'* by the corresponding `pp-eval-'*.  This means that the result of a [[sexp]] evaluation is pretty-printed in a separate [[buffer]], `##*Pp Eval Output*##'. You can edit the definition there, or copy it into other EmacsLisp code.
 
-In addition, library '''<tt>[[pp+.el]]</tt>''' enhances pretty-print evaluation by redefining `pp-eval-expression' as follows:
+In addition, library you can use library '''<tt>[[pp+.el]]</tt>''' to enhance pretty-print evaluation by redefining `pp-eval-expression' as follows:
 
 * Does not use `emacs-lisp-mode-hook'.
-* Fontifies the result buffer, `<code>*Pp Eval Output*</code>'.
+* Fontifies the result buffer, `##*Pp Eval Output*##'.
 * Makes several EmacsLisp keybindings available while reading the expression -- uses a new keymap, `pp-read-expression-map'. You can use:
 ** `C-M-q' to indent a sexp
 ** `C-M-x' to eval a sexp
@@ -37,62 +82,12 @@ In addition, library '''<tt>[[pp+.el]]</tt>''' enhances pretty-print evaluation 
 * With a prefix arg, inserts the pretty-printed result in the current buffer. With a negative prefix arg and a string result, inserts it without enclosing double-quotes (`"').
 * Respects `pp-eval-expression-print-length' and `pp-eval-expression-print-level', new options that control the print length and print level. Respects standard option `eval-expression-debug-on-error'.
 
-Note: If you use '''[[Icicles]]''', then the same behavior is available in ''Icicle'' mode without library <tt>[[pp+.el]]</tt>.
-
--- DrewAdams
-
-== C-h v - describe-variable ==
-
-If you just want to check the current value of a variable, the easiest way is to use `C-h v' (command `describe-variable').  This prints the variable's
-DocString and value.
+Note: If you use '''[[Icicles]]''', then the same behavior is available in ''Icicle'' mode without library <tt>[[pp+.el]]</tt>.  -- DrewAdams
 
 
+== Evaluating All Code in the Region or Buffer ==
 
-== C-x C-e - eval-last-sexp ==
-
-When looking at source code, put point after a sexp, and hit `C-x
-C-e' (command `eval-last-sexp').  This will print
-the value of the sexp in the echo area.  If you need to look at
-the result again later, you can find it in the `*Messages*' buffer (for a while).
-
-You can insert the result of an evaluation into the current buffer at point
-by using a prefix argument: `C-u C-x C-e'.  This can be useful if you are writing some code that uses the result.
-
-== Lisp Modes ==
-
-Some people like to use InferiorEmacsLispMode -- `M-x
-ielm'.  This creates a buffer much like a shell buffer.  Whatever Lisp
-expressions you type are evaluated and the result is printed into
-the buffer.
-
-Similarly, you can use buffer `<code>*scratch*</code>' much as you would a buffer in Emacs-Lisp mode. However, the mode of `<code>*scratch*</code>' is Lisp-Interaction mode, which is slightly different from Emacs-Lisp mode.
-
-== Evaluation Shortcuts ==
-
-=== set-variable ===
-
-You can set user options (user variables) with ‘M-x set-variable’. This can be quicker than evaluating an assignment sexp: `<code>M-: (setq my-variable some-value)</code>'.
-
-=== C-M-x - eval-defun ===
-
-When writing EmacsLisp code, you can use
-`C-M-x' (command `eval-defun') which evaluates the function at point. If 
-the TextCursor is inside or immediately after a variable declaration, this function, unlike `C-x C-e', resets the variable to the value
-contained in the declaration.
-
-Here's a spot of code KevinRyde uses in Emacs 21 to get `C-M-x' to correctly re-evaluate <code>defface</code> forms, that is, to get the new value to take effect.
-
-    (defadvice eval-defun-1 (after my-defface activate)
-      (cond
-       ;; `defface' is macroexpanded to `custom-declare-face'.
-       ((eq (car form) 'custom-declare-face)
-        ;; Reset the face.
-        (put (eval (nth 1 form)) 'face-defface-spec nil)
-        (setq face-new-frame-defaults
-              (assq-delete-all (eval (nth 1 form)) face-new-frame-defaults))
-        form)))
-
-This is taken from the Emacs CVS head sources, turned into a <code>defadvice</code>.
+Evaluate all the EmacsLisp code between [[point]] and [[mark]] using `M-x eval-region'.  To evaluate all of the code in the current [[buffer]], mark it using `C-x h', then do `M-x eval-region'.  For information about loading EmacsLisp library files, see InstallingPackages.
 
 ----
 CategoryCode

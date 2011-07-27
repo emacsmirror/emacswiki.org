@@ -10,19 +10,16 @@
 This section is for EmacsLisp programmers.
 
 [[multi-completion|Multi-completions]] are [[completion]] candidates that are composed of
-parts separated by `icicle-list-join-string' and terminated by
-`icicle-list-end-string'.  See [[Icicles - Multi-Completions]]
+parts separated by `icicle-list-join-string'.  See [[Icicles - Multi-Completions]]
 for information on how users interact with multi-completions.
 
 Multi-completions are  examples of [[fancy candidates]].
 See [[Icicles - Programming with Fancy Candidates]].
 
 You can define your own '''Icicles''' [[command]]s that use
-multi-completions.  You can bind `icicle-list-join-string' or
-`icicle-list-end-string' to any strings you like, depending on
+multi-completions.  You can bind `icicle-list-join-string' to any string you like, depending on
 your needs.  See [[Icicles - Key Completion]] for an example
-where `icicle-list-join-string' is bound to '''##"  =  "##''' and
-`icicle-list-end-string' is '''##""##'''.  This section describes two
+where it is bound to '''##"  =  "##'''.  This section describes two
 additional [[variable]]s that you can bind to affect the appearance
 and behavior of multi-completions.
 

@@ -25,6 +25,9 @@ I'm curious, why is the Caps Lock key useless? - MathiasDahl
 
 It introduces a mode, and thus mode errors by users. -- AlexSchroeder
 
+I'm not sold on the "modes are bad" argument.  I came to this page specifically because I want to redefine my Caps Lock (or perhaps Shift+Caps Lock) to be a Shift Lock (like a typewriter). Anyone know if there's a way to do that (like emacs' scroll-lock-mode)?  -- Sinewalker
+
+
 ==Redefining as Ctrl==
 
 In my opinion (and this is a religious issue), Caps should always be Ctrl, and left control could be the CapsKey. I prefer removing Caps Lock altogether. The additional benefit of having Caps acting like Ctrl is that Ctrl gets a more central position on the keyboard. Which, in Emacs, is quite useful considering ones frequent use of Ctrl commands.

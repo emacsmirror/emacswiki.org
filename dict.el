@@ -486,9 +486,11 @@ This guess is based on the text surrounding the cursor."
   (let (word)
     (save-excursion
       (setq word (current-word))
-      (if (string-match "[._]+$" word)
-	  (setq word (substring word 0 (match-beginning 0))))
-      word)))
+      (cond ((null word) "")
+	    ((string-match "[._]+$" word)
+	     (substring word 0 (match-beginning 0)))
+	    (t word)))))
+
 
 ;;;;
 ;;;; Lookup functions

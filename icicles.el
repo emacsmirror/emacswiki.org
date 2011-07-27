@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 24 18:54:41 2011 (-0700)
+;; Last-Updated: Tue Jul 26 15:52:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22928
+;;     Update #: 22930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -263,7 +263,7 @@
 ;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
 ;;    `icicle-occur', `icicle-other-window-or-frame',
-;;    `icicle-pick-color-by-name-multi', `icicle-plist',
+;;    `icicle-pick-color-by-name', `icicle-plist',
 ;;    `icicle-pop-tag-mark', `icicle-pp-eval-expression',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
 ;;    `icicle-read-kbd-macro', `icicle-recent-file',
@@ -667,8 +667,8 @@
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
 ;;    `icicle-keymaps-for-key-completion', `icicle-kmacro-ring-max',
-;;    `icicle-levenshtein-distance', `icicle-list-end-string',
-;;    `icicle-list-join-string', `icicle-list-nth-parts-join-string',
+;;    `icicle-levenshtein-distance', `icicle-list-join-string',
+;;    `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
 ;;    `icicle-menu-items-to-history-flag',
 ;;    `icicle-minibuffer-setup-hook', `icicle-modal-cycle-down-keys',

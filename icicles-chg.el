@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 24 18:55:03 2011 (-0700)
+;; Last-Updated: Tue Jul 26 10:28:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6668
+;;     Update #: 6676
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/07/26 dadams
+;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/05/22 dadams
 ;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/21 dadams
@@ -406,6 +408,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/26 dadams
+;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/07/24 dadams
 ;;     Moved here from palette.el, and renamed with prefix icicle-:
 ;;       icicle-pick-color-by-name, icicle-pick-color-by-name-action
@@ -829,6 +833,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/07/26 dadams
+;;     icicle-insert-candidates: Vertical multiline: add only one newline, not two.  Use \' not $.
+;;     Removed: icicle-list-end-string (no longer needed).
+;;     Thx to Michael Heerdegen.
 ;; 2011/07/20 dadams
 ;;     icicle-mctized-full-candidate: Don't change icicle-completions-format-internal to horizontal.
 ;;     icicle-insert-candidates: If any candidate is multiline then use only one column.
@@ -4663,6 +4671,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/07/26 dadams
+;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/07/06 dadams
 ;;     Renamed icicle-Completions-frame-at-right-flag to icicle-move-Completions-frame.
 ;;     icicle-move-Completions-frame: Allow for moving frame to the left also.
@@ -5250,6 +5260,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/07/26 dadams
+;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/07/24 dadams
 ;;     Updated icicle-general-help-string for new commands.
 ;; 2011/07/06 dadams
