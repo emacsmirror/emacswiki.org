@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 26 10:00:01 2011 (-0700)
+;; Last-Updated: Wed Jul 27 18:04:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3501
+;;     Update #: 3523
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2034,11 +2034,8 @@ Search respects `icicle-regexp-quote-flag' and
 by using `C-`' and `M-q', respectively.  If `icicle-regexp-quote-flag'
 is non-nil, then regexp special characters are quoted, so that they
 become non-special.  If `icicle-search-whole-word-flag' is non-nil,
-then whole-word searching is done.  During word search, all characters
-in the search string you type are treated as if they were word
-constituents: the search string is matched literally, but only at word
-boundaries.  (You can also use `\\[icicle-search-word]' to perform
-word search.)
+then whole-word searching is done.  (You can also use
+`\\[icicle-search-word]' to perform word search.)
 
 
 Optional Behaviors: Prefix Argument
@@ -2406,13 +2403,30 @@ candidates."
                                (current-prefix-arg                files-only-p))
                            (save-selected-window (icicle-buffer-list))))))
 
+;;; $$$$$$ (defun icicle-search-read-word ()
+;;;   "Read a word to search for (whole-word search).
+;;; Regexp special characters within the word are escaped (quoted)."
+;;;   (setq icicle-search-context-level  0)
+;;;   (concat "\\b"
+;;;           (regexp-quote (icicle-completing-read-history "Search for whole word: "
+;;;                                                         'icicle-search-history))
+;;;           "\\b"))
+
 (defun icicle-search-read-word ()
   "Read a word to search for (whole-word search).
-Regexp special characters within the word are escaped (quoted)."
+The search string is regarded as a whole word, but a \"word\" here can
+contain embedded strings of non word-constituent chars (they are
+skipped over, when matching, included in the match), and any leading
+or trailing word-constituent chars in the search string are dropped
+\(ignored for matching, not included in the match): matches begin and
+end on a word boundary."
   (setq icicle-search-context-level  0)
-  (concat "\\b"
-          (regexp-quote (icicle-completing-read-history "Search for whole word: "
-                                                        'icicle-search-history))
+  (concat "\\b" (replace-regexp-in-string
+                 "\\W+" "\\W+" (replace-regexp-in-string
+                                "^\\W+\\|\\W+$" ""
+                                (icicle-completing-read-history "Search for whole word: "
+                                                                'icicle-search-history))
+                 nil t)
           "\\b"))
 
 (defun icicle-search-final-act ()
@@ -4086,12 +4100,12 @@ valid buffer position."
 (defun icicle-search-word (beg end word-regexp require-match ; Bound to `C-c $'.
                            &optional where &rest args)
   "Search for a whole word.
-Word search is literal: regexp special characters are treated as
-non-special.  In fact, they are also treated as if they were
-word-constituent characters.  That is, your typed input is searched
-for literally, but matches must begin and end on a word boundary.
-This also means that you can include whitespace within the \"word\"
-being sought.
+The search string is regarded as a whole word, but a \"word\" here can
+contain embedded strings of non word-constituent chars (they are
+skipped over, when matching, included in the match), and any leading
+or trailing word-constituent chars in the search string are dropped
+\(ignored for matching, not included in the match): matches begin and
+end on a word boundary.
 
 At the prompt for a word, you can use completion against previous
 Icicles search inputs to choose the word, or you can enter a new word.

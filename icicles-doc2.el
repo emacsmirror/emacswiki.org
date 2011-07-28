@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 26 15:53:42 2011 (-0700)
+;; Last-Updated: Wed Jul 27 18:30:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28052
+;;     Update #: 28071
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -806,15 +806,18 @@
 ;;    for a whole word: your initial search string is matched only
 ;;    against whole words.  Non-`nil' `icicle-search-whole-word-flag'
 ;;    makes other Icicles search commands also perform whole-word
-;;    searching.  The search string you type is matched literally, but
-;;    matches must start and end at word boundaries.  Because it is
-;;    matched literally, all regexp special characters in the search
-;;    string are escaped.  This means, for instance, that you can
-;;    match `foo-bar' as a word, even in contexts (such as Emacs Lisp)
-;;    where `-' is not a word-constituent character.  Similarly, you
-;;    can match the literal four-character "word" `f.*g'.  You can use
-;;    `M-q' while searching to toggle this option; the new value takes
-;;    effect for the next complete search.
+;;    searching.  You can use `M-q' while searching to toggle this
+;;    option; the new value takes effect for the next complete search.
+;;
+;;    Whole-word searching here means that matches can contain
+;;    embedded strings of non word-constituent chars (they are skipped
+;;    over, when matching, included in the match), and any leading or
+;;    trailing word-constituent chars in the search string are dropped
+;;    (ignored for matching, not included in the match).  This means,
+;;    for instance, that you can match `foo-bar' as a word, even in
+;;    contexts (such as Emacs Lisp) where `-' is not a
+;;    word-constituent character.  Similarly, you can include embedded
+;;    whitespace in a "word", e.g., `foo bar'.
 ;;
 ;;  * You can toggle `icicle-use-C-for-actions-flag' at any time using
 ;;    `M-g' in the minibuffer.  This is handy for multi-commands that
@@ -4915,16 +4918,11 @@
 ;;    option `completions-format' for this, if you want the same type
 ;;    of layout with Icicle mode turned on or off.
 ;;
-;;    Multi-completions often involve complex, multi-line text for
-;;    which a vertical `*Completions*' layout is not appropriate.  For
-;;    this reason, when multi-line multi-completions are used the
-;;    layout is horizontal, temporarily overriding any `vertical'
-;;    value for `icicle-completions-format' or `completions-format'.
-;;
-;;    If you need to override this override behavior for some command,
-;;    use `icicle-minibuffer-setup-hook' and `minibuffer-exit-hook' to
-;;    temporarily set and reset the internal variable
-;;    `icicle-completions-format-internal'.
+;;    Icicles always displays multi-line candidates in a single
+;;    column, for readability.  When this is the case, the completions
+;;    format (horizontal or vertical) makes no difference - the effect
+;;    is the same.  (Icicles also inserts an empty line after each
+;;    multi-line candidate, for readability.)
 ;;
 ;;  * If option `icicle-menu-items-to-history-flag' is non-`nil' (the
 ;;    default), then commands that you invoke using the menu-bar menu
@@ -5175,9 +5173,21 @@
 ;;       `icicle-search-context-level-8'
 ;;
 ;;  * Non-`nil' user option `icicle-search-whole-word-flag' means that
-;;    whole-word search is done.  All characters in your search string
-;;    are searched for literally, and matches for the string must
-;;    begin and end on a word boundary.
+;;    whole-word search is done.  You can use `M-q' while searching to
+;;    toggle this option; the new value takes effect for the next
+;;    complete search.
+;;
+;;    Whole-word searching here means that matches can contain
+;;    embedded strings of non word-constituent chars (they are skipped
+;;    over, when matching, included in the match), and any leading or
+;;    trailing word-constituent chars in the search string are dropped
+;;    (ignored for matching, not included in the match).  This means,
+;;    for instance, that you can match `foo-bar' as a word, even in
+;;    contexts (such as Emacs Lisp) where `-' is not a
+;;    word-constituent character.  Similarly, you can include embedded
+;;    whitespace in a "word", e.g., `foo bar'.
+;;
+;;    See also (@> "Icicles Search Commands, Overview").
 ;;
 ;;  * If user option `icicle-search-replace-whole-candidate-flag' is
 ;;    `nil', then whatever matches your current input is replaced,

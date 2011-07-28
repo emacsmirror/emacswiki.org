@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 21 17:50:04 2011 (-0700)
+;; Last-Updated: Wed Jul 27 18:06:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16980
+;;     Update #: 16985
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -658,7 +658,7 @@ POSITION is a buffer position."
     (save-excursion
       (with-current-buffer (get-buffer "*Completions*")
         (goto-char position)
-        (if (memq icicle-completions-format-internal '(horizontal nil))
+        (if (memq icicle-completions-format '(horizontal nil))
             hor-nb
           (let* ((cols      (icicle-nb-Completions-cols))
                  (nb-cands  (length icicle-completion-candidates))
@@ -683,7 +683,7 @@ POSITION is a buffer position."
       ;; Binary search.
       (let ((cand-nb                             (/ (length icicle-completion-candidates) 2))
             (last-nb                             0)
-            (icicle-completions-format-internal  nil)
+            (icicle-completions-format           'horizontal)
             delta)
         (goto-char (point-min))
         (icicle-move-to-next-completion cand-nb t)
@@ -2659,7 +2659,7 @@ Bound to `M-q' in the minibuffer."
 ;;;###autoload
 (defalias 'toggle-icicle-search-whole-word 'icicle-toggle-search-whole-word)
 ;;;###autoload
-(defun icicle-toggle-search-whole-word () ; Bound to `M-q' in minibuffer.
+(defun icicle-toggle-search-whole-word () ; Bound to `M-q' in minibuffer during Icicles search.
   "Toggle the value of `icicle-search-whole-word-flag'.
 The new value takes effect for the next Icicles search command.
 Bound to `M-q' in the minibuffer when searching."
@@ -3938,7 +3938,7 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
   (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-Completions))
   (setq n  (or n 0))
-  (when (eq icicle-completions-format-internal 'vertical)
+  (when (eq icicle-completions-format 'vertical)
     (let* ((cols      (icicle-nb-Completions-cols))
            (nb-cands  (length icicle-completion-candidates))
            (rows      (/ nb-cands cols)))

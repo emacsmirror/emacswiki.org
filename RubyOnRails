@@ -104,3 +104,7 @@ Many in the Ruby community use [http://pastie.org Pastie] for sharing code snipp
 == Haml Support for emacs ==
 
 See HamlMode.
+
+== Tab-Key in Terminal-Mode
+[new]
+When using the emacs-rails plugin with snippets (tab-expansion), it works nice in the normal GUI, but in the terminal mode the tab-key triggers the intendation but snippets dont work. Has somebody any tips for this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman

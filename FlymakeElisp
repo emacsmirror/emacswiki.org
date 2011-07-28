@@ -76,7 +76,6 @@ If you don't want to create external command, use it.
 (add-hook 'emacs-lisp-mode-hook
           ;; workaround for (eq buffer-file-name nil)
           (function (lambda () (if buffer-file-name (flymake-mode)))))
-)
 </pre>
 
 That's all.

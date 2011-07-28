@@ -45,12 +45,6 @@ Variable `custom-file' is an [[option]], but it is (exceptionally) usually bette
 
 HTH -- DrewAdams
 
-
-
-
-
-
-
 == gunzip in dired no longer working in ubuntu 10.10 builds of emacs ==
 [new]
 In Ubuntu 10.10 I have install via their repository 23.1.1 . It seems at least since this (ubuntu) release I can 
@@ -178,14 +172,9 @@ to give me a "\" when I press "i". But of course I need the "i" and I want backs
 
 Any explanations of this behaviour and a solution would be much appreciated. (Note, I am very much a noob with both emacs and my debian)
 
-==Turn off scratch buffer when Aquamacs starts==
-
-[new]
-I installed Aquamacs 2.0 on my mac and I can't get rid of the *scratch* buffer. I tried setting the option in Preferences>Aquamacs>Aquamacs Scratch File to "nil" and nil without quotations, but it just changed the file path of the scratch buffer if you want to save it. In the Aquamacs-Scratch-File option it does not give me a toggle option as to turn it on or off. Please tell me a way to stop opening up the scratch buffer when Aquamacs starts.
 
 
 ==Newly Created Files are Invisible on Vista (64)==
-
 
 [new]
 I have installed emacs 23.1 on a Vista (64) machine. Quite strangely, the files I create with emacs are not visile by the standard Windows programs (cmd, explorer, notepad), though I can access them with emacs and other program (I found out when creating an Xmingrc file in \Program Files (X86)\Xming. Xming reads Xmingrc, while Windows Explorer, dir and notepad do not. However, notepad anot save a file named Xmingrc in the same position. Also I have "show hidden and system files" in my explorer prefs, so that should not be the problem. the nly difference I see between "visible" files and "ghosts":in dired, ghosts are listed as belonging to me; regular files belong to "Administrators". Any idea?
@@ -220,11 +209,7 @@ When I find the file in question, and eval the buffer, I do not get these errors
 Thanks.
 
 [new]
-==Total Newbie Question: Where Do The Aquamacs .el Files Live?==
 
-Hi, I'm just getting started with Aquamacs on OS X 10.6 and I'm not sure where I'm supposed to add customizations.  For example, I'm trying to install a markdown mode (http://jblevins.org/projects/markdown-mode/) but I don't know where to put the actual .el file.  Also, I'm just putting my .emacs files in my home directory.  Is that the best place for it?
-
-Thank you for your help.
 
 [new]
 == Customizing Two-Mode-Mode to ignore delimiter when indenting and/or fontifying ==
@@ -247,31 +232,6 @@ I know it would have been useful lots of times when editing text with Emacs. Is 
 [new]
 You're trying with the mouse I presume?  Are you using TransientMarkMode or PcSelectionMode already?  Seems like these modes should offer what you want or close to it.  If you were using the DefaultKillingAndYanking commands you could change their behavior by AdvisingFunctions. -- AaronHawley
 
-== Is there a package which makes URLs clickable? ==
-
-I'm looking for a minor mode or similar which I can turn on in any buffer and it makes all URLs in the buffer clickable and of course keeps the URLs updated when the buffer text is edited. Is there such a package?
-
-[new]
-Yes, mlinks.el in [NxhtmlMode nXhtml]. Currently it handles only html-style links though.
-
-OrgMode also has support for URL links, but in major mode org-mode though. (And with its own link format, very nice actually.)
-[new]
-Emacs comes with `M-x goto-address'.  See GotoAddress.  Another option is BrowseUrl.  The commentary  suggests adding the following to your .emacs.
-
-    (global-set-key [S-mouse-2] 'browse-url-at-mouse)
-
-Not a minor mode, but maybe having it on all the time is better? -- AaronHawley
-
-[new]
-== Starting Aquamacs with multiple files in tabs ==
-
-I have a minor annoyance with the way Aquamacs handles tabbed buffers. It seems that until a new tab has been opened, new files are not opened in tabs. This means that I have to press 'Apple-T' first, then open the file, then close the untitled tab. After that new files are automatically put in tabs. Also, if opening multiple files from the command-line, the window is split horizontally in two - I'd like to specify that it puts the files in separate tabs. Is there a way to do this?
-
-Opening multiple tabs from the command line works for me with the latest release (1.8). Maybe you need to enable tabs in the Options menu.  This gets turned on automatically when you press Command-T.  See the support mailing list (Emacs on OSX) for more assistance. -- DavidReitter
-
-Thanks, that improves things somewhat (I selected Options/Show Tabs, then Save Options). Now it works as expected when I open Aquamacs with only one (or no) file. However, when I specify two files on the command line, it opens with two panes, with the top pane containing the first file and another tab for the %%*scratch*%% buffer, and the bottom pane containing the second file.
-
-[new]
 == Emacs library files hot-patch doesn't work (Win32 Emacs) ==
 
 I am a newbie user of Emacs, and just can't stop loving it!
@@ -293,19 +253,6 @@ Whenever I hot-patch (via manually patching) emacs library files, such as python
 
 
 [new]
-== Does the Latest Version Really contain a virus? ==
-
-The Version I downloaded: Emacs-23-CvsP090226-EmacsW32-1.58.exe
-is reported by F-Secure to contain: Packed.Win32.Tdss.c
-so I didn't install it. -- 139.91.179.203
-
-[new]
-Does this help? (search for "Does Emacs contain a virus?"):
-http://www.gnu.org/software/emacs/windows/Installing-Emacs.html#Installing-Emacs -- DrewAdams
-
-[new]
-It is only reporting a virus on that one: the latest unpatched version from GNU is ok -- athedsl-4491258.home.otenet.gr 
-
 
 == Color-themes not working==
 [new]
@@ -444,9 +391,7 @@ Thanks!
 Aquamacs newbie here. I can't seem to easily find help on user-defined syntax highlighting for any file types. For example I work with a program called Ox, with .ox extensions. The command 'decl' is often used for declaring variables. Given my text is green, how I would I go about making 'decl' come up blue in .ox files to distinguish the command? Edited to add: simply put, I'm looking to add a new option for .ox files under File>Change Buffer Mode... , that highlights Ox syntax like decl, while, for, if,...etc.
 
 
-== Tab-Key in Terminal-Mode
-[new]
-When using the emacs-rails plugin with snippets (tab-expansion), it works nice in the normal GUI, but in the terminal mode the tab-key triggers the intendation but snippets dont work. Has somebody any tips for this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman
+
 == Control Characters Visible in Dired Listing ==
 [new]
 When running <code>find-grep-dired</code> or <code>find-name-dired</code>, files with executable permissions display control characters around the file name like this:
@@ -457,28 +402,6 @@ It appears that the buffer is trying to colorize the output, though this is not 
 
 [new]
 : I discovered the problem: my emacs instance was inheriting the environment variable <code>CLICOLOR=1</code>, which dired was trying to use to colorize the <code>ls</code> output. The simple fix was to unset this variable in my InitFile: <code>(setenv "CLICOLOR" nil)</code>. But this still begs the question: can color dired output be achieved by maintaining the <code>CLICOLOR</code> variable and somehow tweaking some terminal settings?
-
-== Finding Hidden Files and Directories ==
-[new]
-I can't seem to open either a unix style directory (eg /etc or /bin) or a "hidden" file (eg .profile) from with in the File, Open. Same is true for Open Dir. For that matter, I can't even see a file /usr. Is there a way to do this?
-
-[new] 
-: I can only assume that this is happening to you with the recent GtkFileChooser which is controversial.  Try to hit just '/' or '~' oder C-l to get into the (completing) location bar.  Use a right click to toggle the showing of hidden files in the dialog.  Does this help?
-
-== Key mapping is not as shown in bindings ==
-[new]
-Control-left and right arrow should provide backward-word and forward-word, but
-instead emacs beeps.  C-left isn't bound to a keyboard shortcut in Gnome, nor
-in Ubuntu's Terminal.  Emacs describe-bindings says C-left is bound to backward-word, but
-describe-key C-left says ESC-0 is undefined.  To a newbie these seem contradictory but I haven't found a description of how describe-key differs from the bindings.  
-
-There's no minor mode in use, so it should only be the local keymap overriding the global keymap.  I suspect describe-bindings-internal etc. aren't the right commands for checking the keymaps, but after fumbling around 'info emacs' I'm drawing a blank at finding out more.
-
-Interestingly C-left/right works OK with emacs-snapshot-gtk, which provides a
-GUI and incorporates Gnu Emacs 22.0.50.1 and shows the same key binding, but
-not with plain text-mode emacs using Gnu Emacs 21.4.1 from a terminal.
-
-Solved - it turns out that without X support emacs is only seeing keycodes that cannot represent the full range of X events, and the Control-arrow keys are among the casualties.  Credit to EmacsWiki for refererring to KeybindingGuide - thanks!
 
 == Running on Mac OS X 10.3? (missing lib(s)) ==
 [new]
@@ -528,49 +451,7 @@ Is there a popup input dialog box for Emacs and/or XEmacs, which returns the str
 
 See the documentation for 'x-popup-dialog' in GNU Emacs.
 
-== Graphic support? ==
 
-[new]
-How do you show an image (PNG, JPEG, GIF) in Emacs 21.2, like it does on the intro screen? Can you make the image auto-load when a text file is loaded? I am using Linux, X, and have Emacs 21.2 (not XEmacs). -- LionKimbro
-
-[new]
-: ''I dunno the details, but auto-image-mode lets you view image files when you open them, the secrets will show themselves if you check the source of auto-image-mode --ShaeErisson''
-
-[new]
-:: Thanks! I've opened images with auto-image-mode, and even copy/pasted them into buffers. However, now I am trying to save the buffers, and restore the images. I save them under a format called something like "emacs-mule", or something like that, but when I load it back up, the image is just a bunch of line noise. I have tried to revert the format to "emacs-mule", or whatever it was, but cannot figure out how to do it. Do you know how to do that? When I figure this all out, I plan to add a Wiki entry for it. =^_^= Thanks; LionKimbro.
-
-[new]
-:: ''I guess this doesn't work at the moment.  Nothing I tried seemd to work. -- AlexSchroeder''
-
-[new]
-Does Emacs 21.2 support viewing of any images (BMP,XBM,ICO,PNG...) on Windows?  See AutoImageFileMode.
-
-[new]
-If you want to save a text file with images you need a new file format. MULE is used for non-Ascii text encodings, not for images. Normally Emacs will save only the text of a buffer, not its overlays (colors, fonts, etc.). You can re-attach an image to the text file by creating an overlay with the <code>'display</code> property on it (see AutoSmiley for an example package that adds images to a text file). --AmitPatel
-
-== update-file-header,_time-stamp_and_undo ==
-
-[new]
-This add-hook eliminates the undo trail that update-file-header
-creates and M-x undo tracks back through, as well as the
-narrow-to-buffer, edit, save, undo sequence error: "Changes to be
-undone are outside visible portion of buffer" message from
-undo-more. Comments?
-
-   (add-hook
-    'write-file-hooks
-    '(lambda nil
-       (when (buffer-modified-p)
-         (let ((my-buffer-undo buffer-undo-list))
-      	(buffer-disable-undo) ;; flushes buffer-undo-list
-      	(update-file-header)
-      	(time-stamp)
-      	(setq buffer-undo-list my-buffer-undo)
-      	(buffer-enable-undo)))))
-
-== Older versions of Debian's libc6 ==
-
-Has anyone compiled emacs22 to work with older versions of Debian's libc6 (2.3.6.ds1-4)?
 
 == Looking for a Mark Scope function ==
 
@@ -586,45 +467,8 @@ Thanks!
 You can mark an area with <code>mark-sexp</code> or ThingAtPoint or <code>mark-enclosing-sexp</code> (from ThingAtPointCommands). However if you want to edit within this region while it's marked, you may want to use BasicNarrowing after you've marked a region. --AmitPatel
 
 
-== From *Help* buffer how to automatically examine *.el source in view-mode? ==
-
-C-h f view-mode 
-
-With point over 'view.el' of *Help* buffer @ line 1
-
-M-x describe-text-properties
-
-Returns:
-
-"Here is a `help-function-def' button labeled `view.el'.
-There are text properties here:
-  button               (t)
-  category             help-function-def-button
-  help-args            (view-mode "../emacs/lisp/view.el")"
-
-Most of the time, when I go to examine the source _from_ *Help* I want to do so without having to worry about mucking it up accidentally esp. when the source is beneath "../emacs/lisp/*.el". In these situations I almost alwasy want to _read_ the source _not_ edit it. View-mode is my prefered way of examining source when I want only to read it as it allows me to page in a manner congruent with most unix environments/vi/less/more etc. Is it possible to hook into the help button actions to toggle view-mode when opening for an *.el file from *Help*?  AFAICT *Help* is already leveraging view-mode in a non extensible manner. How does one get Emacs to jump over its own head? --mon_key
-
-[new]
-I had a look at it, for me it works if I advice two functions. Try the following code:
-
-    (defadvice find-function-search-for-symbol (after oxy-adv1 last (symbol type library) activate)
-      (with-current-buffer (car ad-return-value)
-        (view-mode 1)))
-
-    (defadvice find-variable-noselect (after oxy-adv2 last (variable &optional file) activate)
-      (with-current-buffer (car ad-return-value)
-        (view-mode 1)))
-
---TomRauchenwald
-
-[new]
-Great Thanks!  Works for me. I hesitate to reveal the path I went down to attempt accomplishing the same :P I've been wondering about a solution for that puzzle for quite awhile now. I'd be curious to learn if there is a way to accomplish the same without advice... --mon_key
-
-[new]
-A different approach might be to set auto-mode-alist to use view-mode on anything in the standard Emacs lisp directories. --AmitPatel
-
 [:FAQ]
-= Answers to Frequent Questions =
+== Answers to frequent questions ==
 
 These questions are kept here to let people avoid asking frequently asked questions that have answers.
 

@@ -1,7 +1,7 @@
 If you are on a Linux console, for example, some key combinations
 might simply not exist -- it depends on the setup outside of Emacs.
 
-For example there is no C-<up> etc. on my Linux console by
+For example there is no C-<up>, C-<right>, C-<down>, C-<left>, etc. on my Linux console by
 default. Therefore I created a .keymap file with the following entries
 (amonst others):
 
@@ -30,6 +30,8 @@ See LoadKeys for more information about the programs used.
 == How to determine the scancodes ==
 
 Run `showkey' and type the key you want.
+
+
 
 ----
 CategoryKeys

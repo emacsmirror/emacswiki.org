@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 26 10:28:49 2011 (-0700)
+;; Last-Updated: Wed Jul 27 18:18:10 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6676
+;;     Update #: 6694
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -408,6 +408,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/27 dadams
+;;     icicle-search-read-word: Changed regexp to what vanilla Emacs uses for word search.
+;;     icicle-search(-word): Updated doc string wrt word search.
 ;; 2011/07/26 dadams
 ;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/07/24 dadams
@@ -833,6 +836,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/07/27 dadams
+;;     Use icicle-completions-format everywhere, not icicle-completions-format-internal (removed).
+;;     icicle-nb-of-cand-in-Completions-horiz: Bind icicle-completions-format to horizontal, not nil.
 ;; 2011/07/26 dadams
 ;;     icicle-insert-candidates: Vertical multiline: add only one newline, not two.  Use \' not $.
 ;;     Removed: icicle-list-end-string (no longer needed).
@@ -2455,6 +2461,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/07/27 dadams
+;;     Use icicle-completions-format everywhere, not icicle-completions-format-internal (removed).
 ;; 2011/07/21 dadams
 ;;     Renamed: icicle-nb-of-candidate-in-Completions to icicle-nb-of-cand-at-Completions-pos.
 ;; 2011/07/06 dadams
@@ -4671,6 +4679,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/07/27 dadams
+;;     icicle-completions-format, icicle-search-whole-word-flag: Updated doc string.
 ;; 2011/07/26 dadams
 ;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/07/06 dadams
@@ -5260,6 +5270,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/07/27 dadams
+;;     Removed icicle-completions-format-internal.
 ;; 2011/07/26 dadams
 ;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/07/24 dadams

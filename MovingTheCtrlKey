@@ -324,6 +324,14 @@ If you use the AutoHotKey (www.autohotkey.com) Win32 macro program, the followin
 Capslock::Ctrl
 </pre>
 
+Here is a exe of the AutoHotKey script, so you don't have to download autohotkey itself.
+
+The script: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.exe
+
+The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
+
+Notice that it also maps right control to caps lock, maybe someone cap upload one that does not do that.
+
 
 
 ----

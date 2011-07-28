@@ -35,5 +35,14 @@ list, not <tt>cons</tt>. Cons is a constructor for conses, and lists
 just happen to be a special form of conses.  However, some programming
 textbooks don't agree.  -- EricMarsden
 
+[new:NeilSmithline:2011-07-27 22:10 UTC]
+Clearly there was some doubt about whether this page was relevant at the time of its posting. I think it should simply be deleted and, if appropriate, replaced by one or more new pages. The problems I see with this page are:
+# It is questionable whether <tt>cons</tt>ing is a problem in the first place.
+# The page conflates performance/memory management with programming abstractions. As far as performance goes, a series of <tt>cons</tt>'es creates as many <tt>cons</tt> cells as a call to <tt>list</tt>.
+# The page briefly mentions destructive operations but provides no clue as to what they are, when they are appropriate to use, and, most importantly, when they shouldn't be used. 
+# The page wholly omits any mention of FunctionalProgramming (see [http://en.wikipedia.org/wiki/Functional_programming Wiki:FunctionalProgramming]). EmacsLisp code tends to be a mish-mash of functional and declarative programming. There are many places where I that is fine, but it should be a conscious decision to mix functional and declarative programming. Functional programming tends to rely heavily on <tt>cons</tt> with very little use of <tt>list</tt>. The use of destructive functions is practically a litmus test for pure functional programming.
+
+
+
 ----
 CategoryCode, [[EmacsMemoryDebugging]]

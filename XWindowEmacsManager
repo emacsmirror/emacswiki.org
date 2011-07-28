@@ -57,6 +57,11 @@ Window is element of frame that used to arrange managed X clients in Emacs windo
 
 Window has properties list, TODO: write me
 
+== Download ==
+
+source code:
+cvs -d:pserver:anonymous@cvs.sv.gnu.org:/sources/xwem co . 
+
 == Discussion ==
 
 Any comments, wishes and ideas are very very welcome, XWEM is not written yet but base skeleton is already done and I want you to say your words on what you want to be in it. How to represent manager info, how to communicate to user, what we really need from window manager, at last how to do things :) --ZajcevEvgeny

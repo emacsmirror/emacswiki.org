@@ -489,16 +489,18 @@ any time during searching and replacing, to toggle the value.
 
 * Command `icicle-search-word' (bound to `##C-c $##') always searches
 for a whole word: your initial
-search string is matched only against whole words. Non-`nil' '''`<tt>[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]</tt>'''' makes other '''Icicles''' search commands also perform whole-word searching. The search
-string you type is matched literally, but matches must start and
-end at word boundaries.  Because it is matched literally, all
-[[Icicles - Special Characters in Input Patterns|regexp special characters]] in the search string are escaped.
-This means, for instance, that you can match `foo-bar' as a
-word, even in contexts (such as Emacs Lisp) where '''`-'''' is not a
-word-constituent character.  Similarly, you can match the
-literal four-character "word" `##f.*g##'.  You can use '''`M-q'''' while
+search string is matched only against whole words. Non-`nil' '''`<tt>[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]</tt>'''' makes other '''Icicles''' search commands also perform whole-word searching. You can use '''`M-q'''' while
 searching to toggle this option; the new value takes effect for
-the next complete search.
+the next complete search.  Whole-word searching here means that matches can contain
+embedded strings of non word-constituent chars (they are skipped
+over, when matching, included in the match), and any leading or
+trailing word-constituent chars in the search string are dropped
+(ignored for matching, not included in the match). 
+This means, for instance, that you can match `foo-bar' as a
+word, even in contexts (such as EmacsLisp) where '''`-'''' is not a
+word-constituent character.  Similarly, you can can include embedded
+whitespace in a "word", e.g., `##foo bar##'.
+
 
 * You can toggle '''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''' at any time using
 `M-g' in the minibuffer.  This is handy for 

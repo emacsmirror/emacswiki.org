@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 26 09:14:44 2011 (-0700)
+;; Last-Updated: Wed Jul 27 18:10:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4365
+;;     Update #: 4371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -996,9 +996,9 @@ removed based only on the number of input characters."
 `vertical' means display down columns first, then to the right.
 `horizontal' or nil means display across rows first, then down.
 
-A `vertical' value is overridden (ignored) when multi-line
-multi-completions are used.  For clarity, the layout for such
-multi-completions is always horizontal."
+Note that multi-line candidates are always displayed in a single
+column, and in this case it makes no difference what the value of the
+option is - the effect is the same."
   :type '(choice
           (const :tag "Display vertically"    vertical)
           (other :tag "Display horizontally"  horizontal))
@@ -2534,7 +2534,17 @@ You can use `C-,' to toggle this at any time during Icicles search."
 ;;;###autoload
 (defcustom icicle-search-whole-word-flag nil ; Toggle with `M-q'.
   "*Non-nil means that `icicle-search' looks for a whole word.
-You can use `M-q' to toggle this at any time during Icicles search."
+You can use `M-q' to toggle this at any time during Icicles search;
+the new value takes effect for the next complete search.
+
+Whole-word searching here means that matches can contain embedded
+strings of non word-constituent chars (they are skipped over, when
+matching, included in the match), and any leading or trailing
+word-constituent chars in the search string are dropped (ignored for
+matching, not included in the match).  This means, for instance, that
+you can match `foo-bar' as a word, even in contexts (such as Emacs
+Lisp) where `-' is not a word-constituent character.  Similarly, you
+can include embedded whitespace in a \"word\", e.g., `foo bar'."
   :type 'boolean :group 'Icicles-Searching)
 
 ;; Based more or less on `shell-dynamic-complete-as-command'.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 26 15:52:05 2011 (-0700)
+;; Last-Updated: Wed Jul 27 10:57:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1511
+;;     Update #: 1513
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -54,9 +54,7 @@
 ;;    `icicle-completing-read+insert-candidates',
 ;;    `icicle-completion-candidates',
 ;;    `icicle-completion-prompt-overlay',
-;;    `icicle-completion-set-history',
-;;    `icicle-completions-format-internal',
-;;    `icicle-confirm-exit-commands',
+;;    `icicle-completion-set-history', `icicle-confirm-exit-commands',
 ;;    `icicle-current-completion-candidate-overlay',
 ;;    `icicle-current-completion-mode', `icicle-current-input',
 ;;    `icicle-current-raw-input', `icicle-current-TAB-method',
@@ -365,10 +363,6 @@ Used only for Emacs 22 and later.")
   "`completing-read' COLLECTION arg to use for `icicle-completing-read+insert'.")
 
 (defvar icicle-completion-set-history nil "History for completion-set names.")
-
-(defvar icicle-completions-format-internal icicle-completions-format
-  "Internal version of `icicle-completions-format'.
-Used to override the option for multi-completions.")
 
 (defvar icicle-confirm-exit-commands
   (and (boundp 'minibuffer-confirm-exit-commands)

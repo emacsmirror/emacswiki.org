@@ -382,7 +382,22 @@ Emacs 23 comes with a way to execute applescript with a handy function.  It's us
 		       "tell application \"Safari\" to activate") url))
     (start-process (concat "open " url) nil "open" url)))
 }}}
+
+=== Is there a package which makes URLs clickable? ===
+
+I'm looking for a minor mode or similar which I can turn on in any buffer and it makes all URLs in the buffer clickable and of course keeps the URLs updated when the buffer text is edited. Is there such a package?
+
 [new]
+Yes, mlinks.el in [NxhtmlMode nXhtml]. Currently it handles only html-style links though.
+
+OrgMode also has support for URL links, but in major mode org-mode though. (And with its own link format, very nice actually.)
+[new]
+Emacs comes with `M-x goto-address'.  See GotoAddress.  Another option is BrowseUrl.  The commentary  suggests adding the following to your .emacs.
+
+    (global-set-key [S-mouse-2] 'browse-url-at-mouse)
+
+Not a minor mode, but maybe having it on all the time is better? -- AaronHawley
+
 ----
 CategoryDotEmacs CategoryHypermedia
 

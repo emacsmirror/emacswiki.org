@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 26 09:47:44 2011 (-0700)
+;; Last-Updated: Wed Jul 27 10:59:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12423
+;;     Update #: 12425
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -886,8 +886,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
       (setq icicle-initial-value  (car initial-input))
     (setq initial-input         (format "%s" initial-input) ; Convert symbol to string
           icicle-initial-value  initial-input))
-  (setq icicle-nb-of-other-cycle-candidates  0
-        icicle-completions-format-internal   icicle-completions-format)
+  (setq icicle-nb-of-other-cycle-candidates  0)
 
   ;; Use DEF for INITIAL-INPUT also, if `icicle-default-value' says so.
   (when (and def icicle-default-value (not (eq icicle-default-value t))
@@ -3015,7 +3014,7 @@ The optional second arg is ignored."
            startpos endpos string)
       (dolist (cand  candidates)
         (setq endpos  (point))
-        (cond ((eq icicle-completions-format-internal 'vertical) ; Vertical layout.
+        (cond ((eq icicle-completions-format 'vertical) ; Vertical layout.
                (when (>= row rows)
                  (forward-line (- rows))
                  (setq column-nb  (+ column-nb colwidth)
@@ -3070,12 +3069,12 @@ The optional second arg is ignored."
                (when (eq ?\n (char-before (point)))
                  (put-text-property (1- (point)) (point) 'icicle-keep-newline t))
                (set-text-properties (point) (progn (insert (cadr cand)) (point)) nil)))
-        (if (not (eq icicle-completions-format-internal 'vertical))
+        (if (not (eq icicle-completions-format 'vertical))
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
           (setq row  (1+ row)))
         (when (and any-multiline-p (not (string-match "\n\'" cand)))
-          (insert (if (eq 'vertical icicle-completions-format-internal) "\n" "\n\n")))))))
+          (insert (if (eq 'vertical icicle-completions-format) "\n" "\n\n")))))))
 
 ;; ARG is not used yet/currently.
 (defun icicle-fit-completions-window (&optional arg)

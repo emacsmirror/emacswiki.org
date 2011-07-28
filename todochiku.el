@@ -1,5 +1,5 @@
 ;;; todochiku.el - A mode for interfacing with Growl, Snarl, and the like.
-(defconst todochiku-version "0.0.7.b")
+(defconst todochiku-version "0.0.8")
 
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
@@ -97,6 +97,7 @@
 ;; - Build better backend support.
 
 ;;; CHANGELOG:
+;; V0.0.8 - Fixed broken `todochiku-icons-directory' definition that made it impossible to change through Customize.
 ;; V0.0.7b - Added support for sticky messages for libnotify and growl.
 ;; V0.0.7  - Added YaOddMuse interface
 ;; V0.0.6.1 - Bugfixing fom Jason McBrayer  (thanks!)
@@ -158,18 +159,7 @@ Whether or not to display todochiku-messages as a tooltip."
   :group 'todochiku)
 
 (defcustom todochiku-icons-directory
-  (if (file-exists-p  (concat 
-                       (file-name-directory (or
-                                             load-file-name
-                                             buffer-file-name))
-                       "/todochiku-icons"))
-      (concat 
-       (file-name-directory (or
-                             load-file-name
-                             buffer-file-name))
-       "/todochiku-icons")
-    "~/.emacs-cfg/todochiku-icons"
-    )
+  "~/.emacs-cfg/todochiku-icons"
   "Path to the todochiku icons directory."
   :type 'directory
   :group 'todochiku)

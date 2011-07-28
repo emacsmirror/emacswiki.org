@@ -44,6 +44,8 @@ Cheers,
 Alex.
 [new:]
 : Oh no, that's not really ''directly''. I mean type   c a f e   and see 0xCA and 0xFE appear at the left side... Without having to call other functions. Switching between left and right side with a key.
+[new:]
+: Open the file with hexl-find-file, navigate to the location that you want to edit, and type characters directly (e.g. "c a f e") -- the hex codes will appear appropriately on the left side.
 
 [new:]
 An extension built upon hexl to provide a convenient way to view binary data:

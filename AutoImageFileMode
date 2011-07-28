@@ -13,8 +13,30 @@ MIME attachments of the correct format.
 
 21.2.50 already supports PBMs and XBMs... Excellent! -- GirishB
 
-----
+[new]
 So, when do we this extended to use aalib for console mode viewing? :-) --ShaeErisson 
-----
-CategoryModes | MultimediaModes | CategoryGnus
 
+== Graphic support? ==
+
+[new]
+How do you show an image (PNG, JPEG, GIF) in Emacs 21.2, like it does on the intro screen? Can you make the image auto-load when a text file is loaded? I am using Linux, X, and have Emacs 21.2 (not XEmacs). -- LionKimbro
+
+[new]
+: ''I dunno the details, but auto-image-mode lets you view image files when you open them, the secrets will show themselves if you check the source of auto-image-mode --ShaeErisson''
+
+[new]
+:: Thanks! I've opened images with auto-image-mode, and even copy/pasted them into buffers. However, now I am trying to save the buffers, and restore the images. I save them under a format called something like "emacs-mule", or something like that, but when I load it back up, the image is just a bunch of line noise. I have tried to revert the format to "emacs-mule", or whatever it was, but cannot figure out how to do it. Do you know how to do that? When I figure this all out, I plan to add a Wiki entry for it. =^_^= Thanks; LionKimbro.
+
+[new]
+:: ''I guess this doesn't work at the moment.  Nothing I tried seemd to work. -- AlexSchroeder''
+
+[new]
+Does Emacs 21.2 support viewing of any images (BMP,XBM,ICO,PNG...) on Windows?
+
+[new]
+If you want to save a text file with images you need a new file format. MULE is used for non-Ascii text encodings, not for images. Normally Emacs will save only the text of a buffer, not its overlays (colors, fonts, etc.). You can re-attach an image to the text file by creating an overlay with the <code>'display</code> property on it (see AutoSmiley for an example package that adds images to a text file). --AmitPatel
+
+----
+CategoryModes
+MultimediaModes
+CategoryGnus
