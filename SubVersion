@@ -4,7 +4,7 @@ As time passed, the limitations of [[CVS]] became obvious. [::Subversion] aka. [
 
 A small binding for Emacs' [[VersionControl]] feature is included in the source distribution starting with GNU Emacs 22.
 
-* See GIT:vc-svn.el               (update:  This link seems to be out of date... need a new one!)
+* See http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/vc-svn.el
 
 Currently, it does not explicitly support branches, nor `C-x v a' (`vc-update-change-log').
 

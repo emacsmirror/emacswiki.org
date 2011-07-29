@@ -39,10 +39,13 @@ The library behind `thing-at-point' is generic and [[extensible]] to additional 
 
 Function `forward-thing' takes as argument a symbol naming a type of thing. For example, argument `sentence' tells `forward-thing' to move forward one sentence. That is, it does so ''if'' a function named `forward-sentence' is defined, or if the symbol `sentence' has a `forward-op' property on its [[property list]]. Because function `forward-sentence' is defined in Emacs, `forward-thing' can operate with sentences.
 
-To make `forward-thing' work with a particular kind of thing, say, a new type `foobar' that you define, you can define a function `forward-foobar' that moves forward one or more `foobar's. (With a negative argument, `forward-foobar' should move backward.) 
+To make `forward-thing' work with a particular kind of thing, say, a new type `foobar' that you define, you can define a function `forward-foobar' that moves forward one or more `foobar's. (With a negative argument, `forward-foobar' should move backward.)
 
-Here is an example of defining new thing: ThingAtPointExample.
+Examples:
 
+* IntegerAtPoint
+* SyntaxAtPoint
+* StringAtPoint
 
 == Extensions to library `thingatpt.el' ==
 

@@ -11,6 +11,15 @@ It uses ##locate## which is a standard tool on GNU/Linux. Of course, ##locate## 
 == Compatibility ==
 
 This is developed on GnuEmacs but should work on XEmacs, too.
+
+[new]
+To use this on MacOS, you can use the mdfind command instead of locate. 
+
+                   "mdfind"
+                   (list
+                    "-onlyin" "/Users/amitp"
+                    (concat "kMDItemDisplayName == '" input "'wc"))
+
 ----
 
 CategoryFiles CategoryProgrammerUtils
