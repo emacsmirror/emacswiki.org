@@ -17,7 +17,7 @@ To use this on MacOS, you can use the mdfind command instead of locate.
 
                    "mdfind"
                    (list
-                    "-onlyin" "/Users/amitp"
+                    "-onlyin" (getenv "HOME")
                     (concat "kMDItemDisplayName == '" input "'wc"))
 
 ----
