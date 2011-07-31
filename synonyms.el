@@ -7,31 +7,16 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Thu Feb 24 15:59:02 2011 (-0800)
+;; Last-Updated: Sat Jul 30 11:36:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2467
+;;     Update #: 2497
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `cl', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `custom', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
-;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -52,7 +37,7 @@
 ;;
 ;;    ;; The file names are absolute, not relative, locations
 ;;    ;;     - e.g. /foobar/mthesaur.txt.cache, not mthesaur.txt.cache
-;;    (setq synonyms-file  <name & location of mthesaur.txt>)
+;;    (setq synonyms-file        <name & location of mthesaur.txt>)
 ;;    (setq synonyms-cache-file  <name & location of your cache file>)
 ;;    (require 'synonyms)
 ;;
@@ -67,10 +52,10 @@
 ;;  democracy' displays synonyms for `democracy'.
 ;;
 ;;  If you do not define `synonyms-file' and `synonyms-cache-file'
-;;  prior to using command `synonyms', it will prompt you to define
-;;  them.  If you want to use the same values during subsequent Emacs
-;;  sessions, then you should use `customize-option' to save those
-;;  newly defined values.
+;;  prior to using command `synonyms', that command will prompt you to
+;;  define them.  If you want to use the same values during subsequent
+;;  Emacs sessions, then you should use `M-x customize-option' to save
+;;  those newly defined values.
 ;;
 ;;
 ;;  Some Definitions
@@ -208,10 +193,11 @@
 ;;  ------------------------------
 ;;
 ;;  You can complete words and phrases in the minibuffer, as input to
-;;  command `synonyms', and you can use Synonyms together with Icicles
-;;  to complete a partial word in a text buffer into a word or phrase
-;;  in the thesaurus.  For more information on Icicles, see library
-;;  `icicles.el'.
+;;  command `synonyms'.  You can use library Synonyms together with
+;;  library Icicles to complete a partial word in a text buffer into a
+;;  word or phrase in the thesaurus.  If you use both libraries then
+;;  load Icicles after Synonyms.  For more information on Icicles, see
+;;  `http://www.emacswiki.org/cgi-bin/wiki/icicles.el'.
 ;;
 ;;  ** Minibuffer Input Completion **
 ;;
@@ -221,26 +207,22 @@
 ;;  That is, even though you can enter any text (including a regexp),
 ;;  completion will only complete to synonyms in the thesaurus.
 ;;
-;;  Two different versions of the main command, `synonyms', are
-;;  provided here.  If library `icicles.el' has already been loaded
-;;  when you load `synonyms.el' (recommended), then the second, more
-;;  powerful version is used; if not, the first version is used.  The
-;;  second takes advantage of all Icicles features.  In particular, it
-;;  lets you:
+;;  If you load library Icicles, then a more powerful version of
+;;  command `synonyms' is used.  In particular, it lets you:
 ;;
 ;;   - Use `S-TAB' during completion to see the list of all synonyms
 ;;     (thesaurus terms) that match your minibuffer input so far.
 ;;
-;;   - Use `[next]', and `[prior]' (usually keys Page Down and Page
-;;     Up) during completion to cycle through the completion
+;;   - Use `[next]', and `[prior]' (usually keys `Page Down' and `Page
+;;     Up') during completion to cycle through the completion
 ;;     candidates (synonyms) that match your input.
 ;;
 ;;   - Use `C-o', `C-[next]', and `[C-prior]' during completion to
 ;;     display the synonyms of the current completion candidate.
 ;;
-;;  ** Completing Text Using the Thesaurus **
+;;  ** Completing Buffer Text Using the Thesaurus **
 ;;
-;;  Icicles provides two commands for using completion to insert
+;;  Icicles also provides two commands for using completion to insert
 ;;  thesaurus entries in a buffer:
 ;;
 ;;   - `icicle-complete-thesaurus-entry' completes a word in a text
@@ -487,6 +469,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/07/30 dadams
+;;     Moved Icicles code to icicles-cmd2.el.  Removed soft-require of icicles.el.
 ;; 2011/02/11 dadams
 ;;     Better defaults for faces, for dark backgrounds.
 ;; 2011/01/04 dadams
@@ -598,12 +582,9 @@
 
 (require 'thingatpt+ nil t) ;; (no error if not found): word-nearest-point
 (require 'thingatpt nil t)  ;; (no error if not found): word-at-point
-(require 'icicles nil t)    ;; (no error if not found): icicle-define-command
 
 ;; Note: You might get byte-compiler warnings that variables `appendp'
-;;       and `morep' are free: .  In Emacs 22+, you might also get
-;;       warnings that stuff inside `icicle-define-command' here is
-;;       undefined.  All of this is OK.
+;;       and `morep' are free: .  This is OK.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -616,7 +597,7 @@
 (defgroup Synonyms nil
   "Commands to look up synonyms in a thesaurus."
   :prefix "synonyms-"
-  :group 'convenience :group 'help :group 'apropos :group 'matching :group 'Icicles
+  :group 'convenience :group 'help :group 'apropos :group 'matching
   :link `(url-link :tag "Send Bug Report"
           ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 synonyms.el bug: \
@@ -929,50 +910,7 @@ This does nothing if the obarray is already complete."
   "Return non-nil if FILE (a string) names a writable file."
   (and (not (string= "" file)) (file-writable-p file) (not (file-directory-p file))))
 
-(unless (fboundp 'icicle-define-command)
-  (defun synonyms (&optional arg regexp)
-    "Show synonyms that match a regular expression (e.g. a word or phrase).
-You are prompted for the regexp.  By default, it is the text
-of the region, if it is active and `transient-mark-mode' is enabled,
-or the nearest word to the cursor, if not.
-
-Option `synonyms-match-more-flag' non-nil means additional thesaurus
-  entries can be matched.  This can be more time-consuming.  It means
-  two things:
-
-  1) Input can match parts of synonyms, in addition to whole synonyms.
-  2) All synonyms are shown, even if input matches a thesaurus entry.
-
-Option `synonyms-append-result-flag' non-nil means to append search
-  result to previous results.
-
-A prefix argument toggles the meaning of each of those options for the
-duration of the command:
-
-  If `C-u' or `C-u C-u', then toggle `synonyms-match-more-flag'.
-  If negative or `C-u C-u', then toggle `synonyms-append-result-flag'.
-
-\(`C-u C-u' thus means toggle both options.)
-
-When called from Lisp, optional second argument REGEXP is the regexp
-to match (no prompting)."
-    (interactive "P")
-    (synonyms-ensure-synonyms-read-from-cache) ; Fill `synonyms-obarray', for use in completion.
-    (let* ((num-arg              (prefix-numeric-value arg))
-           (morep                (eq synonyms-match-more-flag (atom arg)))
-           (appendp              (eq synonyms-append-result-flag (and (wholenump num-arg)
-                                                                      (/= 16 num-arg))))
-           (default-search-text  (or regexp (synonyms-default-regexp)))
-           (search-text          (or regexp
-                                     (let ((case-fold-search  t)) ; Case-insensitive completion.
-                                       (completing-read
-                                        "Show synonyms for word or phrase (regexp): "
-                                        synonyms-obarray nil nil nil 'synonyms-history
-                                        default-search-text)))))
-      (synonyms-action search-text))))
-
-(when (fboundp 'icicle-define-command)
-  (icicle-define-command synonyms       ; Command
+(defun synonyms (&optional arg regexp)
   "Show synonyms that match a regular expression (e.g. a word or phrase).
 You are prompted for the regexp.  By default, it is the text
 of the region, if it is active and `transient-mark-mode' is enabled,
@@ -997,19 +935,24 @@ duration of the command:
 \(`C-u C-u' thus means toggle both options.)
 
 When called from Lisp, optional second argument REGEXP is the regexp
-to match (no prompting)."               ; Doc string
-  synonyms-action                       ; Action function
-  "Show synonyms for word or phrase (regexp): " ; `completing-read' arguments
-  synonyms-obarray nil nil nil 'synonyms-history (synonyms-default-regexp) nil
-  ((num-arg (prefix-numeric-value current-prefix-arg)) ; Bindings
-   (morep (eq synonyms-match-more-flag (atom current-prefix-arg)))
-   (appendp (eq synonyms-append-result-flag (and (wholenump num-arg) (/= 16 num-arg))))
-   (icicle-sort-function 'icicle-case-insensitive-string-less-p))
-  (synonyms-ensure-synonyms-read-from-cache))) ; Fill `synonyms-obarray' initially, for completion.
+to match (no prompting)."
+  (interactive "P")
+  (synonyms-ensure-synonyms-read-from-cache) ; Fill `synonyms-obarray', for use in completion.
+  (let* ((num-arg              (prefix-numeric-value arg))
+         (morep                (eq synonyms-match-more-flag (atom arg)))
+         (appendp              (eq synonyms-append-result-flag (and (wholenump num-arg)
+                                                                    (/= 16 num-arg))))
+         (default-search-text  (or regexp (synonyms-default-regexp)))
+         (search-text          (or regexp
+                                   (let ((case-fold-search  t)) ; Case-insensitive completion.
+                                     (completing-read
+                                      "Show synonyms for word or phrase (regexp): "
+                                      synonyms-obarray nil nil nil 'synonyms-history
+                                      default-search-text)))))
+    (synonyms-action search-text)))
 
 (defun synonyms-action (search-text)
   "Helper function for command `synonyms'.
-This is the action function, when Synonyms is used with Icicles.
 APPENDP and MOREP are free here."
   (setq synonyms-search-text  search-text) ; Save it.
   (when (string= "" search-text) (error "No text to look up"))

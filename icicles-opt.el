@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 27 18:10:01 2011 (-0700)
+;; Last-Updated: Sat Jul 30 10:51:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4371
+;;     Update #: 4384
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -188,8 +188,7 @@
 ;;
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last',
-;;    `icicle-compute-shell-command-candidates',
-;;    `icicle-increment-color-value', `icicle-remap'.
+;;    `icicle-compute-shell-command-candidates', `icicle-remap'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
@@ -239,12 +238,13 @@
 ;; For Emacs < 21: dolist, push
 (eval-and-compile (when (< emacs-major-version 21) (require 'cl)))
 
-(require 'hexrgb nil t)     ;; (no error if not found): hexrgb-color-values-to-hex,
-                            ;; hexrgb-rgb-to-hsv, hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): list-nearest-point-as-string,
                             ;; region-or-word-nearest-point, symbol-name-nearest-point
-(require 'icicles-face)     ;; icicle-increment-color-hue.
+
+(require 'hexrgb nil t) ;; (no error if not found): hexrgb-approx-equal, hexrgb-saturation 
+(when (featurep 'hexrgb) (require 'icicles-face))
+  ;; icicle-increment-color-hue, icicle-increment-color-value
 
 ;; Quiet the byte-compiler.
 (defvar shell-completion-execonly)      ; In `shell.el'.
@@ -2351,28 +2351,6 @@ time using `C-`'."
                                            13421772) ; 1/10 of `most-positive-fixnum' on Windows.
   "*Icicles version of `regexp-search-ring-max'."
   :type 'integer :group 'Icicles-Searching)
-
-;; This is essentially a version of `doremi-increment-color-component' for value only.
-;; Must be before `icicle-region-background'.
-(defun icicle-increment-color-value (color increment)
-  "Increase value component (brightness) of COLOR by INCREMENT."
-  (unless (featurep 'hexrgb)
-    (error "`icicle-increment-color-value' requires library `hexrgb.el'"))
-  (unless (string-match "#" color)      ; Convert color name to #hhh...
-    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
-  ;; Convert RGB to HSV
-  (let* ((rgb         (x-color-values color))
-         (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
-         (green       (/ (float (nth 1 rgb)) 65535.0))
-         (blue        (/ (float (nth 2 rgb)) 65535.0))
-         (hsv         (hexrgb-rgb-to-hsv red green blue))
-         (hue         (nth 0 hsv))
-         (saturation  (nth 1 hsv))
-         (value       (nth 2 hsv)))
-    (setq value  (+ value (/ increment 100.0)))
-    (when (> value 1.0) (setq value  (1- value)))
-    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                        (hexrgb-hsv-to-rgb hue saturation value)))))
 
 ;; You can use `icicle-increment-color-value' in place of `icicle-increment-color-hue', if you
 ;; prefer highlighting background to be slightly darker instead of a slightly different hue.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  6 14:34:21 2011 (-0700)
+;; Last-Updated: Sat Jul 30 11:49:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26069
+;;     Update #: 26073
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -378,7 +378,7 @@
 ;;  (@file :file-name "icicles-doc2.el" :to "Completion in Other Buffers")
 ;;    (@file :file-name "icicles-doc2.el" :to "Dynamic Abbreviation")
 ;;    (@file :file-name "icicles-doc2.el" :to "BBDB Completion")
-;;    (@file :file-name "icicles-doc2.el" :to "Thesaurus Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "Thesaurus Lookup and Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Completion in Comint Modes")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")

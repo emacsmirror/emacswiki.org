@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 27 11:01:52 2011 (-0700)
+;; Last-Updated: Sat Jul 30 08:51:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22931
+;;     Update #: 22933
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -326,8 +326,9 @@
 ;;    `icicle-sort-proxy-candidates-first',
 ;;    `icicle-sort-special-candidates-first',
 ;;    `icicle-sort-special-candidates-first',
-;;    `icicle-sort-turned-OFF', `icicle-tag-a-file',
-;;    `icicle-tags-search', `icicle-toggle-~-for-home-dir',
+;;    `icicle-sort-turned-OFF', `icicle-synonyms',
+;;    `icicle-tag-a-file', `icicle-tags-search',
+;;    `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
@@ -354,7 +355,8 @@
 ;;    `old-comint-replace-by-expanded-filename',
 ;;    `old-dired-read-shell-command', `old-ess-complete-object-name',
 ;;    `old-gud-gdb-complete-command', `old-read-shell-command',
-;;    `orig-read-file-name', `toggle', `toggle-icicle-~-for-home-dir',
+;;    `orig-read-file-name', `toggle', `synonyms',
+;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',

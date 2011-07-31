@@ -1,3 +1,7 @@
+== Use the mailing list to report bugs ==
+
+Anything has a mailing list, so use that instead, because there is a better chance of getting a reponse there than here: http://groups.google.com/group/emacs-anything?hl=en
+
 == Bug Reports ==
 
 === Wrong name of function or attributes in anything-config.el ===
@@ -433,6 +437,28 @@ I guess this is because the macro `anything-ff-human-size' refers to the variabl
 [new] Fixed thanks.
 
 --ThierryVolpiatto
+
+=== dedicated minibuffer frame won't get keyboard focus with anything ===
+
+I have recently started experimenting with a dedicated minibuffer frame and discovered that whenever I used anything all keyboard input would go into the *anything* buffer instead of the minibuffer. This only occured with a dedicated minibuffer frame, without it anything worked fine.
+
+I solved the issue by uncommenting the following line in anything.el:
+<pre>
+(select-frame-set-input-focus (window-frame (minibuffer-window)))
+</pre>
+
+which can be found in the anything-reading-pattern function.
+
+It seems to me the line is completely uneccessary. I can't find any difference in anythings behaviour with and without the line, except that it works with a dedicated minibuffer frame when the line is removed.
+
+--AndreasRaster
+
+[new] Please use http://groups.google.com/group/emacs-anything?hl=en to report bugs, you can use it also from gmane.emacs.anything.
+Can you provide also your minibuffer frame settings?
+See you on emacs.anything mailing list, i am not using emacswiki anymore. Thanks. 
+
+-- ThierryVolpiatto
+
 ----
 [[Anything]]
 

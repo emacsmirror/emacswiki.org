@@ -89,6 +89,8 @@ as the command, instead of
   "firefox &"
 
 just as you would in the shell. 
+
+Q: What if it is too late. Can I somehow disown my already created process?
 [new]
 
 == W32 Specific ==

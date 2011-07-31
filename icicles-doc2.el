@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 27 18:30:07 2011 (-0700)
+;; Last-Updated: Sat Jul 30 12:01:08 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28071
+;;     Update #: 28077
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -265,7 +265,7 @@
 ;;  (@> "Completion in Other Buffers")
 ;;    (@> "Dynamic Abbreviation")
 ;;    (@> "BBDB Completion")
-;;    (@> "Thesaurus Completion")
+;;    (@> "Thesaurus Lookup and Completion")
 ;;    (@> "Completion in Comint Modes")
 ;;
 ;;  (@> "Customization and General Tips")
@@ -4246,37 +4246,37 @@
 ;;  cycling.  For this feature to take effect, you must load BBDB
 ;;  before you load Icicles.
 ;;
-;;(@* "Thesaurus Completion")
-;;  ** Thesaurus Completion **
+;;(@* "Thesaurus Lookup and Completion")
+;;  ** Thesaurus Lookup and Completion **
 ;;
 ;;  Library `synonyms.el' provides various features for defining a
-;;  thesaurus and looking up words and phrases in it.  Command
-;;  `icicle-complete-thesaurus-entry' takes advantage of these
-;;  features.  You can use it to complete a word in a text buffer to
-;;  any word or phrase in the thesaurus.  With the default value of
-;;  option `icicle-top-level-key-bindings', this is bound to `C-c /'
-;;  in Icicle mode.
+;;  thesaurus and looking up words and phrases in it.  Icicles
+;;  provides a multi-command version (alias `icicle-synonyms') of the
+;;  command `synonyms', which shows all of the synonyms that match a
+;;  regular expression (e.g. a word or phrase) and lets you navigate
+;;  among hyperlinked thesaurus entries.
+;;
+;;  Command `icicle-complete-thesaurus-entry' completes a word in a
+;;  text buffer to any word or phrase in the thesaurus.  With the
+;;  default value of option `icicle-top-level-key-bindings', this is
+;;  bound to `C-c /' in Icicle mode.
 ;;
 ;;  Tip: You can use `icicle-complete-thesaurus-entry' to quickly
 ;;  check the spelling of a word.  If it is correctly spelled, then it
 ;;  appears as a complete completion (is highlighted as such in the
 ;;  minibuffer).
 ;;
-;;  Another Icicles command that uses the thesaurus is
+;;  Another Icicles (multi-)command that uses the thesaurus is
 ;;  `icicle-insert-thesaurus-entry'.  It lets you use Icicles
 ;;  completion, cycling, and so on to insert thesaurus words and
 ;;  phrases in any buffer.  It does not complete the word at point.
-;;  It is a multi-command (see
-;;  (@file :file-name "icicles-doc1.el" :to "Multi-Commands")), so you
-;;  can, within a single call to it, insert any number of thesaurus
+;;  Within a single call to it, insert any number of thesaurus
 ;;  entries, in succession.  If you wanted to, you could write an
 ;;  entire book using a single call to
 ;;  `icicle-insert-thesaurus-entry'!
 ;;
-;;  Both commands, `icicle-complete-thesaurus-entry' and
-;;  `icicle-insert-thesaurus-entry', require that you first load
-;;  library `synonyms.el'.  See library `synonyms.el' for more
-;;  information.
+;;  All of these Icicles commands require that you load library
+;;  `synonyms.el'.
 ;;
 ;;(@* "Completion in Comint Modes")
 ;;  ** Completion in Comint Modes **

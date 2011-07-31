@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 27 18:18:10 2011 (-0700)
+;; Last-Updated: Sat Jul 30 11:41:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6694
+;;     Update #: 6748
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/07/30 dadams
+;;     Moved to icicles-cmd2.el and wrapped in eval-after-load bookmark+.el:
+;;       icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-(un)tag-a-file.
 ;; 2011/07/26 dadams
 ;;     Removed: icicle-list-end-string (no longer needed).  Thx to Michael Heerdegen.
 ;; 2011/05/22 dadams
@@ -408,6 +411,19 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/30 dadams
+;;     Moved here from icicles-cmd1.el and wrapped in eval-after-load bookmark+.el:
+;;       icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-(un)tag-a-file.
+;;     Moved here from synonyms.el and wrapped in eval-after-load synonyms.el: (icicle)-synonyms.
+;;     Moved here from icicles-fn.el and wrapped in eval-after-load hexrgb.el:
+;;       icicle-color-*-lessp (except -rgb-), icicle-color-completion-setup, icicle-color-help,
+;;        icicle-make-color-candidate.
+;;     Soft-require hexrgb.el only when byte-compile.
+;;     icicle-frame-(bg|fg), icicle-read-color: Wrap in eval-after-load hexrgb.el.
+;;     icicle-(insert|complete)-thesaurus-entry(-cand-fn): Wrap in eval-after-load synonyms.el.
+;;     icicle-choose(-(in)visible)-faces, icicle-(hide|show)(-only)-faces:
+;;       Use eval-after-load highlight.el, not featurep.
+;;     icicle-pick-color-by-name(-action), palette keys: Use eval-after-load palette.el, not featurep.
 ;; 2011/07/27 dadams
 ;;     icicle-search-read-word: Changed regexp to what vanilla Emacs uses for word search.
 ;;     icicle-search(-word): Updated doc string wrt word search.
@@ -750,6 +766,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2011/07/30 dadams
+;;     eval-after-load hexrgb.el, not runtime error if not feature, for all fns that use hexrgb.el.
+;;     Moved here from icicles-opt.el: icicle-increment-color-value.
+;;     icicle-search-context-level-*: Use fboundp icicle-increment-color-satur*, not featurep hexrgb.
+;;     Soft-require hexrgb.el when byte compile.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/05/05 dadams
@@ -836,6 +857,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/07/30 dadams
+;;     Moved to icicles-cmd2.el and wrapped in eval-after-load hexrgb:
+;;       icicle-color-*-lessp (except -rgb-), icicle-color-completion-setup, icicle-color-help,
+;;        icicle-make-color-candidate.
 ;; 2011/07/27 dadams
 ;;     Use icicle-completions-format everywhere, not icicle-completions-format-internal (removed).
 ;;     icicle-nb-of-cand-in-Completions-horiz: Bind icicle-completions-format to horizontal, not nil.
@@ -4679,6 +4704,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/07/30 dadams
+;;     Moved icicle-increment-color-value to icicles-face.el.
+;;     Require icicles-face.el only if hexrgb.el has been loaded.
 ;; 2011/07/27 dadams
 ;;     icicle-completions-format, icicle-search-whole-word-flag: Updated doc string.
 ;; 2011/07/26 dadams
