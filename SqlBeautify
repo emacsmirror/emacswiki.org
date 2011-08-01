@@ -98,7 +98,77 @@ Write following definitions to .emacs:
 </pre>
 
 And you can format SQL with <code>M-x sql-beautify-region</code> or <code>M-x sql-beautify-buffer</code>.
+== Joseph 's Emacs Frontend ==
+<pre>
+ (define-key sql-mode-map "\C-\M-\\" 'sql-beautify)
+(define-key sql-interactive-mode-map "\C-\M-\\" 'sql-beautify)
+(eval-after-load 'sqlplus
+  '(progn (define-key sqlplus-mode-map  "\C-\M-\\" 'sql-beautify)))
+(defun sql-beautify()
+  "Beautify SQL. in region or current sql sentence."
+  (interactive)
+  (unless mark-active
+    (let ((sql-bounds (bounds-of-sql-at-point) ))
+      (set-mark (car  sql-bounds))
+      (goto-char (cdr sql-bounds))))
+  (sql-beautify-region (region-beginning) (region-end)))
 
+(defun sql-beautify-region (beg end)
+  "Beautify SQL in region between beg and END."
+  ;;  (interactive "r")
+  (if (equal system-type 'windows-nt)
+      (setenv "CLASSPATH" (concat (getenv "CLASSPATH") ";" "d:\\.emacs.d\\script\\sqlbeautify\\blancosqlformatter-0.1.1.jar"))
+    (setenv "CLASSPATH" (concat (getenv "CLASSPATH") ":" (getenv "HOME") "/.emacs.d/script/sqlbeautify/blancosqlformatter-0.1.1.jar")))
+  (cd "~/.emacs.d/script/sqlbeautify/")
+  (let ((beautified-sql))
+    (shell-command-on-region beg end "java SqlBeautify" "*sqlbeautify*" nil)
+    (with-current-buffer  "*sqlbeautify*"
+      (goto-char (point-min))
+(while (search-forward "\^M" nil t) ;;delete ^m
+        (replace-match "" nil nil))  
+      (setq beautified-sql (buffer-string)))
+    (goto-char beg)
+    (kill-region beg end)
+    (insert beautified-sql)
+    (kill-buffer"*sqlbeautify*")
+    ))
+
+(defun bounds-of-sql-at-point()
+  "get start and end point of current sql."
+  (let ((pt (point))begin end empty-line-p empty-line-p next-line-included tail-p)
+    (when (and (looking-at "[ \t]*\\(\n\\|\\'\\)")
+               (looking-back "[ \t]*;[ \t]*" (beginning-of-line)))
+      (search-backward-regexp "[ \t]*;[ \t]*" (beginning-of-line) t))
+    (save-excursion
+      (skip-chars-forward " \t\n\r")
+      ;;(end-of-line)
+      (re-search-backward ";[ \t\n\r]*\\|\\`\\|\n[\r\t ]*\n[^ \t]" nil t)
+      (skip-syntax-forward "-")
+      (setq begin (match-end 0)))
+    (save-excursion
+      (skip-chars-forward " \t\n\r")
+      (re-search-forward "\n[\r\t ]*\n[^ \t]\\|\\'\\|[ \t\n\r]*;" nil t)
+      (unless (zerop (length (match-string 0)))
+        (backward-char 1))
+      (skip-syntax-backward "-")
+      (setq end   (match-beginning 0)))
+    (goto-char pt)
+    (cons begin end)
+    )
+  )
+
+</pre>
+
+you should change this code in  (sql-beautify-region) .
+<pre> 
+ (if (equal system-type 'windows-nt)
+        (setenv "CLASSPATH" (concat (getenv "CLASSPATH") ";" "d:\\.emacs.d\\script\\sqlbeautify\\blancosqlformatter-0.1.1.jar"))
+      (setenv "CLASSPATH" (concat (getenv "CLASSPATH") ":" (getenv "HOME") "/.emacs.d/script/sqlbeautify/blancosqlformatter-0.1.1.jar")))
+    (cd "~/.emacs.d/script/sqlbeautify/")
+</pre>
+
+ I put  blancosqlformatter-0.1.1.jar and SqlBeautify.class  in d:\\.emacs.d\\script\\sqlbeautify\\
+so you should change it depending on your path.
 ----
 
 CategorySql

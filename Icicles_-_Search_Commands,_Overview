@@ -152,6 +152,7 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 [:icicle-search-sentences]
 [:icicle-search-thing]
 [:icicle-search-xml-element]
+[:icicle-search-xml-element-text-node]
 [:icicle-imenu]
 [:icicle-imenu-command]
 [:icicle-imenu-non-interactive-function]
@@ -177,6 +178,7 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 * '''`icicle-search-sentences'''' -- Search sentences as contexts.
 * '''`icicle-search-thing'''' -- Search ThingAtPoint things as contexts, optionally ignoring comments.
 * '''`icicle-search-xml-element'''' -- Search the contents of XML elements as contexts.
+* '''`icicle-search-xml-element-text-node'''' -- Search the text() nodes of XML elements as contexts.
 * '''`##C-c =##'''' -- '''`icicle-imenu'''' -- Navigate among [[ImenuMode|Imenu]] entries.
 * '''`icicle-imenu-command'''' -- Navigate among Emacs command definitions.
 * '''`icicle-imenu-non-interactive-function'''' -- Navigate among Emacs ''non''-interactive function definitions.

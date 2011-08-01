@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 30 10:24:30 2011 (-0700)
+;; Last-Updated: Sun Jul 31 14:56:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3632
+;;     Update #: 3642
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -128,8 +128,9 @@
 ;;    (+)`icicle-search-this-buffer-bookmark',
 ;;    (+)`icicle-search-url-bookmark',
 ;;    (+)`icicle-search-w3m-bookmark', (+)`icicle-search-word',
-;;    (+)`icicle-search-xml-element', (+)`icicle-select-frame',
-;;    `icicle-select-frame-by-name',
+;;    (+)`icicle-search-xml-element',
+;;    (+)`icicle-search-xml-element-text-node',
+;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', (+)`icicle-show-faces',
 ;;    (+)`icicle-show-only-faces', (+)`icicle-synonyms',
@@ -2876,6 +2877,8 @@ The arguments are the same as for `icicle-search'."
              (sit-for 3))))
         (t                              ; Search this buffer only.
          (icicle-search-define-candidates-1 nil beg end scan-fn-or-regexp args)))
+  (when (and icicle-candidates-alist  (null (cdr icicle-candidates-alist)))
+    (message "Moving to sole candidate") (sit-for 1.5))
   (unless icicle-candidates-alist  (if (functionp scan-fn-or-regexp)
                                        (error "No search hits")
                                      (error "No search hits for `%s'" scan-fn-or-regexp)))
@@ -3811,11 +3814,11 @@ command")))
 
 ;;;###autoload
 (defun icicle-search-xml-element (beg end require-match where element)
-  "`icicle-search with XML ELEMENTs as search contexts.
+  "`icicle-search' with XML ELEMENTs as search contexts.
 ELEMENT is a regexp that is matched against actual element names.
 
 The search contexts are the top-level matching elements within the
-search limits, BEG and END.  They might or might not contain
+search limits, BEG and END.  Those elements might or might not contain
 descendent elements that are themselves of type ELEMENT.
 
 You probably need nXML for this command.  It is included in vanilla
@@ -3837,7 +3840,53 @@ Emacs, starting with Emacs 23."
           (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))))))
 
 ;;;###autoload
-(defun icicle-search-thing (thing &optional beg end require-match where predicate)
+(defun icicle-search-xml-element-text-node (beg end require-match where element)
+  "`icicle-search', with text() nodes of XML ELEMENTs as search contexts.
+ELEMENT is a regexp that is matched against actual XML element names.
+
+The search contexts are the text() nodes of the top-level matching
+elements within the search limits, BEG and END.  (Those elements might
+or might not contain descendent elements that are themselves of type
+ELEMENT.)
+
+You probably need nXML for this command.  It is included in vanilla
+Emacs, starting with Emacs 23."
+  (interactive
+   (let* ((where    (icicle-search-where-arg))
+          (beg+end  (icicle-region-or-buffer-limits))
+          (beg1     (car beg+end))
+          (end1     (cadr beg+end))
+          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
+     `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
+  (let ((nxml-sexp-element-flag  t))
+    (icicle-search-thing
+     'sexp beg end require-match where
+     `(lambda (thg+bds)
+       (and thg+bds
+        (if (fboundp 'string-match-p)
+            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
+          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))
+     `(lambda (thg+bds)
+       (save-excursion
+         (let* ((tag-end     (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element)
+                                           (car thg+bds)))
+                (child       (icicle-next-visible-thing
+                              'sexp (+ (match-end 0) (cadr thg+bds)) (cddr thg+bds)))
+                (tag-regexp  (concat "\\`\\s-*<\\s-*"
+                                     (if (> emacs-major-version 20)
+                                         (if (boundp 'xmltok-ncname-regexp)
+                                             xmltok-ncname-regexp
+                                           "\\(?:[_[:alpha:]][-._[:alnum:]]*\\)")
+                                       "\\([_a-zA-Z][-._a-zA-Z0-9]\\)")
+                                     "\\s-*>")))
+           (and child
+                (not (if (fboundp 'string-match-p)
+                         (string-match-p tag-regexp (car child))
+                       (string-match tag-regexp (car child))))
+                child)))))))
+
+;;;###autoload
+(defun icicle-search-thing (thing &optional beg end require-match where predicate transform-fn)
   "`icicle-search' with THINGs as search contexts.
 Enter the type of THING to search: `sexp', `sentence', `list',
 `string', `comment', etc.
@@ -3861,6 +3910,14 @@ predicate that acceptable things must satisfy.  It is passed the thing
 in the form of the cons returned by
 `icicle-next-visible-thing-and-bounds'.
 
+Non-interactively, if optional arg TRANSFORM-FN is non-nil then it is
+a function to apply to each thing plus its bounds and which returns
+the actual search-target to push to `icicle-candidates-alist' in place
+of THING.  Its argument is the same as PREDICATE's.  It returns the
+replacement for the thing plus its bounds, in the same form: a
+cons (STRING START . END), where STRING is the search hit string and
+START and END are its bounds).
+
 This command is intended only for use in Icicle mode.
 
 NOTE:
@@ -3871,17 +3928,23 @@ NOTE:
    THINGS throughout an entire buffer.
 3. In `nxml-mode', remember that option `nxml-sexp-element-flag'
    controls what a `sexp' means.  To use whole XML elements as search
-   contexts, set it to t, not nil.
+   contexts, set it to t, not nil.  (This is already done for the
+   predefined Icicles XML search commands.)
 4. Remember that if there is only one THING in the buffer or active
    region then no search is done.  Icicles search does nothing when
    there is only one possible search hit.
-5. In Emacs releases prior to Emacs 23 the thing-at-point functions
+5. The scan candidate things moves forward a THING at a time.  In
+   particular, if either PREDICATE or TRANSFORM-FN disqualifies the
+   thing being scanned currently, then scanning skips forward to the
+   next thing.  The scan does not dig inside the current thing to look
+   for a qualified THING.
+6. In Emacs releases prior to Emacs 23 the thing-at-point functions
    can sometimes behave incorrectly.  Thus, `icicle-search-thing' also
    behaves incorrectly in such cases, for Emacs prior to version 23.
-6. Prior to Emacs 21 there is no possibility of ignoring comments."
+7. Prior to Emacs 21 there is no possibility of ignoring comments."
   (interactive (icicle-search-thing-args))
   (setq icicle-search-context-level  0)
-  (icicle-search beg end 'icicle-search-thing-scan require-match where thing predicate))
+  (icicle-search beg end 'icicle-search-thing-scan require-match where thing predicate transform-fn))
 
 (defun icicle-search-thing-args ()
   "Read and return interactive arguments for `icicle-search-thing'."
@@ -3992,16 +4055,30 @@ comments.  Note that prior to Emacs 21, this never hides comments."
         (when icicle-ignore-comments-flag (icicle-hide/show-comments 'show ,ostart ,oend))
         ,result))))
 
-(defun icicle-search-thing-scan (buffer beg end thing &optional predicate)
+(defun icicle-search-thing-scan (buffer beg end thing &optional predicate transform-fn)
   "Scan BUFFER from BEG to END for things of type THING.
-Push hits onto `icicle-candidates-alist'.
+Push the things found onto `icicle-candidates-alist'.
 If BUFFER is nil, scan the current buffer.
 Highlight the matches in face `icicle-search-main-regexp-others'.
 If BEG and END are nil, scan entire BUFFER.
 
 If PREDICATE is non-nil then it is a predicate that acceptable things
-must satisfy.  It is passed the thing in the form of the cons returned
-by `icicle-next-visible-thing-and-bounds'."
+must satisfy.  It is passed the thing plus its bounds, in the form of
+the cons returned by `icicle-next-visible-thing-and-bounds'.
+
+If TRANSFORM-FN is non-nil then it is a function to apply to each
+thing plus its bounds.  Its argument is the same as PREDICATE's.  It
+returns the actual search-target to push to `icicle-candidates-alist'
+in place of THING.  That is, it returns the replacement for the thing
+plus its bounds, in the same form: a cons (STRING START . END), where
+STRING is the search hit string and START and END are its bounds).  It
+can also return nil, in which case it acts as another predicate: the
+thing is not included as a candidate.
+
+NOTE: The scan moves forward a THING at a time.  In particular, if
+either PREDICATE or TRANSFORM-FN disqualifies the thing being scanned
+currently, then scanning skips forward to the next thing.  The scan
+does not dig inside the current thing to look for a qualified THING."
   (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
         (temp-list      ()))
     (unless buffer (setq buffer  (current-buffer)))
@@ -4019,18 +4096,29 @@ by `icicle-next-visible-thing-and-bounds'."
                  (while (and (< beg end) (icicle-invisible-p beg)) ; Skip invisible, overlay or text.
                    (when (get-char-property beg 'invisible)
                      (setq beg  (icicle-next-single-char-property-change beg 'invisible nil end))))
-                 (let* ((thg+bnds    (icicle-next-visible-thing-and-bounds thing beg end))
-                        (hit-string  (and thg+bnds  (car thg+bnds)))
-                        (thg-beg     (and thg+bnds  (cadr thg+bnds)))
-                        (thg-end     (and thg+bnds  (cddr thg+bnds)))
-                        (end-marker  (and thg+bnds  (copy-marker thg-end))))
-                   (when (and thg+bnds (or (not predicate) (funcall predicate thg+bnds)))
+                 (let* ((thg+bnds      (icicle-next-visible-thing-and-bounds thing beg end))
+                        (hit-string    (and thg+bnds  (car thg+bnds)))
+                        (thg-beg       (and thg+bnds  (cadr thg+bnds)))
+                        (thg-end       (and thg+bnds  (cddr thg+bnds)))
+                        (tr-thg-beg    thg-beg)
+                        (tr-thg-end    thg-end)
+                        (end-marker    (and thg+bnds  (copy-marker tr-thg-end)))
+                        (filteredp     (or (not thg+bnds)  (not predicate)
+                                           (funcall predicate thg+bnds)))
+                        (new-thg+bnds  (and thg+bnds  filteredp  (if transform-fn
+                                                                     (funcall transform-fn thg+bnds)
+                                                                   thg+bnds))))
+                   (when new-thg+bnds
+                     (when transform-fn  (setq hit-string  (car  new-thg+bnds)
+                                               tr-thg-beg  (cadr new-thg+bnds)
+                                               tr-thg-end  (cddr new-thg+bnds)
+                                               end-marker  (copy-marker tr-thg-end)))
                      (icicle-candidate-short-help
                       (concat (and add-bufname-p
                                    (format "Buffer: `%s', "
                                            (buffer-name (marker-buffer end-marker))))
                               (format "Bounds: (%d, %d), Length: %d"
-                                      thg-beg thg-end (length hit-string)))
+                                      tr-thg-beg tr-thg-end (length hit-string)))
                       hit-string)
                      (push (cons (if add-bufname-p
                                      (list hit-string
@@ -4043,10 +4131,10 @@ by `icicle-next-visible-thing-and-bounds'."
                                  end-marker)
                            temp-list)
                      ;; Highlight search context in buffer.
-                     (when (and (not (equal beg thg-end))
+                     (when (and (not (equal tr-thg-beg tr-thg-end))
                                 (<= (+ (length temp-list) (length icicle-candidates-alist))
                                     icicle-search-highlight-threshold))
-                       (let ((ov  (make-overlay beg thg-end)))
+                       (let ((ov  (make-overlay tr-thg-beg tr-thg-end)))
                          (push ov icicle-search-overlays)
                          (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
                          (overlay-put ov 'face 'icicle-search-main-regexp-others))))
@@ -6532,7 +6620,7 @@ The new current color is returned."     ; Doc string
 ;;;
 ;;;###autoload (autoload 'synonyms                        "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-synonyms                 "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-insert-thesaurus-entry  "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles-cmd2.el")
 (eval-after-load "synonyms"
   '(progn

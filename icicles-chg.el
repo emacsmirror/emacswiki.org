@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 30 11:41:17 2011 (-0700)
+;; Last-Updated: Sun Jul 31 15:19:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6748
+;;     Update #: 6757
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -411,6 +411,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/07/31 dadams
+;;     Added: icicle-search-xml-element-text-node.
+;;     icicle-search-thing(-scan): Added TRANSFORM-FN arg.
+;;     icicle-search-define-candidates: Added message when only one candidate.
 ;; 2011/07/30 dadams
 ;;     Moved here from icicles-cmd1.el and wrapped in eval-after-load bookmark+.el:
 ;;       icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-(un)tag-a-file.

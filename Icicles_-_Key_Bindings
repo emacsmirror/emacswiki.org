@@ -303,6 +303,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-pages]
 [:icicle-search-paragraphs]
 [:icicle-search-xml-element]
+[:icicle-search-xml-element-text-node]
 [:icicle-select-window]
 [:icicle-set-option-to-t]
 [:icicle-show-faces]
@@ -413,6 +414,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-specific-files-bookmark' -- Search bookmarks for a given set of files
 * `icicle-search-thing' -- Search ThingAtPoint things (as search contexts)
 * `icicle-search-xml-element' -- Search the contents of XML elements (as search contexts)
+* `icicle-search-xml-element-text-node' -- Search the text() nodes of XML elements (as search contexts)
+
 * `icicle-search-this-buffer-bookmark' -- Search bookmarks in the current buffer
 * `icicle-search-url-bookmark' -- Search URL bookmarks
 * `icicle-search-w3m-bookmark' -- Search [[w3m|W3M]] bookmarks

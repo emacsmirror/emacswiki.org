@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 30 12:01:08 2011 (-0700)
+;; Last-Updated: Sun Jul 31 15:02:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28077
+;;     Update #: 28080
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -437,7 +437,8 @@
 ;;            `icicle-search-thing'     - Search thing-at-point things
 ;;                                        optionally ignoring comments
 ;;            `icicle-search-xml-element' - Search XML elements
-
+;;            `icicle-search-xml-element-text-node'- Search text nodes
+;;
 ;;  `C-c ='   `icicle-imenu' - Navigate among Imenu entries.
 ;;            `icicle-imenu-command' -
 ;;               Navigate among Emacs command definitions.
@@ -6157,6 +6158,7 @@
 ;;  `icicle-search-url-bookmark' - Search URL bookmarks
 ;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
 ;;  `icicle-search-xml-element' - Search the contents of XML elements
+;;  `icicle-search-xml-element-text-node' - Search XML text nodes
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to `t'
 ;;  `icicle-show-faces'   - Show invisible faces you choose

@@ -39,6 +39,8 @@ browser):
 
 * [http://www.neilvandyke.org/erin-twiki-emacs Erin Twiki mode] by Neil van Dyke
 
+* [https://github.com/christopherjwhite/emacs-twiki-mode twiki-mode] by Christopher J White -- started as a mode for editing !DokuWiki pages, but revamped and expanded for TWiki.  Makes TWiki pages visually appealing as well as easy to edit.  Integrates with org-table minor mode for editing of embedded tables.
+
 Raw wiki browsers -- view and edit a wiki on a remote server without a web browser:
 
 * SimpleWikiEditMode augments SimpleWikiMode with the ability to follow links and save changes.  This is essentially a raw wiki browser.  It only works for <nowiki>UseMod</nowiki> wikis with UseMod:WikiPatches/RawMode -- eg. the Emacs Wiki.

@@ -10,6 +10,12 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== CGI Internal error: 400 Bad request (malformed multipart POST) ==
+
+I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
+
+
+
 == Glossary - Wrong Page is Linked ==
 
 Thanks for adding the link to the Glossary in the page headers.  However, the link goes nowhere (new page).  It needs to go to this page: CategoryGlossary. -- DrewAdams

@@ -5,7 +5,7 @@ It plays against crafty and gnuchess.
 You can also play on Interenet Chess Servers, like FICS.
 
 
-* http://emacswiki.org/johnw/EmacsChess.html 
+* https://github.com/jwiegley/emacs-chess 
 
 == Crafty ==
 
