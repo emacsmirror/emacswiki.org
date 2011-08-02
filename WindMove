@@ -13,8 +13,14 @@ For CuaMode it may be natural to use
 
 This will override `M-left' and `M-right' but these are duplicated by `C-left' and `C-right' which are probably more natural for a CuaMode user.
 
-See WindowNavigation for a similar piece of code, but written from scratch.
+Some terminals do not support modified arrow keys.  To use a prefix instead of a modifier, add something like the following to your [[init file]].
 
+    (global-set-key (kbd "C-c <left>")  'windmove-left)
+    (global-set-key (kbd "C-c <right>") 'windmove-right)
+    (global-set-key (kbd "C-c <up>")    'windmove-up)
+    (global-set-key (kbd "C-c <down>")  'windmove-down)
+
+See WindowNavigation for a similar piece of code, but written from scratch.
 
 If you want to use windmove on Xemacs, look at:
 

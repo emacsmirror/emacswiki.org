@@ -9,6 +9,21 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+[new]
+
+I would like S-SPC behave as RET key using keyboard-translate. For example: 
+(keyboard-translate ?\C-t ?\C-f)
+
+However I don't know what to put in my case. I tried these:
+
+(keyboard-translate (kbd "S-SPC") [return])
+(keyboard-translate ?\s-SPC [return])
+(keyboard-translate ?\S-SPC [return])
+(keyboard-translate [?\S-SPC] [return])
+(keyboard-translate [(shift space)] [return])
+
+and nothing works :( Any idea?
+
 ===How to Program/Customize Emacs Commands?===
 
 I apologize for this note. I've been using the basic features of Emacs for many years, but am trying to implement some more advanced features. I found this site through Google and would like to implement the code to remove duplicate lines (http://www.emacswiki.org/emacs/DuplicateLines). Unfortunately that page provides no context (where to put this code, etc.) I've been hunting around the site for some time and have yet to find such information anywhere. The site is set up for people with a certain minimum knowledge of the Emacs terminology. The documents for newbies are so voluminous that it would take me forever to go through and figure out what I need to know. 

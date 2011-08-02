@@ -86,3 +86,8 @@ I'm still looking for a good place to bind copy-to-register.  This is one idea:
   (global-set-key [C-M-next] 'copy-to-register)
 
 --Doom
+
+----
+I swapped Control with Backspace, and Delete with Alt.  This makes it easy to type control, alt, and control-alt commands.  I also swap up and down-arrow with "[" and "]" to make it easier to type programs in C-style languages. 
+
+--KevinCline

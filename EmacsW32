@@ -1325,6 +1325,13 @@ Where can I find the beta version? It isn't mentioned anywhere else on this page
 I just added info about where to download beta version.
 
 ----
+I'm having some trouble setting the initial frame dimensions from my .emacs. If the "Emacs.geometry" registry key is present, this appears to override any calls to set-frame-size in the evaluation of .emacs.  Worse, if that registry key is *not* present, the frame will briefly pop to the right size, but then snap back to the default 80x43 frame.  (Note that I have set default-frame-alist and initial-frame-alist as well.)
+
+I've tried attaching the set-frame-size to the 'after-init-hook, but this runs too early as well, it appears. I have a sneaking suspicion I'm missing something obvious, but any help would be appreciated!
+
+-- Dave Moore
+
+----
 Related subjects
 CategoryKeys
 CategoryPorts

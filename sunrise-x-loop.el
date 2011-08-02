@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 27 Jun 2008
 ;; Version: 3
-;; RCS Version: $Rev: 379 $
+;; RCS Version: $Rev: 382 $
 ;; Keywords: sunrise commander, background copy rename move
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-loop.el
 ;; Compatibility: GNU Emacs 22+

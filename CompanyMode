@@ -10,38 +10,40 @@ Back-ends are single functions, they look like this:
 
   (defun company-my-backend (command &optional arg &rest ignored)
     (case command
-      ('prefix (when (looking-back "foo\\>")
-                 (match-string 0)))
-      ('candidates (when (equal arg "foo")
-                      (list "foobar" "foobaz" "foobarbaz")))
-      ('meta (format "This value is named %s" arg))))
+      (prefix (when (looking-back "foo\\>")
+                (match-string 0)))
+      (candidates (when (equal arg "foo")
+                    (list "foobar" "foobaz" "foobarbaz")))
+      (meta (format "This value is named %s" arg))))
 
-They can be installed simply by adding them to 'company-backends.
+They can be installed simply by adding them to ''company-backends''.
 If it is in a file named like the function (e.g. company-my-backend.el), it will be required automatically.
 
 A list of user-written back-ends on the Wiki: CompanyModeBackends
 
 == Front-ends ==
-A visualization (front-end) is also as single function.  It looks like this:
+A visualization (front-end) is also a single function.  It looks like this:
 
   (defun company-my-frontend (command)
     (case command
-      ('pre-command (echo "%s" (car company-candidates)))
-      ('post-command (echo "%s" (car company-candidates)))
-      ('hide (echo ""))))
+      (pre-command (echo "%s" (car company-candidates)))
+      (post-command (echo "%s" (car company-candidates)))
+      (hide (echo ""))))
 
-It can be installed by adding it to 'company-frontends
+It can be installed by adding it to ''company-frontends''.
 
 == Issues & questions ==
 
-==== Why is company-backends initialized with company-css, company-elisp, etc? Shouldn't we add those symbols to company-backends when their respective libraries are required? ===
+==== Why is ''company-backends'' initialized with ''company-css'', ''company-elisp'', etc? Shouldn't we add those symbols to ''company-backends'' when their respective libraries are required? ===
 
 Yes, ideally.  But that would make configuration more difficult.  Currently the user just has to drop the back-end file in the load-path, and company.el doesn't have to be modified.  If users want to go through the trouble to make it a bit more efficient, they can do this:
 
   (setq company-backends nil)
-  (add-to-hook 'css-mode-hook (lambda () (set (make-local-variable 'company-backends) '(company-css))))
+  (add-hook 'css-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-css))))
 
-RichardRiley : shoul this by (add-hook) ? Also in the current (4.3) css mode does not automatically invoke company. The line which worked for me was
+RichardRiley : Also in the current (4.3) css mode does not automatically invoke company. The line which worked for me was
 
    (add-hook 'css-mode-hook (lambda () (company-mode)))
 
@@ -72,9 +74,9 @@ Depending on the emphasis, one of these:
         (company-complete-common)
       (indent-according-to-mode)))
 
-==== Can I complete only after running self-insert-command? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
+==== Can I complete only after running ''self-insert-command''? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
 
-Yes, set company-begin-commands
+Yes, set ''company-begin-commands'':
 
   (setq company-begin-commands '(self-insert-command))
 
@@ -89,18 +91,20 @@ Here's a quick fix: http://gist.github.com/265010
 Another code for solving conflicts in Company and Yasnippet.
 
 {{{
+  (defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "->") t nil)))))
+
+  (defun do-yas-expand ()  
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
   (defun tab-indent-or-complete ()
     (interactive)
-    (defun check-expansion ()
-      (save-excursion
-        (if (looking-at "\\_>") t
-          (progn (backward-char 1)
-                 (if (looking-at "\\.") t
-                   (progn (backward-char 1)
-                          (if (looking-at "->") t nil)))))))
-    (defun do-yas-expand ()  
-      (let ((yas/fallback-behavior 'return-nil))
-        (yas/expand)))
     (if (minibufferp)
         (minibuffer-complete)
       (if (or (not yas/minor-mode)
@@ -108,6 +112,7 @@ Another code for solving conflicts in Company and Yasnippet.
           (if (check-expansion)
               (company-complete-common)
             (indent-for-tab-command)))))
+
   (global-set-key [tab] 'tab-indent-or-complete)
 }}}
 
@@ -123,11 +128,13 @@ How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
 It predates AutoComplete.  The focus for CompanyMode is to have self-contained front and back-ends that can be easily swapped and loaded.
 ----
 
-How about adding an option for substring match completions? E.g. I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names. So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
+How about adding an option for substring match completions? E.g. I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names.  So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
 
-Similarly to iswitchb. Iswitchb is great, because I don't have to type the beginning of the buffer name, I can type any part of it.
+Similarly to iswitchb.  Iswitchb is great, because I don't have to type the beginning of the buffer name, I can type any part of it.
 
 The option which would control it could be set to prefix match by default (keeping the current behavior) and the user could set it to substring match too.
+
+Better yet: obey ''completion-styles'', so the user can choose between ''prefix'', ''substring'', ''partial-completion'', or any other style she likes.
 
 [new]
 The search feature was actually inspired by the way I use iswitchb.  You can start completion with an empty prefix, type C-s, search for "when", and press C-o to limit the search.  But doing that automatically might work well, too.  I'll look into it.
@@ -143,10 +150,12 @@ I've written another command named ''company-filter-candidates'' that will proba
 
 [new]
 
-Why is it difficult to visualize? With prefix match you color the matching prefix part, with substring match you color the first matching substring part. Lots of completion packages here on emacs wiki do that.
+Why is it difficult to visualize? With prefix match you color the matching prefix part, with substring match you color the first matching substring part. Lots of completion packages here on Emacs wiki do that.
 
 [new]
 Because of the way it was build.  The idea is that the interface is standardized, so every front-end has to support this. The "preview" visualization is the one that makes it difficult, because the preview would have to be inserted before point, causing it to jitter as you type.  I'll have to see how well it works.
+
+You could take a look at how icomplete handles this problem (when non-prefix completion is used, it just puts the whole completion after the text rather than only the missing suffix).
 
 [new]
 

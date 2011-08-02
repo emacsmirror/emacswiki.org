@@ -287,22 +287,20 @@ Vim editor has several different outlining (called folding) options. One of them
 
 The following code adds an interactive function `set-vim-foldmarker' which can be used to set Vim-type opening outline marker for the current buffer.
 
-{{{
-(defun set-vim-foldmarker (fmr)
-  "Set Vim-type foldmarkers for the current buffer"
-  (interactive "sSet local Vim foldmarker: ")
-  (if (equal fmr "")
-      (message "Abort")
-    (setq fmr (regexp-quote fmr))
-    (set (make-local-variable 'outline-regexp)
-         (concat ".*" fmr "\\([0-9]+\\)"))
-    (set (make-local-variable 'outline-level)
-         `(lambda ()
-            (save-excursion
-              (re-search-forward
-               ,(concat fmr "\\([0-9]+\\)") nil t)
-              (string-to-number (match-string 1)))))))
-}}}
+    (defun set-vim-foldmarker (fmr)
+      "Set Vim-type foldmarkers for the current buffer"
+      (interactive "sSet local Vim foldmarker: ")
+      (if (equal fmr "")
+          (message "Abort")
+        (setq fmr (regexp-quote fmr))
+        (set (make-local-variable 'outline-regexp)
+             (concat ".*" fmr "\\([0-9]+\\)"))
+        (set (make-local-variable 'outline-level)
+             `(lambda ()
+                (save-excursion
+                  (save-match-data
+                    (re-search-forward ,(concat fmr "\\([0-9]+\\)") nil t)
+                    (string-to-number (match-string 1))))))))
 
 While in outline-mode or outline-minor-mode you can call this interactively with `M-x set-vim-foldmarker' and enter the opening marker when asked. If you use outline-minor-mode and Vim-type outlining always with certain major mode you can add the following lines to the appropriate major mode hook:
 

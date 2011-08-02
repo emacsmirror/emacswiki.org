@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr 21 10:02:52 2011 (-0700)
+;; Last-Updated: Mon Aug  1 09:00:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13832
+;;     Update #: 13833
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -84,6 +84,22 @@
 ;;      4. In your `*Bookmark List*' commands file,
 ;;         `bmkp-bmenu-commands-file' (`~/.emacs-bmk-bmenu-commands.el'),
 ;;         if you have one.
+;;
+;;      You can do this editing in a virgin Emacs session (`emacs
+;;      -Q'), that is, without loading Bookmark+.
+;;
+;;      Alternatively, you can do this editing in an Emacs session
+;;      where Bookmark+ has been loaded, but in that case you must
+;;      TURN OFF AUTOMATIC SAVING of both your default bookmark file
+;;      and your `*Bookmark List*' state file.  Otherwise, when you
+;;      quit Emacs your manually edits will be overwritten.
+;;
+;;      To turn off this automatic saving, you can use `M-~' and `M-l'
+;;      in buffer `*Bookmark List*' (commands
+;;      `bmkp-toggle-saving-bookmark-file' and
+;;      `bmkp-toggle-saving-menu-list-state' - they are also in the
+;;      `Bookmark+' menu).
+;;
 ;;
 ;;      Again, sorry for this inconvenience.
  
