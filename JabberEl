@@ -450,5 +450,9 @@ Painfully, jabber.el doesn't support PGP, meaning that messages can't be encrypt
 [new]
 Is there a plan to save history for groupchat too? --DanielDehennin
 
+[new]
+Is it possible to dynamically turn on and off the alerts for specific chats? --Chet
+
+
 ----
 CategoryChatClient

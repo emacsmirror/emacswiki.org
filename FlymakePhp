@@ -3,6 +3,8 @@ FlyMake with PHP.
 See
 
 * [http://sachachua.com/wp/2008/07/emacs-and-php-on-the-fly-syntax-checking-with-flymake/ PHP syntax checking for Flymake]
+* [http://www.illusori.co.uk/perl/2011/07/25/perl_php_static_analysis_with_emacs_flymake.html Perl and PHP continuous static analysis with Emacs Flymake] ---
+  A guide to getting PHP_!CodeSniffer and/or Perl::Critic hooked up to FlyMake to take you beyond just simple syntax checking.
 
 ----
 CategoryProgrammerUtils

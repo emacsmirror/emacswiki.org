@@ -204,10 +204,17 @@ Does anybody know how to change flymake so that it sticks all of its junk files 
 
 For example, you're editing the source to a folder which you do not have write permissions on. Flymake breaks because it cannot save the _flymake file to the same directory as the source. Plus this leads to ugly _flymake files all over the place if it fails to delete them.
 
+[new:SamGraham:2011-08-02 22:06 UTC]
+I use the trick documented in [http://blog.urth.org/2011/06/flymake-versus-the-catalyst-restarter.html this blog] to make temporary copies in my <code>~/.emacs.d/tmp</code> dir, I've also integrated this tweak and others into a patched version of FlyMake available at https://github.com/illusori/emacs-flymake which may be easier to install. -- SamGraham
+
+
 === Resource consumption? ===
 What about resource consumption ? Does it eat all the CPU or RAM ?
 How Emacs is running when this is activated ? Except these questions,
 it really seems a killer-app :) -- XavierMaillard
+
+[new:SamGraham:2011-08-02 22:06 UTC]
+RAM use is negligible, CPU consumption in the current version can be excessive if you have several hundred buffers open in flymake-mode as it creates a timer for every buffer, I have a patched version at https://github.com/illusori/emacs-flymake that addresses this issue. -- SamGraham
 
 === When is flymake run? ===
 I've tried it (linux, stock emacs).. GREAT.. but.. I found that the buffer is only updated after I save the buffer, even if flymake is running gcc very often... is it normal?

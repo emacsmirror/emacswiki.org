@@ -12,17 +12,23 @@ The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] sh
 [new]
 
 I would like S-SPC behave as RET key using keyboard-translate. For example: 
-(keyboard-translate ?\C-t ?\C-f)
+<code>(keyboard-translate ?\C-t ?\C-f)</code> works.
 
-However I don't know what to put in my case. I tried these:
+However I don't know what to put in my case. I tried the followin possibilities:
 
-(keyboard-translate (kbd "S-SPC") [return])
-(keyboard-translate ?\s-SPC [return])
-(keyboard-translate ?\S-SPC [return])
-(keyboard-translate [?\S-SPC] [return])
-(keyboard-translate [(shift space)] [return])
+
+   (keyboard-translate (kbd "S-SPC") [return])
+   (keyboard-translate ?\s-SPC [return])
+   (keyboard-translate ?\S-SPC [return])
+   (keyboard-translate [?\S-SPC] [return])
+   (keyboard-translate [(shift space)] [return])
 
 and nothing works :( Any idea?
+
+
+: Ok, I found the answer myself. It seem that this is not possible with keyboard-translate, instead I use
+: <code>(define-key key-translation-map (kbd "S-SPC") (kbd "RET"))</code>
+: The problem is discussed here: http://article.gmane.org/gmane.emacs.help/80014
 
 ===How to Program/Customize Emacs Commands?===
 

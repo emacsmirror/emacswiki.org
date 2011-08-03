@@ -32,22 +32,22 @@ MissionStatement for more.''
 単なる英訳にとどまらず、あなたの書いた日本語文章を作成してください。
 
 * HowToNavigate -- help using the site
-* [[Ｅｌｉｓｐセクション]] / ElispArea -- EmacsLispソースコードのアップロードとダウンロード
+* [[Ｅｌｉｓｐセクション]] -- EmacsLispソースコードのアップロードとダウンロード
 * HowToEdit -- どうやってこのサイトに貢献すればよいか
-* [[EmacsWikiの管理者]] / EmacsWikiAdministrators -- handling vandalism and spam on this site
-* [[Wikiのダウンロード|Wikiのダウンロード]] / WikiDownload -- how to get copies of the site
+* [[EmacsWikiの管理者]] -- handling vandalism and spam on this site
+* [[Wikiのダウンロード|Wikiのダウンロード]] -- how to get copies of the site
 
 Emacs とは？
-* [[Emacsビギナー]] / EmacsNewbie -- はじめての方に
+* [[Emacsビギナー]] -- はじめての方に
 * [[カテゴリ・ヘルプ|ヘルプ]] / CategoryHelp -- Emacs 上のヘルプとEmacs ユーザーによるヘルプ
-* [[カテゴリ・用語集|用語集]] / CategoryGlossary -- Emacsユーザーの使用する用語について
+* [[カテゴリ・用語集|用語集]] -- Emacsユーザーの使用する用語について
 * [[カテゴリ・ドキュメント|ドキュメント]] / CategoryDocumentation -- Emacsに関するドキュメントについて
 * [[カテゴリ・歴史|歴史]] / CategoryHistory -- Emacsの発展
 * [[日本語ＦＡＱ]] / [[JapaneseFAQ]] -- ＦＡＱ収集とその英訳
 
 Emacs のダウンロードとインストール
 * [[カテゴリ・Ports|Ports]] / CategoryPorts -- NT, Mac, GNU/Linux (Debian, BSDを含む)
-* [[カテゴリ・WThirtyTwo|w32]] / CategoryWThirtyTwo -- for w32-specific stuff
+* [[カテゴリ・WThirtyTwo|WThirtyTwo]] -- for w32-specific stuff
 * [[カテゴリ・ビルド|ビルド]] / CategoryBuilding -- ソースからどうやってビルドするか
 
 Emacs をテキストエディタとして使うには？

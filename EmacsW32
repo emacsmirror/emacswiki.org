@@ -1324,13 +1324,18 @@ Where can I find the beta version? It isn't mentioned anywhere else on this page
 [new]
 I just added info about where to download beta version.
 
-----
+=== Question about frame geometry ===
 I'm having some trouble setting the initial frame dimensions from my .emacs. If the "Emacs.geometry" registry key is present, this appears to override any calls to set-frame-size in the evaluation of .emacs.  Worse, if that registry key is *not* present, the frame will briefly pop to the right size, but then snap back to the default 80x43 frame.  (Note that I have set default-frame-alist and initial-frame-alist as well.)
 
 I've tried attaching the set-frame-size to the 'after-init-hook, but this runs too early as well, it appears. I have a sneaking suspicion I'm missing something obvious, but any help would be appreciated!
 
--- Dave Moore
+[new]
+I do not think this has anything to do with /EmacsW32/. Could you please try an unpatched Emacs and send an Emacs bug report if you find the problem there. Otherwise come back here. (The best would be if you tried the weekly builds, see CategoryWThirtyTwo
 
+[new]
+Whoops, quite right. The problem goes away in the 24.0 series of binaries.  I found the test versions of EmacsW32 with this version, problem solved.  Thanks!
+
+-- Dave
 ----
 Related subjects
 CategoryKeys
