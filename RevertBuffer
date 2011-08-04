@@ -163,8 +163,34 @@ Inform that modified file was reverted in "real time" for win32
 
 --bdimych
 
+== Put a marker on reloaded files, instead of reloading right away
+
+This is experimental code, use it with care. Todo: display the correct binding or a buffer name
+
+  (defun shk-deferred-auto-revert (&optional ignore-auto noconfirm)
+    (interactive)
+    (if (called-interactively-p)
+        (progn
+          (setq header-line-format nil)
+          (let ((revert-buffer-function nil))
+            (revert-buffer ignore-auto t)))
+      (setq header-line-format
+            (format "%s. Press C-c R to reload it"
+                    (propertize "This file has changed on disk"
+                                'face '(:foreground "#f00"))))))
+  (setq revert-buffer-function 'shk-deferred-auto-revert)
+  (global-set-key [(control c)(R)] 'shk-deferred-auto-revert)
+  
+  (global-auto-revert-mode t)
+
+TODO: figure out how to use where-is programmatically to display actual bindings/function name in all cases
+
+-- shjk
+
 == Auto revert even after you changed the file in Emacs ==
 If you open a file, turn auto-revert-mode on, and modify it (without saving), then it won't be reverted anymore even if an external program updates it. I'd like to lose my changes automatically and get the latest state of the file. How to do it?
+
+[new] Binding revert-buffer-function to a function discarding changes and then reverting might work
 
 
 ----

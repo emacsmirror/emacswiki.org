@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 30 10:08:22 2011 (-0700)
+;; Last-Updated: Wed Aug  3 09:06:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12443
+;;     Update #: 12452
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -711,7 +711,7 @@ lax: a match is not required."
           (setq pos  (1+ (length init))) ; Default is to put cursor at end of INITIAL-INPUT.
         (unless (integerp position)
           (error "icicle-lisp-vanilla-completing-read, POSITION must be an integer: %S" position))
-        (setq pos  (1+ position))))      ; Convert zero-based to one-based.
+        (setq pos  (1+ position))))     ; Convert zero-based to one-based.
     (if (symbolp hist)
         (setq histvar  hist
               histpos  nil)
@@ -719,20 +719,45 @@ lax: a match is not required."
             histpos  (cdr-safe hist)))
     (unless histvar (setq histvar  'minibuffer-history))
     (unless histpos (setq histpos  0))
+    ;; $$$$$$
+    ;;     (setq val  (read-from-minibuffer
+    ;;                 prompt
+    ;;                 (cons init pos)          ; initial-contents
+    ;;                 (if (not require-match)  ; key map
+    ;;                     (if (or (not minibuffer-completing-file-name)
+    ;;                             (eq minibuffer-completing-file-name 'lambda)
+    ;;                             (not (boundp 'minibuffer-local-filename-completion-map)))
+    ;;                         minibuffer-local-completion-map
+    ;;                       minibuffer-local-filename-completion-map)
+    ;;                   (if (or (not minibuffer-completing-file-name)
+    ;;                           (eq minibuffer-completing-file-name 'lambda)
+    ;;                           (not (boundp 'minibuffer-local-filename-must-match-map)))
+    ;;                       minibuffer-local-must-match-map
+    ;;                     minibuffer-local-filename-must-match-map))
+    ;;                 nil histvar def inherit-input-method))
     (setq val  (read-from-minibuffer
                 prompt
-                (cons init pos)          ; initial-contents
-                (if (not require-match)  ; key map
+                (cons init pos)         ; initial-contents
+                (if (not require-match) ; keymap
                     (if (or (not minibuffer-completing-file-name)
                             (eq minibuffer-completing-file-name 'lambda)
                             (not (boundp 'minibuffer-local-filename-completion-map)))
                         minibuffer-local-completion-map
-                      minibuffer-local-filename-completion-map)
+                      (if (fboundp 'make-composed-keymap) ; Emacs 24, starting July 2011.
+                          (make-composed-keymap
+                           minibuffer-local-filename-completion-map
+                           minibuffer-local-completion-map)
+                        minibuffer-local-filename-completion-map))
                   (if (or (not minibuffer-completing-file-name)
                           (eq minibuffer-completing-file-name 'lambda)
-                          (not (boundp 'minibuffer-local-filename-must-match-map)))
+                          (and (not (fboundp 'make-composed-keymap)) ; Emacs 24, starting July 2011.
+                               (not (boundp 'minibuffer-local-filename-must-match-map))))
                       minibuffer-local-must-match-map
-                    minibuffer-local-filename-must-match-map))
+                    (if (fboundp 'make-composed-keymap) ; Emacs 24, starting July 2011.
+                        (make-composed-keymap
+                         minibuffer-local-filename-completion-map
+                         minibuffer-local-must-match-map)
+                      minibuffer-local-filename-must-match-map)))
                 nil histvar def inherit-input-method))
     ;; Use `icicle-filtered-default-value', not DEF, because `read-from-minibuffer' filters it.
     (when (consp icicle-filtered-default-value) ; Emacs 23 lets DEF be a list of strings - use first.

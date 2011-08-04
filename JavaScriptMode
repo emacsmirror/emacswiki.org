@@ -129,7 +129,7 @@ Why isn't js2-mode in end of 23.2, instead of Espresso-mode?
 
 == Imenu integration ==
 
-This integration supports prorotoype.js class representation and original class representation.
+This integration supports prototype.js class representation and original class representation.
 
 (It's not clear which javascript major mode this imenu stuff is intended for.  js-mode (in emacs) includes imenu support; it works pretty well.  You don't need this extra stuff. )
 

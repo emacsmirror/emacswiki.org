@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 31 15:19:30 2011 (-0700)
+;; Last-Updated: Wed Aug  3 09:23:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6757
+;;     Update #: 6760
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -861,6 +861,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/03 dadams
+;;     icicle-lisp-vanilla-completing-read:
+;;       Handle recent Emacs 24 changes: make-compose-keymap etc.  Thx to Stefan Monnier.
 ;; 2011/07/30 dadams
 ;;     Moved to icicles-cmd2.el and wrapped in eval-after-load hexrgb:
 ;;       icicle-color-*-lessp (except -rgb-), icicle-color-completion-setup, icicle-color-help,

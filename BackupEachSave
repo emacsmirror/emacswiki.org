@@ -1,6 +1,7 @@
 backup-each-save.el backs up is a more comprehensive system for saving backups on each buffer saving, as opposed to adding code to ForceBackups.
 
 * http://www.bloomington.in.us/~brutt/emacs.html
+* http://www.emacswiki.org/emacs-de/backup-each-save.el
 
 To activate:
 
@@ -23,6 +24,9 @@ To activate:
 backup-each-save.el works well for me, but I had a problem with the variable "file-remote-p" being undefined. While I can simply remove the line that checks whether it is a remote file, I would like to know if there is a different solution?
 
 -- GunnarWrobel
+
+[new]
+That should only be an issue for fairly old versions of Emacs, however the version of backup-each-save.el hosted here at the Wiki (at least; I can't access the other URL) looks like it accounts for this possibility.
 
 ----
 CategoryFiles

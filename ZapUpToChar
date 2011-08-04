@@ -9,6 +9,22 @@ This is not satisfactory for some.
 In [[XEmacs]], an implementation is installed and available by default.
 There is a `zap-up-to-char' in Emacs 22, GIT:misc.el.
 
+Here is some EmacsLisp you can add to your InitFile or by EvaluatingExpressions to make it available.
+
+  (autoload 'zap-up-to-char "misc"
+    "Kill up to, but not including ARGth occurrence of CHAR.
+  
+  \(fn arg char)"
+    'interactive)
+
+If you want to it to replace the used for `zap-to-char' use the following.
+
+  (global-set-key "\M-z" 'zap-up-to-char)
+
+You could put it on a new binding, like `M-S-z'.
+
+  (global-set-key "\M-Z" 'zap-up-to-char)
+
 Emacs 21 users can either define a modified `zap-to-char' implementation, or provide advice to `zap-to-char' (See AdvisingFunctions).
 The /modular/ customization would be to provide advice:
 
