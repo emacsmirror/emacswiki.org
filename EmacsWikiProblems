@@ -10,6 +10,14 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== Site is very slow now ==
+
+Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams
+
+
+
+
+
 == CGI Internal error: 400 Bad request (malformed multipart POST) ==
 
 I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams

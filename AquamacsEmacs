@@ -55,6 +55,10 @@ Thank you for your help.
 [new]
 I installed Aquamacs 2.0 on my mac and I can't get rid of the *scratch* buffer. I tried setting the option in Preferences>Aquamacs>Aquamacs Scratch File to "nil" and nil without quotations, but it just changed the file path of the scratch buffer if you want to save it. In the Aquamacs-Scratch-File option it does not give me a toggle option as to turn it on or off. Please tell me a way to stop opening up the scratch buffer when Aquamacs starts.
 
+==Windows-style Editing Keys Under Aquamacs==
+
+[new]
+Aquamacs is a nicely polished package. Thanks. One thing I'm looking for is editing keyes for page up/down, home/end on my MacBook Pro. Any ideas?
 
 ----
 CategoryPorts

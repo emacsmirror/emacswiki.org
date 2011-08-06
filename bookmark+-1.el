@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun May  8 11:47:14 2011 (-0700)
+;; Last-Updated: Fri Aug  5 17:27:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2098
+;;     Update #: 2122
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3033,6 +3033,7 @@ If NO-DEFAULT-P is nil, then the default is the current buffer's file
 This brings the displayed list up to date.  It does not change the
 current filtering or sorting of the displayed list.
 Non-nil optional arg BOOKMARK means move cursor to BOOKMARK's line."
+  (unless (stringp bookmark) (setq bookmark  (bookmark-name-from-full-record bookmark)))
   (let ((bookmark-alist  (if bmkp-bmenu-filter-function
                              (funcall bmkp-bmenu-filter-function)
                            bookmark-alist)))
@@ -3497,7 +3498,10 @@ This excludes bookmarks of a more specific kind (e.g. Info, Gnus)."
   (let* ((filename   (bookmark-get-filename bookmark))
          (nonfile-p  (equal filename bmkp-non-file-filename))
          (handler    (bookmark-get-handler bookmark)))
-    (and filename (not nonfile-p) (or (not handler) (eq handler 'bmkp-jump-dired))
+    (and filename (not nonfile-p)
+         (or (not handler)
+             (eq handler 'bmkp-jump-dired)
+             (equal handler (bmkp-default-handler-for-file filename)))
          (not (and (bookmark-prop-get bookmark 'info-node)))))) ; Emacs 20-21 Info: no handler.
 
 (defun bmkp-file-this-dir-bookmark-p (bookmark)
@@ -3653,15 +3657,17 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-all-tags-alist-only (tags)
   "`bookmark-alist', but with only bookmarks having all their tags in TAGS.
+Does not include bookmarks that have no tags.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
    #'(lambda (bmk)
        (let ((bmk-tags  (bmkp-get-tags bmk)))
-         (and bmk-tags (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))
+         (and bmk-tags (bmkp-every #'(lambda (tag) (member (bmkp-tag-name tag) tags)) bmk-tags))))
    bookmark-alist))
 
 (defun bmkp-all-tags-regexp-alist-only (regexp)
   "`bookmark-alist', but with only bookmarks having all tags match REGEXP.
+Does not include bookmarks that have no tags.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
    #'(lambda (bmk)
@@ -4092,9 +4098,8 @@ for the first character are `eq'."
 ;; Similar to `every' in `cl-extra.el', without non-list sequences and multiple sequences.
 (defun bmkp-every (predicate list)
   "Return t if PREDICATE is true for all elements of LIST; else nil."
-  (let ((res  nil))
-    (while (and list (funcall predicate (car list))) (setq list  (cdr list)))
-    (null list)))
+  (while (and list (funcall predicate (car list))) (setq list  (cdr list)))
+  (null list))
 
 ;; Similar to `some' in `cl-extra.el', without non-list sequences and multiple sequences.
 (defun bmkp-some (predicate list)
@@ -6880,7 +6885,7 @@ candidate."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (read-string "Regexp for all tags: "))
           (alist  (bmkp-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -6890,7 +6895,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % *'
   "`bmkp-all-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (read-string "Regexp for all tags: "))
           (alist  (bmkp-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))

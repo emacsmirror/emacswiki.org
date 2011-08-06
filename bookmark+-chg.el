@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug  1 09:00:40 2011 (-0700)
+;; Last-Updated: Fri Aug  5 17:34:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13713
+;;     Update #: 13717
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/08/05 dadams
+;;     bmkp-file-bookmark-p: Allow handler to be bmkp-default-handler-for-file, e.g. for image files.
+;;     bmkp-all-tags-alist-only: Corrected.
+;;     bmkp-refresh-menu-list: Ensure BOOKMARK is a string.
+;;     bmkp-every: Removed unused binding.
 ;; 2011/05/08 dadams
 ;;     Just put some definitions in alphabetic order - no real change.
 ;; 2011/04/25 dadams

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 31 14:56:55 2011 (-0700)
+;; Last-Updated: Fri Aug  5 16:24:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3642
+;;     Update #: 3645
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1773,7 +1773,7 @@ Remember that you can use \\<minibuffer-local-completion-map>\
 
 ;;;###autoload
 (defun icicle-non-whitespace-string-p (string)
-  "Return non-nil if STRING contains a non-whitespace character.
+  "Return non-nil if STRING is a string and contains a non-whitespace char.
 The `standard-syntax-table' definition of whitespace is used."
   (interactive "s")
   (let ((orig-syntable  (syntax-table)))
@@ -6753,7 +6753,8 @@ it already exists, or the file itself if not."
       (lambda (file) (bmkp-autofile-add-tags file tags nil nil 'MSG))
       "File to tag: " nil nil nil nil nil ; `read-file-name' args
       (icicle-file-bindings             ; Bindings
-       ((tags  (bmkp-read-tags-completing)))))
+       ((tags                                  (bmkp-read-tags-completing))
+        (icicle-use-candidates-only-once-flag  t))))
 
     (icicle-define-file-command icicle-untag-a-file ; `C-x p t - a'
       "Remove one or more tags from a file (an autofile bookmark).
@@ -6772,7 +6773,8 @@ all of the given input tags are completion candidates."
         (bmkp-autofile-remove-tags file tags nil nil 'MSG))
       "File to untag: " nil nil t nil nil ; `read-file-name' args
       (icicle-file-bindings             ; Bindings
-       ((tags  (bmkp-read-tags-completing))) ; Pre bindings
+       ((tags                                  (bmkp-read-tags-completing)) ; Pre bindings
+        (icicle-use-candidates-only-once-flag  t))
        ((icicle-must-pass-after-match-predicate ; Post bindings
          #'(lambda (ff)
              ;; Expand relative file name, using directory from minibuffer.
