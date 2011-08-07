@@ -28,6 +28,8 @@ One small annoyance I found with this otherwise excellent package is that it clo
 	 ad-do-it
        (setq kill-ring orig-kill-ring))))
 </pre>
+
+Would it not suffice, and be more idiomatic, to just ##(let ((kill-ring)) (unwind-protect ad-do-it))##?
 ----
 
 From the DotEmacsChallenge page:

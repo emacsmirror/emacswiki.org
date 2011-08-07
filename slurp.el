@@ -1,8 +1,8 @@
 ;;; slurp.el --- Search a file hierarchy for files with matching names
 
 ;; Author: Jason Meade (jemeade@gmail.com)
-;; Last Update: June 30, 2009
-;; Version: 1.3a
+;; Last Update: Aug 5, 2011
+;; Version: 1.4
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@
     ()
   (setf slurp-mode-map (make-keymap))
   (define-key slurp-mode-map [mouse-1] 'slurp-mode-find-buffer)
-  (define-key slurp-mode-map [return] 'slurp-mode-find-buffer-no-event))
+  (define-key slurp-mode-map [return] 'slurp-mode-find-buffer-no-event)
+  (define-key slurp-mode-map (kbd "RET") 'slurp-mode-find-buffer-no-event))
 
 (defun slurp-mode ()
   "Major mode for buffers used by slurp"
