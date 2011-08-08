@@ -1101,7 +1101,7 @@ to organize and access objects of any kind.  See [[#BookmarkTags|Bookmark Tags]]
 You use option '''`bmkp-default-handler-associations'''' to control
 which operation (bookmark handler) to use for which file type.
 This is a set of associations (an [[alist]]) with key a [[regexp]]
-matching a file name and with value a Lisp [[sexp]] that evaluates to
+matching a file name and with value a Lisp [[sexp]] that evaluates to either
 a shell command (a string) or an Emacs function (a [[symbol]] or
 lambda form).
 
@@ -1122,9 +1122,13 @@ is %%PostScript%% (extension `##.ps##'), and invokes EmacsLisp function
 The default value of `bmkp-default-handler-associations' is taken
 from the value of option '''`dired-guess-shell-alist-user'''' (from
 [[Dired X]]).  If no matching file association is found in
-`bmkp-default-handler-associations', then the associations in
-`bmkp-default-handler-associations' are used to find a shell
-command appropriate to the target file type.
+`bmkp-default-handler-associations', and if option
+'''`bmkp-guess-default-handler-for-file-flag'''' is non-`nil' (it is `nil'
+by default), then '''Bookmark+''' will ''guess'' a shell command to use in
+the handler.  It does this by matching the file name against
+`dired-guess-shell-alist-default' (also from [[Dired X]]).  In Emacs 23+, if it finds no
+shell command that way then it guesses one based on mailcap
+entries.
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 31 15:02:04 2011 (-0700)
+;; Last-Updated: Sun Aug  7 18:59:16 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26076
+;;     Update #: 26085
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3086,13 +3086,13 @@
 ;;    portion that is common to all candidates.
 ;;
 ;;  * Starting with Emacs 22, thumbnail images are shown in
-;;    `*Completions*' for candidates that are file names of image
-;;    files, if option `icicle-image-files-in-Completions' is
-;;    non-`nil' (it is `t' by default).  If the option value is
-;;    `image-only', then only the thumbnail images are shown.  If it
-;;    is otherwise non-`nil' then the file names are also shown.  You
-;;    can cycle the option value using `C-x t' in the minibuffer at
-;;    any time during completion.
+;;    `*Completions*' for candidates that are (relative or absolute)
+;;    names of image files, if option
+;;    `icicle-image-files-in-Completions' is non-`nil' (it is `t' by
+;;    default).  If the option value is `image-only', then only the
+;;    thumbnail images are shown.  If it is otherwise non-`nil' then
+;;    the file names are also shown.  You can cycle the option value
+;;    using `C-x t' in the minibuffer at any time during completion.
 ;;
 ;;  * You can scroll `*Completions*' down using `C-v', and up using
 ;;    `M-v'.  You can use `C-u' at any time to reverse the scroll
@@ -4569,8 +4569,9 @@
 ;;  Here are some of the Icicles tripping commands:
 ;;
 ;;  * Trips among tagged files (delicious-style tagging - requires
-;;    library `bookmark+.el').
+;;    library `bookmark+.el').  (The `a' stands for "autofile".)
 ;;    (Use prefix key `C-x 4 j' for other-window commands.)
+;;    `icicle-find-file-tagged'                  (`C-x j t a a')
 ;;    `icicle-find-file-all-tags'                (`C-x j t a *')
 ;;    `icicle-find-file-all-tags-regexp'         (`C-x j t a % *')
 ;;    `icicle-find-file-some-tags'               (`C-x j t a +')

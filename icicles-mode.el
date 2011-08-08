@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 22 13:21:19 2011 (-0700)
+;; Last-Updated: Sun Aug  7 18:49:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7460
+;;     Update #: 7482
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -301,10 +301,20 @@ In many cases there are also `other-window' versions.
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-zippy'                 - Show matching Zippy quotes
 `icicle-bookmark'                      - Jump to a bookmark
+`icicle-bookmark-all-tags'             - Jump to tagged bookmark
+`icicle-bookmark-all-tags-regexp'      - Jump to tagged bookmark
 `icicle-bookmark-bookmark-list'        - Jump to a bookmark list
 `icicle-bookmark-desktop'              - Jump to a desktop bookmark
 `icicle-bookmark-dired'                - Jump to a Dired bookmark
 `icicle-bookmark-file'                 - Jump to a file bookmark
+`icicle-bookmark-file-all-tags'        - Jump to tagged file bookmark
+`icicle-bookmark-file-all-tags-regexp'
+`icicle-bookmark-file-some-tags'
+`icicle-bookmark-file-some-tags-regexp'
+`icicle-bookmark-file-this-dir-all-tags'
+`icicle-bookmark-file-this-dir-all-tags-regexp'
+`icicle-bookmark-file-this-dir-some-tags'
+`icicle-bookmark-file-this-dir-some-tags-regexp'
 `icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
 `icicle-bookmark-info'                 - Jump to an Info bookmark
 `icicle-bookmark-local-file'           - Jump to local-file bookmark
@@ -312,6 +322,8 @@ In many cases there are also `other-window' versions.
 `icicle-bookmark-non-file'             - Jump to a buffer bookmark
 `icicle-bookmark-region'               - Jump to a region bookmark
 `icicle-bookmark-remote-file'          - Jump to a remote file
+`icicle-bookmark-some-tags'            - Jump to tagged bookmark
+`icicle-bookmark-some-tags-regexp'     - Jump to tagged bookmark
 `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
 `icicle-bookmark-specific-files'       - Jump to a bookmarked file
 `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
@@ -354,7 +366,12 @@ In many cases there are also `other-window' versions.
 `icicle-file'                          - Visit file/directory
 `icicle-find-file'                     -       same: relative only
 `icicle-find-file-absolute'            -       same: absolute only
-`icicle-find-file-in-tags-table'       - File in tags table
+`icicle-find-file-all-tags'            - Visit tagged file
+`icicle-find-file-all-tags-regexp'
+`icicle-find-file-some-tags'
+`icicle-find-file-some-tags-regexp'
+`icicle-find-file-in-tags-table'       - File in Emacs tags table
+`icicle-find-file-tagged'              - Visit tagged file
 `icicle-find-first-tag'                - Visit definition with tag
 `icicle-find-tag'                      - Visit definition with tag
 `icicle-font'                          - Change font of frame
@@ -394,6 +411,8 @@ In many cases there are also `other-window' versions.
 `icicle-reset-option-to-nil'           - Set binary option(s) to nil
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
+`icicle-search-all-tags-bookmark'      - Search tagged bookmarks 
+`icicle-search-all-tags-regexp-bookmark'
 `icicle-search-bookmark'               - Search bookmarks separately
 `icicle-search-bookmark-list-bookmark' - Search bookmark lists
 `icicle-search-bookmarks-together'     - Search bookmarks together
@@ -415,6 +434,8 @@ In many cases there are also `other-window' versions.
 `icicle-search-region-bookmark'        - Search bookmarked regions
 `icicle-search-remote-file-bookmark'   - Search remote bookmarks
 `icicle-search-sentences'              - Search sentences as contexts
+`icicle-search-some-tags-bookmark'     - Search tagged bookmarks 
+`icicle-search-some-tags-regexp-bookmark'
 `icicle-search-text-property'          - Search for faces etc.
 `icicle-search-url-bookmark'           - Search bookmarked URLs
 `icicle-search-word'                   - Whole-word search
@@ -423,6 +444,7 @@ In many cases there are also `other-window' versions.
 `icicle-select-window'                 - Select window by buffer name
 `icicle-send-bug-report'               - Send Icicles bug report
 `icicle-set-option-to-t'               - Set binary option(s) to t
+`icicle-tag-a-file'                    - Tag a file a la delicious
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
@@ -451,6 +473,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-sorting'                - Toggle sorting of completions
 `icicle-toggle-transforming'           - Toggle duplicate removal
 `icicle-toggle-WYSIWYG-Completions'   - Toggle WYSIWYG `*Completions*'
+`icicle-untag-a-file'                  - Remove some tags from a file
 `icicle-vardoc'                        - Show variable description
 `icicle-where-is'                      - `where-is' multi-command
 `icicle-yank-maybe-completing'         - `yank' maybe using completion
@@ -575,10 +598,20 @@ In many cases there are also `other-window' versions.
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-zippy'                 - Show matching Zippy quotes
 `icicle-bookmark'                      - Jump to a bookmark
+`icicle-bookmark-all-tags'             - Jump to tagged bookmark
+`icicle-bookmark-all-tags-regexp'      - Jump to tagged bookmark
 `icicle-bookmark-bookmark-list'        - Jump to a bookmark list
 `icicle-bookmark-desktop'              - Jump to a desktop bookmark
 `icicle-bookmark-dired'                - Jump to a Dired bookmark
 `icicle-bookmark-file'                 - Jump to a file bookmark
+`icicle-bookmark-file-all-tags'        - Jump to tagged file bookmark
+`icicle-bookmark-file-all-tags-regexp'
+`icicle-bookmark-file-some-tags'
+`icicle-bookmark-file-some-tags-regexp'
+`icicle-bookmark-file-this-dir-all-tags'
+`icicle-bookmark-file-this-dir-all-tags-regexp'
+`icicle-bookmark-file-this-dir-some-tags'
+`icicle-bookmark-file-this-dir-some-tags-regexp'
 `icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
 `icicle-bookmark-info'                 - Jump to an Info bookmark
 `icicle-bookmark-local-file'           - Jump to local-file bookmark
@@ -586,6 +619,8 @@ In many cases there are also `other-window' versions.
 `icicle-bookmark-non-file'             - Jump to a buffer bookmark
 `icicle-bookmark-region'               - Jump to a region bookmark
 `icicle-bookmark-remote-file'          - Jump to a remote file
+`icicle-bookmark-some-tags'            - Jump to tagged bookmark
+`icicle-bookmark-some-tags-regexp'     - Jump to tagged bookmark
 `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
 `icicle-bookmark-specific-files'       - Jump to a bookmarked file
 `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
@@ -627,7 +662,12 @@ In many cases there are also `other-window' versions.
 `icicle-file'                          - Visit file/directory
 `icicle-find-file'                     -       same: relative only
 `icicle-find-file-absolute'            -       same: absolute only
-`icicle-find-file-in-tags-table'       - File in tags table
+`icicle-find-file-all-tags'            - Visit tagged file
+`icicle-find-file-all-tags-regexp'
+`icicle-find-file-some-tags'
+`icicle-find-file-some-tags-regexp'
+`icicle-find-file-in-tags-table'       - File in Emacs tags table
+`icicle-find-file-tagged'              - Visit tagged file
 `icicle-find-first-tag'                - Visit definition with tag
 `icicle-find-tag'                      - Visit definition with tag
 `icicle-font'                          - Change font of frame
@@ -666,6 +706,8 @@ In many cases there are also `other-window' versions.
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
 `icicle-search-bookmark'               - Search bookmarks separately
+`icicle-search-all-tags-bookmark'      - Search tagged bookmarks 
+`icicle-search-all-tags-regexp-bookmark'
 `icicle-search-bookmark-list-bookmark' - Search bookmark lists
 `icicle-search-bookmarks-together'     - Search bookmarks together
 `icicle-search-char-property'          - Search for overlay/text props
@@ -686,6 +728,8 @@ In many cases there are also `other-window' versions.
 `icicle-search-region-bookmark'        - Search bookmarked regions
 `icicle-search-remote-file-bookmark'   - Search remote bookmarks
 `icicle-search-sentences'              - Search sentences as contexts
+`icicle-search-some-tags-bookmark'     - Search tagged bookmarks 
+`icicle-search-some-tags-regexp-bookmark'
 `icicle-search-text-property'          - Search for faces etc.
 `icicle-search-url-bookmark'           - Search bookmarked URLs
 `icicle-search-word'                   - Whole-word search
@@ -694,6 +738,7 @@ In many cases there are also `other-window' versions.
 `icicle-select-window'                 - Select window by buffer name
 `icicle-send-bug-report'               - Send Icicles bug report
 `icicle-set-option-to-t'               - Set binary option(s) to t
+`icicle-tag-a-file'                    - Tag a file a la delicious
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
@@ -722,6 +767,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-sorting'                - Toggle sorting of completions
 `icicle-toggle-transforming'           - Toggle duplicate removal
 `icicle-toggle-WYSIWYG-Completions'   - Toggle WYSIWYG `*Completions*'
+`icicle-untag-a-file'                  - Remove some tags from a file
 `icicle-vardoc'                        - Show variable description
 `icicle-where-is'                      - `where-is' multi-command
 `icicle-yank-maybe-completing'         - `yank' maybe using completion
@@ -2941,8 +2987,7 @@ Otherwise, bind COMMAND to whatever CURRENT is bound to in MAP."
 
 (defun icicle-bind-completion-keys (map)
   "Bind keys for minibuffer completion map MAP.
-MAP is `minibuffer-local-completion-map',
-`minibuffer-local-filename-completion-map', or
+MAP is `minibuffer-local-completion-map' or
 `minibuffer-local-must-match-map'."
 
   ;; Menu-bar `Minibuf' menu.

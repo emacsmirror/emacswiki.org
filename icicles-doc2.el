@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 31 15:02:49 2011 (-0700)
+;; Last-Updated: Sun Aug  7 17:33:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28080
+;;     Update #: 28083
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4905,12 +4905,12 @@
 ;;
 ;;  * Non-`nil' option `icicle-image-files-in-Completions' means that
 ;;    thumbnail images are shown in `*Completions*' for candidates
-;;    that are names of image files.  The default value is `t'.  If
-;;    the value is `image-only', then only the thumbnail images are
-;;    shown.  If it is otherwise non-`nil' then the file names are
-;;    also shown.  You can cycle the option value using `C-x t' in the
-;;    minibuffer at any time during completion.  This feature is
-;;    available starting with Emacs 22.
+;;    that are (relative or absolute) names of image files.  The
+;;    default value is `t'.  If the value is `image-only', then only
+;;    the thumbnail images are shown.  If it is otherwise non-`nil'
+;;    then the file names are also shown.  You can cycle the option
+;;    value using `C-x t' in the minibuffer at any time during
+;;    completion.  This feature is available starting with Emacs 22.
 ;;
 ;;  * Option `icicle-completions-format' controls whether candidates
 ;;    displayed in `*Completions*' are laid out horizontally (the

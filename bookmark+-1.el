@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug  5 17:27:32 2011 (-0700)
+;; Last-Updated: Sun Aug  7 13:17:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2122
+;;     Update #: 2216
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -253,10 +253,12 @@
 ;;    `bmkp-bookmark-name-length-max', `bmkp-crosshairs-flag',
 ;;    `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handler-associations',
-;;    `bmkp-desktop-no-save-vars', `bmkp-handle-region-function',
-;;    `bmkp-incremental-filter-delay', `bmkp-menu-popup-max-length',
-;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
-;;    `bmkp-region-search-size', `bmkp-save-new-location-flag',
+;;    `bmkp-desktop-no-save-vars',
+;;    `bmkp-guess-default-handler-for-file-flag',
+;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
+;;    `bmkp-menu-popup-max-length', `bmkp-other-window-pop-to-flag',
+;;    `bmkp-prompt-for-tags-flag', `bmkp-region-search-size',
+;;    `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
 ;;    `bmkp-show-end-of-region', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp',
@@ -399,8 +401,8 @@
 ;;    `bmkp-bookmark-list-history', `bmkp-current-bookmark-file',
 ;;    `bmkp-current-nav-bookmark', `bmkp-desktop-history',
 ;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
-;;    `bmkp-edit-tags-mode-map', `bmkp-file-history',
-;;    `bmkp-gnus-history', `bmkp-info-history',
+;;    `bmkp-edit-tags-mode-map', `bmkp-file-bookmark-handlers',
+;;    `bmkp-file-history', `bmkp-gnus-history', `bmkp-info-history',
 ;;    `bmkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bmkp-jump-display-function', `bmkp-jump-other-window-map',
 ;;    `bmkp-last-bmenu-state-file', `bmkp-last-bookmark-file',
@@ -657,11 +659,13 @@ literal string as COMMAND then you must double-quote the text:
 \"...\".  (But do not use double-quotes for the REGEXP.)  If you want
 to use a symbol as COMMAND, then single-quote it - e.g. 'foo.
 
-This option is used by `bmkp-default-handler-user'.  If an association
-for a given file name is not found using this option, then
-`bmkp-default-handler-for-file' looks for an association in
-`dired-guess-shell-alist-user', `dired-guess-shell-alist-default', and
-in mailcap entries (Emacs 23+), in that order."
+This option is used by `bmkp-default-handler-for-file' to determine
+the default handler for a given file.  If a given file name does not
+match this option, and if `bmkp-guess-default-handler-for-file-flag'
+is non-nil, then then `bmkp-default-handler-for-file' tries to guess a
+shell command to use in the default handler.  For that it uses
+`dired-guess-default' and (Emacs 23+ only) mailcap entries, in that
+order."
   :type '(alist :key-type
           regexp :value-type
           (sexp :tag "Shell command (string) or Emacs function (symbol or lambda form)"))
@@ -856,6 +860,15 @@ See `bmkp-sort-comparer'."
   :group 'bookmark-plus)
 
 ;;;###autoload
+(defcustom bmkp-guess-default-handler-for-file-flag nil
+  "*Non-nil means guess the default handler when creating a file bookmark.
+This is ignored if a handler can be found using option
+`bmkp-default-handler-associations'.  Otherwise, this is used by
+function `bmkp-default-handler-for-file' to determine the default
+handler for a given file."
+  :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload
 (defcustom bmkp-use-region t
   "*Non-nil means visiting a bookmark activates its recorded region."
   :type '(choice
@@ -931,6 +944,10 @@ However, this does not change the value of `bookmark-default-file'.
 The value of `bookmark-default-file' is never changed, except by your
 customizations.  Each Emacs session uses `bookmark-default-file' for
 the initial set of bookmarks.")
+
+(defvar bmkp-file-bookmark-handlers '(bmkp-jump-dired image-bookmark-jump)
+  "List of functions that handle file or directory bookmarks.
+This is used to determine `bmkp-file-bookmark-p'.")
 
 (defvar bmkp-last-bookmark-file bookmark-default-file
   "Last bookmark file used in this session (or default bookmark file).
@@ -3500,7 +3517,7 @@ This excludes bookmarks of a more specific kind (e.g. Info, Gnus)."
          (handler    (bookmark-get-handler bookmark)))
     (and filename (not nonfile-p)
          (or (not handler)
-             (eq handler 'bmkp-jump-dired)
+             (memq handler bmkp-file-bookmark-handlers)
              (equal handler (bmkp-default-handler-for-file filename)))
          (not (and (bookmark-prop-get bookmark 'info-node)))))) ; Emacs 20-21 Info: no handler.
 
@@ -4954,7 +4971,16 @@ The bookmarked position will be the beginning of the file."
           ;; Non-user defaults.
           ((and (require 'image nil t) (require 'image-mode nil t) ; Image
                 (condition-case nil (image-type file) (error nil)))
-           'image-bookmark-make-record)
+           ;; Last two lines of function are from `image-bookmark-make-record'.
+           ;; But don't use that directly, because it uses
+           ;; `bookmark-make-record-default', which gets nil for `filename'.
+
+           ;; NEED to keep this code sync'd with `diredp-bookmark'.
+           (lambda ()
+             `((filename   . ,file)
+               (position   . 0)
+               (image-type . ,(image-type file))
+               (handler    . image-bookmark-jump))))
           ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
            `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
           (t
@@ -5156,29 +5182,33 @@ is unchanged."
              (bookmark-name-from-full-record bookmark) failure))))
 
 (defun bmkp-default-handler-for-file (filename)
-  "Return a default bookmark handler for FILENAME.
-It is a Lisp function.  Typically it runs a shell command.
+  "Return a default bookmark handler for FILENAME, or nil.
+If non-nil, it is a Lisp function, determined as follows:
 
-The shell command is the first one found by checking, in order:
-`bmkp-default-handler-user', `dired-guess-default',
-`mailcap-file-default-commands' (Emacs 23+).
+1. Match FILENAME against `bmkp-default-handler-associations'.  If it
+matches a Lisp function, return that function.  If it matches a shell
+command, return a Lisp function that invokes that command.
 
-Alternatively `bmkp-default-handler-user' can provide a Lisp function
-\(a symbol or a lambda form) directly for FILENAME.  In that case, that
-function is applied directly to FILENAME."
+2. If no match is found and `bmkp-guess-default-handler-for-file-flag'
+is non-nil, then try to find an appropriate shell command using, in
+order, `dired-guess-default' and (Emacs 23+ only)
+`mailcap-file-default-commands'.  If a match is found then return a
+Lisp function that invokes that shell command."
   (let* ((bmkp-user  (bmkp-default-handler-user filename))
-         (shell-cmd  (or (and (stringp bmkp-user) bmkp-user)
-                         (and (require 'dired-x nil t)
-                              (let* ((case-fold-search
-                                      (or (and (boundp 'dired-guess-shell-case-fold-search)
-                                               dired-guess-shell-case-fold-search)
-                                          case-fold-search))
-                                     (default  (dired-guess-default (list filename))))
-                                (if (consp default) (car default) default)))
-                         (and (require 'mailcap nil t) ; Emacs 23+
-                              (car (mailcap-file-default-commands (list filename)))))))
-    (cond ((stringp shell-cmd) `(lambda (bmk)
-                                 (dired-do-shell-command ,shell-cmd nil ',(list filename))))
+         (shell-cmd  (if (stringp bmkp-user)
+                         bmkp-user
+                       (and (not bmkp-user)
+                            bmkp-guess-default-handler-for-file-flag
+                            (or (and (require 'dired-x nil t)
+                                     (let* ((case-fold-search
+                                             (or (and (boundp 'dired-guess-shell-case-fold-search)
+                                                      dired-guess-shell-case-fold-search)
+                                                 case-fold-search))
+                                            (default  (dired-guess-default (list filename))))
+                                       (if (consp default) (car default) default)))
+                                (and (require 'mailcap nil t) ; Emacs 23+
+                                     (car (mailcap-file-default-commands (list filename)))))))))
+    (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ,shell-cmd nil ',(list filename))))
           ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
            `(lambda (bmk) (funcall #',bmkp-user ,filename)))
           (t nil))))    

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Jul 25 14:46:41 2011 (-0700)
+;; Last-Updated: Sun Aug  7 14:06:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1925
+;;     Update #: 1936
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -56,6 +56,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/07 dadams
+;;     ls-lisp: Use featurep, not eval-after-load: doesn't work otherwise for Emacs 20.
+;;              Use MS-Windows, not Microsoft, as the value of ls-emulation.
 ;; 2011/07/25 dadams
 ;;     Moved here from start.el: Savehist settings, color-moccur settings.
 ;;     Use eval-after-load where appropriate (e.g. instead of featurep/fboundp/boundp).
@@ -395,23 +398,23 @@
 ;;; The defcustom's in Francis Wright's `ls-lisp.el' cannot take
 ;;; effect, because `ls-lisp.el' is a standard library, preloaded.
 ;;; So, make the assignments here.
-(eval-after-load "ls-lisp"
-  '(progn
-    (setq ls-lisp-emulation  (cond ((memq system-type '(windows-nt ms-dos emx)) 'Microsoft)
-                                   ;; FJW: not sure about how to handle emx!
-                                   ((memq system-type '(hpux dgux usg-unix-v unisoft-unix
-                                                        rtu irix berkeley-unix))
-                                    'UNIX)))
-    (setq ls-lisp-ignore-case
-     ;; Name change for consistency with other option names.
-     (or (eq ls-lisp-emulation 'Microsoft)
-      (and (boundp 'ls-lisp-dired-ignore-case) ls-lisp-dired-ignore-case)))
-    (setq ls-lisp-dirs-first  (eq ls-lisp-emulation 'Microsoft))
-    (setq ls-lisp-verbosity  (cond ((eq ls-lisp-emulation 'Microsoft)
-                                    ;; Distinguish NT/2K from 9x
-                                    (and (getenv "SystemRoot") '(links)))
-                                   ((eq ls-lisp-emulation 'UNIX) '(links uid)) ; UNIX ls
-                                   (t '(links uid gid)))))) ; GNU ls
+;;; Use `featurep', not `eval-after-load' - won't work otherwise, for Emacs 20.
+(when (featurep 'ls-lisp)
+  (setq ls-lisp-emulation  (cond ((memq system-type '(windows-nt ms-dos emx)) 'MS-Windows)
+                                 ;; FJW: not sure about how to handle emx!
+                                 ((memq system-type '(hpux dgux usg-unix-v unisoft-unix
+                                                      rtu irix berkeley-unix))
+                                  'UNIX)))
+  (setq ls-lisp-ignore-case
+        ;; Name change for consistency with other option names.
+        (or (eq ls-lisp-emulation 'MS-Windows)
+            (and (boundp 'ls-lisp-dired-ignore-case) ls-lisp-dired-ignore-case)))
+  (setq ls-lisp-dirs-first  (eq ls-lisp-emulation 'MS-Windows))
+  (setq ls-lisp-verbosity  (cond ((eq ls-lisp-emulation 'MS-Windows)
+                                  ;; Distinguish NT/2K from 9x
+                                  (and (getenv "SystemRoot") '(links)))
+                                 ((eq ls-lisp-emulation 'UNIX) '(links uid)) ; UNIX ls
+                                 (t '(links uid gid))))) ; GNU ls
 
 (setq auto-mode-alist  (append (list    ; Defined in `files.el'.
                                 '("\\.te?xt\\'" . indented-text-mode)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  5 16:25:44 2011 (-0700)
+;; Last-Updated: Sun Aug  7 19:10:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6761
+;;     Update #: 6799
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/08/07 dadams
+;;     icicle-(find-file-absolute|recent-file)(-other-window), icicle-locate-file-1,
+;;       icicle-cd-for-(abs|loc)-files:
+;;         Bind icicle-abs-file-candidates to the COLLECTION alist (no longer just list of strings).
 ;; 2011/07/30 dadams
 ;;     Moved to icicles-cmd2.el and wrapped in eval-after-load bookmark+.el:
 ;;       icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-(un)tag-a-file.
@@ -411,6 +415,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/07 dadams
+;;     Added: icicle-find-file-tagged(-other-window).
 ;; 2011/08/05 dadams
 ;;     icicle-(un)tag-a-file: Bind icicle-use-candidates-only-once-flag to t.
 ;; 2011/07/31 dadams
@@ -863,6 +869,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/07 dadams
+;;     icicle-display-candidates-in-Completions,
+;;       icicle-highlight-(initial-whitespace|complete-input|lighter), icicle-case-string-less-p,
+;;       icicle-expanded-common-match-1, icicle-insert-cand-in-minibuffer, icicle-place-cursor,
+;;       icicle-(special|extra)-candidates-first-p: Handle absolute file names too:
+;;           (icicle-file-name-input-p) -> (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+;;     icicle-display-candidates-in-Completions:: icicle-transform-multi-completion for image-file.
 ;; 2011/08/03 dadams
 ;;     icicle-lisp-vanilla-completing-read:
 ;;       Handle recent Emacs 24 changes: make-compose-keymap etc.  Thx to Stefan Monnier.
@@ -2495,6 +2508,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/07 dadams
+;;     icicle-help-on-candidate: For icicle-candidate-help-fn case: icicle-transform-multi-completion.
 ;; 2011/07/27 dadams
 ;;     Use icicle-completions-format everywhere, not icicle-completions-format-internal (removed).
 ;; 2011/07/21 dadams
@@ -3711,6 +3726,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/08/07 dadams
+;;     icicle-mode: Updated doc string for bookmark commands.
 ;; 2011/05/22 dadams
 ;;     Added defvars for free vars to quiet byte compiler.
 ;; 2011/05/07 dadams
@@ -4713,6 +4730,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/08/07 dadams
+;;     icicle-top-level-key-bindings: Bind icicle-find-file-tagged(-other-window) to C-x j t a a.
 ;; 2011/07/30 dadams
 ;;     Moved icicle-increment-color-value to icicles-face.el.
 ;;     Require icicles-face.el only if hexrgb.el has been loaded.
@@ -5307,6 +5326,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/08/07 dadams
+;;     icicle-abs-file-candidates: Update doc string: now an alist (for COLLECTION arg).
 ;; 2011/07/27 dadams
 ;;     Removed icicle-completions-format-internal.
 ;; 2011/07/26 dadams

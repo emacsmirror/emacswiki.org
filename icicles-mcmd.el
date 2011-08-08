@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 27 18:06:55 2011 (-0700)
+;; Last-Updated: Sun Aug  7 16:54:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 16985
+;;     Update #: 16991
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4745,7 +4745,9 @@ You can use this command only from the minibuffer or `*Completions*'
                                     (not (eq icicle-current-completion-mode 'prefix))))))
     (cond (;; Use special help function.
            icicle-candidate-help-fn
-           (funcall icicle-candidate-help-fn icicle-last-completion-candidate))
+           ;; Transform candidate, in case it's a multi-completion.
+           (funcall icicle-candidate-help-fn
+                    (icicle-transform-multi-completion icicle-last-completion-candidate)))
 
           (;; Call to `lacarte-execute(-menu)-command' (defined in `lacarte.el').
            ;; Use command associated with menu item.
@@ -4773,8 +4775,7 @@ You can use this command only from the minibuffer or `*Completions*'
                    (t (icicle-msg-maybe-in-minibuffer "No help")))))
 
           (t;; Transform candidate, in case it's a multi-completion.
-           (setq transformed-cand  (icicle-transform-multi-completion
-                                    icicle-last-completion-candidate))
+           (setq transformed-cand  (icicle-transform-multi-completion icicle-last-completion-candidate))
            ;; If buffer or file, describe its properties.  Otherwise, create symbol and get its help.
            (cond ((and (bufferp (get-buffer transformed-cand))
                        (with-current-buffer transformed-cand (describe-mode) t)))

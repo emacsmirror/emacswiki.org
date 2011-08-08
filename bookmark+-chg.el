@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug  5 17:34:36 2011 (-0700)
+;; Last-Updated: Sun Aug  7 13:11:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13717
+;;     Update #: 13730
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/08/07 dadams
+;;     Added: bmkp-guess-default-handler-for-file-flag, bmkp-file-bookmark-handlers.
+;;     bmkp-file-bookmark-p: Use bmkp-file-bookmark-handlers, which means also image-bookmark-jump.
+;;     bmkp-make-record-for-target-file (need to keep in sync with diredp-bookmark):
+;;       Instead of image-bookmark-make-record, use explicit function that includes file and type.
+;;     bmkp-default-handler-for-file:
+;;       Use bmkp-guess-default only if bmkp-guess-default-handler-for-file-flag is non-nil.
+;;     bmkp-default-handler-associations: Updated doc string.
 ;; 2011/08/05 dadams
 ;;     bmkp-file-bookmark-p: Allow handler to be bmkp-default-handler-for-file, e.g. for image files.
 ;;     bmkp-all-tags-alist-only: Corrected.

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug  1 09:00:07 2011 (-0700)
+;; Last-Updated: Sun Aug  7 14:14:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13833
+;;     Update #: 13841
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1128,8 +1128,8 @@
 ;;  which operation (bookmark handler) to use for which file type.
 ;;  This is a set of associations (an alist) with key a regexp
 ;;  matching a file name and with value a Lisp sexp that evaluates to
-;;  a shell command (a string) or an Emacs function (a symbol or
-;;  lambda form).
+;;  either a shell command (a string) or an Emacs function (a symbol
+;;  or lambda form).
 ;;
 ;;  The handler for the bookmark created invokes the shell command or
 ;;  the Emacs function with the file name as argument.
@@ -1147,10 +1147,16 @@
 ;;
 ;;  The default value of `bmkp-default-handler-associations' is taken
 ;;  from the value of option `dired-guess-shell-alist-user' (from
-;;  Dired-X).  If no matching file association is found in
-;;  `bmkp-default-handler-associations', then the associations in
-;;  `bmkp-default-handler-associations' are used to find a shell
-;;  command appropriate to the target file type.
+;;  Dired X).
+;;
+;;  If no matching file association is found in
+;;  `bmkp-default-handler-associations', and if option
+;;  `bmkp-guess-default-handler-for-file-flag' is non-nil (it is nil
+;;  by default), then Bookmark+ will guess a shell command to use in
+;;  the handler.  It does this by matching the file name against
+;;  `dired-guess-shell-alist-default' (also from Dired X).  In Emacs
+;;  23+, if it finds no shell command that way then it guesses one
+;;  based on mailcap entries.
 ;;
 ;;
 ;;(@* "Opening Bookmarks Using Windows File Associations")

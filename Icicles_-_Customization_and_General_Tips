@@ -867,7 +867,7 @@ mouse wheel to increment and decrement the value.  You can at the same time use 
 
 Non-`nil' option '''`icicle-image-files-in-Completions'''' means that
 thumbnail images are shown in `*Completions*' for candidates
-that are names of image files.  The default value is `t'.  If
+that are (relative or absolute) names of image files.  The default value is `t'.  If
 the value is `image-only', then only the thumbnail images are    shown.  If it is otherwise non-`nil' then the file names are also
 shown.  You can cycle the option value using '''`C-x t'''' in the
 minibuffer at any time during completion.  This feature is

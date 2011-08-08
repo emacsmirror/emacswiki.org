@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Jul 25 10:49:59 2011 (-0700)
+;; Last-Updated: Sun Aug  7 13:15:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4166
+;;     Update #: 4176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -255,6 +255,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/07 dadams
+;;     diredp-bookmark (need to keep in sync with bmkp-make-record-for-target-file):
+;;       Instead of image-bookmark-make-record, use explicit function that includes file, type.
 ;; 2011/07/25 dadams
 ;;     Changed featurep to eval-after-load, for bookmark+-1.el and w32-browser.el.
 ;; 2011/07/01 dadams
@@ -2888,7 +2891,16 @@ If you use library `bookmark+.el' then the bookmark is an autofile."
           (let ((bookmark-make-record-function
                  (cond ((and (require 'image nil t) (require 'image-mode nil t)
                              (condition-case nil (image-type file) (error nil)))
-                        'image-bookmark-make-record)
+                        ;; Last two lines of function are from `image-bookmark-make-record'.
+                        ;; But don't use that directly, because it uses
+                        ;; `bookmark-make-record-default', which gets nil for `filename'.
+
+                        ;; NEED to keep this code sync'd with `bmkp-make-record-for-target-file'.
+                        (lambda ()
+                          `((filename   . ,file)
+                            (position   . 0)
+                            (image-type . ,(image-type file))
+                            (handler    . image-bookmark-jump))))
                        (t
                         (lambda ()
                           `((filename . ,file)

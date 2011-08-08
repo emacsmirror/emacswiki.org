@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 27 10:57:14 2011 (-0700)
+;; Last-Updated: Sun Aug  7 16:47:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1513
+;;     Update #: 1516
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -204,8 +204,10 @@
 (defvar font-lock-keyword-face 'font-lock-keyword-face ; Defined in `font-lock.el'.
   "Face name to use for keywords.")
 
-(defvar icicle-abs-file-candidates nil
-  "Current list of absolute file-name candidates.")
+(defvar icicle-abs-file-candidates ()
+  "Current alist of absolute file-name candidates.
+An alist appropriate as the COLLECTION argument for `completing-read'.
+Each item is a cons whose car is an absolute file name (a string).")
 
 (defvar icicle-acting-on-next/prev nil
   "Non-nil means this command acts on the previous or next candidate.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 30 10:38:06 2011 (-0700)
+;; Last-Updated: Sun Aug  7 17:31:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21949
+;;     Update #: 21983
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4068,7 +4068,7 @@ You need library `bookmark+.el' for this command."
              type (if otherp " in other window" "")
              (if otherp "-other-window" "") type
              type (if otherp "-other-window" "")) ; Doc string
-    (lambda (cand) (,(if otherp 'icicle-bookmark-jump-other-window 'icicle-bookmark-jump)
+    (lambda (cand) (,(if otherp 'icicle-bookmark-jump-other-window 'icicle-bookmark-jump) ; Action fn.
                      (icicle-transform-multi-completion cand)))
     prompt1 icicle-candidates-alist nil ; `completing-read' args
     (not icicle-show-multi-completion-flag)
@@ -5731,16 +5731,15 @@ option `icicle-require-match-flag'.
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
-  prompt                                ; `completing-read' args
-  (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
-          icicle-abs-file-candidates)
-  nil
+  prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   default-directory 'file-name-history default-directory nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File or dir (absolute): ")
     (icicle-abs-file-candidates
-     (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
+     (mapcar #'(lambda (file)
+                 (setq file  (if (file-directory-p file) (concat file "/") file))
+                 (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
              (directory-files default-directory 'full nil 'nosort)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
@@ -5783,16 +5782,15 @@ Ido-like behavior."                     ; Doc string
   "Visit a file or directory in another window, given its absolute name.
 Same as `icicle-find-file-absolute' except uses a different window." ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
-  prompt                                ; `completing-read' args
-  (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
-          icicle-abs-file-candidates)
-  nil
+  prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   default-directory 'file-name-history default-directory nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File or dir (absolute): ")
     (icicle-abs-file-candidates
-     (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
+     (mapcar #'(lambda (file)
+                 (setq file  (if (file-directory-p file) (concat file "/") file))
+                 (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
              (directory-files default-directory 'full nil 'nosort)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
@@ -5831,7 +5829,7 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
 ;;;###autoload
-(defun icicle-cd-for-abs-files (dir)
+(defun icicle-cd-for-abs-files (dir)    ; Bound to `C-c C-d' in minibuffer for abs file completion.
   "Change `default-directory' during `icicle-find-file-absolute'."
   (interactive
    ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
@@ -5843,14 +5841,13 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
                     "Change default directory: " nil nil
                     (and (member cd-path '(nil ("./"))) (null (getenv "CDPATH")))))))
   (cd dir)
-  (let* ((icicle-abs-file-candidates
-          (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
-                  (directory-files default-directory 'full nil 'nosort)))
-         (collection
-          (mapcar (if icicle-list-use-nth-parts #'icicle-make-file+date-candidate #'list)
-                  icicle-abs-file-candidates)))
+  (let ((icicle-abs-file-candidates
+         (mapcar #'(lambda (file)
+                     (setq file  (if (file-directory-p file) (concat file "/") file))
+                     (if icicle-list-use-nth-parts (icicle-make-file+date-candidate file) (list file)))
+                 (directory-files default-directory 'full nil 'nosort))))
     (setq minibuffer-completion-table
-          (car (icicle-mctize-all collection minibuffer-completion-predicate)))))
+          (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
 
 
 (put 'icicle-find-file 'icicle-Completions-window-max-height 200)
@@ -6038,19 +6035,19 @@ option `icicle-require-match-flag'.
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
-  prompt                                ; `completing-read' args
-  (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
-          icicle-abs-file-candidates)
-  nil
+  prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                                 "Recent file (absolute): ")
-    (icicle-abs-file-candidates             (progn (unless (boundp 'recentf-list) (require 'recentf))
-                                                   (when (fboundp 'recentf-mode) (recentf-mode 99))
-                                                   (unless (consp recentf-list)
-                                                     (error "No recently accessed files"))
-                                                   recentf-list))
+    (icicle-abs-file-candidates
+     (progn (unless (boundp 'recentf-list) (require 'recentf))
+            (when (fboundp 'recentf-mode) (recentf-mode 99))
+            (unless (consp recentf-list)
+              (error "No recently accessed files"))
+            (mapcar #'(lambda (file)
+                        (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
+                    recentf-list)))
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg
@@ -6088,19 +6085,19 @@ Ido-like behavior."                     ; Doc string
   "Open a recently used file in another window.
 Same as `icicle-recent-file' except it uses a different window." ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
-  prompt                                ; `completing-read' args
-  (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
-          icicle-abs-file-candidates)
-  nil
+  prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                                 "Recent file (absolute): ")
-    (icicle-abs-file-candidates             (progn (unless (boundp 'recentf-list) (require 'recentf))
-                                                   (when (fboundp 'recentf-mode) (recentf-mode 99))
-                                                   (unless (consp recentf-list)
-                                                     (error "No recently accessed files"))
-                                                   recentf-list))
+    (icicle-abs-file-candidates
+     (progn (unless (boundp 'recentf-list) (require 'recentf))
+            (when (fboundp 'recentf-mode) (recentf-mode 99))
+            (unless (consp recentf-list)
+              (error "No recently accessed files"))
+            (mapcar #'(lambda (file)
+                        (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
+                    recentf-list)))
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg
@@ -6264,12 +6261,7 @@ does not follow symbolic links."
   "Helper function for `icicle-locate-file(-other-window)'." ; Doc string
   ;; `icicle-locate-file-action-fn' is free here.
   (lambda (f) (funcall icicle-locate-file-action-fn f)) ; Action function
-  prompt                                ; `completing-read' args
-  (mapcar (if (<= (prefix-numeric-value current-prefix-arg) 0)
-              #'icicle-make-file+date-candidate
-            #'list)
-          icicle-abs-file-candidates)
-  nil
+  prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
   (icicle-file-bindings                 ; Bindings
@@ -6285,8 +6277,12 @@ does not follow symbolic links."
                                           (message "Gathering files within `%s' (this could take \
 a while)..." dir)))
     (icicle-abs-file-candidates         ; `icicle-locate-file-no-symlinks-p' is free here.
-     (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
-                          nil icicle-locate-file-no-symlinks-p))
+     (mapcar #'(lambda (file)
+                 (if (<= (prefix-numeric-value current-prefix-arg) 0)
+                     (icicle-make-file+date-candidate file)
+                   (list file)))
+             (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
+                                  nil icicle-locate-file-no-symlinks-p)))
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
@@ -6329,7 +6325,7 @@ a while)..." dir)))
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
 ;;;###autoload
-(defun icicle-cd-for-loc-files (dir &optional no-symlinks-p)
+(defun icicle-cd-for-loc-files (dir &optional no-symlinks-p) ; Bound to `C-c C-d' in minibuf locate-*.
   "Change `default-directory' during `icicle-locate-file'.
 Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
   (interactive
@@ -6342,13 +6338,12 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
                       "Change default directory: " nil nil
                       (and (member cd-path '(nil ("./"))) (null (getenv "CDPATH"))))))))
   (cd dir)
-  (let* ((icicle-abs-file-candidates
-          (icicle-files-within (directory-files dir 'full icicle-re-no-dot) nil no-symlinks-p))
-         (collection
-          (mapcar (if icicle-list-use-nth-parts #'icicle-make-file+date-candidate #'list)
-                  icicle-abs-file-candidates)))
+  (let ((icicle-abs-file-candidates
+         (mapcar #'(lambda (file)
+                     (if icicle-list-use-nth-parts (icicle-make-file+date-candidate file) (list file)))
+                 (icicle-files-within (directory-files dir 'full icicle-re-no-dot) nil no-symlinks-p))))
     (setq minibuffer-completion-table
-          (car (icicle-mctize-all collection minibuffer-completion-predicate)))))
+          (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
 
 
 (put 'icicle-find-file-in-tags-table 'icicle-Completions-window-max-height 200)

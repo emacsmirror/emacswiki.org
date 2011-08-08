@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  5 16:24:14 2011 (-0700)
+;; Last-Updated: Sun Aug  7 18:15:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3645
+;;     Update #: 3649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -73,8 +73,10 @@
 ;;    (+)`icicle-find-file-some-tags-other-window',
 ;;    (+)`icicle-find-file-some-tags-regexp',
 ;;    (+)`icicle-find-file-some-tags-regexp-other-window',
-;;    (+)`icicle-font', (+)`icicle-frame-bg', (+)`icicle-frame-fg',
-;;    (+)`icicle-fundoc', (+)`icicle-goto-global-marker',
+;;    (+)`icicle-find-file-tagged',
+;;    (+)`icicle-find-file-tagged-other-window', (+)`icicle-font',
+;;    (+)`icicle-frame-bg', (+)`icicle-frame-fg', (+)`icicle-fundoc',
+;;    (+)`icicle-goto-global-marker',
 ;;    (+)`icicle-goto-global-marker-or-pop-global-mark',
 ;;    (+)`icicle-goto-marker',
 ;;    (+)`icicle-goto-marker-or-set-mark-command',
@@ -6725,6 +6727,8 @@ build a cache file of synonyms that are used for completion.  See
 ;;;
 ;;;###autoload (autoload 'icicle-tag-a-file                              "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-untag-a-file                            "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-find-file-all-tags-other-window         "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-find-file-all-tags-regexp               "icicles-cmd2.el")
@@ -6787,6 +6791,81 @@ all of the given input tags are completion candidates."
                                                   (throw 'icicle-untag-a-file nil)))
                             t))))))))
 
+    ;;$$$$$$  Do not bother with autofiles that have a PREFIX, for now.
+    (icicle-define-command icicle-find-file-tagged ; Command name
+      "Find one or more files with tags that match your input.
+Only tagged files are candidates.  (Tagged files are autofile
+bookmarks.)
+
+Each completion candidate is a multi-completion composed of these
+fields: an absolute file name plus the file's tags, all separated by
+`icicle-list-join-string' (\"^G^J\", by default).  As always, you can
+type `C-M-j' to insert this separator into the minibuffer.
+
+For this command, by default `.' in your input matches any character,
+including a newline.  As always, you can use `C-M-.' to toggle
+this (so `.' does not match newline).
+
+You can match your input against the file name or tags or both.
+
+E.g., type:
+
+ `red S-TAB'                    to match all files with the tag `red'
+ `red M-SPC green M-SPC blue'   to match all files with tags `red',
+                                `green', and `blue' (in any order)
+
+That assumes that these tags do not also match any file names.  
+
+If you need to match against a particular field (e.g. the file name or
+a specific tag position), then use the field separator.  Otherwise,
+just use progressive completion, as shown above.
+
+E.g., to match only tags and not the filename, start with `C-M-j' to
+get past the file-name field.  To match both file name and tags, type
+something to match the file name before the `C-M-j'.  E.g., type:
+
+ `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
+                                `blue' that have `2011' in their names" ; Doc string
+      (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
+      prompt icicle-abs-file-candidates ; `completing-read' args
+      nil nil nil 'icicle-filetags-history nil nil
+      ((prompt                             "FILE `C-M-j' TAGS: ") ; Bindings
+       (icicle-abs-file-candidates      ; An alist whose items are ((FILE TAG...)).
+        (let ((result  ()))
+          (dolist (autofile  (bmkp-autofile-alist-only))
+            (let ((tags  (bmkp-get-tags autofile)))
+              (when tags (push (list (cons (bookmark-get-filename autofile) tags)) result))))
+          result))
+       (icicle-dot-string                  (icicle-anychar-regexp))
+       (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+       (icicle-list-use-nth-parts          '(1))
+       (pref-arg                           current-prefix-arg))
+      (progn
+        (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+        (icicle-highlight-lighter)
+        (message "Gathering tagged files...")))
+
+    (icicle-define-command icicle-find-file-tagged-other-window ; Command name
+      "Find one or more files with tags that match your input.
+Same as `icicle-find-file-tagged' except it uses a different window." ; Doc string
+      (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
+      prompt icicle-abs-file-candidates ; `completing-read' args
+      nil nil nil 'icicle-filetags-history nil nil
+      ((prompt                             "FILE `C-M-j' TAGS: ") ; Bindings
+       (icicle-abs-file-candidates      ; An alist whose items are ((FILE TAG...)).
+        (let ((result  ()))
+          (dolist (autofile  (bmkp-autofile-alist-only))
+            (let ((tags  (bmkp-get-tags autofile)))
+              (when tags (push (list (cons (bookmark-get-filename autofile) tags)) result))))
+          result))
+       (icicle-dot-string                  (icicle-anychar-regexp))
+       (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+       (icicle-list-use-nth-parts          '(1))
+       (pref-arg                           current-prefix-arg))
+      (progn
+        (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+        (icicle-highlight-lighter)
+        (message "Gathering tagged files...")))
 
 ;;; These are like multi-command versions of `bmkp-find-file-all-tags' etc.,
 ;;; except that the predicate is applied after matching the user's input
