@@ -11,25 +11,12 @@ remainder of my customizations work across my three machines, but the
 JDE stuff is highly machine-specific.  Oh, and as a by-product,
 customization variables are sorted in alphabetical order.
 
+This package was written by JohnWiegley, and is now being maintained by
+DaveAbrahams.
+
 Get it from here:
 
-* http://newartisans.com/johnw/Emacs/initsplit.el (2008.04.18 : currently this link is dead)
-* ftp://ftp.newartisans.com/pub/emacs/initsplit.el (alternative link)
-* https://github.com/dabrahams/initsplit (a bit enhanced -- doesn't clobber the kill ring, as below)
-----
-
-One small annoyance I found with this otherwise excellent package is that it clobbers the KillRing quite drastically.  The following piece of advice fixes that.
-
-<pre>
- (defadvice initsplit-split-customizations (around do-the-initsplit act)
-   "Don't clobber the `kill-ring' when writing customizations."
-   (let ((orig-kill-ring kill-ring))
-     (unwind-protect
-	 ad-do-it
-       (setq kill-ring orig-kill-ring))))
-</pre>
-
-Would it not suffice, and be more idiomatic, to just ##(let ((kill-ring)) (unwind-protect ad-do-it))##?
+* https://github.com/dabrahams/initsplit
 ----
 
 From the DotEmacsChallenge page:

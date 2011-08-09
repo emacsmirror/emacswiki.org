@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 19:10:40 2011 (-0700)
+;; Last-Updated: Mon Aug  8 09:05:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6799
+;;     Update #: 6801
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -415,6 +415,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/08 dadams
+;;     icicle-find-file-tagged(-other-window): Prefix arg means use all (not just tagged) autofiles.
 ;; 2011/08/07 dadams
 ;;     Added: icicle-find-file-tagged(-other-window).
 ;; 2011/08/05 dadams

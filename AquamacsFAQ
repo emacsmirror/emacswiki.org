@@ -105,7 +105,7 @@ I found out that the reason was that I had an old version of aspell install via 
 
 If you need to input characters using the Option modifier (such as \ or { on a German keyboard), go to Options >> Option Key. You will find the option "Standard Mac characters", meaning the the Option modifier is not Meta. Another is Meta, meaning the pressing Option gets you a Meta, and you will not able to produce characters \ using your German or Spanish keyboard. Then it follows a set of handy options for mixing the use of Option as Meta, and allowing you to produce the option-characters for your KeyBoard. They are called "Meta & Language". Choose your favorite.
 
-To temporarily change the function of the Option key, pressing Command-; is the quicker way to do the same.
+To temporarily change the function of the Option key, pressing Control-; is the quicker way to do the same.
 This will disable the use of "Option" for the Emacs (Unix) Meta key. To avoid this, you can use one of the emulation variants in the same menu, which will only map often-used key combinations (such as [, ], \, @ etc., depending on the keyboard layout) to their OS X equivalents, but leave the general Option-Meta binding in place.
 
 

@@ -85,7 +85,7 @@ But it doesn't work all the time, esp. the refreshing. Any better idea?
 
 : At least it's a lot better with my-font-lock-extend-region. You still have to hit Ctrl-L or change something to refresh, but it does that quite reliably. -- StefanRing
 
-=Milti-line font lock in XEmacs=
+=Multi-line font lock in XEmacs=
 
 works in general much more reliably than in Emacs. Can Emacs hackers please look into how it's done in XEmacs and fix the Emacs implementation? This is a long-standing problem that needs to be addressed centrally, not with ad-hoc fixes. 
 

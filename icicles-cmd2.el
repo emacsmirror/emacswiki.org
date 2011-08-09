@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 18:15:07 2011 (-0700)
+;; Last-Updated: Mon Aug  8 09:00:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3649
+;;     Update #: 3654
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6794,8 +6794,9 @@ all of the given input tags are completion candidates."
     ;;$$$$$$  Do not bother with autofiles that have a PREFIX, for now.
     (icicle-define-command icicle-find-file-tagged ; Command name
       "Find one or more files with tags that match your input.
-Only tagged files are candidates.  (Tagged files are autofile
-bookmarks.)
+By default, only tagged files are candidates.  With a prefix argument,
+all autofiles are candidates.  (Autofiles are autofile bookmarks - you
+need Bookmark+ for this command.)
 
 Each completion candidate is a multi-completion composed of these
 fields: an absolute file name plus the file's tags, all separated by
@@ -6834,7 +6835,8 @@ something to match the file name before the `C-M-j'.  E.g., type:
         (let ((result  ()))
           (dolist (autofile  (bmkp-autofile-alist-only))
             (let ((tags  (bmkp-get-tags autofile)))
-              (when tags (push (list (cons (bookmark-get-filename autofile) tags)) result))))
+              (when (or tags current-prefix-arg)
+                (push (list (cons (bookmark-get-filename autofile) tags)) result))))
           result))
        (icicle-dot-string                  (icicle-anychar-regexp))
        (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
@@ -6856,7 +6858,8 @@ Same as `icicle-find-file-tagged' except it uses a different window." ; Doc stri
         (let ((result  ()))
           (dolist (autofile  (bmkp-autofile-alist-only))
             (let ((tags  (bmkp-get-tags autofile)))
-              (when tags (push (list (cons (bookmark-get-filename autofile) tags)) result))))
+              (when (or tags current-prefix-arg)
+                (push (list (cons (bookmark-get-filename autofile) tags)) result))))
           result))
        (icicle-dot-string                  (icicle-anychar-regexp))
        (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
