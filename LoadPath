@@ -1,77 +1,98 @@
-The variable ##load-path## lists all the directories where Emacs
-should look for Elisp files. The first file found is used, therefore
+[[variable|Variable]] `load-path' lists all directories where Emacs
+should look for EmacsLisp libraries. The first matching file found is used, therefore
 the order of the directories is relevant.
 
-Preference is given to compiled files when both a compiled file and a
-source file are found. Therefore, make sure to recompile files after
+Preference is given to byte-compiled files (##*.elc##) when both a byte-compiled file and a
+source file (##*.el##) are found. Therefore, make sure to recompile files after
 making changes to them (or don't compile the files at all).
+
+Code shown here can be run by EvaluatingExpressions in
+Emacs or by adding it to your InitFile.
 
 == Adding a directory ==
 
-To add a single directory to the ##load-path##:
+To add a single directory to the front of your `load-path' (the final slash is needed for a directory):
 
     (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 
-The final slash is required for all paths that should be treated as
-directories as opposed to regular files.
+
+Interactively:
+
+* You can use `M-:' to evaluate `add-to-list'.  In particular, to add the current directory (that is, the value of `default-directory'), type this:
+
+            M-: (add-to-list 'load-path ".")
+
+* To change `default-directory' to a particular directory, use [[Dired]], visit a file in that directory, or use Emacs command `cd' to make it current:
+
+            M-x cd ~/my/favorite/dir/
+
+
 
 [:AddSubDirectories]
-== Adding sub-directories ==
+== Adding subdirectories ==
 
-Adding a directory to the ##load-path## does not add its
-sub-directories also.  To add the sub-directories of the current
-directory to the ##load-path## do this:
+Adding a directory to variable `load-path' does not also add its
+subdirectories.  To recursively add the subdirectories of 
+`default-directory' to the end of `load-path' do this:
 
     (normal-top-level-add-subdirs-to-load-path)
 
-This adds all sub-directories of the current directory recursively;
-except those not starting with letters or digits, named ##RCS## or
-##CVS## or containing a file named ##.nosearch##.
+This avoids subdirectories not starting with letters or digits, those named
+##RCS## or ##CVS##, and those containing a file named ##.nosearch##.
 
-The current directory is the directory containing the currently
-visited file, or if the current buffer does not visit a file the
-directory from which Emacs was started.
+To add only some subdirectories, pass the list as a second argument.  For example:
 
-To add any other directory to the ##load-path## (which is what you
-normally want to do) the current directory has to be temporarily
-changed by binding ##default-directory##:
-
-    (let ((default-directory "~/.emacs.d/site-lisp/"))
-      (normal-top-level-add-subdirs-to-load-path))
-
-If you only want some of the sub-directories added, you can use:
-
-    (let ((default-directory "~/.emacs.d/site-lisp/"))
-      (normal-top-level-add-to-load-path '("emms" "erc" "planner"
+    (normal-top-level-add-to-load-path '("emms" "erc" "planner"
 "w3"))
 
-Another way of changing the current directory is using the command
-##cd##.  However this is intended for interactive use for its
-side-effect -- which is to *permanently* set the default directory.
+You can of course bind `default-directory' around the call:
 
-== Add all locally installed packages ==
+   (let ((default-directory  "~/.emacs.d/site-lisp/"))
+      (normal-top-level-add-subdirs-to-load-path 
+        '("emms" "erc" "planner" "w3")))
+
+To have libraries in particular paths take precedence over other libraries elsewhere with the same name, put those
+paths at the beginning of `load-path'.
+
+    (let ((default-directory  "~/.emacs.d/site-lisp/"))
+      (setq load-path
+            (append
+             (let ((load-path (copy-sequence load-path))) ;; Shadow
+               (normal-top-level-add-subdirs-to-load-path))
+             load-path)))
 
 Assuming that you install packages in ##~/.emacs.d/site-lisp/## and
 that some of the installed packages are single libraries while others
 are placed inside their own sub-directories you need to combine the
-steps from the previous sections.
+steps from above.
 
     (let ((default-directory "~/.emacs.d/site-lisp/"))
       (normal-top-level-add-to-load-path '("."))
       (normal-top-level-add-subdirs-to-load-path))
 
 Since various packages store information in ##~/.emacs.d/##, it is
-unwise to add all of its sub-directories to ##load-path##.  Here we
+unwise to add all of its sub-directories to `load-path'.  Above we
 only added the sub-directory ##site-lisp## to avoid loading files that
 aren't libraries.
 
-If you are using Emacs 23 you can use ##user-emacs-directory## to
+To install all directories to the beginning of the `load-path' use:
+
+    (let ((default-directory "~/.emacs.d/site-lisp/"))
+      (setq load-path
+            (append
+             (let ((load-path (copy-sequence load-path))) ;; Shadow
+               (append 
+                (copy-sequence (normal-top-level-add-to-load-path '(".")))
+                (normal-top-level-add-subdirs-to-load-path)))
+             load-path)))
+
+If you are using Emacs 23 you can use `user-emacs-directory' to
 construct a path to one of its sub-directories.
 
     (concat user-emacs-directory
             (convert-standard-filename "site-lisp/"))
 
-Note how we use ##convert-standard-file-name## to construct a path
+Note how we use `convert-standard-file-name' to construct a path
 which is valid on all supported platforms.
 
 If you use an older versions of Emacs you can backport this useful
@@ -87,7 +108,7 @@ files are placed.
 
 == Default value ==
 
-The default value of ##load-path## includes two special directories
+The default value of `load-path' includes two special directories
 recursively: ##/usr/local/share/emacs/VERSION/site-lisp## and
 ##/usr/local/share/emacs/site-lisp##.  (On Windows, the equivalent
 location is ##C:\Program Files\emacs-VERSION\site-lisp##.)  The first
@@ -97,7 +118,7 @@ directories contain files for the current ''site'', for use by the
 system administrator when installing software
 locally[http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY].
 
-On ##~/.emacs.d/## on the other hand contains files for the current
+##~/.emacs.d/## on the other hand contains files for the current
 ''user'', and is independent of system-wide changes.  This makes it
 the best choice for storing your personal changes.  Installing all
 packages in a sub-directory of ##~/.emacs.d/## also makes it very easy
@@ -105,45 +126,14 @@ to move them along with your configuration to a different machine.
 
 == Debugging ==
 
-First, check the value of your ##load-path## by asking for help on the
+First, check the value of your `load-path' by asking for help on the
 variable: `C-h v load-path RET' should give you the documentation for
 the variable and its current value. If your directory is not listed,
 you must add it (see above).
 
 If your directory ''is'' listed, check for ConflictingLibraries.
 
-== Searching for files in your load-path ==
-
-See SearchingLoadPath.
-
-== Discussion ==
-
-[new]
-What is ##normal-top-level-add-to-load-path##?  It is not documented;
-I quickly looked at the code and couldn't make any sense of it.  Why
-is it needed? Isn't it only required during startup (and even then
-why)?  How is better than manually editing ##load-path##?  If it has
-benefits is it worth confusing people by suggesting to use an
-undocumented function?  If it is then its use should be explained in
-##Adding a directory## (without removing ##add-to-list##) but I
-frankly have some doubts.  -- JonasBernoulli
-
-[new]
-I'm not sure why the code is documented in a comment and not a
-DocString. -- AaronHawley
-
-[new]
-It will be documented in Emacs 24 (and is documented in the trunk).
-
-[new]
-Why does ##normal-top-level-add-to-load-path## puts the new list in 
-cdr of load-path? I expect the normal use-case for this, as in the
-example above, to be to add personal packages on the load-path; 
-as it is now, my bleeding-edge libraries get shadowed by 'old' 
-emacs-shipped libraries.
-JonasBernoulli: IIUC, it is just a helper for when you want to add a list
-of dirs to load-path. And you are right, it makes little sense when your
-list is just ("."). -- TiagoSaboga
+To see the path where Emacs finds a library use `M-x locate-library'.
 
 ----
 CategoryHelp

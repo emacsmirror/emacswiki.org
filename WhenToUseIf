@@ -1,37 +1,24 @@
-This page is about conditional control of program flow (evaluation). It contains the following sections:
+This page is about conditional control of program flow (evaluation).
+ 
+All EmacsLisp control structures are functions (in the broad sense, which includes [[macro]]s): they return a value.  Sometimes you are not interested in this value (that is, it is not used by the calling code).
 
-* '''When to Use Which Conditional Control Structure?''' -- [[#WhichConditional]]
-* '''Cond''' -- see [[#Cond]]
-* '''If-Then-Else''' -- see [[#IfThenElse]]
-* '''When, Unless''' -- see [[#WhenUnless]]
-* '''And, Or''' -- see [[#AndOr]]
-* '''Case''' -- see [[#Case]]
+For more information about conditional expressions, see Manual:Conditionals (EmacsLispReference) or use `C-h f cond', `C-h if' etc.
 
-In Emacs Lisp, all control structures not only control program flow; they also return a value. Sometimes you are interested in this value; sometimes you are not interested in it.
-
-All conditional control structures except `case' include tests for boolean "truth value". In Emacs Lisp, this means testing for `nil'-ness. If an expression evaluates to `nil', then the test is said to fail (the truth value is false); if the expression evaluates to anything else but `nil', then the test is said to succeed (the truth value is true).
-
-For more information on the conditional control structures, consult Info (EmacsLispReference), node Conditionals, or use `C-h f cond', `C-h if' etc.
 
 [:WhichConditional]
-= When to Use Which Conditional Control Structure? =
+== When to Use Which Conditional Control Structure? ==
 
-In general, the answer is that you can do anything you want with any control structure. Which you use is a question of style and succinctness. In general, the following heuristics provide a guide:
-
-* Use `and' or `or' if:
-
-** Tests can be ''accumulated sequentially'', stopping with the first that succeeds (`or') or fails (`and').
-** A logical ''combination of the test values should be returned'' as the value of the conditional expression. Using `and' or `or' suggests to readers that the return value is important to the surrounding code.
-
-* Use `cond' or `if' if the ''value'' of the conditional expression is important.
+Which you use is a question of style and succinctness. In general, the following heuristics provide a guide:
 
 * Use `when' or `unless' if the value of the conditional expression is ''not'' important, that is, if you are executing the expression only for its ''side effects''.
 
-: '''Note:''' This is a stylistic concern -- use `when' or `unless' to indicate to readers of the code that the return value is unimportant, that the code is only intended to perform side effects. This communication can help modifiers or reusers of your code.
+* Use `and' or `or' if the following hold:
+** The return value is used by the calling code.
+** Tests are to be carried out sequentially until one fails (`and') or succeeds (`or'), or until all have been tried.
 
-* Use `cond' if several alternative tests are to be used. Use `if' if one branch of the test will have a single, simple expression to evaluate -- place that branch first. Use `cond', `when' or `unless' if multiple expressions are to be evaluated for a given test.
+* Use `if' if there is only one condition to test.  Use `cond' if there are several tests.  Like `or', `cond' tests its conditions sequentially until one of them succeeds or all have been tried.  Whereas `or' just returns the value of the succeeding test, `cond' then evaluates a sequence of other sexps (an implicit `progn').
 
-* Use `case' if the same value is to be compared to several other values. If you find yourself writing this, then consider using `case' instead (but be aware that `case' uses `eql', not `eq' for comparsion):
+* Use `case' if the same value is to be compared against several values. If you find yourself writing this, then consider using `case' instead (but `case' uses `eql' for comparsion, not `eq'):
 
      (let ((x (y)))
        (cond ((eq x 'lazy) (do-this))
@@ -42,101 +29,100 @@ In general, the answer is that you can do anything you want with any control str
              ((eq x 'z) (do-such-and-such))
              (t (must-be-another-x))))
 
-[:Cond]
-= Cond =
 
-`cond' is a general conditional construct. With it, you can achieve the functionality of any of the other conditional constructs. These are the things to note about `cond':
+
+
+[:Cond]
+== Cond ==
 
 * You can use any number of conditional tests.
-* Each test can be associated with any number (including zero) of expressions to be evaluated if the test is true.
-* The tests are tried in order. The expressions associated with the first succeeding test are executed; no subsequent tests are evaluated.
+* Each test can be associated with any number of [[sexp]]s to be evaluated if the test is true (an implicit `progn').
+* The tests are tried in order. The sexps associated with the first succeeding test are executed; no subsequent tests are evaluated.
 * The value returned by `cond' is:
-** The value of the last expression associated with the successful test.
-** The value of the successful test itself, if the test has no associated expressions.
+** The value of the last sexp of the implicit `progn' associated with the successful test.
+** The value of the successful test itself, if the test has no associated sexps.
 ** `nil', if no test is successful.
-* You can have an "otherwise", or default, clause that executes if all other tests fail, by using `t' as the last test -- this test always succeeds.
+
+
+
 
 
 [:IfThenElse]
-= If-Then-Else =
+== If-Then-Else ==
 
-`if' is as general as `cond': any other conditional control structure can be expressed in terms of `if', though the result may not always be succinct.
+ (if TEST EVAL-IF-T EVAL-IF-NIL...)
 
-Pretty much any usable programming language out there has something along the lines of the If-Then-Else statement.  Emacs Lisp is no exception:
-
- (if TEST EVAL-IF-T &rest EVAL-IF-NIL...)
-
-So, you can create a simple conditional like this:
+Example:
 
  (if (>= emacs-major-version 21)                        ; this is the test, the "if"
      (message "You are running Emacs 21!  Lucky you.") ; This is the "then"
    (ding)                                              ; From here on is the "else"
    (message "Time to upgrade, don't you think?"))
 
-Notice that if the test is true (and you don't have to use a function there, like I did; a variable, or anything that returns nil if false should work), you get one line to run; if the test is false, then you get the rest of the statements to respond to the false result.  That is called an implicit progn in Emacs jargon, because a <code>progn</code> is a single statement that evals multiple statements inside it.
+If the test is true then a single [[sexp]] is evaluated.  If the test is false then a (possibly empty) sequence of sexps are evaluated, in order.
 
-If you want to run multiple statements if the result is true, then you can do something like this:
+Such a sequence of sexps is called an "implicit `progn'" in Emacs jargon.  For more about implicit `progn's, see Manual:Sequencing.
+
+If you want to evaluate multiple sexps when the result is true, then either use `cond' or use an explicit `progn'.  For example:
 
  (if (>= emacs-major-version 21)
-     (progn
+     (progn ; Lets you evaluate more than one sexp for the true case
          (ding)
          (message "You are running Emacs 21!  Lucky you."))
    (ding)
    (message "Time to upgrade, don't you think?"))
 
-As you can see, the <code>progn</code> allows us to do for the true result, what we can already do for the false result.  But you can make your code more readable, and you can make it more efficient.  (Sometimes you can even do both.  But not often in my experience.)
+
 
 [:WhenUnless]
-= When, Unless =
+== When, Unless ==
 
-There are two new if-like things in Emacs 20 and later, which have implicit progns and help readability:
+`when' and `unless' are equivalent to `if' with a vacuous THEN part.  IOW, they let you conditionally evaluate a sequence of [[sexp]]s (an implicit `progn').
 
- (when TEST &rest EVAL-IF-T...)
+ (when CONDITION EVAL-IF-T...)
+ (unless CONDITION EVAL-IF-NIL...)
 
- (unless TEST &rest EVAL-IF-NIL...)
+The former is the same as ##(if (not CONDITION ) nil EVAL-IF-T...)##.
+The latter is the same as ##(if CONDITION nil EVAL-IF-NIL...)##.
 
-<code>when</code> tests to see if the test is true, and then runs everything that comes after it if so.  As you may have guessed, <code>unless</code> does the opposite.
+`when' tests whether the ##CONDITION## is true, and if so it evaluates the sexps that follow (an implicit `progn').  `unless' does the same, but tests whether the ##CONDITION## is false.  For example:
 
  ; Load my abbreviations and use them in all text modes
  (unless (featurep 'xemacs)
    (add-hook 'text-mode-hook (lambda () (abbrev-mode 1)))
    (read-abbrev-file (expand-file-name "~/.abbrev_defs")))
 
-The above is an example of this sort of construct.  I test to see if there is a feature called 'xemacs (which is not the best way of testing for features in general, but oh well, this is an example).  If I am running XEmacs, I don't want to use abbrev mode.  So I tell it to do all of the following ''unless'' I am running XEmacs.  If I had done this with an <code>if</code> statement, I would have had to use a progn, but here the progn is implicit.
+This tests whether there is a feature called `xemacs'.  If so, it does nothing.  If not, it evaluates the sexps ##(add-hook....)## and ##(read-abbrev-file...)##, in that order.
 
-For more about implicit progns, have a look at http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_125.html#SEC125
+Using `when' and `unless' is a way of signalling to human readers that your code does not use the return value.  This is an informal convention, and it is not followed by everyone.
+
+
 
 [:AndOr]
-= And, Or =
+== And, Or ==
 
-If you need to test for several things "serially," that is, test for this, then do this, and if that works, then do this, and so on, then you might want to consider using <code>and</code>.  It is a boolean function, sure, but it and <code>or</code> can manage certain orders of tasks on their own.
+Use `and' or `or' when (a) the return value is important (it is used by the calling code) and (b) you want to evaluate [[sexp]]s in order until one of them returns `nil' (for `and') or non-`nil' (for `or').
 
-Consider this function from my [http://www.livingtorah.org/~csebold/emacs/dot.emacs .emacs] to hyphenate previous words:
+Example:
 
- (defun crs-hyphenate-last-two-words ()
-  "Take the last two words you typed and replace the space between them with a
- hyphen."
-  (interactive)
-  (save-excursion
     (and (re-search-backward " " nil t)
          (re-search-backward "[^ \n]" nil t)
          (re-search-forward "[ \n]+" nil t)
-         (replace-match "-"))))
+         (replace-match "-"))
 
-We start by declaring the function interactive (so I can bind it to a key and use it anytime, and it will show up when doing <code>C-h a</code> for apropos-command).  Then we wrap the rest of the code in <code>save-excursion</code>, which will restore the location of point and other things when we are done.
+The sexps following `and' are evaluated in order until one of them returns `nil' or until the last one has been evaluated.
 
-Following that is a long <code>and</code> statement.  I want to test for each of these things, and I want point to move along with the tests.  If any of these fail, I want the whole operation to stop.  <code>and</code> and <code>or</code> only perform the tests they need to perform; that is, since <code>and</code> is testing to see if everything in the list is true, it will stop if any of these operations return a <code>nil</code>.  <code>or</code> is the same way; as soon as something returns a value other than nil, it will stop the tests.
+In the example, `and' first tests whether there is a space before the current location of [[point]].  If so, then it tests the second sexp, and so on.  As soon as any condition is false `and' is done and returns `nil' -- subsequent conditions are not evaluated.
 
-In the example, then, it first tests to see if there is a space before the current location of point.  If that passes, then on to step two; if not, then the whole and statement, and the function in our example, is done.  Next it tests (from where the last search left off, write after the first space it found) for the next character that is neither a space nor a newline.  Finding that, it now looks forward again, to capture all of the spaces and/or newlines that follow, and finding those (as it almost has to based on the last searches) it replaces the match with a hyphen.
-
-We did all of that without using an <code>if</code> statement!  And it is clear to the reader who understands, that each of these has to be performed successfully in series in order to allow the hyphenation to occur.
 
 [:Case]
-= Case =
+== Case ==
 
-`case' is a bit like `cond', in that it can involve multiple tests. What really distinguishes `case' is that a single test expression is evaluated ''once'', and the result is ''compared to other values''. Comparison is done using Common-Lisp function `eql'. 
+`case' is like `cond' in that it can involve multiple tests.  What distinguishes `case' is that a single test [[sexp]] is evaluated only once.  The result of that evaluation is compared to multiple values, in turn, until a comparison succeeds or all have been tried. Comparison is done using CommonLisp function `eql'. 
 
-The first comparison that succeeds provokes execution of its associated expressions, much as for `cond'. A `case' expression can include a final default clause by using a comparison value of `t' or `otherwise'. Comparison values can be ''grouped'', so that several values will lead to the same consequence code being executed. 
+When a comparison succeeds. its associated sexps are evaluated (an implicit `progn').  If none succeeds then `case' returns `nil'.
+
+A `case' expression can include a final default clause by using a comparison value of `t' or `otherwise'. Comparison values can be ''grouped'', so that several values will lead to the same consequence code being executed. 
 
 `case' is part of the Common Lisp package. To use it, you must `<code>(require 'cl)</code>'.
 

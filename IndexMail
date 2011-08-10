@@ -53,7 +53,9 @@ http://www.xemacs.org/Releases/index.html#Pre-Releases
 
 == Tips ==
 
-DebianUser can find nnir.el by installing emacs-goodies package
+Debian users can find nnir.el by installing emacs-goodies package.
+
+: In squeeze nnir.el is in the gnus-bonus-el package. However the version there is from 2003 and does not seem to support IMAP.
 
 The index will need to be updated regularly.
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 24 11:39:49 2011 (-0700)
+;; Last-Updated: Tue Aug  9 13:27:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 678
+;;     Update #: 680
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -457,6 +457,7 @@ the original buffer.
 FIRST-SEXP is a sexp evaluated before the main body of the command.
 UNDO-SEXP is a sexp evaluated in case of error or if the user quits.
 LAST-SEXP is a sexp evaluated after the main body of the command.
+ It is always evaluated, in particular, even in case of error or quit.
 NOT-INTERACTIVE-P non-nil means to define COMMAND as a non-interactive
  function that reads multi-command input.
 
@@ -599,6 +600,7 @@ the original buffer.
 FIRST-SEXP is a sexp evaluated before the main body of the command.
 UNDO-SEXP is a sexp evaluated in case of error or if the user quits.
 LAST-SEXP is a sexp evaluated after the main body of the command.
+ It is always evaluated, in particular, even in case of error or quit.
 NOT-INTERACTIVE-P non-nil means to define COMMAND as a non-interactive
  function that reads multi-command input.
 

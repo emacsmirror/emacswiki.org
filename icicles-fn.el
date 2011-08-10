@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 16:22:43 2011 (-0700)
+;; Last-Updated: Tue Aug  9 14:48:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12471
+;;     Update #: 12473
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -53,8 +53,7 @@
 ;;    `icicle-case-insensitive-string-less-p',
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
 ;;    `icicle-choose-completion-string', `icicle-clear-lighter',
-;;    `icicle-clear-minibuffer', 
-;;    `icicle-color-name-w-bg',
+;;    `icicle-clear-minibuffer', `icicle-color-name-w-bg',
 ;;    `icicle-color-rgb-lessp', `icicle-command-abbrev-save',
 ;;    `icicle-command-abbrev-used-more-p',
 ;;    `icicle-command-names-alphabetic-p',
@@ -148,8 +147,8 @@
 ;;    `icicle-remove-color-duplicates', `icicle-remove-dots',
 ;;    `icicle-remove-duplicates', `icicle-remove-dups-if-extras',
 ;;    `icicle-remove-if', `icicle-remove-if-not',
-;;    `icicle-remove-property', `icicle-require-match-p',
-;;    `icicle-restore-standard-commands',
+;;    `icicle-remove-property', `icicle-replace-mct-cand-in-mct',
+;;    `icicle-require-match-p', `icicle-restore-standard-commands',
 ;;    `icicle-restore-standard-options',
 ;;    `icicle-restore-std-completion-fns', `icicle-reversible-sort',
 ;;    `icicle-saved-fileset-p', `icicle-save-or-restore-input',
@@ -1045,6 +1044,19 @@ Returns a new propertized string corresponding to (car CAND)."
   "Return MCT candidate that corresponds to display candidate CAND."
   (let ((full-cand  (or (funcall icicle-get-alist-candidate-function cand) (list cand))))
     (cons cand full-cand)))
+
+(defun icicle-replace-mct-cand-in-mct (old new)
+  "Replace OLD candidate with NEW in `minibuffer-completion-table'.
+Both OLD and NEW have been mctized.  That is, they are ready for
+`minibuffer-completion-table'."
+  (let ((newlist  minibuffer-completion-table))
+    (catch 'icicle-replace-cand-in-mct
+      (while newlist
+        (when (equal (car newlist) old)
+          (setcar newlist new)
+          (throw 'icicle-replace-cand-in-mct nil))
+        (setq newlist  (cdr newlist))))
+    minibuffer-completion-table))
 
 (defun icicle-read-file-name (prompt &optional dir default-filename
                               require-match initial-input predicate)

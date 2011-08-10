@@ -21,9 +21,9 @@ The definition of `icicle-execute-extended-command' provides an interesting illu
                  (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
                 ""))
      obarray 'commandp t nil 'extended-command-history nil nil
-     ((last-cmd last-command))        ; Bindings: save last command.
-     nil (setq last-command last-cmd) ; Undo code: restore last command.
-     (setq last-command last-cmd))    ; Last code: restore last command.
+     ((last-cmd last-command))        ; Bindings: save last command
+     nil nil                          ; First code, undo code
+     (setq last-command last-cmd))    ; Last code: restore last command
 
   (defun icicle-execute-extended-command-1 (cmd-name)
     "Candidate action function for `icicle-execute-extended-command'."

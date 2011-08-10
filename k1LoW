@@ -1,11 +1,12 @@
 Kenichirou Oyama (Japan). [http://code.101000lab.org 101000code].
 
 * [[Cake]]
+* DrillInstructor
+* Lisp:anything-exuberant-ctags.el (0.1.0 AnythingSources)
 * AnythingSources
 * Lisp:anything-etags.el (1.1.6 AnythingSources)
 * Lisp:ac-dabbrev.el (0.0.7 AutoCompleteSources)
 * FuzzyFormat
-* DrillInstructor
 * Lisp:anything-c-shell-history.el (0.0.8 AnythingSources)
 * Lisp:re-builder+.el
 

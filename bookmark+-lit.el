@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2111, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Apr  1 16:24:25 2011 (-0700)
+;; Last-Updated: Tue Aug  9 10:27:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 732
+;;     Update #: 737
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -199,7 +199,7 @@
 ;; bmkp-latest-bookmark-alist, bmkp-marked-bookmarks-only,
 ;; bmkp-msg-about-sort-order, bmkp-nav-alist, bmkp-refresh-menu-list,
 ;; bmkp-remove-if, bmkp-remove-if-not, bmkp-repeat-command,
-;; bmkp-sequence-bookmark-p, bmkp-sort-and-remove-dups,
+;; bmkp-sequence-bookmark-p, bmkp-sort-omit,
 ;; bmkp-specific-buffers-alist-only, bmkp-this-buffer-alist-only,
 ;; bmkp-this-buffer-cycle-sort-comparer, bmkp-this-buffer-p
 
@@ -972,7 +972,7 @@ In Lisp code:
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) nil startovr)))
   (bookmark-maybe-load-default-file)
   (let ((bmkp-sort-comparer  bmkp-this-buffer-cycle-sort-comparer))
-    (setq bmkp-nav-alist  (bmkp-sort-and-remove-dups (bmkp-this-buffer-lighted-alist-only))))
+    (setq bmkp-nav-alist  (bmkp-sort-omit (bmkp-this-buffer-lighted-alist-only))))
   (unless bmkp-nav-alist (error "No lighted bookmarks for cycling"))
   (unless (and bmkp-current-nav-bookmark (not startoverp)
                (bookmark-get-bookmark bmkp-current-nav-bookmark 'NOERROR)
@@ -1169,7 +1169,8 @@ Return the bookmark name or, if FULLP non-nil, the full bookmark data."
 (defun bmkp-read-set-lighting-args (&optional default-style default-face default-when)
   "Read args STYLE, FACE, and WHEN for commands that set `lighting' prop.
 Optional args are the default values (strings) for reading new values."
-  (let* ((style       (cdr (assoc (let ((completion-ignore-case  t))
+  (let* ((icicle-unpropertize-completion-result-flag  t)
+         (style       (cdr (assoc (let ((completion-ignore-case  t))
                                     (completing-read "Style: " bmkp-light-styles-alist
                                                      nil t nil nil default-style))
                                   bmkp-light-styles-alist)))
@@ -1301,7 +1302,7 @@ Non-nil LINEP means also highlight the line containing POS."
 
 ;; Not used for Emacs 20-21.
 (defun bmkp-fringe-string (side autonamedp)
-  "Return a fring string for a bookmark overlay.
+  "Return a fringe string for a bookmark overlay.
 If SIDE is `right' then use the right fringe, otherwise left.
 AUTONAMEDP: non-nil means use face `bmkp-light-fringe-autonamed'.
             nil means use face `bmkp-light-fringe-non-autonamed'."

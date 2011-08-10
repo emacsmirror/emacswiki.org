@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  8 09:05:54 2011 (-0700)
+;; Last-Updated: Tue Aug  9 15:05:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6801
+;;     Update #: 6809
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/08/09 dadams
+;;     icicle-define(-file)-command calls: Removed undo code if same as last code, so do not repeat it.
 ;; 2011/08/07 dadams
 ;;     icicle-(find-file-absolute|recent-file)(-other-window), icicle-locate-file-1,
 ;;       icicle-cd-for-(abs|loc)-files:
@@ -415,6 +417,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/09 dadams
+;;     icicle-find-file-tagged(-other-window): Bind C-x a [+-] to adding/removing tags.
+;;     icicle-define(-file)-command calls: Removed undo code if same as last code, so do not repeat it.
 ;; 2011/08/08 dadams
 ;;     icicle-find-file-tagged(-other-window): Prefix arg means use all (not just tagged) autofiles.
 ;; 2011/08/07 dadams
@@ -871,6 +876,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/09 dadams
+;;     Added: icicle-replace-mct-cand-in-mct.
 ;; 2011/08/07 dadams
 ;;     icicle-display-candidates-in-Completions,
 ;;       icicle-highlight-(initial-whitespace|complete-input|lighter), icicle-case-string-less-p,

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Aug  7 13:17:58 2011 (-0700)
+;; Last-Updated: Tue Aug  9 10:57:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2216
+;;     Update #: 2238
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2749,7 +2749,10 @@ command has no effect."
   "Create a bookmark that invokes FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
 Returns the new bookmark (internal record)."
-  (interactive (list (read-string "Bookmark: ") (completing-read "Function: " obarray 'functionp)))
+  (interactive
+   (let ((icicle-unpropertize-completion-result-flag  t))
+     (list (read-string "Bookmark: ")
+           (completing-read "Function: " obarray 'functionp))))
   (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
                                   (position . 0)
                                   (function . ,(read function))
@@ -2916,12 +2919,14 @@ navigation list are those that would be currently shown in the
   "Set the bookmark navigation list to the bookmarks of a type you choose.
 The pseudo-type `any' sets the navigation list to all bookmarks.
 This sets variable `bmkp-nav-alist'."
-  (interactive (let ((completion-ignore-case  t)
-                     (type                    (completing-read "Type: "
-                                                               (cons '("any" . bookmark-history)
-                                                                     bmkp-types-alist)
-                                                               nil t nil nil "any")))
-                 (list type)))
+  (interactive
+   (let* ((completion-ignore-case                      t)
+          (icicle-unpropertize-completion-result-flag  t)
+          (type                                        (completing-read "Type: "
+                                                                        (cons '("any" . bookmark-history)
+                                                                              bmkp-types-alist)
+                                                                        nil t nil nil "any")))
+     (list type)))
   (setq bmkp-nav-alist  (if (equal "any" type)
                             bookmark-alist
                           (funcall (intern (format "bmkp-%s-alist-only" type)))))
@@ -3020,11 +3025,12 @@ If NO-DEFAULT-P is nil, then the default is the current buffer's name,
  or the value of `bmkp-last-specific-buffer' if the current buffer has
  no bookmarks."
   (bookmark-maybe-load-default-file)
-  (completing-read "Buffer: " (mapcar #'list (bmkp-buffer-names)) nil t nil 'buffer-name-history
-                   (and (not no-default-p)
-                        (if (member (buffer-name) (bmkp-buffer-names))
-                            (buffer-name)
-                          bmkp-last-specific-buffer))))
+  (let ((icicle-unpropertize-completion-result-flag  t))
+    (completing-read "Buffer: " (mapcar #'list (bmkp-buffer-names)) nil t nil 'buffer-name-history
+                     (and (not no-default-p)
+                          (if (member (buffer-name) (bmkp-buffer-names))
+                              (buffer-name)
+                            bmkp-last-specific-buffer)))))
 
 (defun bmkp-completing-read-file-name (&optional no-default-p)
   "Read the name of a file associated with a bookmark.
@@ -3035,9 +3041,11 @@ If NO-DEFAULT-P is nil, then the default is the current buffer's file
  name, if any, or the value of `bmkp-last-specific-file' if the
  current buffer has no associated file or the file has no bookmarks."
   (bookmark-maybe-load-default-file)
-  (let ((completion-ignore-case  (if (boundp 'read-file-name-completion-ignore-case)
-                                     read-file-name-completion-ignore-case
-                                   (memq system-type '(ms-dos windows-nt darwin cygwin)))))
+  (let ((completion-ignore-case                      (if (boundp 'read-file-name-completion-ignore-case)
+                                                         read-file-name-completion-ignore-case
+                                                       (memq system-type
+                                                             '(ms-dos windows-nt darwin cygwin))))
+        (icicle-unpropertize-completion-result-flag  t))
     (completing-read "File: " (mapcar #'list (bmkp-file-names)) nil t nil 'file-name-history
                      (and (not no-default-p)
                           (let ((file  (buffer-file-name)))
@@ -3181,10 +3189,12 @@ CANDIDATE-TAGS is an alist of tags to use for completion.
 REQUIRE-MATCH is passed to `completing-read'.
 Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist'."
   (bookmark-maybe-load-default-file)
-  (let ((cand-tags  (copy-sequence
-                     (or candidate-tags
-                         (and (not update-tags-alist-p) bmkp-tags-alist) ; Use cached list.
-                         (bmkp-tags-list))))) ; Update the cache.
+  (let ((cand-tags                                   (copy-sequence
+                                                      (or candidate-tags
+                                                          (and (not update-tags-alist-p)
+                                                               bmkp-tags-alist) ; Use cached list.
+                                                          (bmkp-tags-list)))) ; Update the cache.
+        (icicle-unpropertize-completion-result-flag  t))
     (completing-read (or prompt "Tag: ") cand-tags nil require-match nil 'bmkp-tag-history)))
 
 (defun bmkp-read-tags-completing (&optional candidate-tags require-match update-tags-alist-p)
@@ -3196,10 +3206,11 @@ CANDIDATE-TAGS is an alist of tags to use for completion.
 REQUIRE-MATCH is passed to `completing-read'.
 Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist'."
   (bookmark-maybe-load-default-file)
-  (let ((cands    ())
-        (btags    ())
-        (prompt1  "Tag (RET for each, empty input to finish): ")
-        (prompt2  "Tag: ")
+  (let ((cands                                       ())
+        (btags                                       ())
+        (prompt1                                     "Tag (RET for each, empty input to finish): ")
+        (prompt2                                     "Tag: ")
+        (icicle-unpropertize-completion-result-flag  t)
         tag old-tag)
     ;; Make a new candidates alist, with just one entry per tag name.  The original cdr is discarded.
     (dolist (full-tag  (or candidate-tags
@@ -5043,12 +5054,12 @@ file names."
 The bookmark name is the non-directory part of FILE, but if PREFIX is
 non-nil then it is PREFIX prepended to the non-directory part of FILE.
 
-The bookmark returned has FILE as the non-directory part of its
-`filename' property.
-
 The directory part of property `filename' is the directory part of
 FILE, if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
-`default-directory' otherwise."
+`default-directory' otherwise.
+
+FILE and the `filename' property of the bookmark returned are the
+same, except possibly for their directory parts (see previous)."
   (let* ((fname       (file-name-nondirectory file))
          (bname       (if prefix (concat prefix fname) fname))
          (dir-to-use  (if (file-name-absolute-p file)
@@ -6103,10 +6114,12 @@ With non-nil OPTION, read the name of a user option.
 The default value is DEFAULT-VALUE if non-nil, or the nearest symbol
 to the cursor if it is a variable."
   (setq option  (if option 'user-variable-p 'boundp))
-  (let ((symb                          (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                                             ((fboundp 'symbol-at-point) (symbol-at-point))
-                                             (t nil)))
-        (enable-recursive-minibuffers  t))
+  (let ((symb                                        (cond ((fboundp 'symbol-nearest-point)
+                                                            (symbol-nearest-point))
+                                                           ((fboundp 'symbol-at-point) (symbol-at-point))
+                                                           (t nil)))
+        (enable-recursive-minibuffers                t)
+        (icicle-unpropertize-completion-result-flag  t))
     (when (and default-value (symbolp default-value))
       (setq default-value  (symbol-name default-value)))
     (intern (completing-read prompt obarray option t nil 'minibuffer-history
@@ -6419,13 +6432,16 @@ ACTION is the action to mention in the prompt.  `Jump to ', if nil."
 Otherwise, this is the same as `bookmark-jump' - see that, in
 particular, for info about using a prefix argument."
   (interactive
-   (let* ((completion-ignore-case  t)
-          (type-cands              bmkp-types-alist)
-          (type                    (completing-read "Type of bookmark: " type-cands nil t))
-          (alist                   (funcall (intern (format "bmkp-%s-alist-only" type))))
-          (history                 (assoc-default type type-cands))
-          (bmk-name                (bmkp-read-bookmark-for-type (concat type " ") alist nil nil
-                                                                history)))
+   (let* ((completion-ignore-case                      t)
+          (type-cands                                  bmkp-types-alist)
+          (icicle-unpropertize-completion-result-flag  t)
+          (type                                        (completing-read "Type of bookmark: "
+                                                                        type-cands nil t))
+          (alist                                       (funcall (intern
+                                                                 (format "bmkp-%s-alist-only" type))))
+          (history                                    (assoc-default type type-cands))
+          (bmk-name                                   (bmkp-read-bookmark-for-type (concat type " ")
+                                                                                   alist nil nil history)))
      (list bmk-name  (or (equal type "Region") current-prefix-arg))))
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
@@ -6433,13 +6449,16 @@ particular, for info about using a prefix argument."
 (defun bmkp-jump-to-type-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j :'
   "`bmkp-jump-to-type', but in another window."
   (interactive
-   (let* ((completion-ignore-case  t)
-          (type-cands              bmkp-types-alist)
-          (type                    (completing-read "Type of bookmark: " type-cands nil t))
-          (alist                   (funcall (intern (format "bmkp-%s-alist-only" type))))
-          (history                 (assoc-default type type-cands))
-          (bmk-name                (bmkp-read-bookmark-for-type (concat type " ") alist t nil
-                                                                history)))
+   (let* ((completion-ignore-case                      t)
+          (type-cands                                  bmkp-types-alist)
+          (icicle-unpropertize-completion-result-flag  t)
+          (type                                        (completing-read "Type of bookmark: "
+                                                                        type-cands nil t))
+          (alist                                       (funcall (intern
+                                                                 (format "bmkp-%s-alist-only" type))))
+          (history                                     (assoc-default type type-cands))
+          (bmk-name                                    (bmkp-read-bookmark-for-type (concat type " ")
+                                                                                    alist t nil history)))
      (list bmk-name (or (equal type "Region") current-prefix-arg))))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 

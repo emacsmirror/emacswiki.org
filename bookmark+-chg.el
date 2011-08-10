@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug  7 13:11:46 2011 (-0700)
+;; Last-Updated: Tue Aug  9 10:29:22 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13730
+;;     Update #: 13732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/08/09 dadams
+;;     Bind icicle-unpropertize-completion-result-flag to t for all calls to completing-read.
 ;; 2011/08/07 dadams
 ;;     Added: bmkp-guess-default-handler-for-file-flag, bmkp-file-bookmark-handlers.
 ;;     bmkp-file-bookmark-p: Use bmkp-file-bookmark-handlers, which means also image-bookmark-jump.
@@ -494,6 +496,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2011/08/09 dadams
+;;     Bind icicle-unpropertize-completion-result-flag to t for all calls to completing-read.
 ;; 2011/04/12
 ;;     bmkp-cycle-lighted-this-buffer: Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
 ;; 2011/04/01 dadams

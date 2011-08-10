@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 17:33:13 2011 (-0700)
+;; Last-Updated: Tue Aug  9 14:40:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28083
+;;     Update #: 28128
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7727,22 +7727,33 @@
 ;;  `icicle-add-buffer-candidate' - Add buffer to those always shown
 ;;  `icicle-add-buffer-config' - Add to `icicle-buffer-configs'
 ;;  `icicle-bookmark'     - Jump to a bookmark
-;;  `icicle-bookmark-bookmark-list-*' - Jump: bookmark-list bookmark
-;;  `icicle-bookmark-desktop-*' - Jump: bookmarked desktop
-;;  `icicle-bookmark-dired-*' - Jump: bookmarked Dired state
-;;  `icicle-bookmark-file-*' - Jump: bookmarked file
-;;  `icicle-bookmark-gnus-*' - Jump: bookmarked Gnus message
-;;  `icicle-bookmark-info-*' - Jump: bookmarked Info node
+;;  `icicle-bookmark-all-tags' - Jump: bookmark with all matching tags
+;;  `icicle-bookmark-all-tags-regexp' - ... matching a regexp
+;;  `icicle-bookmark-bookmark-list-' - Jump: bookmark-list bookmark
+;;  `icicle-bookmark-desktop' - Jump: bookmarked desktop
+;;  `icicle-bookmark-dired' - Jump: bookmarked Dired state
+;;  `icicle-bookmark-file' - Jump: bookmarked file
+;;  `icicle-bookmark-gnus' - Jump: bookmarked Gnus message
+;;  `icicle-bookmark-info' - Jump: bookmarked Info node
 ;;  `icicle-bookmark-list' - Choose a list of bookmark names
-;;  `icicle-bookmark-local-file-*' - Jump: bookmarked local file
-;;  `icicle-bookmark-man-*' - Jump: bookmarked `man' page
-;;  `icicle-bookmark-non-file-*' - Jump: bookmarked buffer
-;;  `icicle-bookmark-region-*' - Jump: bookmarked region
-;;  `icicle-bookmark-remote-file-*' - Jump: bookmarked remote file
-;;  `icicle-bookmark-url-*' - Jump: bookmarked URL
+;;  `icicle-bookmark-local-file' - Jump: bookmarked local file
+;;  `icicle-bookmark-man' - Jump: bookmarked `man' page
+;;  `icicle-bookmark-non-file' - Jump: bookmarked non-file buffer
+;;  `icicle-bookmark-region' - Jump: bookmarked region
+;;  `icicle-bookmark-remote-file' - Jump: bookmarked remote file
+;;  `icicle-bookmark-some-tags'- Jump: bookmark with some matching tag
+;;  `icicle-bookmark-some-tags-regexp'- matching a regexp
+;;  `icicle-bookmark-specific-buffers'- Jump: specific-buffer bookmark
+;;  `icicle-bookmark-specific-files' - Jump: specific-file bookmark
+;;  `icicle-bookmark-this-buffer' - Jump: bookmark for this buffer
+;;  `icicle-bookmark-url' - Jump: bookmarked URL
+;;  `icicle-bookmark-w3m' - Jump: W3M bookmark
 ;;  `icicle-buffer'       - Switch to another buffer
 ;;  `icicle-buffer-config' - Choose a config for buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
+;;  `icicle-choose-faces' - Choose a list of face names
+;;  `icicle-choose-invisible-faces' - Choose list of invisible faces
+;;  `icicle-choose-visible-faces' - Choose list of visible faces
 ;;  `icicle-clear-history' - Clear entries from minibuffer histories
 ;;  `icicle-clear-current-history' - Clear current history entries
 ;;  `icicle-color-theme'  - Change color theme
@@ -7764,8 +7775,13 @@
 ;;  `icicle-file'         - Visit a file or directory
 ;;  `icicle-find-file'    - Visit a file or directory (relative)
 ;;  `icicle-find-file-absolute' - Visit a file (absolute)
+;;  `icicle-find-file-all-tags' - Visit a file with all matching tags
+;;  `icicle-find-file-all-tags-regexp' - ... matching a regexp
 ;;  `icicle-find-file-in-tags-table' - Visit a file in a tags table
 ;;  `icicle-find-file-read-only' - Visit a file in read-only mode
+;;  `icicle-find-file-some-tags'- Visit a file with some matching tags
+;;  `icicle-find-file-some-tags-regexp' - ... matching a regexp
+;;  `icicle-find-file-tagged' - Visit a file with matching tags
 ;;  `icicle-find-first-tag' - Visit source-code definition with tag
 ;;  `icicle-font'         - Change the frame font
 ;;  `icicle-frame-bg'     - Change the frame background color
@@ -7775,11 +7791,12 @@
 ;;  `icicle-increment-option' - Increment option value using arrows
 ;;  `icicle-increment-variable' - Increment variable value
 ;;  `icicle-insert-buffer'- Insert a buffer
-;;  `icicle-insert-thesaurus-entry' - Insert thesaurus entry
+;;  `icicle-insert-thesaurus-entry' - Insert an entry from a thesaurus
 ;;  `icicle-keyword-list' - Choose a list of keywords (regexps)
 ;;  `icicle-kill-buffer'  - Kill a buffer
 ;;  `icicle-kmacro'       - Execute a keyboard macro (Emacs 22+)
 ;;  `icicle-locate-file'  - Open a file located anywhere
+;;  `icicle-pick-color-by-name' - Set current highlighting color
 ;;  `icicle-plist'        - Choose a symbol and its property list
 ;;  `icicle-recent-file'  - Open a recently used file
 ;;  `icicle-remove-buffer-candidate' -
@@ -7791,8 +7808,12 @@
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-reset-option-to-nil' -
 ;;                          Set value of binary option to `nil'
+;;  `icicle-search-all-tags-bookmark'- Search bookmark with given tags
+;;  `icicle-search-all-tags-regexp-bookmark'- ... tags matching regexp
+;;  `icicle-search-autofile-bookmark' - Search an autofile bookmark
 ;;  `icicle-search-bookmark' - Search a bookmark
-;;  `icicle-search-bookmark-list-bookmark' - Bookmark-list bookmark
+;;  `icicle-search-bookmark-list-bookmark' - Search bookmark-list bmk
+;;  `icicle-search-desktop-bookmark' - Search a Desktop bookmark
 ;;  `icicle-search-dired-bookmark' - Search a Dired bookmark
 ;;  `icicle-search-file-bookmark' - Search a bookmarked file
 ;;  `icicle-search-gnus-bookmark' - Search a bookmarked Gnus message
@@ -7802,20 +7823,29 @@
 ;;  `icicle-search-non-file-bookmark' - Search a bookmarked buffer
 ;;  `icicle-search-region-bookmark' - Search a bookmarked region
 ;;  `icicle-search-remote-file-bookmark' - Search a remote bookmark
+;;  `icicle-search-some-tags-bookmark'- Search bookmark with some tags
+;;  `icicle-search-some-tags-regexp-bookmark'- ... matching regexp
+;;  `icicle-search-specific-buffers-bookmark'- ...specific-buffers bmk
+;;  `icicle-search-specific-files-bookmark' - ... specific-files bmk
+;;  `icicle-search-this-buffer-bookmark' - ...bookmark for this buffer
 ;;  `icicle-search-url-bookmark' - Search a bookmarked URL
+;;  `icicle-search-w3m-bookmark' - Search a W3M bookmark
 ;;  `icicle-select-frame' - Select frame by name and raise it
 ;;  `icicle-select-window' - Select window by its buffer name
 ;;  `icicle-set-option-to-t' - Set the value of a binary option to `t'
+;;  `icicle-synonyms' - Show synonyms that match a regexp
+;;  `icicle-tag-a-file' - Add one or more tags to a file
 ;;  `icicle-toggle-option' - Toggle the value of a binary option
+;;  `icicle-untag-a-file' - Remove one or more tags from a file
 ;;  `icicle-vardoc'       - Display the doc of a variable
 ;;  `icicle-where-is'     - Show key sequences that invoke a command
 ;;
-;;  For simplicity, the descriptions of these commands are singular
-;;  actions (e.g. "kill a buffer"), but each of them can be used to
-;;  act on any number of items any number of times (e.g. kill one or
-;;  more buffers).  I recommend that you follow a similar naming
-;;  convention - remember that the doc string will let users know that
-;;  the command can be used on multiple objects.
+;;  For simplicity, the descriptions of most of these commands are
+;;  singular actions (e.g. "kill a buffer"), but each of them can be
+;;  used to act on any number of items any number of times (e.g. kill
+;;  one or more buffers).  I recommend that you follow a similar
+;;  naming convention - remember that the doc string will let users
+;;  know that the command can be used on multiple objects.
 ;;
 ;;  Macros `icicle-define-command' and `icicle-define-file-command'
 ;;  define a multi-command in a simple way.  Sometimes you will need a
@@ -8200,9 +8230,9 @@
 ;;                        (prefix-numeric-value current-prefix-arg))
 ;;               ""))
 ;;    obarray 'commandp t nil 'extended-command-history nil nil
-;;    ((last-cmd last-command))        ; Save the last command.
-;;    nil (setq last-command last-cmd) ; Undo: restore last command.
-;;    (setq last-command last-cmd))    ; Last: restore last command.
+;;    ((last-cmd last-command))        ; Save the last command
+;;    nil nil                          ; First code, undo code
+;;    (setq last-command last-cmd))    ; Last: restore last command
 ;;
 ;;  (defun icicle-execute-extended-command-1 (cmd-name)
 ;;    "Action function for `icicle-execute-extended-command'."

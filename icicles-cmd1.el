@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 17:31:45 2011 (-0700)
+;; Last-Updated: Tue Aug  9 13:24:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 21983
+;;     Update #: 22010
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2486,8 +2486,8 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
-  nil  nil
-  (setq this-command  icicle-new-last-cmd)) ; Final code: this will update `last-command'.
+  nil  nil                              ; First code, undo code
+  (setq this-command  icicle-new-last-cmd)) ; Last code: this will update `last-command'
 
 ;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
 ;;                 `icicle-new-last-cmd' and `icicle-orig-must-pass-after-match-pred' are bound in
@@ -2609,8 +2609,7 @@ need match only a prefix.  For example, nil means that abbreviation
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command"))))
-  (when icicle-proxy-candidates         ; First code
-    (put-text-property 0 1 'icicle-fancy-candidates t prompt))
+  (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)) ; First code
   nil (setq icicle-proxy-candidates  nil)) ; Undo code, last code
 
 (defun icicle-command-abbrev-action (abbrev-or-cmd)
@@ -2694,8 +2693,8 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    (icicle-add-proxy-candidates-flag  nil) ; No abbrevs - just commands here.
    (last-command                      last-command) ; Save and restore the last command.
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
-  nil nil
-  (setq this-command  icicle-new-last-cmd) ; Final code: this will update `last-command'.
+  nil nil                               ; First code, undo code
+  (setq this-command  icicle-new-last-cmd) ; Last code: this will update `last-command'.
   'NON-INTERACTIVE)                     ; This is not a real command.
 
 (defun icicle-command-abbrev-record (abbrev command)
@@ -2721,7 +2720,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (icicle-must-pass-after-match-predicate
     #'(lambda (fn) (setq fn  (intern fn)) (and (commandp fn) (arrayp (symbol-function fn)))))
-   (icicle-candidate-alt-action-fn      ; Bindings
+   (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))))
@@ -2890,8 +2889,8 @@ history entries, so `C-next' and so on act on the current candidate."
    (icicle-use-candidates-only-once-flag    t)
    (icicle-show-Completions-initially-flag  t)
    (icicle-clear-history-hist               minibuffer-history-variable))
-  (when icicle-pref-arg                 ; Use `error' just to exit and make sure message is seen.
-    (icicle-ding)
+  (when icicle-pref-arg                 ; First code
+    (icicle-ding)                       ; Use `error' just to exit and make sure message is seen.
     (if (not (yes-or-no-p (format "Are you sure you want to empty `%s' completely? "
                                   minibuffer-history-variable)))
         (error "")
@@ -3130,10 +3129,10 @@ The list of bookmark names (strings) is returned." ; Doc string
                 (bmkp-describe-bookmark-internals cand)
               (bmkp-describe-bookmark cand))
           (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
-  (progn
+  (progn                                ; First code
     (message "Gathering bookmarks...")
     (unless types  (setq types '(all)))
-    (dolist (type  types)               ; First code
+    (dolist (type  types)
       (setq icicle-candidates-alist
             (nconc icicle-candidates-alist
                    (if (not (featurep 'bookmark+))
@@ -4074,12 +4073,12 @@ You need library `bookmark+.el' for this command."
     (not icicle-show-multi-completion-flag)
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
-    ((IGNORED1                               (unless (require 'bookmark+ nil t)
+    ((IGNORED1                               (unless (require 'bookmark+ nil t) ; Additional bindings
                                                (error "You need library `bookmark+.el' for this \
 command")))
      (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
-     (completion-ignore-case                 bookmark-completion-ignore-case) ; Additional bindings
+     (completion-ignore-case                 bookmark-completion-ignore-case)
      (prompt1                                ,(or prompt
                                                   (format "%s%s bookmark: "
                                                           (capitalize (substring type 0 1))
@@ -4408,15 +4407,14 @@ do not want this remapping, then customize option
   nil nil nil nil (funcall (or find-tag-default-function (get major-mode 'find-tag-default-function)
                                'find-tag-default))
   nil
-  ((completion-ignore-case  (progn (require 'etags)
-                                   (if (and (boundp 'tags-case-fold-search) ; Bindings
+  ((completion-ignore-case  (progn (require 'etags) ; Bindings
+                                   (if (and (boundp 'tags-case-fold-search)
                                             (memq tags-case-fold-search '(t nil)))
                                        tags-case-fold-search
                                      case-fold-search)))
    (case-fold-search        completion-ignore-case))
-  nil                                   ; First, undo, last code.
-  (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))
-  (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch)))
+  nil nil                               ; First code, undo code
+  (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))) ; Last code
 
 (defun icicle-find-first-tag-action (cand)
   "Action function for `icicle-find-first-tag'."
@@ -4439,9 +4437,8 @@ Same as `icicle-find-first-tag' except it uses a different window." ; Doc string
                                        tags-case-fold-search
                                      case-fold-search)))
    (case-fold-search        completion-ignore-case))
-  nil                                   ; First, undo, last code.
-  (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))
-  (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch)))
+  nil nil                               ; First code, undo code
+  (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))) ; Last code
 
 (defun icicle-find-first-tag-other-window-action (cand)
   "Action function for `icicle-find-first-tag-other-window'."
@@ -4917,8 +4914,7 @@ the behavior."                          ; Doc string
   (progn                                ; First code
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
     (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
-  (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xM" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xM" nil)))
 
@@ -4996,10 +4992,7 @@ the behavior."                          ; Doc string
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-non-file-other-window))
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
     (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)
-         (define-key minibuffer-local-completion-map "\C-xM" nil)
-         (define-key minibuffer-local-must-match-map "\C-xM" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xm" nil)
          (define-key minibuffer-local-completion-map "\C-xM" nil)
@@ -5052,10 +5045,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-non-file-other-window))
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
     (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)
-         (define-key minibuffer-local-completion-map "\C-xM" nil)
-         (define-key minibuffer-local-must-match-map "\C-xM" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xm" nil)
          (define-key minibuffer-local-completion-map "\C-xM" nil)
@@ -5104,8 +5094,7 @@ the behavior."                          ; Doc string
   (progn                                ; First code
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
     (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
-  (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xM" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xM" nil)))
 
@@ -5140,8 +5129,7 @@ the behavior."                          ; Doc string
   (progn                                ; First code
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
     (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
-  (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xM" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xM" nil)))
 
@@ -5577,8 +5565,7 @@ During completion:
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-dired-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-dired-other-window)))
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xm" nil)))
 
@@ -5605,8 +5592,7 @@ During completion:
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-dired-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-dired-other-window)))
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xm" nil)))
 
@@ -5758,14 +5744,7 @@ Ido-like behavior."                     ; Doc string
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Undo code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
          (define-key minibuffer-local-must-match-map [(control backspace)] nil)
          (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
@@ -5809,14 +5788,7 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Undo code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
          (define-key minibuffer-local-must-match-map [(control backspace)] nil)
          (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
@@ -5913,8 +5885,7 @@ Ido-like behavior."                     ; Doc string
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xm" nil)))
 
@@ -5957,8 +5928,7 @@ to visit the current directory."        ; Doc string
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Undo code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
          (define-key minibuffer-local-must-match-map "\C-xm" nil)))
 
@@ -6067,12 +6037,7 @@ Ido-like behavior."                     ; Doc string
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Undo code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
          (define-key minibuffer-local-must-match-map [(control backspace)] nil)
          (define-key minibuffer-local-completion-map "\C-c+"               nil)
@@ -6117,12 +6082,7 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Undo code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
          (define-key minibuffer-local-must-match-map [(control backspace)] nil)
          (define-key minibuffer-local-completion-map "\C-c+"               nil)
@@ -6305,14 +6265,7 @@ a while)..." dir)))
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Undo code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil))
+  nil                                   ; Undo code
   (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
          (define-key minibuffer-local-must-match-map [(control backspace)] nil)
          (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)

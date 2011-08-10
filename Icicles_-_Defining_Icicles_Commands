@@ -242,25 +242,34 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-add-buffer-candidate'''' -- Add buffer to those always shown for completion
 * '''`icicle-add-buffer-config'''' -- Add config to `icicle-buffer-configs'
 * '''`icicle-bookmark''''    -- Jump to a [[bookmark]]
-* '''`icicle-bookmark-bookmark-list-*'''' -- Jump to a bookmark-list bookmark
-* '''`icicle-bookmark-desktop-*'''' -- Jump to a bookmarked DeskTop
-* '''`icicle-bookmark-dired-*'''' -- Jump to a bookmarked Dired state
-* '''`icicle-bookmark-file-*'''' -- Jump to a bookmarked file
-* '''`icicle-bookmark-gnus-*'''' -- Jump to a bookmarked Gnus message
-* '''`icicle-bookmark-info-*'''' -- Jump to a bookmarked [[Info]] node
+* '''`icicle-bookmark-all-tags'''' -- Jump: bookmark with all of its tags matching a given set
+* '''`icicle-bookmark-all-tags-regexp'''' -- Jump: bookmark with all of its tags matching a given [[regexp]]
+* '''`icicle-bookmark-bookmark-list'''' -- Jump to a bookmark-list bookmark
+* '''`icicle-bookmark-desktop'''' -- Jump to a bookmarked DeskTop
+* '''`icicle-bookmark-dired'''' -- Jump to a bookmarked Dired state
+* '''`icicle-bookmark-file'''' -- Jump to a bookmarked file
+* '''`icicle-bookmark-gnus'''' -- Jump to a bookmarked Gnus message
+* '''`icicle-bookmark-info'''' -- Jump to a bookmarked [[Info]] node
 * '''`icicle-bookmark-list'''' -- Choose a list of bookmark names
-* '''`icicle-bookmark-local-file-*'''' -- Jump to a bookmarked local file
-* '''`icicle-bookmark-man-*'''' -- Jump to a bookmarked `man' page
-* '''`icicle-bookmark-non-file-*'''' -- Jump to a bookmarked [[buffer]]
-* '''`icicle-bookmark-region-*'''' -- Jump to a bookmarked [[region]]
-* '''`icicle-bookmark-remote-file-*'''' -- Jump to a bookmarked remote file
-* '''`icicle-bookmark-url-*'''' -- Jump to a bookmarked URL
+* '''`icicle-bookmark-local-file'''' -- Jump to a bookmarked local file
+* '''`icicle-bookmark-man'''' -- Jump to a bookmarked `man' page
+* '''`icicle-bookmark-non-file'''' -- Jump to a bookmarked non-file [[buffer]]
+* '''`icicle-bookmark-region'''' -- Jump to a bookmarked [[region]]
+* '''`icicle-bookmark-remote-file'''' -- Jump to a bookmarked remote file
+* '''`icicle-bookmark-some-tags'''' -- Jump: bookmark with some of its tags matching a given set
+* '''`icicle-bookmark-some-tags-regexp'''' -- Jump: bookmark with some of its tags matching a given [[regexp]]
 
-
-
+* '''`icicle-bookmark-specific-buffers'''' -- Jump: specific-buffer bookmark
+* '''`icicle-bookmark-specific-files'''' -- Jump: specific-file bookmark
+* '''`icicle-bookmark-this-buffer'''' -- Jump: bookmark for this buffer
+* '''`icicle-bookmark-url'''' -- Jump to a bookmarked URL
+* '''`icicle-bookmark-w3m'''' -- Jump to a [[w3m]] bookmark
 * '''`icicle-buffer''''      -- Switch to another buffer
 * '''`icicle-buffer-config'''' -- Choose a config of options for '''Icicles''' buffer commands
 * '''`icicle-buffer-list''''  -- Choose a [[list]] of buffer names
+* '''`icicle-choose-faces'''' -- Choose a list of [[face]] names
+* '''`icicle-choose-invisible-faces'''' -- Choose list of invisible faces
+* '''`icicle-choose-visible-faces'''' -- Choose list of visible faces
 * '''`icicle-clear-history'''' -- Clear entries from minibuffer histories
 * '''`icicle-clear-current-history'''' -- Clear current history entries
 * '''`icicle-color-theme'''' -- Change color theme
@@ -281,8 +290,13 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-file''''   -- Visit a file or directory
 * '''`icicle-find-file''''   -- Visit a file or directory (relative)
 * '''`icicle-find-file-absolute''''   -- Visit a file (absolute)
+* '''`icicle-find-file-all-tags'''' -- Visit a file with all of its tags matching a given set
+* '''`icicle-find-file-all-tags-regexp'''' -- Visit a file with all of its tags matching a given [[regexp]]
 * '''`icicle-find-file-in-tags-table'''' -- Visit a file in a [[TagsFile|tags table]]
 * '''`icicle-find-file-read-only'''' -- Visit a file in read-only mode
+* '''`icicle-find-file-some-tags'''' -- Visit a file with some tags matching a given set
+* '''`icicle-find-file-some-tags-regexp'''' -- Visit a file with some of its tags matching a given [[regexp]]
+* '''`icicle-find-file-tagged'''' -- Visit a file with file name or tags matching minibuffer input
 * '''`icicle-find-first-tag'''' -- Visit source-code definition with [[tags|tag]]
 * '''`icicle-font''''        -- Change the [[frame]] font
 * '''`icicle-frame-bg''''    -- Change the frame background color
@@ -292,11 +306,12 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-increment-option'''' -- Increment an option value using arrows
 * '''`icicle-increment-variable'''' -- Increment a variable value using arrows
 * '''`icicle-insert-buffer'''' -- Insert a buffer
-* '''`icicle-insert-thesaurus-entry'''' -- Insert thesaurus entry
+* '''`icicle-insert-thesaurus-entry'''' -- Insert an entry from a thesaurus
 * '''`icicle-keyword-list'''' -- Choose a list of keywords ([[regexps]])
 * '''`icicle-kill-buffer'''' -- Kill a buffer
 * '''`icicle-kmacro''''      -- Execute a [[keyboard macro]] (Emacs 22+)
 * '''`icicle-locate-file'''' -- Open a file located anywhere
+* '''`icicle-pick-color-by-name'''' -- Set highlighting color to one you name
 * '''`icicle-plist''''       -- Choose a [[symbol]] and its [[property list]]
 * '''`icicle-recent-file'''' -- Open a recently used file
 * '''`icicle-remove-buffer-candidate'''' -- Remove buffer from those always shown for completion
@@ -304,26 +319,40 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-remove-file-from-recentf-list'''' -- Remove files from recent-files list
 * '''`icicle-remove-saved-completion-set'''' -- Remove a [[Icicles - Candidate Sets|set]] from `icicle-saved-completion-sets'
 * '''`icicle-reset-option-to-nil'''' -- Set the value of a binary option to `nil'
+
+* '''`icicle-search-all-tags-bookmark'''' -- Search a bookmark that has all of a given set of tags
+* '''`icicle-search-all-tags-regexp-bookmark'''' -- Search a bookmark all of whose tags match a [[regexp]]
+* '''`icicle-search-autofile-bookmark'''' -- Search an autofile bookmark
 * '''`icicle-search-bookmark'''' -- Search a bookmark
 * '''`icicle-search-bookmark-list-bookmark'''' -- Search a bookmark-list bookmark
-* '''`icicle-search-dired-bookmark'''' -- Search a Dired bookmark
+* '''`icicle-search-desktop-bookmark'''' -- Search a DeskTop bookmark
+* '''`icicle-search-dired-bookmark'''' -- Search a [[Dired]] bookmark
 * '''`icicle-search-file-bookmark'''' -- Search a bookmarked file
 * '''`icicle-search-gnus-bookmark'''' -- Search a bookmarked Gnus message
-* '''`icicle-search-info-bookmark'''' -- Search a bookmarked Info node
+* '''`icicle-search-info-bookmark'''' -- Search a bookmarked [[Info]] node
 * '''`icicle-search-local-file-bookmark'''' -- Search a local-file bookmark
 * '''`icicle-search-man-bookmark'''' -- Search a bookmarked `man' page
 * '''`icicle-search-non-file-bookmark'''' -- Search a bookmarked buffer
 * '''`icicle-search-region-bookmark'''' -- Search a bookmarked region
 * '''`icicle-search-remote-file-bookmark'''' -- Search a remote bookmark
+* '''`icicle-search-some-tags-bookmark'''' -- Search a bookmark that has some of a given set of tags
+* '''`icicle-search-some-tags-regexp-bookmark'''' -- Search a bookmark some of whose tags match a [[regexp]]
+* '''`icicle-search-specific-buffers-bookmark'''' -- Search a bookmark to specific [[buffer]]s
+* '''`icicle-search-specific-files-bookmark'''' -- Search a bookmark to specific files
+* '''`icicle-search-this-buffer-bookmark'''' -- Search a bookmark to the current buffer
 * '''`icicle-search-url-bookmark'''' -- Search a bookmarked URL
+* '''`icicle-search-w3m-bookmark'''' -- Search a [[w3m]] bookmark
 * '''`icicle-select-frame'''' -- Select frame by name and raise it
 * '''`icicle-select-window'''' -- Select window by its buffer name
 * '''`icicle-set-option-to-t'''' -- Set the value of a binary option to `t'
+* '''`icicle-synonyms'''' -- Show synonyms that match a [[regexp]]
+* '''`icicle-tag-a-file'''' -- Add one or more tags to a file
 * '''`icicle-toggle-option'''' -- Toggle the value of a binary option
+* '''`icicle-untag-a-file'''' -- Remove one or more tags from a file
 * '''`icicle-vardoc''''      -- Display the doc of a variable
 * '''`icicle-where-is'''' -- Show key sequences that invoke a command
 
-For simplicity, the descriptions of these commands are singular
+For simplicity, the descriptions of most of these commands are singular
 actions (e.g. "kill '''''a''''' buffer"), but each of them can be used to
 act on any number of items any number of times (e.g. kill one or
 more buffers).  I recommend that you follow a similar naming

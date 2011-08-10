@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  8 09:00:44 2011 (-0700)
+;; Last-Updated: Tue Aug  9 15:01:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3654
+;;     Update #: 3668
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6587,7 +6587,7 @@ The new current color is returned."     ; Doc string
       icicle-pick-color-by-name-action  ; Action function
       "Color (name or #R+G+B+): "       ; `completing-read' arguments
       (hexrgb-defined-colors-alist) nil nil nil nil nil nil
-      ((completion-ignore-case t)))
+      ((completion-ignore-case  t)))    ; Bindings
 
     (defun icicle-pick-color-by-name-action (color)
       "Action function for `icicle-pick-color-by-name'."
@@ -6681,10 +6681,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
         (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
           (error "You must first load library `synonyms.el'"))
         (synonyms-ensure-synonyms-read-from-cache))
-      (when (window-live-p icicle-orig-window) ; Undo code
-        (select-window icicle-orig-window)
-        (select-frame-set-input-focus (selected-frame))
-        (goto-char icicle-track-pt))
+      nil                               ; Undo code
       (when (window-live-p icicle-orig-window) ; Last code
         (select-window icicle-orig-window)
         (select-frame-set-input-focus (selected-frame))
@@ -6796,7 +6793,7 @@ all of the given input tags are completion candidates."
       "Find one or more files with tags that match your input.
 By default, only tagged files are candidates.  With a prefix argument,
 all autofiles are candidates.  (Autofiles are autofile bookmarks - you
-need Bookmark+ for this command.)
+need library `Bookmark+' for this command.)
 
 Each completion candidate is a multi-completion composed of these
 fields: an absolute file name plus the file's tags, all separated by
@@ -6815,7 +6812,7 @@ E.g., type:
  `red M-SPC green M-SPC blue'   to match all files with tags `red',
                                 `green', and `blue' (in any order)
 
-That assumes that these tags do not also match any file names.  
+That assumes that these tags do not also match any file names.
 
 If you need to match against a particular field (e.g. the file name or
 a specific tag position), then use the field separator.  Otherwise,
@@ -6826,7 +6823,11 @@ get past the file-name field.  To match both file name and tags, type
 something to match the file name before the `C-M-j'.  E.g., type:
 
  `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
-                                `blue' that have `2011' in their names" ; Doc string
+                                `blue' that have `2011' in their names
+
+During completion you can use keys `C-x a +' and `C-x a -' to add and
+remove tags from the current candidate, respectively.  After hitting
+the key you are prompted for the tags to add or remove." ; Doc string
       (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
       prompt icicle-abs-file-candidates ; `completing-read' args
       nil nil nil 'icicle-filetags-history nil nil
@@ -6841,11 +6842,44 @@ something to match the file name before the `C-M-j'.  E.g., type:
        (icicle-dot-string                  (icicle-anychar-regexp))
        (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
        (icicle-list-use-nth-parts          '(1))
-       (pref-arg                           current-prefix-arg))
+       (icicle-whole-candidate-as-text-prop-p  t)
+       (pref-arg                           current-prefix-arg)
+       (C-x-a                                  (lookup-key minibuffer-local-completion-map "\C-xa"))
+       (C-x-a-+                                (lookup-key minibuffer-local-completion-map "\C-xa+"))
+       (C-x-a--                                (lookup-key minibuffer-local-completion-map "\C-xa-")))
       (progn
         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
         (icicle-highlight-lighter)
-        (message "Gathering tagged files...")))
+        (message "Gathering tagged files...")
+        (define-key minibuffer-local-completion-map "\C-xa+"
+          (lambda ()
+            (interactive)
+            (let ((mct-cand  (icicle-mctized-display-candidate icicle-last-completion-candidate))
+                  (file      (icicle-transform-multi-completion icicle-last-completion-candidate))
+                  (new-tags  (bmkp-read-tags-completing)))
+              (bmkp-autofile-add-tags file new-tags nil nil 'MSG)
+              (icicle-replace-mct-cand-in-mct
+               mct-cand
+               (icicle-mctized-full-candidate
+                (list (cons file (bmkp-get-tags (bmkp-get-autofile-bookmark file))))))
+              (icicle-update-and-next))))
+        (define-key minibuffer-local-completion-map "\C-xa-"
+          (lambda ()
+            (interactive)
+            (let ((mct-cand  (icicle-mctized-display-candidate icicle-last-completion-candidate))
+                  (file      (icicle-transform-multi-completion icicle-last-completion-candidate))
+                  (rem-tags  (bmkp-read-tags-completing)))
+              (bmkp-autofile-remove-tags file rem-tags nil nil 'MSG)
+              (icicle-replace-mct-cand-in-mct
+               mct-cand
+               (icicle-mctized-full-candidate
+                (list (cons file (bmkp-get-tags (bmkp-get-autofile-bookmark file))))))
+              (icicle-update-and-next)))))
+      nil                               ; Undo code
+      (progn                            ; Last code
+        (define-key minibuffer-local-completion-map "\C-xa+" (and (not (integerp C-x-a-+)) C-x-a-+))
+        (define-key minibuffer-local-completion-map "\C-xa-" (and (not (integerp C-x-a--)) C-x-a--))
+        (define-key minibuffer-local-completion-map "\C-xa"  (and (not (integerp C-x-a))   C-x-a))))
 
     (icicle-define-command icicle-find-file-tagged-other-window ; Command name
       "Find one or more files with tags that match your input.
@@ -6857,18 +6891,51 @@ Same as `icicle-find-file-tagged' except it uses a different window." ; Doc stri
        (icicle-abs-file-candidates      ; An alist whose items are ((FILE TAG...)).
         (let ((result  ()))
           (dolist (autofile  (bmkp-autofile-alist-only))
-            (let ((tags  (bmkp-get-tags autofile)))
+            (let ((tags  (bmkp-get-tags autofile)))                  
               (when (or tags current-prefix-arg)
                 (push (list (cons (bookmark-get-filename autofile) tags)) result))))
           result))
-       (icicle-dot-string                  (icicle-anychar-regexp))
-       (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-       (icicle-list-use-nth-parts          '(1))
-       (pref-arg                           current-prefix-arg))
+       (icicle-dot-string                      (icicle-anychar-regexp))
+       (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+       (icicle-list-use-nth-parts              '(1))
+       (icicle-whole-candidate-as-text-prop-p  t)
+       (pref-arg                               current-prefix-arg)
+       (C-x-a                                  (lookup-key minibuffer-local-completion-map "\C-xa"))
+       (C-x-a-+                                (lookup-key minibuffer-local-completion-map "\C-xa+"))
+       (C-x-a--                                (lookup-key minibuffer-local-completion-map "\C-xa-")))
       (progn
         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
         (icicle-highlight-lighter)
-        (message "Gathering tagged files...")))
+        (message "Gathering tagged files...")
+        (define-key minibuffer-local-completion-map "\C-xa+"
+          (lambda ()
+            (interactive)
+            (let ((mct-cand  (icicle-mctized-display-candidate icicle-last-completion-candidate))
+                  (file      (icicle-transform-multi-completion icicle-last-completion-candidate))
+                  (new-tags  (bmkp-read-tags-completing)))
+              (bmkp-autofile-add-tags file new-tags nil nil 'MSG)
+              (icicle-replace-mct-cand-in-mct
+               mct-cand
+               (icicle-mctized-full-candidate
+                (list (cons file (bmkp-get-tags (bmkp-get-autofile-bookmark file))))))
+              (icicle-update-and-next))))
+        (define-key minibuffer-local-completion-map "\C-xa-"
+          (lambda ()
+            (interactive)
+            (let ((mct-cand  (icicle-mctized-display-candidate icicle-last-completion-candidate))
+                  (file      (icicle-transform-multi-completion icicle-last-completion-candidate))
+                  (rem-tags  (bmkp-read-tags-completing)))
+              (bmkp-autofile-remove-tags file rem-tags nil nil 'MSG)
+              (icicle-replace-mct-cand-in-mct
+               mct-cand
+               (icicle-mctized-full-candidate
+                (list (cons file (bmkp-get-tags (bmkp-get-autofile-bookmark file))))))
+              (icicle-update-and-next)))))
+      nil                               ; Undo code
+      (progn                            ; Last code
+        (define-key minibuffer-local-completion-map "\C-xa+" (and (not (integerp C-x-a-+)) C-x-a-+))
+        (define-key minibuffer-local-completion-map "\C-xa-" (and (not (integerp C-x-a--)) C-x-a--))
+        (define-key minibuffer-local-completion-map "\C-xa"  (and (not (integerp C-x-a))   C-x-a))))
 
 ;;; These are like multi-command versions of `bmkp-find-file-all-tags' etc.,
 ;;; except that the predicate is applied after matching the user's input

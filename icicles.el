@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 18:15:45 2011 (-0700)
+;; Last-Updated: Tue Aug  9 14:49:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22935
+;;     Update #: 22936
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -980,7 +980,8 @@
 ;;    `icicle-remove-duplicates', `icicle-remove-dups-if-extras',
 ;;    `icicle-remove-from-recentf-candidate-action',
 ;;    `icicle-remove-if', `icicle-remove-if-not',
-;;    `icicle-remove-property', `icicle-remove-saved-set-action',
+;;    `icicle-remove-property', `icicle-replace-mct-cand-in-mct',
+;;    `icicle-remove-saved-set-action',
 ;;    `icicle-replace-input-w-parent-dir', `icicle-require-match-p',
 ;;    `icicle-restore-completion-keys',
 ;;    `icicle-restore-other-keymap-keys',
