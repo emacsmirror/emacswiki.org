@@ -1,8 +1,10 @@
-;;; msearch.el
+;;; msearch.el --- Search for mouse selection
+
 ;; Copyright (C) 2010  Tobias.Naehring
 
 ;; Author: Tobias.Naehring <i@tn-home.de>
-;; Keywords: Search for mouse selection.
+
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -16,6 +18,8 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Keywords: mouse search selection
 
 ;;; Commentary:
 

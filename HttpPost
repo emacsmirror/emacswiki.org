@@ -18,5 +18,46 @@ See also the UrlPackage which is now part of Emacs and provides support for auth
             (buffer-string)))
 
 ----
+
+DennyZhang says: I like Lisp:http-post-simple.el very much.
+
+I also have made some enhancement: insert the HTTP output in a configurable buffer, instead of mixed in \*Message\* buffer.
+
+Since I can't contact with the original author (Tom Schutzer-Weissmann), I post my enhancement here.
+
+  (defun http-post-simple (url fields &optional charset bufname)
+    "Send FIELDS to URL as an HTTP POST request, returning the response
+   and response headers.
+   FIELDS is an alist, eg ((field-name . \"value\")); all values
+   need to be strings, and they are encoded using CHARSET,
+   which defaults to 'utf-8"
+    (let (request-result)
+      (setq request-result (http-post-simple-internal
+                            url
+                            (http-post-encode-fields fields charset)
+                            charset
+                            `(("Content-Type"
+                               .
+                               ,(http-post-content-type
+                                 "application/x-www-form-urlencoded"
+                                 charset)))))
+      ;; set buffername
+      (unless bufname (setq bufname
+                            (format "*HTTP POST %s *" url)))
+      (save-excursion
+        (delete-other-windows) ;; bury other window
+        (split-window-vertically) ;; split window vertically
+        ;; switch to window for HTTP output
+        (pop-to-buffer (get-buffer-create bufname))
+        (insert (mapconcat '(lambda(x)
+                              (if (integerp x)
+                                  (int-to-string x)
+                                (identity x)))
+                           (nreverse request-result) "\n"))
+        (beginning-of-buffer))
+      ))
+
+
+----
 CategoryInterface
 CategoryHypermedia

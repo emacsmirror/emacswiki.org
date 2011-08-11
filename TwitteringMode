@@ -373,5 +373,9 @@ Are there commands to view lists of (i) people who you're following and (ii) peo
 
 --BeSlayed
 
+How could I expand the number of twitts retrieved on the mode startup? And why we don't have a command like `twittering-favorite-timeline`?
+
+--FabioCosta
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

@@ -79,5 +79,12 @@ you want to include them:
 
 [new]
 As of 2009-12-23 the wikiupload link just displays a blank page. - TobyCabot
+
+[new]
+Anybody interested in editing [http://www.jasperforge.org/jasperreports JasperReports] JRXML files?
+I derived my jasperreports.rnc from one of the latest DTDs.
+Sad enough they say, they abandon the DTD in favour of an XSD schema.
+Let me know, if you are interested in jasperreports.rnc!
+-- [[JochenHayek]]
 ----
 CategoryXML

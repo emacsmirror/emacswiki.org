@@ -10,7 +10,12 @@ When a question is answered--and sometimes before it is answered, it is moved to
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
 [new]
+=== extent-at function ===
+The latest available spice-mode, http://spice-mode.4t.com/, uses the *extent-at* function. This is not found in emacs 23.3. Did this function go away with some release? (That is hard to believe). Is it Xemacs-only? Note, this is also used in the verilog-mode (same URL). -- KevinBuchs
 
+
+[new]
+=== S-SPC definition ===
 I would like S-SPC behave as RET key using keyboard-translate. For example: 
 <code>(keyboard-translate ?\C-t ?\C-f)</code> works.
 

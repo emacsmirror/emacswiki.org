@@ -1,16 +1,2138 @@
 Just starting to have fun, but I am really lost on understanding Emacs wiki editing.  Where is the "What is this all about" page?
 
+[new]
 Hello and welcome!  I'd like to improve the site -- especially for newbies.  The most important thing, I guess, is *your* impression at this very moment -- before learning from other people: What did you look for?  Where did you look for it?  As to what to the *plan*: Supposedly you'd look at the first two paragraphs of the SiteMap. There you would find the links to the three introduction pages: EmacsWiki, MissionStatement, HowTo. -- AlexSchroeder
 
 
+[new]
 Alex - thanks for the pointers.  I have read those pages.  I guess I have the basic understanding of how this website works.  I have an interest in using the tools here for Wiki support to implement my own wiki for personal use.  I have downloaded files related to the emacs wiki mode, but I am overwhelmed with the information contained in these and would like to see a simple overview as to the concepts involved.  I have visited WikiModeDiscussion and WikiMode.  Thanks for any further help you can provide.  -- KevinBuchs
 
-
+[new]
 Hm, why not try it like this: Download Lisp:wiki.el, install it, create the directory ~/Wiki, create a file in this directory called <nowiki>SiteMap</nowiki>.  This should activate wiki-mode for that file.  Write some text, adding the word <nowiki>KevinBuchs</nowiki> somewhere.  This should be hilighted as a link as you type.  Click it (or type RET at it), and you should be propelled to the new page.  Let me know how it works. -- AlexSchroeder
 
 ----
 
 For more help, be sure to visit: MeatBall:TextFormattingRules,  MeatBall:StyleGuide, MeatBall:WhyWikiWorks, and UseMod:UseMod -- Kevin Buchs
-
 ----
+I use Emacs
+
 CategoryHomepage
+
+== My .emacs ==
+
+<pre>
+; $Id: .emacs,v 1.16 2010/10/13 15:19:01 buchs Exp $
+; .emacs -- Kevin Buchs
+;
+
+;------------------------------------
+; General - OS-independent Setup
+;------------------------------------
+
+(setq home (getenv "HOME"))
+(setq custom-dir (expand-file-name "lib/emacs" home))
+(setq load-path (append (list custom-dir) load-path))
+(add-to-list 'Info-default-directory-list 
+	     (expand-file-name "info" custom-dir) 1)
+(require 'mwheel) ; Enable wheelmouse support by default
+(setq x-select-enable-clipboard t) ; use desktop clipboard - not default on linux
+(setq fill-column 80)
+
+;--------------------------------
+; OS-specific Setup ;
+;--------------------------------
+
+(if (string= system-type "windows-nt")
+    ; then running Windows OS
+    (progn
+
+      ; check if at work or home by what the home env. variable starts with
+      (if (string= "H" (substring home 0 1))
+      ;--- was (if (string= system-name "LEFT")
+      ; save the above for documentation
+    	  ; then we are running Windows at work
+	  (progn
+	    ; check if network drives are mounted
+	    (if (file-exists-p "h:/.emacs")
+		(progn
+		  (setq network-drives t)
+		  (setq auto-save-list-file-name "h:/temp/backups")
+		  (setq backup-directory-alist (quote (("." . "h:/temp/backups"))))
+		  (setq user-full-name "Kevin Buchs")
+		  (setq user-mail-address "my-email-address-here")
+		  ;(setq smtpmail-default-smtp-server "my-server-here")
+		  ;(setq smtpmail-local-domain nil)
+		  ;(setq send-mail-function 'smtpmail-send-it)
+		  ;(load-library "smtpmail")
+		  (setq printer-name "//Quigon/sith")
+		  (setq ps-printer-name "//Quigon/sith")
+		)
+	      (progn
+		(setq network-drives nil)
+		(setq auto-save-list-file-name "c:/temp/backups")
+		(setq backup-directory-alist (quote (("." . "c:/temp/backups"))))
+	      )
+	     )
+
+	    (setq default-frame-alist  (append default-frame-alist
+		   '(     (top . 200) (left . 400)    )  )  )
+	   )
+	   ; else running Windows at home
+	   (progn
+	     (setq network-drives t)
+	     (setq auto-save-list-file-name "c:/Temp/backups")
+	     (setq backup-directory-alist (quote (("." . "c:/Temp/backups"))))
+	     (setq printer-name "LPT1:")
+	   )
+       )
+
+       ; Universal Windows Setup - Work & Home
+       (load-library "w32-symlinks") ; handles windows shortcuts
+       (setq w32-symlinks-handle-shortcuts t) ; enable it.
+       ; find user profile
+       (setq windows-profile (getenv "USERPROFILE"))
+       (setq tcl-application "tclsh.exe")
+    )
+
+    ; else running Unix OS
+    (progn
+      (setq backup-directory-alist (quote (("." . "~/temp/backups"))))
+      (setq home-systems (list "note2" "hope"))
+      (if (not (member system-name home-systems))
+	  (progn
+	    (setq lpr-switches '("-dsith"))
+	    (setq lpr-add-switches 'nil)
+	    (setq ps-lpr-switches '("-dsith"))
+      ))
+      (if (string= system-type "gnu/linux")
+	  (defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
+      )
+      (if (string= system-name "note2")
+	  (setq default-frame-alist  (append default-frame-alist
+			  '(     (width . 80) (height . 30)    
+				 (left . 20)  (top . -100)    )  ) )
+      )
+    )
+)
+
+
+;------------------------------------
+; emacs lisp reference
+;------------------------------------
+
+; point-min, -max - return positions
+; message "text" - displays in notification area
+
+
+
+;------------------------------------
+; function definitions
+;------------------------------------
+
+(defun hspice ()
+   "Runs a Python script, passing the name of the file and that script executes a remote call to hspice on the current file. Results are displayed in a 'HSPICE Output' buffer."
+   (interactive)
+   (let
+      (  (hspice-deck buffer-file-name)
+	 (hspice-output-buffer (get-buffer-create "HSPICE Output")))
+
+      (save-some-buffers (not compilation-ask-about-save) nil)
+      (set-buffer hspice-output-buffer)
+      (erase-buffer)
+
+      ;; Start the compilation.
+      (get-buffer-process hspice-output-buffer)
+
+      (let
+	 (   (command (concat "c:\\apps\\python27\\python h:\\bin\\win\\remhsp.py " hspice-deck)))
+	 (start-file-process-shell-command "remhsp" hspice-output-buffer command))
+
+      (message (concat "running hspice on " hspice-deck))
+      (display-buffer hspice-output-buffer t t)
+      (set-buffer hspice-output-buffer)))
+
+(defun cut-here-up ()
+   "Cut the content from point to the beginning of the buffer"
+   (interactive)
+   (kill-region (point-min) (point)))
+
+(defun cut-here-down ()
+   "Cut the content from point to the end of the buffer"
+   (interactive)
+   (kill-region (point) (point-max)))
+
+(defun electric-pair ()
+   "If at end of line, insert character pair without surrounding spaces.
+    Otherwise, just insert the typed character.
+    Then enable it by binding the appropriate characters to it in 
+    your favorite programming modes. For example, for PythonMode."
+   (interactive)
+   (if (eolp) (let (parens-require-spaces) (insert-pair)) (self-insert-command 1)))
+
+
+(defun savebuf ()
+"Saves the contents of the current buffer to a user-specified filename without changing the current buffer.  Suggested alternate name is the original name with a .bak suffix appended"
+  (interactive)
+
+  (let 
+    (
+      (oldbuf (current-buffer)) ; save current buffer in order to return to it
+      (filecopy 
+        (read-from-minibuffer "Save copy to: " 
+          (concat (buffer-name) ".bak") ) )
+    )
+    (save-current-buffer
+       (copy-to-buffer "temporary" (point-min) (point-max))
+       (set-buffer "temporary")
+       (write-file filecopy)
+       (print (concat "inside save-current-buffer, buffer=" (buffer-name)))
+       (kill-buffer (current-buffer))
+    )
+  )
+)
+
+(defun count (low high delim)
+   "Output integers from low to high, separated by delim."
+
+   (interactive "nlow value: \nnhigh value: \nMdelimiter:")
+   (let ((firsttime nil) (count (+ low 1)))
+      (insert (number-to-string low))
+      (while (<= count high)
+	 (insert delim)
+	 (insert (number-to-string count))
+	 (setq count (1+ count))
+)))
+
+(defun write-file-copy (filename)
+  "Write a copy of the current buffer into file FILENAME
+but leave buffer alone.  This is a modified version of 
+`write-file'.  See that for more info."
+
+  (interactive
+       (list (if buffer-file-name
+	       (read-file-name "Write file: "
+		  nil nil nil nil)
+	       (read-file-name "Write file: " default-directory
+		  (expand-file-name
+		     (file-name-nondirectory (buffer-name))
+		     default-directory)
+		  nil nil)
+	    )
+	)
+   )
+
+   (if (null buffer-file-name) 
+       (write-file nil)
+       (or (null filename) (string-equal filename "")
+         (let
+            (save-filename save-mod-status save-ro-status)
+ 	    (progn
+
+	      ; If entered filename was only a directory, fill in file name too
+	      (if (file-directory-p filename)
+	        (setq filename (concat (file-name-as-directory filename)
+				       (file-name-nondirectory
+					 (or buffer-file-name (buffer-name))))
+		)
+              )
+
+	      ; Capture current buffer attributes
+	      (setq save-filename buffer-file-name)
+	      (setq save-mod-status (buffer-modified-p))
+	      (setq save-ro-status buffer-read-only)
+
+              ; Save the copy in provided filename
+	      (set-visited-file-name filename)
+	      (save-buffer)
+
+              ; Restore buffer state
+	      (set-visited-file-name save-filename)
+	      (setq buffer-read-only save-ro-status)
+	      (set-buffer-modified-p save-mod-status)
+	    )
+	 )
+      )
+   )
+)
+ 
+
+(defun my-eval-region (start end)
+   "Evaluate the region and print a helpful message when complete."
+   (interactive "r")  ; r as argument says to pass in point and mark
+   (eval-region start end)
+   (message "Evaluation of %d lines completed." (how-many "\n" start end)))
+    
+(defun count-words (&optional begin end)
+  "Count words between BEGIN and END (region); if no region defined, count words in buffer"
+  ; Credit to: DJCB at http://emacs-fu.blogspot.com/2009/01/counting-words.html
+  (interactive "r")
+  (let ((b (if mark-active begin (point-min)))
+      (e (if mark-active end (point-max))))
+    (message "Word count: %s" (how-many "\\w+" b e)))
+)
+
+(defun insert-emacs-modeline ()
+"Provide a template for the line to go in a file to set emacs modes when visiting it."
+   (interactive)
+   (insert "-*- mode: Mode, MinorMode; Var: Value; -*-")
+)
+
+(defun delete-white-lines ()
+"Delete lines that have only white space on them for whole buffer"
+   (interactive)
+   (delete-trailing-whitespace)
+   (replace-regexp "\n\n+" "\n" nil (point-min) (point-max))
+)
+
+(defun step-and-repeat ()
+"This function will move down a line and move to the beginning
+ of the line and then paste the kill buffer."
+   (interactive)
+   (forward-line 1)
+   (yank)
+)
+
+(defun highlight-double-words (mouse-event)
+"Current mouse point is used to find two space-delimited strings, 
+one in the position where the mouse was clicked and one immediately 
+following that.  This `phrase' is highlighted whereever it appears
+in the buffer using hi-lock-mode."
+  (interactive "e")
+  (save-excursion
+    (mouse-set-point mouse-event)
+    (let* ( (pt (point))
+	    (str  (buffer-substring-no-properties
+	             (+ pt (save-excursion 
+		             (skip-chars-backward "[-.0-9a-zA-Z]") )) 
+	             (+ pt (save-excursion  (+
+		             (skip-chars-forward "[-.0-9a-zA-Z]")
+		             (skip-chars-forward " ")
+		             (skip-chars-forward "[-.0-9a-zA-Z]") ) ))
+	     )
+         )) 
+         (hi-lock-mode -1)
+	 (hi-lock-mode +1)
+	 (hi-lock-face-buffer (regexp-quote str) "hi-yellow")
+    )
+  )
+)
+
+(defun setup-to-highlight-double-words ()
+" Define Control-MB3 so we can easily use the mouse.  Need to remove the builtin def of C-down-mouse-3 so that doesn't conflict."
+  (interactive)
+  (global-unset-key [C-mouse-down-3])
+  (global-set-key [C-mouse-3] 'highlight-double-words)
+)
+
+
+(defun uniquify-all-lines-region (start end)
+    "Find duplicate lines in region START to END keeping first occurrence."
+    (interactive "*r")
+    (save-excursion
+      (let ((end (copy-marker end)))
+        (while
+            (progn
+              (goto-char start)
+              (re-search-forward "^\\(.*\\)\n\\(\\(.*\n\\)*\\)\\1\n" end t))
+          (replace-match "\\1\n\\2")))))
+  
+(defun uniquify-all-lines-buffer ()
+  "Delete duplicate lines in buffer and keep first occurrence."
+  (interactive "*")
+  (uniquify-all-lines-region (point-min) (point-max)))
+
+
+(defun test22 ()
+  (interactive)
+  (find-file)
+)
+
+; trying to get this to work - problem is what is shown above in test22 does not work.
+
+(defun open-copy () 
+  "Open a file for editing and save a copy to user supplied name"
+  (interactive)
+  (find-file)
+  (setq newfile (read-from-minibuffer "Enter root filename/suffix into which to save a copy: "))
+  (setq oldfile (buffer-file-name))
+  (copy-file oldfile newfile)
+)
+
+(defun large ()
+  "Set the font for this frame to 18 point large font"
+  (interactive)
+  (set-frame-font "-*-courier-medium-r-normal--18-180-75-75-m-*-iso8859-1")
+)
+
+(defun medium ()
+  "Set the font for this frame to 14-point medium font"
+  (interactive)
+  (set-frame-font "-*-courier-medium-r-normal--14-140-75-75-m-*-iso8859-1")
+)
+
+(defun normalfont ()
+  "Set the font for this frame to 12-point normal font"
+  (interactive)
+  (set-frame-font "-*-courier-medium-r-normal--12-120-75-75-m-*-iso8859-1")
+)
+
+
+(defun bigframe ()
+  "Create a new frame with larger font and nice background"
+  (interactive)
+  (make-frame-command)
+  (set-frame-font "-b&h-lucida-bold-r-normal-sans-22-180-75-75-p-120-iso8859-1")
+  (set-frame-background "ivory3")
+)
+
+; Allow incremental changes in font size, with simple keystroke Ctrl - and Ctrl +
+
+(defun sacha/increase-font-size ()
+  (interactive)
+  (message (format "current height %f" (face-attribute 'default :height)))
+  (message (format "increasing to  %f" (ceiling (* 1.10 (face-attribute 'default :height)))))
+  (message (format "increasing to  %f" (ceiling (* 1.10 (face-attribute 'default :height)))))
+
+  (set-face-attribute 'default
+                      nil
+                      :height
+                      (ceiling (* 1.10
+                                  (face-attribute 'default :height))))
+  (message (format "now height is %f" (face-attribute 'default :height)))
+  (message (format "I said it  is %f" (face-attribute 'default :height)))
+)
+
+(defun sacha/decrease-font-size ()
+  (interactive)
+  (set-face-attribute 'default
+                      nil
+                      :height
+                      (floor (* 0.9
+                                  (face-attribute 'default :height)))))
+
+
+(defun join1space ()
+  "Join the current line to the following one leaving only one space between the sections"
+  (interactive)
+  (end-of-line)
+  (delete-char 1)
+  (delete-horizontal-space)
+  (insert " ")
+)
+
+(defun Desktop ()
+   "Open dired on my user profile Desktop directory"
+   (interactive)
+   (dired (concat windows-profile "\\Desktop"))
+)
+
+(defun MyDocuments ()
+  "Open dired on the local personal favorites"
+  (interactive)
+  (dired "H:/")
+  ; (dired "C:/Documents and Settings/buchs/Personal")
+)
+
+(defun MyProfile ()
+  "Open dired on the local profile"
+  (interactive)
+  (dired "C:/Documents and Settings/buchs")
+)
+
+(defun keep-filling ()
+  "Keep calling fill-this-para upon the user's input"
+  (interactive)
+  (if (yes-or-no-p "Fill this paragraph? ")
+      (fill-this-para)
+  )
+  (while 
+      (forward-paragraph)
+      (if (yes-or-no-p "Fill this paragraph? ")
+	  (fill-this-para)
+	)
+      )
+)
+
+
+
+(defun fill-this-para ()
+  "Make the paragraph a single line"
+  (interactive)
+  (mark-paragraph)
+  (forward-char)
+  (exchange-point-and-mark)
+  (backward-char)
+  (replace-regexp "
+" " " nil (point) (mark))
+)
+
+(defun fill-it (start end)
+  "Make very long lines for each paragraph"
+  (interactive "r")
+  (replace-regexp "
+\([^
+]\)" " \1" nil start end)
+)
+
+  ;(goto-char start)
+  ;(message (format "point at: %d" (point)))
+;  (while (re-search-forward "
+; \([^
+; ]\)" end t)
+;  (message (format "point at: %d" (point))))
+;
+;    (replace-match " \1" nil nil))
+
+
+(defun f ()
+  "f"
+  (interactive)
+  (message (format "located at %d" (re-search-forward "a")))
+)
+
+
+; was kill-all-buffers - now duplicated below
+(defun die ()
+  "Kill out all the buffers, except *scratch*"
+  (interactive)
+  (setq bl (buffer-list)) ; get the list of all buffers
+  (while (not (null bl))
+    (setq bn (buffer-name (car bl)))
+    (if (not (string-equal "*scratch*" bn))
+	;(message (concat "want to kill " bn))
+	(kill-buffer bn)
+    )
+    (setq bl (cdr bl))
+  )
+  (delete-window)  ; get rid of multiple windows too
+)
+
+(defun kill-all-buffers ()
+  "Kill out all the buffers, except *scratch*"
+  (interactive)
+  (setq bl (buffer-list)) ; get the list of all buffers
+  (while (not (null bl))
+    (setq bn (buffer-name (car bl)))
+    (if (not (string-equal "*scratch*" bn))
+	;(message (concat "want to kill " bn))
+	(kill-buffer bn)
+    )
+    (setq bl (cdr bl))
+  )
+  (delete-window)  ; get rid of multiple windows too
+)
+
+
+;(defun dired-find-file-new-screen ()
+;  "In dired, visit this file or directory in a newly created screen."
+;  (interactive)
+;  (find-file-other-frame (file-name-sans-versions (dired-get-filename) t)))
+
+; This one works better than the above.
+(defun dired-find-file-other-frame ()
+    "In Dired, visit this file or directory in another window."
+    (interactive)
+    (find-file-other-frame (dired-get-file-for-visit)))
+
+(defun get-screen-res ()
+  "Get the screen resolution"
+  (interactive)
+  (if window-system
+       (progn
+	 (setq screen-width (x-display-pixel-width))
+	 (setq screen-height (x-display-pixel-height))
+	 (setq screen-centerx (/ screen-width 2))
+	 (setq screen-centery (/ screen-height 2))
+       )
+  )
+)
+
+(defun mark-white ()
+  "Set the region to enclose a white space delimited set of characters forward and backward from point."
+  (interactive)
+  (skip-syntax-forward "^ ") 
+  (push-mark (point))
+  (skip-syntax-backward "^ ")
+)
+
+(defun kill-white ()
+  "Kill a white-space delimited set of characters forward and backward from point." 
+  (interactive)
+  (mark-white)
+  (kill-region (point) (mark))
+)
+
+(defun kill-buffer-contents ()
+  "Just blow away what is in this buffer, but leave the buffer standing."
+  (interactive)
+  ;(beginning-of-buffer)
+  ;(mark)
+  ;(end-of-buffer)
+  (kill-region (point-min) (point-max))
+)
+
+(defun show-buffer-file-name ()
+  "Put a message in the feedback area giving the file name being visited by the current buffer"
+  (interactive)
+  (message (concat "Buffer file=" buffer-file-name))
+)
+
+(defun make-hyperlink ()
+  "Turn the current whitespace delimited string into a hyperlink"
+  (interactive)
+  (kill-white)
+  (insert "<a href=\"")
+  (yank)
+  (insert "\">")
+  (yank)
+  (insert "</a>")
+)
+
+(defun current-white (&optional strict)
+  "Return the word point is on (or a nearby word) as a string.
+If optional arg STRICT is non-nil, return nil unless point is within
+or adjacent to a word."
+  (save-excursion
+    (let ((oldpoint (point)) (start (point)) (end (point)))
+      (skip-syntax-backward "^ _") (setq start (point))
+      (goto-char oldpoint)
+      (skip-syntax-forward "^ _") (setq end (point))
+      (if (and (eq start oldpoint) (eq end oldpoint))
+	  ;; Point is neither within nor adjacent to a word.
+	  (and (not strict)
+	       (progn
+		 ;; Look for preceding word in same line.
+		 (skip-syntax-backward "^w_"
+				       (save-excursion (beginning-of-line)
+						       (point)))
+		 (if (bolp)
+		     ;; No preceding word in same line.
+		     ;; Look for following word in same line.
+		     (progn
+		       (skip-syntax-forward "^w_"
+					    (save-excursion (end-of-line)
+							    (point)))
+		       (setq start (point))
+		       (skip-syntax-forward "w_")
+		       (setq end (point)))
+		   (setq end (point))
+		   (skip-syntax-backward "w_")
+		   (setq start (point)))
+		 (buffer-substring-no-properties start end)))
+	(buffer-substring-no-properties start end))))
+)
+
+(defun lift-up ()
+  "Puts the current line at the top of the window"
+  (interactive)
+  (recenter 0)
+)
+
+(defun set-down ()
+  "Recenter the current point on the bottom of the window"
+  (interactive)
+  (recenter (- (window-height) 2))
+)
+
+(defun drop-down ()
+  "Position the bottom line at the bottom of the window"
+  (interactive)
+  (save-excursion
+    (goto-char (point-max))
+    (recenter (- (window-height) 2))
+  )
+)
+
+(defun umm ()
+  "Copy the whole buffer to the kill-ring and clipboard"
+  (interactive)
+  (kill-ring-save (point-min) (point-max))
+  (message "that whole buffer was yummy.  Now on clipboard")
+)
+
+(defun load-weekly-template ()
+  "Load a file"
+  (interactive)
+  (find-file-other-frame "l:/doc/sppdg_general_docs/reports/simulation/template.txt")
+;  (find-file-other-frame "/sppdg/local/sppdg_general_docs/reports/simulation/template.txt")
+ )
+ 
+(defun bang-other ()
+  "Execute a !! in the other window, which should be a csh shell window"
+  (interactive)
+  (other-window 1)
+  (insert-string "!!")
+  (comint-send-input)
+  (other-window -1)
+)
+
+(defun blow-buffer-file-away ()
+  "Delete the file that this current buffer is visiting - DANGEROUS!"
+  (interactive)
+  (if (yes-or-no-p "Are you sure you want to delete this file? ")
+      (delete-file (buffer-file-name))
+  )
+)
+
+(defun comment-line () 
+  "Make the current line a comment"
+  (interactive)
+  (comment-region (line-beginning-position) (line-end-position))
+)
+
+
+(defun uncomment ()
+  "Call comment-region with appropriate arguments to uncomment a region"
+  (interactive)
+  (comment-region (region-beginning) (region-end) -1)
+  ;;(insert "region-beginning=" (region-beginning) )
+)
+
+(defun date ()
+  "Insert a date and user name audit trail into the current buffer"
+  (interactive)
+  (insert (format-time-string "%Y/%m/%d %I:%M%p") " -- " (user-full-name))
+)
+
+
+(defun datealone ()
+  "Insert a date into the current buffer"
+  (interactive)
+  (insert (format-time-string "%Y/%m/%d %I:%M%p") " ")
+)
+
+(defun ts ()
+  "Insert a date at beginning of current line"
+  (interactive)
+  (beginning-of-line)
+  (insert (format-time-string "%y-%m-%d") " ")
+)
+
+(defun revert-now ()
+   "Description goes here"
+   (interactive)
+   (let 
+      ((save-point (point)))
+      (revert-buffer nil t nil)
+      (goto-char save-point)))
+
+(defun other-one ()
+  "Make the other window the sole window displayed"
+  (interactive)
+  (other-window 1)
+  (delete-other-windows))
+
+; Files needed for the following few functions
+
+(setq kevin-keys-help  (expand-file-name "keys.txt" custom-dir))
+(setq kevin-hints-file (expand-file-name "info/hints.txt" home))
+(setq kevin-data-file  (expand-file-name "info/data.txt" home))
+
+(defun hints ()
+  "Open the hints file in a new frame"
+  (interactive)
+  (find-file-other-frame kevin-hints-file)
+)
+
+(defun hintshere ()
+  "Open the hints file in this frame"
+  (interactive)
+  (find-file kevin-hints-file)
+)
+
+(defun keys ()
+  "Open the emacs key hints file"
+  (interactive)
+  (find-file-other-frame kevin-keys-help)
+)
+
+(defun data ()
+  "Open the data file in a new frame"
+  (interactive)
+  (find-file-other-frame kevin-data-file)
+)
+
+(defun eric ()
+  "Set up for editing code from Eric Amundsen"
+  (interactive)
+  ; tab stops set to 4
+  (set-variable 'tab-width 4)
+  ;(insert "eric?")
+)
+
+(defun all-win ()
+  "Go to the next window, cylically, considering all frames"
+  (interactive)
+  (other-window 2 t)
+)
+
+
+(defun box0 ()
+  "Insert a fancy comment box, takes the current line, removes the first character as a comment delimiter and the space following, then surrounds the text with those same comment delimiters"
+  (interactive)
+  (beginning-of-line)
+  (setq box-builder (char-after))  
+  (delete-char 1)   ; delete the comment character
+  (delete-char 1)   ; and space after it
+  (setq wid (+ 4 (- (line-end-position) (line-beginning-position))))
+  (setq lin (make-string wid box-builder))
+  ; now ready to insert
+  (insert lin)
+  (newline)
+  (insert-char box-builder 1)
+  (insert-char ?  1)
+  (end-of-line)
+  (insert-char ?  1)
+  (insert-char box-builder 1)
+  (newline)
+  (insert lin)
+  (next-line 1)
+  (beginning-of-line)
+)
+
+(defun box1 ()
+  "Insert a comment box"
+  (interactive)
+  (setq char-start (if (not (boundp 'comment-char)) '"#" comment-char))
+  (setq strline (make-string 30 ?-))
+  (insert (concat char-start strline))
+  (newline)
+  (insert char-start)
+  (newline)
+  (insert (concat char-start "  "))
+  (newline)
+  (insert char-start)
+  (newline)
+  (insert (concat char-start strline))
+  (newline)
+  (previous-line 3)
+  (end-of-line)
+)
+
+(defun box2 ()
+  "Insert a comment box of pound marks"
+  (interactive)
+  (insert "#######################################################
+#
+#   
+#
+#######################################################
+")
+  (previous-line 3)
+  (end-of-line)
+)
+
+(defun box3 ()
+  "Insert a light comment box"
+  (interactive)
+  (insert ";--------------------------------
+;
+; 
+;
+;--------------------------------
+")
+  (previous-line 3)
+  (end-of-line)
+)
+
+
+(defun divline ()
+   "Add characters to line to make a line the full width"
+   (interactive)
+   (let ( (numfill (- fill-column (- (line-end-position) (line-beginning-position) ) ) ) )
+      (end-of-line)
+      (insert (make-string numfill ?-))
+   )
+)
+
+
+(defun logit (filename)
+  "Prepend another entry to a dated log file.  Argument is name of file."
+  (interactive "fLog file name: ")
+
+  (find-file filename)
+  (beginning-of-buffer)
+  (insert (format-time-string "DateMark %Y/%m/%d %I:%M%p\n\n\n\n") )
+  (goto-line 3)
+  (font-lock-mode)
+)
+
+(defun sep ()
+  "Insert a HTML separator"
+  (interactive)
+  (insert " &nbsp; | &nbsp; ")
+)
+
+(defun yh ()
+  "Do yellow highlighting of the region"
+  (interactive)
+  (facemenu-set-background "yellow")
+)
+
+(defun toggle-search ()
+  "toggle the binding of the RET key to isearch-repeat-forward so that if I 
+   am going to do lots of searching it will be easier"
+  (interactive)
+  (local-set-key [RET] 'isearch-repeat-forward)
+)
+
+(defun untoggle-search ()
+  "toggle the binding of the RET key to isearch-repeat-forward so that if I 
+   am going to do lots of searching it will be easier"
+  (interactive)
+  (local-set-key [RET] 'newline)
+)
+
+(defun dos-line () 
+  "sets the buffer-file-coding-system to undecided-dos; changes the buffer
+    by invisibly adding carriage returns"
+  (interactive)
+  (set-buffer-file-coding-system 'undecided-dos nil)
+  (save-buffer)
+)
+
+(defun unix-line () 
+  "sets the buffer-file-coding-system to undecided-unix; changes the buffer
+    by invisibly removing carriage returns"
+  (interactive)
+  (set-buffer-file-coding-system 'undecided-unix nil)
+  (save-buffer)
+)
+
+; (defun mac-line () 
+;   "sets the buffer-file-coding-system to undecided-mac; may change the buffer
+;     by invisibly removing carriage returns"
+;   (interactive)
+;   (set-buffer-file-coding-system 'undecided-mac nil))
+
+
+(defun name-my-macro ()
+  "gives the name my-macro to the last keyboard macro recorded"
+   (interactive)
+   (kmacro-name-last-macro 'my-macro)
+)
+
+(defun matlab-support ()
+   "stores the contents of h:/lib/matlab/ver.txt onto the clipboard for filling out a matlab support request."
+   (interactive)
+   (with-temp-buffer
+      (insert-file-contents "h:/lib/matlab/ver.txt")
+      (kill-region (point-min) (point-max))))
+
+(defun ascii-table ()
+    "Display basic ASCII table (0 thru 128)."
+    (interactive)
+    (switch-to-buffer "*ASCII*")
+    (erase-buffer)
+    (save-excursion (let ((i -1))
+      (insert "ASCII characters 0 thru 127.\n\n")
+      (insert " Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char\n")
+      (while (< i 31)
+        (insert (format "%4x %4d %4s | %4x %4d %4s | %4x %4d %4s | %4x %4d %4s\n"
+                        (setq i (+ 1  i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)))
+        (setq i (- i 96))))))
+
+(defun dka-fix-comments ()
+   "Move through the entire buffer searching for comments that begin with
+    \"//\" and fill them appropriately.  That means if comments start too
+    close to the end of line (20 less than the fill-column) move the
+    entire comment on a line by itself."
+   (interactive)
+   (save-excursion
+      (beginning-of-buffer)
+      (while (search-forward "//")
+	 (lisp-indent-for-comment)
+	 ;; when the comment is deemed to be too close to the end of the
+	 ;; line, yank it and put it on the previous line before filling
+	 (while (< (- fill-column 20) (- (current-column) 3))
+	    (search-backward "//")
+	    (kill-line)
+	    (beginning-of-line)
+	    (yank)
+	    (insert "\n"))
+	 ;; now fill the lines that are too long
+	 (if (and (not (end-of-line))
+		(< fill-column (current-column)))
+	    (c-fill-paragraph)))))
+
+
+;;;======================================================================
+;;; From: lawrence mitchell <wence@gmx.li>
+;;; Find the function under the point in the elisp manual
+;;;
+;;; C-h TAB runs the command info-lookup-symbol
+;;;    which is an interactive autoloaded Lisp function in `info-look'.
+;;; [Arg list not available until function definition is loaded.]
+;;;
+;;; Display the definition of SYMBOL, as found in the relevant manual.
+;;; When this command is called interactively, it reads SYMBOL from the minibuffer.
+;;; In the minibuffer, use M-n to yank the default argument value
+;;; into the minibuffer so you can edit it.
+;;; The default symbol is the one found at point.
+;;;
+;;; With prefix arg a query for the symbol help mode is offered.
+;;;======================================================================
+(defun find-function-in-elisp-manual (function)
+  (interactive
+   (let ((fn (function-called-at-point))
+	 (enable-recursive-minibuffers t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if fn
+		(format "Find function (default %s): " fn)
+	      "Find function: ")
+	    obarray 'fboundp t nil nil (symbol-name fn)))
+     (list (if (equal val "")
+	       fn
+	     val))))
+  (Info-goto-node "(elisp)Index")
+  (condition-case err
+      (progn
+	(search-forward (concat "* "function":"))
+	(Info-follow-nearest-node))
+    (error (message "`%s' not found" function))))
+
+
+;;;======================================================================
+;;; define a function to scroll with the cursor in place, moving the
+;;; page instead
+;;;======================================================================
+(defun scroll-down-in-place (n)
+  (interactive "p")
+  (previous-line n)
+  (scroll-down n))
+
+(defun scroll-up-in-place (n)
+  (interactive "p")
+  (next-line n)
+  (scroll-up n))
+
+
+;;;======================================================================
+;;; functions to display file and path information
+;;;======================================================================
+;;; show the full path and filename in the message area
+(defun path ()
+  (interactive "*")
+  (message "%s" buffer-file-name))
+
+;;; set filename only in the Modeline display
+(defun short-file-name ()
+  "Display the file path and name in the modeline"
+  (interactive "*")
+  (setq-default mode-line-buffer-identification '("%12b")))
+
+;;; set the full path and filename only in the Modeline display
+(defun long-file-name ()
+  "Display the full file path and name in the modeline"
+  (interactive "*")
+  (setq-default mode-line-buffer-identification
+    '("%S:"(buffer-file-name "%f"))))
+
+(defun insert-current-file-name ()
+  (interactive)
+  (insert (buffer-file-name (current-buffer))))
+
+
+;;;======================================================================
+;;; byte compile the current buffer on saving it
+;;;======================================================================
+(defvar mode-specific-after-save-buffer-hooks nil
+  "Alist (MAJOR-MODE . HOOK) of after-save-buffer hooks
+specific to major modes.")
+
+(defun run-mode-specific-after-save-buffer-hooks ()
+  "Run hooks in `mode-specific-after-save-buffer-hooks' that match the
+current buffer's major mode.  To be put in `after-save-buffer-hooks'."
+  (let ((hooks mode-specific-after-save-buffer-hooks))
+    (while hooks
+      (let ((hook (car hooks)))
+    (if (eq (car hook) major-mode)
+	(funcall (cdr hook))))
+      (setq hooks (cdr hooks)))))
+
+(defun ask-to-byte-compile ()
+  "Ask the user whether to byte-compile the current buffer
+if its name ends in `.el' and the `.elc' file also exists."
+  (let ((name (buffer-file-name)))
+    (and name
+     (string-match "\\.el$" name)
+     (file-exists-p (concat name "c"))
+     (if (y-or-n-p (format "Byte-compile %s? " name))
+	 (byte-compile-file name)
+       (message "")))))
+
+(setq mode-specific-after-save-buffer-hooks
+      '((emacs-lisp-mode . ask-to-byte-compile)
+		(lisp-mode       . ask-to-byte-compile)
+    ))
+
+(setq after-save-hook '(run-mode-specific-after-save-buffer-hooks))
+
+
+;;;======================================================================
+;;; functions to get and set current fonts
+;;;======================================================================
+(defun get-font()
+  "Insert a string in the X format which describes a font the user can
+select from the Windows font selector."
+  (interactive)
+;  (if (y-or-n-p "Proportional? ")
+;      (insert (prin1-to-string (w32-select-font (selected-frame) w32-list-proportional-fonts)))
+;  (insert (prin1-to-string (w32-select-font))))
+  (insert (prin1-to-string (w32-select-font)))
+  (message ""))
+
+
+(defun set-font()
+  "Select the default font for this frame from the windows font selector dialog"
+  (interactive)
+;  (if (y-or-n-p "Proportional? ")
+;      (set-default-font (w32-select-font (selected-frame) w32-list-proportional-fonts))
+;    (set-default-font (w32-select-font)))
+  (set-default-font (w32-select-font))
+  (if frame-enlarged
+      (frame-enlarge)
+    (frame-adjust))
+  (message ""))
+
+
+;;;======================================================================
+;;; this command will list all available fonts. Good if the font
+;;; you want does not appear in the font dialog
+;;;======================================================================
+(defun list-fonts()
+  "Return a list of all available fonts"
+  (interactive)
+    (pop-to-buffer "*fontlist*")
+    (erase-buffer)
+    (insert-string (prin1-to-string (x-list-fonts "*")))
+
+    ; delete the leading ("
+    (goto-char (point-min))
+    (delete-char 2)
+
+    ; replace " " with a newline
+    (while (re-search-forward "\" \"" nil t)
+      (replace-match "\n"))
+
+    ; delete the trailing ")
+    (goto-char (point-max))
+    (delete-char -2)
+
+    ; sort the region
+    (sort-lines nil (point-min) (point-max))
+    (goto-char (point-min))
+
+    ; set the 'q' key to hide the window
+    (local-set-key "q" (quote delete-window))
+  )
+
+;;;======================================================================
+;;; Related to font-lock mode
+;;;======================================================================
+
+;;; get the font information for the text under the cursor
+(defun what-face (pos)
+  "Return the font-lock face information at the current point
+Thanks to Miles Bader <miles@lsi.nec.co.jp> for this (gnus.emacs.help)"
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+		  (get-char-property (point) 'face))))
+    (if face
+	(message "Face: %s" face)
+      (message "No face at %d" pos))))
+
+(defun add-keyword (str face mode)
+   "Allow easy addition of font lock keyword for a specified mode.
+    add-keyword str face mode
+      str = keyword text - double backslashes?
+      face = name of face to use
+      mode = name of mode for which this should be added"
+   (interactive)
+   (font-lock-add-keywords mode str 1 face))
+
+;;;======================================================================
+;;; sum a column of numbers.
+;;;======================================================================
+(defun sum-column (start end)
+  "Adds numbers in a rectangle. Digits must be aligned correctly"
+  (interactive "r")
+  (copy-rectangle-to-register 9 start end)
+  (set-buffer (get-buffer-create "*calc-sum*"))
+  (erase-buffer)
+  (insert-register 9)
+  (let ((sum 0))
+    (while (re-search-forward "[0-9]*\\.?[0-9]+" nil t)
+      (setq sum (+ sum (string-to-number (match-string 0)))))
+    (message "Sum: %f" sum)))
+
+
+;;;======================================================================
+;;; Launch various tasks (apps with predefined switches)
+;;;======================================================================
+;;; the XTerm switches and geometry are defined in the .tcshrc
+
+(defun console ()
+  "Launch a shell in the normal console location using rxvt"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "rxvt"
+   (concat (getenv "CONSOLE_SWITCHES") " -T '" (getenv "HOSTNAME") "' -e tcsh")))
+
+(defun xterm ()
+  "Launch a shell using the rxvt application."
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "rxvt"
+   (concat (getenv "XTERM_SWITCHES") " -T 'xterm' -e tcsh")))
+
+(defun wordpad ()
+  "Launch the Wordpad editor"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "C:/Program Files/Windows NT/Accessories/wordpad.exe"))
+
+
+(defun cmd ()
+  "Launch the NT Command console"
+  (interactive)
+	(w32-shell-execute
+	 "open"
+	 "cmd"))
+
+(defun dterm ()
+  "Launch tcsh shell with the NT shell window"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "cmd"
+   "/C tcsh"))
+
+(defun explorer ()
+  "Launch the windows explorer in the current directory"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "explorer"
+   (concat "/e, " (convert-standard-filename default-directory))))
+
+;;;======================================================================
+;;; Remote desktop shortcuts
+;;;======================================================================
+(defun remote-desktop (rdpfile)
+  "Connect to a machine using the XP remote desktop connection in console mode.
+  The rdpfile must exist in c:/Remote_Machines since no error
+  checking is done."
+  (w32-shell-execute "open" "c:/Windows/System32/mstsc.exe"
+                     (concat "c:/Remote_Machines/" rdpfile " /console")))
+
+;; format for shortcuts to launch remote desktop might be
+;;(defun computername() (interactive) (remote-desktop "computername.rdp"))
+
+(defun virtual-machine ()
+  (interactive)
+  (w32-shell-execute "open" "C:/Program Files/Microsoft Virtual Server/VMRC Client/vmrc.exe"))
+
+;;;======================================================================
+;;; Launch various applications
+;;;======================================================================
+(defconst path_to_office "c:/Program Files/Microsoft Office/Office11/")
+
+(defun access ()
+  "Launch the MS Access database program"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/msaccess.exe")))
+
+(defun excel ()
+  "Launch the MS Excel spreadsheet application"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/excel.exe")))
+
+(defun outlook ()
+  "Launch the MS Outlook calander and email program"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/outlook.exe") "/recycle"))
+
+(defun powerpoint ()
+  "Launch the MS PowerPoint presentation program"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/powerpnt.exe")))
+
+(defun word ()
+  "Launch the MS Word application"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/winword.exe")))
+
+(defun hotsync ()
+  "Launch the Palm hotsync program"
+  (interactive)
+  (w32-shell-execute "open" "c:/Program Files/palmOne/hotsync.exe"))
+
+(defun palm ()
+  "Launch the Palm desktop program"
+  (interactive)
+  (w32-shell-execute "open" "c:/Program Files/palmOne/palm.exe"))
+
+(defun pskill (pid)
+  "Kill the process with the specified pid using the pstools
+  pskill command"
+  (interactive "sPID or Executable Name: ")
+  (let ((default-directory TOP_LEVEL)))
+  (shell-command (concat "pskill " pid)))
+
+;;;======================================================================
+;;; the following functions use the program nircmd
+;;; found at http://www.nirsoft.net
+(defun nircmd (cmd)
+  (interactive "MCmd: " cmd)
+  (w32-shell-execute "open" (concat UTILS_DIR "/nircmd/nircmd.exe") cmd))
+
+(defun cdeject ()
+  "Eject the cd in drive d:"
+  (interactive)
+  (nircmd "cdrom open d:"))
+
+(defun cdopen ()
+  "Eject the cd in drive d:"
+  (interactive)
+  (cdeject))
+
+(defun screensaver ()
+  "Start the default screensaver"
+  (interactive)
+  (nircmd "screensaver"))
+
+(defun lock ()
+  "Lock the workstation"
+  (interactive)
+  (nircmd "lockws"))
+
+
+
+
+;;;======================================================================
+;;; Load various web pages into the browser of choice
+;;;======================================================================
+;;; use the webjump package for web pages. It provides completion of
+;;; all available pages and has provisions for search engines already
+;;; built in (C-c j)
+
+;BRWSR is set in the .emacs file
+(defun browse (&optional url &optional arg)
+  "Launch your preferred browser (`BRWSR) with an optional URL"
+  (interactive "MURL (optional): ")
+  (if (string= url "")
+	  (w32-shell-execute "open" BRWSR)
+	(w32-shell-execute "open" BRWSR url arg)))
+
+(defun ie (&optional url &optional arg)
+  "Launch Internet Explorer with an optional URL"
+  (interactive "MURL (optional): ")
+;  (interactive (browse-url-interactive-arg "URL: "))
+;  (interactive)
+;  (read-minibuffer "URL: " (format "%s" (url-atpt)))
+  (if (or (string= url "") (null url))
+      (w32-shell-execute "open" IEPRG "-nohome")
+    (w32-shell-execute "open" IEPRG url arg)))
+
+(defun fx (&optional url)
+  "Launch the Mozilla Firefox browser with an optional URL"
+  (interactive "MURL (optional): ")
+;  (interactive (browse-url-interactive-arg "URL: "))
+;  (interactive)
+;  (read-minibuffer "URL: " (format "%s" (url-atpt)))
+  (if (or (string= url "") (null url))
+      (w32-shell-execute "open" FRFXPRG "/prefetch:1")
+    (w32-shell-execute "open" FRFXPRG url)))
+
+(defun css ()
+  "Load the Cascading Style Sheet specification into the default browser
+Local or Remote (web-based) copies available"
+  (interactive)
+  (if (y-or-n-p "Local copy? ")
+;      (browse (concat "file://" UTILS_DIR "/reference/CSS1/index.html"))
+;    (browse "http://www.htmlhelp.com/reference/css/"))
+      (w3m-find-file (concat UTILS_DIR "/reference/CSS1/index.html"))
+    (w3m-goto-url "http://www.htmlhelp.com/reference/css/"))
+  (message ""))
+
+(defun html ()
+  "Load the HTML specification into w3m
+Local or Remote (web-based) copies available"
+  (interactive)
+  (if (y-or-n-p "Local copy? ")
+;      (browse (concat "file://" UTILS_DIR "/reference/HTML4/index.html"))
+;    (browse "http://www.htmlhelp.com/reference/html40/"))
+      (w3m-find-file (concat UTILS_DIR "/reference/HTML4/index.html"))
+    (w3m-goto-url "http://www.htmlhelp.com/reference/html40/"))
+	(message ""))
+
+;;;======================================================================
+;;; load various web pages
+;;;======================================================================
+(defun google (what)
+  "Use google to search for WHAT."
+  (interactive "sSearch: ")
+  (w3m-browse-url (concat "http://www.google.com/search?q="
+                          (w3m-url-encode-string what))))
+
+
+
+;;;======================================================================
+;;; keyboard macro definitions.
+;;;======================================================================
+;;; The macro name is just after defalias '<macro>.  You execute the
+;;; macro by typing;;; Esc-x <macro_name>;;;
+;;; 1) define the macro ( C-x ( to begin, type macro then C-x ) to end )
+;;; 2) name the macro ( M-x name-last-kbd-macro )
+;;; 3) insert the macro into your .emacs file. Go the the end of the
+;;; .  emacs and execute the following
+;;;    M-x insert-kbd-macro <return> macro name <return>
+
+;;; bring up the color display
+(defalias 'colors
+  (read-kbd-macro "M-x list-colors-display RET"))
+
+;;; bring up the faces display
+(defalias 'faces
+  (read-kbd-macro "M-x list-faces-display RET"))
+
+;;; justification of a paragraph at the current fill column
+(defalias 'justify-center
+  (read-kbd-macro "M-x set-justification-center"))
+(defalias 'justify-full
+  (read-kbd-macro "M-x set-justification-full"))
+(defalias 'justify-right
+  (read-kbd-macro "M-x set-justification-right"))
+(defalias 'justify-left
+  (read-kbd-macro "M-x set-justification-left"))
+(defalias 'justify-none
+  (read-kbd-macro "M-x set-justification-none"))
+
+;;;=====================
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of
+;;; fill-paragraph Takes a multi-line paragraph and makes it into a
+;;; single line of text.
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column 46488))
+    (fill-paragraph nil)))
+
+(defun unfill-region ()   "Do the opposite of fill-region; stuff all
+paragraphs in the current region into long lines."
+  (interactive)
+  (let ((fill-column 9000))
+    (fill-region (point) (mark))))
+
+;------------------------------------
+; Somebody's code to jump to a URL or file
+;------------------------------------
+
+(defun my-jump ()
+  "Jump to the thing at point.  If a filename, open it."
+  (interactive)
+  (let (thing (thing-at-point 'filename))
+    (if thing
+      (if (file-readable-p thing)
+          (find-file thing)
+        (if (file-exists-p thing)
+            (error "File is not readable")
+            (error "File does not exist")
+        )
+      )
+      (setq thing (thing-at-point 'url))
+      (if thing
+	  (browse-url thing)
+	  (error "Nothing to jump to at point")
+      )
+    )
+  )
+)
+
+
+;------------------------------------
+; key definitions
+;------------------------------------
+
+;; Helpful info from the emacs info file...
+;; The way to write a vector in Emacs Lisp is with square brackets
+;; around the vector elements.  Use spaces to separate the elements.  If an
+;; element is a symbol, simply write the symbol's name--no other
+;; delimiters or punctuation are needed.  If a vector element is a
+;; character, write it as a Lisp character constant: `?' followed by the
+;; character as it would appear in a string.
+
+;; Here is an example of using a vector to rebind `C-=' (a control
+;; character not in ASCII):
+;;      (global-set-key [?\C-=] 'make-symbolic-link)
+;; Also some others: 
+;;  `C-M-=' [?\M-\C-=] (not in ASCII because `C-=' is not),
+;;  `H-a'   [?\H-a] (a Hyper character; ASCII doesn't have Hyper, 
+;;  <F7>    [f7] (a function key), and 
+;; `C-Mouse-1' [C-mouse-1]  (a keyboard-modified mouse button):
+;;  `C-z' [?\C-z],  `C-x l' [?\C-x ?l],  `C-x <TAB>' [?\C-x ?\t]
+;;  [?\r] newline,  [?\d] delete,  [?\C-x ?\e ?\e] 'repeat-complex-command)
+
+;; Interesting notes on syntax
+; key [(meta up)] can be given as (kbd "M-<up>")
+; The manual now recommends using the kbd function.  Examples of the string 
+; you should feed that are these: "C-c y", C-M-q, <f5>, C-<f5>,C-<right>,
+; <mouse-2>, C-<down-mouse-3>.  kbd converts from a textual representation
+; to a form that can be passed to global-set-key. Another option is a Lisp
+; string or vector to specify it. A string only works for ASCII and Meta+
+; ASCII. Examples: "\C-x\M-l", C-x\t. Use for tab, return, escape and 
+; delete: \t \r \e and \d. A Lisp vector has surrounding square braces and 
+; spaces between input events. Function keys are given by symbols. A 
+; character constant in Lisp is a question mark followed by the character.
+; Examples: [?\C-=], [?\M-\C-=], [?\H-a], [f7], [C-mouse-1], [?\C-z ?\M-l]. 
+; See Info Chapter "Rebinding Function Keys" for more info on the function
+; keys
+
+
+; --- these seem to be set everywhere and are not needed.
+(if (string= system-type "gnu/linux")
+   (progn
+      (global-set-key [delete] 'delete-char)
+      (global-set-key [kp-delete] 'delete-char)
+   )
+)
+
+; keypad function keys
+(global-set-key [kp-f1] 'scroll-up)
+(global-set-key [kp-f2] 'scroll-down)
+
+; regular function keys
+; by default function key 2 is defined as a prefix key - assigned to
+; 2C-mode-map, for two column editing special mode.  So, must first undo that 
+(setq 2C-mode-map 'nil) ; undefine the keymap, then can reassign the key
+(global-set-key [f2] 'name-my-macro)
+
+(global-set-key [f3] 'my-macro)
+(global-set-key [f4] 'make-frame-command)
+(global-set-key [f5] 'delete-frame)
+(global-set-key [f6] 'myfiles)
+(global-set-key [f7] 'MyDocuments)
+(global-set-key [S-f7] 'MyProfile)
+; [S-f8] is getting swallowed by VNC viewer - so accomodate
+(global-set-key [f8] 'umm)
+;; (global-set-key [S-f8] 'revert-now)
+;; (global-set-key [C-S-f8] 'kill-buffer-contents)
+(global-set-key [f9] 'revert-now)
+;(global-set-key [C-S-f9] 'kill-buffer-contents)
+; for some reason, shift-fn keys are getting the shift removed.  Remap.
+; (global-set-key [f9] 'server-edit)
+;(global-set-key [f10] 'switch-to-buffer)
+(global-set-key [f12] 'save-buffer)
+(global-set-key "\C-xw" 'write-file-copy) ; saves a copy of the current buffer
+(global-set-key [end] 'end-of-line)
+
+; tough key to type
+(global-set-key '[(meta up)] 'beginning-of-buffer)
+(global-set-key [C-up] 'cut-here-up)
+(global-set-key [C-down] 'cut-here-down)
+(global-set-key "\C-cb" 'box0)
+(global-set-key "\C-c\C-d" 'date)
+(global-set-key "\C-cd" 'datealone)
+(global-set-key "\C-c\C-f" 'fill-para-here)
+(global-set-key "\C-cg" 'goto-line)
+
+(global-set-key (kbd "C-+") 'sacha/increase-font-size)
+(global-set-key (kbd "C--") 'sacha/decrease-font-size)
+
+(global-set-key "\C-\M-l" 'drop-down) ; was reposition-window
+
+(global-set-key (kbd "C-;") 'comment-region)
+
+(global-set-key '[(control ?1)] 'delete-window) ; was defined as digit argument
+(global-set-key '[(control ?2)] 'other-one) ; keep other window
+(global-set-key '[(control ?4)] 'replace-string)  ; was defined as digit argument
+(global-set-key '[(control ?5)] 'query-replace)  ; was defined as digit argument
+(global-set-key '[(control ?6)] 'replace-regexp)
+(global-set-key '[(control ?7)] 'query-replace-regexp)
+(global-set-key '[(control ?8)] 'step-and-repeat)
+
+(global-set-key "\C-x\C-l" 'lift-up) ; was downcase-region
+(global-set-key "\M-l" 'set-down)    ; was downcase-word
+
+;(global-set-key "\C-he" 'hints) ; display hints and data in a new frame
+(global-set-key "\C-he" 'keys) ; 
+(global-set-key "\C-hE" 'hintshere) ; and in this frame
+(global-set-key "\C-h\C-e" 'data)
+
+(global-set-key "\C-xd"    'dired)  ; Make these both dired, because that
+(global-set-key "\C-x\C-d" 'dired)  ; is what I anyway.
+
+(global-set-key "\C-x-" 'show-buffer-file-name)
+(global-set-key "\M-;" 'eval-expression) ; was indent-for-comment
+(global-set-key "\M-:" 'my-eval-region) ; was eval-expression
+
+;
+; Set Bindings to Mouse Events ------------------------------
+;
+(global-set-key [S-down-mouse-1] 'browse-url-at-mouse) ; Was mouse-set-font
+; (global-set-key [S-down-mouse-3] 'ffap-at-mouse ; This is already defined...
+(global-set-key [S-mouse-3] 'ffap-at-mouse)
+(global-set-key [S-mouse-2] 'yh)
+
+
+;------------------------------------
+; enabled commands
+;------------------------------------
+
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'eval-expression 'disabled nil)
+
+
+;------------------------------------
+; control flags
+;------------------------------------
+;;; turn off menu bar 
+(menu-bar-mode -1)
+;;; turn off tool-bar
+(tool-bar-mode -1)
+
+;;; Turn off the fringes - see how you like this:
+(if (fboundp 'fringe-mode)
+    (fringe-mode 0)) ; so hopefully this can turn it off.
+
+;; Turn off default transient mark mode (minor mode)
+;(setq transient-mark-mode nil)
+;(transient-mark-mode -1)
+(transient-mark-mode 0)
+
+;; Always end a file with a newline
+(setq require-final-newline t)
+
+;; Stop at the end of the file, not just add lines
+(setq next-line-add-newlines nil)
+
+;; Allow ffap to also read a URL
+;(setq ffap-url-regexp 1)
+
+; (setq initial-scratch-message nil) ; sets initial message to blank
+(setq inhibit-startup-screen 1) ; skip initial message
+
+; default mode for *scratch* buffer is text
+(setq initial-major-mode 'text-mode)
+
+; default mode is text with auto-fill
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+; delete excess backup files
+(setq delete-old-versions t)
+
+(setq initial-frame-alist (append initial-frame-alist default-frame-alist))
+
+(setq scroll-bar-mode 'right)
+
+(setq comint-scroll-to-bottom-on-input t)
+(setq comint-scroll-to-bottom-on-output t)
+
+; shell doesn't seem to be working unless this gets changed to remove
+; the "-T" on hpux
+; (setq explicit-csh-args ("-i"))
+
+; disable the initial comments in the scratch buffer.
+(setq initial-scratch-message nil)
+
+
+;--------------------------------
+; Setup Backups to my wishes
+;--------------------------------
+; save these for examples
+;;
+;; Make backup files in `backup-file-directory' rather than scattered 
+;; around all over the filesystem. (old way is (concat file-name "~"))
+
+;; create `backup-file-directory' if it doesn't exist
+;(if (not (file-exists-p backup-file-directory))
+;    (progn
+;      (message
+;       (concat "Creating backup directory " backup-file-directory)
+;       )
+;      (make-directory backup-file-directory)
+;      )
+;)
+
+;; (defun make-backup-file-name (file-name)
+;;   "Create the non-numeric backup file name for `file-name'."
+;;   (progn
+;;     (expand-file-name 
+;;       ;; swap ':' and '/' with '_'
+;;       (subst-char-in-string ?: ?_ (subst-char-in-string ?/ ?_ file-name)) 
+;;       backup-file-directory
+;;     )
+;;   )
+;; )
+
+;------------------------------------
+; server and other utilities
+;------------------------------------
+
+(if (not (string= system-type "windows-nt"))
+    (server-start)
+  (if (string= system-type "windows-nt")
+      (if (not (string= system-name "LEFT"))
+	  (progn
+	    (load "gnuserv")
+	    (gnuserv-start)
+	  )
+      )
+  )
+)
+  
+;-----------------------------------------
+; Set up default colors & frame attributes
+;-----------------------------------------
+  
+(setq default-frame-alist  (append default-frame-alist
+       '(  (foreground-color . "White")
+	   (background-color . "Black")
+	   (cursor-color . "SkyBlue")
+	   (scroll-bar-width . 12)
+        )
+))
+
+(setq initial-frame-alist (append initial-frame-alist default-frame-alist))
+
+(setq scroll-bar-mode 'right)
+
+
+;; (custom-set-faces
+;;   ;; custom-set-faces was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+
+;; ; this next guy came with Ubuntu install
+;;  '(font-lock-string-face (
+;;       (  ((class color) (min-colors 88) (background light)) 
+;;          (:foreground "Red")
+;;       ) )
+;;   )
+
+;;  '(bold-italic ((t (:bold t :italic t :foreground "HotPink"))))
+
+;; ; '(font-lock-builtin-face (
+;; ;     (   ((class color) (min-colors 88) (background light)) 
+;; ;         (:foreground "Steel Blue" :weight bold)))
+;; ;  )
+
+
+;;  '(font-lock-builtin-face (
+;;      (  ((class color) (background light)) 
+;;         (:foreground "Steel Blue" :weight bold))))
+
+;;  '(italic (t (:italic t :foreground "HotPink")))
+
+;;  '(region (t (:background "Cyan")))
+
+;; )
+
+(setq comint-scroll-to-bottom-on-input t)
+(setq comint-scroll-to-bottom-on-output t)
+
+; shell doesn't seem to be working unless this gets changed to remove
+; the "-T" on hpux
+; (setq explicit-csh-args ("-i"))
+
+; disable the initial comments in the scratch buffer.
+(setq initial-scratch-message nil)
+
+;------------------------------------
+; configure different modes
+;------------------------------------
+
+;------------------------------------
+; configure spice mode
+;------------------------------------
+
+(setq auto-mode-alist (cons '("\\.sp$" . spice-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.inc" . spice-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.lib" . spice-mode) auto-mode-alist))
+(autoload 'spice-mode "spice-mode.el" "mode for SPICE decks" t)
+;(setq spice-standard "hspice") ; operating in hspice mode by default
+(defun spice-mode-hook-fn1 ()
+   "Set up spice-mode when it loads"
+   (progn
+     (define-key spice-mode-map "\C-c\C-c" 'hspice)
+     (message "defined new key for spice mode")))
+(add-hook 'spice-mode-hook 'spice-mode-hook-fn1)
+
+;------------------------------------
+; Visual Basic Mode
+; configure visual-basic mode
+;------------------------------------
+(setq auto-mode-alist (cons '("\\.[vV][bB]s?$" . visual-basic-mode) auto-mode-alist))
+(autoload 'visual-basic-mode "visual-basic-mode.el" "mode for Visual Basic" t)
+
+
+;------------------------------------
+; true-tab mode
+;------------------------------------
+
+(defvar true-tab-mode-map
+  (let ( (map (make-sparse-keymap)) )  ; sparse keymap copies the existing one
+    (define-key map "\t" 'self-insert-command)
+    map) ; return the value of the let clause, which is map from this line
+ "Keymap for `true-tab-mode'.")
+
+(define-derived-mode true-tab-mode text-mode "text TrueTab"
+" Major mode based on text mode, just reassigns the TAB key to do
+an insertion of a tab.  Key map: \\{true-tab-mode-map}"
+)
+
+; How to test for a variable to exist - if exists, append, if not just set
+(if (boundp 'magic-mode-alist)
+    (setq magic-mode-alist 
+       (quote (("^#! /usr/bin/python" . python-mode)
+               ("^VRT 6" . true-tab-mode)))))
+
+;    (setq magic-mode-alist (cons '("^VRT 6" . true-tab-mode) magic-mode-alist) )
+;    (setq magic-mode-alist '("^VRT 6" . true-tab-mode))
+
+
+;------------------------------------
+; font-lock mode
+;------------------------------------
+;;   Already set above under custom-set-variables, turns on font-lock-mode for all
+;;   modes specified in font-lock-global-modes.
+;; (global-font-lock-mode 1)
+
+;;    set above under custom-set-variables, sets the modes which turn on 
+;;    font lock globally, if t, then all modes which allow font-lock
+;;  font-lock-global-modes
+
+(setq font-lock-maximum-decoration t)
+
+(font-lock-add-keywords
+ 'c-mode
+ '(("\\<\\(FIXME\\):" 1 font-lock-warning-face t)))
+
+(font-lock-add-keywords
+ 'text-mode
+ '(("\\<\\(FIXME\\)" 1 font-lock-warning-face t)))
+
+(font-lock-add-keywords
+ 'html-helper-mode
+ '(("\\<\\(<!FIXME>\\)" 1 font-lock-warning-face t)))
+
+;; for journaling mode
+(font-lock-add-keywords
+ 'text-mode
+ '(( "\\<\\(DateMark 20.*\\)" 1 font-lock-keyword-face t))
+ '(( "\\<\\(DateMark: .*\\)" 1 font-lock-keyword-face t)))
+
+
+;--------------------------------
+; shell mode
+;--------------------------------
+; suggested by shell.el
+;; Define M-# to run some strange command:
+(eval-after-load "shell"
+ '(define-key shell-mode-map "\M-#" 'shells-dynamic-spell))
+; shell.el runs this hook
+; define a function shell-mode-hook to run when shell loads
+;; (add-hook 'shell-mode-hook (setq explicit-csh-args '("-i"))
+;
+
+;------------------------------------
+; Dired Mode
+;------------------------------------
+
+(defun dired-open-file-outside-emacs ()
+   "Use the OS's file association to open this file in the appropriate tool"
+   (interactive)
+   (setq filename (file-name-sans-versions (dired-get-filename)))
+   ;(setq command (concat "/usr/bin/gnome-open " filename))
+   (setq command (concat "/home/buchs/bin/myopen gnome-open " filename))
+   (async-shell-command command)
+)
+
+(defun dired-find-file-new-frame ()
+  "In dired, visit this file or directory in a newly created frame."
+  (interactive)
+  (find-file-other-frame (file-name-sans-versions (dired-get-filename))))
+
+(defun my-dired-hook-fn1 ()
+  "Set up dired when it loads"
+  (progn
+    (define-key dired-mode-map "e" 'dired-find-file-new-frame)
+    (define-key dired-mode-map "O" 'dired-open-file-outside-emacs)))
+
+(add-hook 'dired-mode-hook 'my-dired-hook-fn1)
+
+
+;------------------------------------
+; Lisp Mode
+;------------------------------------
+
+(setq lisp-indent-offset 3)
+
+;------------------------------------
+; Python Mode
+;------------------------------------
+
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+(setq interpreter-mode-alist (cons '("python" . python-mode)
+                                      interpreter-mode-alist))
+
+;(autoload 'smarttabs "smart-tabs-advice" "loading..." t)
+;(smart-tabs-advice python-indent-line-1 python-indent)
+
+; Then enable electric-pair by binding the appropriate characters to it in 
+; your favorite programming modes. For example, for PythonMode:
+(add-hook 'python-mode-hook
+   (lambda ()
+      (setq indent-tabs-mode t)
+      (setq tab-width (default-value 'tab-width))))
+      ; Well, what IS the python keyboard table called?
+      ;(define-key python-mode-map "\"" 'electric-pair)
+      ;(define-key python-mode-map "\'" 'electric-pair)
+      ;(define-key python-mode-map "(" 'electric-pair)
+      ;(define-key python-mode-map "[" 'electric-pair)
+      ;(define-key python-mode-map "{" 'electric-pair)))
+;; or 
+; check out http://www.emacswiki.org/emacs/AutoPairs
+
+;------------------------------------
+; Matlab Mode
+;------------------------------------
+
+(autoload 'matlab-mode "matlab" "Matlab mode." t)
+(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
+(autoload 'matlab-shell "matlab" "Interactive Matlab mode." t)
+
+; User Level customizations (You need not use them all):
+;;   (setq matlab-indent-function t)    ; if you want function bodies indented
+;;   (setq matlab-verify-on-save-flag nil) ; turn off auto-verify on save
+
+;(defun my-matlab-mode-hook ()
+;   (setq fill-column 76))           ; where auto-fill should wrap
+;(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+;(defun my-matlab-shell-mode-hook ()
+;   '())
+;(add-hook 'matlab-shell-mode-hook 'my-matlab-shell-mode-hook)
+
+
+
+;------------------------------------
+; html-helper-mode
+;------------------------------------
+; for documentation - view this - use shift-m1
+;   file:///H:/lib/emacs/html-helper-mode_keybindings.html
+;   file:///H:/lib/emacs/html-helper-mode_documentation.html
+
+;; load up my custom functions
+(autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
+(setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.htm$" . html-helper-mode) auto-mode-alist))
+(setq html-helper-do-write-file-hooks t)   ;;; try to update file timestamp
+(setq html-helper-build-new-buffer t)      ;;; create skeleton for new file
+
+;;; default address field
+(setq html-helper-address-string 
+  "Kevin Buchs <a href=mailto:myemailhere>myemailhere</a>")
+;; set up local key bindings for html-helper-mode
+
+(add-hook 
+ 'html-helper-mode-hook
+ '(lambda () "HTML Mode hook function"
+     (load "html-helper-mode-extensions")
+     (turn-off-auto-fill)
+     (define-key html-helper-mode-map "\C-c[f1]" 'hhm-ex-make-current-line-h1)
+     (define-key html-helper-mode-map [C-return] 'hhm-ex-rb)
+     (define-key html-helper-mode-map "\M-p" 'hhm-ex-p)
+     (define-key html-helper-mode-map "\M-b" 'hhm-ex-b)
+     (define-key html-helper-mode-map "\M-." 'hhm-ex-ra)
+     (define-key html-helper-mode-map "\M-u" 'hhm-ex-u)
+     (define-key html-helper-mode-map "\M-o" 'hhm-ex-o)
+     (define-key html-helper-mode-map "\M-l" 'hhm-ex-l)
+     (define-key html-helper-mode-map "\M-3" 'hhm-ex-inc)
+     (define-key html-helper-mode-map "\M-i" 'hhm-ex-i)
+     (define-key html-helper-mode-map "\M-
+" 'hhm-ex-rp)
+     (define-key html-helper-mode-map "\C-c1" 'hhm-ex-h1)
+     (define-key html-helper-mode-map "\C-c2" 'hhm-ex-h2)
+     (define-key html-helper-mode-map "\C-c3" 'hhm-ex-h3)
+     (define-key html-helper-mode-map "\C-c4" 'hhm-ex-h4)
+     (define-key html-helper-mode-map "\C-c5" 'hhm-ex-h5)
+     (define-key html-helper-mode-map "\C-ca" 'hhm-ex-make-current-line-h1)
+     (define-key html-helper-mode-map "\C-cb" 'hhm-ex-make-current-line-h2)
+     (define-key html-helper-mode-map "\C-cc" 'hhm-ex-make-current-line-h3)
+     (define-key html-helper-mode-map "\C-cd" 'hhm-ex-make-current-line-h4)
+     (define-key html-helper-mode-map "\C-ce" 'hhm-ex-make-current-line-h5)
+     (define-key html-helper-mode-map "\C-cp" 'hhm-ex-pre-region)
+     (define-key html-helper-mode-map "\C-cx" 'hhm-ex-xmp-region)
+     (define-key html-helper-mode-map "\C-cw" 'hhm-ex-bold-region)
+     (define-key html-helper-mode-map "\C-cy" 'hhm-ex-ital-region)
+  )
+)
+
+;; turn off all the nice indentation code
+(setq html-helper-never-indent t)
+
+;------------------------------------
+; TCL mode - inferior shell
+;------------------------------------
+(add-hook 'inferior-tcl-mode-hook
+          (lambda ()
+	    (tcl-send-string (inferior-tcl-proc) "set ::tcl_interactive 1\n")))
+
+;------------------------------------
+; VHDL mode
+;------------------------------------
+(autoload 'vhdl-mode "vhdl-mode" "VHDL Mode" t)
+(setq auto-mode-alist (cons '("\\.vhd?\\'" . vhdl-mode) auto-mode-alist))
+
+;------------------------------------
+; Verilog mode
+;------------------------------------
+(autoload 'verilog-mode "verilog-mode" "Verilog mode" t )
+(setq auto-mode-alist (cons  '("\\.v\\'" . verilog-mode) auto-mode-alist))
+
+
+;; To get tab to insert spaces in Verilog mode, add this code to $HOME/.emacs
+;; (add-hook 'verilog-mode-hook
+;;    (lambda ()
+;;       (setq indent-tabs-mode 'nil)
+;;       (define-key verilog-mode-map "\t" 'indent-for-tab-command)
+;; ))
+
+;; If you instead want the tab to globally, in every mode in emacs,
+;; insert spaces, then add this:
+
+;; (setq-default indent-tabs-mode 'nil)
+
+;; I found in testing the Verilog mode, it won't permit a simple tab
+;; insertion for me and this must be other electric functions turned
+;; on. I assume you know how you are currently inserting tabs and so
+;; you would know how to get them in your Verilog code. Give it a
+;; try.
+
+;-------------------------------------
+; Other autoloaded functions, self-creations
+;-------------------------------------
+
+(autoload 'myfiles "myfiles" "myfiles" t)
+
+(autoload 'log-mode "log-mode" "log-mode" t)
+
+(autoload 'wr "wr" "Create a weekly report" t)
+
+(autoload 'fill-para-here "fill-para-here" "Fill a partial paragraph" t)
+
+(autoload 'html-toc "html-toc" "Create an html table of contents" t)
+
+(autoload 'htmlify "htmlify" "Convert a text document to html legal format" t)
+
+(autoload 'removing-funny-chars "removing-funny-chars" "Take out 8 bit characters" t)
+
+;------------------------------------
+; Somebody's code to jump to a URL or file
+;------------------------------------
+
+(defun my-jump ()
+  "Jump to the thing at point.  If a filename, open it."
+  (interactive)
+  (let (thing (thing-at-point 'filename))
+    (if thing
+      (if (file-readable-p thing)
+          (find-file thing)
+        (if (file-exists-p thing)
+            (error "File is not readable")
+            (error "File does not exist")
+        )
+      )
+      (setq thing (thing-at-point 'url))
+      (if thing
+	  (browse-url thing)
+	  (error "Nothing to jump to at point")
+      )
+    )
+  )
+)
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(background "blue")
+ '(font-lock-builtin-face ((((class color) (background dark)) (:foreground "Turquoise"))))
+ '(font-lock-comment-face ((t (:foreground "MediumAquamarine"))))
+ '(font-lock-constant-face ((((class color) (background dark)) (:bold t :foreground "DarkOrchid"))))
+ '(font-lock-doc-string-face ((t (:foreground "green2"))))
+ '(font-lock-function-name-face ((t (:foreground "SkyBlue"))))
+ '(font-lock-keyword-face ((t (:bold t :foreground "CornflowerBlue"))))
+ '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
+ '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
+ '(font-lock-string-face ((t (:foreground "LimeGreen"))))
+ '(font-lock-type-face ((t (:foreground "#9290ff"))))
+ '(font-lock-variable-name-face ((t (:foreground "PaleGreen"))))
+ '(font-lock-warning-face ((((class color) (background dark)) (:foreground "yellow" :background "red"))))
+ '(fringe ((((class color) (background dark)) (:background "grey98"))))
+ '(highlight ((t (:background "CornflowerBlue"))))
+ '(italic ((t (:italic t :foreground "HotPink"))))
+ '(list-mode-item-selected ((t (:background "gold"))))
+ '(makefile-space-face ((t (:background "wheat"))) t)
+ '(mode-line ((t (:background "Navy"))))
+ '(paren-match ((t (:background "darkseagreen4"))))
+ '(region ((t (:background "DarkSlateBlue"))))
+ '(scroll-bar ((t (:background "black"))))
+ '(show-paren-match ((t (:foreground "black" :background "wheat"))))
+ '(show-paren-mismatch ((((class color)) (:foreground "white" :background "red"))))
+ '(speedbar-button-face ((((class color) (background dark)) (:foreground "green4"))))
+ '(speedbar-directory-face ((((class color) (background dark)) (:foreground "khaki"))))
+ '(speedbar-file-face ((((class color) (background dark)) (:foreground "cyan"))))
+ '(speedbar-tag-face ((((class color) (background dark)) (:foreground "Springgreen"))))
+ '(vhdl-speedbar-architecture-selected-face ((((class color) (background dark)) (:underline t :foreground "Blue"))))
+ '(vhdl-speedbar-entity-face ((((class color) (background dark)) (:foreground "darkGreen"))))
+ '(vhdl-speedbar-entity-selected-face ((((class color) (background dark)) (:underline t :foreground "darkGreen"))))
+ '(vhdl-speedbar-package-face ((((class color) (background dark)) (:foreground "black"))))
+ '(vhdl-speedbar-package-selected-face ((((class color) (background dark)) (:underline t :foreground "black"))))
+ '(widget-field ((((class grayscale color) (background light)) (:background "DarkBlue")))))
+
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(Info-enable-edit t)
+ '(Man-notify-method (quote pushy))
+ '(browse-url-new-window-flag t)
+ '(c-basic-offset 2)
+ '(c-default-style "gnu")
+ '(c-echo-syntactic-information-p t)
+ '(c-hanging-braces-alist (quote ((brace-list-open) (brace-entry-open) (substatement-open before after) (block-close . c-snug-do-while) (extern-lang-open after) (inexpr-class-open after) (inexpr-class-close before))))
+ '(c-offsets-alist (quote ((defun-block-intro . 0) (brace-list-intro . 0) (statement-block-intro . 0))))
+ '(c-strict-syntax-p t)
+ '(cpp-known-face (quote default))
+ '(explicit-csh-args (quote ("-i")))
+ '(font-lock-global-modes t)
+ '(global-font-lock-mode t nil (font-lock))
+ '(inhibit-startup-screen t)
+ '(lpr-page-header-switches (quote ("-Fl60")))
+ '(py-indent-offset 2)
+ '(scroll-bar-mode (quote right))
+ '(speedbar-frame-parameters (quote ((minibuffer) (width . 20) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (set-background-color "black"))))
+ '(tcl-indent-level 2)
+ '(vc-command-messages t)
+ '(vc-default-back-end (quote SVN))
+ '(vc-handled-backends (quote (CVS SVN RCS)))
+ '(vc-path nil))
+
+</pre>
