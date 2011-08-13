@@ -28,7 +28,7 @@ I wrote:
 * [[sqlparser-mysql-complete.el]] -- completing tablename or column name when editing sql for mysql .[2011-07-21]
 * [[sqlparser-oracle-complete.el]] -- completing tablename or column name when editing sql for oracle .[2011-07-31]
 * [[oracle-shell-query.el]] --  execute sql query using sqlplus for oracle .[2011-07-31]
-
+* [[oracle-query.el]] --  execute sql query using sqlplus for oracle .[2011-08-12]
 [new:DrewAdams:2011-02-25 16:24 UTC]
 Welcome to the wiki. -- DrewAdams
 

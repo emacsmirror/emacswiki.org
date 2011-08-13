@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  9 14:49:01 2011 (-0700)
+;; Last-Updated: Fri Aug 12 14:57:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22936
+;;     Update #: 22940
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -745,6 +745,7 @@
 ;;    `custom-variable-p', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name', `icicle-activate-mark',
 ;;    `icicle-add-key+cmd', `icicle-add-menu-item-to-cmd-history',
+;;    `icicle-add/remove-tags-and-refresh',
 ;;    `icicle-all-candidates-action-1', `icicle-all-exif-data',
 ;;    `icicle-alpha-p', `icicle-alt-act-fn-for-type',
 ;;    `icicle-any-candidates-p', `icicle-anychar-regexp',
@@ -757,7 +758,8 @@
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer', `icicle-binary-option-p',
-;;    `icicle-bind-completion-keys', `icicle-bind-isearch-keys',
+;;    `icicle-bind-completion-keys',
+;;    `icicle-bind-file-candidate-keys', `icicle-bind-isearch-keys',
 ;;    `icicle-bind-key-completion-keys-for-map-var',
 ;;    `icicle-bind-key-completion-keys-in-keymaps-from',
 ;;    `icicle-bind-other-keymap-keys',
@@ -1038,6 +1040,7 @@
 ;;    `icicle-transform-multi-completion',
 ;;    `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-dots', `icicle-try-switch-buffer',
+;;    `icicle-unbind-file-candidate-keys',
 ;;    `icicle-unbind-isearch-keys',
 ;;    `icicle-unbind-key-completion-keys-for-map-var',
 ;;    `icicle-unbind-key-completion-keys-in-keymaps-from',
@@ -1115,7 +1118,8 @@
 ;;    `icicle-files', `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
-;;    `icicle-frames-menu-map', `icicle-function-name-history',
+;;    `icicle-frames-menu-map', `icicle-full-cand-fn',
+;;    `icicle-function-name-history',
 ;;    `icicle-fundoc-last-initial-cand-set',
 ;;    `icicle-general-help-string',
 ;;    `icicle-get-alist-candidate-function',

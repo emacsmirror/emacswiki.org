@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 16:47:13 2011 (-0700)
+;; Last-Updated: Fri Aug 12 14:59:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1516
+;;     Update #: 1523
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -72,7 +72,7 @@
 ;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
-;;    `icicle-function-name-history',
+;;    `icicle-full-cand-fn', `icicle-function-name-history',
 ;;    `icicle-fundoc-last-initial-cand-set',
 ;;    `icicle-general-help-string',
 ;;    `icicle-get-alist-candidate-function',
@@ -491,6 +491,12 @@ Do not set or bind this.  This is bound only by `completing-read'.")
 (defvar icicle-frame-alist nil "Alist of frames, returned by `icicle-make-frame-alist'.")
 
 (defvar icicle-frame-name-history nil "History for frame names.")
+
+(defvar icicle-full-cand-fn nil
+  "nil or a function to create a full candidate from a display candidate.
+If candidates are currently multi-completions then the display
+candidate is assumed to have been transformed first (using
+`icicle-transform-multi-completion').")
 
 (defvar icicle-function-name-history nil "History for function names.
 Each name is a symbol name or a lambda form, as a string.")

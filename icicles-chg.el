@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  9 15:05:46 2011 (-0700)
+;; Last-Updated: Fri Aug 12 15:39:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6809
+;;     Update #: 6859
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/08/12 dadams
+;;     icicle-delete-file, icicle-(file|directory)-list, icicle-(dired|file)*,
+;;       icicle-find-file(-absolute|-read-only|in-tags-table)*, icicle-(recent|locate)-file*:
+;;         Use icicle-(un)bind-file-candidate-keys.  Don't do/undo such bindings individually here.
+;;     icicle-find-file-(absolute|in-tags-table)*, icicle-(recent|locate)-file*:
+;;       Bind icicle-full-cand-fn.
+;;     icicle-dired-(project|buffer)*: Removed fboundp test of icicle-bookmark-* (just test Bookmark+).
+;; 2011/08/11 dadams
+;;     icicle-find-file-absolute(-other-window):
+;;       Bind C-x a [+-] to adding/removing tags.
 ;; 2011/08/09 dadams
 ;;     icicle-define(-file)-command calls: Removed undo code if same as last code, so do not repeat it.
 ;; 2011/08/07 dadams
@@ -417,6 +427,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/12 dadams
+;;     icicle-find-file-tagged(-other-window): 
+;;       Bind icicle-full-cand-fn.  Use icicle-file-bindings.
+;;       Use icicle-(un)bind-file-candidate-keys.  Don't do/undo such bindings individually here.
 ;; 2011/08/09 dadams
 ;;     icicle-find-file-tagged(-other-window): Bind C-x a [+-] to adding/removing tags.
 ;;     icicle-define(-file)-command calls: Removed undo code if same as last code, so do not repeat it.
@@ -876,6 +890,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/12 dadams
+;;     icicle-completing-p: Handle cases of filename must-match maps.
+;;     icicle-file-name-input-p: Improved doc string.
 ;; 2011/08/09 dadams
 ;;     Added: icicle-replace-mct-cand-in-mct.
 ;; 2011/08/07 dadams
@@ -2392,6 +2409,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/08/12 dadams
+;;     icicle-file-bindings: Removed binding of icicle-ignore-space-prefix-flag (to *-buffer-ignore-*).
 ;; 2011/05/22 dadams
 ;;     icicle-define(-file)-command: Use #',FUNCTION instead of ',FUNCTION.
 ;;     icicle-with-selected-window, icicle-(buffer|file)-bindings:
@@ -2517,6 +2536,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/12 dadams
+;;     Added: icicle-add/remove-tags-and-refresh, icicle-(un)bind-file-candidate-keys.
 ;; 2011/08/07 dadams
 ;;     icicle-help-on-candidate: For icicle-candidate-help-fn case: icicle-transform-multi-completion.
 ;; 2011/07/27 dadams
@@ -3735,6 +3756,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/08/12 dadams
+;;     icicle-define-minibuffer-maps: Removed code that binds C-x m, C-backspace, C-c +.
+;;       Do that in icicle-bind-file-candidate-keys now.
 ;; 2011/08/07 dadams
 ;;     icicle-mode: Updated doc string for bookmark commands.
 ;; 2011/05/22 dadams
@@ -5335,6 +5359,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/08/12 dadams
+;;     Added: icicle-full-cand-fn.
 ;; 2011/08/07 dadams
 ;;     icicle-abs-file-candidates: Update doc string: now an alist (for COLLECTION arg).
 ;; 2011/07/27 dadams

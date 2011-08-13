@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  9 14:48:07 2011 (-0700)
+;; Last-Updated: Fri Aug 12 15:07:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12473
+;;     Update #: 12478
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4209,7 +4209,12 @@ That is, backslash is never treated as a directory separator."
 ;;   (and (symbolp minibuffer-completion-table) (stringp minibuffer-completion-predicate)))
 
 (defun icicle-file-name-input-p ()
-  "Return non-nil if expected input is a file name."
+  "Return non-nil if reading a file name using `read-file-name'.
+This means that completion candidates are relative file names.
+If instead you want to test whether input is a file name, absolute or
+relative, use this test:
+
+ (or (icicle-file-name-input-p) icicle-abs-file-candidates)"
   minibuffer-completing-file-name)
 
 (defun icicle-file-directory-p (file)
@@ -5466,13 +5471,23 @@ minibuffer."
              ;; $$$ (where-is-internal 'icicle-candidate-action nil 'first-only)
              (let* ((loc-map  (current-local-map))
                     (parent   (keymap-parent loc-map))
-                    (maps     (if (boundp 'minibuffer-local-filename-completion-map)
-                                  (list minibuffer-local-completion-map
-                                        minibuffer-local-must-match-map
-                                        minibuffer-local-filename-completion-map
-                                        minibuffer-local-filename-must-match-map)
-                                (list minibuffer-local-completion-map
-                                      minibuffer-local-must-match-map))))
+                    (maps     (cond ((boundp 'minibuffer-local-filename-must-match-map)
+                                     (list minibuffer-local-completion-map
+                                           minibuffer-local-must-match-map
+                                           minibuffer-local-filename-completion-map
+                                           minibuffer-local-filename-must-match-map))
+                                    ((boundp 'minibuffer-local-must-match-filename-map)
+                                     (list minibuffer-local-completion-map
+                                           minibuffer-local-must-match-map
+                                           minibuffer-local-filename-completion-map
+                                           minibuffer-local-must-match-filename-map))
+                                    ((boundp 'minibuffer-local-filename-completion-map)
+                                     (list minibuffer-local-completion-map
+                                           minibuffer-local-must-match-map
+                                           minibuffer-local-filename-completion-map))
+                                    (t
+                                     (list minibuffer-local-completion-map
+                                           minibuffer-local-must-match-map)))))
                (and (or (and parent (member parent maps)) (member loc-map maps))
                     t)))))              ; Cache t, not the keymap portion.
 

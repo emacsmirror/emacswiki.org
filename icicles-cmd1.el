@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  9 13:24:49 2011 (-0700)
+;; Last-Updated: Fri Aug 12 15:18:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22010
+;;     Update #: 22157
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -375,8 +375,9 @@
          (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;; icicle-assoc-delete-all, icicle-define-command, icicle-define-file-command,
-  ;; icicle-define-add-to-alist-command
+  ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-buffer-bindings,
+  ;; icicle-define-command, icicle-define-file-command, icicle-define-add-to-alist-command,
+  ;; icicle-file-bindings, icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
   ;; icicle-yank
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
@@ -2291,7 +2292,7 @@ directory.
 You can use `C-x m' during completion to access Dired bookmarks, if
 you use library `bookmark+.el'."
   (interactive "P")
-  (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-dired-other-window))
+  (when (require 'bookmark+ nil t)
     (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window))
   (unwind-protect
        ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
@@ -2332,7 +2333,7 @@ directory.
 You can use `C-x m' during completion to access Dired bookmarks, if
 you use library `bookmark+.el'."
   (interactive "P")
-  (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-dired-other-window))
+  (when (require 'bookmark+ nil t)
     (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window))
   (unwind-protect
        ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
@@ -4987,7 +4988,7 @@ the behavior."                          ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings)              ; Bindings
   (progn                                ; First code
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-non-file-other-window))
+    (when (require 'bookmark+ nil t)
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-non-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-non-file-other-window))
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
@@ -5040,7 +5041,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings)              ; Bindings
   (progn                                ; First code
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-non-file-other-window))
+    (when (require 'bookmark+ nil t)
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-non-file-other-window)
       (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-non-file-other-window))
     (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
@@ -5418,10 +5419,22 @@ Otherwise:
 
 ;;;###autoload (autoload 'icicle-delete-file "icicles-cmd1.el")
 (icicle-define-file-command icicle-delete-file ; Command name
-  "Delete a file or directory."         ; Doc string
+  "Delete a file or directory.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
   icicle-delete-file-or-directory       ; Function to perform the action
   "Delete file or directory: " default-directory nil t nil nil ; `read-file-name' args
-  (icicle-file-bindings))               ; Bindings
+  (icicle-file-bindings)                ; Bindings
+  (icicle-bind-file-candidate-keys)     ; First code
+  nil                                   ; Undo code
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 (defun icicle-delete-file-or-directory (file)
   "Delete file or (empty) directory FILE."
@@ -5449,9 +5462,7 @@ Otherwise:
 
 ;;;###autoload (autoload 'icicle-file-list "icicles-cmd1.el")
 (icicle-define-file-command icicle-file-list ; Command name
-  "Choose a list of file and directory names.
-The list of file names (strings) is returned.
-
+  "Choose a list of file and directory names (strings), and return it.
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 You can navigate the directory tree, picking files and directories
@@ -5465,9 +5476,15 @@ regexp.
 You can use either `RET' or `C-g' to finish adding file names to the
 list.
 
-You can use `S-delete' during completion to delete a candidate file.
-  Careful: This deletes the file, it does not just remove it as a
-  candidate.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5494,23 +5511,29 @@ Ido-like behavior."                     ; Doc string
     (icicle-comp-base-is-default-dir-p  t)
     ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
     ))
-  nil nil                               ; First code, undo code
+  (icicle-bind-file-candidate-keys)     ; First code
+  nil                                   ; Undo code
   (prog1 (setq file-names  (nreverse (delete "" file-names))) ; Last code - return list of files
+    (icicle-unbind-file-candidate-keys)
     (when (interactive-p) (message "Files: %S" file-names))))
 
 ;;;###autoload (autoload 'icicle-directory-list "icicles-cmd1.el")
 (icicle-define-file-command icicle-directory-list ; Command name
-  "Choose a list of directory names.
+  "Choose a list of directory names (strings), and return it.
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 You can navigate the directory tree, picking directories anywhere in
 the tree.
 
-You can use `S-delete' during completion to delete a candidate (empty)
-directory.
-  Careful: This deletes the directory, it does not just remove it as a
-  candidate.
-The list of directory names (strings) is returned.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5538,20 +5561,25 @@ Ido-like behavior."                     ; Doc string
     (icicle-comp-base-is-default-dir-p  t)
     ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
     ))
-  nil nil                               ; First code, undo code
+  (icicle-bind-file-candidate-keys)     ; First code
+  nil                                   ; Undo code
   (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of dirs
+    (icicle-unbind-file-candidate-keys)
     (when (interactive-p) (message "Directories: %S" dir-names))))
 
 ;;;###autoload (autoload 'icicle-dired "icicles-cmd1.el")
 (icicle-define-file-command icicle-dired
   "Multi-command version of `dired'.
-During completion:
- You can use `C-x m' to access Dired bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory."                           ; Doc string
+
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
   (lambda (dir) (dired dir switches))   ; Function to perform the action
   "Dired (directory): " nil default-directory nil nil nil ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
@@ -5561,24 +5589,13 @@ During completion:
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
-  (unless (boundp 'minibuffer-local-filename-completion-map) ; First code
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-dired-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-dired-other-window)))
+  (icicle-bind-file-candidate-keys)     ; First code
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 ;;;###autoload (autoload 'icicle-dired-other-window "icicles-cmd1.el")
 (icicle-define-file-command icicle-dired-other-window
-  "Multi-command version of `dired-other-window'.
-During completion:
- You can use `C-x m' to access Dired bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory."                           ; Doc string
+  "Same as `icicle-dired', except uses another window."                           ; Doc string
   (lambda (dir) (dired-other-window dir switches)) ; Function to perform the action
   "Dired in other window (directory): " nil default-directory nil nil nil ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
@@ -5588,13 +5605,9 @@ During completion:
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
-  (unless (boundp 'minibuffer-local-filename-completion-map) ; First code
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-dired-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-dired-other-window)))
+  (icicle-bind-file-candidate-keys)     ; First code
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 
 (put 'icicle-file 'icicle-Completions-window-max-height 200)
@@ -5635,31 +5648,7 @@ then customize option `icicle-top-level-key-bindings'."
 (put 'icicle-file-other-window 'icicle-Completions-window-max-height 200)
 ;;;###autoload
 (defun icicle-file-other-window (arg)   ; Bound to `C-x 4 f' in Icicle mode.
-  "Visit a file or directory in another window.
-With no prefix argument, use relative file names
- (`icicle-find-file-other-window').
-With a prefix argument, use absolute file names
- (`icicle-find-file-absolute-other-window').
-With a negative prefix argument, you can choose also by date:
- Completion candidates include the last modification date.
-
-Note that when you use a prefix argument completion matches candidates
-as ordinary strings.  It knows nothing of file names per se.  In
-particular, you cannot use remote file-name syntax if you use a prefix
-argument.
-
-During completion:
- You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory.
-
-By default, Icicle mode remaps all key sequences that are normally
-bound to `find-file-other-window' to `icicle-file-other-window'.  If
-you do not want this remapping, then customize option
-`icicle-top-level-key-bindings'."
+  "Same as `icicle-file', except uses another window."
   (interactive "P")
   (if arg
       (if (wholenump (prefix-numeric-value arg))
@@ -5689,14 +5678,15 @@ in a common directory.
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
 
-During completion:
- You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c C-d' (think `cd') to change the `default-directory'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5722,11 +5712,15 @@ Ido-like behavior."                     ; Doc string
   default-directory 'file-name-history default-directory nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File or dir (absolute): ")
-    (icicle-abs-file-candidates
-     (mapcar #'(lambda (file)
-                 (setq file  (if (file-directory-p file) (concat file "/") file))
-                 (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
-             (directory-files default-directory 'full nil 'nosort)))
+    (icicle-full-cand-fn                `(lambda (file)
+                                          (setq file  (if (file-directory-p file)
+                                                          (concat file "/")
+                                                        file))
+                                          ,(if current-prefix-arg
+                                               '(icicle-make-file+date-candidate file)
+                                               '(list file))))
+    (icicle-abs-file-candidates         (mapcar icicle-full-cand-fn
+                                                (directory-files default-directory 'FULL nil 'NOSORT)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
@@ -5735,42 +5729,32 @@ Ido-like behavior."                     ; Doc string
     (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-must-match-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c\C-d"            'icicle-cd-for-abs-files)
-    (define-key minibuffer-local-must-match-map "\C-c\C-d"            'icicle-cd-for-abs-files)
-    (define-key minibuffer-local-completion-map "\C-c+"               'icicle-make-directory)
-    (define-key minibuffer-local-must-match-map "\C-c+"               'icicle-make-directory)
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+    (icicle-highlight-lighter)
+    (message "Gathering files...")
+    (icicle-bind-file-candidate-keys))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 
 (put 'icicle-find-file-absolute-other-window 'icicle-Completions-window-max-height 200)
 ;;;###autoload (autoload 'icicle-find-file-absolute-other-window "icicles-cmd1.el")
 (icicle-define-command icicle-find-file-absolute-other-window ; Command name
-  "Visit a file or directory in another window, given its absolute name.
-Same as `icicle-find-file-absolute' except uses a different window." ; Doc string
+  "Same as `icicle-find-file-absolute' except uses another window." ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   default-directory 'file-name-history default-directory nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File or dir (absolute): ")
-    (icicle-abs-file-candidates
-     (mapcar #'(lambda (file)
-                 (setq file  (if (file-directory-p file) (concat file "/") file))
-                 (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
-             (directory-files default-directory 'full nil 'nosort)))
+    (icicle-full-cand-fn                `(lambda (file)
+                                          (setq file  (if (file-directory-p file)
+                                                          (concat file "/")
+                                                        file))
+                                          ,(if current-prefix-arg
+                                               '(icicle-make-file+date-candidate file)
+                                               '(list file))))
+    (icicle-abs-file-candidates         (mapcar icicle-full-cand-fn
+                                                (directory-files default-directory 'FULL nil 'NOSORT)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
@@ -5779,25 +5763,11 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
     (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-must-match-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c\C-d"            'icicle-cd-for-abs-files)
-    (define-key minibuffer-local-must-match-map "\C-c\C-d"            'icicle-cd-for-abs-files)
-    (define-key minibuffer-local-completion-map "\C-c+"               'icicle-make-directory)
-    (define-key minibuffer-local-must-match-map "\C-c+"               'icicle-make-directory)
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+    (icicle-highlight-lighter)
+    (message "Gathering files...")
+    (icicle-bind-file-candidate-keys))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil)))
-
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
 ;;;###autoload
@@ -5835,13 +5805,15 @@ a prefix arg for the command, files are visited in read-only mode by
 default and a prefix arg for an individual file visits it without
 read-only mode.
 
-During completion:
- You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5881,29 +5853,13 @@ Ido-like behavior."                     ; Doc string
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
-  (unless (boundp 'minibuffer-local-filename-completion-map) ; First code
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+  (icicle-bind-file-candidate-keys)     ; First code
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 ;;;###autoload (autoload 'icicle-find-file-other-window "icicles-cmd1.el")
 (icicle-define-file-command icicle-find-file-other-window
-  "Visit a file or directory in another window.
-Same as `icicle-find-file' except it uses a different window.
-
-Note: Unlike standard `find-file-other-window', in Dired the file or
-directory on the current line is the default value.  Like
-`find-file-other-window', if you just hit `RET' without entering any
-text, that is the same as if you first use `M-n' to retrieve the
-default value and then hit `RET'.  Thus, if you just want to visit, in
-a different window, the current directory instead of the file or
-directory of the current line, you should use `\\<minibuffer-local-completion-map>\
-\\[icicle-erase-minibuffer-or-history-element]' to first empty the
-minibuffer.  Or you can just use a different command, such as `\\[dired]',
-to visit the current directory."        ; Doc string
+  "Same as `icicle-find-file', except uses another window." ; Doc string
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
@@ -5924,13 +5880,9 @@ to visit the current directory."        ; Doc string
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
-  (unless (boundp 'minibuffer-local-filename-completion-map) ; First code
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+  (icicle-bind-file-candidate-keys)     ; First code
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 
 (put 'icicle-find-file-read-only 'icicle-Completions-window-max-height 200)
@@ -5944,15 +5896,24 @@ If you use a prefix arg for the command itself, this reverses the
 effect of using a prefix arg on individual candidates.  That is, with
 a prefix arg for the command, files are not visited in read-only mode
 by default and a prefix arg for an individual file visits it in
-read-only mode."
+read-only mode.
+
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir."
   (interactive)
   (let ((current-prefix-arg  (not current-prefix-arg)))
     (icicle-find-file)))
 
 ;;;###autoload
-(defun icicle-find-file-read-only-other-window ()    ; Bound to `C-x 4 r' in Icicle mode.
-  "Visit a file or directory in read-only mode in another window.
-Same as `icicle-find-file-read-only' except use a different window."
+(defun icicle-find-file-read-only-other-window () ; Bound to `C-x 4 r' in Icicle mode.
+  "Same as `icicle-find-file-read-only' except uses another window."
   (interactive)
   (let ((current-prefix-arg  (not current-prefix-arg)))
     (icicle-find-file-other-window)))
@@ -5974,13 +5935,15 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
-During completion:
- You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 You can use any of the alternative-action keys, such as `C-S-RET', to
 remove a candidate file from the recent files list, `recentf-list'.
@@ -6010,6 +5973,13 @@ Ido-like behavior."                     ; Doc string
   nil 'file-name-history (car recentf-list) nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                                 "Recent file (absolute): ")
+    (icicle-full-cand-fn                `(lambda (file)
+                                              (setq file  (if (file-directory-p file)
+                                                              (concat file "/")
+                                                            file))
+                                              ,(if current-prefix-arg
+                                                   '(icicle-make-file+date-candidate file)
+                                                   '(list file))))
     (icicle-abs-file-candidates
      (progn (unless (boundp 'recentf-list) (require 'recentf))
             (when (fboundp 'recentf-mode) (recentf-mode 99))
@@ -6030,31 +6000,28 @@ Ido-like behavior."                     ; Doc string
                                                          files))))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-must-match-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c+"               'icicle-make-directory)
-    (define-key minibuffer-local-must-match-map "\C-c+"               'icicle-make-directory)
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+    (icicle-highlight-lighter)
+    (message "Gathering files...")
+    (icicle-bind-file-candidate-keys))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 ;;;###autoload (autoload 'icicle-recent-file-other-window "icicles-cmd1.el")
 (icicle-define-command icicle-recent-file-other-window ; Command name
-  "Open a recently used file in another window.
-Same as `icicle-recent-file' except it uses a different window." ; Doc string
+  "Same as `icicle-recent-file' except uses another window." ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                                 "Recent file (absolute): ")
+    (icicle-full-cand-fn                    `(lambda (file)
+                                              (setq file  (if (file-directory-p file)
+                                                              (concat file "/")
+                                                            file))
+                                              ,(if current-prefix-arg
+                                                   '(icicle-make-file+date-candidate file)
+                                                   '(list file))))
     (icicle-abs-file-candidates
      (progn (unless (boundp 'recentf-list) (require 'recentf))
             (when (fboundp 'recentf-mode) (recentf-mode 99))
@@ -6075,20 +6042,11 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
                                                          files))))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-must-match-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c+"               'icicle-make-directory)
-    (define-key minibuffer-local-must-match-map "\C-c+"               'icicle-make-directory)
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+    (icicle-highlight-lighter)
+    (message "Gathering files...")
+    (icicle-bind-file-candidate-keys))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil)))
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 ;;;###autoload (autoload 'icicle-remove-file-from-recentf-list "icicles-cmd1.el")
 (icicle-define-command icicle-remove-file-from-recentf-list
@@ -6153,14 +6111,15 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
-During completion:
- You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
- You can use `C-c C-d' (think `cd') to change the `default-directory'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 Directories in `icicle-ignored-directories' are ignored (skipped).  In
 addition, these options control candidate matching and filtering:
@@ -6183,7 +6142,7 @@ For example, to show only names of files larger than 5000 bytes, set
 
 ;;;###autoload
 (defun icicle-locate-file-other-window ()
-  "Same as `icicle-locate-file' except visit file in a different window.
+  "Same as `icicle-locate-file' except uses another window.
 See also command `icicle-locate-file-no-symlinks-other-window', which
 does not follow symbolic links."
   (interactive)
@@ -6194,7 +6153,7 @@ does not follow symbolic links."
 (put 'icicle-locate-file-no-symlinks 'icicle-Completions-window-max-height 200)
 ;;;###autoload
 (defun icicle-locate-file-no-symlinks ()
-  "`icicle-locate-file' except do not follow symlinks."
+  "Same as `icicle-locate-file', except do not follow symlinks."
   (interactive)
   (let ((icicle-locate-file-action-fn      'icicle-locate-file-other-window-action)
         (icicle-locate-file-no-symlinks-p  t))
@@ -6202,7 +6161,7 @@ does not follow symbolic links."
 
 ;;;###autoload
 (defun icicle-locate-file-no-symlinks-other-window ()
-  "`icicle-locate-file-no-symlinks' except visit file in different window."
+  "Same as `icicle-locate-file-no-symlinks', except uses another window."
   (interactive)
   (let ((icicle-locate-file-action-fn      'icicle-locate-file-other-window-action)
         (icicle-locate-file-no-symlinks-p  t))
@@ -6236,6 +6195,13 @@ does not follow symbolic links."
                                           (icicle-highlight-lighter)
                                           (message "Gathering files within `%s' (this could take \
 a while)..." dir)))
+    (icicle-full-cand-fn                `(lambda (file)
+                                          (setq file  (if (file-directory-p file)
+                                                          (concat file "/")
+                                                        file))
+                                          ,(if (<= (prefix-numeric-value current-prefix-arg) 0)
+                                               '(icicle-make-file+date-candidate file)
+                                               '(list file))))
     (icicle-abs-file-candidates         ; `icicle-locate-file-no-symlinks-p' is free here.
      (mapcar #'(lambda (file)
                  (if (<= (prefix-numeric-value current-prefix-arg) 0)
@@ -6256,24 +6222,11 @@ a while)..." dir)))
   (progn                                ; First code
     (when (<= (prefix-numeric-value current-prefix-arg) 0)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-must-match-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c\C-d"            'icicle-cd-for-loc-files)
-    (define-key minibuffer-local-must-match-map "\C-c\C-d"            'icicle-cd-for-loc-files)
-    (define-key minibuffer-local-completion-map "\C-c+"               'icicle-make-directory)
-    (define-key minibuffer-local-must-match-map "\C-c+"               'icicle-make-directory)
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
+    (icicle-highlight-lighter)
+    (message "Gathering files...")
+    (icicle-bind-file-candidate-keys))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d"            nil)
-         (define-key minibuffer-local-completion-map "\C-c+"               nil)
-         (define-key minibuffer-local-must-match-map "\C-c+"               nil)
-         (define-key minibuffer-local-completion-map "\C-xm"               nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"               nil))
+  (icicle-unbind-file-candidate-keys)   ; Last code
   'NON-INTERACTIVE)                     ; This is not a real command.
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
@@ -6326,12 +6279,15 @@ in a common directory.
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
 
-During completion:
- You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
-  directory.
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -6363,6 +6319,13 @@ Ido-like behavior."                     ; Doc string
   nil 'file-name-history nil nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File (in tags table): ")
+    (icicle-full-cand-fn                `(lambda (file)
+                                          (setq file  (if (file-directory-p file)
+                                                          (concat file "/")
+                                                        file))
+                                          ,(if current-prefix-arg
+                                               '(icicle-make-file+date-candidate file)
+                                               '(list file))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
     (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))
@@ -6371,14 +6334,16 @@ Ido-like behavior."                     ; Doc string
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (unless (require 'etags nil t) (error "`etags.el' is required"))))
+    (unless (require 'etags nil t) (error "`etags.el' is required"))
+    (icicle-bind-file-candidate-keys))
+  nil                                   ; Undo code
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 
 (put 'icicle-find-file-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
 ;;;###autoload (autoload 'icicle-find-file-in-tags-table-other-window "icicles-cmd1.el")
 (icicle-define-command icicle-find-file-in-tags-table-other-window ; Command name
-  "Visit a tags-table file in another window.
-Same as `icicle-find-file-in-tags-table', but uses a different window." ; Doc string
+  "Same as `icicle-find-file-in-tags-table', but uses another window." ; Doc string
   (lambda (ff)
     (visit-tags-table-buffer 'same)     ; To pick up `default-directory' of TAGS table.
     (find-file (icicle-transform-multi-completion ff) 'WILDCARDS)) ; Action function
@@ -6391,6 +6356,13 @@ Same as `icicle-find-file-in-tags-table', but uses a different window." ; Doc st
   nil 'file-name-history nil nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File (in tags table): ")
+    (icicle-full-cand-fn                `(lambda (file)
+                                          (setq file  (if (file-directory-p file)
+                                                          (concat file "/")
+                                                        file))
+                                          ,(if current-prefix-arg
+                                               '(icicle-make-file+date-candidate file)
+                                               '(list file))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
     (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))
@@ -6399,7 +6371,10 @@ Same as `icicle-find-file-in-tags-table', but uses a different window." ; Doc st
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (unless (require 'etags nil t) (error "`etags.el' is required"))))
+    (unless (require 'etags nil t) (error "`etags.el' is required"))
+    (icicle-bind-file-candidate-keys))
+  nil                                   ; Undo code
+  (icicle-unbind-file-candidate-keys))  ; Last code
 
 (defun icicle-make-file+date-candidate (file)
   "Return a multi-completion candidate: FILE + last modification date."

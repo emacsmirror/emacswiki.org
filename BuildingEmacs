@@ -9,6 +9,7 @@ should really also read the official documentation.  We won't repeat
 everything said there just for the sake of it.
 
     $ cd /where/you/unpacked/or/branched/emacs
+    $ ./autogen.sh    # not needed when installing from tarball
     $ ./configure
     $ make
     $ make install

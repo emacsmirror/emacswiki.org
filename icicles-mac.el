@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  9 13:27:25 2011 (-0700)
+;; Last-Updated: Fri Aug 12 11:37:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 680
+;;     Update #: 683
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -363,7 +363,6 @@ created after the others."
                                                     (delete already-there icicle--temp-orders)))
                         (cons `("by `icicle-file-sort'" . ,icicle-file-sort) icicle--temp-orders)))
                   icicle--temp-orders)))
-        (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
         (icicle-candidate-help-fn                    #'(lambda (cand)
                                                          (icicle-describe-file cand current-prefix-arg)))
         (icicle-candidate-alt-action-fn
@@ -412,7 +411,6 @@ created after the others."
                                                     (delete already-there icicle--temp-orders)))
                         (cons (` ("by `icicle-file-sort'" . (, icicle-file-sort))) icicle--temp-orders)))
                   icicle--temp-orders)))
-        (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
         (icicle-candidate-help-fn                    #'(lambda (cand)
                                                          (icicle-describe-file cand current-prefix-arg)))
         (icicle-candidate-alt-action-fn
