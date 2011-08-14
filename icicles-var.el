@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 14:59:00 2011 (-0700)
+;; Last-Updated: Sat Aug 13 14:25:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1523
+;;     Update #: 1526
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -128,6 +128,7 @@
 ;;    `icicle-saved-region-background',
 ;;    `icicle-saved-search-ring-max', `icicle-scan-fn-or-regexp',
 ;;    `icicle-scroll-Completions-reverse-p', `icicle-search-command',
+;;    `icicle-search-complement-domain-p',
 ;;    `icicle-search-context-level', `icicle-search-context-regexp',
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',
@@ -1234,6 +1235,15 @@ Used for completion in `icicle-candidate-set-retrieve-from-variable'.")
   "Command to use for Icicles searches.
 You can set a buffer-local value of this variable, to use a specific
 search command in a particular mode.")
+
+(defvar icicle-search-complement-domain-p nil
+  "Non-nil means complement the initial search candidates wrt the buffer.
+This has an effect only on (some) Icicles search commands.
+The scan function or regexp for the search command defines a set of
+matches in the buffer.  If this option is non-nil then the actual
+candidates used are the sections of buffer text that are separated by
+the initial candidates, that is, the non-candidates as defined by the
+scan or regexp.")
 
 (defvar icicle-search-context-level 0
   "Match level for `icicle-search' context regexp.

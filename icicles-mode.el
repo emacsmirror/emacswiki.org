@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 13:43:10 2011 (-0700)
+;; Last-Updated: Sat Aug 13 14:38:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7515
+;;     Update #: 7539
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -466,6 +466,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
+`icicle-toggle-search-complementing-domain' - Toggle complement search
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
 `icicle-toggle-search-replace-whole'   - Toggle replacing whole hit
 `icicle-toggle-search-whole-word'      - Toggle whole-word searching
@@ -760,6 +761,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
+`icicle-toggle-search-complementing-domain' - Toggle complement search
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
 `icicle-toggle-search-replace-whole'   - Toggle replacing whole hit
 `icicle-toggle-search-whole-word'      - Toggle whole-word searching
@@ -1182,6 +1184,10 @@ Used on `pre-command-hook'."
                icicle-toggle-search-whole-word :visible icicle-mode
                :enable icicle-searching-p :keys "M-q"
                :help "Toggle `icicle-search-whole-word-flag'"))
+           (define-key icicle-options-menu-map [icicle-toggle-search-complementing-domain]
+             '(menu-item "Toggle Searching Complement"
+               icicle-toggle-search-complementing-domain :visible icicle-mode :keys "C-M-~"
+               :help "Toggle `icicle-search-complement-domain-p'"))
            (define-key icicle-options-menu-map [icicle-toggle-highlight-all-current]
              '(menu-item "Toggle All-Current Icicle-Search Highlighting"
                icicle-toggle-highlight-all-current :visible icicle-mode
@@ -2371,6 +2377,10 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          '(menu-item "Icicles Help" icicle-minibuffer-help
            :help "Display help for minibuffer input and completion"))
        (define-key map [menu-bar minibuf separator-last] '("--"))
+       (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
+         '(menu-item "Toggle Searching Complement"
+           icicle-toggle-search-complementing-domain
+           :help "Toggle `icicle-search-complement-domain-p'" :keys "C-M-~"))
        (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
          '(menu-item "Toggle All-Current Icicle-Search Highlighting"
            icicle-toggle-highlight-all-current :enable icicle-searching-p
@@ -2466,6 +2476,10 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            '(menu-item "Icicles Help" icicle-minibuffer-help
              :help "Display help for minibuffer input and completion"))
          (define-key map [menu-bar minibuf separator-last] '("--"))
+         (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
+           '(menu-item "Toggle Searching Complement"
+             icicle-toggle-search-complementing-domain
+             :help "Toggle `icicle-search-complement-domain-p'" :keys "C-M-~"))
          (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
            '(menu-item "Toggle All-Current Icicle-Search Highlighting"
              icicle-toggle-highlight-all-current :enable icicle-searching-p
@@ -2561,6 +2575,10 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            '(menu-item "Icicles Help" icicle-minibuffer-help
              :help "Display help for minibuffer input and completion"))
          (define-key map [menu-bar minibuf separator-last] '("--"))
+         (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
+           '(menu-item "Toggle Searching Complement"
+             icicle-toggle-search-complementing-domain
+             :help "Toggle `icicle-search-complement-domain-p'" :keys "C-M-~"))
          (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
            '(menu-item "Toggle All-Current Icicle-Search Highlighting"
              icicle-toggle-highlight-all-current :enable icicle-searching-p
@@ -2720,23 +2738,24 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [menu-bar minibuf return]
          '(menu-item "Enter" exit-minibuffer
            :help "Terminate input and exit minibuffer" :keys "RET"))
-       (define-key map [menu-bar minibuf separator-help]                      nil)
-       (define-key map [menu-bar minibuf completion-help]                     nil)
-       (define-key map [menu-bar minibuf separator-last]                      nil)
-       (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current] nil)
-       (define-key map [menu-bar minibuf icicle-regexp-quote-input]           nil)
-       (define-key map [menu-bar minibuf separator-set2]                      nil)
-       (define-key map [menu-bar minibuf icicle-clear-current-history]        nil)
-       (define-key map [menu-bar minibuf icicle-erase-minibuffer]             nil)
-       (define-key map [menu-bar minibuf icicle-delete-history-element]       nil)
-       (define-key map [menu-bar minibuf icicle-insert-list-join-string]      nil)
-       (define-key map [menu-bar minibuf icicle-insert-key-description]       nil)
-       (define-key map [menu-bar minibuf icicle-insert-history-element]       nil)
-       (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]     nil)
-       (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]   nil)
-       (define-key map [menu-bar minibuf icicle-insert-string-at-point]       nil)
-       (define-key map [menu-bar minibuf icicle-completing-read+insert]       nil)
-       (define-key map [menu-bar minibuf icicle-read+insert-file-name]        nil)
+       (define-key map [menu-bar minibuf separator-help]                            nil)
+       (define-key map [menu-bar minibuf completion-help]                           nil)
+       (define-key map [menu-bar minibuf separator-last]                            nil)
+       (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain] nil)
+       (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]       nil)
+       (define-key map [menu-bar minibuf icicle-regexp-quote-input]                 nil)
+       (define-key map [menu-bar minibuf separator-set2]                            nil)
+       (define-key map [menu-bar minibuf icicle-clear-current-history]              nil)
+       (define-key map [menu-bar minibuf icicle-erase-minibuffer]                   nil)
+       (define-key map [menu-bar minibuf icicle-delete-history-element]             nil)
+       (define-key map [menu-bar minibuf icicle-insert-list-join-string]            nil)
+       (define-key map [menu-bar minibuf icicle-insert-key-description]             nil)
+       (define-key map [menu-bar minibuf icicle-insert-history-element]             nil)
+       (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]           nil)
+       (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]         nil)
+       (define-key map [menu-bar minibuf icicle-insert-string-at-point]             nil)
+       (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
+       (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
 
        (define-key map [(control ??)]            nil) ; `C-?'
        (define-key map [(control ?g)]            (if (and (fboundp 'minibuffer-keyboard-quit)
@@ -2769,23 +2788,24 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [menu-bar minibuf return]
            '(menu-item "Enter" exit-minibuffer
              :help "Terminate input and exit minibuffer" :keys "RET"))
-         (define-key map [menu-bar minibuf separator-help]                      nil)
-         (define-key map [menu-bar minibuf completion-help]                     nil)
-         (define-key map [menu-bar minibuf separator-last]                      nil)
-         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current] nil)
-         (define-key map [menu-bar minibuf icicle-regexp-quote-input]           nil)
-         (define-key map [menu-bar minibuf separator-set2]                      nil)
-         (define-key map [menu-bar minibuf icicle-clear-current-history]        nil)
-         (define-key map [menu-bar minibuf icicle-erase-minibuffer]             nil)
-         (define-key map [menu-bar minibuf icicle-delete-history-element]       nil)
-         (define-key map [menu-bar minibuf icicle-insert-list-join-string]      nil)
-         (define-key map [menu-bar minibuf icicle-insert-key-description]       nil)
-         (define-key map [menu-bar minibuf icicle-insert-history-element]       nil)
-         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]     nil)
-         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]   nil)
-         (define-key map [menu-bar minibuf icicle-insert-string-at-point]       nil)
-         (define-key map [menu-bar minibuf icicle-completing-read+insert]       nil)
-         (define-key map [menu-bar minibuf icicle-read+insert-file-name]        nil)
+         (define-key map [menu-bar minibuf separator-help]                            nil)
+         (define-key map [menu-bar minibuf completion-help]                           nil)
+         (define-key map [menu-bar minibuf separator-last]                            nil)
+         (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain] nil)
+         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]       nil)
+         (define-key map [menu-bar minibuf icicle-regexp-quote-input]                 nil)
+         (define-key map [menu-bar minibuf separator-set2]                            nil)
+         (define-key map [menu-bar minibuf icicle-clear-current-history]              nil)
+         (define-key map [menu-bar minibuf icicle-erase-minibuffer]                   nil)
+         (define-key map [menu-bar minibuf icicle-delete-history-element]             nil)
+         (define-key map [menu-bar minibuf icicle-insert-list-join-string]            nil)
+         (define-key map [menu-bar minibuf icicle-insert-key-description]             nil)
+         (define-key map [menu-bar minibuf icicle-insert-history-element]             nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]           nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]         nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-at-point]             nil)
+         (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
+         (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
 
          (define-key map [(control ??)]            nil) ; `C-?'
          (define-key map [(control ?g)]            (if (and (fboundp 'minibuffer-keyboard-quit)
@@ -2818,23 +2838,24 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [menu-bar minibuf return]
            '(menu-item "Enter" exit-minibuffer
              :help "Terminate input and exit minibuffer" :keys "RET"))
-         (define-key map [menu-bar minibuf separator-help]                      nil)
-         (define-key map [menu-bar minibuf completion-help]                     nil)
-         (define-key map [menu-bar minibuf separator-last]                      nil)
-         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current] nil)
-         (define-key map [menu-bar minibuf icicle-regexp-quote-input]           nil)
-         (define-key map [menu-bar minibuf separator-set2]                      nil)
-         (define-key map [menu-bar minibuf icicle-clear-current-history]        nil)
-         (define-key map [menu-bar minibuf icicle-erase-minibuffer]             nil)
-         (define-key map [menu-bar minibuf icicle-delete-history-element]       nil)
-         (define-key map [menu-bar minibuf icicle-insert-list-join-string]      nil)
-         (define-key map [menu-bar minibuf icicle-insert-key-description]       nil)
-         (define-key map [menu-bar minibuf icicle-insert-history-element]       nil)
-         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]     nil)
-         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]   nil)
-         (define-key map [menu-bar minibuf icicle-insert-string-at-point]       nil)
-         (define-key map [menu-bar minibuf icicle-completing-read+insert]       nil)
-         (define-key map [menu-bar minibuf icicle-read+insert-file-name]        nil)
+         (define-key map [menu-bar minibuf separator-help]                            nil)
+         (define-key map [menu-bar minibuf completion-help]                           nil)
+         (define-key map [menu-bar minibuf separator-last]                            nil)
+         (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain] nil)
+         (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]       nil)
+         (define-key map [menu-bar minibuf icicle-regexp-quote-input]                 nil)
+         (define-key map [menu-bar minibuf separator-set2]                            nil)
+         (define-key map [menu-bar minibuf icicle-clear-current-history]              nil)
+         (define-key map [menu-bar minibuf icicle-erase-minibuffer]                   nil)
+         (define-key map [menu-bar minibuf icicle-delete-history-element]             nil)
+         (define-key map [menu-bar minibuf icicle-insert-list-join-string]            nil)
+         (define-key map [menu-bar minibuf icicle-insert-key-description]             nil)
+         (define-key map [menu-bar minibuf icicle-insert-history-element]             nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]           nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]         nil)
+         (define-key map [menu-bar minibuf icicle-insert-string-at-point]             nil)
+         (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
+         (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
 
          (define-key map [(control ??)]            nil) ; `C-?'
          (define-key map [(control ?g)]            (if (and (fboundp 'minibuffer-keyboard-quit)
@@ -2957,6 +2978,10 @@ MAP is `minibuffer-local-completion-map' or
       '(menu-item "Icicles Help" icicle-minibuffer-help
         :help "Display help for minibuffer input and completion"))
     (define-key map [menu-bar minibuf separator-last] '("--"))
+    (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
+        '(menu-item "Toggle Searching Complement"
+          icicle-toggle-search-complementing-domain
+          :help "Toggle `icicle-search-complement-domain-p'" :keys "C-M-~"))
     (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
       '(menu-item "Toggle All-Current Icicle-Search Highlighting"
         icicle-toggle-highlight-all-current :enable icicle-searching-p
@@ -3292,6 +3317,7 @@ complete)"))
   (define-key map [(control ?^)]             'icicle-dispatch-C-^) ; `C-^'
   (define-key map [(control shift ?a)]       'icicle-toggle-case-sensitivity) ; `C-S-a' (`C-A')
   (define-key map [(meta ?~)]                'icicle-toggle-~-for-home-dir) ; `M-~'
+  (define-key map [(control meta ?~)]        'icicle-toggle-search-complementing-domain) ; `C-M-~'
   (define-key map [(meta ?g)]                'icicle-toggle-C-for-actions) ; `M-g'
   (define-key map [(meta ?,)]                'icicle-dispatch-M-comma) ; `M-,'
   (define-key map [(control meta ?,)]        'icicle-toggle-alternative-sorting) ; `C-M-,'
@@ -3340,24 +3366,25 @@ MAP is `minibuffer-local-completion-map',
     (define-key map [menu-bar minibuf return]
       '(menu-item "Enter" exit-minibuffer
         :help "Terminate input and exit minibuffer" :keys "RET"))
-    (define-key map [menu-bar minibuf separator-help]                        nil)
-    (define-key map [menu-bar minibuf completion-help]                       nil)
-    (define-key map [menu-bar minibuf separator-last]                        nil)
-    (define-key map [menu-bar minibuf icicle-clear-current-history]          nil)
-    (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]   nil)
-    (define-key map [menu-bar minibuf icicle-regexp-quote-input]             nil)
-    (define-key map [menu-bar minibuf separator-set2]                        nil)
-    (define-key map [menu-bar minibuf icicle-clear-current-history]          nil)
-    (define-key map [menu-bar minibuf icicle-erase-minibuffer]               nil)
-    (define-key map [menu-bar minibuf icicle-delete-history-element]         nil)
-    (define-key map [menu-bar minibuf icicle-insert-list-join-string]        nil)
-    (define-key map [menu-bar minibuf icicle-insert-key-description]         nil)
-    (define-key map [menu-bar minibuf icicle-insert-history-element]         nil)
-    (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]       nil)
-    (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]     nil)
-    (define-key map [menu-bar minibuf icicle-insert-string-at-point]         nil)
-    (define-key map [menu-bar minibuf icicle-completing-read+insert]         nil)
-    (define-key map [menu-bar minibuf icicle-read+insert-file-name]          nil)
+    (define-key map [menu-bar minibuf separator-help]                            nil)
+    (define-key map [menu-bar minibuf completion-help]                           nil)
+    (define-key map [menu-bar minibuf separator-last]                            nil)
+    (define-key map [menu-bar minibuf icicle-clear-current-history]              nil)
+    (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain] nil)
+    (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]       nil)
+    (define-key map [menu-bar minibuf icicle-regexp-quote-input]                 nil)
+    (define-key map [menu-bar minibuf separator-set2]                            nil)
+    (define-key map [menu-bar minibuf icicle-clear-current-history]              nil)
+    (define-key map [menu-bar minibuf icicle-erase-minibuffer]                   nil)
+    (define-key map [menu-bar minibuf icicle-delete-history-element]             nil)
+    (define-key map [menu-bar minibuf icicle-insert-list-join-string]            nil)
+    (define-key map [menu-bar minibuf icicle-insert-key-description]             nil)
+    (define-key map [menu-bar minibuf icicle-insert-history-element]             nil)
+    (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]           nil)
+    (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]         nil)
+    (define-key map [menu-bar minibuf icicle-insert-string-at-point]             nil)
+    (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
+    (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
     )
   (define-key map [menu-bar minibuf icicle-goto/kill-failed-input]           nil)
   (define-key map [menu-bar minibuf icicle-retrieve-next-input]              nil)
@@ -3544,6 +3571,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map [(control ?^)]             nil)
   (define-key map [(control shift ?a)]       nil)
   (define-key map [(meta ?~)]                nil)
+  (define-key map [(control meta ?~)]        nil)
   (define-key map [(meta ?g)]                nil)
   (define-key map [(meta ?,)]                nil)
   (define-key map [(control meta ?,)]        nil)

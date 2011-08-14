@@ -1,13 +1,12 @@
 == Executing External Commands ==
 
-You can execute an external shell command from within emacs using `##M-!##' (`shell-command').
-The output from the shell command is displayed in the [[minibuffer]] or in a separate [[buffer]], depending on the output size.
+You can execute an external shell command from within Emacs using `##M-!##' (`shell-command'). The output from the shell command is displayed in the [[minibuffer]] or in a separate [[buffer]], depending on the output size.
 
-When used with a prefix argument (`##C-u M-!##') the shell-command output is inserted in the current buffer, at [[point]].
+When used with a [[prefix argument]] (e.g, `##C-u M-!##'), the shell-command output is inserted in the current buffer at [[point]].
 
-To provide the [[region]] text to the shell command as input, use `##M-|##' (`shell-command-on-region'). If you want the shell to ''replace'' the region text with the output from the shell command, use `##C-u M-|##'. 
+To provide the [[region]] text to the shell command as input, use `##M-|##' (`shell-command-on-region'). If you want the shell to ''replace'' the region text with the output from the shell command, use `##C-u M-|##'.
 
-If you are programming in an interpreted language, such as Perl, Python, or a shell script, such as BASH, you might want to run your entire program through the interpreter. To do that, use `C-x h' (`mark-whole-buffer'), then use `##M-|##' to send all of the buffer text to the interpreter.
+If you are programming using an interpreted language, such as Perl or Python, or a shell script, such as BASH, you might want to run your entire program through the interpreter.  To do that, use `C-x h' (`mark-whole-buffer'), then use `##M-|##' to send all of the buffer text to the interpreter.
 
 Buffer `##*Shell Command Buffer*##' is displayed briefly whenever you run a shell command.  You can switch to that buffer using `C-x b'.
 
@@ -15,40 +14,38 @@ Buffer `##*Shell Command Buffer*##' is displayed briefly whenever you run a shel
 
 == TAB Completion for `M-!' and `M-|' ==
 
-Starting with Emacs 23, `TAB' [[completion]] will be available for `##M-!##' and `##M-|##'. These libraries provide such a feature for earlier Emacs versions:
+Starting with Emacs 23, `TAB' [[completion]] is available for `##M-!##' and `##M-|##'.  The following libraries provide such a feature for earlier Emacs versions:
 
-*  http://namazu.org/~tsuchiya/elisp/shell-command.el
-*  http://www.emacswiki.org/cgi-bin/wiki/shell-completion.el
+*  [[http://namazu.org/~tsuchiya/elisp/shell-command.el|shell-command.el]]
+*  [[shell-completion.el]]
+*  [[Icicles]] (Emacs 20 and later -- see also next)
+
 
 === Icicles Completion for `M-!' and `M-|' ===
 
-[[Icicles]] enhances the vanilla `TAB' completion for `##M-!##' and `##M-|##'. Whenever
-here are two or more candidate completions, you can use any '''Icicles'''
-completion features ([[Icicles - Cycling Completions|cycling]], [[progressive completion]], [[apropos completion]], and so on).  See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
-
+[[Icicles]] enhances the vanilla `TAB' completion for `##M-!##' and `##M-|##'.  Whenever there are two or more candidate completions, you can use any '''Icicles''' completion features ([[Icicles - Cycling Completions|cycling]], [[progressive completion]], [[apropos completion]], and so on).  See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
 
 
 == Running a Shell Command Asynchronously ==
 
-You can run a shell command asynchronously by adding an ampersand (##&##) after it, if you have a UNIX or UXIX-like enviornment.
+You can run a shell command asynchronously by adding an ampersand (##&##) after it, if you have a UNIX or UXIX-like environment.
 
-Here is a some elisp to modify shell-command to allow many commands to execute asynchronously (and show the command at the top of the buffer
-
+Here is a some EmacsLisp code that modifies `shell-command' to allow many commands to execute asynchronously (and show the command at the top of the buffer):
 
 <pre>
 (defadvice erase-buffer (around erase-buffer-noop)
   "make erase-buffer do nothing")
 
 (defadvice shell-command (around shell-command-unique-buffer activate compile)
-  (if (or current-prefix-arg 
+  (if (or current-prefix-arg
           (not (string-match "[ \t]*&[ \t]*\\'" command)) ;; background
-          (bufferp output-buffer) 
+          (bufferp output-buffer)
           (stringp output-buffer))
       ad-do-it ;; no behavior change
 
     ;; else we need to set up buffer
-    (let* ((command-buffer-name 
-            (format "*background: %s*" 
+    (let* ((command-buffer-name
+            (format "*background: %s*"
                     (substring command 0 (match-beginning 0))))
            (command-buffer (get-buffer command-buffer-name)))
 
@@ -57,15 +54,15 @@ Here is a some elisp to modify shell-command to allow many commands to execute a
         (cond ((get-buffer-process command-buffer)
                (set-buffer command-buffer)
                (rename-uniquely))
-              ('t 
+              ('t
                (kill-buffer command-buffer))))
       (setq output-buffer command-buffer-name)
 
       ;; insert command at top of buffer
       (switch-to-buffer-other-window output-buffer)
-      (insert "Running command: " command 
+      (insert "Running command: " command
               "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
-      
+
       ;; temporarily blow away erase-buffer while doing it, to avoid
       ;; erasing the above
       (ad-activate-regexp "erase-buffer-noop")
@@ -73,10 +70,17 @@ Here is a some elisp to modify shell-command to allow many commands to execute a
       (ad-deactivate-regexp "erase-buffer-noop"))))
 </pre>
 
+----
+
 == Discussion ==
 
+=== Parent shell ===
 
-Is there no built-in function that simply returns the output of a shell command as a string. I mean, so that, for instance:
+When running Emacs in a terminal (with ##emacs -nw##), is it possible to execute a command in the parent shell ''without'' suspending Emacs? I know that one can press `##C-z##', type a command and then resume Emacs with ##fg##, but I would like to communicate with the parent shell from "within" Emacs. -- VegardOye
+
+=== Return output as a string ===
+
+Is there a built-in function that returns the output of a shell command as a string?  For instance:
 
     (message (WHATEVER "echo the message"))
 
@@ -84,11 +88,10 @@ Would display the message:
 
     the message
 
-in the status bar?
+In the status bar?
 
-Answer:
-
-In XEmacs, use `exec-to-string' and in GNUEmacs, use `shell-command-to-string'. For example:
+[new]
+In [[XEmacs]], use `exec-to-string' and in GnuEmacs, use `shell-command-to-string'. For example:
 
  (message (exec-to-string "pwd"))
  ;; or
@@ -102,27 +105,30 @@ This executes the command in some kind of shell, and (some) normal shell magic h
 "
 </pre>
 
-In this case, command history is not accessed with !, but the shell variable "x" is looked up and replaced with a blank. You can quote each "word" in your command seperately, and run the result, like this:
+In this case, command history is not accessed with `##!##', but the shell variable `x' is looked up and replaced with a space char. You can quote each "word" in your command seperately, and run the result, like this:
 
 <pre>
 (defun execvp (&rest args)
   "Simulate C's execvp() function.
-
 Quote each argument seperately, join with spaces and call shell-command-to-string to run in a shell."
   (let ((cmd (mapconcat 'shell-quote-argument args " ")))
     (shell-command-to-string cmd)))
 </pre>
 
-Then, calling (execvp "touch" "'a'" "b" "$x") will create files called 'a', b, and $x in whatever directory you happen to be in.
+Then, calling ##(execvp "touch" "'a'" "b" "$x")## creates files called `a', `b', and `##$x##' in whatever directory you happen to be in.
 
-[new]
-Is it possible (desirable?) to automatically close the ##*Shell Command Output##* buffer for commands that report "Shell command succeeded with no output"?
-[new] How can you use shell-command with programs that require input such as passords? Kind of annoying having to open a new buffer just to scp a file.
 
-== See Also == 
+=== Automatically close the output buffer ===
 
-* [[ex]] -- Function `ex-defun' defines an Emacs function that does its job by invoking an external interpreted language.
+Is it possible (desirable?) to automatically close buffer ##*Shell Command Output##* for commands that report `##Shell command succeeded with no output##'?
 
+=== Passwords ===
+
+How can you use `shell-command' with programs that require input such as passords? Kind of annoying having to open a new buffer just to `scp' a file.
+
+== See Also ==
+
+* [[ex]] -- Function `ex-defun' defines an EmacsLisp function that does its job by invoking an external interpreted language
 
 ----
 CategoryExternalUtilities

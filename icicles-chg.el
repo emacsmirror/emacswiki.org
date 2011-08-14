@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 15:39:13 2011 (-0700)
+;; Last-Updated: Sat Aug 13 14:46:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6859
+;;     Update #: 6875
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -427,6 +427,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/13 dadams
+;;     Added: icicle-bookmark-a-file.
+;;     icicle-search-regexp-scan, icicle-search-char-property-scan:
+;;       Handle icicle-search-complement-domain-p.
 ;; 2011/08/12 dadams
 ;;     icicle-find-file-tagged(-other-window): 
 ;;       Bind icicle-full-cand-fn.  Use icicle-file-bindings.
@@ -2536,6 +2540,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/13 dadams
+;;     Added: icicle-toggle-search-complementing-domain, toggle-icicle-search-complementing-domain.
+;;     icicle-insert-string-from-variable: Completion candidates now include all string-valued vars.
 ;; 2011/08/12 dadams
 ;;     Added: icicle-add/remove-tags-and-refresh, icicle-(un)bind-file-candidate-keys.
 ;; 2011/08/07 dadams
@@ -3756,6 +3763,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/08/13 dadams
+;;     Bound icicle-toggle-search-complementing-domain to C-M-~ and added to menus.
 ;; 2011/08/12 dadams
 ;;     icicle-define-minibuffer-maps: Removed code that binds C-x m, C-backspace, C-c +.
 ;;       Do that in icicle-bind-file-candidate-keys now.
@@ -4763,6 +4772,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/08/13 dadams
+;;     icicle-top-level-key-bindings: Map bmkp-autofile-set to icicle-bookmark-a-file.
 ;; 2011/08/07 dadams
 ;;     icicle-top-level-key-bindings: Bind icicle-find-file-tagged(-other-window) to C-x j t a a.
 ;; 2011/07/30 dadams
@@ -5359,6 +5370,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/08/13 dadams
+;;     Added: icicle-search-complement-domain-p.
 ;; 2011/08/12 dadams
 ;;     Added: icicle-full-cand-fn.
 ;; 2011/08/07 dadams

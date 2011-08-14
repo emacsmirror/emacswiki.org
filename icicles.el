@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 14:57:12 2011 (-0700)
+;; Last-Updated: Sat Aug 13 14:41:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22940
+;;     Update #: 22945
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -120,7 +120,7 @@
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-variable', `icicle-apropos-zippy',
 ;;    `icicle-bbdb-complete-name', `icicle-bookmark',
-;;    `icicle-bookmark-all-tags',
+;;    `icicle-bookmark-a-file', `icicle-bookmark-all-tags',
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
@@ -347,6 +347,7 @@
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-remote-file-testing',
 ;;    `icicle-toggle-search-cleanup',
+;;    `icicle-toggle-search-complementing-domain',
 ;;    `icicle-toggle-search-replace-whole',
 ;;    `icicle-toggle-search-whole-word', `icicle-toggle-sorting',
 ;;    `icicle-toggle-transforming',
@@ -374,6 +375,7 @@
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
 ;;    `toggle-icicle-remote-file-testing',
 ;;    `toggle-icicle-search-cleanup',
+;;    `toggle-icicle-search-complementing-domain',
 ;;    `toggle-icicle-search-replace-whole',
 ;;    `toggle-icicle-search-whole-word',
 ;;    `toggle-icicle-show-multi-completion', `toggle-icicle-sorting',
@@ -539,6 +541,7 @@
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-search-cleanup',
+;;    `icicle-toggle-search-complementing-domain',
 ;;    `icicle-toggle-search-replace-common-match',
 ;;    `icicle-toggle-search-replace-whole',
 ;;    `icicle-toggle-search-whole-word',
@@ -567,6 +570,7 @@
 ;;    `toggle-icicle-literal-replacement',
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
 ;;    `toggle-icicle-search-cleanup',
+;;    `toggle-icicle-search-complementing-domain',
 ;;    `toggle-icicle-search-replace-common-match',
 ;;    `toggle-icicle-search-replace-whole',
 ;;    `toggle-icicle-search-whole-word', `toggle-icicle-sorting',
@@ -1183,6 +1187,7 @@
 ;;    `icicle-saved-region-background',
 ;;    `icicle-saved-search-ring-max',
 ;;    `icicle-scroll-Completions-reverse-p', `icicle-search-command',
+;;    `icicle-search-complement-domain-p',
 ;;    `icicle-search-context-level', `icicle-search-context-regexp',
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',

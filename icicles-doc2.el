@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  9 14:40:19 2011 (-0700)
+;; Last-Updated: Sat Aug 13 11:03:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28128
+;;     Update #: 28159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3666,17 +3666,17 @@
 ;;  For convenience in multi-line matching, I added a *multi-line
 ;;  dot*, or dot-matches-newline-too, hack to Icicles.  This feature
 ;;  is turned off, by default.  You can toggle it on/off, using
-;;  command `icicle-toggle-dot', which is bound to `C-M-.' in the
-;;  minibuffer during completion.
+;;  command `icicle-toggle-dot' (aka `icicle-toggle-.'), which is
+;;  bound to `C-M-.' in the minibuffer during completion.
 ;;
-;;  When it is turned on, `.' is highlighted in the minibuffer (using
-;;  face `highlight'), and it matches newlines also.  In fact,
+;;  When this is turned on, `.' is highlighted in the minibuffer
+;;  (using face `highlight'), and it matches newlines also.  In fact,
 ;;  although it appears as just a highlighted dot, the ugly regexp
-;;  `\(.\|[\n]\)' is really used, under the covers.  Icicles takes
-;;  care of things so that you can edit normally (delete and transpose
-;;  characters, etc.): A multi-line `.' acts just like a normal,
-;;  single character, even though it is really a string of ten
-;;  characters.
+;;  `\(.\|[\n]\)' (the value of constant `icicle-anychar-regexp') is
+;;  really used, under the covers.  Icicles takes care of things so
+;;  that you can edit normally (delete and transpose characters,
+;;  etc.): A multi-line `.' acts just like a normal, single character,
+;;  even though it is really a string of ten characters.
 ;;
 ;;  If you prefer to see the full regexp, `\(.\|[\n]\)', but
 ;;  highlighted, then set option `icicle-dot-show-regexp-flag' to
@@ -3715,6 +3715,26 @@
 ;;  against multi-line candidates.  Typical use cases include
 ;;  `icicle-search' and the Icicles doc commands, `icicle-vardoc',
 ;;  `icicle-fundoc', and `icicle-doc'.
+;;
+;;  Note that the dot-matching behavior described here applies only to
+;;  matching minibuffer input against completion candidates.  It does
+;;  not mean that whenever you type `.' in the minibuffer it is
+;;  interpreted specially.  For example, when you input (using `RET')
+;;  a regexp as the context pattern for Icicles search, a `.'  has its
+;;  usual meaning in Emacs regexps - it does not match newlines.
+;;
+;;  If you want a regexp that you input (using `RET') to match any
+;;  character including a newline, then you can use `C-u C-=
+;;  icicle-anychar-regexp' to insert the proper string explicitly.
+;;  You can shorten this to just `C-=' if you use command
+;;  `icicle-save-string-to-variable':
+;;
+;;   M-x icicle-save-string-to-variable C-u C-= icicle-anychar-regexp
+;;
+;;  See Also:
+;;
+;;  * (@> "Using Regexps with Icicles Search")
+;;  * (@file :file-name "icicles-doc1.el" :to "Inserting a Regexp from a Variable or Register")
  
 ;;(@* "Fuzzy Completion")
 ;;

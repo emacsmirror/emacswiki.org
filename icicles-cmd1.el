@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 15:18:52 2011 (-0700)
+;; Last-Updated: Sat Aug 13 01:05:08 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22157
+;;     Update #: 22169
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2057,7 +2057,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive "P")
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files' requires library Bookmark+"))
+    (error "Command `icicle-bookmark-save-marked-files' requires library `Bookmark+'"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) arg))
 
@@ -2082,7 +2082,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive "P")
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files-more' requires library Bookmark+"))
+    (error "Command `icicle-bookmark-save-marked-files-more' requires library `Bookmark+'"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) arg t))
 
@@ -2103,7 +2103,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive)
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files-to-variable' requires library Bookmark+"))
+    (error "Command `icicle-bookmark-save-marked-files-to-variable' requires library `Bookmark+'"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) 99))
 
@@ -2129,7 +2129,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive "P")
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "This command requires library Bookmark+"))
+    (error "This command requires library `Bookmark+'"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) (if filesetp 0 '(1))))
 
@@ -2290,7 +2290,7 @@ ignored.  Existence of files with relative names is checked in the
 directory.
 
 You can use `C-x m' during completion to access Dired bookmarks, if
-you use library `bookmark+.el'."
+you use library `Bookmark+'."
   (interactive "P")
   (when (require 'bookmark+ nil t)
     (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window))
@@ -2331,7 +2331,7 @@ ignored.  Existence of files with relative names is checked in the
 directory.
 
 You can use `C-x m' during completion to access Dired bookmarks, if
-you use library `bookmark+.el'."
+you use library `Bookmark+'."
   (interactive "P")
   (when (require 'bookmark+ nil t)
     (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window))
@@ -3246,9 +3246,9 @@ In particular, you might prefer to remap `bookmark-set' to
 
 ;;;###autoload
 (defun icicle-bookmark-set (&optional name parg interactivep) ; `C-x r m'
-  "With Bookmark+, this is `bookmark-set' with Icicles multi-completions.
+  "With `Bookmark+', this is `bookmark-set' with Icicles multi-completions.
 In particular, you can use (lax) completion for the bookmark name.
-Without library `bookmark+.el', this is the same as vanilla Emacs
+Without library `Bookmark+', this is the same as vanilla Emacs
 `bookmark-set'."
   (interactive (list nil current-prefix-arg t))
   (if (not (featurep 'bookmark+))
@@ -3438,7 +3438,7 @@ With a plain prefix argument (`C-u'), reverse the effect of option
 
 During completion, you can use `S-delete' on a bookmark to delete it.
 
-If you also use library `bookmark+.el', then:
+If you also use library `Bookmark+', then:
 
  * `C-M-RET' shows detailed info about the current bookmark candidate.
    `C-u C-M-RET' shows the complete, internal info for the bookmark.
@@ -3820,7 +3820,7 @@ You probably don't want to use this.  Use
   (bookmark-maybe-historicize-string bookmark)
   (if (fboundp 'bookmark--jump-via)
       (bookmark--jump-via bookmark (if other-window-p 'pop-to-buffer 'switch-to-buffer))
-    (let ((cell  (bookmark-jump-noselect bookmark))) ; Emacs < 23 and without `bookmark+.el'.
+    (let ((cell  (bookmark-jump-noselect bookmark))) ; Emacs < 23 and without `Bookmark+'.
       (when cell
         (if other-window-p
             (pop-to-buffer (car cell) 'other-window)
@@ -3839,7 +3839,7 @@ You probably don't want to use this.  Use
 ;; $$$$$$   (select-frame-set-input-focus (selected-frame)))
 
 (defun icicle-bookmark-help-string (bookmark-name)
-  "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `bookmark+.el'.
+  "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `Bookmark+'.
   ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
   (let* ((bmk         (bookmark-get-bookmark bookmark-name))
          (buf         (and (fboundp 'bmkp-get-buffer-name) (bmkp-get-buffer-name bmk)))
@@ -4055,8 +4055,8 @@ You are prompted for the FILES."
 ;;;###autoload
 (defmacro icicle-define-bookmark-command-1 (otherp type prompt args)
   "Helper macro for `icicle-define*-bookmark-command' macros.
-The command defined raises an error unless library `bookmark+.el' can
-be loaded."
+The command defined raises an error unless library `Bookmark+' can be
+loaded."
   `(icicle-define-command
     ,(intern (format "icicle-bookmark-%s%s" type (if otherp "-other-window" ""))) ; Command name
     ,(format "Jump to a %s bookmark%s.
@@ -4064,7 +4064,7 @@ Like `icicle-bookmark%s',
  but with %s bookmarks only.
 This is a multi-command version of
  `bmkp-%s-jump%s'.
-You need library `bookmark+.el' for this command."
+You need library `Bookmark+' for this command."
              type (if otherp " in other window" "")
              (if otherp "-other-window" "") type
              type (if otherp "-other-window" "")) ; Doc string
@@ -4075,8 +4075,7 @@ You need library `bookmark+.el' for this command."
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
     ((IGNORED1                               (unless (require 'bookmark+ nil t) ; Additional bindings
-                                               (error "You need library `bookmark+.el' for this \
-command")))
+                                               (error "You need library `Bookmark+' for this command")))
      (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
      (completion-ignore-case                 bookmark-completion-ignore-case)
@@ -4947,7 +4946,7 @@ With a zero prefix arg, only buffers that have the same mode as the
  current buffer are candidates.
 
 You can use `C-x m' during completion to access buffer (non-file)
- bookmarks, if you use library `bookmark+.el'.
+ bookmarks, if you use library `Bookmark+'.
 You can use `S-delete' during completion to kill a candidate buffer.
 
 You can use `C-x M' during completion to allow only buffers of a
@@ -5628,7 +5627,7 @@ argument.
 
 During completion:
  You can use `C-x m' to access file bookmarks, if you use library
-  `bookmark+.el'.
+  `Bookmark+'.
  You can use `C-c +' to create a new directory.
  You can use `M-|' to open Dired on the currently matching file names.
  You can use `S-delete' to delete a candidate file or (empty)

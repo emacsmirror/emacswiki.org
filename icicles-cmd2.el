@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 13:56:04 2011 (-0700)
+;; Last-Updated: Sat Aug 13 14:26:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3713
+;;     Update #: 3739
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -59,7 +59,8 @@
 ;;    (+)`icicle-apply', `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-variable', `icicle-apropos-zippy',
-;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
+;;    (+)`icicle-bookmark-a-file', (+)`icicle-choose-faces',
+;;    (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
 ;;    (+)`icicle-complete-keys', `icicle-complete-thesaurus-entry',
@@ -2923,45 +2924,48 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                             (eq last-beg beg)
                             (not (eobp)))
                   (forward-char) (setq beg  (1+ beg))) ; Matched again, same place.  Advance 1 char.
-                (when beg
-                  (unless (match-beginning icicle-search-context-level)
-                    (error "Search context has no subgroup of level %d - try a lower number"
-                           icicle-search-context-level))
-                  (let ((hit-string  (buffer-substring-no-properties
-                                      (match-beginning icicle-search-context-level)
+                (unless (or (not beg) (match-beginning icicle-search-context-level))
+                  (error "Search context has no subgroup of level %d - try a lower number"
+                         icicle-search-context-level))
+                (let* ((hit-beg     (if icicle-search-complement-domain-p
+                                        last-beg
+                                      (match-beginning icicle-search-context-level)))
+                       (hit-end     (if icicle-search-complement-domain-p
+                                        (if beg
+                                            (match-beginning icicle-search-context-level)
+                                          (point-max))
                                       (match-end icicle-search-context-level)))
-                        end-marker)
-                    (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
-                               (setq end-marker  (copy-marker
-                                                  (match-end icicle-search-context-level)))
-                               (or (not predicate)
-                                   (save-match-data (funcall predicate hit-string end-marker))))
-                      (icicle-candidate-short-help
-                       (concat (and add-bufname-p
-                                    (format "Buffer: `%s', "
-                                            (buffer-name (marker-buffer end-marker))))
-                               (format "Position: %d, Length: %d"
-                                       (marker-position end-marker) (length hit-string)))
-                       hit-string)
-                      ;; Add whole candidate to `temp-list'.  Whole candidate is
-                      ;; (`hit-string' . `end-marker') or ((`hit-string' BUFNAME) . `end-marker').
-                      (push (cons (if add-bufname-p
-                                      (list hit-string
-                                            (let ((string  (copy-sequence (buffer-name))))
-                                              (put-text-property 0 (length string) 'face
-                                                                 'icicle-candidate-part string)
-                                              string))
-                                    hit-string)
-                                  end-marker)
-                            temp-list)
-                      ;; Highlight search context in buffer.
-                      (when (<= (+ (length temp-list) (length icicle-candidates-alist))
-                                icicle-search-highlight-threshold)
-                        (let ((ov  (make-overlay (match-beginning icicle-search-context-level)
-                                                 (match-end icicle-search-context-level))))
-                          (push ov icicle-search-overlays)
-                          (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
-                          (overlay-put ov 'face 'icicle-search-main-regexp-others))))))
+                       (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+                       end-marker)
+                  (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
+                             (setq end-marker  (copy-marker hit-end))
+                             (or (not predicate)
+                                 (save-match-data (funcall predicate hit-string end-marker))))
+                    (icicle-candidate-short-help
+                     (concat (and add-bufname-p
+                                  (format "Buffer: `%s', "
+                                          (buffer-name (marker-buffer end-marker))))
+                             (format "Position: %d, Length: %d"
+                                     (marker-position end-marker) (length hit-string)))
+                     hit-string)
+                    ;; Add whole candidate to `temp-list'.  Whole candidate is
+                    ;; (`hit-string' . `end-marker') or ((`hit-string' BUFNAME) . `end-marker').
+                    (push (cons (if add-bufname-p
+                                    (list hit-string
+                                          (let ((string  (copy-sequence (buffer-name))))
+                                            (put-text-property 0 (length string) 'face
+                                                               'icicle-candidate-part string)
+                                            string))
+                                  hit-string)
+                                end-marker)
+                          temp-list)
+                    ;; Highlight search context in buffer.
+                    (when (<= (+ (length temp-list) (length icicle-candidates-alist))
+                              icicle-search-highlight-threshold)
+                      (let ((ov  (make-overlay hit-beg hit-end)))
+                        (push ov icicle-search-overlays)
+                        (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
+                        (overlay-put ov 'face 'icicle-search-main-regexp-others)))))
                 (setq last-beg  beg))
               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
@@ -4423,6 +4427,7 @@ PREDICATE is nil or a Boolean function that takes these arguments:
   - a marker at the end of the search-context"
   (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
         (temp-list      ())
+        (last-beg       nil)
         (zone-end       nil))
     (unless buffer (setq buffer  (current-buffer)))
     (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
@@ -4431,6 +4436,7 @@ PREDICATE is nil or a Boolean function that takes these arguments:
                                     end  (point-max)))
         (condition-case icicle-search-char-property-scan
             (save-excursion
+              (setq last-beg  beg)
               (while (and (< beg end)
                           (let* ((charval  (and (or (not type) (eq type 'overlay))
                                                 (get-char-property beg prop)))
@@ -4439,12 +4445,20 @@ PREDICATE is nil or a Boolean function that takes these arguments:
                                  (currval  (icicle-flat-list charval textval)))
                             (not (icicle-set-intersection values currval))))
                 (setq beg  (icicle-next-single-char-property-change beg prop nil end)))
-              (while (and beg (< beg end))
+              (while (and beg  (< last-beg end))
                 (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end) end))
-                (let* ((hit-string  (buffer-substring-no-properties beg zone-end))
-                       (end-marker  (copy-marker zone-end)))
-                  (when (or (not predicate)
-                            (save-match-data (funcall predicate hit-string end-marker)))
+                (let* ((hit-beg     (if icicle-search-complement-domain-p
+                                        last-beg
+                                      beg))
+                       (hit-end     (if icicle-search-complement-domain-p
+                                          beg
+                                        zone-end))
+                       (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+                       end-marker)
+                  (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
+                             (setq end-marker  (copy-marker hit-end))
+                             (or (not predicate)
+                                 (save-match-data (funcall predicate hit-string end-marker))))
                     (icicle-candidate-short-help
                      (concat (and add-bufname-p
                                   (format "Buffer: `%s', " (buffer-name (marker-buffer end-marker))))
@@ -4461,14 +4475,14 @@ PREDICATE is nil or a Boolean function that takes these arguments:
                                 end-marker)
                           temp-list)
                     ;; Highlight search context in buffer.
-                    (when (and (not (equal beg zone-end))
-                               (<= (+ (length temp-list) (length icicle-candidates-alist))
+                    (when (and (<= (+ (length temp-list) (length icicle-candidates-alist))
                                    icicle-search-highlight-threshold))
-                      (let ((ov  (make-overlay beg zone-end)))
+                      (let ((ov  (make-overlay hit-beg hit-end)))
                         (push ov icicle-search-overlays)
                         (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
                         (overlay-put ov 'face 'icicle-search-main-regexp-others)))))
-                (setq beg  zone-end)
+                (setq beg       zone-end
+                      last-beg  zone-end)
                 (while (and (< beg end)
                             (let* ((charval  (and (or (not type) (eq type 'overlay))
                                                   (get-char-property beg prop)))
@@ -6736,6 +6750,32 @@ build a cache file of synonyms that are used for completion.  See
 (eval-after-load "bookmark+"
   '(progn
 
+    (icicle-define-file-command icicle-bookmark-a-file ; `C-x p c a'
+      "Bookmark a file (create an autofile bookmar).
+\(You need library `Bookmark+' for this command.)
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file.
+The autofile bookmark created has the same name as the file.
+
+During file-name completion:
+ You can use `C-x a +' or `C-x a -' to add or remove tags from the
+  current-candidate file.  You are prompted for the tags.
+  (This action requires library `Bookmark+'.)
+ You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+ You can use `C-c +' to create a new directory.
+ You can use `M-|' to open Dired on currently matching file names.
+ You can use `S-delete' to delete a candidate file or (empty) dir."
+      (lambda (file) (bmkp-bookmark-a-file file nil nil 'MSG))
+      "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
+      (icicle-file-bindings             ; Bindings
+       ((icicle-use-candidates-only-once-flag  t)
+        (icicle-all-candidates-list-alt-action-fn ; `M-|'
+         (lambda (files) (let ((enable-recursive-minibuffers  t))
+                           (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+      (icicle-bind-file-candidate-keys) ; First code
+      nil                               ; Undo code
+      (icicle-unbind-file-candidate-keys)) ; Last code
+
     (icicle-define-file-command icicle-tag-a-file ; `C-x p t + a'
       "Tag a file (an autofile bookmark) with one or more tags.
 You are prompted for the tags, then the file name.
@@ -6842,7 +6882,7 @@ During completion (`*': requires library `Bookmark+'):
                                               (list (cons file
                                                           (bmkp-get-tags
                                                            (bmkp-get-autofile-bookmark file))))))
-        (icicle-abs-file-candidates      ; An alist whose items are ((FILE TAG...)).
+        (icicle-abs-file-candidates     ; An alist whose items are ((FILE TAG...)).
          (let ((result  ()))
            (dolist (autofile  (bmkp-autofile-alist-only))
              (let ((tags  (bmkp-get-tags autofile)))
@@ -6872,7 +6912,7 @@ During completion (`*': requires library `Bookmark+'):
                                                   (list (cons file
                                                               (bmkp-get-tags
                                                                (bmkp-get-autofile-bookmark file))))))
-        (icicle-abs-file-candidates      ; An alist whose items are ((FILE TAG...)).
+        (icicle-abs-file-candidates     ; An alist whose items are ((FILE TAG...)).
          (let ((result  ()))
            (dolist (autofile  (bmkp-autofile-alist-only))
              (let ((tags  (bmkp-get-tags autofile)))                  
@@ -7013,12 +7053,12 @@ at point, or if none then the visited file."
           (funcall fn file 'WILDCARDS)))
       "Find file: " nil nil t nil nil
       (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg)
+       ((init-pref-arg  current-prefix-arg) ; Pre bindings
         (tags           (bmkp-read-tags-completing))
         (icicle-all-candidates-list-alt-action-fn ; `M-|'
          (lambda (files) (let ((enable-recursive-minibuffers  t))
                            (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate
+       ((icicle-must-pass-after-match-predicate ; Post bindings
          (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                              (btgs  (and bmk (bmkp-get-tags bmk))))
                         (and btgs  (bmkp-some  #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))

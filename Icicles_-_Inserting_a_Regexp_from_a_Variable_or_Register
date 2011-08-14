@@ -18,9 +18,9 @@ you assign it to a string, then you can use '''`C-=''''
 
 
 If you use `##C-u C-=##' (provide a [[prefix argument]]) then you are
-prompted for the variable to use.  You can use any variable.
-Without `C-u', the default variable is used (no prompting),
-'''`icicle-input-string''''.  So, for example, if `icicle-input-string'
+prompted for the variable to use.  Completion candidates for this
+include all string-valued variables.  Without `C-u', the default variable is used (no prompting),
+'''`icicle-input-string''''.  So for example, if `icicle-input-string'
 had value ##"[a-zA-Z]+"## then it would match any [[completion]] candidate
 composed only of letters.  You can customize `icicle-input-string'.
 
@@ -29,7 +29,8 @@ as ##(setq icicle-input-string "[a-zA-Z]+")## or ##(setq my-var ".*")##,
 you can use '''Icicles''' command '''`icicle-save-string-to-variable'''' to
 save a regexp to a variable.  You are prompted for the regexp to
 save.  Just as for `icicle-insert-string-from-variable', with a
-prefix argument you are prompted for the variable to use; with no
+prefix argument you are prompted for the variable to use (all
+variables are completion candidates).  With no
 prefix argument the regexp is saved to variable
 `icicle-input-string'.
 

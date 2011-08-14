@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  7 18:59:16 2011 (-0700)
+;; Last-Updated: Sat Aug 13 10:42:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26085
+;;     Update #: 26091
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2502,9 +2502,11 @@
 ;;  (`icicle-insert-string-from-variable') to insert it.
 ;;
 ;;  If you use `C-u C-=' (provide a prefix argument) then you are
-;;  prompted for the variable to use.  You can use any variable.
+;;  prompted for the variable to use.  Completion candidates for this
+;;  include all string-valued variables.
+;;
 ;;  Without `C-u', the default variable is used (no prompting),
-;;  `icicle-input-string'.  So, for example, if `icicle-input-string'
+;;  `icicle-input-string'.  So for example, if `icicle-input-string'
 ;;  had value "[a-zA-Z]+" then it would match any completion candidate
 ;;  composed only of letters.  You can customize
 ;;  `icicle-input-string'.
@@ -2514,9 +2516,9 @@
 ;;  you can use Icicles command `icicle-save-string-to-variable' to
 ;;  save a regexp to a variable.  You are prompted for the regexp to
 ;;  save.  Just as for `icicle-insert-string-from-variable', with a
-;;  prefix argument you are prompted for the variable to use; with no
-;;  prefix argument the regexp is saved to variable
-;;  `icicle-input-string'.
+;;  prefix argument you are prompted for the variable to use (all
+;;  variables are completion candidates).  With no prefix argument the
+;;  regexp is saved to variable `icicle-input-string'.
 ;;
 ;;  Another way of inserting a string into the minibuffer is to use a
 ;;  negative prefix arg with `M-:' (e.g. `M-- M-:') during minibuffer

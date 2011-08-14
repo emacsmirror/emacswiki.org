@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 12 14:19:49 2011 (-0700)
+;; Last-Updated: Sat Aug 13 14:26:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17040
+;;     Update #: 17090
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -188,6 +188,7 @@
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-remote-file-testing',
 ;;    `icicle-toggle-search-cleanup',
+;;    `icicle-toggle-search-complementing-domain',
 ;;    `icicle-toggle-search-replace-common-match',
 ;;    `icicle-toggle-search-replace-whole',
 ;;    `icicle-toggle-search-whole-word',
@@ -218,6 +219,7 @@
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
 ;;    `toggle-icicle-remote-file-testing',
 ;;    `toggle-icicle-search-cleanup',
+;;    `toggle-icicle-search-complementing-domain',
 ;;    `toggle-icicle-search-replace-common-match',
 ;;    `toggle-icicle-search-replace-whole',
 ;;    `toggle-icicle-search-whole-word',
@@ -1361,7 +1363,7 @@ Bound to `M-_' in the minibuffer when searching."
   "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'.
 Bound to `C-M-.' in the minibuffer."
   (interactive)
-  (setq icicle-dot-string           (if (string= icicle-dot-string ".") (icicle-anychar-regexp) "."))
+  (setq icicle-dot-string  (if (string= icicle-dot-string ".") (icicle-anychar-regexp) "."))
   (icicle-msg-maybe-in-minibuffer
    (cond ((string= icicle-dot-string ".")
           (icicle-convert-dots (equal icicle-current-input icicle-last-input) t)
@@ -2549,13 +2551,16 @@ the last and NO-REPLACE-P is nil."
 ;;;###autoload
 (defun icicle-insert-string-from-variable (askp) ; Bound to `C-=' in minibuffer.
   "Insert text into the minibuffer from a variable.
-By default, the variable is user option `icicle-input-string'.
-To insert from a different variable, use a prefix argument; you are
-then prompted for the variable to use.  You can use command
-`icicle-save-string-to-variable' to save a string to a variable.
-Typically, you store a regexp or part of a regexp in the variable.
-This command is bound in the minibuffer to `C-=', by default.
-This is especially useful when used with command `icicle-search'.
+By default, the variable is user option `icicle-input-string'.  To
+insert from a different variable, use a prefix argument.  You are then
+prompted for the variable to use.  Completion candidates for this
+include all string-valued variables.
+
+You can use command `icicle-save-string-to-variable' to save a string
+to a variable.  Typically, you store a regexp or part of a regexp in
+the variable.  This command is bound in the minibuffer to `C-=', by
+default.  This is especially useful when used with command
+`icicle-search'.
 
 Some regexps that you might want to assign to variables:
 
@@ -2606,30 +2611,20 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
         (let* ((icicle-whole-candidate-as-text-prop-p   nil)
                ;; If we didn't use this here we'd at least have to bind it to
                ;; `orig-must-pass-after-match-predicate', because of `icicle-execute-extended-command'.
-               (icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
+               (icicle-must-pass-after-match-predicate  #'(lambda (s)
+                                                            (let ((sym  (intern-soft s)))
+                                                              (and sym  (boundp (intern s))
+                                                                   (condition-case nil
+                                                                       (icicle-var-is-of-type-p
+                                                                        sym '(string color regexp)
+                                                                        'inherit-or-value)
+                                                                     (error nil))))))
                (enable-recursive-minibuffers            t)
                (var
-                (intern
-                 (completing-read
-                  "Insert text from variable: "
-                  (mapcar  #'list
-                           (mapcar 'symbol-name
-                                   '(adaptive-fill-first-line-regexp adaptive-fill-regexp
-                                     add-log-current-defun-header-regexp
-                                     ange-ftp-gateway-prompt-pattern allout-bullets-string
-                                     allout-line-boundary-regexp allout-regexp
-                                     comment-start-skip comment-end comint-prompt-regexp
-                                     ffap-url-regexp find-face-regexp find-function-regexp
-                                     find-variable-regexp imenu-example--function-name-regexp-c
-                                     org-plain-time-of-day-regexp outline-heading-end-regexp
-                                     outline-line-boundary-regexp outline-plain-bullets-string
-                                     outline-regexp page-delimiter paragraph-separate paragraph-start
-                                     rmail-mime-charset-pattern sentence-end shell-prompt-pattern
-                                     telnet-prompt-pattern temp-file-name-pattern
-                                     thing-at-point-url-regexp)))
-                  nil  nil nil (if (boundp 'variable-name-history)
-                                   'variable-name-history
-                                 'icicle-variable-name-history))))
+                (intern (completing-read "Insert text from variable: " obarray  nil  nil nil
+                                         (if (boundp 'variable-name-history)
+                                             'variable-name-history
+                                           'icicle-variable-name-history))))
                ;; Make sure we use the buffer-local value of the variable, if there is one.
                (text
                 (with-current-buffer (cadr (buffer-list)) (symbol-value var))))
@@ -7137,6 +7132,20 @@ Bound to `C-.' in the minibuffer, except for file-name input."
   (icicle-msg-maybe-in-minibuffer (if icicle-search-cleanup-flag
                                       "Removal of Icicles search highlighting is now ON"
                                     "Removal of Icicles search highlighting is now OFF")))
+
+;;;###autoload
+(defalias 'toggle-icicle-search-complementing-domain 'icicle-toggle-search-complementing-domain)
+;;;###autoload
+(defun icicle-toggle-search-complementing-domain () ; Bound to `C-M-~' in minibuffer.
+  "Toggle searching the complements of the normal search contexts.
+This toggles internal variable `icicle-search-complement-domain-p'.
+If toggled during search it affects the next, not the current, search.
+Bound to `C-M-~' in the minibuffer."
+  (interactive)
+  (setq icicle-search-complement-domain-p  (not icicle-search-complement-domain-p))
+  (icicle-msg-maybe-in-minibuffer
+   (format "Future Icicles searches %suse the COMPLEMENT of the search domain"
+           (if icicle-search-complement-domain-p "" "do NOT "))))
 
 ;;$$$ (defun icicle-dispatch-C-backquote ()   ; Bound to `C-`' in minibuffer.
 ;;   "Do the right thing for `C-`'.

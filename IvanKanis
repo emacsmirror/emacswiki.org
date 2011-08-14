@@ -14,5 +14,7 @@ I have patched appt.el to support variable warning time see details on my [http:
 
 ----
 Hi Ivan, where i can find your nterm.el? I can't download it from http://kanis.fr/nterm.html (Access denied) -- AndyStewart
+
+I can download it now but it is version 0.3 but the changelog mentions 0.4. Also the tarball contains byte-compiled and at least less insists to opening it in hex mode. "My favorite search engine" did not tell me a better way to contact you than this. Maybe you can make a hg repository (containing only nterm) available? -- JonasBernoulli
 ----
 CategoryHomepage
