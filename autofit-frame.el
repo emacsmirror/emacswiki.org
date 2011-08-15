@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 21.0
-;; Last-Updated: Fri Feb 25 17:31:26 2011 (-0800)
+;; Last-Updated: Sun Aug 14 11:28:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 601
+;;     Update #: 612
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/autofit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -27,13 +27,15 @@
 ;;  Functions are provided here to automatically resize each frame to
 ;;  fit its selected window, when there is no other window in the
 ;;  frame.  Standard Emacs primitive functions are redefined to do
-;;  this: `display-buffer', `switch-to-buffer', and `pop-to-buffer'.
+;;  this: `display-buffer', `switch-to-buffer', `pop-to-buffer', and
+;;  `pop-to-buffer-same-window' (Emacs 24+).
 ;;
 ;;  Automatic frame resizing is also provided here implicitly for
 ;;  functions `switch-to-buffer-other-window' and
 ;;  `switch-to-buffer-other-frame', since they ultimately use
-;;  `display-buffer'. (Command `switch-to-buffer' does not use
-;;  `display-buffer', so it is redefined separately here.)
+;;  `display-buffer'.  (Commands `switch-to-buffer' and
+;;  `pop-to-buffer-same-window' do not use `display-buffer', so they
+;;  are redefined separately here.)
 ;;
 ;;  Put the following in your Emacs initialization file (`~/.emacs'),
 ;;  in order to provide for automatic frame resizing:
@@ -72,6 +74,12 @@
 ;;
 ;;  `window--display-buffer-1' -
 ;;     Resize frame to fit sole window if `autofit-frames-flag'.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `window.el' have been
+;;              REDEFINED HERE:
+;;
+;;  `pop-to-buffer-same-window' (Emacs 24+).
 ;;
 ;;
 ;;  ***** NOTE: The following EMACS PRIMITIVES are REDEFINED HERE:
@@ -122,6 +130,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/14 dadams
+;;     Added redefinition of pop-to-buffer-same-window, for Emacs 24.
 ;; 2011/02/25 dadams
 ;;     switch-to-buffer:
 ;;       If BUFFER is nil, use other-buffer.  Thx to Martial Boniou.
@@ -220,6 +230,7 @@ Don't forget to mention your Emacs and library versions.")))
 
 ;; This is not used here.  It is useful as a `temp-buffer-show-hook':
 ;;   (add-hook 'temp-buffer-show-hook 'fit-frame-if-one-window 'append)
+;;
 (defun fit-frame-if-one-window ()
   "Resize frame to fit selected window if it is alone in the frame.
 Usable in `temp-buffer-show-hook'.
@@ -233,7 +244,7 @@ This does nothing if `autofit-frames-flag' is nil."
       (fset 'old-pop-to-buffer (symbol-function 'pop-to-buffer)))
 
   ;; REPLACES ORIGINAL (built-in):
-  ;; Calls my version of `display-buffer'.  Needed because built-in
+  ;; Call my version of `display-buffer'.  Needed because built-in
   ;; `pop-to-buffer' calls C version, Fdisplay_buffer, not `display-buffer'.
   ;;
   (defun pop-to-buffer (buffer &optional other-window norecord)
@@ -266,8 +277,8 @@ of `display-buffer' for additional customization information."
       (fset 'old-display-buffer (symbol-function 'display-buffer)))
 
   ;; REPLACES ORIGINAL (built-in):
-  ;; 1) Uses `read-buffer' in interactive spec.
-  ;; 2) Resizes frame to fit sole window if `autofit-frames-flag'.
+  ;; 1) Use `read-buffer' in interactive spec.
+  ;; 2) Resize frame to fit sole window if `autofit-frames-flag'.
   ;; 3) Raise the frame.  In particular, this ensures that a thumbified frame
   ;;    is raised (see `thumb-frm.el').
   ;; 4) Hack to restore point in buffer - fixes unknown Emacs 22 bug.
@@ -312,11 +323,10 @@ it manually)."
     (interactive
      (list (read-buffer "Display buffer: " (current-buffer) 'existing)
            current-prefix-arg))
-    (let* ((wins ())
-           (old-wins (progn (walk-windows (lambda (w) (push w wins)) t 0)
-                            wins))
-           (win (old-display-buffer buffer not-this-window frame))
-           (pt (save-excursion (set-buffer buffer) (point))))
+    (let* ((wins      ())
+           (old-wins  (progn (walk-windows (lambda (w) (push w wins)) t 0) wins))
+           (win       (old-display-buffer buffer not-this-window frame))
+           (pt        (save-excursion (set-buffer buffer) (point))))
       (when (window-live-p win)
         (save-excursion
           (save-selected-window
@@ -332,7 +342,7 @@ it manually)."
 
 
 ;; REPLACES ORIGINAL defined in `window.el' (Emacs 23+):
-;; Resizes frame to fit sole window if `autofit-frames-flag'.
+;; Resize frame to fit sole window if `autofit-frames-flag'.
 ;;
 (when (fboundp 'window--display-buffer-1) ; Emacs 23+
 
@@ -346,15 +356,14 @@ it manually)."
 Do not raise the selected frame.
 Resize frame to fit sole window if `autofit-frames-flag'.
 Return WINDOW."
-    (let* ((frame (window-frame window))
-           (visible (frame-visible-p frame)))
+    (let* ((frame    (window-frame window))
+           (visible  (frame-visible-p frame)))
       (unless (or (not visible)
                   ;; Assume the selected frame is already visible enough.
                   (eq frame (selected-frame))
                   ;; Assume frame from which we invoked minibuffer is visible.
                   (and (minibuffer-window-active-p (selected-window))
-                       (eq frame (window-frame
-                                  (minibuffer-selected-window)))))
+                       (eq frame (window-frame (minibuffer-selected-window)))))
         (raise-frame frame)
         (save-excursion
           (save-selected-window
@@ -368,12 +377,12 @@ Return WINDOW."
     (fset 'old-switch-to-buffer (symbol-function 'switch-to-buffer)))
 
 ;; REPLACES ORIGINAL (built-in):
-;; 1) Uses `read-buffer' in interactive spec.
+;; 1) Use `read-buffer' in interactive spec.
 ;; 2) If current window is dedicated, then use another window.
 ;;    NOTE: Emacs versions >= 19.34 signal error if dedicated window, instead
 ;;          of using another one.  Don't know what the 19.28 version did.
 ;;          Don't know if this is needed any more.
-;; 3) Resizes frame to fit sole window if `autofit-frames-flag'
+;; 3) Resize frame to fit sole window if `autofit-frames-flag'
 ;;    (unless BUFFER is already the `current-buffer').
 ;;;###autoload
 (defun switch-to-buffer (buffer &optional norecord)
@@ -395,7 +404,7 @@ The buffer switched to is returned.
 within a Lisp program!  Use `set-buffer' instead, to avoid messing
 with correspondences between windows and buffers.
 
-Resizes frame to fit sole window if `autofit-frames-flag'
+Resize frame to fit sole window if `autofit-frames-flag'
 \(unless BUFFER is already the `current-buffer')."
   (interactive
    (list (read-buffer "Switch to buffer: "
@@ -404,7 +413,7 @@ Resizes frame to fit sole window if `autofit-frames-flag'
                         (other-buffer (current-buffer))))))
   ;; If string arg, convert to a buffer.  If nil, use `other-buffer'.
   (setq buffer  (if buffer (get-buffer-create buffer) (other-buffer)))
-  (let ((orig-buf (current-buffer)))
+  (let ((orig-buf  (current-buffer)))
     (prog1 (if (window-dedicated-p (selected-window))
                (switch-to-buffer-other-window buffer)
              (old-switch-to-buffer buffer norecord))
@@ -412,6 +421,38 @@ Resizes frame to fit sole window if `autofit-frames-flag'
            (not (eq buffer orig-buf))   ; Don't resize if same buffer.
            autofit-frames-flag
            (fit-frame)))))
+
+
+;; REPLACES ORIGINAL in `window.el':
+;; 1) Use `read-buffer' in interactive spec.
+;; 2) Resize frame to fit sole window if `autofit-frames-flag'
+;;    (unless BUFFER is already the `current-buffer').
+(when (fboundp 'pop-to-buffer-same-window)
+  (defun pop-to-buffer-same-window (&optional buffer-or-name norecord label)
+    "Pop to buffer specified by BUFFER-OR-NAME in the selected window.
+Another window is used only if the buffer cannot be shown in the
+selected window, usually because it is dedicated to another buffer.
+Optional arguments BUFFER-OR-NAME, NORECORD, and LABEL are as for
+`pop-to-buffer'.
+
+Resize frame to fit sole window if `autofit-frames-flag' is non-nil.
+\(unless BUFFER is already the `current-buffer')."
+    (interactive
+     (list (read-buffer "Pop to buffer in selected window: "
+                        (if (fboundp 'another-buffer) ; In `misc-fns.el'.
+                            (another-buffer nil t)
+                          (other-buffer (current-buffer))))
+           current-prefix-arg))
+    ;; If string arg, convert to a buffer.  If nil, use `current-buffer'.
+    (setq buffer-or-name  (if buffer-or-name
+                              (get-buffer-create buffer-or-name)
+                            (current-buffer)))
+    (let ((orig-buf  (current-buffer)))
+      (prog1 (pop-to-buffer buffer-or-name 'same-window norecord label)
+        (and (one-window-p t)
+             (not (eq buffer-or-name orig-buf)) ; Don't resize if same buffer.
+             autofit-frames-flag
+             (fit-frame))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

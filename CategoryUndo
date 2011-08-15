@@ -73,6 +73,8 @@ See MarkCommands for commands to pop local and global mark rings, undoing the cu
 
 Use BreadcrumbForEmacs to leave breadcrumb bookmarks in the buffers, and jump back to them quickly.
 
+Use AtimUnscroll to restore buffer look as it was before you scrolled the text.
+
 == Undo at point Level ==
 
 Is there an undo at the point level ? I would like to undo [[point]] movement too. Right now it's very hard to tell what is about to be undone. 

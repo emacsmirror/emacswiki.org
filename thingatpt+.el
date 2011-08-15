@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jul  8 17:07:41 2011 (-0700)
+;; Last-Updated: Sun Aug 14 15:42:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1266
+;;     Update #: 1271
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -91,6 +91,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/14 dadams
+;;     bounds-of-thing-at-point-1:
+;;       Tests for end need to use <, not <=.  If past the THING then should return nil.
 ;; 2011/07/08 dadams
 ;;     Removed: list-at/nearest-point.
 ;;     Added: (list|sexp)-(at|nearest)-point-with-bounds,
@@ -258,7 +261,7 @@ symbol as a valid THING."
     (bounds-of-thing-at-point-1 thing)))
 
 
-;; This is the original `bounds-of-thing-at-point', but with bug #8667 fixed.
+;; This is the original `bounds-of-thing-at-point', but with bugs #8667 and #9300 fixed.
 (defun bounds-of-thing-at-point-1 (thing)
   "Helper for `bounds-of-thing-at-point'.
 Do all except handle the optional SYNTAX-TABLE arg."
@@ -283,7 +286,7 @@ Do all except handle the optional SYNTAX-TABLE arg."
                                       (or (get thing 'end-op)
                                           (lambda () (forward-thing thing 1))))
                                      (point))))
-                    (and (<= orig real-end) (< beg real-end)
+                    (and (< orig real-end) (< beg real-end)
                          (cons beg real-end)))
                 (goto-char orig)
                 ;; Try a second time, moving first backward and then forward,
@@ -298,7 +301,7 @@ Do all except handle the optional SYNTAX-TABLE arg."
                                     (or (get thing 'beginning-op)
                                         (lambda () (forward-thing thing -1))))
                                    (point))))
-                  (and (<= real-beg orig) (<= orig end) (< real-beg end)
+                  (and (<= real-beg orig) (< orig end) (< real-beg end)
                        (cons real-beg end))))))
         (error nil)))))
 

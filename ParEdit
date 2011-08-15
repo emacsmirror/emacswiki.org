@@ -26,6 +26,8 @@ To use %%ParEdit%% with Emacs' Lisp modes, add the following to <tt>[InitFile .e
     (add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
     (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
     (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+    (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
+
 
 == ParEdit and ElDoc ==
 

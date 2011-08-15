@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 14:26:48 2011 (-0700)
+;; Last-Updated: Mon Aug 15 00:01:16 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17090
+;;     Update #: 17092
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5727,13 +5727,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (message "Complementing current set of candidates...")
   (setq icicle-completion-candidates
-        (icicle-set-difference
-         (condition-case nil
-             (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
-                              icicle-ignore-space-prefix-flag)
-           (wrong-number-of-arguments   ; Emacs 23.2+ has no 4th arg.
-            (all-completions "" minibuffer-completion-table minibuffer-completion-predicate)))
-         icicle-completion-candidates))
+        (icicle-set-difference (icicle-all-completions "" minibuffer-completion-table
+                                                       minibuffer-completion-predicate
+                                                       icicle-ignore-space-prefix-flag)
+                               icicle-completion-candidates))
   (icicle-maybe-sort-and-strip-candidates)
   (message "Displaying completion candidates...")
   (with-output-to-temp-buffer "*Completions*" (display-completion-list icicle-completion-candidates))

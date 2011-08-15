@@ -14,35 +14,32 @@ Note that this page is not about EmacsWikiMode.
 
 Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams
 
-
-
+[new]
+Is this happening to anybody else? What about the time? Whenever I use the site, it seems to be working just fine. -- AlexSchroeder
 
 
 == CGI Internal error: 400 Bad request (malformed multipart POST) ==
 
 I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
 
-
-
-== Glossary - Wrong Page is Linked ==
-
-Thanks for adding the link to the Glossary in the page headers.  However, the link goes nowhere (new page).  It needs to go to this page: CategoryGlossary. -- DrewAdams
-
-
 [new]
-Maybe move the current page to [[Glossary]], and then make CategoryGlossary a traditional "category" page with links to glossary entries.  I am willing to volunteer to do this. -- AaronHawley
-
-
-[new:DrewAdams:2011-07-25 14:50 UTC]
-OK by me.  But do you really think there is a need/use for such a traditional category page?  -- DrewAdams
-
-
-
+Anybody else? I've never seen this before. -- AlexSchroeder
 
 == Search Flooded with Source Code ==
 
 No idea how much control you have over the search. However, currently searches often are useless to me, because they show only source code files. Try searching for "defmacro", for instance; maybe that is because it isn't discussed anywhere on the wiki, but I have no way of finding out. Please allow to exclude sources from the search results. -- OlafB
 
+[new]
+The ElispArea used to be separate, but now it is not.  Oddmuse:Searching would need to be improved to be able to differentiate code. -- AaronHawley
+
+[new]
+I'm not sure what to do. Fiddling with the search engine configuration might work, but how would we search for code examples, then? Add a second search box for code only? Yuck. There\s not much configuration going on because we are using Google Search. I don't see a way to add checkboxes and other options to influence it.
+
+Somebody could start working on a multi-lingual setup for Lucene or whatever the search engine of choice is for people who want to do it themselves. I remember looking at it and thinking that it looked like a lot of work for little gain.
+
+For the example given, Google returns MacroBasics on third place. That's not so bad, is it?
+
+We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
 
 == FYI - still getting Server Error ==
 
@@ -55,24 +52,8 @@ Just an FYI that this problem has not disappeared, even if it is less frequent. 
 
 How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[[Manual:Circular Objects]]## and a few variants, but didn't find anything that works.  -- DrewAdams
 
-
-== Problems with edit shortcut ==
-
-The first bullet point on [[HowToEdit]] tells me "In common browsers,
-to edit a page, just use `Alt e’" I tried firefox and chromium browser
-under ubuntu, and both do open an internal menu instead of putting the
-current page in edit mode. It would be nice to have a remark on the
-[[HowToEdit]] page, for EmacsWiki newbies like me, which explains how
-to get the shortcuts for edit, preview and save to work. Thanks! -- ThomasAlexanderGerds
 [new]
-[[HowToEdit]] page updated. On firefox, you use Alt-Shift-e.  -- [[sylecn]]
-
-[new]
-Thanks. For me the problem was an old version of firemacs. -- ThomasAlexanderGerds
-
-
-
-
+Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
 
 == Page not found by search ==
 
@@ -183,36 +164,6 @@ Vegard's update wiped out my previous update. -- DrewAdams
 
 [new]
 Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to edit the page before he saved it? Perhaps diff3 will sometimes merge things and drop changes without marking them as a conflict? Or he used a raw client that interacts with the wiki text directly, didn't post back the last modification date, thus diff3 was unable to determine the ancestor for conflict resolution, and he ended up overwriting what you had done. I think the caching problem you reported earlier is something else (and much trickier, apparently). -- AlexSchroeder
-
-== w3m ==
-
-To edit the wiki using [[w3m]] make sure you enable cookies in w3m! Hit ##o## for options and check for the following:
-
-{{{
-Cookie Settings
-
-Enable cookie processing                           (*)YES  ( )NO
-Print a message when receiving a cookie            (*)YES  ( )NO
-Accept cookies                                     (*)YES  ( )NO
-}}}
-
-Next, [http://www.emacswiki.org/emacs/uihnscuskc/SiteMap follow this
-link] to set the cookie. This will prevent the reCAPTCHA code from
-being triggered.
-
-== emacs-w3m ==
-
-To edit the wiki using [[emacs-w3m]] make sure you enable cookies in
-your .emacs!
-
-{{{
-(setq w3m-use-cookies t)
-}}}
-
-Next, [http://www.emacswiki.org/emacs/uihnscuskc/SiteMap follow this
-link] to set the cookie. This will prevent the reCAPTCHA code from
-being triggered.
-
 
 [:EditingGetsOldPageText]
 == editing does not get most recent version ==

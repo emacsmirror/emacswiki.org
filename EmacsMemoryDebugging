@@ -1,6 +1,4 @@
-* Emacs Memory Debugging
-
-What to do if you think that Emacs leaks memory ([http://en.wikipedia.org/wiki/Memory_leak what's a memory leak?]).
+What to do if you think that Emacs [http://en.wikipedia.org/wiki/Memory_leak leaks memory]?
 
 ==How to extract more information==
 
@@ -57,9 +55,9 @@ You can go through the previous revisions in the version control system until yo
 If a program (like Emacs) seems to want progressively all your computer's memory there is risk that it will slow down your system or is killed by your kernel. A easy thing you can do is to stop the program via ##kill -SIGSTOP 25952## to freeze it (and ##SIGCONT## to restore it). Then go on with debugging (##gdb## etc.).
 
 ==Interpret the results==
-What does it mean if you have a very high numbers of [CategoryGlossary conses]? Etc.
+What does it mean if you have a very high numbers of [[cons]]es? Etc.
 
-TODO: explain
+WikiTodo: explain
 
 ==Discussion about particular memory problems==
 ===Emacs grows and dies===
@@ -118,7 +116,7 @@ Apparently this has some relation to this line of code in ##src/puresize.h##:
 }}}
 It was later increased to 1270000. But the original problem was due to [http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00233.html this recent change]. After reverting it, everyone could compile Emacs again and they lived happily ever after.
 
--- 6.Aug.2009 [[DanielClemente]]
+-- 6.Aug.2009 DanielClemente
 
 ----
-[[CategoryDebug]], [[DebugEmacs]]
+CategoryDebug

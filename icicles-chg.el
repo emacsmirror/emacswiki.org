@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 14:46:35 2011 (-0700)
+;; Last-Updated: Mon Aug 15 00:03:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6875
+;;     Update #: 6892
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -427,6 +427,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/14 dadams
+;;     icicle-search-thing-scan: Handle icicle-search-complement-domain-p.
+;;     Updated doc strings of search commands to mention complementing.
+;;     icicle-imenu(-command|-non-interactive-function), icicle-complete-keys-1:
+;;       Replaced mapc with dolist so do not require cl.el at runtime (Emacs 20).
+;;     icicle-imenu: Ignore case when completing to the type (function etc.). 
 ;; 2011/08/13 dadams
 ;;     Added: icicle-bookmark-a-file.
 ;;     icicle-search-regexp-scan, icicle-search-char-property-scan:
@@ -894,6 +900,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/15 dadams
+;;     Added: icicle-all-completions.
+;;     Use icicle-all-completions, not all-completions, wherever a 4th arg is passed.
 ;; 2011/08/12 dadams
 ;;     icicle-completing-p: Handle cases of filename must-match maps.
 ;;     icicle-file-name-input-p: Improved doc string.
@@ -2540,6 +2549,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/15 dadams
+;;     icicle-candidate-set-complement: Use icicle-all-completions instead of its definition inline.
 ;; 2011/08/13 dadams
 ;;     Added: icicle-toggle-search-complementing-domain, toggle-icicle-search-complementing-domain.
 ;;     icicle-insert-string-from-variable: Completion candidates now include all string-valued vars.
