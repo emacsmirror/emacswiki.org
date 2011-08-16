@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 00:01:16 2011 (-0700)
+;; Last-Updated: Mon Aug 15 08:16:33 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17092
+;;     Update #: 17104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5241,7 +5241,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
         (icicle-apropos-complete-match-fn  icicle-last-apropos-complete-match-fn)
         (icicle-progressive-completing-p   t) ; Inhibit completion by `icicle-minibuffer-setup'.
         (enable-recursive-minibuffers      t))
-    (cond ((and icicle-completion-candidates (null (cdr icicle-completion-candidates)))
+    (cond ((and icicle-completion-candidates  (null (cdr icicle-completion-candidates)))
            (if (not (and icicle-top-level-when-sole-completion-flag
                          (sit-for icicle-top-level-when-sole-completion-delay)))
                (minibuffer-message "  [Sole completion]")
@@ -5282,9 +5282,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                          ((and (icicle-file-name-input-p) (> emacs-major-version 22)) ; Emacs 23.2+
                           (let ((icicle-must-pass-after-match-predicate
                                  #'(lambda (c) (member c current-candidates))))
-                            (completing-read
-                             "Match also (regexp): " 'read-file-name-internal nil
-                             icicle-require-match-p nil minibuffer-history-variable)))
+                            (completing-read "Match also (regexp): " 'read-file-name-internal nil
+                                             icicle-require-match-p nil minibuffer-history-variable)))
                          (t             ; Emacs 20, 21
                           ;; In Emacs < 22, there is no PREDICATE arg to `read-file-name', so
                           ;; we use `completing-read' even for file-name completion.  In that case, we
@@ -5716,21 +5715,26 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;;;###autoload
 (defun icicle-candidate-set-complement () ; Bound to `C-~' in minibuffer.
   "Complement the set of current completion candidates.
-The new set of candidates is the set of `all-completions' minus the
-set of candidates prior to executing this command - that is, all
-possible completions of the appropriate type, except for those that
-are in the current set of completions.
+The new set of candidates is the set of all candidates in the initial
+completion domain minus the set of matching candidates prior to
+executing this command - that is, all possible completions of the
+appropriate type, except for those that are in the current set of
+completions.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-candidate-set-complement]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (message "Complementing current set of candidates...")
-  (setq icicle-completion-candidates
-        (icicle-set-difference (icicle-all-completions "" minibuffer-completion-table
-                                                       minibuffer-completion-predicate
-                                                       icicle-ignore-space-prefix-flag)
-                               icicle-completion-candidates))
+  (let ((initial-cands  (icicle-all-completions "" minibuffer-completion-table
+                                                minibuffer-completion-predicate
+                                                icicle-ignore-space-prefix-flag)))
+    (setq icicle-completion-candidates  (icicle-set-difference
+                                         (if icicle-must-pass-after-match-predicate
+                                             (icicle-remove-if-not
+                                              icicle-must-pass-after-match-predicate initial-cands)
+                                           initial-cands)
+                                         icicle-completion-candidates)))
   (icicle-maybe-sort-and-strip-candidates)
   (message "Displaying completion candidates...")
   (with-output-to-temp-buffer "*Completions*" (display-completion-list icicle-completion-candidates))

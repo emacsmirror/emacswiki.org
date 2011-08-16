@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 24 17:49:53 2011 (-0700)
+;; Last-Updated: Mon Aug 15 08:48:03 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3041
+;;     Update #: 3042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1107,7 +1107,7 @@ things down.  Do you really want to highlight up to %d chars?  "
   (when (eq t msg-p)
     (message "Highlighting occurrences of `%s' done.  %s" regexp
              (substitute-command-keys
-              "`\\[negative-argument] \\[highlight]' to remove highlighting.")))
+              "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting.")))
   (setq hlt-last-regexp  regexp))
 
 ;;;###autoload
@@ -1134,7 +1134,7 @@ Optional 5th arg NTH determines which regexp subgroup is highlighted.
   (let ((remove-msg
          (and msg-p
               (substitute-command-keys
-               "`\\[negative-argument] \\[highlight]' to remove highlighting."))))
+               "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting."))))
     (when msg-p
       (message "Highlighting occurrences of `%s' after cursor..." regexp))
     (hlt-highlight-regexp-region (point) (point-max) regexp face

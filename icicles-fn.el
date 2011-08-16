@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 00:00:09 2011 (-0700)
+;; Last-Updated: Mon Aug 15 08:35:42 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12500
+;;     Update #: 12502
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2983,7 +2983,7 @@ It can find the completion buffer in `standard-output'.
 The optional second arg is ignored."
   (if (not (bufferp standard-output))
       (let ((standard-output  (current-buffer))) (icicle-display-completion-list completions))
-    (let ((mainbuf  (current-buffer)))  ; $$$$$$$$$ For Emacs 23 crap that puts base-size in last cdr.
+    (let ((mainbuf  (current-buffer)))  ; $$$$$$ For Emacs 23 crap that puts base-size in last cdr.
       (with-current-buffer standard-output
         (goto-char (point-max))
         (when icicle-show-Completions-help-flag (icicle-insert-Completions-help-string))
@@ -2995,7 +2995,7 @@ The optional second arg is ignored."
           (insert cand-intro-string))
         ;; $$$$$$$$ Emacs 23 nonsense.  Revisit this when Stefan finally removes that crud.
         ;; This is done in Emacs 23 `display-completion-list'.
-        (when (fboundp 'completion-all-sorted-completions) ; Emacs 23
+        (when (and completions  (fboundp 'completion-all-sorted-completions)) ; Emacs 23
           (let ((last  (last completions)))
             ;; Set base-size from the tail of the list.
             (set (make-local-variable 'completion-base-size)

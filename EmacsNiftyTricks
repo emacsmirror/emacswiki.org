@@ -41,7 +41,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * M-SPC will remove all except 1 space between characters.  Suppose you have
 'a <blanks> tree' & point is postioned just after the 'a' (or anywhere in the space between the words), hitting M-SPC will make it 'a tree'.   --SivaramN
 
-* A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/elisp/gse-number-rect.el -- ScottEvans
+* A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/download/elisp/gse-number-rect.el -- ScottEvans
 * Use MarkCommands to remember and go back and forth between locations in buffers or across buffers.
 * Use BreadcrumbForEmacs to set a series of breadcrumb bookmarks in the buffers, and jump back to them quickly.  Visiting the bookmarks in the other window is a quick way to browse all the bookmarked locations.
 * When you are inserting from [[register]] with <code>C-x r i</code>, you may use a prefix argument to jump to the end of the inserted text, but if you forget you can use <code>C-x C-x</code>.

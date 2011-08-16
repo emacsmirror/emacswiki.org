@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 00:03:47 2011 (-0700)
+;; Last-Updated: Mon Aug 15 08:42:03 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6892
+;;     Update #: 6899
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -901,6 +901,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2011/08/15 dadams
+;;     icicle-display-completion-list: Do not call (last ...) if COMPLETIONS is null.
 ;;     Added: icicle-all-completions.
 ;;     Use icicle-all-completions, not all-completions, wherever a 4th arg is passed.
 ;; 2011/08/12 dadams
@@ -2550,7 +2551,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2011/08/15 dadams
-;;     icicle-candidate-set-complement: Use icicle-all-completions instead of its definition inline.
+;;     icicle-candidate-set-complement:
+;;       Apply icicle-must-pass-after-match-predicate to correct the initial domain subtracting from.
+;;       Use icicle-all-completions instead of its definition inline.
 ;; 2011/08/13 dadams
 ;;     Added: icicle-toggle-search-complementing-domain, toggle-icicle-search-complementing-domain.
 ;;     icicle-insert-string-from-variable: Completion candidates now include all string-valued vars.
