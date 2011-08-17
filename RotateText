@@ -12,9 +12,16 @@ Various sets of words could be be rotated. If the selected text matches an item 
     (zero one two)
      ... easy to define your own sets.
 
-This version of rotate-region builds a giant RegularExpression for finding matches rather than iterating on entries in the data structures.  It is written defensively with error-checking, and rotates text "in the buffer" for the `rotate-region' command.  It has a `rotate-string' procedure.  At the end is a key binding for an `indent-or-rotate' command.
+This version of rotate-region builds a giant RegularExpression for finding matches rather than iterating on entries in the data structures.  It is written defensively with error-checking, and rotates text "in the buffer" with the `rotate-region' command.  There is a `rotate-word-at-point' command with a suggested key binding of ##`C-c /'## and also a `rotate-string' procedure for use in Emacs Lisp code.  At the end is a key binding for an `indent-or-rotate' command.
+
+Use this code by EvaluatingExpressions  in Emacs or by adding it to your InitFile for Emacs.
 
 {{{
+(defvar rotate-text-rotations
+  '(("true" "false")
+    ("yes" "no"))
+  "List of text rotation sets.")
+
 (defun rotate-region (beg end)
   "Rotate all matches in `rotate-text-rotations' between point and mark."
   (interactive "r")
@@ -81,6 +88,19 @@ Example:
 	(append (rotate-flatten-list (car list-of-lists))
 		(rotate-flatten-list (cdr list-of-lists)))
       (list list-of-lists))))
+
+(defun rotate-word-at-point ()
+  "Rotate word at point based on sets in `rotate-text-rotations'."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'word))
+        (opoint (point)))
+    (when (consp bounds)
+      (let ((beg (car bounds))
+            (end (copy-marker (cdr bounds))))
+        (rotate-region beg end)
+        (goto-char (if (> opoint end) end opoint))))))
+
+(global-set-key "\C-c/" 'rotate-word-at-point)
 
 (defun indent-or-rotate ()
   "If point is at end of a word, then else indent the line."

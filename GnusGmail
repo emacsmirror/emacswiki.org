@@ -57,8 +57,12 @@ If you don't wish to store your password there, just omit the "password secret" 
 
 ====Accessing the [Gmail] folders====
 
-All Gmail system labels have a prefix [Gmail], it matches the default value of gnus-ignored-newsgroups, so
-we could set it to "^to\\.\\|^[0-9.        ]+\\( \\|$\\)\\|^[\"]\"[#'()]" to work around.
+All Gmail system labels have a prefix [Gmail], which matches the default
+value of gnus-ignored-newsgroups.  A workaround is to redefine it as
+follows:
+
+    ;; Make Gnus NOT ignore [Gmail] mailboxes
+    (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 
 ===Accessing Gmail via POP===
 

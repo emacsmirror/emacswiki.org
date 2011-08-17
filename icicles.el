@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 00:00:04 2011 (-0700)
+;; Last-Updated: Tue Aug 16 16:27:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22947
+;;     Update #: 22951
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -103,6 +103,7 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
+;;    `icicle-maybe-byte-compile-after-load'
 ;;    `icicle-maybe-cached-action', `icicle-with-comments-hidden',
 ;;    `icicle-with-selected-window'.
 ;;
@@ -625,6 +626,7 @@
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
 ;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
+;;    `icicle-byte-compile-eval-after-load-flag',
 ;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
@@ -1312,7 +1314,7 @@
 ;;; Load other Icicles files (except documentation) ------------------
 
 (require 'icicles-mac)
-(require 'icicles-face)
+(require 'icicles-face) ;; Requires mac
 (require 'icicles-opt)  ;; Requires face
 (require 'icicles-var)  ;; Requires opt
 (require 'icicles-fn)   ;; Requires mac, opt, var

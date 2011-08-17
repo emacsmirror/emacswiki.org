@@ -4,6 +4,8 @@
 
 * Debian package `emacs-goodies-el': Miscellaneous add-ons for Emacs at https://alioth.debian.org/projects/pkg-goodies-el
 
+* Debian and Ubuntu `emacs-snapshot' packages: http://emacs.naquadah.org/
+
 * Lots of others, check out http://www.debian.org/distrib/packages#search_packages or use your favorite apt package managemennt tool.
 
 === Debian related emacs libraries === 

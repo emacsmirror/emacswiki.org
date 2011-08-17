@@ -1656,6 +1656,23 @@ command `toggle' is defined as an alias for command
 defined by '''Icicles''' if a function with the same name is already
 defined.
 
+
+----
+[:icicle-byte-compile-eval-after-load-flag]
+==== Option icicle-byte-compile-eval-after-load-flag ====
+
+Non-`nil' option `icicle-byte-compile-eval-after-load-flag'
+means byte-compile definitions made within `eval-after-load'.
+Some '''Icicles''' functions (commands, in particular) work only if a
+given library is loaded.  Some such functions are defined inside
+an `eval-after-load' form, which means they are defined only,
+and as soon as, the required library is loaded.
+
+If this option is non-`nil' then those function definitions are
+byte-compiled.  This compilation adds a bit to the load time, in
+effect, but it means that the functions run faster.
+
+
 ----
 [:icicle-color-themes]
 ==== Option icicle-color-themes ====

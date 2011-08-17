@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 08:42:03 2011 (-0700)
+;; Last-Updated: Tue Aug 16 16:21:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6899
+;;     Update #: 6912
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -427,6 +427,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/16 dadams
+;;     icicle-maybe-byte-compile-after-load the eval-after-load definitions.
 ;; 2011/08/14 dadams
 ;;     icicle-search-thing-scan: Handle icicle-search-complement-domain-p.
 ;;     Updated doc strings of search commands to mention complementing.
@@ -809,6 +811,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2011/08/16 dadams
+;;     Require icicles-mac.el.
+;;     icicle-maybe-byte-compile-after-load the eval-after-load definitions.
 ;; 2011/07/30 dadams
 ;;     eval-after-load hexrgb.el, not runtime error if not feature, for all fns that use hexrgb.el.
 ;;     Moved here from icicles-opt.el: icicle-increment-color-value.
@@ -2423,6 +2428,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/08/16 dadams
+;;     Added: icicle-maybe-byte-compile-after-load, icicle-byte-compile-eval-after-load-flag.
+;;     icicle-(buffer|file)-bindings: Use append, not backquote syntax.
 ;; 2011/08/12 dadams
 ;;     icicle-file-bindings: Removed binding of icicle-ignore-space-prefix-flag (to *-buffer-ignore-*).
 ;; 2011/05/22 dadams

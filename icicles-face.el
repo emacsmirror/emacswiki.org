@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 30 11:03:21 2011 (-0700)
+;; Last-Updated: Tue Aug 16 16:21:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 548
+;;     Update #: 574
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -104,6 +104,8 @@
 
 (eval-when-compile (require 'hexrgb nil t)) ;; (no error if not found):
   ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
+
+(require 'icicles-mac) ;; icicle-maybe-byte-compile-after-load
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -475,6 +477,9 @@ This highlighting is done during Icicles searching."
         (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                             (hexrgb-hsv-to-rgb hue saturation value)))))
 
+    (icicle-maybe-byte-compile-after-load icicle-increment-color-hue)
+
+
     ;; Essentially a version of `doremi-increment-color-component' for saturation only.
     ;; Must be before `icicle-search-context-level-1'.
     (defun icicle-increment-color-saturation (color increment)
@@ -495,6 +500,9 @@ This highlighting is done during Icicles searching."
         (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                             (hexrgb-hsv-to-rgb hue saturation value)))))
 
+    (icicle-maybe-byte-compile-after-load icicle-increment-color-saturation)
+
+
     ;; Essentially a version of `doremi-increment-color-component' for value only.
     ;; Must be before `icicle-region-background'.
     (defun icicle-increment-color-value (color increment)
@@ -514,6 +522,9 @@ This highlighting is done during Icicles searching."
         (when (> value 1.0) (setq value  (1- value)))
         (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                             (hexrgb-hsv-to-rgb hue saturation value)))))
+
+    (icicle-maybe-byte-compile-after-load icicle-increment-color-value)
+
     ))
 
 ;;;###autoload
