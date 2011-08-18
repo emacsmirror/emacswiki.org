@@ -540,7 +540,7 @@ OK, I removed the `sit-for'.  Thanks for the feedback. -- DrewAdams
 
 [new]
 
-Here is a fresh bug: you added a "p" to dired-toggle-find-file-reuse-dir. From the changelog: "toggle-dired-find-file-reuse-dir: Swapped which one is the alias."  -- [[pasja]]
+Here is a fresh bug: you added a "p" to dired-toggle-find-file-reuse-dir. From the changelog: "toggle-dired-find-file-reuse-dir: Swapped which one is the alias."  -- [[PasJa]]
 
    (defalias 'toggle-dired-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)  ; <--- Here is the bug!
    ;;;###autoload

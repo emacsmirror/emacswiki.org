@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Aug 14 15:42:47 2011 (-0700)
+;; Last-Updated: Wed Aug 17 10:26:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1271
+;;     Update #: 1277
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -91,6 +91,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/17 dadams
+;;     list-at/nearest-point-with-bounds:
+;;       Don't count `foo or 'foo as a list, i.e., (` foo) or (quote foo).
 ;; 2011/08/14 dadams
 ;;     bounds-of-thing-at-point-1:
 ;;       Tests for end need to use <, not <=.  If past the THING then should return nil.
@@ -650,7 +653,9 @@ Return nil if no non-empty list is found."
             (when up
               (up-list (- up))
               (setq sexp+bnds  (sexp-at-point-with-bounds)))
-            (while (not (consp (car sexp+bnds)))
+            (while (or (not (consp (car sexp+bnds)))
+                       (and (memq (caar sexp+bnds) (list backquote-backquote-symbol 'quote))
+                            (not (listp (cadr (car sexp+bnds))))))
               (up-list -1)
               (setq sexp+bnds  (sexp-at-point-with-bounds)))
             (when (and unquotedp (consp (car sexp+bnds))

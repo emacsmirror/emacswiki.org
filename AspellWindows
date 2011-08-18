@@ -10,9 +10,8 @@ Next we need to make a series of changes in your InitFile.  &nbsp;You need to ad
 
 We need tell emacs to use aspell, and where your custom dictionary is.
 
-    (setq
-       ispell-program-name "aspell"
-       ispell-personal-dictionary (C:/path/to/your/.ispell"))
+    (setq ispell-program-name "aspell")
+    (setq ispell-personal-dictionary "C:/path/to/your/.ispell")
 
 Then, we need to turn it on.
 

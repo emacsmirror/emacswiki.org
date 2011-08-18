@@ -120,6 +120,57 @@ Another possibility: if you set up a Gmail filter by entering "in:inbox" in the 
 
 Not even the above is necessary (as of 2006-12-02), gmail has now an option for forwarding the whole inbox to another address. [[dida]]
 
+=== How to use offlineimap and the dovecot mail server ===
+
+From http://sachachua.com/blog/2008/05/geek-how-to-use-offlineimap-and-the-dovecot-mail-server-to-read-your-gmail-in-emacs-efficiently/
+
+Make sure you’ve set up Postfix or some other mail server that can send mail. I’m not going to cover that because my configuration for outgoing mail doesn’t use Gmail.
+Install dovecot (IMAP server) and offlineimap (IMAP synchronization). You can probably find binaries for your distribution.
+Edit /etc/dovecot.conf and set the following:
+
+default_mail_env = maildir:%h/Maildir
+
+Put the following in ~/.offlineimaprc, changing your_local_username, your_username, and your_gmail_password:
+
+[general]
+accounts = Gmail
+maxsyncaccounts = 1
+
+[Account Gmail]
+localrepository = Local
+remoterepository = Remote
+
+[Repository Local]
+type = IMAP
+remotehost = localhost
+port = 143
+remoteuser = your_local_username
+
+[Repository Remote]
+type = IMAP
+remotehost = imap.gmail.com
+remoteuser = your_username@gmail.com
+remotepass = your_gmail_password
+ssl = yes
+maxconnections = 1
+realdelete = no
+folderfilter = lambda foldername: foldername in ['INBOX']
+
+If you feel comfortable specifying your password for your local account in your ~/.offlineimaprc, you can do so by adding a remotepass line under the remoteuser line in the [Repository Local] section.
+chmod go-rwx ~/.offlineimaprc for a little bit of safety.
+Type offlineimap to start synchronizing.
+While that’s synchronizing, use something like this as your ~/.gnus:
+
+(setq gnus-select-method
+      '(nnimap "Mail"
+	       (nnimap-address "localhost")
+	       (nnimap-stream network)
+	       (nnimap-authenticator login)))
+
+(setq user-mail-address "youremail@example.com")
+(setq gnus-ignored-from-addresses "youruser")
+
+Start Emacs. Start Gnus with M-x gnus. If you don’t see the INBOX group, press ^ (gnus-group-enter-server-mode), open nnimap:Mail, move your cursor to the INBOX, and either press RET to go into the group or press u (gnus-browse-unsubscribe-current-group) to toggle the subscription status until you’re subscribed to the group. Then it should show up on the group screen (M-x gnus).
 ===Sending mail through Gmail's SMTP server===
 See the section with the IMAP configuration for the required settings to configure SMTP.
 

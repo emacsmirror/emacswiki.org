@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 16 16:21:07 2011 (-0700)
+;; Last-Updated: Wed Aug 17 10:33:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6912
+;;     Update #: 6921
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -427,6 +427,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/17 dadams
+;;     icicle-search-thing-scan: Use correct code (not 1+) also if thingatpt+.el is loaded.
+;;     icicle-search-regexp-scan: Quit while loop if no more match, except if complementing.
+;;     icicle-search-read-context-regexp, icicle-search-(thing|property)-args, icicle-tags-search:
+;;       Change prompt when complementing (add: *NOT*).
 ;; 2011/08/16 dadams
 ;;     icicle-maybe-byte-compile-after-load the eval-after-load definitions.
 ;; 2011/08/14 dadams

@@ -167,10 +167,15 @@ Alternatively, there are a few ways you can download all of the files at once. S
 
 '''5'''. '''Python script''': <tt>[[icicles_dler.py]]</tt>.  Runs under python2.5.2. Thanks to DarrenYin.  (Script is still "somewhat sketchy". -- DarrenYin)
 
+'''6.''' '''Using `wget' directly :''' 
+* Required libraries:
+##wget http://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el##
+* Optional libraries:
+##wget http://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el##
 
+-- JoniDiMontago
 
-
-'''6.''' '''Using a bzr repository:''' that should stay in sync with '''Icicles''' (updated every 24 hours -- no; see below): ##bzr branch http://archives.hodique.info/bzr/icicles/##  Thanks to YannHodique for that.
+'''7.''' '''Using a bzr repository:''' that should stay in sync with '''Icicles''' (updated every 24 hours -- no; see below): ##bzr branch http://archives.hodique.info/bzr/icicles/##  Thanks to YannHodique for that.
 
 [new:DrewAdams:2007-10-09 02:48 UTC]
 :: Yann -- Does that work? If so, how? [http://archives.hodique.info/bzr/icicles/ http://archives.hodique.info/bzr/icicles/] seems to be an empty directory. -- DrewAdams

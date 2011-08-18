@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 16 15:51:13 2011 (-0700)
+;; Last-Updated: Wed Aug 17 14:59:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3917
+;;     Update #: 3935
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,11 +21,11 @@
 ;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
-;;   `misc-fns', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
+;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2803,7 +2803,8 @@ The arguments are for use by `completing-read' to read the regexp.
  The REQUIRE-MATCH arg to `completing-read' is nil.
  A default prompt is used if PROMPT is nil."
   (setq hist    (or hist 'regexp-history)
-        prompt  (or prompt "Search within contexts (regexp): "))
+        prompt  (or prompt (format "Search %swithin contexts (regexp): "
+                                   (if icicle-search-complement-domain-p "*NOT* " ""))))
   (let* ((icicle-candidate-action-fn  nil)
          (icicle-candidate-help-fn    nil)
          (regexp                      (icicle-completing-read-history
@@ -2975,11 +2976,15 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
         (condition-case icicle-search-regexp-scan
             (save-excursion
               (goto-char (setq last-beg  beg))
-              (while (and beg (< beg end) (not (eobp)))
-                (while (and (setq beg  (re-search-forward regexp end t))
-                            (eq last-beg beg)
-                            (not (eobp)))
-                  (forward-char) (setq beg  (1+ beg))) ; Matched again, same place.  Advance 1 char.
+              (while (and beg (< beg end) (not (eobp))
+                          (progn
+                            (while (and (setq beg  (re-search-forward regexp end t))
+                                        (eq last-beg beg)
+                                        (not (eobp)))
+                              ;; Matched again, same place.  Advance 1 char.
+                              (forward-char) (setq beg  (1+ beg)))
+                            ;; Stop if no more match.  But if complementing then continue until eobp.
+                            (or beg  icicle-search-complement-domain-p)))
                 (unless (or (not beg) (match-beginning icicle-search-context-level))
                   (error "Search context has no subgroup of level %d - try a lower number"
                          icicle-search-context-level))
@@ -4043,8 +4048,10 @@ NOTE:
          (beg+end  (icicle-region-or-buffer-limits))
          (beg1     (car beg+end))
          (end1     (cadr beg+end))
-         (thing    (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
-                                            (symbol-name icicle-last-thing-type)))))
+         (thing    (intern
+                    (completing-read
+                     (format "%shing (type): " (if icicle-search-complement-domain-p "*NOT* t" "T"))
+                     (icicle-things-alist) nil nil nil nil (symbol-name icicle-last-thing-type)))))
     (when (and (eq thing 'comment)  icicle-ignore-comments-flag)
       (message "Use `C-M-;' if you do not want to ignore comments") (sit-for 2))
     `(,thing ,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where)))
@@ -4113,7 +4120,7 @@ because it needs `comment-search-forward'."
              (goto-char start)
              (while (and (< start end) (setq cbeg  (comment-search-forward end 'NOERROR)))
                (setq cend  (if (string= "" comment-end)
-                               (1+ (line-end-position))
+                               (min (1+ (line-end-position)) (point-max))
                              (search-forward comment-end end 'NOERROR)))
                (when (and cbeg cend)
                  (if (eq 'hide hide/show)
@@ -4216,8 +4223,7 @@ This function respects both `icicle-search-complement-domain-p' and
                                                       (funcall transform-fn thg+bnds)
                                                     thg+bnds)))))
                        (when (and (not (string= "" hit-string)) ; No-op if empty hit.
-                                  (or new-thg+bnds
-                                      icicle-search-complement-domain-p))
+                                  (or new-thg+bnds  icicle-search-complement-domain-p))
                          (when (and  transform-fn  (not icicle-search-complement-domain-p))
                            (setq hit-string  (car  new-thg+bnds)
                                  tr-thg-beg  (cadr new-thg+bnds)
@@ -4259,7 +4265,9 @@ This function respects both `icicle-search-complement-domain-p' and
                            ;; in Emacs 24), that will loop forever.  In that case we move forward a
                            ;; char to prevent looping, but that means that the position just after
                            ;; a THING is considered to be covered by the THING (which is incorrect).
-                           (setq beg  (if (> emacs-major-version 23) thg-end (1+ thg-end)))
+                           (setq beg  (if (or (featurep 'thingatpt+) (> emacs-major-version 23))
+                                          thg-end
+                                        (1+ thg-end)))
                          ;; If visible then no more things - skip to END.
                          (unless (icicle-invisible-p beg) (setq beg  end)))))
                    (setq last-beg  beg)))
@@ -4462,7 +4470,10 @@ That is, do not also search an overlay property."
          (end1     (cadr beg+end))
          (props    (mapcar #'(lambda (prop) (list (symbol-name prop)))
                            (icicle-char-properties-in-buffers where beg1 end1)))
-         (prop     (intern (completing-read "Property to search: " props nil nil nil nil "face")))
+         (prop     (intern (completing-read
+                            (format "Property %sto search: "
+                                    (if icicle-search-complement-domain-p "*NOT* " ""))
+                            props nil nil nil nil "face")))
          (values   (if (memq prop '(face font-lock-face))
                        (let ((faces  (icicle-face-list)))
                          (if faces (mapcar #'intern faces) (face-list))) ; Default: all faces.
@@ -5407,7 +5418,9 @@ future search commands, not the current one.)"
                                       tags-case-fold-search
                                     case-fold-search)))
      (require 'etags)
-     (list (icicle-search-read-context-regexp "Search files with tags for regexp: ")
+     (list (icicle-search-read-context-regexp (format
+                                               "Search files with tags %smatching regexp: "
+                                               (if icicle-search-complement-domain-p "*NOT* " "")))
            current-prefix-arg)))
   (let ((files  ()))
     (save-excursion
