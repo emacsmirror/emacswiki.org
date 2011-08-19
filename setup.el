@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Jul 25 13:48:52 2011 (-0700)
+;; Last-Updated: Thu Aug 18 08:37:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 758
+;;     Update #: 764
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/18 dadams
+;;     lisp-indentation-hack: Added icicle-with-selected-window, icicle-condition-case.
 ;; 2011/07/25 dadams
 ;;     Use eval-after-load where appropriate (e.g. instead of featurep/fboundp/boundp).
 ;; 2009/04/18 dadams
@@ -246,7 +248,7 @@
 
 
 
-;; This might not be needed for Emacs 22. Wait and update if need be.
+;; This might not be needed for Emacs 22+ - dunno.
 ;;
 (defun lisp-indentation-hack ()
   "Better Lisp indenting.  Use in Lisp mode hooks
@@ -255,12 +257,14 @@ such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
   (unless (assoc "cl-indent" load-history) (load "cl-indent" nil t))
   (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
   (setq lisp-indent-maximum-backtracking  10)
-  (put 'define-derived-mode 'common-lisp-indent-function '(4 4 4 2 &body))
-  (put 'if 'common-lisp-indent-function '(nil nil &body))
-  (put 'icicle-define-command 'common-lisp-indent-function '(4 &body))
-  (put 'icicle-define-file-command 'common-lisp-indent-function '(4 &body))
-  (put 'icicle-define-sort-command 'common-lisp-indent-function '(4 4 &body))
-  (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body)))
+  (put 'define-derived-mode         'common-lisp-indent-function '(4 4 4 2 &body))
+  (put 'if                          'common-lisp-indent-function '(nil nil &body))
+  (put 'icicle-define-command       'common-lisp-indent-function '(4 &body))
+  (put 'icicle-define-file-command  'common-lisp-indent-function '(4 &body))
+  (put 'icicle-define-sort-command  'common-lisp-indent-function '(4 4 &body))
+  (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
+  (put 'icicle-with-selected-window 'common-lisp-indent-function '(4 &body))
+  (put 'icicle-condition-case       'common-lisp-indent-function '(4 4 &body)))
 
 (add-hook 'emacs-lisp-mode-hook 'lisp-indentation-hack)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode) ; Feedback on current function.

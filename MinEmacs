@@ -1,30 +1,30 @@
-MinEmacs wants to help the OneTrueEditor become a lighter yet even more instantly extendable environment by repackaging GNU Emacs as a careful minimum of bundled functionality that also makes extra EmacsLisp or 'c' language changes available through AutoExtend.
+MinEmacs wants to help the OneTrueEditor become a lighter and yet even more instantly extendable environment by repackaging GNU Emacs as a carefully minimized bundle.
 
+Striving for core functionality to meet the constraints of small LiveCD or USB GNU+Linux|*BSD distros - and I suppose WinPE if you must.
 
-== Implementation Pseudocode ==
 <pre>
-#!/bin/pseudocode_interpreter
-## MinEmacsSetup --- Download a subset of GNU Emacs source; patch for AutoExtend; Compile; Package; Advertise.
+MakeMinEmacs -- Generate MinEmacs packages based on some version of GNU Emacs.
 
-# Download
-# use the --ignore switch, (or whatever) to make the VersionControl avoid downloading the files we don't use.
-SomeVC.exe Savannah.GNU.org/emacs co emacs
-cd emacs
+1. Download GNU Emacs source-code snapshot from Version Control
 
-merge AutoInstall
-merge AutoExtend
+2. Apply patches to allow Emacs to compile with a severly reduced subset of packages
 
-./configure
-make bootstrap
-make
+3. Add autodownload.el -- autoload from https or email or whatever using https://github.com/emacsmirror/epkgs or whatever is best.
 
-# Now use packaging tools to create .deb, .rpm, .msi, .autopackage, etc.
-# This is also a great way to build an incremental GNU distro ... GNUnix.
+4. Compile.
+
+5. Could make any or all: .ebuild .deb, .rpm, .msi, .exe, .pkg, .dmg
 </pre>
 
 
 
+I'm considering going ahead with this now, but just wanted to know if anyone is already working on the minimization part of this?
+
 == Discussion ==
+
+
+
+
 
 MinEmacs is a term (probably) introduced by PatrickAnderson to describe the idea that the user should be able to select a subset of the packages distributed with Emacs at compile time and/or be able to add or remove these packages later on. This would make the OneTrueEditor become a lighter yet even more instantly extended environment.
 
@@ -48,6 +48,9 @@ Last but not least there has to be an *easy way for users to select packages* us
 
 PatrickAnderson proposed building native packages for various GNU/Linux distributions et cetera. I don't think that's such a good idea as the "et cetera" at the end of the last line suggests. A also think that all sources should be distributed with Emacs with no regard to what packages the user is allowed to exclude (not only in the vc tree but also in archives). And in that case native packages just wouldn't make much sense, while causing lots of problems.
 
+
+
+
 == Messages ==
 [new]
 http://github.com/tarsius/emacs-internal contains branches for individual packages distributed with GNU Emacs. However these branches do not contain any useful commit messages. However the master branch of contains file packages.spec which assigns files to packages. This hasn't been done very carefully but might still serve as a starting point.
@@ -65,4 +68,3 @@ You might be interested in http://github.com/tarsius/emacs-internal (finally som
 
 [new]
 Thanks for the update Jonas.  I've temporarily lost steam for this project, so I'm glad you're pressing ahead. -- PatrickAnderson
-

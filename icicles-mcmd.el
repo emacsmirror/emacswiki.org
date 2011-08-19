@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 08:16:33 2011 (-0700)
+;; Last-Updated: Thu Aug 18 14:52:26 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17104
+;;     Update #: 17105
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,10 +19,10 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
-;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
-;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-opt',
+;;   `icicles-var', `image-dired', `kmacro', `levenshtein', `mouse3',
+;;   `mwheel', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1318,7 +1318,7 @@ If option `ignore-comments-flag' is defined (in library
 Bound to `C-M-;' in the minibuffer."
   (interactive)
   (setq icicle-ignore-comments-flag  (not icicle-ignore-comments-flag))
-  (when (boundp ignore-comments-flag) (setq ignore-comments-flag  (not ignore-comments-flag)))
+  (when (boundp 'ignore-comments-flag) (setq ignore-comments-flag  (not ignore-comments-flag)))
   (icicle-msg-maybe-in-minibuffer (if icicle-ignore-comments-flag
                                       "Ignoring comments is now ON"
                                     "Ignoring comments is now OFF")))

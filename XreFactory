@@ -15,7 +15,8 @@ I used Xrefactory in my previous job, on a fairly large Java code
   newer JDKs). --Damien Diederen
 [new]
 These products (xrefactory c/java, xrefactory c++) seems to be abandoned. The c++ version does not work very well with recent c++ code (like one found in new versions of boost). 
-
+[new]
+There is a GPL version labelled as "A C refactoring tool for emacs" at http://sourceforge.net/projects/c-xref/files/
 
 ----
 CategoryProgrammerUtils

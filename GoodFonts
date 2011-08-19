@@ -149,9 +149,12 @@ I often need better Unicode coverage than provided by most monospaced fonts, lik
 
 [[image:DmFontETLEighteen]]
 
-Hello, this is one of your enemies: a Vim-fanatic. Nontheless, I wondered if you might also seek for some feasible fonts at small sizes, and so didn't hardly hesitate to enter the evil world of Escape-Meta-Alt-Control-Shift, commonly known as EMACS. I personally found the DINA font very pleasing. When I saw it mentioned in the preface, I had to admit you have no bad taste - well, as far as fonts are concerned. When differentiating between an OS and an editing facility, you're still at odds (my opinion). I _found_ DINA very pleasing indeed but in the last years got convinced of all the benefits one begets using DejaVu Sans Mono. Any size (small for myself, huge when showing off some snippets to others), a whole bunch of codepages supported (I use the NEO ergonomic keyboard layout giving direct access to many glyphs most of which DejaVu surprisingly knows about), and readability 24/7. I do love that font. Every now and then I'd still switch back to DINA but never for too long. Glad to have found DejaVu here, too.
+[new]
+Hello, this is one of your enemies: a Vim-fanatic. Nontheless, I wondered if you might also seek for some feasible fonts at small sizes, and so didn't hardly hesitate to enter the evil world of Escape-Meta-Alt-Control-Shift, commonly known as EMACS. I personally found the DINA font very pleasing. When I saw it mentioned in the preface, I had to admit you have no bad taste - well, as far as fonts are concerned. When differentiating between an OS and an editing facility, you're still at odds (my opinion). I _found_ DINA very pleasing indeed but in the last years got convinced of all the benefits one begets using *DejaVu Sans Mono*. Any size (small for myself, huge when showing off some snippets to others), a whole bunch of codepages supported (I use the NEO ergonomic keyboard layout giving direct access to many glyphs most of which !DejaVu surprisingly knows about), and readability 24/7. I do love that font. Every now and then I'd still switch back to DINA but never for too long. Glad to have found !DejaVu here, too.
+
 Greetings from Germany (apologies for any mistakes in English spelling/wording/…)
 
+[new]
 The CVS Emacs (23.0.60.6) (see XftGnuEmacs) has some problems with fonts because of the wrong "preferred charset" recognition, so I tried some TTF fonts, which I generally avoid. !DejaVu Mono-12 was very good:
 
 [[image:DmFontDejaVuTwelve]]

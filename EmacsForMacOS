@@ -178,6 +178,8 @@ As of May 8th, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.n
 and even AucTeX!
 * XEmacs 21.4.20
 
+--- I just installed fink 0.31.0 on 10.6 using a source tarball because I wanted jdee, but unfortunately there seems to be no such package.  (kosta 19/08/2011)
+
 === Homebrew ===
 
 [http://mxcl.github.com/homebrew/ Homebrew] has an Emacs 23.2 (as of 2010-08-27) package. A Cocoa-specific Emacs.app can be build using the --cocoa switch. The following is copied from the Homebrew info

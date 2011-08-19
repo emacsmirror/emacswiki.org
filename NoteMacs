@@ -1,8 +1,9 @@
 NoteMacs wants to help MinEmacs package the OneTrueEditor as an instantly configurable yet still infinitely helpful environment, but for now is just PatrickAnderson's DotEmacs, and his collection of EmacsLisp experiments along with the EmacsLisp of many others.
 
-Some of the packages are redundant when using newer GnuEmacs {META: oh the day when a wiki will link the language even when a word is cased as it should be.  In that day I will then write "GNU Emacs" (without quotes) and it will link.}, but are applicable when you must use an older version.
+Some of the packages are redundant when using newer GnuEmacs {META: When every wiki is finally a PlainLink wiki, then I will write "GNU Emacs" (without quotes) and it will link to where it should.}
 
-* http://patware.FreeShell.org/NoteMacs.tar.bz2
+* http://patware.FreeShell.org/NoteMacs.7z
+
 
 ===Goals similar to===
 : PopularOptions
