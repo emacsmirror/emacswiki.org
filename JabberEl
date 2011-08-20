@@ -453,6 +453,11 @@ Is there a plan to save history for groupchat too? --DanielDehennin
 [new]
 Is it possible to dynamically turn on and off the alerts for specific chats? --Chet
 
+[new]
+Recently I found the emacs jabber client no longer working properly. it is version 8.0. 
+the problem is no contact shown in the buffer *-jabber-roster-* after login, but jabber says me online.
+the jabber seems never go ahead when it shows "Authentication succeeded" in the minibuffer. but previously it would continue to show "..... is online" messages and load all contacts in the roster buffer.  --Cesc
+
 
 ----
 CategoryChatClient

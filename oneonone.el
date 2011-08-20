@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Jun 18 08:18:01 2011 (-0700)
+;; Last-Updated: Fri Aug 19 07:44:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2574
+;;     Update #: 2576
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -259,6 +259,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/19 dadams
+;;     1on1-fit-minibuffer-frame:
+;;       Removed the scroll-down because it interfered with doing stuff at eob.
 ;; 2011/06/15 dadams
 ;;     Removed soft require of files+.el (switch-to-buffer-other-frame no longer used).
 ;; 2011/01/04 dadams
@@ -1637,7 +1640,9 @@ This has no effect if you do not also use library `fit-frame.el'."
         ((eq last-command '1on1-fit-minibuffer-frame)
          (set-frame-height frame (1+ (frame-height frame)))
          (1on1-set-minibuffer-frame-top/bottom)
-         (condition-case nil (scroll-down (frame-height frame)) (error nil)))
+         ;; $$$$$$ This interfered with `C-e' and inserting text at end.
+         ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
+         )
         (t
          (let* ((beg                                     (1on1-minibuffer-prompt-end))
                 (fit-frame-max-height
@@ -1649,10 +1654,12 @@ This has no effect if you do not also use library `fit-frame.el'."
                 (fit-frame-empty-height                  1on1-minibuffer-frame-height)
                 (fit-frame-empty-special-display-height  1on1-minibuffer-frame-height))
            (fit-frame frame (frame-width frame))
-;; $$$$       (when (>= emacs-major-version 21)
-;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
+           ;; $$$$       (when (>= emacs-major-version 21)
+           ;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
            (1on1-set-minibuffer-frame-top/bottom)
-           (condition-case nil (scroll-down (frame-height frame)) (error nil))))))))
+           ;; $$$$$$ This interfered with `C-e' and inserting text at end.
+           ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
+           ))))))
 
 (defun 1on1-minibuffer-prompt-end ()
   "Version of `minibuffer-prompt-end' that works for Emacs 20 and later."

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 17 10:33:59 2011 (-0700)
+;; Last-Updated: Fri Aug 19 09:25:39 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6921
+;;     Update #: 6926
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2563,6 +2563,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/19 dadams
+;;     Fix C-u in minibuffer for Emacs 24:
+;;       Don't bother to define icicle-ensure-overriding-map-is-bound for Emacs 24+.
+;;       icicle-(universal|digit|negative)-argument:
+;;         Use save&set-overriding-map, not icicle-ensure-*, for Emacs 24.
 ;; 2011/08/15 dadams
 ;;     icicle-candidate-set-complement:
 ;;       Apply icicle-must-pass-after-match-predicate to correct the initial domain subtracting from.

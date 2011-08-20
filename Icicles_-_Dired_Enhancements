@@ -78,7 +78,7 @@ See [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Differ
 [:OpenDiredOnSavedFiles]
 === Open Dired for a Set of File Names ===
 
-In Dired with '''Icicles''' you can use `##C-M-<##' (`icicle-dired-chosen-files-other-window') to open Dired for a set of file or directory names that you choose interactively or that you have previously [[#SaveFilesAsCandidates|saved]] (persistently or not) as completion candidates.
+In Dired with '''Icicles''' you can use `##C-M-<##' (`icicle-dired-chosen-files-other-window') to open Dired for a set of file or directory names that you choose interactively or that you have previously [[#SaveFilesAsCandidates|saved]] (persistently or not) as completion candidates or as an Emacs [[fileset]].
 
 For example, this opens Dired on all files whose names match the [[regexp]] `##.*foo.*bar##' (the initial `##.*##' is implicit):
 

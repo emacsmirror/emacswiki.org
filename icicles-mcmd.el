@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 18 14:52:26 2011 (-0700)
+;; Last-Updated: Fri Aug 19 09:21:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17105
+;;     Update #: 17116
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2133,17 +2133,18 @@ you do not want this remapping, then customize option
     (icicle-remove-Completions-window 'FORCE))
   (abort-recursive-edit))
 
-(defun icicle-ensure-overriding-map-is-bound ()
-  "Set `overriding-terminal-local-map' to `icicle-universal-argument-map'."
-  (if (not (boundp 'overriding-map-is-bound)) ; Emacs 20, 21.
-      (setq overriding-terminal-local-map  icicle-universal-argument-map)
-    (unless overriding-map-is-bound     ; Emacs 22+.
-      (setq saved-overriding-map           overriding-terminal-local-map
-            overriding-terminal-local-map  icicle-universal-argument-map
-            overriding-map-is-bound        t))))
+(unless (fboundp 'save&set-overriding-map) ; Only Emacs 20-23 use `ensure-overriding-map-is-bound'.
+  (defun icicle-ensure-overriding-map-is-bound ()
+    "Set `overriding-terminal-local-map' to `icicle-universal-argument-map'."
+    (if (not (boundp 'overriding-map-is-bound)) ; Emacs 20, 21.
+        (setq overriding-terminal-local-map  icicle-universal-argument-map)
+      (unless overriding-map-is-bound   ; Emacs 22+.
+        (setq saved-overriding-map           overriding-terminal-local-map
+              overriding-terminal-local-map  icicle-universal-argument-map
+              overriding-map-is-bound        t)))))
 
 ;;;###autoload
-(defun icicle-digit-argument (arg) ; Bound to `C-<0-9>', `M-<0-9>', `C-M-<0-9>' in minibuffer.
+(defun icicle-digit-argument (arg)      ; Bound to `C-<0-9>', `M-<0-9>', `C-M-<0-9>' in minibuffer.
   "`digit-argument', but also echo the prefix."
   (interactive "P")
   (let* ((char   (if (integerp last-command-char)
@@ -2158,27 +2159,33 @@ you do not want this remapping, then customize option
           (t
            (setq prefix-arg  digit))))
   (setq universal-argument-num-events  (length (this-command-keys)))
-  (icicle-ensure-overriding-map-is-bound)
+  (if (fboundp 'save&set-overriding-map) ; Emacs 24+
+      (save&set-overriding-map icicle-universal-argument-map)
+    (icicle-ensure-overriding-map-is-bound))
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
 
 ;;;###autoload
-(defun icicle-negative-argument (arg) ; Bound to `M--', `C-M--' in minibuffer.
+(defun icicle-negative-argument (arg)   ; Bound to `M--', `C-M--' in minibuffer.
   "`negative-argument', but also echo the prefix."
   (interactive "P")
   (cond ((integerp arg) (setq prefix-arg  (- arg)))
         ((eq arg '-) (setq prefix-arg  nil))
         (t (setq prefix-arg  '-)))
   (setq universal-argument-num-events  (length (this-command-keys)))
-  (icicle-ensure-overriding-map-is-bound)
+  (if (fboundp 'save&set-overriding-map) ; Emacs 24+
+      (save&set-overriding-map icicle-universal-argument-map)
+    (icicle-ensure-overriding-map-is-bound))
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
 
 ;;;###autoload
-(defun icicle-universal-argument ()    ; Bound to `C-u' in minibuffer.
+(defun icicle-universal-argument ()     ; Bound to `C-u' in minibuffer.
   "`universal-argument', but also echo the prefix."
   (interactive)
   (setq prefix-arg                     (list 4)
         universal-argument-num-events  (length (this-command-keys)))
-  (icicle-ensure-overriding-map-is-bound)
+  (if (fboundp 'save&set-overriding-map) ; Emacs 24+
+      (save&set-overriding-map icicle-universal-argument-map)
+    (icicle-ensure-overriding-map-is-bound))
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
 
 ;;;###autoload
