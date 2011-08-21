@@ -17,6 +17,8 @@ however instead of the teensy USB controller I'm planning to use a cheap USB num
 
 [1] http://www.staples.com/sbd/cre/marketing/easybutton/easybutton.html?cm_sp=creative-_-easy%20button_workgr01-_-easybutton
 
+[new] In the end I use only two foot pedal switches: one for Ctrl key and the other for Shift key. I tried with 3 pedal switches but I found this inconvenient to search the middle pedal (assigned to RET key) with the foot. With just two pedal you don't need to move the foots and I assigned RET key to S-SPC (Shift+Space). Also you can easily press to pedals at the same time to have S-C combination and create keybindings from C-A (C-S-a) to C-Z (C-S-z). Moreover I moved the backspace key to CapsLock key (before CapsLock was for Ctrl but now it's not needed anymore since I use one pedal for it). After trying different USB foot pedals, I ended up with the custom-made pedals composed on Teensy 2.0 Usb controller (16$), 2 doorbell switches (4$) used as pedals (but also pushbuttons can be used) and wires. Loading custom program to assign Ctrl and Shift keys with Arduino software (Teensyduino) is quite easy since there are examples on their website. -- SewerynKokot
+
 ----
 
-CategoryAccessibility
+CategoryAccessibility CategoryKeys

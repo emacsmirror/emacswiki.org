@@ -21,6 +21,11 @@ example for w3m:
     (require 'simple-wiki)
     (add-to-list 'auto-mode-alist '("w3mtmp" . simple-wiki-mode))
 
+In addition, if you are using GNU Emacs, you have to add the following
+to your init file:
+
+    (require 'cl)
+
 == Tags ==
 
 Use the following code to have `C-c C-t' insert tags.

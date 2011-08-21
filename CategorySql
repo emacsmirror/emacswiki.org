@@ -25,6 +25,9 @@ Click on the header to list all SQL related pages.
 * Lisp:sqlparser-oracle-complete.el completing tablenmae columnname ,need oracle-shell-query.el
 * Lisp:oracle-shell-query.el executing sql query using sqlplus 
 * Lisp:oracle-query.el executing sql query using sqlplus (faster than oracle-shell-query.el)
+* Lisp:sqlparser-sqlserver-complete.el -- completing tablename or column name when editing sql for  sqlserver2005 and later
+* Lisp:sqlserver-query.el -- execute sql query using sqlcmd.exe or osql.exe * for sql server 
+
 * MySqlHelp -- alist and completion function for MySQL's `mysql' help facility e.g. mysql> help contents
 * http://lispsql.sourceforge.net Mysql front-end for Emacs, access mysql without tying up your shell prompt, and many other useful mysql things.  
 * PlsqlMode -- support for editing PL/SQL code

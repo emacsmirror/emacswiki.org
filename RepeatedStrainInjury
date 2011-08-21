@@ -37,6 +37,8 @@ Preferences->Keyboard->Typing Break.
 (shows excercises too and lot of features).
 ** Debian: apt-cache search injury
 * [ViperMode Viper] whips up [ViKeys vi keys] in Emacs, [http://invisible-island.net/vile/ Vile]-like.
+* Another option is to use FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. This way I solved the problem with RSI. -- SewerynKokot
+
 
 Information on the original wiki:
 

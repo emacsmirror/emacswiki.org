@@ -625,6 +625,29 @@ Improved.
 -- [[rubikitch]]
 
 
+== Notmuch Mail Saved Searches ==
+
+<pre>
+(defvar notmuch-anything-source-saved-searches
+  '((name . "Notmuch Mail - Saved Searches")
+    (candidates . notmuch-saved-searches)
+    (action  ("Search with notmuch" . notmuch-search))
+    (candidate-number-limit . 100)
+    "Source for completing anything saved searches."))
+
+(defun notmuch-anything (&optional rehash)
+  (interactive (list current-prefix-arg))
+  (anything
+   :sources 'notmuch-anything-source-saved-searches
+   :preselect "inbox"
+   :buffer "*notmuch-saved-searches*"
+   ))
+
+(define-key notmuch-hello-mode-map "S" 'notmuch-anything)
+</pre>
+
+-- [[antono]]
+
 == CPAN Modules ==
 
 This source is a experimentation of power of anything.

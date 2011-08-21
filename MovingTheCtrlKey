@@ -332,6 +332,7 @@ The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
 
 Notice that it also maps right control to caps lock, maybe someone cap upload one that does not do that.
 
+[new] Another option is to use FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. -- SewerynKokot
 
 
 ----

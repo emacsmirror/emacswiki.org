@@ -34,9 +34,9 @@ This idea is somewhat related to the idea of a package manager for Emacs Lisp pa
 
 First it has to be decided *which files belong to which package*. There has to be one special package which contains the files that are absolutely necessary for Emacs to work properly.
 
-Then these *packages have to be seperated* somehow. Currently the lisp subdirectory of the Emacs source contains some subdirectories. But these are not related to individual packages. While it is not absolutely necessary to split the packages into subdirectories, this seams like a reasonable choice.
+Then these *packages have to be separated* somehow. Currently the lisp subdirectory of the Emacs source contains some subdirectories. But these are not related to individual packages. While it is not absolutely necessary to split the packages into subdirectories, this seams like a reasonable choice.
 
-I (JonasBernoulli) believe it would be a good idea to not only use seperate directories for packages but even give each package it's own (git) *submodule*.
+I (JonasBernoulli) believe it would be a good idea to not only use separate directories for packages but even give each package it's own (git) *submodule*.
 
 It has been decided that Emacs development will switch to bzr at some point in the futur. From my limited experience with bzr I do not know if bzr supports something like submodules in git, but have a feeling that it doesn't (shared repositories isn't the same thing). Of course these submodules would have to *retain the history* of the contained files since the dawn of time.
 
@@ -68,3 +68,5 @@ You might be interested in http://github.com/tarsius/emacs-internal (finally som
 
 [new]
 Thanks for the update Jonas.  I've temporarily lost steam for this project, so I'm glad you're pressing ahead. -- PatrickAnderson
+
+[new] You should consider working with Upstream on this. There is now the GNU ELPA package repository. For instance it should now be easy to remove Org from MinEmacs, because its also available as a Gnu Elpa package. etc. IMHO more packages should move from core to elpa. --JoakimVerona

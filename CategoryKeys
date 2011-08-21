@@ -23,6 +23,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 
 == Key Problems Solved ==
 
+* FootSwitches -- assign Ctrl and other keys to pedal type switches
 * UseCustomizeForKeyBindings -- EmacsLisp code to let users do all key customization in Customize.
 * ShiftedKeys -- Shifted function keys are unavailable if they have no explicit definition.
 * MetaKeyProblems -- Meta and Alt key confusion

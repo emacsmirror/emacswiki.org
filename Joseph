@@ -27,8 +27,10 @@ I wrote:
 * [[joseph-file-util.el]] --  util functions about handle file and directory.[2011-03-31]
 * [[sqlparser-mysql-complete.el]] -- completing tablename or column name when editing sql for mysql .[2011-07-21]
 * [[sqlparser-oracle-complete.el]] -- completing tablename or column name when editing sql for oracle .[2011-07-31]
+* [[sqlparser-sqlserver-complete.el]] -- completing tablename or column name when editing sql for  sqlserver2005 and later .[2011-08-21]
 * [[oracle-shell-query.el]] --  execute sql query using sqlplus for oracle .[2011-07-31]
 * [[oracle-query.el]] --  execute sql query using sqlplus for oracle .[2011-08-12]
+* [[sqlserver-query.el]] -- execute sql query using sqlcmd.exe or osql.exe * for sql server [2011-08-21]
 [new:DrewAdams:2011-02-25 16:24 UTC]
 Welcome to the wiki. -- DrewAdams
 
