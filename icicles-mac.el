@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 16 16:05:42 2011 (-0700)
+;; Last-Updated: Fri Aug 19 16:33:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 707
+;;     Update #: 791
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -33,10 +33,10 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `icicle-buffer-bindings', `icicle-define-add-to-alist-command',
-;;    `icicle-define-command', `icicle-define-file-command',
-;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-maybe-byte-compile-after-load',
+;;    `icicle-buffer-bindings', `icicle-condition-case-no-debug',
+;;    `icicle-define-add-to-alist-command', `icicle-define-command',
+;;    `icicle-define-file-command', `icicle-define-sort-command',
+;;    `icicle-file-bindings', `icicle-maybe-byte-compile-after-load',
 ;;    `icicle-with-selected-window'.
 ;;
 ;;  Functions defined here:
@@ -149,6 +149,21 @@ effect, but it means that the functions run faster."
 ;;(@* "Macros")
 
 ;;; Macros -----------------------------------------------------------
+
+;;; Same as vanilla `condition-case-no-debug', which is available starting with Emacs 23.
+(defmacro icicle-condition-case-no-debug (var bodyform &rest handlers)
+  "Like `condition-case', but does not catch anything when debugging.
+Specifically, non-nil `debug-on-error' means catch no signals.
+This is the same as `condition-case-no-debug': added to use in older
+Emacs versions too."
+  (when (fboundp 'declare) (declare (debug condition-case) (indent 2)))
+  (let ((bodysym  (make-symbol "body")))
+    `(let ((,bodysym  (lambda () ,bodyform)))
+      (if debug-on-error
+          (funcall ,bodysym)
+        (condition-case ,var
+            (funcall ,bodysym)
+          ,@handlers)))))
 
 (defmacro icicle-maybe-byte-compile-after-load (function)
   "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
@@ -451,7 +466,7 @@ This is an Icicles command - see command `icicle-mode'.")
                                                            minibuffer-prompt-properties))
                     (minibuffer-setup-hook            minibuffer-setup-hook)
                     (minibuffer-text-before-history   minibuffer-text-before-history))
-                (condition-case in-action-fn
+                (icicle-condition-case-no-debug in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have killed the buffer or deleted the window.
                     (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
@@ -474,7 +489,7 @@ This is an Icicles command - see command `icicle-mode'.")
                 (select-frame-set-input-focus (selected-frame))
                 nil))))                 ; Return nil for success.
       ,first-sexp
-      (condition-case act-on-choice
+      (icicle-condition-case-no-debug act-on-choice
           (let ((cmd-choice  (completing-read ,prompt ,collection ,predicate ,require-match
                                               ,initial-input ,hist ,def ,inherit-input-method)))
             ;; Reset after reading input, so that commands can tell whether input has been read.
@@ -595,7 +610,7 @@ This is an Icicles command - see command `icicle-mode'.")
                     (minibuffer-text-before-history   minibuffer-text-before-history))
                 (setq candidate  (expand-file-name
                                   candidate (icicle-file-name-directory icicle-last-input)))
-                (condition-case in-action-fn
+                (icicle-condition-case-no-debug in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have deleted the file or the window.
                     (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
@@ -618,7 +633,7 @@ This is an Icicles command - see command `icicle-mode'.")
                 (select-frame-set-input-focus (selected-frame))
                 nil))))                 ; Return nil for success.
       ,first-sexp
-      (condition-case act-on-choice
+      (icicle-condition-case-no-debug act-on-choice
           (let ((file-choice
                  (if (< emacs-major-version 21) ; No predicate arg for Emacs 20.
                      (read-file-name ,prompt ,dir ,default-filename ,require-match ,initial-input)
@@ -725,14 +740,16 @@ Elements of ALIST that are not conses are ignored."
 ;;   (unless (assoc "cl-indent" load-history) (load "cl-indent" nil t))
 ;;   (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
 ;;   (setq lisp-indent-maximum-backtracking  10)
-;;   (put 'define-derived-mode 'common-lisp-indent-function '(4 4 4 2 &body))
-;;   (put 'if 'common-lisp-indent-function '(nil nil &body))
-;;   (put 'icicle-define-command 'common-lisp-indent-function '(4 &body))
-;;   (put 'icicle-define-file-command 'common-lisp-indent-function '(4 &body))
-;;   (put 'icicle-define-sort-command 'common-lisp-indent-function '(4 4 &body))
-;;   (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body)))
+;;   (put 'define-derived-mode                'common-lisp-indent-function '(4 4 4 2 &body))
+;;   (put 'if                                 'common-lisp-indent-function '(nil nil &body))
+;;   (put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
+;;   (put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
+;;   (put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
+;;   (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
+;;   (put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
+;;   (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body)))
 
-;; (add-hook 'emacs-lisp-mode-hook 'lisp-indentation-hack)
+;; (add-hook 'emacs-lisp-mode-hook       'lisp-indentation-hack)
 ;; (add-hook 'lisp-mode-hook             'lisp-indentation-hack)
 ;; (add-hook 'lisp-interaction-mode-hook 'lisp-indentation-hack)
 

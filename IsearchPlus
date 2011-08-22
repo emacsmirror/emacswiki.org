@@ -1,4 +1,4 @@
-This page is about library <tt>[[isearch+.el]]</tt>, written by DrewAdams. This extends standard Emacs library ##isearch.el##, which provides IncrementalSearch.
+This page is about '''[::Isearch+]''', that is,  library <tt>[[isearch+.el]]</tt>, written by DrewAdams. This extends standard Emacs library ##isearch.el##, which provides IncrementalSearch.
 
 Features:
 

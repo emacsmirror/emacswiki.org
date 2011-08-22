@@ -11,18 +11,18 @@ There are many, many different ways to make CapsLock work as an additional contr
 
 Recent versions of the Gnome desktop have a Keyboard Preferences dialog that allows you to configure the Ctrl key position.  On Ubuntu this is found under System -> Preferences -> Keyboard.  Under the "Layout Options" tab choose "Ctrl key position" and it gives you a number of choices.
 
-[[image:GnomeKeyboardPreferences.png|Gnome Keyboard Preferences|thumb]]
-[[image:GnomeKeyboardLayoutOptions.png|Gnome Keyboard Layout Options|right]]
+[[image:GnomeKeyboardPreferences.png|Gnome Keyboard Preferences]]
+[[image:GnomeKeyboardLayoutOptions.png|Gnome Keyboard Layout Options]]
 
 == KDE Desktop Environment ==
 
 In KDE 4.x there's a "Keyboard Layout" dialog in the Systems settings that allow you to modify the Caps Lock behavior. First be sure to allow KDE to control keyboard layouts. Do this by selecting "Enable keyboard layouts" here:
 
-[[image:KDEKeyboardPreferences.png|KDE Keyboard Layout|thumb]]
+[[image:KDEKeyboardPreferences.png|KDE Keyboard Layout]]
 
 Then turn on the desired options and press the apply button:
 
-[[image:KDEKeyboardAdvancedOptions.png|KDE Keyboard Layout Advanced Options|thumb]]
+[[image:KDEKeyboardAdvancedOptions.png|KDE Keyboard Layout Advanced Options]]
 
 
 == X (using xmodmap) ==
@@ -230,14 +230,17 @@ wsconsctl -w map+="keysym Caps_Lock = Control_L"
 
 == OS X ==
 
-Check out uControl http://gnufoo.org/ucontrol/ for switching
-keys on a mac; it does Caps/Ctrl but other switches too.
+Open System Preferences → Keyboard and choose Modifier Keys:
 
-Starting with Mac OS 10.4 (Tiger) you can remap modifier keys (including "Caps Lock" to "Control") in the "Keyboard & Mouse" System Preference Panel.
+[[image:MacKeyboardPreferences.png|Mac Keyboard Preferences]]
+
+Then select which of the four modifier keys should send Control:
+
+[[image:MacKeyboardKeys.png|Mac Keyboard Modifier Keys]]
+
+For Mac OS older than 10.4, [http://gnufoo.org/ucontrol/ uControl] allows switching keys.
 
 In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-modifier' to remap the Control key.
-
-Use the menu item: "<Apple Menu>/System Preferences...", select the "Keyboard & Mouse" panel, select the "Keyboard" tab and press the "Modifier Keys..." button at the lower left to bring up a remapping dialog where you can make the desired changes.  The remapping is effective throughout the OS X UI including within Apple's X11 implementation.
 
 
 == Microsoft Windows ==

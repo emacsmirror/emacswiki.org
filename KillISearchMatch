@@ -38,3 +38,11 @@ Anyway, some ideas:
           (isearch-repeat-backward))))
 
 -- hws
+
+
+
+See also: '''[[Isearch+]]''', which optionally sets the [[region]] around the search target.  You can toggle this option using `C-SPC' during Isearch.  Setting the region is more useful (general) than killing the text -- you can always hit `C-w'.
+
+
+----
+CategorySearchAndReplace

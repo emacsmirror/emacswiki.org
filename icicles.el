@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 16 16:27:02 2011 (-0700)
+;; Last-Updated: Sun Aug 21 10:45:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22951
+;;     Update #: 22952
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -96,7 +96,8 @@
 ;;
 ;;  Macros defined in Icicles:
 ;;
-;;    `icicle-buffer-bindings', `icicle-define-add-to-alist-command',
+;;    `icicle-buffer-bindings', `icicle-condition-case-no-debug',
+;;    `icicle-define-add-to-alist-command',
 ;;    `icicle-define-bookmark-command',
 ;;    `icicle-define-bookmark-command-1',
 ;;    `icicle-define-bookmark-other-window-command',

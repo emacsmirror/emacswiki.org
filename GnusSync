@@ -24,6 +24,10 @@ Make backups before doing this in case something goes wrong! You may have notice
 
 To avoid typing passwords, you might want to create a ssh key with an empty pass phrase (ssh-keygen) and put them into the ~/ssh/.authorized_keys at your 'work' location. Alternatively (and faster), you can initiate one master ssh connection and reuse it (see man page of "ssh" and look at the options "-M" and "-S").
 
+
+An alternative to rsync, more suited for the task of keeping several computers in sync, is unison: http://www.cis.upenn.edu/~bcpierce/unison/
+
+
 == Automating the process ==
 
 Put the following into your .emacs at 'home' if you want Emacs to do the syncing for you. 

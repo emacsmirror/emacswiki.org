@@ -501,3 +501,16 @@ CategoryCompletion
 [FAQ]
 
 How does it work ? What does it get assigned to any keys ? Which function should I assign to get auto-completion ?
+
+----
+[new]
+I can't figure out how to report bugs on the bug tracker page and I've tried emailing the developer of auto-complete over a month ago, so I'm gonna try asking here:
+I have a black background and when I use auto-complete, as soon as I type something my cursor turns black, so now I can't see it. 
+Help! How am I going to fix this problem? Thanks in advance.
+
+--Tom Edwards
+
+[new]
+Ok nevermind, fixed it. Just added (set-cursor-color "white") to my .emacs file after loading the auto-complete package.
+
+--Tom Edwards
