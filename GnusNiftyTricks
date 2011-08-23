@@ -56,6 +56,13 @@ That sets it to use bbdb-complete-name on a field where I might want to do name 
 
 <code>C-q TAB</code> should always insert a plain tab --ClausBrunzema
 
+== Gnus Harvest ==
+
+If you use Kai's excellent message-x mode, but don't use BBDB for harvesting addresses to complete against, you can use Lisp:gnus-harvest.el, which notices e-mail address in every message or post you read or write, and collects them in an SQLite database which can be very easily and quickly queried to determine the completion list.  I prefer using it with ido, to make completion as easy as possible. -- JohnWiegley
+
+  (require 'gnus-harvest)
+  (gnus-harvest-install 'message-x)
+
 == No Server ==
 
 * gnus pisses me off by downloading 600k or so each time I start it up, AlexSchroeder showed me that M-x gnus-no-server will start up gnus without downloading the active file, and hitting "3 g" in the groups buffer will update the groups without doing the 600k active file thingie - if only this were the default behaviour!

@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 382 $
+;; RCS Version: $Rev: 383 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1072,9 +1072,9 @@ these values uses the default, ie. $HOME."
         (if right-directory
             (setq sr-right-directory right-directory))
 
-        (setq sr-running t)
-        (setq sr-restore-buffer (current-buffer))
-        (setq sr-prior-window-configuration (current-window-configuration))
+        (setq sr-restore-buffer (current-buffer)
+              sr-prior-window-configuration (current-window-configuration)
+              sr-running t)
         (sr-setup-windows)
         (if filename
             (condition-case description
@@ -1152,6 +1152,13 @@ buffer or window."
            (setq ,(sr-symbol side 'directory) default-directory))
        (sr-dired ,(sr-symbol side 'directory)))))
 
+(defun sr-setup-visible-panes ()
+  "Set up sunrise on all visible panes."
+  (sr-setup-pane left)
+  (unless (eq sr-window-split-style 'top)
+    (other-window 1)
+    (sr-setup-pane right)))
+
 (defun sr-setup-windows()
   "Set up the Sunrise window configuration (two windows in `sr-mode')."
   (run-hooks 'sr-init-hook)
@@ -1183,11 +1190,7 @@ buffer or window."
     (t (error "Unrecognised `sr-window-split-style' value: %s"
               sr-window-split-style)))
 
-  ;;setup sunrise on all visible panes
-  (sr-setup-pane left)
-  (unless (eq sr-window-split-style 'top)
-    (other-window 1)
-    (sr-setup-pane right))
+  (sr-setup-visible-panes)
 
   ;;select the correct window
   (sr-select-window sr-selected-window)
@@ -1228,7 +1231,8 @@ buffer or window."
         (sr-hide-avfs-root)
         (sr-highlight-broken-links)
         (sr-graphical-highlight face)
-        (sr-force-passive-highlight)
+        (unless (eq sr-window-split-style 'top)
+          (sr-force-passive-highlight))
         (run-hooks 'sr-refresh-hook))
       (hl-line-mode 1))))
 
@@ -1880,7 +1884,9 @@ and add it to your `load-path'" name name))))
     (let ((tmp sr-this-directory))
       (setq sr-this-directory sr-other-directory
             sr-other-directory tmp))
-    (sr-setup-windows)))
+    (select-window sr-right-window)
+    (sr-setup-visible-panes)
+    (sr-select-window sr-selected-window)))
 
 (defun sr-synchronize-panes (&optional reverse)
   "Change the directory in the other pane to that in the current one.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Jul 25 15:27:50 2011 (-0700)
+;; Last-Updated: Mon Aug 22 09:51:16 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1028
+;;     Update #: 1035
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -105,6 +105,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/22 dadams
+;;     describe-variable (Emacs 23+): Added terpri after Value: (for multiline value).
 ;; 2011/07/25 dadams
 ;;     describe-mode:
 ;;       Put call to help-documentation inside let for maj: else major-mode gets changed to help-mode.
@@ -1398,7 +1400,7 @@ it is displayed along with the global value."
                   ;; (delete-region (point) (progn (end-of-line) (point)))
                   ;; which suppressed display of the buffer local value for large values.
                   (when (looking-at "value is") (replace-match ""))
-                  (save-excursion (insert "\n\nValue:")
+                  (save-excursion (insert "\n\nValue:") (terpri)
                                   (set (make-local-variable 'help-button-cache) (point-marker)))
                   (insert "value is shown ")
                   (insert-button "below" 'action help-button-cache 'follow-link t
@@ -1607,7 +1609,7 @@ it is displayed along with the global value."
                   ;; (delete-region (point) (progn (end-of-line) (point)))
                   ;; which suppressed display of the buffer local value for large values.
                   (when (looking-at "value is") (replace-match ""))
-                  (save-excursion (insert "\n\nValue:")
+                  (save-excursion (insert "\n\nValue:") (terpri)
                                   (set (make-local-variable 'help-button-cache) (point-marker)))
                   (insert "value is shown ")
                   (insert-button "below" 'action help-button-cache 'follow-link t

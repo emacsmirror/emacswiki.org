@@ -461,5 +461,8 @@ the jabber seems never go ahead when it shows "Authentication succeeded" in the 
 [new]
 Are you connecting to Google Talk by any chance?  Those symptoms sounds very much like a problem that's solved in the recent 0.8.90 release. (Google Talk recently started using namespace prefixes, which jabber.el was rather ill-prepared for.) --MagnusHenoch
 
+[new]
+Yes, it is Google Talk. And I have checked out the git version for namespace prefixes after I saw the information in the mail list. It works now. --Cesc
+
 ----
 CategoryChatClient

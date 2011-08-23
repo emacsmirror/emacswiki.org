@@ -67,6 +67,13 @@ Highlighting ##`...'## and ##"..."## strings is problematic. In general, the res
 [new]
 OK, I see -- [[ahei]]
 
+[new]
+Hi!
+
+A quick question: how to prevent info+ to split my window. I want the original info behavior, if i type M-x info, i want a full window to read.
+
+Thanks!  --[[PasJa]]
+
 ----
 Lisp:info+.el
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 19 16:33:18 2011 (-0700)
+;; Last-Updated: Mon Aug 22 11:27:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 791
+;;     Update #: 797
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -169,6 +169,7 @@ Emacs versions too."
   "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
 Do nothing if FUNCTION has not been defined (`fboundp')."
   `(when (and icicle-byte-compile-eval-after-load-flag (fboundp ',function))
+    (require 'bytecomp)
     (let ((byte-compile-warnings  ())
           (byte-compile-verbose   nil))
       (byte-compile ',function))))
@@ -729,7 +730,7 @@ Elements of ALIST that are not conses are ignored."
              "\\>[ \t'\(]*\\(\\sw+\\)?")
     (1 font-lock-keyword-face)
     ;; Index (2 or 3) depends on whether or not shy groups are supported.
-    ,(list (if (string-match "\\(?:\\)" "") 2 3) font-lock-function-name-face nil t))))
+    ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))))
 
 ;; This is commented out, but you might also want to use it or something similar.  I use it in
 ;; my init file.  The `icicle-define-*' lines cause doc strings to be indented correctly.

@@ -8,6 +8,8 @@ MyopiMacs -- View small portions of extremely large files using little memory or
 [new:TedZ:2010-04-20 13:34 UTC]
 Is this planned or already written but not here? --TedZ
 
+@!TedZ: this is part of [[PatrickAnderson]]'s Emacs wishlist. !ViewLargeFiles by Mathias Dahl might provide some of the same functionality (I haven't experimented with it yet); see [[vlf.el]].
+
 ==Notes=
 
 http://litchie.net/programs/binview.html

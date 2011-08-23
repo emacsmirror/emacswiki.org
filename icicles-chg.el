@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 21 10:41:47 2011 (-0700)
+;; Last-Updated: Mon Aug 22 11:28:57 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6931
+;;     Update #: 6933
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2433,6 +2433,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/08/22 dadams
+;;     icicle-maybe-byte-compile-after-load: Require bytecomp.el.
+;;     font-lock-add-keywords: Quote font-lock-function-name-face, for Emacs 20.
 ;; 2011/08/21 dadams
 ;;     Added: icicle-condition-case-no-debug.  Thx to Michael Heerdegen.
 ;;     icicle-define(-file)-command: Use icicle-condition-case-no-debug.

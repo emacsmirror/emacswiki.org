@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Apr 16 09:50:06 2011 (-0700)
+;; Last-Updated: Mon Aug 22 10:15:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1068
+;;     Update #: 1078
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/22 dadams
+;;     menu-bar-toggle-replace-w-completion:
+;;       Just use menu-bar-make-toggle, and adjust for diff releases.  Thx to PasJa (EmacsWiki).
+;;     Removed eval-when-compile soft require of menu-bar+.el.
 ;; 2011/04/16 dadams
 ;;     occur, occur-mode-mouse-goto:
 ;;       Fix for lexbind Emacs 24: replace named arg REGEXP, EVENT by (ad-get-arg 0).
@@ -230,7 +234,6 @@
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight-regexp-region
 (require 'isearch+ nil t) ;; (no error if not found):
                           ;; isearchp-set-region-flag, set-region-around-search-target
-(eval-when-compile (require 'menu-bar+ nil t)) ;; menu-bar-make-toggle-any-version
 (require 'menu-bar+ nil t) ;; menu-bar-options-menu, menu-bar-search-replace-menu
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -404,14 +407,14 @@ Non-nil `replace-w-completion-flag' means you can use completion."
       :help "Replace string interactively asking about each occurrence"
       :enable (not buffer-read-only))))      
 
-(when (boundp 'menu-bar-options-menu)   ; In `menu-bar+.el'.
-  (define-key-after menu-bar-options-menu [replace-w-completion-flag]
-    (menu-bar-make-toggle-any-version menu-bar-toggle-replace-w-completion
-                                      replace-w-completion-flag
-                                      "Completion for Query Replace"
-                                      "Using completion with query replace is %s"
-                                      "Using completion with query replace")
-    'case-fold-search))
+(define-key-after menu-bar-options-menu [replace-w-completion-flag]
+  (if (< emacs-major-version 21)
+      (menu-bar-make-toggle menu-bar-toggle-replace-w-completion replace-w-completion-flag
+                            "Completion for Query Replace" "Using completion with query replace is %s")
+    (menu-bar-make-toggle menu-bar-toggle-replace-w-completion replace-w-completion-flag
+                          "Completion for Query Replace" "Using completion with query replace is %s"
+                          "Using completion with query replace"))
+  'case-fold-search)
 
 
 ;; The main difference between this and `query-replace' is in the treatment of the PREFIX

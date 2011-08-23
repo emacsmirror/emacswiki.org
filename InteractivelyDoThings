@@ -389,6 +389,42 @@ This makes ido-find-file-other-window, ido-switch-buffer-other-window, et. al ob
 
 http://gist.github.com/493269
 
+=== Make RET easier to use with ido-find-file ===
+
+Both SPC and RET in ido-find-file cause ido to descend directories.  C-j can
+be used to select a matched directory name, but if used after typing a prefix,
+it creates a new file of that name.  What I need is a binding between the two:
+where RET immediately selects whatever directory is shown in the minibuffer --
+or has been partially selected -- while SPC or / can be used to keep
+descending.  Doing things required a hack, as there is no customization to
+achieve this.  Here is the code for your .emacs. -- JohnWiegley
+
+  (defun ido-smart-select-text ()
+    "Select the current completed item.  Do NOT descend into directories."
+    (interactive)
+    (when (and (or (not ido-require-match)
+                   (if (memq ido-require-match
+                             '(confirm confirm-after-completion))
+                       (if (or (eq ido-cur-item 'dir)
+                               (eq last-command this-command))
+                           t
+                         (setq ido-show-confirm-message t)
+                         nil))
+                   (ido-existing-item-p))
+               (not ido-incomplete-regexp))
+      (when ido-current-directory
+        (setq ido-exit 'takeprompt)
+        (if (not (and ido-text (= 0 (length ido-text))))
+            (throw 'ido
+                   (let ((match (ido-name (car ido-matches))))
+                     (setq ido-selected
+                           (replace-regexp-in-string "/\\'" "" match)
+                           ido-text ido-selected
+                           ido-final-text ido-text)))))
+      (exit-minibuffer)))
+  
+  (eval-after-load "ido"
+    '(define-key ido-common-completion-map "\C-m" 'ido-smart-select-text))
 
 == Icicles and Ido ==
 
