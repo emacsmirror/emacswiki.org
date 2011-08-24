@@ -383,8 +383,23 @@ This space is for ongoing discussion.
 ----
 
 
+[new]
 
+Hi Drew!
 
+I could not byte-compile replace+.el. Here is the error:
+
+<code>
+Compiling file /home/pasja/.emacs.d/el-get/replace+/replace+.el at Wed Aug 24 09:50:28 2011
+replace+.el:410:1:Error: Wrong number of arguments: #[(name variable doc message help &rest body) "\306\307 \310\311	\312\313O\227	\313\314O\315R\316\317
+\203 
+
+</code>
+
+Thanks for your quick replies!
+
+regards,
+[[PasJa]]
 
 [new]
 

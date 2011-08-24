@@ -71,6 +71,19 @@ After (require 'slime), eval follow form.
   (forward-sexp)
   t)
 
+== Remove SLIME's keybinding on C-c x ==
+Emacs's elisp documentaiton states that "Sequences consisting of `C-c' and a letter (either upper or lower case) are reserved for users; they are the *only* sequences reserved for users, so do not block them." Unfortunately, slime binds `C-c x' to slime-export-symbol-at-point, shadowing any keybindings the user might have established via global-set-key. 
+
+To remove slime's keybinding, and expose your original keybinding, add the following form after your call to (require 'slime) or (require 'slime-autoloads)
+
+  (add-hook 'slime-mode-hook 
+            (defun slime-sanitize-bindings ()
+              "Removes SLIME's keybinding on C-c x"
+              (cond ((boundp 'slime-mode-map)
+                     (define-key slime-mode-map (kbd "C-c x") nil)
+                     (message "slime keybinding on C-c x has been sanitized"))
+                    ('t (message "slime keybindings not sanitized")))))
+
 ----
 CategoryModes
 CategoryProgramming

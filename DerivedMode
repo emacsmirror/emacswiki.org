@@ -15,48 +15,59 @@ Old GenericMode code:
 
 New DerivedMode code:
 
- (defvar kk-mode-font-lock-keywords
-   '(("\\(--.*\\)" 1 'font-lock-comment-face)))
+  (defvar mydsl-events
+    '("reservedword1"
+      "reservedword2"))
   
- (define-derived-mode kk-mode fundamental-mode "KK"
-   "Major mode to edit KK files."
-   (set (make-local-variable 'font-lock-keywords)
-        '(kk-mode-font-lock-keywords))
-   (set (make-local-variable 'comment-start) "--"))
-
-If you are looking for an example for using a DerivedMode in released
-software, and you like to cook (with food as well as with code), see
-RicetteMode.
-
-Another example of a simple mode defined by derivation is this
-simple procmail mode
-[http://list-archive.xemacs.org/xemacs-design/200206/msg00103.html].
-Note that there is another ProcmailMode available via tiny tools.
-
-  (define-derived-mode procmail-mode fundamental-mode "Procmail"
-    "Major mode for editing procmail recipes."
-
+  (defvar mydsl-keywords
+    '("other-keyword" "another-keyword"))
+  
+  ;; I'd probably put in a default that you want, as opposed to nil
+  (defvar mydsl-tab-width nil "Width of a tab for MYDSL mode")
+  
+  ;; Two small edits.
+  ;; First is to put an extra set of parens () around the list
+  ;; which is the format that font-lock-defaults wants
+  ;; Second, you used ' (quote) at the outermost level where you wanted ` (backquote)
+  ;; you were very close
+  (defvar mydsl-font-lock-defaults
+    `((
+       ;; stuff between "
+       ("\"\\.\\*\\?" . font-lock-string-face)
+       ;; ; : , ; { } =>  @ $ = are all special elements
+       (":\\|,\\|;\\|{\\|}\\|=>\\|@\\|$\\|=" . font-lock-keyword-face)
+       ( ,(regexp-opt mydsl-keywords 'words) . font-lock-builtin-face)
+       ( ,(regexp-opt mydsl-events 'words) . font-lock-constant-face)
+       )))
+  
+  (define-derived-mode mydsl-mode fundamental-mode "MYDSL script"
+    "MYDSL mode is a major mode for editing MYDSL  files"
+  
+  
+    ;; you again used quote when you had '((mydsl-hilite))
+    ;; I just updated the variable to have the proper nesting (as noted above)
+    ;; and use the value directly here
+    (setq font-lock-defaults mydsl-font-lock-defaults)
+  
+    ;; when there's an override, use it
+    ;; otherwise it gets the default value
+    (when mydsl-tab-width
+      (setq tab-width mydsl-tab-width))
+  
+    ;; for comments
+    ;; overriding these vars gets you what (I think) you want
+    ;; they're made buffer local when you set them
     (setq comment-start "#")
-    (setq comment-start-skip "#\\W*")
+    (setq comment-end "")
+  
+    (modify-syntax-entry ?# "< b" mydsl-mode-syntax-table)
+    (modify-syntax-entry ?\n "> b" mydsl-mode-syntax-table)
+    ;;A gnu-correct program will have some sort of hook call here.
+    )
+  
+  (provide 'mydsl-mode)
 
-    ;;register keywords
-    (setq procmail-font-lock-keywords
-          (list '("#.*"
-                  . font-lock-comment-face)
-                '("^[\t ]*:.*"
-                  . font-lock-type-face)
-                '("[A-Za-z_]+=.*"
-                  . font-lock-keyword-face)
-                '("^[\t ]*\\*.*"
-                  . font-lock-doc-string-face)
-                '("\$[A-Za-z0-9_]+"
-                  . font-lock-function-name-face)))
 
-    (font-lock-mode))
-
-  (add-to-list 'auto-mode-alist '(".procmailrc\\'" . procmail-mode))
-
-Another example is SimpleWikiMode.
 
 If you are are deriving your new mode from something other than fundamental-mode, you may want to add to that mode's set of existing keywords.
 

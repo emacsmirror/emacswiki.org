@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Feb 24 15:34:25 2011 (-0800)
+;; Last-Updated: Tue Aug 23 10:47:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4459
+;;     Update #: 4468
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -178,6 +178,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/23 dadams
+;;     Removed hard-code removal of info from same-window-(regexps|buffer-names).  Thx to PasJa.
 ;; 2011/02/06 dadams
 ;;     info-user-option-ref-item: Corrected background for light-bg case.
 ;; 2011/02/03 dadams
@@ -473,40 +475,43 @@
 ;;   (require 'icicles nil t)) ;; (no error if not found): icicle-read-string-completing
 
 ;; Quiet the byte compiler a bit.
-(when (< emacs-major-version 21)
-  (eval-when-compile
-   (defvar desktop-save-buffer)
-   (defvar header-line-format)
-   (defvar Info-breadcrumbs-in-mode-line-mode)
-   (defvar Info-fontify-visited-nodes)
-   (defvar Info-hide-note-references)
-   (defvar Info-history-list)
-   (defvar Info-isearch-initial-node)
-   (defvar Info-isearch-search)
-   (defvar Info-menu-entry-name-re)
-   (defvar Info-next-link-keymap)
-   (defvar Info-mode-line-node-keymap)
-   (defvar Info-node-spec-re)
-   (defvar Info-point-loc)
-   (defvar Info-prev-link-keymap)
-   (defvar Info-refill-paragraphs)
-   (defvar Info-saved-nodes)
-   (defvar Info-search-case-fold)
-   (defvar Info-search-history)
-   (defvar Info-search-whitespace-regexp)
-   (defvar info-tool-bar-map)
-   (defvar Info-up-link-keymap)
-   (defvar Info-use-header-line)
-   (defvar widen-automatically)))
+;;
+;; (when (< emacs-major-version 21)
+;;   (eval-when-compile
+(defvar desktop-save-buffer)
+(defvar header-line-format)
+(defvar Info-breadcrumbs-in-mode-line-mode)
+(defvar Info-fontify-visited-nodes)
+(defvar Info-hide-note-references)
+(defvar Info-history-list)
+(defvar Info-isearch-initial-node)
+(defvar Info-isearch-search)
+(defvar Info-menu-entry-name-re)
+(defvar Info-next-link-keymap)
+(defvar Info-mode-line-node-keymap)
+(defvar Info-node-spec-re)
+(defvar Info-point-loc)
+(defvar Info-prev-link-keymap)
+(defvar Info-refill-paragraphs)
+(defvar Info-saved-nodes)
+(defvar Info-search-case-fold)
+(defvar Info-search-history)
+(defvar Info-search-whitespace-regexp)
+(defvar info-tool-bar-map)
+(defvar Info-up-link-keymap)
+(defvar Info-use-header-line)
+(defvar widen-automatically)
 
-(when (< emacs-major-version 23)
-  (eval-when-compile
-   (defvar Info-read-node-completion-table)
-   (defvar Info-breadcrumbs-depth)
-   (defvar Info-breadcrumbs-depth-internal)
-   (defvar Info-breadcrumbs-in-header-flag)
-   (defvar Info-current-node-virtual)
-   (defvar isearch-filter-predicate)))
+;; (when (< emacs-major-version 23)
+;;   (eval-when-compile
+(defvar Info-read-node-completion-table)
+(defvar Info-breadcrumbs-depth)
+(defvar Info-breadcrumbs-depth-internal)
+(defvar Info-breadcrumbs-in-header-flag)
+(defvar Info-current-node-virtual)
+(defvar Info-last-search)
+(defvar Info-title-face-alist)
+(defvar isearch-filter-predicate)
 
 ;;; You will likely get byte-compiler messages saying that variable
 ;;; `node-name' is free.  In older Emacs versions, you might also get
@@ -920,16 +925,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
    ["Previous Link" Info-prev-reference t]
    ["Search (regexp)" Info-search t]
    ["Quit" quit-window t]))
-
-
-
-;; Do this to counteract what is done in `info.el'.  There is no
-;; reason not to use a separate window, if the user, e.g., sets
-;; `pop-up-windows' or `pop-up-frames' non-nil.
-;;
-(if (>= emacs-major-version 22)
-    (remove-hook 'same-window-regexps "\\*info\\*\\(\\|<[0-9]+>\\)")
-  (remove-hook 'same-window-buffer-names "*info*"))
 
 
 ;; Make `Info-find-emacs-command-nodes' look for these commands in the

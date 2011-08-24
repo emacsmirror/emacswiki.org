@@ -31,45 +31,19 @@ As of 2009-06-11, Ken has provided [http://www.mit.edu/~raeburn/guilemacs/ an up
 To subscribe to a mailing list about about Guile Emacs send a blank messsage to
 mailto:guile-emacs-subscribe@sources.redhat.com
 
-[new]
-Seems GuileEmacs lacks a clear goal and clear deliverable designations. How about these (all points must be met):
-# Having an [[Emacs]] Editor (an executable built from a set of C source files) with [[Scheme]] as an extension language provided by [[Guile]].
-# The possibility to run any EmacsLisp code on GuileEmacs without any rewritting.
-# Clearly make the distinction between Scheme code and Emacslisp code, encouraging the development of Scheme programs for GuileEmacs.
-
-Deliverables:
-For Goal 1: The GuileEmacs Editor integrating the [[Guile]] library for extension and nothing else (no EmacsLisp extension provided natively)
-For Goal 2: An EmacsLisp compiler (written in Scheme) to produce GuileEmacs byte code.
-Goal 3 is achieved by the fact that you cannot interpret EmacsLisp code using GuileEmacs. You must recompile EmacsLisp code targetting GuileEmacs.
-With these deliverables, we can have a GuileEmacs, interpreting pure [[Scheme]] code only and having access to all the extraordinary set of EmacsLisp libraries.
-
-As these goals can't be achieved in a few months, 
-OldEmacs will continue to evolve. People will use GuileEmacs and code it in Scheme only if they have all features of OldEmacs and access to all EmacsLisp libraries. -- JeromeRadix
-
-[new]
 As brought to our attention in [[2010-04-16]] by AlexSchroeder:
 : Apparently there's more discussion regarding Guile, Emacs, and GuileEmacs on emacs-devel.
 : * [http://lists.gnu.org/archive/html/emacs-devel/2010-04/msg00507.html Guile in Emacs] started by Tom Lord, a very long thread
 : * [http://lists.gnu.org/archive/html/emacs-devel/2010-04/msg00665.html guile and emacs and elisp, oh my] by Andy Wingo
 
-[new]
+On 2011-02-16, [http://lists.gnu.org/archive/html/guile-devel/2011-02/msg00173.html Guile 2.0 was released] with some Emacs Lisp support.
 
-I have written a library providing a common API for several scripting languages (over time, I aim to collect up all Free / Open Source interpretive language implementations!) and have made a start at interfacing it to Emacs.  I was meaning to leave releasing it until there was quite a bit there, but I've not done anything to it for a few months, so I'll put it up for comment and contributions, and remind myself to get on with it... The interface library is [http://www.nongnu.org/muesli/ Muesli] (Multiple Utility, Evaluation and Scripting Language Interface) and you can see the Emacs-Lisp interface for it at http://cvs.savannah.gnu.org/viewvc/muesli/apps/GNUEmacs/muesli-elisp.c?root=muesli&view=markup 
+For GoogleSummerOfCode 2011, work was done on Emacs Lisp support in Guile.  Read [http://lists.gnu.org/archive/html/guile-devel/2011-07/msg00054.html the status report on 2011-07-21] posted to the [[guile-devel]] list.
 
-With this approach, the effort of "breaking out" from elisp is shared between interfacing it to all languages.
+* [http://wingolog.org/archives/2009/01/07/a-brief-history-of-guile A Brief History of Guile] by Andy Wingo
 
-It also adds mixed-language working: you can write 
-
-  (eval-in-language language-name code-fragment)
-
-in the appropriate syntax in any language supported by Muesli, and I'm working on an embedding syntax that lets you write things like
-
-  (+ 1 {{Guile: (length thing)}})
-
--- JohnSturdy
-
-Guile 2.0 is out. It supports emacs lisp and other languages. So is it so good now? Is it adopted in official next generation emacs plan?   -- mikeyao
+See also other EmacsImplementations.
 
 ----
 CategoryExtensionLanguage
-EmacsImplementations
+
