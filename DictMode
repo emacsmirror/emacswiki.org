@@ -88,7 +88,8 @@ chinese character that seached just fine using dict in eshell, the result is gob
 Any ideas as to how to debug this would be greatly appreciated.  I've got dictionary-1.8.7,
 on GNU Emacs 21.4.1 (stock Debian install). -- BrianTodd
 
-
+[new]
+Emacs 24 drops support for make-local-hook. The Debian package linked above includes a patch to get round this. Those unfamiliar with patching can also [http://pastebin.com/8S2rZd3s grab the updated dictionary.el]. -- ChrisPoole
  
 
 ----

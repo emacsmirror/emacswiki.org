@@ -9,7 +9,7 @@ Note: the version on sourceforge is outdated by a few years. For the latest vers
 Debian also includes tabbar.el in the [[http://packages.debian.org/search?keywords=emacs-goodies-el emacs-goodies-el]] package.
 
 The tabbar.el is extensively modified and used by AquamacsEmacs to be
-as close to modern UI's tab bar as possible. (see AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png official
+as close to modern UI's tab bar as possible. A fork of the Aquamacs version of TabBarMode which is intended to be Emacs agnostic is available [[https://github.com/dholm/tabbar here]]. (see AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png official
 website screenshot]] for a look. You can also try to get the [[http://github.com/davidswelt/aquamacs-emacs/tree/master/aquamacs/src/site-lisp/tabbar/tabbar.el source code]] from AquamacsEmacs, but it may not work with standard emacs.)
 
 Note that tabbar mode as implemented in Emacs is a bit different than

@@ -34,7 +34,8 @@ Now whenever you will type 'G-G', Gnus will react by asking you to type keywords
 
 Then nnir will open a new buffer with the possible mails matching your request.
 
-You can there choose to go to the thread by typing 'G-T' (Mx gnus-summary-nnir-goto-thread RET) onto an item. You will then be teleported into the group this article came from.
+You can there choose to go to the thread by typing 'G-T' (Mx gnus-summary-nnir-goto-thread RET) onto an item. You will then be teleported into the group this article came from. Note that gnus-summary-nnir-goto-thread is replaced by gnus-summary-refer-thread in newer Gnus. 
+
 
 == Downloading ==
 

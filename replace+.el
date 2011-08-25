@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Aug 22 10:15:06 2011 (-0700)
+;; Last-Updated: Wed Aug 24 07:26:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1078
+;;     Update #: 1091
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/24 dadams
+;;     Added macro menu-bar-make-toggle-any-version.  Use for menu-bar-toggle-replace-w-completion.
 ;; 2011/08/22 dadams
 ;;     menu-bar-toggle-replace-w-completion:
 ;;       Just use menu-bar-make-toggle, and adjust for diff releases.  Thx to PasJa (EmacsWiki).
@@ -237,6 +239,20 @@
 (require 'menu-bar+ nil t) ;; menu-bar-options-menu, menu-bar-search-replace-menu
 
 ;;;;;;;;;;;;;;;;;;;;;
+
+;; Same as the version in `menu-bar+.el'.
+(defmacro menu-bar-make-toggle-any-version (name variable doc message help &rest body)
+  "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
+NAME is the name of the toggle command to define.
+VARIABLE is the variable to set.
+DOC is the menu-item name.
+MESSAGE is the toggle message, minus status.
+HELP is :help string.
+BODY is the function body to use.  If present, it is responsible for
+setting the variable and displaying a status message (not MESSAGE)."
+  (if (< emacs-major-version 21)
+      `(menu-bar-make-toggle ,name ,variable ,doc ,message ,@body)
+    `(menu-bar-make-toggle ,name ,variable ,doc ,message ,help ,@body)))
 
 (defface occur-highlight-linenum '((t (:foreground "Red")))
   "*Face to use to highlight line number of visited hit lines."
@@ -405,17 +421,14 @@ Non-nil `replace-w-completion-flag' means you can use completion."
   (define-key menu-bar-search-replace-menu [query-replace]
     '(menu-item "Query String" query-replace-w-options
       :help "Replace string interactively asking about each occurrence"
-      :enable (not buffer-read-only))))      
+      :enable (not buffer-read-only))))
 
 (define-key-after menu-bar-options-menu [replace-w-completion-flag]
-  (if (< emacs-major-version 21)
-      (menu-bar-make-toggle menu-bar-toggle-replace-w-completion replace-w-completion-flag
-                            "Completion for Query Replace" "Using completion with query replace is %s")
-    (menu-bar-make-toggle menu-bar-toggle-replace-w-completion replace-w-completion-flag
-                          "Completion for Query Replace" "Using completion with query replace is %s"
-                          "Using completion with query replace"))
+  (menu-bar-make-toggle-any-version menu-bar-toggle-replace-w-completion replace-w-completion-flag
+                                    "Completion for Query Replace"
+                                    "Using completion with query replace is %s"
+                                    "Using completion with query replace")
   'case-fold-search)
-
 
 ;; The main difference between this and `query-replace' is in the treatment of the PREFIX
 ;; arg.  Only a positive (or nil) PREFIX value gives the same behavior.  A negative PREFIX
@@ -685,6 +698,7 @@ the matching is case-sensitive."
                 (let ((print-escape-newlines  t)) (prin1 regexp))
                 (insert " in buffer `" (buffer-name buffer) "'." ?\n)
                 (occur-mode)
+                ;; `occur-buffer', `occur-nlines', and `occur-command-arguments' are free here.
                 (setq occur-buffer             buffer
                       occur-nlines             nlines
                       occur-command-arguments  (list regexp nlines))))

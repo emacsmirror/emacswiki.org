@@ -4,11 +4,11 @@ This package allows you to place your abbrevs into your filesystem,
 in a special directory tree.
 
 * http://www.bloomington.in.us/~brutt/msf-abbrev.html. Although the website does not exist anymore, msf-abbrev.el file works excellent in emacs 23.2.
-** there is an archive copy http://web.archive.org/web/20080611035209/http://www.bloomington.in.us/~brutt/msf-abbrev.html. 
-* http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif (no longer; was animated gif)
-** archive copy:
+** there is an archive copy 
+http://wayback.archive.org/web/20081217151848*/http://www.bloomington.in.us/~brutt/msf-abbrev.html 
+(click on the latest link available because the direct link frowm archive does not work)
 
-http://web.archive.org/web/20080611035209/http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif
+* http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif (click demo in the archived website, I tried this today 25-08-2011 and it worked)
 
 version 1.0beta series (original version developed by Benjamin Rutt).
 

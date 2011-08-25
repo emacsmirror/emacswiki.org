@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 22 11:27:18 2011 (-0700)
+;; Last-Updated: Wed Aug 24 09:28:57 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 797
+;;     Update #: 804
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -156,7 +156,6 @@ effect, but it means that the functions run faster."
 Specifically, non-nil `debug-on-error' means catch no signals.
 This is the same as `condition-case-no-debug': added to use in older
 Emacs versions too."
-  (when (fboundp 'declare) (declare (debug condition-case) (indent 2)))
   (let ((bodysym  (make-symbol "body")))
     `(let ((,bodysym  (lambda () ,bodyform)))
       (if debug-on-error
@@ -192,7 +191,6 @@ This macro uses `save-current-buffer' to save and restore the
 current buffer, since otherwise its normal operation could
 potentially make a different buffer current.  It does not alter
 the buffer list ordering."
-    (when (fboundp 'declare) (declare (indent 1) (debug t)))
     ;; Most of this code is a copy of save-selected-window.
     `(let ((save-selected-window-window  (selected-window))
            ;; It is necessary to save all of these, because calling
@@ -732,28 +730,28 @@ Elements of ALIST that are not conses are ignored."
     ;; Index (2 or 3) depends on whether or not shy groups are supported.
     ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))))
 
-;; This is commented out, but you might also want to use it or something similar.  I use it in
-;; my init file.  The `icicle-define-*' lines cause doc strings to be indented correctly.
+;; Make Icicles macros indent better.
+(put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
+(put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
+(put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
+(put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
+
+;; You might also want to use the following or something similar.
 ;; (defun lisp-indentation-hack ()
 ;;   "Better Lisp indenting.  Use in Lisp mode hooks
 ;; such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
 ;; `lisp-interaction-mode-hook'."
-;;   (unless (assoc "cl-indent" load-history) (load "cl-indent" nil t))
+;;   (load "cl-indent" nil t)
 ;;   (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
 ;;   (setq lisp-indent-maximum-backtracking  10)
-;;   (put 'define-derived-mode                'common-lisp-indent-function '(4 4 4 2 &body))
-;;   (put 'if                                 'common-lisp-indent-function '(nil nil &body))
-;;   (put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
-;;   (put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
-;;   (put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
-;;   (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
-;;   (put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
-;;   (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body)))
-
+;;   (put 'define-derived-mode 'common-lisp-indent-function '(4 4 4 2 &body))
+;;   (put 'if                  'common-lisp-indent-function '(nil nil &body)))
+;;
 ;; (add-hook 'emacs-lisp-mode-hook       'lisp-indentation-hack)
 ;; (add-hook 'lisp-mode-hook             'lisp-indentation-hack)
 ;; (add-hook 'lisp-interaction-mode-hook 'lisp-indentation-hack)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

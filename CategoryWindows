@@ -18,6 +18,8 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 ** NumberedWindows
 ** Lisp:switch-window.el shows big numbers in each window, you input the number to get where you want to.
 ** WindowNumberingMode
+* Use a transient keymap to move among windows
+** WinSwitch -- a dynamic, transient mode that enables easy, efficient navigation among windows (and frames)
 
 
 == Resizing, Splitting,... Windows ==

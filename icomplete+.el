@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jun  5 09:29:14 2011 (-0700)
+;; Last-Updated: Wed Aug 24 09:52:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 921
+;;     Update #: 931
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -62,6 +62,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/24 dadams
+;;     Added top-level puts for common-lisp-indent-function.
+;;     with-local-quit, while-no-input:
+;;       Define only if not defined.  Use put for indentation.  Remove declare declaration.
 ;; 2011/06/05 dadams
 ;;     icomplete-completions: Handle Emacs 24's new METADATA arg for completion-try-completion.
 ;; 2011/01/04 dadams
@@ -271,35 +275,37 @@ See `icomplete-mode' and `minibuffer-setup-hook'."
 ;;; These two macros are defined in `subr.el' for Emacs 23+.
 ;;; They are included here only so you can, if needed, byte-compile this file using Emacs < 23
 ;;; and still use the byte-compiled file in Emacs 23+.
-(defmacro with-local-quit (&rest body)
-  "Execute BODY, allowing quits to terminate BODY but not escape further.
+(unless (fboundp 'with-local-quit)
+  (defmacro with-local-quit (&rest body)
+    "Execute BODY, allowing quits to terminate BODY but not escape further.
 When a quit terminates BODY, `with-local-quit' returns nil but
 requests another quit.  That quit will be processed as soon as quitting
 is allowed once again.  (Immediately, if `inhibit-quit' is nil.)"
-  (when (fboundp 'declare) (declare (debug t) (indent 0)))
-  `(condition-case nil
-    (let ((inhibit-quit nil))
-      ,@body)
-    (quit (setq quit-flag t)
-     ;; This call is to give a chance to handle quit-flag
-     ;; in case inhibit-quit is nil.
-     ;; Without this, it will not be handled until the next function
-     ;; call, and that might allow it to exit thru a condition-case
-     ;; that intends to handle the quit signal next time.
-     (eval '(ignore nil)))))
+    `(condition-case nil
+      (let ((inhibit-quit nil))
+        ,@body)
+      (quit (setq quit-flag t)
+       ;; This call is to give a chance to handle quit-flag
+       ;; in case inhibit-quit is nil.
+       ;; Without this, it will not be handled until the next function
+       ;; call, and that might allow it to exit thru a condition-case
+       ;; that intends to handle the quit signal next time.
+       (eval '(ignore nil)))))
+  (put 'with-local-quit 'common-lisp-indent-function '(&body)))
 
-(defmacro while-no-input (&rest body)   ; Defined in `subr.el'.
-  "Execute BODY only as long as there's no pending input.
+(unless (fboundp 'while-no-input)
+  (defmacro while-no-input (&rest body) ; Defined in `subr.el'.
+    "Execute BODY only as long as there's no pending input.
 If input arrives, that ends the execution of BODY,
 and `while-no-input' returns t.  Quitting makes it return nil.
 If BODY finishes, `while-no-input' returns whatever value BODY produced."
-  (when (fboundp 'declare) (declare (debug t) (indent 0)))
-  (let ((catch-sym (make-symbol "input")))
-    `(with-local-quit
-      (catch ',catch-sym
-        (let ((throw-on-input ',catch-sym))
-          (or (input-pending-p)
-              (progn ,@body)))))))
+    (let ((catch-sym (make-symbol "input")))
+      `(with-local-quit
+        (catch ',catch-sym
+          (let ((throw-on-input ',catch-sym))
+            (or (input-pending-p)
+                (progn ,@body)))))))
+  (put 'while-no-input 'common-lisp-indent-function '(&body)))
 
 
 
@@ -310,46 +316,46 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 ;;
 (when (> emacs-major-version 22)        ; Emacs 23+
   (defun icomplete-exhibit ()
-  "Insert icomplete completions display.
+    "Insert icomplete completions display.
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
 and `minibuffer-setup-hook'."
-  (when (and icomplete-mode (icomplete-simple-completing-p))
-    (save-excursion
-      (goto-char (point-max))
-      ;; Insert the match-status information.
-      (when (and (> (point-max) (minibuffer-prompt-end))
-                 buffer-undo-list       ; Wait for some user input.
-                 (save-excursion ; Do nothing if looking at a list, string, etc.
-                   (goto-char (minibuffer-prompt-end))
-                   (save-match-data
-                     (not (looking-at   ; No (, ", ', 9 etc. at start.
-                           "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
-                 (or
-                  ;; Don't bother with delay after certain number of chars:
-                  (> (- (point) (field-beginning)) icomplete-max-delay-chars)
-                  ;; Don't delay if alternatives number is small enough:
-                  (and (sequencep minibuffer-completion-table)
-                       (< (length minibuffer-completion-table)
-                          icomplete-delay-completions-threshold))
-                  ;; Delay - give some grace time for next keystroke, before
-                  ;; embarking on computing completions:
-                  (sit-for icomplete-compute-delay)))
-        (let ((text             (while-no-input
-                                  (icomplete-completions
-                                   (field-string)
-                                   minibuffer-completion-table
-                                   minibuffer-completion-predicate
-                                   (not minibuffer-completion-confirm))))
-              (buffer-undo-list t)
-              deactivate-mark)
-          ;; Do nothing if `while-no-input' was aborted.
-          (when (stringp text)
-            (move-overlay icomplete-overlay (point) (point) (current-buffer))
-            ;; The current C cursor code doesn't know to use the overlay's
-            ;; marker's stickiness to figure out whether to place the cursor
-            ;; before or after the string, so let's spoon-feed it the pos.
-            (put-text-property 0 1 'cursor t text)
-            (overlay-put icomplete-overlay 'after-string text))))))))
+    (when (and icomplete-mode (icomplete-simple-completing-p))
+      (save-excursion
+        (goto-char (point-max))
+        ;; Insert the match-status information.
+        (when (and (> (point-max) (minibuffer-prompt-end))
+                   buffer-undo-list     ; Wait for some user input.
+                   (save-excursion      ; Do nothing if looking at a list, string, etc.
+                     (goto-char (minibuffer-prompt-end))
+                     (save-match-data
+                       (not (looking-at ; No (, ", ', 9 etc. at start.
+                             "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
+                   (or
+                    ;; Don't bother with delay after certain number of chars:
+                    (> (- (point) (field-beginning)) icomplete-max-delay-chars)
+                    ;; Don't delay if alternatives number is small enough:
+                    (and (sequencep minibuffer-completion-table)
+                         (< (length minibuffer-completion-table)
+                            icomplete-delay-completions-threshold))
+                    ;; Delay - give some grace time for next keystroke, before
+                    ;; embarking on computing completions:
+                    (sit-for icomplete-compute-delay)))
+          (let ((text             (while-no-input
+                                   (icomplete-completions
+                                    (field-string)
+                                    minibuffer-completion-table
+                                    minibuffer-completion-predicate
+                                    (not minibuffer-completion-confirm))))
+                (buffer-undo-list t)
+                deactivate-mark)
+            ;; Do nothing if `while-no-input' was aborted.
+            (when (stringp text)
+              (move-overlay icomplete-overlay (point) (point) (current-buffer))
+              ;; The current C cursor code doesn't know to use the overlay's
+              ;; marker's stickiness to figure out whether to place the cursor
+              ;; before or after the string, so let's spoon-feed it the pos.
+              (put-text-property 0 1 'cursor t text)
+              (overlay-put icomplete-overlay 'after-string text))))))))
 
 
 
