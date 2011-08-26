@@ -77,5 +77,8 @@ As a vi user, I thought I'd pop in and point out that emacs' `M-g g 42' is only 
 [new]
 You also have to press enter (2 keybpresses more than 42G). Furthermore the emacs binding is a Meta key chord, which makes it very uncomfortable (I think).
 
+[new]
+Typing M-4 M-2 M-g M-g has the same effect
+
 ----
 CategoryHumor
