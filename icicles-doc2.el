@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 16 15:00:15 2011 (-0700)
+;; Last-Updated: Fri Aug 26 10:58:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28160
+;;     Update #: 28163
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7596,8 +7596,8 @@
 ;;        (if (eq t (car (file-attributes file)))
 ;;            (delete-directory file)
 ;;          (delete-file file))
-;;      (error (message (error-message-string i-delete-file))
-;;             (error (error-message-string i-delete-file)))))
+;;      (error (message "%s" (error-message-string i-delete-file))
+;;             (error "%s" (error-message-string i-delete-file)))))
 ;;
 ;;  There are two parts to the definition of `my-delete-file':
 ;;
@@ -8514,7 +8514,7 @@
 ;;        (error (switch-to-buffer icicle-orig-buff)
 ;;               (modify-frame-parameters
 ;;                orig-frame (list (cons 'font orig-font)))
-;;               (error (error-message-string act-on-choice))))))
+;;               (error "%s" (error-message-string act-on-choice))))))
 ;;
 ;;  That's a lot of (error-prone) work!  You obviously do not want to
 ;;  be doing that a lot.  Whenever you can, you should use macro

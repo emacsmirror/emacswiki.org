@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Fri May 27 08:56:55 2011 (-0700)
+;; Last-Updated: Fri Aug 26 13:41:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 665
+;;     Update #: 672
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2001/08/26 dadams
+;;     imenu--sort-submenu: Copy MENU-ITEMS so sort doesn't modify it.  Thx  to Michael Heerdegen.
 ;; 2011/05/27 dadams
 ;;     imenu-lisp-var-defn-regexp:
 ;;       Corrected to allow \n after var name (\n is comment-end syntax, not whitespace, in Lisp).
@@ -285,7 +287,8 @@ See `imenu' for more information."
         (menu-items (cdr submenu)))
     (cons menu-name (if (and (consp menu-items)
                              (consp (cdr menu-items)))
-                        (sort menu-items predicate)
+                        ;; Must copy, because MENU-ITEMS can be part of `imenu--index-alist'.
+                        (sort (copy-sequence menu-items) predicate)
                       menu-items))))
 
 

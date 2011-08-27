@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 24 09:28:57 2011 (-0700)
+;; Last-Updated: Fri Aug 26 10:23:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 804
+;;     Update #: 805
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -703,7 +703,7 @@ Elements of ALIST that are not conses are ignored."
                   (condition-case err-switch-other
                       (unless (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name buffer))
                         (switch-to-buffer-other-window buffer))
-                    (error (error-message-string err-switch-other))))))))
+                    (error (error-message-string err-switch-other)))))))) ; Return error message string.
 
 (unless (fboundp 'select-frame-set-input-focus) ; Defined in Emacs 22.
   (defun select-frame-set-input-focus (frame)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 19 09:21:15 2011 (-0700)
+;; Last-Updated: Fri Aug 26 10:25:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17116
+;;     Update #: 17122
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,12 +17,13 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-opt',
-;;   `icicles-var', `image-dired', `kmacro', `levenshtein', `mouse3',
-;;   `mwheel', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
+;;   `doremi', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
+;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
+;;   `icicles-mac', `icicles-opt', `icicles-var', `image-dired',
+;;   `kmacro', `levenshtein', `mouse3', `mwheel', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3396,7 +3397,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                         (no-catch
                          (icicle-retrieve-last-input)
                          icicle-current-input)
-                        (error (message (error-message-string icicle-prefix-complete-1)))))
+                        (error (message "%s" (error-message-string icicle-prefix-complete-1)))))
                      ((and icicle-edit-update-p (not (eq no-display-p 'no-msg)))
                       (minibuffer-message
                        (format (case (icicle-current-TAB-method)
@@ -3724,7 +3725,7 @@ message either.  NO-DISPLAY-P is passed to
                       (no-catch (setq icicle-current-input  (car icicle-completion-candidates))
                                 (icicle-retrieve-last-input)
                                 icicle-current-input)
-                      (error (message (error-message-string icicle-apropos-complete-1)))))
+                      (error (message "%s" (error-message-string icicle-apropos-complete-1)))))
                    ((and icicle-edit-update-p (not (eq no-display-p 'no-msg)))
                     (minibuffer-message (format "  [One apropos completion: %s]"
                                                 (car icicle-completion-candidates)))
@@ -5267,7 +5268,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                (no-catch (setq icicle-current-input  (car icicle-completion-candidates))
                          (icicle-retrieve-last-input)
                          icicle-current-input)
-               (error (message (error-message-string i-narrow-candidates))))))
+               (error (message "%s" (error-message-string i-narrow-candidates))))))
           (t
            (let* (;; $$$$$$$$$$$$$ (icicle-whole-candidate-as-text-prop-p  nil)
                   (minibuffer-setup-hook ; Make sure the new minibuffer is the reference buffer.
@@ -5324,7 +5325,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                    (no-catch (setq icicle-current-input  result)
                              (icicle-retrieve-last-input)
                              icicle-current-input)
-                   (error (message (error-message-string i-narrow-candidates))))
+                   (error (message "%s" (error-message-string i-narrow-candidates))))
                result))))))
 
 ;;;###autoload
@@ -5414,7 +5415,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                (no-catch (setq icicle-current-input  (car icicle-completion-candidates))
                          (icicle-retrieve-last-input)
                          icicle-current-input)
-               (error (message (error-message-string i-narrow-candidates))))))
+               (error (message "%s" (error-message-string i-narrow-candidates))))))
           (t                            ; Read new predicate and incorporate it.
            (let ((pred  (or predicate
                             (icicle-read-from-minibuf-nil-default
@@ -6239,7 +6240,7 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                      (condition-case err
                          (with-temp-file file-name
                            (prin1 icicle-saved-completion-candidates (current-buffer)))
-                       (error (error "Could not write to cache file.  %S"
+                       (error (error "Could not write to cache file.  %s"
                                      (error-message-string err)))))))
                 ((zerop (prefix-numeric-value arg))
                  ;; Save to a fileset (and to `icicle-saved-completion-candidates').

@@ -172,7 +172,7 @@ failure.
         (error (switch-to-buffer icicle-orig-buff)
                (modify-frame-parameters
                 orig-frame (list (cons 'font orig-font)))
-               (error (error-message-string act-on-choice))))))
+               (error "%s" (error-message-string act-on-choice))))))
 
 That's a lot of (error-prone) work!  You obviously do not want to
 be doing that a lot.  Whenever you can, you should use macro

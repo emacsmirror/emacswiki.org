@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 17 14:59:06 2011 (-0700)
+;; Last-Updated: Fri Aug 26 14:20:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3935
+;;     Update #: 3954
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,10 +17,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
+;;   `apropos', `apropos-fn+var', `avoid', `backquote', `bytecomp',
+;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
 ;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
 ;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
 ;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `pp', `pp+',
@@ -3031,7 +3031,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-                 (error (error-message-string icicle-search-regexp-scan))))))))
+                 (error "%s" (error-message-string icicle-search-regexp-scan))))))))
 
 ;; Free var here: `icicle-search-ecm' is bound in `icicle-search'.
 (defun icicle-search-highlight-all-input-matches (&optional input)
@@ -3194,11 +3194,10 @@ display string as in `icicle-search-action'."
               (error                    ; Ignore disappearance of `*Completions*'.
                (unless (string-match "Wrong type argument: window-live-p,"
                                      (error-message-string icicle-search-action-1-save-window))
-                 (error (message (error-message-string icicle-search-action-1-save-window))
-                        (error-message-string icicle-search-action-1-save-window)))))
+                 (error "%s" (error-message-string icicle-search-action-1-save-window)))))
             nil))                       ; Return nil for success.
-      (error (message (error-message-string icicle-search-action-1))
-             (error-message-string icicle-search-action-1)))))
+      (error (message "%s" (error-message-string icicle-search-action-1))
+             (error-message-string icicle-search-action-1))))) ; Return the error string.
 
 (defun icicle-search-in-context-default-fn (cand+mrker replace-string)
   "Default value of `icicle-search-in-context-fn'."
@@ -3362,7 +3361,7 @@ FIXEDCASE is as for `replace-match'.  Non-nil means do not alter case."
                  compiled)
                fixedcase icicle-search-replace-literally-flag nil (match-data)))
           (buffer-read-only (ding) (error "Buffer is read-only"))
-          (error (icicle-remove-Completions-window) (error "No match for %s" replace-string))))
+          (error (icicle-remove-Completions-window) (error "No match for `%s'" replace-string))))
     (condition-case icicle-search-replace-match2 ; Emacs < 22.  Try to interpret `\'.
         (replace-match replace-string fixedcase icicle-search-replace-literally-flag)
       (error (replace-match replace-string fixedcase t))))) ;   If error, replace literally.
@@ -4034,9 +4033,9 @@ NOTE:
    thing being scanned currently, then scanning skips forward to the
    next thing.  The scan does not dig inside the current thing to look
    for a qualified THING.
-6. In Emacs releases prior to Emacs 23 the thing-at-point functions
-   can sometimes behave incorrectly.  Thus, `icicle-search-thing' also
-   behaves incorrectly in such cases, for Emacs prior to version 23.
+6. In some Emacs releases, especially prior to Emacs 23, the
+   thing-at-point functions can sometimes behave incorrectly.  Thus,
+   `icicle-search-thing' also behaves incorrectly in such cases.
 7. Prior to Emacs 21 there is no possibility of ignoring comments."
   (interactive (icicle-search-thing-args))
   (setq icicle-search-context-level  0)
@@ -4274,7 +4273,7 @@ This function respects both `icicle-search-complement-domain-p' and
                (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
            (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
            (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-                  (error (error-message-string icicle-search-thing-scan)))))))))
+                  (error "%s" (error-message-string icicle-search-thing-scan)))))))))
 
 ;; Same as `thgcmd-invisible-p' in `thing-cmds.el'.
 (defun icicle-invisible-p (position)
@@ -4626,7 +4625,7 @@ PREDICATE is nil or a Boolean function that takes these arguments:
               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-                 (error (error-message-string icicle-search-char-property-scan))))))))
+                 (error "%s" (error-message-string icicle-search-char-property-scan))))))))
 
 (defun icicle-flat-list (val1 val2)
   "Return a flat list with all values in VAL1 and VAL2."
@@ -5231,11 +5230,13 @@ submenus:
  7. Faces        - faces, from `defface'
  8. Other        - other definitions
 
-Note: If you use this command with a prefix argument, then the Imenu
-mode (and `imenu-generic-expression') of the current buffer determines
-what kinds of definitions are found.  So, if you want to search for
-definitions in a certain language, then invoke this command from a
-buffer in that language.
+If you use this command with a prefix argument then multiple buffers,
+files, or bookmarks are used (see `icicle-search' for information
+about prefix arg behavior).  When this is the case, the Imenu mode
+\(and `imenu-generic-expression') of the current buffer at time of
+command invocation determines what kinds of definitions are found.
+So, if you want to search for definitions in a certain language, then
+invoke this command from a buffer in that language.
 
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
@@ -5260,14 +5261,24 @@ search multiple regions, buffers, or files, see the doc for command
     (unwind-protect
          (save-match-data
            (set-syntax-table table)
-           (let* ((menus    (icicle-remove-if-not
-                             #'icicle-imenu-in-buffer-p ; Only use menus that match the buffer.
-                             (mapcar #'(lambda (menu) ; Name an unlabeled menu `Others'.
-                                         (if (stringp (car menu)) menu (cons "Others" (cdr menu))))
-                                     imenu-generic-expression)))
-                  (submenu  (let ((icicle-show-Completions-initially-flag  t)
-                                  (completion-ignore-case                  t))
-                              (completing-read "Choose: " menus nil t)))
+           (let* ((others   0)
+                  (menus
+                   (mapcar #'(lambda (menu)
+                               (when (equal (car menu) "Others")
+                                 (setq others  (1+ others))
+                                 (when (> others 1)
+                                   (setcar menu (format "Others<%d>" others))))
+                               menu)
+                           (icicle-remove-if-not
+                            #'icicle-imenu-in-buffer-p ; Only use menus that match the buffer.
+                            (mapcar #'(lambda (menu) ; Name an unlabeled menu `Others'.
+                                        (if (stringp (car menu)) menu (cons "Others" (cdr menu))))
+                                    imenu-generic-expression))))
+                  (submenu  (if (cadr menus)
+                                (let ((icicle-show-Completions-initially-flag  t)
+                                      (completion-ignore-case                  t))
+                                  (completing-read "Choose: " menus nil t))
+                              (caar menus))) ; Only one submenu, so use it.
                   (regexp   (cadr (assoc submenu menus)))
                   (icicle-transform-function
                    (if (interactive-p) nil icicle-transform-function)))
@@ -6212,17 +6223,16 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                     (when (eq 'negative-argument binding)
                       (icicle-msg-maybe-in-minibuffer "Negative argument"))
                     (setq last-nonmenu-event  1) ; So `*Completions*' mouse-click info is ignored.
-                    (condition-case try-command ; Bind so vanilla context when invoke chosen cmd.
-                        (let ((icicle-candidate-action-fn              nil)
-                              (icicle-completing-keys-p                nil)
-                              (icicle-sort-orders-alist                icicle-orig-sort-orders-alist)
-                              (icicle-sort-comparer                    'icicle-case-string-less-p)
-                              (icicle-alternative-sort-comparer
-                               'icicle-historical-alphabetic-p)
-                              (icicle-show-Completions-initially-flag
-                               icicle-orig-show-initially-flag))
-                          (call-interactively binding nil icicle-this-cmd-keys))
-                      (error (error (error-message-string try-command)))))))
+                    ;; Bind so vanilla context when invoke chosen command.
+                    (let ((icicle-candidate-action-fn              nil)
+                          (icicle-completing-keys-p                nil)
+                          (icicle-sort-orders-alist                icicle-orig-sort-orders-alist)
+                          (icicle-sort-comparer                    'icicle-case-string-less-p)
+                          (icicle-alternative-sort-comparer
+                           'icicle-historical-alphabetic-p)
+                          (icicle-show-Completions-initially-flag
+                           icicle-orig-show-initially-flag))
+                      (call-interactively binding nil icicle-this-cmd-keys)))))
         (select-window action-window))))
 
   (defun icicle-keys+cmds-w-prefix (prefix)

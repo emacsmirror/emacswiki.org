@@ -1,6 +1,6 @@
-;;; esv.el --- Access the ESV Bible text api
+;;; esv.el
 
-;;; Copyright: (C) 2008, 2009 Charles Sebold
+;;; Copyright: (C) 2008, 2009, 2011 Charles Sebold
 ;; 
 ;;     This program is free software; you can redistribute it and/or
 ;;     modify it under the terms of the GNU General Public License as
@@ -19,8 +19,6 @@
 ;;
 ;; Latest version should be available at:
 ;;    <URL:http://www.emacswiki.org/cgi-bin/wiki/EsvMode>
-
-;;; Commentary
 ;;
 ;; To use this, you must customize or otherwise set the variable
 ;; ESV-KEY!  Otherwise by default the ESV API handlers will not call out
@@ -263,6 +261,10 @@ or you may just want to do it yourself."
     (concat "\\<" (regexp-opt bible-abbrevs t) "[ \t\n]*[0-9]+\\(?:[-0-9, :]*[0-9]\\)?\\>"))
   "Regular expression compiled from possible book abbreviation in Bible references.")
 
+(defvar esv-footnote-entities
+  '(("&emacron;" . "ē"))
+  "List of entities and replacement characters.")
+
 (defvar esv-mode nil
   "Variable controlling `esv-mode', a minor mode in which Bible
 references are highlighted and clickable.")
@@ -350,7 +352,9 @@ off."
 (defun esv-display-mode-quit ()
   "Make ESV display window go away."
   (interactive)
-  (delete-window))
+  (if (one-window-p)
+      (bury-buffer)
+    (delete-window)))
 
 ; not right
 (defgroup esv-display-mode-faces nil
@@ -584,7 +588,8 @@ Instead of using the built-in Crossway-XML-1.0 parser, this ignores
 website format the text according to its standards.  `my-fill-column'
 will determine the maximum line-length returned."
   (interactive "MESV reference: ")
-  (let ((my-fill-column fill-column))
+  (let ((my-fill-column fill-column)
+        (start (point)))
     (insert
      (esv-get-query
       (list
@@ -603,7 +608,14 @@ will determine the maximum line-length returned."
        (list 'include-subheadings
              esv-include-subheadings)
        (list 'line-length
-             (format "%d" my-fill-column)))))))
+             (format "%d" my-fill-column)))))
+    (save-excursion
+      (narrow-to-region start (point))
+      (dolist (i esv-footnote-entities)
+        (goto-char (point-min))
+        (while (re-search-forward (regexp-quote (car i)) nil t)
+          (replace-match (cdr i) t t)))
+      (widen))))
 
 (defun esv-calendar-return-time ()
   "Ask for a specific date using `calendar-read-date'."

@@ -81,8 +81,8 @@ files or directories:
         (if (eq t (car (file-attributes file)))
             (delete-directory file)
           (delete-file file))
-      (error (message (error-message-string i-delete-file))
-             (error (error-message-string i-delete-file)))))
+      (error (message "%s" (error-message-string i-delete-file))
+             (error "%s" (error-message-string i-delete-file)))))
 
 There are two parts to the definition of `my-delete-file':
 

@@ -1,7 +1,6 @@
-when used in dired, ls-lisp shows normally lots of status info per file in front of the file name which sometimes makes reading the file name cumbersome.
+When used in dired, ls-lisp shows normally lots of status info per file in front of the file name which sometimes makes reading the file name cumbersome.
 
-in order to gain more real estate for the file name it can be useful to switch off user and group info. i have written a little function which toggles this info on and off with the necessary redraw:
-
+In order to gain more real estate for the file name it can be useful to switch off user and group info. I have written a little function which toggles this info on and off with the necessary redraw:
 
     (defun leo-toggle-ls-lisp-verbosity ()
       (interactive)
@@ -17,17 +16,41 @@ in order to gain more real estate for the file name it can be useful to switch o
           (revert-buffer)
           (message "uid & gid visible"))))
 
-
-    
-i have bound it to C-p in dired mode:
-
+I have bound it to C-p in dired mode:
 
     (add-hook 'dired-load-hook
        (lambda ()
          (define-key dired-mode-map "\C-p" 
                             'leo-toggle-ls-lisp-verbosity)))
-</code>
 
+If you want to get rid of verbosity forever you can add following lines to the "~/.emacs":
+
+<pre>
+(custom-set-variables
+ '(ls-lisp-verbosity nil))
+</pre>
+
+More information about ls-lisp-verbosity can be found in GNU Emacs Manual chapter "G.4 Emulation of ls on MS-Windows".
+
+Both previous methods will leave file permissions field like "drwxrwxrwx", if you want to hide it also then you can use following code:
+<pre>
+(defadvice ls-lisp-format (around my-ls-lisp-format 
+  (file-name file-attr file-size switches time-index now))
+  "Advice definition which removes unnecessary information
+during file listing in dired. For such purposes 
+`ls-lisp-verbosity' customized variable can be used, but 
+even if it is equal to nil dired will display file 
+permissions field like \"drwxrwxrwx\".\. So here we just 
+get full control to what dired shows and leave only those 
+fields which we need."
+  (progn
+    ad-do-it
+    (setq ad-return-value (concat 
+      (substring ad-return-value 0 1)
+      (substring ad-return-value 13)))))
+(ad-activate 'ls-lisp-format t)
+</pre>
+You should add it to "~/.emacs".
 
 See also: DiredDetails
 

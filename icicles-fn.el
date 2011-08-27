@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 15 08:35:42 2011 (-0700)
+;; Last-Updated: Fri Aug 26 10:22:33 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12502
+;;     Update #: 12505
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,11 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein',
-;;   `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
+;;   `hexrgb', `icicles-face', `icicles-mac', `icicles-opt',
+;;   `icicles-var', `kmacro', `levenshtein', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4074,10 +4074,14 @@ Optional argument DONT-ACTIVATE-P means do not activate the mark."
       (save-excursion
         (save-restriction
           (narrow-to-region (point) (point-max)) ; Search within the completion candidate.
-          (re-search-forward (if icicle-regexp-quote-flag
-                                 (regexp-quote (icicle-minibuf-input-sans-dir input))
-                               (icicle-minibuf-input-sans-dir input))
-                             nil t))))
+          (condition-case lossage
+              (re-search-forward (if icicle-regexp-quote-flag
+                                     (regexp-quote (icicle-minibuf-input-sans-dir input))
+                                   (icicle-minibuf-input-sans-dir input))
+                                 nil t)
+            (invalid-regexp  (when (string-match "\\`Premature \\|\\`Unmatched \\|\\`Invalid "
+                                                 (cadr lossage))
+                               (goto-char (point-max))))))))
     ;; Position point.
     (case icicle-point-position-in-candidate
       (input-start (goto-char input-start-position))
@@ -4615,7 +4619,7 @@ string candidates."
                   (condition-case err
                       (when (listp (setq cands-read  (read list-buf)))
                         (message "Set `%s' read from file `%s'" set-name cache-file))
-                    (error (error "Could not read cache file.  %S" (error-message-string err))))
+                    (error (error "Could not read cache file.  %s" (error-message-string err))))
                (icicle-kill-a-buffer list-buf))
              (unless cands-read (error "No completion candidates in file `%s'" cache-file))
              (dolist (cand  (nreverse cands-read)) ; Convert saved to displayable candidates.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 10:42:37 2011 (-0700)
+;; Last-Updated: Fri Aug 26 14:12:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26091
+;;     Update #: 26094
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2537,6 +2537,11 @@
 ;;  `icicle-search'.  See
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Search Commands, Overview")
 ;;  for more information.
+;;
+;;  These shortcuts are also handy for Isearch, in particular, regexp
+;;  search.  Use `M-e' after `C-M-s', to edit the search string (which
+;;  puts you in a minibuffer), then use `C-u C-=' or `C-x r i' to
+;;  insert a saved regexp.
 ;;
 ;;  See Also: (@> "Inserting Text Found Near the Cursor").
  

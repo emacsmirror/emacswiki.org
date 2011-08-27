@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 01:05:08 2011 (-0700)
+;; Last-Updated: Fri Aug 26 09:35:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22169
+;;     Update #: 22190
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,14 +17,15 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
-;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel', `pp',
-;;   `pp+', `regexp-opt', `ring', `ring+', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `avoid', `backquote', `bytecomp',
+;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
+;;   `misc-fns', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -376,8 +377,8 @@
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-buffer-bindings,
-  ;; icicle-define-command, icicle-define-file-command, icicle-define-add-to-alist-command,
-  ;; icicle-file-bindings, icicle-unbind-file-candidate-keys
+  ;; icicle-condition-case-no-debug, icicle-define-command, icicle-define-file-command,
+  ;; icicle-define-add-to-alist-command, icicle-file-bindings, icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
   ;; icicle-yank
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
@@ -671,7 +672,7 @@ Returns t if successful."
            (insert filesuffix)
            (unless minibuffer-p (message "Sole completion")))
           ((string-equal completion "") ; A directory: "dir/" - complete it.
-           (condition-case nil
+           (icicle-condition-case-no-debug nil
                (let* ((icicle-show-Completions-initially-flag      t)
                       (icicle-incremental-completion-p             'display)
                       (icicle-top-level-when-sole-completion-flag  t)
@@ -701,8 +702,9 @@ Returns t if successful."
                     ;; It's not unique, but user wants shortest match.
                     (insert (if (file-directory-p file) dirsuffix filesuffix))
                     (unless minibuffer-p (message "Completed shortest")))
+                   ;; It's not unique.  Let user choose a completion.
                    ((or comint-completion-autolist (string-equal filenondir completion))
-                    (condition-case nil ; It's not unique.  Let user choose a completion.
+                    (icicle-condition-case-no-debug nil
                         (let* ((icicle-show-Completions-initially-flag      t)
                                (icicle-incremental-completion-p             'display)
                                (icicle-top-level-when-sole-completion-flag  t)
@@ -842,7 +844,7 @@ See also `icicle-comint-dynamic-complete-filename'."
                     (unless minibuffer-p (message "Completed shortest"))
                     'shortest)
                    ((or comint-completion-autolist (string-equal stub completion))
-                    (condition-case nil ;  Let user choose a completion.
+                    (icicle-condition-case-no-debug nil ;  Let user choose a completion.
                         (let* ((icicle-show-Completions-initially-flag      t)
                                (icicle-incremental-completion-p             'display)
                                (icicle-top-level-when-sole-completion-flag  t)
@@ -1409,7 +1411,7 @@ control completion behaviour using `bbdb-completion-type'."
          (cond ((and dwim-completions (null (cdr dwim-completions))) ; Insert the unique match.
                 (delete-region beg end) (insert (car dwim-completions)) (message ""))
                (t                       ; More than one match.  Use Icicles minibuffer completion.
-                (condition-case nil
+                (icicle-condition-case-no-debug nil
                     (let* ((icicle-show-Completions-initially-flag      t)
                            (icicle-incremental-completion-p             'display)
                            (icicle-top-level-when-sole-completion-flag  t)
@@ -2021,7 +2023,7 @@ You can add entries to `icicle-saved-completion-sets' using command
           (if (y-or-n-p (format "Delete cache file `%s'? " cache))
               (when (condition-case err
                         (progn (delete-file cache) t)
-                      (error (progn (message (error-message-string err)) nil)))
+                      (error (progn (message "%s" (error-message-string err)) nil)))
                 (message "DELETED `%s'" cache) (sit-for 1))
             (message "OK, file NOT deleted") (sit-for 1)))
         (setq sets  (delete set sets)))))
@@ -2236,7 +2238,7 @@ directory (default directory)."
   (interactive "P")
   ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
   (unless icicle-saved-completion-candidates
-    (error (substitute-command-keys "No saved completion candidates.  \
+    (error "%s" (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
@@ -2371,7 +2373,7 @@ directory."
    (list
     (let ((file-names  ()))
       (unless icicle-saved-completion-candidates
-        (error (substitute-command-keys "No saved completion candidates.  \
+        (error "%s" (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
       (unless grep-command (grep-compute-defaults))
       (dolist (f  icicle-saved-completion-candidates) (when (file-exists-p f) (push f file-names)))
@@ -2386,7 +2388,7 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
 
 ;; Utility function.  Use it to define multi-commands that navigate.
 (defun icicle-explore (define-candidates-fn final-action-fn quit-fn error-fn cleanup-fn prompt
-                       &rest compl-read-args)
+                                            &rest compl-read-args)
   "Icicle explorer: explore complex completion candidates.
 Navigate among locations or other entities represented by a set of
 completion candidates.  See `icicle-search' for a typical example.
@@ -2441,7 +2443,7 @@ commands, it need not be.  It can be useful anytime you need to use
       (setq icicle-explore-final-choice  (icicle-display-cand-from-full-cand
                                           (car icicle-candidates-alist))))
     (unwind-protect
-         (condition-case failure
+         (icicle-condition-case-no-debug failure
              (progn
                (unless icicle-explore-final-choice
                  (setq icicle-explore-final-choice
@@ -3146,7 +3148,8 @@ The list of bookmark names (strings) is returned." ; Doc string
                      (bookmark-maybe-load-default-file) ; Load bookmarks, define `bookmark-alist'.
                      (mapcar (if icicle-show-multi-completion-flag
                                  #'(lambda (bmk)
-                                     (condition-case nil ; Ignore errors, e.g. from bad bookmark.
+                                     ;; Ignore errors, e.g. from bad bookmark.
+                                     (icicle-condition-case-no-debug nil
                                          (let* ((bname     (bookmark-name-from-full-record bmk))
                                                 (guts      (bookmark-get-bookmark-record bmk))
                                                 (file      (bookmark-get-filename bmk))
@@ -3165,7 +3168,8 @@ The list of bookmark names (strings) is returned." ; Doc string
                                                  guts))
                                        (error nil)))
                                #'(lambda (bmk)
-                                   (condition-case nil ; Ignore errors, e.g. from bad bookmark.
+                                   ;; Ignore errors, e.g. from bad bookmark.
+                                   (icicle-condition-case-no-debug nil
                                        (let ((bname  (bookmark-name-from-full-record bmk))
                                              (guts   (bookmark-get-bookmark-record bmk)))
                                          (cons (icicle-candidate-short-help
@@ -3570,7 +3574,8 @@ position is highlighted."               ; Doc string
       (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
       (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
-                      (condition-case nil ; Ignore errors, e.g. from bad or stale bookmark records.
+                      ;; Ignore errors, e.g. from bad or stale bookmark records.
+                      (icicle-condition-case-no-debug nil
                           (let* ((bname     (bookmark-name-from-full-record bmk))
                                  (guts      (bookmark-get-bookmark-record bmk))
                                  (file      (bookmark-get-filename bmk))
@@ -3587,7 +3592,8 @@ position is highlighted."               ; Doc string
                                   guts))
                         (error nil)))
                 #'(lambda (bmk)
-                    (condition-case nil ; Ignore errors, e.g. from bad or stale bookmark records.
+                    ;; Ignore errors, e.g. from bad or stale bookmark records.
+                    (icicle-condition-case-no-debug nil
                         (let ((bname  (bookmark-name-from-full-record bmk))
                               (guts   (bookmark-get-bookmark-record bmk)))
                           (cons (icicle-candidate-short-help
@@ -3698,7 +3704,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
       (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
       (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
-                      (condition-case nil ; Ignore errors, e.g. from bad or stale bookmark records.
+                      ;; Ignore errors, e.g. from bad or stale bookmark records.
+                      (icicle-condition-case-no-debug nil
                           (let* ((bname     (bookmark-name-from-full-record bmk))
                                  (guts      (bookmark-get-bookmark-record bmk))
                                  (file      (bookmark-get-filename bmk))
@@ -3715,7 +3722,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
                                   guts))
                         (error nil)))
                 #'(lambda (bmk)
-                    (condition-case nil ; Ignore errors, e.g. from bad or stale bookmark records.
+                    ;; Ignore errors, e.g. from bad or stale bookmark records.
+                    (icicle-condition-case-no-debug nil
                         (let ((bname  (bookmark-name-from-full-record bmk))
                               (guts   (bookmark-get-bookmark-record bmk)))
                           (cons (icicle-candidate-short-help
@@ -4139,7 +4147,8 @@ You need library `Bookmark+' for this command."
      (icicle-candidates-alist
       (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
-                      (condition-case nil ; Ignore errors, e.g. from bad or stale bookmark records.
+                      ;; Ignore errors, e.g. from bad or stale bookmark records.
+                      (icicle-condition-case-no-debug nil
                           (let* ((bname     (bookmark-name-from-full-record bmk))
                                  (guts      (bookmark-get-bookmark-record bmk))
                                  (file      (bookmark-get-filename bmk))
@@ -4157,7 +4166,8 @@ You need library `Bookmark+' for this command."
                                   guts))
                         (error nil)))
                 #'(lambda (bmk)
-                    (condition-case nil ; Ignore errors, e.g. from bad or stale bookmark records.
+                    ;; Ignore errors, e.g. from bad or stale bookmark records.
+                    (icicle-condition-case-no-debug nil
                         (let ((bname  (bookmark-name-from-full-record bmk))
                               (guts   (bookmark-get-bookmark-record bmk)))
                           (cons (icicle-candidate-short-help
@@ -4620,9 +4630,9 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
          (tag-find-file-of-tag-noselect (nth 1 cand))
        (find-file-noselect (nth 1 cand))))
     (widen)
-    (condition-case err
+    (icicle-condition-case-no-debug err
         (funcall goto-func tag-info)    ; Go to text at TAG-INFO.
-      (error (message (error-message-string err)) (sit-for 2) nil)))
+      (error (message "%s" (error-message-string err)) (sit-for 2) nil)))
   (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))
   (select-window (minibuffer-window))
   (select-frame-set-input-focus (selected-frame)))
@@ -4922,7 +4932,7 @@ the behavior."                          ; Doc string
   "Kill buffer BUF and update the set of completions."
   (setq buf  (get-buffer buf))
   (if buf
-      (condition-case err
+      (icicle-condition-case-no-debug err
           (if (not (buffer-live-p buf))
               (message "Buffer already deleted: `%s'" buf)
             (if (fboundp 'kill-buffer-and-its-windows)
@@ -5343,14 +5353,15 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
    (prefix-arg                      current-prefix-arg))
   (progn (unless (prog1 (require 'color-theme nil t) ; First code
                    (when (and (fboundp 'color-theme-initialize) (not color-theme-initialized))
-                     ;; NOTE: We need the `condition-case' because of a BUG in `directory-files'
-                     ;; for Emacs 20.  Bug reported to `color-theme.el' maintainer 2009-11-22.  The
-                     ;; problem is that the default value of `color-theme-libraries' concats
-                     ;; `file-name-directory', which ends in `/', with `/themes', not with `themes'.
-                     ;; So the result is `...//themes'.  That is tolerated by Emacs 21+
-                     ;; `directory-files', but not for Emacs 20.  Until this `color-theme.el' bug is
-                     ;; fixed, Emacs 20 users will need to manually load `color-theme-libraries.el'.
-                     (condition-case nil
+                     ;; NOTE: We need the `icicle-condition-case-no-debug' because of a BUG in
+                     ;; `directory-files' for Emacs 20.  Bug reported to `color-theme.el'
+                     ;; maintainer 2009-11-22.  The problem is that the default value of
+                     ;; `color-theme-libraries' concats `file-name-directory', which ends in `/',
+                     ;; with `/themes', not with `themes'.  So the result is `...//themes'.
+                     ;; That is tolerated by Emacs 21+ `directory-files', but not for Emacs 20.
+                     ;; Until this `color-theme.el' bug is fixed, Emacs 20 users will need to
+                     ;; manually load `color-theme-libraries.el'.
+                     (icicle-condition-case-no-debug nil
                          (let ((color-theme-load-all-themes  t))
                            (color-theme-initialize)
                            (setq color-theme-initialized  t))
@@ -5437,12 +5448,12 @@ During completion (`*': requires library `Bookmark+'):
 
 (defun icicle-delete-file-or-directory (file)
   "Delete file or (empty) directory FILE."
-  (condition-case i-delete-file
+  (icicle-condition-case-no-debug i-delete-file
       (if (eq t (car (file-attributes file)))
           (delete-directory file)
         (delete-file file))
-    (error (message (error-message-string i-delete-file))
-           (error (error-message-string i-delete-file)))))
+    (error (message "%s" (error-message-string i-delete-file))
+           (error "%s" (error-message-string i-delete-file)))))
 
 ;; $$$$$ (icicle-define-command icicle-file-list ; Command name
 ;;   "Choose a list of file names.

@@ -52,6 +52,11 @@ useful to you, and use `C-=' to quickly access them in
 `icicle-search'.  See [[Icicles - Search Commands, Overview]] for
 more information.
 
+These shortcuts are also handy for [[Isearch]], in particular, regexp
+search.  Use `M-e' after `C-M-s', to edit the search string (which
+puts you in a minibuffer), then use `##C-u C-=##' or `C-x r i' to insert a saved
+regexp.
+
 '''See Also:''' [[Icicles - Inserting Text from Cursor]]
 
 

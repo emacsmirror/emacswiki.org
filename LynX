@@ -8,7 +8,7 @@ My works are:
 
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
 * WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
-
+* Made some changes in LsLispToggleVerbosity
 
 
 [new:DrewAdams:2011-04-04 20:36 UTC]

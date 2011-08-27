@@ -8,11 +8,7 @@ extensibility in mind. There are several other packages emulating Vim
 features, see CategoryEmulation for an overview. 
 
 Before you start using vim-mode you should definitely have look at
-[[Vimpulse]] which is another great package for emulating Vim. In
-contrast to vim-mode, [[Vimpulse]] is based on the famous ViperMode
-which has brought Vi bindings to Emacs for a long time. Therefore
-[[Vimpulse]] has to be considered more stable, portable and
-feature-rich than vim-mode.
+[[Evil]] which is only one great package for emulating Vim. 
 
 == Quick Start ==
 

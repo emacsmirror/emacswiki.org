@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 24 09:32:33 2011 (-0700)
+;; Last-Updated: Fri Aug 26 10:51:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6939
+;;     Update #: 6956
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/08/26 dadams
+;;     icicle-comint-dynamic-complete-as-filename, icicle-comint-dynamic-simple-complete,
+;;       icicle-bbdb-complete-name, icicle-explore, icicle-bookmark(-list|-other-window),
+;;       icicle-define-bookmark-command-1, icicle-find-tag-action,
+;;       icicle-kill-a-buffer-and-update-completions, icicle-color-theme,
+;;       icicle-delete-file-or-directory:
+;;         Use icicle-condition-case-no-debug instead of condition-case.  Thx to Michael Heerdegen.
+;;     Make sure to pass format string as first arg to calls to functions error and message.
 ;; 2011/08/12 dadams
 ;;     icicle-delete-file, icicle-(file|directory)-list, icicle-(dired|file)*,
 ;;       icicle-find-file(-absolute|-read-only|in-tags-table)*, icicle-(recent|locate)-file*:
@@ -427,6 +435,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/26 dadams
+;;     icicle-imenu: When only one submenu, just use it (no choosing).
+;;     icicle-complete-keys-action: Removed useless condition-case.
+;;     Make sure to pass format string as first arg to calls to functions error and message.
 ;; 2011/08/17 dadams
 ;;     icicle-search-thing-scan: Use correct code (not 1+) also if thingatpt+.el is loaded.
 ;;     icicle-search-regexp-scan: Quit while loop if no more match, except if complementing.
@@ -910,6 +922,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/26 dadams
+;;     icicle-place-cursor: Put cursor at eob if get invalid-regexp error.
+;;     icicle-get-candidates-from-saved-set: Use %s, not %S, in error format string.
 ;; 2011/08/15 dadams
 ;;     icicle-display-completion-list: Do not call (last ...) if COMPLETIONS is null.
 ;;     Added: icicle-all-completions.
@@ -2572,6 +2587,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/26 dadams
+;;     Make sure to pass format string as first arg to calls to functions error and message.
+;;     icicle-candidate-set-save-1: Use %s, not %S, in error format string.
 ;; 2011/08/19 dadams
 ;;     Fix C-u in minibuffer for Emacs 24:
 ;;       Don't bother to define icicle-ensure-overriding-map-is-bound for Emacs 24+.

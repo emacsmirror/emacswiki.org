@@ -3,9 +3,11 @@ from the English Standard Version of the Bible.  CharlesSebold wrote it.
 
 Current version of the code just gets the text and displays it.  I'm
 still trying to figure out this whole XML thing.  Requires at least
-Emacs 21 and the XmlParser and UrlPackage libraries (should work with Emacs 22 out of the box).
+Emacs 22.
 
 Download the latest uploaded version at Lisp:esv.el if you care.
+
+== Usage ==
 
 To use this, you must customize or otherwise set the variable
 ESV-KEY!  Otherwise by default the ESV API handlers will not call out
@@ -68,6 +70,21 @@ or
 However, note the warning about imposing your individual preferences
 on files at the end of the info node above.
 
+== Bugs ==
+
+# <code>esv-mode</code> (the minor mode, not the whole thing here) doesn't work too well; I'm not great with syntax highlighting.
+# If you <code>esv-insert-passage</code> something that is formatted as poetry, it will not get the "(ESV)" text at the end of the last line.  This is because of the ESV API, not because of my code; when you call for plain-text output from their web service, you get "(ESV)" at the end of most sections of Biblical text, but not things that are preformatted as poetry.  I don't consider this a big enough problem to work around, myself, but if somebody wants to submit code to look for that and fix it, I'd be willing to include it, with a <code>defcustom</code> to allow people to leave it the way it came from their web service by default.
+# The text formatting, when I'm parsing it out of the XML, can be goofy.  Some of this depends on how your AutoFillMode, FillAdapt, and so forth are configured.  I'd like to make that better, and maybe someday I'll have the time.
+# Emacs 21 is no longer officially supported, mostly because I'm using UTF-8 to encode the source file now that I'm having to parse some strange things in the footnotes.  If there's an elegant way to make this work backwards, I'm interested in hearing about it, but Emacs 22 has been out for a while.
+
+== Feature Requests ==
+
+# I'd like to extend this to other Bible-verse web services as well, and make the ESV one just one of many pluggable options.
+# I'd like to generate something for arbitrary reading plans, invented or submitted by users; I'm using Grant Horner's ten-chapters-per-day model now and I've got a fairly complicated system that OrgMode is driving to get me those chapters, but it's not easily extended to work for EsvMode at the moment.
+# I really want to do some cool face work with the <code>esv-reading-mode</code> major mode, to make a really nice Bible reading page.  That's a pretty low priority when there's missing functionality, though.
+
+== Changelog ==
+
 1.11 includes reading plan support (esv-reading-plan, use prefix
 argument to specify date), plain text insertion which is good for email
 (esv-insert-passage), and more prep work for better support in the
@@ -90,3 +107,9 @@ problem) and attempts to fix the multiline problem too
 1.22 adds yank if mouse-2 happens in a non-clickable region
 
 1.23 adds new reading plans from Crossway
+
+1.24 adds support for ē entity and adds a framework for more if more are found in the footnotes, thanks to Matt Gumm for bug report; Emacs 21 no longer officially supported
+
+1.25 fixes a bug when quitting esv-display-mode with only one window present
+
+1.26 fixes a bug introduced in 1.24
