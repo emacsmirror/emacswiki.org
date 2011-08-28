@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 14:12:53 2011 (-0700)
+;; Last-Updated: Sat Aug 27 16:27:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26094
+;;     Update #: 26109
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -312,7 +312,9 @@
 ;;  (@file :file-name "icicles-doc2.el" :to "Search and Replace")
 ;;  (@file :file-name "icicles-doc2.el" :to "Other Icicles Search Commands")
 ;;    (@file :file-name "icicles-doc2.el" :to "Icicles Imenu")
-;;      (@file :file-name "icicles-doc2.el" :to "`icicle-imenu' Combines Benefits of Imenu and Emacs Tags")
+;;      (@file :file-name "icicles-doc2.el" :to "Type-Specific Imenu Commands")
+;;      (@file :file-name "icicles-doc2.el" :to "Imenu Commands that Search Full Definitions")
+;;      (@file :file-name "icicles-doc2.el" :to "Icicles Imenu Combines Benefits of Imenu and Emacs Tags")
 ;;
 ;;    (@file :file-name "icicles-doc2.el" :to "Compile/Grep Search")
 ;;    (@file :file-name "icicles-doc2.el" :to "Input Reuse in Interactive Interpreter Modes")
@@ -4629,8 +4631,20 @@
 ;;  * `icicle-goto-global-marker' (`C-- C-x C-SPC') - Trip among
 ;;                                       global markers
 ;;  * `icicle-goto-marker' (`C-- C-SPC') - Trip among local markers
-;;  * `icicle-imenu' (`C-c ='), `icicle-imenu-command',
-;;    `icicle-imenu-non-interactive-function' - Trip among definitions
+;;  * `icicle-imenu' (`C-c =')           - Trip among definitions
+;;    (`icicle-imenu-full' to search full definitions)
+;;
+;;  * Type-specific Imenu trips (library `imenu+.el' recommended).
+;;    (And `*-full' versions of each to search full definitions.)
+;;    `icicle-imenu-command'
+;;    `icicle-imenu-face'
+;;    `icicle-imenu-key-explicit-map'
+;;    `icicle-imenu-key-implicit-map'
+;;    `icicle-imenu-macro'
+;;    `icicle-imenu-non-interactive-function'
+;;    `icicle-imenu-user-option'
+;;    `icicle-imenu-variable'
+
 ;;  * `icicle-Info-goto-node' (`g' in Info)- Trip among Info nodes
 ;;  * `icicle-Info-index' (`i' in Info) - Trip among Info nodes
 ;;  * `icicle-Info-menu' (`m' in Info) - Trip among Info nodes
@@ -4710,10 +4724,8 @@
 ;;    for information about `icicle-occur' and `icicle-search'.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Other Icicles Search Commands")
 ;;    for information about `icicle-compilation-search',
-;;    `icicle-imenu', `icicle-imenu-command',
-;;    `icicle-imenu-non-interactive-function',
-;;    `icicle-search-char-property', `icicle-search-keywords',
-;;    `icicle-search-overlay-property', and
+;;    `icicle-imenu*' commands, `icicle-search-char-property',
+;;    `icicle-search-keywords', `icicle-search-overlay-property', and
 ;;    `icicle-search-text-property'.
 ;;
 ;;  * (@file :file-name "icicles-doc2.el" :to "Defining Icicles Tripping Commands")

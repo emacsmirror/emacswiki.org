@@ -85,7 +85,21 @@ navigate.
 [:icicle-goto-global-marker]
 [:icicle-goto-marker]
 [:icicle-imenu]
+[:icicle-imenu-full]
+[:icicle-imenu-command]
+[:icicle-imenu-command-full]
+[:icicle-imenu-face]
+[:icicle-imenu-face-full]
+[:icicle-imenu-key-explicit-map]
+[:icicle-imenu-key-explicit-map-full]
+[:icicle-imenu-key-implicit-map]
+[:icicle-imenu-key-implicit-map-full]
 [:icicle-imenu-non-interactive-function]
+[:icicle-imenu-non-interactive-function-full]
+[:icicle-imenu-user-option]
+[:icicle-imenu-user-option-full]
+[:icicle-imenu-variable]
+[:icicle-imenu-variable-full]
 [:icicle-Info-goto-node]
 [:icicle-Info-index]
 [:icicle-Info-menu]
@@ -175,9 +189,20 @@ Here are some of the '''Icicles''' tripping commands:
 * '''`icicle-goto-global-marker'''' ('''`C-- C-x C-SPC'''') -- Trip among
   global [[marker]]s
 * '''`icicle-goto-marker'''' ('''`C-- C-SPC'''') -- Trip among local markers
-* '''`icicle-imenu'''' ('''`##C-c =##''''), '''`icicle-imenu-command'''',
-  '''`icicle-imenu-non-interactive-function'''' -- Trip among
-  definitions
+* '''`icicle-imenu'''' ('''`##C-c =##'''') -- Trip among definitions
+('''`icicle-imenu-full'''' to search full definitions)
+
+* Type-specific Imenu trips (library <tt>[[imenu+.el]]</tt> recommended).
+(And `##*-full##' versions of each to search full definitions.)
+** '''`icicle-imenu-command'''' -- Emacs [[command]]s
+** '''`icicle-imenu-face'''' -- Emacs [[face]]s
+** '''`icicle-imenu-key-explicit-map'''' -- Emacs [[key]]s defined in explicit maps
+** '''`icicle-imenu-key-implicit-map'''' -- Emacs [[key]]s defined in implicit maps (e.g. `global-set-key')
+** '''`icicle-imenu-macro'''' -- Lisp [[macro]]s
+** '''`icicle-imenu-non-interactive-function'''' -- Lisp non-[[command]] functions
+** '''`icicle-imenu-user-option'''' -- Emacs [[user option]]s
+** '''`icicle-imenu-variable'''' -- Lisp [[variable]]s
+
 * '''`icicle-Info-goto-node'''' ('''`g'''' in Info)-- Trip among [[InfoMode|Info]] nodes
 * '''`icicle-Info-index'''' ('''`i'''' in Info) -- Trip among Info nodes
 * '''`icicle-Info-menu'''' ('''`m'''' in Info)-- Trip among Info nodes
@@ -269,9 +294,7 @@ This page has additional screenshots for '''Icicles''' search commands: [[Icicle
   for information about `icicle-occur' and `icicle-search'.
 * [[Icicles - Other Search Commands]]
   for information about `icicle-compilation-search',
-  `icicle-imenu', `icicle-imenu-command',
-  `icicle-imenu-non-interactive-function',
-  `icicle-search-char-property', `icicle-search-keywords',
+  `##icicle-imenu*##' commands,  `icicle-search-char-property', `icicle-search-keywords',
   `icicle-search-overlay-property', and
   `icicle-search-text-property'.
 * [[Icicles - Defining Tripping Commands]] for information about defining your own tripping commands

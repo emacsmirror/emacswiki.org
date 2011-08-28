@@ -66,6 +66,8 @@ One problem I have in and out of Emacs is keeping track of what window has focus
 
 I should post my `.emacs' file someday.  I've posted parts of it in blog posts. None of these are likely to be interesting to emacswiki members though.
 
+[http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html My mode line setup]
+
 [http://amitp.blogspot.com/2007/03/emacs-move-autosave-and-backup-files.html Move backup files elsewhere]
 
 [http://amitp.blogspot.com/2007/05/emacs-highlighting-parentheses.html Highlighting parentheses]

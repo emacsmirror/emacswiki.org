@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 10:23:50 2011 (-0700)
+;; Last-Updated: Sat Aug 27 16:38:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 805
+;;     Update #: 811
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -150,19 +150,68 @@ effect, but it means that the functions run faster."
 
 ;;; Macros -----------------------------------------------------------
 
-;;; Same as vanilla `condition-case-no-debug', which is available starting with Emacs 23.
+;; $$$$$$
+;; Same as vanilla `condition-case-no-debug', which is available starting with Emacs 23.
+;; (defmacro icicle-condition-case-no-debug (var bodyform &rest handlers)
+;;   "Like `condition-case', but does not catch anything when debugging.
+;; Specifically, non-nil `debug-on-error' means catch no signals.
+;; This is the same as `condition-case-no-debug': added to use in older
+;; Emacs versions too."
+;;   (let ((bodysym  (make-symbol "body")))
+;;     `(let ((,bodysym  (lambda () ,bodyform)))
+;;       (if debug-on-error
+;;           (funcall ,bodysym)
+;;         (condition-case ,var
+;;             (funcall ,bodysym)
+;;           ,@handlers)))))
+
 (defmacro icicle-condition-case-no-debug (var bodyform &rest handlers)
-  "Like `condition-case', but does not catch anything when debugging.
-Specifically, non-nil `debug-on-error' means catch no signals.
-This is the same as `condition-case-no-debug': added to use in older
-Emacs versions too."
+  "Like `condition-case', but do not catch per `debug-on-(error|quit)'.
+If both `debug-on-error' and `debug-on-quit' are non-nil, then handle
+only other signals - enter the debugger for errors and `C-g'.
+
+If `debug-on-error' is non-nil and `debug-on-quit' is nil, then handle
+all signals except errors that would be caught by an `error' handler.
+Enter the debugger on such errors.
+
+If `debug-on-quit' is non-nil and `debug-on-error' is nil, then handle
+all signals except quitting.  Enter the debugger on quit (`C-g').
+
+NOTE:
+1. This does not treat `error' and `quit' handlers specially when
+   they are in a list that is the car of a handler.  In such a case
+   the handler remains in effect in spite of the values of
+   `debug-on-(error|quit)'.
+
+2. Only errors that would be caught by an `error' handler (if one were
+   present) enter the debugger when `debug-on-error' is non-nil.  When
+   a specific error handler (e.g. `arith-error') is present, it still
+   handles such an error - the debugger is not entered just because
+   `debug-on-error' is non-nil."
   (let ((bodysym  (make-symbol "body")))
     `(let ((,bodysym  (lambda () ,bodyform)))
-      (if debug-on-error
-          (funcall ,bodysym)
-        (condition-case ,var
-            (funcall ,bodysym)
-          ,@handlers)))))
+      (cond ((and debug-on-error debug-on-quit)
+             (condition-case ,var
+                 (funcall ,bodysym)
+               ,@(icicle-remove-if
+                  (lambda (hh) (memq (car hh) '(error quit)))
+                  handlers)))
+            (debug-on-error
+             (condition-case ,var
+                 (funcall ,bodysym)
+               ,@(icicle-remove-if
+                  (lambda (hh) (eq (car hh) 'error))
+                  handlers)))
+            (debug-on-quit
+             (condition-case ,var
+                 (funcall ,bodysym)
+               ,@(icicle-remove-if
+                  (lambda (hh) (eq (car hh) 'quit))
+                  handlers)))
+            (t
+             (condition-case ,var
+                 (funcall ,bodysym)
+               ,@handlers))))))
 
 (defmacro icicle-maybe-byte-compile-after-load (function)
   "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.

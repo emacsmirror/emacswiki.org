@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 10:58:46 2011 (-0700)
+;; Last-Updated: Sat Aug 27 16:26:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28163
+;;     Update #: 28186
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -197,7 +197,9 @@
 ;;  (@> "Search and Replace")
 ;;  (@> "Other Icicles Search Commands")
 ;;    (@> "Icicles Imenu")
-;;      (@> "`icicle-imenu' Combines Benefits of Imenu and Emacs Tags")
+;;      (@> "Type-Specific Imenu Commands")
+;;      (@> "Imenu Commands that Search Full Definitions")
+;;      (@> "Icicles Imenu Combines Benefits of Imenu and Emacs Tags")
 ;;
 ;;    (@> "Compile/Grep Search")
 ;;    (@> "Input Reuse in Interactive Interpreter Modes")
@@ -1309,24 +1311,24 @@
 ;;  ** Icicles Imenu **
 ;;
 ;;  Command `icicle-imenu', which is bound to `C-c =', is an Imenu
-;;  browser.  It lets you use Icicles completion to navigate among
-;;  definitions of functions, variables, types, keys, and so on in a
-;;  programming language (in fact, any language that Imenu handles).
-;;  As always in Icicles, your current input (e.g. a regexp) filters
-;;  the set of available candidates.  That is, you can match against
-;;  parts of an Imenu entry - any parts.  That's particularly useful
-;;  if there are many entries in the Imenu menu; you do not need to
-;;  read/scan the whole list.
+;;  browser.  It lets you use Icicles completion to navigate among or
+;;  search the content of definitions of functions, variables, macros,
+;;  keys, and so on in a programming language (any language that Imenu
+;;  handles).  As always in Icicles, your current input (e.g. a
+;;  regexp) filters the set of available candidates.  That is, you can
+;;  match against parts of an Imenu entry - any parts.  That's
+;;  particularly useful if there are many entries in the Imenu menu;
+;;  you do not need to read/scan the whole list.
 ;;
 ;;  If you look at the definition of `icicle-imenu' you'll see that it
-;;  simply lets you choose an Imenu submenu (Functions, User Options,
-;;  and so on) that is appropriate for the current buffer type, and
-;;  then it calls `icicle-search', passing it the appropriate Imenu
-;;  regexp.  You can similarly define your own specialized search
-;;  commands using `icicle-search' to browse regexp matches.  You get
-;;  all of the features of `icicle-search' when you do that.  For
-;;  example, `icicle-imenu' gives you these advantages over a standard
-;;  Imenu menu:
+;;  simply lets you choose an Imenu submenu (`Functions', `User
+;;  Options', and so on) that is appropriate for the current buffer
+;;  type, and then it calls `icicle-search', passing it the
+;;  appropriate Imenu regexp.  You can similarly define your own
+;;  specialized search commands using `icicle-search' to browse regexp
+;;  matches.  You get all of the features of `icicle-search' when you
+;;  do that.  For example, `icicle-imenu' gives you these advantages
+;;  over a standard Imenu menu:
 ;;
 ;;  * You can restrict navigation (search) to a region.
 ;;
@@ -1339,16 +1341,46 @@
 ;;  * As for `icicle-search', you can search multiple bookmarks,
 ;;    multiple buffers, or multiple files.
 ;;
-;;  In addition, for Emacs-Lisp function definitions, Icicles provides
-;;  two specializations of `icicle-imenu', to find only Emacs command
-;;  definitions and only non-interactive function (that is,
-;;  non-command) definitions: `icicle-imenu-command' and
-;;  `icicle-imenu-non-interactive-function'.  The definitions of these
-;;  two search commands provide examples of using `icicle-search' with
-;;  a predicate argument.
+;;(@* "Type-Specific Imenu Commands")
+;;  *** Type-Specific Imenu Commands ***
 ;;
-;;(@* "`icicle-imenu' Combines Benefits of Imenu and Emacs Tags")
-;;  *** `icicle-imenu' Combines Benefits of Imenu and Emacs Tags ***
+;;  In addition, Icicles provides specializations of `icicle-imenu',
+;;  to find only definitions of particular types:
+;;
+;;  `icicle-imenu-command', `icicle-imenu-face',
+;;  `icicle-imenu-key-explicit-map', `icicle-imenu-key-implicit-map',
+;;  `icicle-imenu-macro', `icicle-imenu-non-interactive-function',
+;;  `icicle-imenu-user-option', `icicle-imenu-variable'
+;;
+;;  All of these commands use only the Imenu regexps that match
+;;  entities of different types.  Because these regexps were designed
+;;  (for Imenu) only to locate the start of a definition, they
+;;  generally do not match full definitions.  This makes them OK for
+;;  use by an Icicles multi-command as a browser, to navigate among
+;;  definitions.  But it does not make them useful for searching the
+;;  content of definitions.
+;;
+;;(@* "Imenu Commands that Search Full Definitions")
+;;  *** Imenu Commands that Search Full Definitions ***
+;;
+;;  Icicles also provides a similar set of commands, with the same
+;;  names but with suffix `-full', which do use full definitions as
+;;  the completion candidates, so you can search those bodies.  When
+;;  you only want to navigate, you will generally use the non `-full'
+;;  commands because the candidates are simpler.  When you want to
+;;  search you will generally use the `-full' commands.
+;;
+;;  Be aware that "full" really means what it says only for
+;;  definitions in languages like Lisp.  These commands in fact first
+;;  match the Imenu regexp, then use the text between the regexp match
+;;  beginning and one sexp forward.  In the case of Lisp sexps, that
+;;  means they use the full sexp for the definition.  But in the case
+;;  of other languages, such as C, the "full" definitions can in fact
+;;  be shorter than the simple regexp matches.
+;;
+;;
+;;(@* "Icicles Imenu Combines Benefits of Imenu and Emacs Tags")
+;;  *** Icicles Imenu Combines Benefits of Imenu and Emacs Tags ***
 ;;
 ;;  * Imenu lets you navigate among definitions in a single buffer.
 ;;
@@ -1356,7 +1388,7 @@
 ;;    but you must build and update the tags file that identifies the
 ;;    definitions.
 ;;
-;;  Like Emacs tags, `icicle-imenu' lets you navigate among
+;;  Like Emacs tags, Icicles Imenu commands let you navigate among
 ;;  definitions in multiple files - and also multiple bookmarks and
 ;;  multiple non-file buffers.  Like Imenu, you need not build a tags
 ;;  file.  Unlike Imenu, Icicles provides regexp completion that lets
@@ -1370,10 +1402,10 @@
 ;;  which files to search. And if you want to search all files, then
 ;;  you must open them all (e.g. by matching a project regexp),
 ;;
-;;  The differences mean that `icicle-imenu' does not provide a
-;;  substitute for Emacs tags; it provides some similar
-;;  functionality. It is another tool in your belt, handier in some
-;;  situations than using tags, and less useful in some other
+;;  The differences mean that Icicles Imenu commands do not provide a
+;;  substitute for Emacs tags; they provide some similar
+;;  functionality.  They add another tool to your tool belt, handier
+;;  in some situations than using tags, and less useful in some other
 ;;  situations.
 ;;
 ;;  See Also: (@> "Icicles Enhancements for Emacs Tags")

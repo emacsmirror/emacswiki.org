@@ -3,14 +3,14 @@ Editing the usual .rb ruby files in rails is no big deal, just use the usual [[R
 For those you probably want to use [[MuMaMo]]-Mode to combine [[HtmlMode]] with [[RubyMode]] <i>(most stable)</i>, or just use [NxhtmlMode nXhtml] <i>(includes MuMaMo and is more feature rich, but slightly less stable)</i> which can handle this combination automatically.  For more information and instructions see [http://rinari.rubyforge.org/Rhtml-Setup.html#Rhtml-Setup Rhtml-Setup] <i>(while these instructions are part of the [[#Rinari]] documentation the techniques can be used independent of [[#Rinari]])</i>.
 
 ==emacs-rails==
-Please checkout the most recen version of this mode here. [http://github.com/dima-exe/emacs-rails-reloaded/tree/master http://github.com/dima-exe/emacs-rails-reloaded/tree/master]. It has been improved a lot since this wiki has been last edited. (June 2009)
+Please checkout the most recent version of this mode here. [http://github.com/dima-exe/emacs-rails-reloaded/tree/master http://github.com/dima-exe/emacs-rails-reloaded/tree/master]. It has been improved a lot since this wiki has been last edited. (June 2009)
 
 minor mode for editing !RubyOnRails code
 
 Features(svn version):
-* Identation
+* Indentation
 
-* Code hightlight
+* Code highlight
 
 * Non-intellectual autocomplete
 
@@ -20,9 +20,9 @@ Features(svn version):
 
 * Display color log file
 
-* Toggle Switch between Action/View and other file (tests, helpers) automaticly or with menu
+* Toggle Switch between Action/View and other file (tests, helpers) automatically or with menu
 
-* Switching to file from current line f.e. from redirect_to :controller => “foo”, :action => “bar”, switchs to this controller/action
+* Switching to file from current line f.e. from redirect_to :controller => “foo”, :action => “bar”, switches to this controller/action
 
 * TextMate?-like snippets (snippets.el)
 
@@ -42,9 +42,9 @@ Features(svn version):
 
 * Auto-determination of current rails DB settings and running SQL console
 
-* Automatic openning browser on current action (from view or controller)
+* Automatic opening browser on current action (from view or controller)
 
-* Debug integration with firefox/ie
+* Debug integration with Firefox/IE
 
 * Integration with interactive scripts script/console and script/breakpointer
 

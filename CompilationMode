@@ -106,6 +106,23 @@ http://ant.apache.org/faq.html#emacs-mode has some hints on the use of ant and e
 
 DrewAdams has written libraries Lisp:compile-.el and Lisp:compile+.el, which together provide some minor enhancements to standard library ##compile.el##. 
 
+[new:DaveAbrahams:2011-08-28 00:09 UTC]
+To ensure correct load order (compile- must load before compile), I put this file in my load-path and call it ##compile.el##
+
+
+
+  (require 'compile-)
+
+  (catch 'found
+    (dolist (d (mapcar 'file-name-as-directory load-path))
+      (let* ((f (expand-file-name (concat d "compile")))
+             (regexp (concat (mapconcat 'regexp-quote (get-load-suffixes) "\\|") "$"))
+             (seek (car (split-string load-file-name regexp))))
+        (and (not (string= f seek))
+             (require 'compile f 'noerror)
+             (throw 'found nil)))))
+[new]
+
 Some additional key bindings are made, mouseover highlighting is modified, and a single-window compilation results frame is shrink-wrapped to fit the buffer.
 
 == Colours ==

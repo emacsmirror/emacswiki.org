@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 10:51:37 2011 (-0700)
+;; Last-Updated: Sat Aug 27 16:48:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6956
+;;     Update #: 6998
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -435,8 +435,21 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/08/27 dadams
+;;     icicle-search-char-property-scan: Added optional ACTION arg.  Move hit-end after ACTION.
+;;     Added: icicle-imenu-1.  Created from old icicle-imenu*, but: (1) added args FULLP for full,
+;;            SUBMENU-FN to pick submenu, (2) pass PREDICATE and pos after forward-sexp for FULLP.
+;;     icicle-imenu, icicle-imenu-command: Use icicle-imenu-1.
+;;     Added: icicle-imenu(-command|-non-interactive-function)-full, icicle-search-defs-full,
+;;            icicle-imenu-(macro|variable|user-option|face|key-(implicit|explicit)-map)(-full), 
+;;     icicle-apply-action, icicle-apply-list-action, icicle-search-regexp-scan,
+;;       icicle-search-action-1, icicle-search-bookmark, icicle-define-search-bookmark-command,
+;;       icicle-search-thing-scan, icicle-search-char-property-scan:
+;;         Use icicle-condition-case-no-debug instead of condition-case.  Thx to Michael Heerdegen.
 ;; 2011/08/26 dadams
-;;     icicle-imenu: When only one submenu, just use it (no choosing).
+;;     icicle-imenu:
+;;       When multiple Others menus, name them uniquely.
+;;       When only one submenu, just use it (no choosing).
 ;;     icicle-complete-keys-action: Removed useless condition-case.
 ;;     Make sure to pass format string as first arg to calls to functions error and message.
 ;; 2011/08/17 dadams
@@ -922,6 +935,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/08/27 dadams
+;;     icicle-recentf-make-menu-items, icicle-display-candidates-in-Completions,
+;;       icicle-command-abbrev-save, icicle-kill-a-buffer: 
+;;         Use icicle-condition-case-no-debug instead of condition-case.  Thx to Michael Heerdegen.
 ;; 2011/08/26 dadams
 ;;     icicle-place-cursor: Put cursor at eob if get invalid-regexp error.
 ;;     icicle-get-candidates-from-saved-set: Use %s, not %S, in error format string.
@@ -2448,6 +2465,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/08/27 dadams
+;;     icicle-condition-case-no-debug: Redefined so it respects debug-on-quit and keeps other handlers.
 ;; 2011/08/24 dadams
 ;;     Added top-level puts for common-lisp-indent-function.
 ;;     icicle-condition-case-no-debug, icicle-with-selected-window: Removed declare declaration.

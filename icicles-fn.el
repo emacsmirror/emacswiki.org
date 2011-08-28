@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 10:22:33 2011 (-0700)
+;; Last-Updated: Sat Aug 27 10:18:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12505
+;;     Update #: 12510
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2588,13 +2588,12 @@ and file c:/Program Files/My Dir/mycmd.exe exists, then this returns
 This is a menu filter function which ignores the MENU argument."
   (setq recentf-menu-filter-commands nil)
   (let* ((recentf-menu-shortcuts 0)
-         (file-items  (condition-case err
+         (file-items  (icicle-condition-case-no-debug err
                           (mapcar 'recentf-make-menu-item
                                   (recentf-apply-menu-filter recentf-menu-filter
                                                              (recentf-menu-elements
                                                               recentf-max-menu-items)))
-                        (error
-                         (message "recentf update menu failed: %s" (error-message-string err))))))
+                        (error (message "recentf update menu failed: %s" (error-message-string err))))))
     (append (or file-items '(["No files" t :help "No recent file to open" :active nil]))
             (if recentf-menu-open-all-flag
                 '(["All..." recentf-open-files :help "Open recent files through a dialog" :active t])
@@ -2641,10 +2640,10 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   (when (and (eq t icicle-incremental-completion-p) (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
   (let ((nb-cands             (length icicle-completion-candidates)))
-        ;; $$$$$$ Could use this binding to prevent frame fitting, to allow room for images.
-        ;; But that is not really the solution.  Really should fit the frame or window in such a way
-        ;; that it takes image sizes into account.  Might need to wait for a fix to Emacs bug #7822.
-        ;; (autofit-frames-flag  (not icicle-image-files-in-Completions)))
+    ;; $$$$$$ Could use this binding to prevent frame fitting, to allow room for images.
+    ;; But that is not really the solution.  Really should fit the frame or window in such a way
+    ;; that it takes image sizes into account.  Might need to wait for a fix to Emacs bug #7822.
+    ;; (autofit-frames-flag  (not icicle-image-files-in-Completions)))
     (cond ((eq no-display-p 'no-msg))   ; No-op.
           (no-display-p (icicle-msg-maybe-in-minibuffer
                          (format "Candidates updated (%s matching): %d"
@@ -2723,9 +2722,9 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                             new-cand))))
                                  new-cand))
                              icicle-completion-candidates)))
-             ;; The `condition-case' shouldn't be needed, but it prevents an "End of buffer"
-             ;; message from `display-completion-list' on Emacs 22.
-             (condition-case nil
+             ;; The `icicle-condition-case-no-debug' should not be needed, but it prevents an
+             ;; "End of buffer" message from `display-completion-list' on Emacs 22.
+             (icicle-condition-case-no-debug nil
                  (display-completion-list
                   (if reverse-p (reverse icicle-completion-candidates) icicle-completion-candidates))
                (error nil)))
@@ -5194,7 +5193,7 @@ Character FROM is affected (possibly deleted).  Character TO is not."
 
 (defun icicle-command-abbrev-save ()
   "Save `icicle-command-abbrev-alist'.  Used on `kill-emacs-hook'."
-  (condition-case err                   ; Don't raise an error, since it's on `kill-emacs-hook.
+  (icicle-condition-case-no-debug err   ; Don't raise an error, since it's on `kill-emacs-hook.
       (let ((sav  (get 'icicle-command-abbrev-alist 'saved-value)))
         (unless (and (or (null sav)
                          (and (consp sav)  (consp (car sav))  (consp (cdar sav))
@@ -5582,7 +5581,7 @@ Optional arg NOMSG non-nil means don't display an error message."
   (save-selected-window
     (setq buf  (get-buffer buf))
     (if buf
-        (condition-case err
+        (icicle-condition-case-no-debug err
             (if (not (buffer-live-p buf))
                 (unless nomsg (message "Buffer already deleted: `%s'" buf))
               (let ((enable-recursive-minibuffers  t)) ; In case called from minibuffer, and modified.
