@@ -50,6 +50,22 @@ I guess this should be
 
 -- RichardRiley
 
+
+
+
+
+
+== Using `M-.' in Icicles ==
+
+With [[Icicles]], anytime you are in the [[minibuffer]] you can use `##M-.##' to yank a text thing at point into the minibuffer.  In Isearch, `M-e' puts you in the minibuffer (to edit the search string), and `C-s' then searches with your edited text.  So to yank something at point into the Isearch search string you can use `##M-e M-. C-s##'.
+
+The behavior of `##M-.##' is customizable.  You can control the possible things to yank, and you can decide whether repeated `##M-.##' yanks successive words or yanks different types of thing as alternatives.  Use this feature with [[ThingAtPoint+]] to get better thing support.
+
+For example, you can hit `##M-. M-.##' to pick up the most immediatly surrounding list at point.  Or `##M-. M-. M-. M-.##' to pick up the list that encloses the list that encloses that list (3rd level up).  This is useful when searching for Lisp program parts.
+
+See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor]].
+
+
 == Coding entire commands ==
 
 Mimicking this feature of Vim in Emacs can be done in a little EmacsLisp code.
@@ -136,6 +152,9 @@ Seen on http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness:
             (setq isearch-initial-string (buffer-substring begin end))
             (add-hook 'isearch-mode-hook 'isearch-set-initial-string)
             (isearch-forward regexp-p no-recursive-edit)))))
+
+
+
 
 == Extending Isearch with isearch-yank-symbol ==
 

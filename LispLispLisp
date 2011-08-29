@@ -31,7 +31,6 @@ Here are some of the pages about Lisp on EmacsWiki:
 * EuLisp
 * [[Sexp]]
 * ListStructure
-** AvoidConsing
 ** ListModification
 ** DestructiveOperations
 ** BackquoteSyntax

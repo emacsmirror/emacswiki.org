@@ -301,7 +301,7 @@
   "Add a new project named PROJECT-NAME to the project bufffer,
 and use the content of VCPROJ-FILE to populate it."
   (let* ((project-dir (file-name-directory vcproj-file))
-	 (project-data (and (file-exists-p vcproj-file)
+	 (project-data (and (file-regular-p vcproj-file)
 			    (vcproj-extract-data vcproj-file)))
 	 (platforms (car project-data))
 	 (configurations (cadr project-data)))

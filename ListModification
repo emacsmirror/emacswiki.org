@@ -1,7 +1,9 @@
 This is based on a posting by ThomasBurdick. -- AlexSchroeder
 
-Newbies are often confused when creating new lists.  Here are some
-examples including box diagrams.  Maybe that helps.
+Newbies are often confused when creating new lists.  This page presents some
+examples showing box diagrams.  Maybe that helps.
+
+Of the Lisp functions described here, the following can use side effects to modify ListStructure: `delete', `add-to-list', `nconc', and `setcar'.  The other functions described here are non-destructive.
 
 The list we shall be using in our examples is this:
 
@@ -19,6 +21,9 @@ Here's the corresponding box diagram:
 See ListStructure if you don't feel comfortable with the box diagram above.
 
 The ELISP prompt is from InferiorEmacsLispMode, `M-x ielm'.
+
+
+
 
 == delete ==
 
@@ -45,10 +50,10 @@ nil is the end of the list.
  list1--->| alpha | *----->| beta | *--->| gamma | nil |
           +-------+---+    +------+---+  +-------+-----+
 
-Now you call delete.
+Now you call `delete'.
 This will change pointers around.
 If you delete beta, then alpha cell will point to gamma cell, and beta is deleted.
-Since delete returns the pointer to the first cell, list2 points to the modified
+Since `delete' returns the pointer to the first cell, list2 points to the modified
 cell, list1 has the same value!
 
           +-------+---+    +------+---+       +-------+-----+
@@ -76,9 +81,12 @@ both list1 and list2 remain unchanged:
 The gamma cell is shared between all three lists.
 There is no more reference to the beta cell and it will eventually be garbage collected.
 
+
+
+
 == remove ==
 
-To delete elements of a list without modifying the original list, use `remove' instead of `delete'.  It returns a copy of the original list with elements elided.  See the source code of `remove' and see it is implemented using `copy-sequence' and `delete'.
+To "delete" elements of a list without modifying the original list, use `remove' instead of `delete'.  It returns a copy of the original list with elements elided.  See the source code of `remove' and see it is implemented using `copy-sequence' and `delete'.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
@@ -93,12 +101,11 @@ The same pattern applies for `delq' and `remq' as for `delete' and `remove' exce
 
 == add-to-list ==
 
-`add-to-list' works by side-effect (ie. not FunctionalProgramming).
-You pass it a list symbol and an element, and add-to-list will add the
+You pass `add-to-list' a [[variable]] whose value is a list and an element to be added to the list. `add-to-list' adds the
 element to the front of the list if it is not already a member of the
-list.  This avoids duplicates but if you use this a lot in your code,
-remember that add-to-list has to go through the entire list in order
-to check for duplicates.
+list.  This avoids duplicates, but if you use this a lot in your code,
+remember that `add-to-list' has to go through the entire list in order
+to check for duplicates.  
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
@@ -124,7 +131,7 @@ the cell.  Several cons cells form a list if the car always points to
 an element of the list and the cdr points to the next cons cell.  The
 cdr of the last cons cell in the list is nil.
 
-Using cons to add to the front of the list is the easiest and most
+Using `cons' to add to the front of a list is the easiest and most
 natural thing to do!  After adding lots of elements to the list in
 this way, you can reverse the list using `nreverse'.
 
@@ -158,20 +165,20 @@ And here's the box diagram:
           +---------+---+
 }}}
 
-In terms of efficiency, "consing" is something expensive because it
+In terms of efficiency, consing is something expensive because it
 allocates new storage for a cons cell.  Usually that doesn't matter.
 If you want to add an existing cons cell to your list (eg. moving it
 from one list to another) you might get away with lots of `setcar' and
 `setcdr'.  But that usually results in code which is difficult to
 maintain.
 
+
+
 == nconc ==
 
-`nconc' will modify the cdr of the last cell in the list: It will be
-changed from nil to point to the new element.  This is also not
-FunctionalProgramming.
+`nconc' modifies the cdr of the last cell of a list: Its target  is changed from nil to the new element.
 
-Here's what happens if you don't add a cons cell to the list.  The
+Here's what happens if you add something other than a cons cell to the list.  The
 result is no longer a "proper" list.  The cdr of the last cons cell is
 no longer nil.
 
@@ -198,8 +205,6 @@ This situation looks like:
  list2-------------------+
 }}}
 
-What you usually do is you add lists like that.
-
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
  
@@ -218,7 +223,7 @@ Note how list1 was changed:
  (omega ypsilon)
 
 Actually, if this were real code, you would have assigned the result
-of nconc to one of the existing variables instead of using a third
+of `nconc' to one of the existing variables instead of using a third
 one.
 
  ELISP> (setq list1 (nconc list1 list2))
@@ -248,11 +253,14 @@ Just to prove that the tail (list2) is shared:
 
 See also CircularLists.
 
+
+
+
+
+
 == append ==
 
-`append' creates a new copy of the list that is added to the front of
-another list.  The front will be new, the tail will be shared.  The
-copying of the list may be expensive.
+`append' creates a copy of the list that is added to the front of the other list. The front is new; the tail is shared. Because come new list structure is created this can be more expensive than using `nconc'.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)

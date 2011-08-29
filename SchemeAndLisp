@@ -30,11 +30,13 @@ non-standard ones (some portable). Emacs Lisp has a single non-standard one
 [[EIEIO]]. (A Schemer would consider this to be part of the library,
 btw)
 
-Scheme favors functional programming over imperative programming, but
+Scheme favors FunctionalProgramming over imperative programming, but
 doesn't make the latter impossible. CL doesn't really favor one. Emacs Lisp
 makes functional programming difficult to impossible.
 
 Other than that, the differences are mostly syntactic.
+
+See also EmacsLispLimitations, WhyDoesElispSuck, DownWithEmacsLisp.
 
 ----
 CategoryCode

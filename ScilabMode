@@ -5,7 +5,6 @@ Pour en savoir plus: http://www.scilab.org/
 
 Un mode pour éditer du code Scilab et pour utiliser Scilab comme un sous-process d'Emacs.
 
-http://www.geocities.com/avezunchik/scilab/scilab.html
-
+Lisp:scilab.el -- cette version et ancienne et ne foncionne pas avec la version d'Emacs actuelle sans la adapter
 
 

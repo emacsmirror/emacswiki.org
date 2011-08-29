@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 16:27:38 2011 (-0700)
+;; Last-Updated: Sun Aug 28 11:00:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26109
+;;     Update #: 26137
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1517,8 +1517,8 @@
 ;;  sacrificing any key bindings to ffap.  One way is to use `M-.'
 ;;  (command `icicle-insert-string-at-point') at any time in the
 ;;  minibuffer.  It grabs text at or near the cursor and yanks it into
-;;  the minibuffer.  By default, the text it grabs is whatever
-;;  `ffap-guesser' guesses.
+;;  the minibuffer.  One of the alternative types of thing it grabs is
+;;  whatever text `ffap-guesser' guesses.
 ;;
 ;;  Another way is to use one of the proxy completion candidates
 ;;  `*point file name*' or `*mouse-2 file name*' whenever Emacs asks
@@ -1583,10 +1583,53 @@
 ;;
 ;;  For example, if the value of `icicle-default-thing-insertion' is
 ;;  `alternatives' (the default value), then repeated use of `M-.'
-;;  inserts a different kind of thing at point: ffap guess, file name,
-;;  word, or URL.  If you set `icicle-default-thing-insertion' to
-;;  `more-of-the-same', then repeated use of `M-.' inserts successive
-;;  words into the minibuffer, as shown in the example above.
+;;  inserts a different kind of thing at point each time.  By default,
+;;  these are the thing types, in order:
+;;
+;;    `symbol-name-nearest-point' (*) or `symbol-at-point'
+;;    `region-or-word-nearest-point' (*) or the word at point
+;;    `list-nearest-point-as-string' (*), the first enclosing list
+;;    `list-nearest-point-as-string' (*), the second enclosing list
+;;    `list-nearest-point-as-string' (*), the third enclosing list
+;;    `ffap-guesser'
+;;    `thing-at-point-url-at-point'
+;;
+;;  The alternatives marked with an asterisk (*) are available only if
+;;  you use library `thingatpt+.el'.  Alternative `ffap-guesser' is
+;;  used only if you use library `ffap.el'.
+;;
+;;  The first alternative inserts text that has the syntax of an
+;;  Emacs-Lisp symbol name.  In practice, this can also be a file
+;;  name or a URL - it can include characters such as -, /, +, ., :,
+;;  @, and _.
+;;
+;;  The second alternative inserts a word, which includes letters, ',
+;;  and -.  Or it inserts the region (wherever it is), if it is
+;;  active.
+;;
+;;  The third, fourth, and fifth alternatives insert a (non-`nil')
+;;  list that is around point - three different enclosing levels.
+;;
+;;  The sixth alternative inserts whatever `ffap-guesser' returns: a
+;;  file name or a URL at point.
+;;
+;;  The seventh alternative inserts a URL at point, adding prefix
+;;  "http://" if needed.
+;;
+;;  This means that you can quickly pick up a symbol name, a list, a
+;;  file name, or a URL at point.
+;;
+;;  If you use library `thingatpt+.el' then the first two alternatives
+;;  pick up the symbol or word nearest point - the cursor need not be
+;;  exactly on the symbol or word.
+;;
+;;  You can of course add to or replace any of the alternatives that
+;;  are provided by default.
+;;
+;;  If you set `icicle-default-thing-insertion' to `more-of-the-same'
+;;  instead of `alternatives', then repeated use of `M-.' inserts
+;;  successive words into the minibuffer, as shown in the example
+;;  above.
 ;;
 ;;  You need not make a final choice once and for all between
 ;;  `alternatives' and `more-of-the-same'.  You can also make an
@@ -1609,49 +1652,6 @@
 ;;
 ;;  If you used `M--3 M-.', then you would immediately insert
 ;;  `differently if you'.
-;;
-;;  In the case of `alternatives', the default possibilities depend on
-;;  whether or not you also use my library `thingatpt+.el'.  If not,
-;;  there are four alternatives:
-;;
-;;  * The first alternative inserts text that has the syntax of an
-;;    Emacs-Lisp symbol name.  In practice, this can also be a file
-;;    name or a URL - it can include characters such as -, /, +, ., :,
-;;    @, and _.
-;;
-;;  * The second alternative inserts a word, which includes letters,
-;;    ', and -.
-;;
-;;  * The third alternative inserts whatever `ffap-guesser' returns: a
-;;    file name or URL.
-;;
-;;  * The fourth alternative inserts a URL, adding prefix "http://" if
-;;    needed.
-;;
-;;  If you also use my library `thingatpt+.el', then:
-;;
-;;  * The first and second alternatives are like those for the case
-;;    where you do not use `thingatpt+.el', except that the cursor
-;;    need not be exactly on the text - the symbol or word *nearest*
-;;    the cursor is grabbed.
-;;
-;;  * If the region is active, then the second alternative inserts the
-;;    region text instead of just the nearest word.
-;;
-;;  * The third alternative inserts the (non-`nil') list nearest
-;;    point.  IOW, this grabs a sexp that is more than just an atom.
-;;
-;;  * The fourth and fifth alternatives are like the third, but they
-;;    grab wider sexps.  They first go up one and two list levels,
-;;    respectively.
-;;
-;;  * The sixth and seventh alternatives insert a file name and URL,
-;;    respectively.  They are the same as the third and fourth
-;;    alternatives that are provided if you do not use
-;;    `thingatpt+.el'.
-;;
-;;  You can of course add to or replace any of the alternatives
-;;  provided by default.
 ;;
 ;;  See Also:
 ;;

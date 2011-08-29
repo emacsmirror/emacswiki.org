@@ -4,7 +4,7 @@
 
 ----
 
-= Inserting Text Found Near the Cursor =
+== Inserting Text Found Near the Cursor ==
 
 Most of '''Icicles''' is about completing text that you type in the [[minibuffer]] against
 some set of possible [[completion]] candidates.  This particular feature is
@@ -23,6 +23,11 @@ asking for input does not let you retrieve that text as the
 default value.  For example, if the text at point is a file name,
 you might like to use it with `C-x C-f' to open that file.  Or, if
 the text is a URL, you might want to visit it using a Web browser.
+
+
+
+[:ffap]
+=== FFAP: Find File At Point ===
 
 Some Emacs libraries, such as FindFileAtPoint (`##ffap.el##'), have as their specific purpose
 to help you do this.  "Ffap" stands for `find-file-at-point', the
@@ -43,8 +48,15 @@ keys such as `C-x C-f'.  (In that case, do not call function
 the ffap function that guesses which string at the cursor position
 you want to grab, without sacrificing any key bindings to ffap. One way is to use '''`##M-.##'''' (command `icicle-insert-string-at-point') at any
 time in the minibuffer.  It grabs text at or near the cursor and
-yanks it into the minibuffer.  By default, the text it grabs is
-whatever `ffap-guesser' guesses.
+yanks it into the minibuffer.  One of the alternative types of thing it grabs is whatever text `ffap-guesser' guesses.
+
+
+
+
+
+[:ProxyCandidates]
+
+=== Proxy Candidates, `M-.' ===
 
 Another way is to use one of the [[Icicles - Completions Display#ProxyCandidates|proxy completion candidates]] `##*point file name*##' or `##*mouse-2 file name*##' whenever Emacs asks you to input a file name (provided option
 `icicle-add-proxy-candidates-flag' is non-`nil' -- toggle with
@@ -53,6 +65,14 @@ Another way is to use one of the [[Icicles - Completions Display#ProxyCandidates
 Using `##M-.##' or a proxy candidate on demand, instead of binding keys to ffap commands,
 lets you control which [[buffer]] text you use as minibuffer input and
 how that text should be interpreted (file name, URL, and so on).  You can change the behavior of `##M-.##' (which string-inserting functions are used) by customizing [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>''''.
+
+
+
+
+
+
+[:RepeatedM.]
+=== Repeat `M-.' To Grab More or Different ===
 
 Actually, `##M-.##' acts <u>differently if you **u**se it successively</u>.
 Successive uses of `##M-.##' grab and insert either '''1''') alternative
@@ -102,9 +122,50 @@ is used by `##M-.##'.
 
 For example, if the value of `icicle-default-thing-insertion' is
 '''`alternatives'''' (the default value), then repeated use of `##M-.##'  inserts
-a different kind of thing at point: ffap guess, file name, word,
-or URL.  If you set `icicle-default-thing-insertion' to
-'''`more-of-the-same'''', then repeated use of `##M-.##' inserts successive
+a different kind of thing at point each time.  By default, these are
+the thing types, in order:
+
+# `symbol-name-nearest-point' (*) or `symbol-at-point'
+# `region-or-word-nearest-point' (*) or the word at point
+# `list-nearest-point-as-string', the first enclosing list (*)
+# `list-nearest-point-as-string', the second enclosing list (*)
+# `list-nearest-point-as-string', the third enclosing list (*)
+# `ffap-guesser'
+# `thing-at-point-url-at-point'
+
+The alternatives marked with an asterisk (*) are available only if you
+use library '''[[ThingAtPoint+]]'''.  Alternative `ffap-guesser' is used
+only if you use library ##ffap.el##.
+
+The first alternative inserts text that has the syntax of an
+EmacsLisp ''[[symbol]]'' name.  In practice, this can also be a ''file''
+name or a ''URL'' -- it can include characters such as  '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''.
+
+The second alternative inserts a ''word'', which includes letters,
+'''##'##''', and '''##-##'''.  Or it inserts the [[region]] (wherever it is), if it is
+[[active region|active]].
+
+The third, fourth, and fifth alternatives insert a (non-`nil')
+list that is around point - three different enclosing levels.
+
+The sixth alternative inserts whatever `ffap-guesser' returns: a
+''file'' name or a ''URL'' at point.
+
+The seventh alternative inserts a ''URL'' at point, adding prefix
+`##http://##' if needed.
+
+This means that you can quickly pick up a symbol name, a
+list, a file name, or a URL at point.
+
+If you use library '''[[ThingAtPoint+]]''' then the first two alternatives
+pick up the symbol or word ''nearest'' point -- the cursor need not be
+exactly on the symbol or word.
+
+You can of course add to or replace any of the alternatives
+that are provided by default.
+
+If you set `icicle-default-thing-insertion' to
+'''`more-of-the-same'''' instead of `alternatives', then repeated use of `##M-.##' inserts successive
 words into the minibuffer, as shown in the example above.
 
 You need not make a final choice once and for all between
@@ -127,46 +188,6 @@ instead of to the right. In the example above, if you used `##M-- M-. M-. M-.##'
 
 If you used `##M--3 M-.##', then you would immediately insert `##differently if you##'.
 
-In the case of `alternatives', the default possibilities depend on
-whether or not you also use my library <tt>[[thingatpt+.el]]</tt>.  If not, there are four alternatives:
-
-* The first alternative inserts text that has the syntax of an
-EmacsLisp ''[[symbol]]'' name.  In practice, this can also be a ''file''
-name or a ''URL'' -- it can include characters such as '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''.
-
-* The second alternative inserts a ''word'', which includes letters,
-'''##'##''', and '''##-##'''.
-
-* The third alternative inserts whatever `ffap-guesser' returns: a
-''file'' name or ''URL''.
-
-* The fourth alternative inserts a ''URL'', adding prefix `##http://##' if needed.
-
-  
-
-If you also use my library '''<tt>[[thingatpt+.el]]</tt>''', then:
-
-* The first and second alternatives are like those for the case
-where you do not use ##thingatpt+.el##, except that the [[cursor]]
-need not be exactly on the text -- the [[symbol]] or word ''nearest'' the cursor is
-grabbed.
-
-* If the [[region]] is [[active region|active]], then the second alternative inserts the
-''region text'' instead of just the nearest word.
-
-* The third alternative inserts the (non-`nil') ''list'' nearest point.
-IOW, this grabs a ''[[sexp]]'' that is more than just an [[atom]].
-
-* The fourth and fifth alternatives are like the third, but they
-grab ''wider sexps''.  They first go up one and two list levels,
-respectively.
-
-* The sixth and seventh alternatives insert a ''file'' name and ''URL'', respectively.  They
-are the same as the third and fourth alternatives that are
-provided if you do not use ##thingatpt+.el##.
-
-You can of course add to or replace any of the alternatives
-provided by default.
 
 
 

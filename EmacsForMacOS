@@ -93,7 +93,7 @@ Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] 
 
 === Building Emacs for OS X ===
 
-There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer[http://www.kwick.de/french200/#/french200/blog/ .]
+There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
 ==== Aquamacs ====
 

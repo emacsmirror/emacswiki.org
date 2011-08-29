@@ -24,3 +24,10 @@ where <nowiki>"C:\\PROGRA~1\\GnuWin32\\bin\\HardDrivesMenu.exe" is a full path t
 It should be placed in "~/.emacs" file.
 
 Zip archive with binary and source can be downloaded from the http://mobilave.info/2010/HardDrivesMenu/HardDrivesMenu.zip
+
+
+See also: [[DiredPlus#w32-browser|`^' in Dired+ takes you to Windows drive list]]
+
+
+----
+CategoryDirectories

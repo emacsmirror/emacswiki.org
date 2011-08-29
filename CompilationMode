@@ -104,12 +104,12 @@ http://ant.apache.org/faq.html#emacs-mode has some hints on the use of ant and e
 
 == compile-.el, compile+.el: Extensions to compile.el ==
 
-DrewAdams has written libraries Lisp:compile-.el and Lisp:compile+.el, which together provide some minor enhancements to standard library ##compile.el##. 
+DrewAdams has written libraries Lisp:compile-.el and Lisp:compile+.el, which together provide some minor enhancements to standard library ##compile.el##.  Some additional key bindings are made, mouseover highlighting is modified, and a single-window compilation results frame is shrink-wrapped to fit the buffer.
+
+
 
 [new:DaveAbrahams:2011-08-28 00:09 UTC]
 To ensure correct load order (compile- must load before compile), I put this file in my load-path and call it ##compile.el##
-
-
 
   (require 'compile-)
 
@@ -123,7 +123,10 @@ To ensure correct load order (compile- must load before compile), I put this fil
              (throw 'found nil)))))
 [new]
 
-Some additional key bindings are made, mouseover highlighting is modified, and a single-window compilation results frame is shrink-wrapped to fit the buffer.
+
+
+
+
 
 == Colours ==
 

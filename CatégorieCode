@@ -30,7 +30,6 @@ Avant que vous vous plongiez dans le Lisp d'Emacs, nous vous suggérons de vous 
 ** ListModificationCl -- pour les programmeurs en Lisp: utilisation des fonctions de la bibliothèque  CL pour modifier les listes,
 ** ListModificationLibrary -- pour les programmeurs en Lisp: d'autres fonctions pour travailler avec les listes, 
 ** IntList -- exemples de base montrant comment créer récursivement des listes de nombres entiers,
-* AvoidConsing – vielle recommandation qui n'est plus appropriée,
 * SubdirsToList -- ajout récursif des sous-répertoires à une liste,
 * VectorUsage -- recherche des vecteurs,
 * VectorModificationLibrary -- pour les programmeurs en Lisp: davantage de fonctions pour modifier des vecteurs,
