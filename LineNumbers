@@ -46,6 +46,13 @@ A similar problem was recently fixed in the Emacs core. Please try the most rece
 
 : It looks like ##visual-line-mode## doesn't like spaces in the margin (a bug?). A simple workaround is to set ##linum-format## to ##"%d"##. This has a side effect of aligning all line numbers to the left.
 
+[new:kodekata: 2011-08-29]
+There is a problem with the rendering of the line numbers in (all?) recent GNU Emacs versions (i.e. at least 23.? through current bzr trunk) on OS X. The problem is demonstrated here:
+http://lists.gnu.org/archive/html/help-gnu-emacs/2011-03/msg00322.html
+E.g. it is present on 24.0.50.1 (i386-apple-darwin10.7.1, NS apple-appkit-1038.35), built with homebrew.
+I have found that the bug seems to create the vertical white line artifact through what are the margin characters second from the left.
+A temporary fix is to do something like: <code>(setq linum-format "    %d ")</code>; while creating a larger margin, this seems to alleviate the problem on my system.
+
 == LinumPlus ==
 LinumPlus
 

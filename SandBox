@@ -2,6 +2,8 @@
 '''Please leave all text above the first horizontal line intact''', to
 serve as instructions for others.
 
+"          "
+
 This page is not to be confused with //sandbox.el// at
 http://panix.com/~tehom/my-code/, which can be used to help check the
 security of new elisp code.

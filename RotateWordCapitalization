@@ -4,5 +4,26 @@ In a certain office productivity suite, pressing Shift-F3 will rotate among the 
 
 This is all a neat idea for a command, but has never been proposed elsewhere.  Probably because the "do what I want" commands are adequate.
 
+Also here is a simpler version, which should work in most cases (barely tested):
+
+    (defun cycle-word-capitalization ()
+      "Change the capitalization of the current word.
+    If the word under point is in lower case, capitalize it.  If it
+    is in capitalized form, change it to upper case.  If it is in
+    upper case, downcase it."
+      (interactive "*")
+      (let ((case-fold-search nil))
+        (save-excursion
+          (skip-syntax-backward "w")
+          (cond
+           ((looking-at-p "[[:lower:]]+")
+            (capitalize-word 1))
+           ((looking-at-p "[[:upper:]][[:lower:]]+")
+            (upcase-word 1))
+           ((looking-at-p "[[:upper:]]+")
+            (downcase-word 1))
+           (t
+            (downcase-word 1))))))
+
 ----
 CategoryEditing

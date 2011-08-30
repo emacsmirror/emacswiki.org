@@ -197,6 +197,11 @@ tabbed browsing, so %%ElScreen%%'s tabbing capability is incompatible with
 it. ElScreen-W3M resolves this incompatibility by integrating
 Emacs-W3M's tabbing into %%ElScreen%%. 
 
+== Bugs ==
+
+[new:DaveAbrahams:2011-08-30 07:26 UTC]
+There appear to be bugs in ##elscreen-e21-command-line## where it tries to use unbound symbols  ##dir## and ##line##.  Customizing ##elscreen-startup-command-line-processing## and setting it to ##nil## should suppress the bug.
+
 == Opinions ==
 [new]
 Compared to escreen (EmacsScreen) its frame support is better: it spawns a new set (0-9) of screens for each frame, which is more in line with what I expect. -- DanDebertin

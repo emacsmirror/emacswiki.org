@@ -240,6 +240,8 @@ Then select which of the four modifier keys should send Control:
 
 For Mac OS older than 10.4, [http://gnufoo.org/ucontrol/ uControl] allows switching keys.
 
+The variable `mac-command-modifier' can be used to interpret the Command key as an additional Control.  This can be useful for Linux-like behavior when Caps Lock has already been remapped to Command.
+
 In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-modifier' to remap the Control key.
 
 
