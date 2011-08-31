@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 24 15:16:55 2011 (-0800)
+;; Last-Updated: Tue Aug 30 17:36:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 486
+;;     Update #: 532
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -37,6 +37,12 @@
 ;;  Put this in your initialization file (`~/.emacs'):
 ;;
 ;;    (require 'grep+)
+;;
+;;  Face suggestions (what I use):
+;;
+;;    `compilation-info-face':   Blue3' foreground,        no inherit
+;;    `compilation-line-number': DarkGoldenrod foreground, no inherit
+;;    `match':                   SkyBlue background,       no inherit
 ;;
 ;;
 ;;  New user options defined here:
@@ -79,6 +85,11 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/08/30 dadams
+;;     grepp-default-regexp-fn: symbol-name-nearest-point -> non-nil-symbol-name-nearest-point.
+;;                              Use functionp, not fboundp.
+;;     grep: Test value of function, not option, grepp-default-regexp-fn, before funcall.
+;;     Do not change any faces - just suggest.
 ;; 2011/02/15 dadams
 ;;     For Emacs 24+, do not set grep-hit-face to font-lock-keyword-face.
 ;;     grep-regexp-alist, grep-mode-font-lock-keywords, grep-mode: Updated for Emacs 24.
@@ -131,7 +142,7 @@
 (require 'compile+ nil t) ;; (no error if not found) - to pick up enhancements for grep too.
 (require 'font-lock) ;; font-lock-keyword-face
 (require 'grep)
-(require 'thingatpt+ nil t) ;; (no error if not found) symbol-name-nearest-point
+(require 'thingatpt+ nil t) ;; (no error if not found) non-nil-symbol-name-nearest-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -143,12 +154,13 @@ The default value matches lines that begin with a Lisp comment."
   :type 'string :group 'grep)
 
 ;;;###autoload
-(defcustom grepp-default-regexp-fn (if (fboundp 'symbol-name-nearest-point)
-                                       'symbol-name-nearest-point
+(defcustom grepp-default-regexp-fn (if (fboundp 'non-nil-symbol-name-nearest-point)
+                                       'non-nil-symbol-name-nearest-point
                                      'word-at-point)
   "*Function of 0 args called to provide default search regexp to \\[grep].
-Some reasonable choices: `word-nearest-point',
-`symbol-name-nearest-point', `sexp-nearest-point'.
+Some reasonable choices are defined in `thingatpt+.el':
+`word-nearest-point', `non-nil-symbol-name-nearest-point',
+`region-or-non-nil-symbol-name-nearest-point', `sexp-nearest-point'.
 
 This is ignored if Transient Mark mode is on and the region is active
 and non-empty.  In that case, the quoted (\") region text is used as
@@ -159,7 +171,8 @@ If `grepp-default-regexp-fn' is nil and no prefix arg is given to
 
 Otherwise, if the value is not a function, then function
 `grepp-default-regexp-fn' does the defaulting."
-  :type '(choice (const :tag "No default search regexp (unless you use `C-u')" nil)
+  :type '(choice
+          (const :tag "No default search regexp (unless you use `C-u')" nil)
           (function :tag "Function of zero args to provide default search regexp"))
   :group 'grep)
 
@@ -175,12 +188,12 @@ first of these that references a defined function:
   - variable `grepp-default-regexp-fn'
   - variable `find-tag-default-function'
   - the `find-tag-default-function' property of the `major-mode'
-  - function `symbol-name-nearest-point', if bound
+  - function `non-nil-symbol-name-nearest-point', if bound
   - function `grep-tag-default'"
-  (cond ((fboundp grepp-default-regexp-fn) grepp-default-regexp-fn)
+  (cond ((functionp grepp-default-regexp-fn) grepp-default-regexp-fn)
         (find-tag-default-function)
         ((get major-mode 'find-tag-default-function))
-        ((fboundp 'symbol-name-nearest-point) 'symbol-name-nearest-point)
+        ((fboundp 'non-nil-symbol-name-nearest-point) 'non-nil-symbol-name-nearest-point)
         (t 'find-tag-default)))
 
 
@@ -189,9 +202,9 @@ first of these that references a defined function:
 ;;; Use `grepp-default-regexp-fn' to define `tag-default'.
 ;;;
 (defun grep-default-command ()
-  (let ((tag-default (shell-quote-argument (or (funcall (grepp-default-regexp-fn)) "")))
-        (sh-arg-re "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
-        (grep-default (or (car grep-history) grep-command)))
+  (let ((tag-default   (shell-quote-argument (or (funcall (grepp-default-regexp-fn)) "")))
+        (sh-arg-re     "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
+        (grep-default  (or (car grep-history) grep-command)))
     ;; Replace the thing matching for with that around cursor.
     (when (or (string-match
                (concat "[^ ]+\\s +\\(?:-[^ ]+\\s +\\)*" sh-arg-re "\\(\\s +\\(\\S +\\)\\)?")
@@ -203,9 +216,8 @@ first of these that references a defined function:
                       (string-match (wildcard-to-regexp (file-name-nondirectory
                                                          (match-string 3 grep-default)))
                                     (file-name-nondirectory buffer-file-name)))))
-        (setq grep-default (concat (substring grep-default 0 (match-beginning 2))
-                                   " *."
-                                   (file-name-extension buffer-file-name))))
+        (setq grep-default  (concat (substring grep-default 0 (match-beginning 2)) " *."
+                                    (file-name-extension buffer-file-name))))
       (replace-match tag-default t t grep-default 1))))
 
 
@@ -236,10 +248,10 @@ The text (regexp) to find is defaulted as follows:
 - If `grepp-default-regexp-fn' is nil and no prefix arg is provided,
   then no default regexp is used.
 
-If a prefix arg is provided, then the default text is substituted
-into the last grep command in the grep command history (or into
-`grep-command' if that history list is empty).  That is, the same
-command options and files to search are used as the last time.
+If a prefix arg is provided, the default text is substituted into the
+last grep command in the grep command history (or into `grep-command'
+if that history list is empty).  That is, the same command options and
+files to search are used as the last time.
 
 If specified, optional second arg HIGHLIGHT-REGEXP is the regexp to
 temporarily highlight in visited source lines."
@@ -247,7 +259,7 @@ temporarily highlight in visited source lines."
    (progn
      (unless (and grep-command (or (not grep-use-null-device) (eq grep-use-null-device t)))
        (grep-compute-defaults))
-     (let ((default (grep-default-command)))
+     (let ((default  (grep-default-command)))
        (list (read-from-minibuffer
               "grep <pattern> <files> :  "
               (if current-prefix-arg
@@ -257,7 +269,7 @@ temporarily highlight in visited source lines."
                                  (not (eq (region-beginning) (region-end))))
                             ;; $$$$$ Would it be better to use `shell-quote-argument' on the region?
                             (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
-                          (and grepp-default-regexp-fn (funcall (grepp-default-regexp-fn))))
+                          (and (grepp-default-regexp-fn) (funcall (grepp-default-regexp-fn))))
                         " "))
               nil nil 'grep-history
               (if current-prefix-arg nil default))))))
@@ -290,7 +302,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
 (defun grepp-choose-grep-buffer (buf)
   "Switch to a grep buffer."
   (interactive
-   (let ((bufs (grepp-buffers)))
+   (let ((bufs  (grepp-buffers)))
      (unless bufs (error "No grep buffers"))
      (list (completing-read "Grep buffer: " bufs nil t nil nil
                             (and grep-last-buffer (buffer-name grep-last-buffer))))))
@@ -300,7 +312,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
 
 (defun grepp-buffers ()
   "List of names of grep buffers."
-  (let ((bufs nil))
+  (let ((bufs  ()))
     (dolist (buf (buffer-list))
       (when (string-match "\\*grep\\*" (buffer-name buf))
         (push (list (buffer-name buf)) bufs)))
@@ -325,12 +337,11 @@ to remove C++ comments that start with //, but not multi-line comments
 between /* and */."
   (interactive "P")
   (when (eq major-mode 'grep-mode) ; Do nothing otherwise, so can use in `compilation-filter-hook'.
-    (let ((inhibit-read-only t)
-          (regexp
-           (if read-regexp-p
-               (read-from-minibuffer "Comment regexp: " nil nil nil 'regexp-history
-                                     grepp-default-comment-line-regexp)
-             grepp-default-comment-line-regexp)))
+    (let ((inhibit-read-only  t)
+          (regexp  (if read-regexp-p
+                       (read-from-minibuffer "Comment regexp: " nil nil nil 'regexp-history
+                                             grepp-default-comment-line-regexp)
+                     grepp-default-comment-line-regexp)))
       (save-excursion (flush-lines regexp (point-min) (point-max))))))
 
 ;;;###autoload
@@ -363,11 +374,6 @@ between /* and */."
 (define-key grep-mode-map ";" 'grepp-remove-comments)
 (define-key grep-mode-map [(meta ?\;)] 'grepp-toggle-comments)
 
-;; New face values
-(set-face-foreground grep-match-face nil)
-(set-face-background grep-match-face "SkyBlue")
-(unless (> emacs-major-version 23) (setq grep-hit-face font-lock-keyword-face))
-
 
 
 ;;; REPLACE ORIGINAL `grep-regexp-alist' defined in `grep.el'.
@@ -386,7 +392,7 @@ between /* and */."
            2 3
            ;; Calculate column positions (beg . end) of first grep match on a line
            ((lambda ()
-              (setq compilation-error-screen-columns nil)
+              (setq compilation-error-screen-columns  nil)
               (- (match-beginning 4) (match-end 1)))
             .
             (lambda () (- (match-end 5) (match-end 1)
@@ -450,7 +456,7 @@ code \\([0-9]+\\)\\)?.*"
 ;;;
 (define-compilation-mode grep-mode "Grep"
   "Sets `grep-last-buffer' and `compilation-window-height'."
-  (setq grep-last-buffer (current-buffer))
+  (setq grep-last-buffer  (current-buffer))
   (when (boundp 'grep-mode-tool-bar-map)
     (set (make-local-variable 'tool-bar-map) grep-mode-tool-bar-map))
   (set (make-local-variable 'compilation-error-face) grep-hit-face)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 09:35:13 2011 (-0700)
+;; Last-Updated: Tue Aug 30 07:26:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22190
+;;     Update #: 22194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5402,6 +5402,7 @@ from the `kill-ring'."                  ; Doc string
    (icicle-sort-comparer            nil)
    (icicle-delete-candidate-object  'kill-ring)))
 
+
 (defun icicle-insert-for-yank (string)
   "`insert-for-yank', if defined; else, `insert' with `read-only' removed.
 Pushes the mark first, so the inserted text becomes the region."
@@ -5412,6 +5413,9 @@ Pushes the mark first, so the inserted text becomes the region."
       (insert string)
       (let ((inhibit-read-only  t)) (remove-text-properties opoint (point) '(read-only nil))))))
 
+
+;; Make delete-selection mode recognize yanking, so it replaces region text.
+(put 'icicle-yank-maybe-completing 'delete-selection 'yank)
 ;;;###autoload
 (defun icicle-yank-maybe-completing (&optional arg) ;  Bound to `C-y' (or what `yank' was bound to).
   "`icicle-completing-yank', `icicle-yank', or `icicle-yank-function'.

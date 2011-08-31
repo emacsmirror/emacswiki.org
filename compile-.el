@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 14:52:02 2011 (-0800)
+;; Last-Updated: Tue Aug 30 16:56:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 100
+;;     Update #: 103
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile-.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -34,6 +34,10 @@
 ;;
 ;;    (require 'compile-)
 ;;
+;;  Face suggestion (what I use):
+;;
+;;    `next-error': SkyBlue background, no inheritance
+;;
 ;;
 ;;  New face defined here:
 ;;
@@ -53,6 +57,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/30 dadams
+;;     Do not change next-error face - just suggest changes.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookie for the defcustom.  Corrected install instructions.
 ;; 2006/04/02 dadams
@@ -109,14 +115,10 @@ Faces `compilation-error-face', `compilation-warning-face',
   "*Face used to highlight text the mouse is over."
   :group 'compilation :group 'font-lock-highlighting-faces)
 
-(when (and (fboundp 'x-color-defined-p) (x-color-defined-p "SkyBlue"))
-  (cond ((facep 'next-error)
-         (set-face-foreground 'next-error nil)
-         (set-face-background 'next-error  "SkyBlue"))
-        (t
-         (defface next-error '((t (:background "SkyBlue")))
-           "Face used to highlight next error locus."
-           :group 'next-error))))
+(unless (facep 'next-error)
+  (defface next-error '((t (:background "SkyBlue")))
+    "Face used to highlight next error locus."
+    :group 'next-error))
                                    
 
 ;; Resize frame to fit buffer - hook `compilation-finish-functions'.

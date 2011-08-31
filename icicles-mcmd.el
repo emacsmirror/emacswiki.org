@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 26 10:25:59 2011 (-0700)
+;; Last-Updated: Tue Aug 30 07:35:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17122
+;;     Update #: 17132
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -853,6 +853,9 @@ POSITION is a buffer position."
   (interactive "p")
   (icicle-forward-char-dots (- n)))
 
+
+;; Make delete-selection mode recognize it, so region is deleted.
+(put 'icicle-backward-delete-char-untabify 'delete-selection 'supersede)
 ;;;###autoload
 (defun icicle-backward-delete-char-untabify (n &optional killflag)
   "`backward-delete-char-untabify' + update `*Completions*' with matches.
@@ -868,6 +871,9 @@ Handles Icicles dots (`.')."
           (backward-delete-char-untabify len killflag)
         (backward-delete-char-untabify 1 killflag)))))
 
+
+;; Make delete-selection mode recognize it, so region is deleted.
+(put 'icicle-delete-backward-char 'delete-selection 'supersede)
 ;;;###autoload
 (defun icicle-delete-backward-char (n &optional killflag) ; Bound to `DEL' in minibuffer.
   "`delete-backward-char' and update `*Completions*' with input matches.
@@ -883,6 +889,9 @@ Handles Icicles dots (`.')."
           (delete-char (- len) killflag)
         (delete-char -1 killflag)))))
 
+
+;; Make delete-selection mode recognize it, so region is deleted.
+(put 'icicle-delete-char 'delete-selection 'supersede)
 ;;;###autoload
 (defun icicle-delete-char (n &optional killflag) ; Bound to `C-d' in minibuffer.
   "`delete-char' and update `*Completions*' with input matches.

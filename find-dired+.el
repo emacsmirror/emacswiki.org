@@ -9,20 +9,22 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 09:24:31 2011 (-0800)
+;; Last-Updated: Tue Aug 30 17:28:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 571
+;;     Update #: 607
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `custom', `dired', `dired+', `dired-aux', `dired-x',
-;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `find-dired', `find-dired-', `fit-frame', `info', `info+',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `strings', `thingatpt',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `bookmark+-mac', `cl',
+;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `easymenu',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `find-dired',
+;;   `find-dired-', `fit-frame', `info', `info+', `misc-fns',
+;;   `mkhtml', `mkhtml-htmlize', `pp', `pp+', `strings', `thingatpt',
 ;;   `thingatpt+', `w32-browser', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -75,6 +77,11 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/30 dadams
+;;     find-dired-default-fn:
+;;       devar -> defcustom.
+;;       symbol-name-nearest-point -> region-or-non-nil-symbol-name-nearest-point.
+;;     find(-name|-grep)-dired: Use functionp as test, not just non-nil.
 ;; 2011/01/04 dadams
 ;;     Removed autoloads for defvar, defconst, and non-interactive functions.
 ;; 2010/03/24 dadams
@@ -150,27 +157,28 @@
                         ;; diredp-menu-bar-subdir-menu
  ;; Note: `dired+.el' does a (require 'dired): dired-mode-map
 (require 'thingatpt+ nil t) ;; (no error if not found):
-                            ;; symbol-name-nearest-point
-
-;;; You will get this message:
-;;;
-;;; Compiling file find-dired+.el
-;;;   ** the function dired-simple-subdir-alist is not known to be defined.
+                            ;; region-or-non-nil-symbol-name-nearest-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar find-dired-hook nil
   "*Hook to be run at the end of each `find-dired' execution.")
 
-(defvar find-dired-default-fn (and (fboundp 'symbol-name-nearest-point)
-                                    'symbol-name-nearest-point)
+(defcustom find-dired-default-fn (if (fboundp 'region-or-non-nil-symbol-name-nearest-point)
+                                     (lambda () (region-or-non-nil-symbol-name-nearest-point t))
+                                   'word-at-point)
   "*Function of 0 args called to provide default input for \\[find-dired],
 \\[find-name-dired], and  \\[find-grep-dired].
 
-Some reasonable choices:
-`word-nearest-point', `symbol-name-nearest-point', `sexp-nearest-point'.
+Some reasonable choices: `word-nearest-point',
+`region-or-non-nil-symbol-name-nearest-point',
+`non-nil-symbol-name-nearest-point', `sexp-nearest-point'.
 
-If this is nil, then no default input is provided.")
+If this is nil, then no default input is provided."
+  :type '(choice
+          (const :tag "No default for `find-dired'" nil)
+          (function :tag "Function of zero args to provide default for `find-dired'"))
+  :group 'find-dired)
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
@@ -195,8 +203,7 @@ LS-SWITCHES is a list of `ls' switches to tell dired how to parse the output.")
 ;; 1. Interactive spec uses `read-from-minibuffer', `read-file-name',
 ;;    `dired-regexp-history' and `find-dired-default-fn'.
 ;; 2. Runs `find-dired-hook' at end.
-;; 3. Uses `find-dired-default-fn' to get default input text.
-;; 4. Buffer used has same root name as the dir (not "*Find*").
+;; 3. Buffer used has same root name as the dir (not "*Find*").
 ;;;###autoload
 (defun find-dired (dir args)
   "Run `find' and put its output in a buffer in Dired Mode.
@@ -205,27 +212,24 @@ The `find' command run (after changing into DIR) is:
 
     find . \\( ARGS \\) -ls"
   (interactive
-   (let ((default (and find-dired-default-fn
-                       (funcall find-dired-default-fn))))
+   (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
      (list (read-file-name "Run `find' in directory: " nil "" t)
            (read-from-minibuffer "Run `find' (with args): " nil
                                  nil nil 'find-args-history default t))))
-  (let ((dired-buffers dired-buffers))
+  (let ((dired-buffers  dired-buffers))
     ;; Expand DIR ("" means default-directory), and make sure it has a
     ;; trailing slash.
-    (setq dir (abbreviate-file-name
-               (file-name-as-directory (expand-file-name dir))))
+    (setq dir  (abbreviate-file-name (file-name-as-directory (expand-file-name dir))))
     (unless (file-directory-p dir)      ; Ensure that it's really a directory.
       (error "Command `find-dired' needs a directory: `%s'" dir))
     (switch-to-buffer (create-file-buffer (directory-file-name dir)))
     (widen)
     (kill-all-local-variables)
-    (setq buffer-read-only nil)
+    (setq buffer-read-only  nil)
     (erase-buffer)
-    (setq default-directory dir)
-    (setq args (concat
-                "find . " (if (string= "" args) "" (concat "\\( " args " \\) "))
-                (car find-ls-option)))
+    (setq default-directory  dir)
+    (setq args  (concat "find . " (if (string= "" args) "" (concat "\\( " args " \\) "))
+                        (car find-ls-option)))
     ;; The next statement will bomb in classic dired (no optional arg allowed)
     (dired-mode dir (cdr find-ls-option))
     ;; This really should rerun the find command, but I don't
@@ -241,7 +245,7 @@ The `find' command run (after changing into DIR) is:
       ;; this does no harm)
       (set (make-local-variable 'dired-subdir-alist)
            (list (cons default-directory (point-min-marker)))))
-    (setq buffer-read-only nil)
+    (setq buffer-read-only  nil)
     ;; Subdir headerline must come first because the first marker in
     ;; `subdir-alist' points there.
     (insert "  " dir ":\n")
@@ -249,12 +253,12 @@ The `find' command run (after changing into DIR) is:
     ;; "wildcard" line.
     (insert "  " args "\n")
     ;; Start the `find' process.
-    (let ((proc (start-process-shell-command "find" (current-buffer) args)))
+    (let ((proc  (start-process-shell-command "find" (current-buffer) args)))
       (set-process-filter proc (function find-dired-filter))
       (set-process-sentinel proc (function find-dired-sentinel))
       ;; Initialize the process marker; it is used by the filter.
       (move-marker (process-mark proc) 1 (current-buffer))
-      (setq mode-line-process '(": %s `find'"))
+      (setq mode-line-process  '(": %s `find'"))
       (run-hooks 'find-dired-hook 'dired-after-readin-hook))))
 
 
@@ -268,11 +272,10 @@ and run `dired' on those files.  PATTERN may use shell wildcards, and
 it need not be quoted.  It is not an Emacs regexp.
 The command run (after changing into DIR) is: find . -name 'PATTERN' -ls"
   (interactive
-   (let ((default (and find-dired-default-fn
-                       (funcall find-dired-default-fn))))
-   (list (read-file-name "Find-name (directory): " nil "" t)
-         (read-from-minibuffer "Find-name (filename wildcard): " nil
-                               nil nil 'dired-regexp-history default t))))
+   (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
+     (list (read-file-name "Find-name (directory): " nil "" t)
+           (read-from-minibuffer "Find-name (filename wildcard): " nil
+                                 nil nil 'dired-regexp-history default t))))
   (find-dired dir (concat "-name '" pattern "'")))
 
 
@@ -289,8 +292,7 @@ The `find' command run (after changing into DIR) is:
 
 Thus REGEXP can also contain additional grep options."
   (interactive
-   (let ((default (and find-dired-default-fn
-                       (funcall find-dired-default-fn))))
+   (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
      (list (read-file-name "Find-grep (directory): " nil "" t)
            (read-from-minibuffer "Find-grep (grep regexp): " nil
                                  nil nil 'dired-regexp-history default t))))
@@ -300,8 +302,7 @@ Thus REGEXP can also contain additional grep options."
   ;; by FIFOs and devices.  I'm not sure what's best to do
   ;; about symlinks, so as far as I know this is not wrong.
   (find-dired dir
-              (concat "-type f -exec grep " find-grep-options " "
-                      regexp " {} \\\; ")))
+              (concat "-type f -exec grep " find-grep-options " " regexp " {} \\\; ")))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
@@ -310,15 +311,15 @@ Thus REGEXP can also contain additional grep options."
   "Filter for \\[find-dired] processes.
 PROC is the process.
 STRING is the string to insert."
-  (let ((buf (process-buffer proc)))
+  (let ((buf  (process-buffer proc)))
     (if (buffer-name buf)               ; not killed?
         (save-excursion
           (set-buffer buf)
           (save-restriction
             (widen)
             (save-excursion
-              (let ((buffer-read-only nil)
-                    (end (point-max)))
+              (let ((buffer-read-only  nil)
+                    (end               (point-max)))
                 (goto-char end)
                 (insert string)
                 (goto-char end)
@@ -328,7 +329,7 @@ STRING is the string to insert."
                   (forward-line 1))
                 (goto-char (- end 3))   ; no error if < 0
                 (save-excursion         ; Remove lines just listing the file.
-                  (let ((kill-whole-line t))
+                  (let ((kill-whole-line  t))
                     (while (re-search-forward "^  ./" nil t)
                       (beginning-of-line) (kill-line))))
                 ;; Convert ` ./FILE' to ` FILE'
@@ -340,11 +341,8 @@ STRING is the string to insert."
                 ;; output and process it to add text properties.
                 (goto-char end)
                 (if (search-backward "\n" (process-mark proc) t)
-                    (progn
-                      (dired-insert-set-properties (process-mark proc)
-                                                   (1+ (point)))
-                      (move-marker (process-mark proc) (1+ (point)))))
-                ))))
+                    (progn (dired-insert-set-properties (process-mark proc) (1+ (point)))
+                           (move-marker (process-mark proc) (1+ (point)))))))))
       (delete-process proc))))          ; The buffer was killed.
 
 
@@ -355,20 +353,19 @@ STRING is the string to insert."
   "Sentinel for \\[find-dired] processes.
 PROC is the process.
 STATE is the state of process PROC."
-  (let ((buf (process-buffer proc)))
+  (let ((buf  (process-buffer proc)))
     (if (buffer-name buf)
         (save-excursion
           (set-buffer buf)
-          (let ((buffer-read-only nil))
+          (let ((buffer-read-only  nil))
             (save-excursion
               (goto-char (point-max))
               (insert "\nfind " state)  ; STATE is, e.g., "finished".
               (forward-char -1)         ; Back up before \n at end of STATE.
               (insert " at " (substring (current-time-string) 0 19))
               (forward-char 1)
-              (setq mode-line-process
-                    (concat ": " (symbol-name (process-status proc))
-                            " `find'"))
+              (setq mode-line-process  (concat ": " (symbol-name (process-status proc))
+                                               " `find'"))
               ;; Since the buffer and mode line will show that the
               ;; process is dead, we can delete it now.  Otherwise it
               ;; will stay around until M-x list-processes.

@@ -3,6 +3,7 @@ Hi, I love emacs. Especially dired, tramp and comint. Not to the mention the who
 : Welcome on the wiki !
 ----
 I uploaded:
+* PerlmonksEl - Emacs interface to www.perlmonks.org
 * Daniel Polani's ShellCurrentDirectory and I hope you enjoy it.
 * AsciidocEl - asciidoc support for emacs.
 * ColorThemeRandom - randomly select a color theme - every (random n) minutes!

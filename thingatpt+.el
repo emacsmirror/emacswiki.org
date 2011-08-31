@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Aug 17 10:26:49 2011 (-0700)
+;; Last-Updated: Tue Aug 30 11:48:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1277
+;;     Update #: 1290
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,6 +51,7 @@
 ;;    `non-nil-symbol-nearest-point', `number-at-point-decimal',
 ;;    `number-at-point-hex', `number-nearest-point',
 ;;    `region-or-word-at-point', `region-or-word-nearest-point',
+;;    `region-or-non-nil-symbol-name-nearest-point',
 ;;    `sentence-nearest-point', `sexp-at-point-with-bounds',
 ;;    `sexp-nearest-point', `sexp-nearest-point-with-bounds',
 ;;    `string-at-point', `string-nearest-point',
@@ -91,6 +92,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/30 dadams
+;;     Added: region-or-non-nil-symbol-name-nearest-point.
+;;     region-or-*: Use region only if transient-mark-mode, non-empty (and active).
 ;; 2011/08/17 dadams
 ;;     list-at/nearest-point-with-bounds:
 ;;       Don't count `foo or 'foo as a list, i.e., (` foo) or (quote foo).
@@ -830,6 +834,19 @@ Returns the name of the nearest symbol other than `nil'.
   (let ((symb+bds  (symbol-nearest-point-with-bounds t)))
     (if symb+bds (symbol-name (car symb+bds)) "")))
 
+(defun region-or-non-nil-symbol-name-nearest-point (&optional quote-it-p)
+  "Return non-empty active region or symbol nearest point.
+Non-nil QUOTE-IT-P means wrap the region text in double-quotes (\").
+The name of the nearest symbol other than `nil' is used.
+See `non-nil-symbol-name-nearest-point'."
+  (if (and transient-mark-mode mark-active
+           (not (eq (region-beginning) (region-end))))
+      (let ((region-text  (buffer-substring-no-properties (region-beginning) (region-end))))
+        (if quote-it-p
+            (concat "\"" region-text "\"")
+          region-text))
+    (non-nil-symbol-name-nearest-point)))
+
 (defun word-nearest-point (&optional syntax-table)
   "Return the word (a string) nearest to point, if any, else \"\".
 \"Nearest\" to point is determined as for `thing-nearest-point'.
@@ -837,16 +854,18 @@ SYNTAX-TABLE is a syntax table to use."
   (thing-nearest-point 'word syntax-table))
 
 (defun region-or-word-nearest-point (&optional syntax-table)
-  "Return the active region or the word nearest point if region inactive.
+  "Return non-empty active region or word nearest point.
 See `word-nearest-point'."
-  (if mark-active
+  (if (and transient-mark-mode mark-active
+           (not (eq (region-beginning) (region-end))))
       (buffer-substring-no-properties (region-beginning) (region-end))
     (word-nearest-point syntax-table)))
 
 (put 'region-or-word 'thing-at-point 'region-or-word-at-point)
 (defun region-or-word-at-point ()
-  "Return the active region or the word at point if the region is not active."
-  (if mark-active
+  "Return non-empty active region or word at point."
+  (if (and transient-mark-mode mark-active
+           (not (eq (region-beginning) (region-end))))
       (buffer-substring-no-properties (region-beginning) (region-end))
     (current-word)))
 

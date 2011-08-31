@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 16:48:15 2011 (-0700)
+;; Last-Updated: Tue Aug 30 18:04:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 6998
+;;     Update #: 7006
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/08/30 dadams
+;;     icicle-yank-maybe-completing: Put delete-selection prop, so region is deleted.
 ;; 2011/08/26 dadams
 ;;     icicle-comint-dynamic-complete-as-filename, icicle-comint-dynamic-simple-complete,
 ;;       icicle-bbdb-complete-name, icicle-explore, icicle-bookmark(-list|-other-window),
@@ -2606,6 +2608,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/08/30 dadams
+;;     icicle-backward-delete-char-untabify, icicle-delete(-backward)-char:
+;;       Put delete-selection prop, so region is deleted.
 ;; 2011/08/26 dadams
 ;;     Make sure to pass format string as first arg to calls to functions error and message.
 ;;     icicle-candidate-set-save-1: Use %s, not %S, in error format string.
@@ -4850,6 +4855,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/08/30 dadams
+;;     icicle-thing-at-point-functions:
+;;       symbol-name-nearest-point -> icicle-thing-at-point-functions
+;;       region-or-word-nearest-point -> word-nearest-point
 ;; 2011/08/13 dadams
 ;;     icicle-top-level-key-bindings: Map bmkp-autofile-set to icicle-bookmark-a-file.
 ;; 2011/08/07 dadams

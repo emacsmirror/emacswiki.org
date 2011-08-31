@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 01:30:29 2011 (-0700)
+;; Last-Updated: Tue Aug 30 17:57:34 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4402
+;;     Update #: 4425
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,8 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `regexp-opt',
+;;   `backquote', `bytecomp', `cl', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-mac', `kmacro', `levenshtein', `regexp-opt',
 ;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3079,12 +3080,11 @@ during Icicles search)."
 (defcustom icicle-thing-at-point-functions
   (progn (or (require 'ffap- nil t) (require 'ffap nil t)) ; Try `ffap-.el' first.
          (cons
-          ;; 1) Lisp symbol or file name, 2) region-or-word, 3) Ffap, 4)url.
-          `(,(if (fboundp 'symbol-name-nearest-point)
-                 'symbol-name-nearest-point
+          `(,(if (fboundp 'non-nil-symbol-name-nearest-point)
+                 'non-nil-symbol-name-nearest-point
                  (lambda () (symbol-name (symbol-at-point))))
-            ,(if (fboundp 'region-or-word-nearest-point)
-                 'region-or-word-nearest-point
+            ,(if (fboundp 'word-nearest-point)
+                 'word-nearest-point
                  (lambda () (thing-at-point 'word)))
             ,@(and (fboundp 'list-nearest-point-as-string) '(list-nearest-point-as-string))
             ,@(and (fboundp 'list-nearest-point-as-string)

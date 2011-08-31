@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 28 11:00:05 2011 (-0700)
+;; Last-Updated: Tue Aug 30 17:57:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26137
+;;     Update #: 26140
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1586,8 +1586,8 @@
 ;;  inserts a different kind of thing at point each time.  By default,
 ;;  these are the thing types, in order:
 ;;
-;;    `symbol-name-nearest-point' (*) or `symbol-at-point'
-;;    `region-or-word-nearest-point' (*) or the word at point
+;;    `non-nil-symbol-name-nearest-point' (*) or `symbol-at-point'
+;;    `word-nearest-point' (*) or the word at point
 ;;    `list-nearest-point-as-string' (*), the first enclosing list
 ;;    `list-nearest-point-as-string' (*), the second enclosing list
 ;;    `list-nearest-point-as-string' (*), the third enclosing list
@@ -1604,8 +1604,7 @@
 ;;  @, and _.
 ;;
 ;;  The second alternative inserts a word, which includes letters, ',
-;;  and -.  Or it inserts the region (wherever it is), if it is
-;;  active.
+;;  and -.
 ;;
 ;;  The third, fourth, and fifth alternatives insert a (non-`nil')
 ;;  list that is around point - three different enclosing levels.

@@ -125,8 +125,8 @@ For example, if the value of `icicle-default-thing-insertion' is
 a different kind of thing at point each time.  By default, these are
 the thing types, in order:
 
-# `symbol-name-nearest-point' (*) or `symbol-at-point'
-# `region-or-word-nearest-point' (*) or the word at point
+# `non-nil-symbol-name-nearest-point' (*) or `symbol-at-point'
+# `word-nearest-point' (*) or the word at point
 # `list-nearest-point-as-string', the first enclosing list (*)
 # `list-nearest-point-as-string', the second enclosing list (*)
 # `list-nearest-point-as-string', the third enclosing list (*)
@@ -142,8 +142,7 @@ EmacsLisp ''[[symbol]]'' name.  In practice, this can also be a ''file''
 name or a ''URL'' -- it can include characters such as  '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''.
 
 The second alternative inserts a ''word'', which includes letters,
-'''##'##''', and '''##-##'''.  Or it inserts the [[region]] (wherever it is), if it is
-[[active region|active]].
+'''##'##''', and '''##-##'''. 
 
 The third, fourth, and fifth alternatives insert a (non-`nil')
 list that is around point - three different enclosing levels.

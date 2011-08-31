@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Aug 24 07:26:41 2011 (-0700)
+;; Last-Updated: Tue Aug 30 17:46:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1091
+;;     Update #: 1134
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,13 +44,6 @@
 ;;  Internal variable defined here: `occur-regexp'.
 ;;
 ;;
-;;
-;;  ***** NOTE: The following user option defined in `replace.el' has
-;;              been REDEFINED HERE:
-;;
-;;    `list-matching-lines-face'.
-;;
-;;
 ;;  ***** NOTE: The following functions defined in `replace.el' have
 ;;              been REDEFINED HERE:
 ;;
@@ -74,23 +67,19 @@
 ;;                              and visited linenum in occur buffer.
 ;;    `occur-read-primary-args' - (Emacs 21 only) Default regexps via
 ;;                                `search/replace-default-fn'.
-;;    `query-replace-read-args',  - (Not needed for Emacs 21)
+;;    `query-replace-read-args',  - (Not needed for Emacs 21+)
 ;;                                1. Uses `completing-read' if
 ;;                                   `replace-w-completion-flag' is
 ;;                                   non-nil.
 ;;                                2. Default regexps are obtained via
 ;;                                   `search/replace-default-fn'.
 ;;    `query-replace-read-(from|to)' - Same as `query-replace-read-args',
-;;                                     but for Emacs 21.
+;;                                     but for Emacs 21+.
 ;;
 ;;
 ;;  This file should be loaded after loading the standard GNU file
 ;;  `replace.el'.  So, in your `~/.emacs' file, do this:
 ;;  (eval-after-load "replace" '(progn (require 'replace+)))
-;;
-;;  Because standard variables such as `list-matching-lines-face' are
-;;  predefined, this file overrides the standard definition.  If you
-;;  want a different value, you must set it after loading this file.
 ;;
 ;;  For Emacs releases prior to Emacs 22, these Emacs 22 key bindings
 ;;  are made here:
@@ -107,6 +96,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/30 dadams
+;;     search/replace-default-fn:
+;;       defvar -> defcustom.
+;;       symbol-name-nearest-point -> non-nil-symbol-name-nearest-point.
+;;     query-replace-read-(to|from|args), (keep|flush)-lines, how-many, occur, occur-read-primary-args:
+;;       Use functionp, not fboundp.
 ;; 2011/08/24 dadams
 ;;     Added macro menu-bar-make-toggle-any-version.  Use for menu-bar-toggle-replace-w-completion.
 ;; 2011/08/22 dadams
@@ -229,7 +224,7 @@
                                   ;;       and, for Emacs <20: cadr, when, unless)
 
 (require 'thingatpt nil t) ;; (no error if not found): word-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-name-nearest-point
+(require 'thingatpt+ nil t) ;; (no error if not found): non-nil-symbol-name-nearest-point
 (require 'frame-cmds nil t) ;; (no error if not found): show-a-frame-on
 (require 'frame-fns nil t) ;; (no error if not found): get-a-frame
 (require 'fit-frame nil t) ;; (no error if not found): fit-frame
@@ -265,9 +260,7 @@ setting the variable and displaying a status message (not MESSAGE)."
     "*Face for minibuffer prompts."
     :group 'basic-faces))
 
-
 (defvar occur-regexp nil "Search pattern used by `occur' command.") ; Internal variable.
-
 
 (defcustom replace-w-completion-flag nil
   "*Non-nil means use minibuffer completion for replacement commands
@@ -293,15 +286,26 @@ This toggles the value of option `replace-w-completion-flag'."
         (setq replace-w-completion-flag  nil))
     (setq replace-w-completion-flag  (not replace-w-completion-flag)))) ; Toggle.
 
-(defvar search/replace-default-fn
-  (if (fboundp 'symbol-name-nearest-point)
-      'symbol-name-nearest-point
-    'word-at-point)
-  "*Fn of 0 args called to provide default input for search/replacement
-functions such as \\[query-replace-w-options] and \\[occur].
+(defcustom search/replace-default-fn (if (fboundp 'non-nil-symbol-name-nearest-point)
+                                         'non-nil-symbol-name-nearest-point
+                                       'word-at-point)
+  "*Function to provide default input for search/replacement functions.
+This includes commands such as \\[query-replace-w-options] and \\[occur].
+The function is called with no arguments.
 
 Some reasonable choices are defined in `thingatpt+.el':
-`word-nearest-point', `symbol-name-nearest-point', `sexp-nearest-point'")
+`word-nearest-point', `non-nil-symbol-name-nearest-point',
+`region-or-non-nil-symbol-name-nearest-point', `sexp-nearest-point'.
+
+Note that if you use `region-or-non-nil-symbol-name-nearest-point' for
+this (which is what I personally prefer), then you cannot also take
+advantage of the use of the region to bound the effect of
+query-replace.  (Personally, I just narrow the buffer whenever I want
+to restrict query-replace scope to the region.)"
+  :type '(choice
+          (const :tag "No default input search/replacement functions" nil)
+          (function :tag "Function of 0 args to provide default for search/replace"))
+  :group 'matching)
 
 
 
@@ -323,7 +327,7 @@ wants to replace FROM with TO.
 Non-nil `replace-w-completion-flag' means you can use completion."
     (if query-replace-interactive
         (car (if regexp-flag regexp-search-ring search-ring))
-      (let* ((default   (if (fboundp search/replace-default-fn)
+      (let* ((default   (if (functionp search/replace-default-fn)
                             (funcall search/replace-default-fn)
                           (car (symbol-value query-replace-from-history-variable))))
              (lastto    (car (symbol-value query-replace-to-history-variable)))
@@ -377,7 +381,7 @@ Non-nil `replace-w-completion-flag' means you can use completion."
 (when (> emacs-major-version 21)
   (defun query-replace-read-to (from string regexp-flag)
     "Query and return the `to' argument of a query-replace operation."
-    (let* ((default    (if (fboundp search/replace-default-fn)
+    (let* ((default    (if (functionp search/replace-default-fn)
                            (funcall search/replace-default-fn)
                          (car (symbol-value query-replace-to-history-variable))))
            (to-prompt  (format "%s.  NEW (replacing %s): " string (query-replace-descr from)))
@@ -435,7 +439,7 @@ Non-nil `replace-w-completion-flag' means you can use completion."
 ;; value does a regexp query replace.  Another difference is that non-nil
 ;; `isearchp-set-region-flag' means set the region around the last target occurrence.
 ;;
-;; In Emacs 21, this has the same behavior as the versions of `query-replace-read-to' and
+;; In Emacs 21+, this has the same behavior as the versions of `query-replace-read-to' and
 ;; `query-replace-read-from' defined here:
 ;;
 ;;    1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
@@ -511,7 +515,7 @@ minibuffer completion while you type the arguments.  In that case, to
 insert a `SPC' or `TAB' character, you will need to preceed it by \
 `\\[quoted-insert]'."
     (unless noerror (barf-if-buffer-read-only))
-    (let* ((default     (if (fboundp search/replace-default-fn)
+    (let* ((default     (if (functionp search/replace-default-fn)
                             (funcall search/replace-default-fn)
                           (car regexp-history)))
            (old-prompt  (concat string ".  OLD (to be replaced): "))
@@ -548,7 +552,7 @@ the matching is case-sensitive."
     (interactive
      (list (read-from-minibuffer
             "Keep lines after cursor that contain a match for REGEXP: "
-            (if (fboundp search/replace-default-fn)
+            (if (functionp search/replace-default-fn)
                 (funcall search/replace-default-fn)
               (car regexp-history))
             nil nil 'regexp-history nil t)))
@@ -587,7 +591,7 @@ the matching is case-sensitive."
     (interactive
      (list (read-from-minibuffer
             "Delete lines after cursor that contain a match for REGEXP: "
-            (if (fboundp search/replace-default-fn)
+            (if (functionp search/replace-default-fn)
                 (funcall search/replace-default-fn)
               (car regexp-history))
             nil nil 'regexp-history nil t)))
@@ -613,7 +617,7 @@ If REGEXP contains upper case characters (excluding those preceded by `\\'),
 the matching is case-sensitive."
     (interactive (list (read-from-minibuffer
                         "Count matches after point for REGEXP: "
-                        (if (fboundp search/replace-default-fn)
+                        (if (functonp search/replace-default-fn)
                             (funcall search/replace-default-fn)
                           (car regexp-history)) nil nil 'regexp-history nil t)))
     (when (interactive-p) (message "Counting matches after point..."))
@@ -657,7 +661,7 @@ menu to find any of the occurrences in the current buffer.
 If REGEXP contains upper case characters (excluding those preceded by `\\'),
 the matching is case-sensitive."
     (interactive
-     (list (let ((default  (if (fboundp search/replace-default-fn)
+     (list (let ((default  (if (functionp search/replace-default-fn)
                                (funcall search/replace-default-fn)
                              (car regexp-history))))
              (read-from-minibuffer "List lines matching regexp: "  nil nil nil 'regexp-history default t))
@@ -869,7 +873,7 @@ the matching is case-sensitive."
 ;; The default regexp is provided by `search/replace-default-fn'.
 (when (>= emacs-major-version 21)
   (defun occur-read-primary-args ()
-    (list (let* ((default  (if (fboundp search/replace-default-fn)
+    (list (let* ((default  (if (functionp search/replace-default-fn)
                                (funcall search/replace-default-fn)
                              (car regexp-history)))
                  (input    (read-from-minibuffer

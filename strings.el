@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:18:02 2011 (-0800)
+;; Last-Updated: Tue Aug 30 17:49:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 512
+;;     Update #: 515
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -284,9 +284,9 @@ Interactively:
 \"Word\" is as defined by `forward-word'.
 Note: It is possible for the symbol found to be on a previous line.
 
-Some related functions:
-  `symbol-name-nearest-point' returns the name of `symbol-nearest-point'
-    as a string, or \"\" if none.
+Some related functions (defined in `thingatpt+.el'):
+  `non-nil-symbol-name-nearest-point' returns the name of the non-nil
+    `symbol-nearest-point' as a string, or \"\" if none.
   `symbol-name-before-point'  returns the string naming the symbol at or
     before the cursor (even if it is on a previous line) or \"\" if none.
   `symbol-at-point' returns the symbol under the cursor, or nil if none.
@@ -304,9 +304,9 @@ Note that these last two functions return symbols, not strings."
 If no symbol is found, returns the empty string, \"\".
 Note: It is possible for the symbol found to be on a previous line.
 
-Some related functions:
-  `symbol-name-nearest-point' returns the name of `symbol-nearest-point'
-    as a string, or \"\" if none.
+Some related functions (defined in `thingatpt+.el'):
+  `non-nil-symbol-name-nearest-point' returns the name of the non-nil
+    `symbol-nearest-point' as a string, or \"\" if none.
   `word-before-point' returns the word at or before the cursor as a string.
   `symbol-at-point' returns the symbol under the cursor, or nil if none.
   `symbol-nearest-point' returns the symbol nearest to the cursor, or nil.

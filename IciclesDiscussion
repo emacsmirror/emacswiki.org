@@ -817,8 +817,6 @@ No, I'm sorry. [[Ido]] uses the minibuffer in incompatible ways; '''Icicles''' u
 
 
 
-[:LatestEntry]
-
 
 <pre>
 
@@ -890,18 +888,32 @@ Do not hesitate to ask questions or mention problems you encounter, but the doc 
 
 
 
+[:LatestEntry]
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
 
 
+[new]
+
+Hi Drew!
+
+Some quick questions:
+
+How to go to *completions* buffer automatically when i hit TAB or S-TAB? Now i have to hit C-INS to go to the *completions* buffer.
+
+I cycling in the completions buffer and if i go through some directories, they've been cocatenated to the path. I vant the same behaviour as i've got for files (replace not concatenate).
+
+Screenshot for clarification: http://imageshack.us/photo/my-images/833/icicles.png/
 
 
-
-
-
-
-
-
+Thanks for your answer!
 
 
 ----

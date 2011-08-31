@@ -344,6 +344,42 @@ Hey Drew, thanks for all the great code.  Just wondering, is <tt>[[cus-edit+.el]
 [new:DrewAdams:2010-12-22 15:14 UTC]
 Hi Dave. Dunno. I haven't changed it in years, so it is probably out of date in some respects. If you have the time to take a look and let me know, I'll put it on my to-do list.  Thx -- DrewAdams
 
+[new]
+query-replace-w-options does not offer the thing at point as default (occur does)??
+I would love to have query-replace-w-options pick up the thing at point.
+At the end of my .emacs:
+
+    (add-to-list 'load-path "~/.emacs.d/replace_plus/")
+    (eval-after-load "replace" '(progn (require 'replace+)))
+
+Running 23.3 under Windows--Thanks [[Mike F]]
+
+[new:DrewAdams:2011-08-30 15:11 UTC]
+I don't understand.  For `M-n', it should be picking up the `symbol-name-nearest-point' if you use library [[ThingAtPoint+]], or the `word-at-point' otherwise.  What is your value of `search/replace-default-fn'?
+
+Remember that the default in this sense is what you get via `M-n'.  Query-replace has a different default behavior if you just hit `RET' with no typed input.  This is a feature.  `M-n' lets you get the thing at point, and an empty `RET' lets you repeat the last query-replace.
+
+You will need to describe just what you're doing (recipe), so I can understand the problem.  Thx -- DrewAdams
+
+[new]
+I did not know about `M-n' to access the thing at point.  Works great!
+I really like the functionality where occur opens using the thing at point with one key.
+
+Is there a binding to open an Icicles Occur from thing at point with one key?  Thanks MikeF 
+
+[new:DrewAdams:2011-08-30 21:00 UTC]
+1. To clarify, `M-n' does not access the thing at point, in general.  `M-n' inserts the (first) default value into the minibuffer.  In the case at hand, that default value comes from the thing at point.
+
+2. '''Icicles''' occur (`icicle-occur', `##C-'##') is not the same as `occur'.  The regexp it uses is dynamic: whatever you type in the minibuffer immediately updates the "occur" matches.  A "default value" has no meaning here.  However, in '''Icicles''' you can ''always'' insert text that is at point into the minibuffer, using `##M-.##'.  See [[Icicles - Inserting Text from Cursor]].
+
+
+[new:DaveAbrahams:2011-08-30 20:52 UTC]
+Hi Drew,
+
+One downside I notice with many of the enhancements such as compile- and grep+ is that they stomp on the face settings from the zenburn theme I use.  I could try to load all your stuff first, but I really don't like to load things eagerly.    What's your recommendation? -- DaveAbrahams
+
+[new:DrewAdams:2011-08-30 21:02 UTC]
+Should be OK now. Let me know if you find other such problems. Thx -- DrewAdams
 
 ----
 

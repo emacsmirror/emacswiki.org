@@ -33,7 +33,7 @@ If you want the full path to the file, you can have it "expanded" with a PrefixA
 
 Running
 
-  C-c C-i ~/.emacs RET
+  C-u C-c C-i ~/.emacs RET
 
 will insert
 
@@ -48,6 +48,13 @@ Running
 will insert the relative path to the file, in this case just the file name.
 
   .emacs
+
+Here's a summary of the above,
+
+|| **Key sequence**             || **Inserted text**     ||
+|| ##C-c C-i ~/.emacs RET##     || ##~/.emacs##          ||
+|| ##C-u C-c C-i ~/.emacs RET## || ##/home/user/.emacs## ||
+|| ##C-- C-c C-i ~/.emacs RET## || ##.emacs##            ||
 
 Based on a [http://rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/ blog post]  by RodrigoLazo.
 

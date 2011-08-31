@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Thu Feb 24 14:48:41 2011 (-0800)
+;; Last-Updated: Tue Aug 30 17:16:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 844
+;;     Update #: 902
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -80,6 +80,12 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/08/30 dadams
+;;     grep-default-regexp-fn:
+;;       symbol-name-nearest-point -> non-nil-symbol-name-nearest-point.
+;;       Allow nil in defcustom.
+;;       Use functionp, not fboundp.
+;;     grep: Test value of function, not option, grep-default-regexp-fn, before funcall.
 ;; 2011/01/03 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;;     Added some missing autoload cookies for commands.
@@ -124,11 +130,11 @@
 ;;     1. Removed compilation-sentinel.
 ;;     2. compile-internal: go to eob before running process.
 ;; 1999/08/12 dadams
-;;     `underline' instead of `highlight' for `mouse-face', and put on whole line.
+;;     underline instead of highlight for mouse-face, and put on whole line.
 ;; 1999/04/14 dadams
-;;     `grep-regexp-face': Define as `skyblue-background-face', if that is defined.
+;;     grep-regexp-face: Define as skyblue-background-face, if that is defined.
 ;; 1999/04/13  dadams
-;;     `compilation-sentinel': Only put `mouse-face' on the `grep-regexp-alist' part.
+;;     compilation-sentinel: Put mouse-face only on the grep-regexp-alist part.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -157,7 +163,7 @@
 (require 'compile)
 
 (require 'thingatpt nil t) ;; (no error if not found): word-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-name-nearest-point
+(require 'thingatpt+ nil t) ;; (no error if not found): non-nil-symbol-name-nearest-point
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight-regexp-region
 
 ;;; Free variables here - quiet byte compiler.
@@ -173,7 +179,7 @@
 
 ;;; Faces
 
-;; This is defined in `faces.el', Emacs 22.  This definition is adapted to Emacs 20.
+;; This is defined in `faces.el', Emacs 22+.  This definition is adapted to Emacs 20.
 (unless (facep 'minibuffer-prompt)
   (defface minibuffer-prompt '((((background dark)) (:foreground "cyan"))
                                (t (:foreground "dark blue")))
@@ -207,12 +213,13 @@ If your grep command has no such option, set this to \"\"."
   :type 'sexp :group 'compilation)
 
 ;;;###autoload
-(defcustom grep-default-regexp-fn (if (fboundp 'symbol-name-nearest-point)
-                                      'symbol-name-nearest-point
+(defcustom grep-default-regexp-fn (if (fboundp 'non-nil-symbol-name-nearest-point)
+                                      'non-nil-symbol-name-nearest-point
                                     'word-at-point)
   "*Function of 0 args called to provide default search regexp to \\[grep].
-Some reasonable choices: `word-nearest-point',
-`symbol-name-nearest-point', `sexp-nearest-point'.
+Some reasonable choices are defined in `thingatpt+.el':
+`word-nearest-point', `non-nil-symbol-name-nearest-point',
+`region-or-non-nil-symbol-name-nearest-point', `sexp-nearest-point'.
 
 This is ignored if Transient Mark mode is on and the region is active
 and non-empty.  In that case, the quoted (\") region text is used as
@@ -223,7 +230,10 @@ If `grep-default-regexp-fn' is nil and no prefix arg is given to
 
 Otherwise, if the value is not a function, then function
 `grep-default-regexp-fn' does the defaulting."
-  :type 'function :group 'compilation)
+  :type '(choice
+          (const :tag "No default search regexp (unless you use `C-u')" nil)
+          (function :tag "Function of zero args to provide default search regexp"))
+  :group 'grep)
 
 ;;;###autoload
 (defcustom grep-default-comment-line-regexp ":[0-9]+: *;"
@@ -249,12 +259,12 @@ first of these that references a defined function:
   - variable `grep-default-regexp-fn'
   - variable `find-tag-default-function'
   - the `find-tag-default-function' property of the `major-mode'
-  - function `symbol-name-nearest-point', if bound
+  - function `non-nil-symbol-name-nearest-point', if bound
   - function `grep-tag-default'"
-  (cond ((fboundp grep-default-regexp-fn) grep-default-regexp-fn)
+  (cond ((functionp grep-default-regexp-fn) grep-default-regexp-fn)
         (find-tag-default-function)
         ((get major-mode 'find-tag-default-function))
-        ((fboundp 'symbol-name-nearest-point) 'symbol-name-nearest-point)
+        ((fboundp 'non-nil-symbol-name-nearest-point) 'non-nil-symbol-name-nearest-point)
         (t                              ; Use `grep-tag-default' instead of
          'grep-tag-default)))           ; `find-tag-default', to avoid loading etags.
 
@@ -288,8 +298,8 @@ a function that generates a unique name."
                                    '(compile-history . 1)))
      (list compile-command)))
   ;; Reset `grep-pattern' from last grep.
-  (setq grep-pattern nil)
-  (setq compile-command command)
+  (setq grep-pattern     nil
+        compile-command  command)
   (save-some-buffers (not compilation-ask-about-save) nil)
   (compile-internal compile-command "No more errors."))
 
@@ -322,21 +332,21 @@ The text (regexp) to find is defaulted as follows:
 - If `grep-default-regexp-fn' is nil and no prefix arg is provided,
   then no default regexp is used.
 
-If a non-nil prefix arg is provided, the default text is substituted
-into the last grep command in the grep command history (or into
-`grep-command' if that history list is empty).  That is, the same
-command options and files to search are used as the last time."
+If a prefix arg is provided, the default text is substituted into the
+last grep command in the grep command history (or into `grep-command'
+if that history list is empty).  That is, the same command options and
+files to search are used as the last time."
   (interactive
-   (let ((arg current-prefix-arg)
+   (let ((arg  current-prefix-arg)
          grep-default)
      (unless grep-command (grep-compute-defaults))
      (when arg
-       (let ((tag-default (funcall (grep-default-regexp-fn))))
-         (setq grep-default (or (car grep-history) grep-command))
+       (let ((tag-default  (funcall (grep-default-regexp-fn))))
+         (setq grep-default  (or (car grep-history) grep-command))
          ;; Replace the thing matching for with that around cursor
          (when (string-match "[^ ]+\\s +\\(-[^ ]+\\s +\\)*\\(\"[^\"]+\"\\|[^ ]+\\)"
                              grep-default)
-           (setq grep-default (replace-match tag-default t t grep-default 2)))))
+           (setq grep-default  (replace-match tag-default t t grep-default 2)))))
      (list (read-from-minibuffer
             "grep <pattern> <files> :  "
             (if arg
@@ -346,7 +356,7 @@ command options and files to search are used as the last time."
                                (not (eq (region-beginning) (region-end))))
                           ;; Use double-quoted region text.
                           (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
-                        (and grep-default-regexp-fn (funcall (grep-default-regexp-fn))))
+                        (and (grep-default-regexp-fn) (funcall (grep-default-regexp-fn))))
                       " "))
             nil nil 'grep-history))))
 
@@ -359,38 +369,35 @@ command options and files to search are used as the last time."
              "[ \t]*\\(-[a-zA-Z]+\\s-+\\)*[ \t]*\\('[^']+'\\|\"[^\"]+\"\\)") ;"
             command-args)
            (setq grep-pattern
-                 (substring command-args
-                            (1+ (match-beginning 2)) (1- (match-end 2)))))
+                 (substring command-args (1+ (match-beginning 2)) (1- (match-end 2)))))
           (;; Unquoted pattern.
            (string-match
             (concat grep-program
                     "[ \t]*\\(-[a-zA-Z]+\\s-+\\)*[ \t]*\\([^ \n\t'\"]+\\)") ; "
             command-args)
-           (setq grep-pattern
-                 (substring command-args (match-beginning 2) (match-end 2))))
+           (setq grep-pattern  (substring command-args (match-beginning 2) (match-end 2))))
           (t;; Bad pattern.
-           (setq grep-pattern nil))))
+           (setq grep-pattern  nil))))
 
   ;; Account for a case-insensitivity option.  Thx to Tamas Patrovics for the suggestion.
   (when (and (not (string= "" grep-case-insensitive-option))
              (string-match grep-case-insensitive-option command-args))
-    (setq grep-pattern (mapconcat (lambda (char)
-                                    (if (or (and (>= char ?a) (<= char ?z))
-                                            (and (>= char ?A) (<= char ?Z)))
-                                        (concat "["  (char-to-string (downcase char))
-                                                (char-to-string (upcase char)) "]")
-                                      (char-to-string char)))
-                                  grep-pattern "")))
+    (setq grep-pattern  (mapconcat (lambda (char)
+                                     (if (or (and (>= char ?a) (<= char ?z))
+                                             (and (>= char ?A) (<= char ?Z)))
+                                         (concat "["  (char-to-string (downcase char))
+                                                 (char-to-string (upcase char)) "]")
+                                       (char-to-string char)))
+                                   grep-pattern "")))
   
   ;; Setting process-setup-function makes exit-message-function work
   ;; even when async processes aren't supported.
-  (let* ((compilation-process-setup-function 'grep-process-setup)
-         (buf (compile-internal (if null-device
-                                    (concat command-args " " null-device)
-                                  command-args)
-                                "No more grep hits" "grep"
-                                ;; Give it a simpler regexp to match.
-                                nil grep-regexp-alist)))))
+  (let* ((compilation-process-setup-function  'grep-process-setup)
+         (buf
+          (compile-internal (if null-device (concat command-args " " null-device) command-args)
+                            "No more grep hits" "grep"
+                            ;; Give it a simpler regexp to match.
+                            nil grep-regexp-alist)))))
 
 
 ;; REPLACES ORIGINAL in `compile.el':
@@ -403,22 +410,17 @@ command options and files to search are used as the last time."
    (mapcar (function
             (lambda (item)
               ;; Prepend "^", adjusting FILE-IDX and LINE-IDX accordingly.
-              (let ((file-idx (nth 1 item))
-                    (line-idx (nth 2 item))
-                    (col-idx (nth 3 item))
+              (let ((file-idx  (nth 1 item))
+                    (line-idx  (nth 2 item))
+                    (col-idx   (nth 3 item))
                     keyword)
                 (when (numberp col-idx)
-                  (setq keyword
-                        (cons (list (1+ col-idx) 'font-lock-type-face nil t)
-                              keyword)))
+                  (setq keyword  (cons (list (1+ col-idx) 'font-lock-type-face nil t) keyword)))
                 (when (numberp line-idx)
-                  (setq keyword
-                        (cons (list (1+ line-idx) 'font-lock-variable-name-face)
-                              keyword)))
+                  (setq keyword  (cons (list (1+ line-idx) 'font-lock-variable-name-face)
+                                       keyword)))
                 (when (numberp file-idx)
-                  (setq keyword
-                        (cons (list (1+ file-idx) 'font-lock-warning-face)
-                              keyword)))
+                  (setq keyword  (cons (list (1+ file-idx) 'font-lock-warning-face) keyword)))
                 (cons (concat "^\\(" (nth 0 item) "\\)") keyword))))
            compilation-error-regexp-alist)
    ;;
@@ -460,15 +462,14 @@ For arg 7-10 a value of t means an empty alist.
 Return the compilation buffer created."
   (let (outbuf)
     (save-excursion
-      (unless name-of-mode (setq name-of-mode "Compilation"))
-      (setq outbuf
-            (get-buffer-create
-             (funcall (or name-function compilation-buffer-name-function
-                          (function (lambda (mode)
-                                      (concat "*" (downcase mode) "*"))))
-                      name-of-mode)))
+      (unless name-of-mode (setq name-of-mode  "Compilation"))
+      (setq outbuf  (get-buffer-create
+                     (funcall (or name-function compilation-buffer-name-function
+                                  (function (lambda (mode)
+                                    (concat "*" (downcase mode) "*"))))
+                              name-of-mode)))
       (set-buffer outbuf)
-      (let ((comp-proc (get-buffer-process (current-buffer))))
+      (let ((comp-proc  (get-buffer-process (current-buffer))))
         (when comp-proc
           (if (or (not (eq (process-status comp-proc) 'run))
                   (yes-or-no-p (format "A %s process is running; kill it? "
@@ -483,45 +484,41 @@ Return the compilation buffer created."
       ;; In case the compilation buffer is current, make sure we get the global
       ;; values of compilation-error-regexp-alist, etc.
       (kill-all-local-variables))
-    (unless error-regexp-alist
-      (setq error-regexp-alist compilation-error-regexp-alist))
-    (unless enter-regexp-alist
-      (setq enter-regexp-alist compilation-enter-directory-regexp-alist))
-    (unless leave-regexp-alist
-      (setq leave-regexp-alist compilation-leave-directory-regexp-alist))
-    (unless file-regexp-alist
-      (setq file-regexp-alist compilation-file-regexp-alist))
+    (unless error-regexp-alist (setq error-regexp-alist  compilation-error-regexp-alist))
+    (unless enter-regexp-alist (setq enter-regexp-alist  compilation-enter-directory-regexp-alist))
+    (unless leave-regexp-alist (setq leave-regexp-alist  compilation-leave-directory-regexp-alist))
+    (unless file-regexp-alist  (setq file-regexp-alist   compilation-file-regexp-alist))
     (unless nomessage-regexp-alist
-      (setq nomessage-regexp-alist compilation-nomessage-regexp-alist))
-    (unless parser (setq parser compilation-parse-errors-function))
-    (let ((thisdir default-directory)
+      (setq nomessage-regexp-alist  compilation-nomessage-regexp-alist))
+    (unless parser (setq parser  compilation-parse-errors-function))
+    (let ((thisdir  default-directory)
           outwin)
       (save-excursion
         ;; Clear out the compilation buffer and make it writable.
         ;; Change its default-directory to the directory where the compilation
         ;; will happen, and insert a `cd' command to indicate this.
         (set-buffer outbuf)
-        (setq buffer-read-only nil)
+        (setq buffer-read-only  nil)
         (buffer-disable-undo (current-buffer))
         (erase-buffer)
         (buffer-enable-undo (current-buffer))
-        (setq default-directory thisdir)
+        (setq default-directory  thisdir)
         (insert "cd " thisdir "\n" command "\n")
-        (setq font-lock-fontified nil)  ; DDA
+        (setq font-lock-fontified  nil)  ; DDA
         (set-buffer-modified-p nil))
       ;; If we're already in the compilation buffer, go to the end
       ;; of the buffer, so point will track the compilation output.
       (when (eq outbuf (current-buffer)) (goto-char (point-max)))
       ;; Pop up the compilation buffer.
       ;; DDA: Don't let frame get resized now. - see `fit-frame.el'
-      (setq outwin (let ((fit-frame-inhibit-fitting-flag t)) (display-buffer outbuf)))
+      (setq outwin  (let ((fit-frame-inhibit-fitting-flag  t)) (display-buffer outbuf)))
       (save-excursion
         (set-buffer outbuf)
         ;; D. Adams: next line added to fix bug when my redefined version of `display-buffer' is
         ;; used.  Without it, the error msgs are inserted above the "cd ..." & "grep ..." lines.
         (goto-char (point-max))
         (compilation-mode name-of-mode)
-        ;; (setq buffer-read-only t)  ;;; Non-ergonomic.
+        ;; (setq buffer-read-only  t)  ;;; Non-ergonomic.
         (set (make-local-variable 'compilation-parse-errors-function) parser)
         (set (make-local-variable 'compilation-error-message) error-message)
         (set (make-local-variable 'compilation-error-regexp-alist)
@@ -542,9 +539,9 @@ Return the compilation buffer created."
                    file-regexp-alist nomessage-regexp-alist))
         (make-local-variable 'lazy-lock-defer-on-scrolling) ; `lazy...' is a free var here.
         ;; This proves a good idea if the buffer's going to scroll with lazy-lock on.
-        (setq lazy-lock-defer-on-scrolling t)
-        (setq default-directory thisdir)
-        (setq compilation-directory-stack (list default-directory))
+        (setq lazy-lock-defer-on-scrolling  t
+              default-directory             thisdir
+              compilation-directory-stack   (list default-directory))
         (set-window-start outwin (point-min))
         (unless (eq outwin (selected-window)) (set-window-point outwin (point-min)))
         (compilation-set-window-height outwin)
@@ -552,21 +549,21 @@ Return the compilation buffer created."
           (funcall compilation-process-setup-function))
         ;; Start the compilation.
         (if (fboundp 'start-process)
-            (let* ((process-environment (cons "EMACS=t" process-environment))
-                   (proc (start-process-shell-command (downcase mode-name)
-                                                      outbuf
-                                                      command)))
+            (let* ((process-environment  (cons "EMACS=t" process-environment))
+                   (proc                 (start-process-shell-command (downcase mode-name)
+                                                                      outbuf
+                                                                      command)))
               (set-process-sentinel proc 'compilation-sentinel)
               (set-process-filter proc 'compilation-filter)
               (set-marker (process-mark proc) (point) outbuf)
-              (setq compilation-in-progress (cons proc compilation-in-progress)))
+              (setq compilation-in-progress  (cons proc compilation-in-progress)))
           ;; No asynchronous processes available.
           (message "Executing `%s'..." command)
           ;; Fake modeline display as if `start-process' were run.
-          (setq mode-line-process ":run")
+          (setq mode-line-process  ":run")
           (force-mode-line-update)
           (sit-for 0)                   ; Force redisplay
-          (let ((status (call-process shell-file-name nil outbuf nil "-c" command)))
+          (let ((status  (call-process shell-file-name nil outbuf nil "-c" command)))
             (cond ((numberp status)
                    (compilation-handle-exit
                     'exit status (if (zerop status)
@@ -580,7 +577,7 @@ Return the compilation buffer created."
       (when compilation-scroll-output
         (save-selected-window (select-window outwin) (goto-char (point-max)))))
     ;; Make it so the next C-x ` will use this buffer.
-    (setq compilation-last-buffer outbuf)))
+    (setq compilation-last-buffer  outbuf)))
 
 
 ;;;###autoload
@@ -602,13 +599,11 @@ The following bindings are in effect in this mode:
   (interactive)
   (fundamental-mode)
   (use-local-map compilation-mode-map)
-  (setq major-mode 'compilation-mode)
-  (setq mode-name (or name-of-mode "Compilation"))
+  (setq major-mode  'compilation-mode
+        mode-name   (or name-of-mode "Compilation"))
   (compilation-setup)
-  (set (make-local-variable 'font-lock-defaults)
-       '(compilation-mode-font-lock-keywords t))
-  (set (make-local-variable 'revert-buffer-function)
-       'compilation-revert-buffer)
+  (set (make-local-variable 'font-lock-defaults) '(compilation-mode-font-lock-keywords t))
+  (set (make-local-variable 'revert-buffer-function) 'compilation-revert-buffer)
   (run-hooks 'compilation-mode-hook))
 
 
@@ -623,18 +618,18 @@ NTH defaults to 1, meaning the next error."
   (interactive "p")
   (unless (compilation-buffer-p (current-buffer))
     (error "Not in a compilation buffer"))
-  (setq compilation-last-buffer (current-buffer))
-  (let ((errors (compile-error-at-point)))
+  (setq compilation-last-buffer  (current-buffer))
+  (let ((errors  (compile-error-at-point)))
     ;; Move to the error after the one containing point.
     (goto-char (car (if (< nth 0)
-                        (let ((i 0)
-                              (e compilation-old-error-list))
+                        (let ((i  0)
+                              (e  compilation-old-error-list))
                           ;; See how many cdrs away ERRORS is from the start.
                           (while (not (eq e errors)) (incf i) (pop e))
                           (if (> (- nth) i)
                               (error "Moved back past first error")
                             (nth (+ i nth) compilation-old-error-list)))
-                      (let ((compilation-error-list (cdr errors)))
+                      (let ((compilation-error-list  (cdr errors)))
                         (compile-reinitialize-errors nil nil nth)
                         (if compilation-error-list
                             (nth (1- nth) compilation-error-list)
@@ -656,7 +651,7 @@ NEXT-ERROR is the locus of the next compilation error."
       ;; If the compilation buffer window is selected,
       ;; keep the compilation buffer in this window;
       ;; display the source in another window.
-      (let ((pop-up-windows t))
+      (let ((pop-up-windows  t))
         (pop-to-buffer (marker-buffer (cdr next-error))))
     (if (and (window-dedicated-p (selected-window))
              (eq (selected-window) (frame-root-window)))
@@ -667,11 +662,11 @@ NEXT-ERROR is the locus of the next compilation error."
   (unless (= (point) (marker-position (cdr next-error)))
     (widen) (goto-char (cdr next-error)))
   ;; Show compilation buffer in other window, scrolled to this error.
-  (let* ((pop-up-windows t)
+  (let* ((pop-up-windows  t)
          ;; Use an existing window if it is in a visible frame.
-         (w (or (get-buffer-window (marker-buffer (car next-error)) 'visible)
-                ;; Pop up a window.
-                (display-buffer (marker-buffer (car next-error))))))
+         (w               (or (get-buffer-window (marker-buffer (car next-error)) 'visible)
+                              ;; Pop up a window.
+                              (display-buffer (marker-buffer (car next-error))))))
     (set-window-point w (car next-error))
     (set-window-start w (car next-error))
     ;; Highlight `grep-pattern' in compilation buffer, if possible.
@@ -718,7 +713,7 @@ if the user has asked for that."
         ;; LIMIT-SEARCH or FIND-AT-LEAST arg.  In that case its value
         ;; records the current position in the error list, and we must
         ;; preserve that after reparsing.
-        (let ((error-list-pos compilation-error-list))
+        (let ((error-list-pos  compilation-error-list))
           (funcall compilation-parse-errors-function
                    limit-search
                    (and find-at-least
@@ -735,18 +730,18 @@ if the user has asked for that."
           (when error-list-pos
             ;; We started in the middle of an existing list of parsed
             ;; errors before parsing more; restore that position.
-            (setq compilation-error-list error-list-pos))
+            (setq compilation-error-list  error-list-pos))
           ;; Mouse-Highlight (the first line of) each error message when the
           ;; mouse pointer moves over it:
-          (let ((inhibit-read-only t)
-                (buffer-undo-list t)
-                deactivate-mark
-                (error-list compilation-error-list))
+          (let ((inhibit-read-only  t)
+                (buffer-undo-list   t)
+                (error-list         compilation-error-list)
+                deactivate-mark)
             (while error-list
               (save-excursion (put-text-property (goto-char (car (car error-list)))
                                                  (progn (end-of-line) (point))
                                                  'mouse-face compile-buffer-mouse-face))
-              (setq error-list (cdr error-list)))))))))
+              (setq error-list  (cdr error-list)))))))))
 
 
 ;; REPLACES ORIGINAL in `compile.el':
@@ -757,17 +752,17 @@ that point to the error messages and their text, so that they no
 longer slow down gap motion.  This would happen anyway at the next
 garbage collection, but it is better to do it right away."
   (while compilation-old-error-list
-    (let ((next-error (car compilation-old-error-list)))
+    (let ((next-error  (car compilation-old-error-list)))
       (set-marker (car next-error) nil)
       (if (markerp (cdr next-error))
           (set-marker (cdr next-error) nil)))
-    (setq compilation-old-error-list (cdr compilation-old-error-list)))
-  (setq compilation-error-list nil
-        compilation-directory-stack (list default-directory)
-        compilation-parsing-end 1)
+    (setq compilation-old-error-list  (cdr compilation-old-error-list)))
+  (setq compilation-error-list       nil
+        compilation-directory-stack  (list default-directory)
+        compilation-parsing-end      1)
   ;; Remove the highlighting added by compile-reinitialize-errors:
-  (let ((inhibit-read-only t)
-        (buffer-undo-list t)
+  (let ((inhibit-read-only  t)
+        (buffer-undo-list   t)
         deactivate-mark)
     (remove-text-properties (point-min) (point-max) (list 'mouse-face compile-buffer-mouse-face))))
 
@@ -786,7 +781,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
 (defun choose-grep-buffer (buf)
   "Switch to a grep buffer."
   (interactive
-   (let ((bufs (grep-buffers)))
+   (let ((bufs  (grep-buffers)))
      (unless bufs (error "No grep buffers"))
      (list (completing-read "Grep buffer: " bufs nil t nil nil
                             (and (consp (cdr bufs)) (car (cadr bufs)))))))
@@ -796,7 +791,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
 
 (defun grep-buffers ()
   "List of names of grep buffers."
-  (let ((bufs nil))
+  (let ((bufs  ()))
     (dolist (buf (buffer-list))
       (when (string-match "\\*grep\\*" (buffer-name buf)) (push (list (buffer-name buf)) bufs)))
     (nreverse bufs)))
@@ -827,15 +822,14 @@ provide.  It does not, in general, remove multi-line comments.  Use it
 to remove C++ comments that start with //, but not multi-line comments
 between /* and */."
   (interactive "P")
-  (let ((inhibit-read-only t)
-        (regexp
-         (if read-regexp-p
-             (read-from-minibuffer "Comment regexp: " nil nil nil 'regexp-history
-                                   grep-default-comment-line-regexp)
-           grep-default-comment-line-regexp)))
-    (save-excursion
-      (goto-char (point-min))
-      (flush-lines regexp))))
+  (let ((inhibit-read-only  t)
+        (regexp             (if read-regexp-p
+                                (read-from-minibuffer
+                                 "Comment regexp: " nil nil nil 'regexp-history
+                                 grep-default-comment-line-regexp)
+                              grep-default-comment-line-regexp)))
+    (save-excursion (goto-char (point-min))
+                    (flush-lines regexp))))
 
 ;;;###autoload
 (defun toggle-grep-comments ()
@@ -859,7 +853,7 @@ between /* and */."
 ;;;(defun compilation-parse-errors (limit-search find-at-least)
 ;;;  "Parse the current buffer as `grep', `cc' or `lint' error messages.
 ;;;See var `compilation-parse-errors-function' for its interface."
-;;;  (setq compilation-error-list nil)
+;;;  (setq compilation-error-list  nil)
 ;;;  (message "Parsing error messages ...")
 ;;;  (let (text-buffer orig orig-expanded parent-expanded
 ;;;        regexp enter-group leave-group error-group
