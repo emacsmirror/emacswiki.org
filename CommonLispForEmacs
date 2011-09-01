@@ -1,8 +1,4 @@
-There are two ways to incorporate CommonLisp in EmacsLisp programs:
-
-== The cl package ==
-
-With this, some CommonLisp functions and macros can be used in EmacsLisp programs.
+Some CommonLisp functions and macros can be used in EmacsLisp programs.
 
 It is already loaded when you start XEmacs.  For GNU Emacs, you need to add the following to your ~/.emacs file:
 
@@ -20,9 +16,10 @@ Here are some things extending <code>cl.el</code>,
 * ArrayExtension -- for <code>cl-array.el</code> multi-dimensional arrays
 * struct+.el / defstruct+.el -- enhancing <code>defstruct</code> (gone?)
 * [http://user42.tuxfamily.org/cl-loop-aplist/index.html cl-loop-aplist.el] -- <code>loop</code> over alists and plists
+* If you want to highlighting cl functions for coding conventions, you
+can use Lisp:highlight-cl.el package.
 
-[new]
-Packages distributed within GNU Emacs don't use cl at runtime (on account of its size, and potential future namespace clashes), only via byte-compiled macros (see the introduction to the cl manual on this).  That doesn't mean you must avoid cl altogether if you aspire to get code into Emacs, indeed major packages like CcMode and [[Gnus]] happily use cl; just ensure it's only through macro forms (such as `push', `setf', `defun*', `loop').  The easiest way to do that is
+Packages distributed within GNU Emacs don't use cl at runtime (on account of its size, and potential future namespace clashes), only via byte-compiled macros (see the introduction to the cl manual on this).[http://lists.gnu.org/archive/html/emacs-devel/2007-09/msg01472.html]  That doesn't mean you must avoid cl altogether if you aspire to get code into Emacs, indeed major packages like CcMode and [[Gnus]] happily use cl; just ensure it's only through macro forms (such as `push', `setf', `defun*', `loop').  The easiest way to do that is
 
   (eval-when-compile (require 'cl))
 
@@ -32,23 +29,7 @@ instead of
 
 The <code>eval-when-compile</code> gets cl loaded when compiling, and the macros expand at that time, leaving no reference to cl in the <code>.elc</code> (if only macros forms are used).  If running uncompiled cl is loaded, but that's ok since there are currently no technical issues.
 
-----
-
-[new]
-I just noticed that the doing (require 'cl) gives problems in [[Eshell]]. -- LennartBorgman
-
-[new]
-Can you be more specific? ;-) -- DrewAdams
-
-
-
-== Emacs Common Lisp ==
-
 EmacsCommonLisp is (or will soon be) a full implementation of CommonLisp.
-
-== Highlighting cl functions ==
-If you want to highlighting cl functions for coding conventions, you
-can use Lisp:highlight-cl.el package.
 
 ----
 CategoryCode

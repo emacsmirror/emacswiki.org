@@ -912,8 +912,20 @@ I cycling in the completions buffer and if i go through some directories, they'v
 
 Screenshot for clarification: http://imageshack.us/photo/my-images/833/icicles.png/
 
+Thanks for your answer! --PasJa
 
-Thanks for your answer!
+[new:DrewAdams:2011-08-31 14:50 UTC]
+
+1. I cannot get to the image you posted. Try posting the image on ThisWiki instead.
+
+2. You should not need to go to (i.e., select) `*Completions*'. I almost never do that.  What is the use case?  Why not just cycle candidates using `down' etc. from the minibuffer?
+
+3. Give me a recipe to reproduce.  I don't understand what it is that you're doing/seeing.
+
+4. But I do see a bug, which I don't have time now to look into: Yes, cycling when in `*Completions*' appends directories. It should not do that.  A workaround is to do your cycling from the minibuffer, as usual.
+
+Thx -- DrewAdams
+
 
 
 ----

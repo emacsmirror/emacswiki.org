@@ -39,13 +39,19 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 * 次のコードを`.emacs`に追加する。
 {{{
       (require 'twittering-mode)
-}}}      
+}}}
+* (Optional) master passwordを使うと一度取得した認証済みOAuth tokenをローカルに暗号化保存しますので、次回以降の実行時にPIN番号を入力する必要がなくなります。master passwordを使うには下記の設定を`.emacs'に追加してください。:
+{{{
+      (setq twittering-use-master-password t)
+}}}
+この設定には[[GnuPG]]が必要です。さらに、[[EasyPG]]もしくは alpaca.el (0.13) も必要になります。
 
 === twittering-modeを動かす ===
 
 # `M-x twit`を実行する。
-# 画面の指示に従いOAuthの認証ページを開き、"Allow"ボタンをクリックして、表示されたPINコードをEmacsに入力する。
-# Twitterのタイムラインが表示されるはず!
+# 画面の指示に従いOAuthの認証ページを開き、"Allow"ボタンをクリックして、表示されたPINコードをEmacsに入力する。master passwordを使っている場合、次回以降はPIN入力もブラウザ起動も必要ありません。
+# (Optional) master passwordを使う場合は、暗号化保存のためのpass phraseを尋ねられますので入力してください。
+# Twitterのタイムラインが表示されるはず! `V'で[[#timeline-spec]]を指定すれば色々なtimelineを開くことができます。
 
 == キーバインド(Viewモード) ==
 
@@ -82,7 +88,7 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 新たなタイムラインを表示すると、バッファも新しく作られます。
 
 ; `v': カーソル下のユーザのタイムラインを表示する。ハッシュタグの場合は検索結果を表示する。(`twittering-other-user-timeline')
-; `V': さまざまなタイムラインを表示する。TAB での補完も可能。(`twittering-visit-timeline')
+; `V': さまざまなタイムラインを表示する。[[#timeline-spec]]を使って、任意のtimelineを開くことができます。TAB での補完も可能。(`twittering-visit-timeline')
 : よく使われそうなタイムラインは、以下のショートカットが用意されている。
 ** `C-c C-f' あなたのfriendsタイムラインを表示する。(`twittering-friends-timeline')
 ** `C-c C-u' あなた自身のツイートを表示する。(`twittering-user-timeline')
@@ -145,6 +151,45 @@ You can use `twittering-mode-hook' to customize your configuration. This example
                      ("R" . twittering-replies-timeline)
                      ("U" . twittering-user-timeline)
                      ("W" . twittering-update-status-interactive)))))
+== Timeline spec ==
+[:timeline-spec]
+Twittering-modeでは**timeline spec**という文字列でtimelineを指定します。
+`V' (`twittering-visit-timeline')を押したときに開くプロンプトで**timeline spec**を入力することで任意のtimelineを開くことができます。開いたtimelineは履歴に残りますので、[[EmacsSession]]の機能やminibuffer上でのbackward incremental searchと組み合わせれば、開いたことのあるtimelineを開くのに便利でしょう。
+
+この**timeline spec**はtimelineを指定する色々な場面で使えます。
+=== 基本的なtimeline ===
+; <b>##:home##</b>: いわゆるホームtimeline
+; <b>##:mentions##</b>: 自分へのmentionを含むtweetから成るtimeline
+; <b>##:public##</b>: public timeline
+; <b>/USER/</b>: /USER/が投稿したtweetから成るtimeline
+; <b>/USER/##/##/LISTNAME/</b>: /USER/が作成した、/LISTNAME/という名前のlistのtimeline
+=== Direct message ===
+; <b>##:direct_messages##</b>: 受信したdirect messageのtimeline
+; <b>##:direct_messages_sent##</b>: 送信したdirect messageのtimeline
+=== Favorite ===
+; <b>##:favorites##</b>: 「お気に入り」のtimeline
+; <b>##:favorites/##/USER/</b>: /USER/の「お気に入り」のtimeline
+=== Hashtag ===
+; <b>#/HASHTAG/</b>: ハッシュタグ#/HASHTAG/のtimeline
+=== Retweet ===
+; <b>##:retweeted_by_me##</b>: 自分が投稿したretweet
+; <b>##:retweeted_by_user/##/USER/</b>: (only on development version) /USER/が投稿したretweet
+; <b>##:retweeted_to_me##</b>: 自分のhome timelineで受信したretweet
+; <b>##:retweeted_to_user/##/USER/</b>: (only on development version) /USER/のhome timelineで受信したretweet
+; <b>##:retweets_of_me##</b>: 自分の投稿したtweetのうち、他のユーザによってretweetされたもの
+=== Search ===
+; <b>##:search/##/QUERY-STRING/##/##</b>: 検索文字列/QUERY-STRING/にマッチするtweet。 /QUERY-STRING/の中では**/** (slash)や**\** (backslash)は**\/**あるいは**\\**のようにエスケープする必要があります。
+== 起動時に自動で開くtimelineの設定 ==
+変数`twittering-initial-timeline-spec-string'を変更すれば、最初に自動的に開くtimelineを変更できます。開くtimelineは[[#timeline-spec]]を使って下記のように指定してください。
+{{{
+(setq twittering-initial-timeline-spec-string
+      '(":home"
+        ":replies"
+        ":favorites"
+        ":direct_messages"
+        ":search/emacs/"
+        "user_name/list_name"))
+}}}
 
 == その他便利なオプション ==
 

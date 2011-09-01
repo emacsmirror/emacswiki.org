@@ -2,8 +2,6 @@
 '''Please leave all text above the first horizontal line intact''', to
 serve as instructions for others.
 
-"          "
-
 This page is not to be confused with //sandbox.el// at
 http://panix.com/~tehom/my-code/, which can be used to help check the
 security of new elisp code.
@@ -22,30 +20,4 @@ done things. Then come back here to experiment. Note that you need not save your
 
 ----
 
-Edits made by usernames ending in a number will be ignored ;)
-
-This is temporary
-
-Many things are temporary. See [[#over]]
-
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-7
-
-8
-
-9
-
------
-
-[:over] This is a new section.
+This is *really* good.

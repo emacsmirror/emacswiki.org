@@ -372,6 +372,28 @@ Is there a binding to open an Icicles Occur from thing at point with one key?  T
 
 2. '''Icicles''' occur (`icicle-occur', `##C-'##') is not the same as `occur'.  The regexp it uses is dynamic: whatever you type in the minibuffer immediately updates the "occur" matches.  A "default value" has no meaning here.  However, in '''Icicles''' you can ''always'' insert text that is at point into the minibuffer, using `##M-.##'.  See [[Icicles - Inserting Text from Cursor]].
 
+[new:Mike_F:2011-09-01 02:13 UTC]
+I noticed Icicles Occur search is not re-started on execution of `##M-.##'  I was able to restart the search by using backspace then re-typing the last character.  Is the non-restart purposeful?  Is there a variable  restart-after-thing-at-point-fetch, or a general command restart-search?--Thanks Mike
+
+[new:DrewAdams:2011-09-01 02:56 UTC]
+Sorry, I don't follow. Please give me a clear, step by step recipe, preferably starting from ##emacs -Q##, saying what you see and what different you expected to see.  Each time you use `##C-c '##' it should invoke `icicle-occur'.  
+
+`##M-.##' does not invoke `icicle-occur' -- you can use it anytime in the minibuffer. What it does is insert some text in the minibuffer (what it inserts depends on the thing at point, how it is configured, and whether you use a prefix arg).
+
+`##M-.##' insertion is similar to having typed something in the minibuffer, but without incremental completion; that is, it does not automatically re-complete. (Perhaps that's what you meant?)  To complete what is in the minibuffer at any time, hit `S-TAB' (or `TAB') again.
+
+You don't really want `##M-.##' to automatically re-complete after inserting, believe me. For one thing, it is very often repeated, and often to get alternative things at point.  You don't want completion against the wrong thing, and you don't want to have to hurry to forestall automatic (i.e., incremental) completion.  For another thing, it is very often the case that you want to edit the text that you pull into the minibuffer.  You don't want automatic completion of it before you get a chance to edit it.
+
+What you really want, I think, is what '''Icicles''' does: you request completion when you want it.  If you don't trust me on this one, all you have to do is this, to try automatic re-completion after `##M-.##':
+
+  (defun icicle-insert-string-at-point-and-update (&optional arg)
+    "Like `icicle-insert-string-at-point', but complete afterward."
+    (interactive "P")
+    (icicle-call-then-update-Completions
+      #'icicle-insert-string-at-point arg))
+
+Then replace `icicle-insert-string-at-point' by that command in a copy of `icicles-mode.el', load that, and toggle <tt>[[icicle-mode.el]]</tt> twice.  Try it and you'll see that it is not what you want.  If it is, then now you know what to do to get it. ;-) -- DrewAdams
+
 
 [new:DaveAbrahams:2011-08-30 20:52 UTC]
 Hi Drew,

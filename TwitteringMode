@@ -29,26 +29,25 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 {{{
         (add-to-list 'load-path "/path/to/foo/twittering-mode-X.X.X")
 }}}
-* Install cURL, gnutls, or openssl for using SSL connection.
+* Install cURL, wget, gnutls, or openssl for using SSL connection.
 * Proceed to **Set up your Emacs**
 
 === Set up your Emacs ===
-
 * Add following code to your `.emacs`:
 {{{
       (require 'twittering-mode)
 }}}
-
-=== Run twittering-mode ===
-
-# Execute `M-x twit` to run twittering-mode.
-# Open OAuth authorization page with your browser, click "Allow", and enter the PIN code.
-# Your friends' timeline will appear. Enjoy!
-
-To avoid having to authorize twittering-mode everytime you run it, add this to your `.emacs`:
+* (Optional) To avoid having to authorize twittering-mode everytime you run it, add this to your `.emacs`:
 {{{
       (setq twittering-use-master-password t)
 }}}
+This requires GnuPG. And also, either EasyPG or alpaca.el (0.13) is necessary.
+
+=== Run twittering-mode ===
+# Execute `M-x twit` to run twittering-mode.
+# Open OAuth authorization page with your browser, click "Allow", and enter the PIN code. If you use the master password, the PIN code is required only at the first time.
+# (Optional) Input the passphrase if you use the master password. This is required only at the first time.
+# Your friends' timeline will appear. You can also open other timelines by `V' with [[#timeline-spec]]. Enjoy!
 
 == Key-bindings on View mode ==
 `M-x twit', and you enter to this mode. You can see various timelines.
@@ -130,9 +129,35 @@ If you open a new timeline, a new buffer is generated.
 ; `C-c C-k': Cancel editing a tweet. (`twittering-edit-cancel-status')
 ; `C-c C-c': Post the current tweet. (`twittering-edit-post-status')
 
-== Timeline Spec ==
-By setting the "twittering-initial-timeline-spec-string" you can have twittering-mode fetch timelines, searches, replies and lists on startup.
+== Timeline spec ==
+[:timeline-spec]
+When pressing `V' (`twittering-visit-timeline'), you can open *any* timeline with **timeline spec**. Since twittering-mode stores the history of visited timelines, [[EmacsSession]] and incremental backward search on the prompt of `V' (`twittering-visit-timeline') may be useful when you open a timeline which you have opened.
 
+The **timeline spec** can be used anywhere you have to specify a timeline.
+=== Basic timeline ===
+; <b>##:home##</b>: the home timeline.
+; <b>##:mentions##</b>: the timeline consisting of tweets mentioning you.
+; <b>##:public##</b>: the public timeline.
+; <b>/USER/</b>: the timeline consisting of tweets posted by /USER/.
+; <b>/USER/##/##/LISTNAME/</b>: the list timeline owned by /USER/ and named /LISTNAME/.
+=== Direct message ===
+; <b>##:direct_messages##</b>: the timeline consisting of direct messages sent to you.
+; <b>##:direct_messages_sent##</b>: the timeline consisting of direct messages that you sent.
+=== Favorite ===
+; <b>##:favorites##</b>: the timeline consisting of tweets that you marked as a favorite.
+; <b>##:favorites/##/USER/</b>: the timeline consisting of tweets that /USER/ marked as a favorite.
+=== Hashtag ===
+; <b>#/HASHTAG/</b>: the timeline consisting of tweets including #/HASHTAG/.
+=== Retweet ===
+; <b>##:retweeted_by_me##</b>: retweets that you posted.
+; <b>##:retweeted_by_user/##/USER/</b>: (only on development version) retweets that /USER/ posted.
+; <b>##:retweeted_to_me##</b>: retweets sent to your home timeline.
+; <b>##:retweeted_to_user/##/USER/</b>: (only on development version) retweets sent to /USER/'s home timeline.
+; <b>##:retweets_of_me##</b>: your tweets that have been retweeted by others.
+=== Search ===
+; <b>##:search/##/QUERY-STRING/##/##</b>: the timeline consisting of tweets matching /QUERY-STRING/. In /QUERY-STRING/, **/** (slash) and **\** (backslash) must be escaped as **\/** or **\\**.
+== Initial timeline ==
+By setting the `twittering-initial-timeline-spec-string', you can specify timelines that should be opened initially. Timelines are specified by [[#timeline-spec]] as follows.
 {{{
 (setq twittering-initial-timeline-spec-string
       '(":home"

@@ -16,7 +16,7 @@ I am interested in software quality and usability, and while I think that Emacs 
 * Many people don't recognize the need of improvement and think for instance that it's normal to spend many days just to configure your e-mail
 
 I'd like to try to fix this type of problems.
-For instance, moving people to take part in [[SummerOfCode2009]] in GNU Emacs, which is a good opportunity to tackle the big projects... because you have a mentor, some objectives to achieve, an evaluation at the end, and progress tracking. This is hard to obtain individually, specially in a project without roadmaps like Emacs.
+For instance, moving people to take part in GoogleSummerOfCode 2009 in GNU Emacs, which is a good opportunity to tackle the big projects... because you have a mentor, some objectives to achieve, an evaluation at the end, and progress tracking. This is hard to obtain individually, specially in a project without roadmaps like Emacs.
 
 Until now, I improved some documentation: [[FloatingPoint]], symbol glossary at [[CategoryGlossary]], [[GnusGmail]], [[GnusEncryptedAuthInfo]], [[GnusSpeed]], [[EmacsLispReference]], [[FakeClosures]], [[EmacsMemoryDebugging]], [[GnusDemon]], [[GnusNotify]], … and did content reorganization and maintenance (ex: at [[JavaDevelopmentEnvironment]], [[JdeeVsEclipse]]). I'm writting also my first patches while I learn [[EmacsLisp]].
 

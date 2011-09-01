@@ -8,7 +8,7 @@ the old <code>gdb-ui</code> package in GNU Emacs.
 «[http://socghop.appspot.com/student_project/show/google/gsoc2009/karlberry/t124022551883
 Emacs GDB/MI migration]» is one of two Emacs-related projects which were
 [http://socghop.appspot.com/org/home/google/gsoc2009/karlberry accepted] for 
-[EmacsWiki:id=SummerOfCode2009 Google Summer of Code 2009] program.
+GoogleSummerOfCode 2009 program.
 
 The goal of this project is to migrate the GDB graphical interface in
 Emacs to completely use GDB's Machine Interface (GDB/MI). This will

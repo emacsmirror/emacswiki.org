@@ -113,6 +113,12 @@ Only tested with ERC 5.3:
       erc-log-write-after-insert t)
 </pre>
 
+Check your version of ERC (C-h v erc-version-string RET) before reading on, as this (above) is probably the solution you want.
+
+(These settings clearly post-date most of the discussion below)
+
+----
+
 == delYsid's advice for auto-saving logs ===
 
  <delYsid> resolve: add erc-save-buffer-in-logs to
