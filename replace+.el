@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 30 17:46:28 2011 (-0700)
+;; Last-Updated: Thu Sep  1 07:52:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1134
+;;     Update #: 1142
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -298,10 +298,14 @@ Some reasonable choices are defined in `thingatpt+.el':
 `region-or-non-nil-symbol-name-nearest-point', `sexp-nearest-point'.
 
 Note that if you use `region-or-non-nil-symbol-name-nearest-point' for
-this (which is what I personally prefer), then you cannot also take
-advantage of the use of the region to bound the effect of
-query-replace.  (Personally, I just narrow the buffer whenever I want
-to restrict query-replace scope to the region.)"
+this then you cannot also take advantage of the use of the region to
+bound the scope of query-replace.  Remember too that you can always
+yank the region using `C-y'.
+
+FWIW - Personally I use `region-or-non-nil-symbol-name-nearest-point'
+as the value, and I also automatically insert the default value in the
+minibuffer (`icicle-default-value' = `insert-end'.  Whenever I want to
+restrict query-replace scope to the region I just narrow the buffer."
   :type '(choice
           (const :tag "No default input search/replacement functions" nil)
           (function :tag "Function of 0 args to provide default for search/replace"))
@@ -993,197 +997,6 @@ Also highlight occur regexp in source buffer."
           (hlt-highlight-regexp-region (save-excursion (beginning-of-line) (point))
                                        (save-excursion (end-of-line) (point))
                                        occur-regexp list-matching-lines-face))))))
-
-
-
-
-;;;Emacs19 ;; REPLACES ORIGINAL in `replace.el':
-;;;Emacs19 ;; When change markers to numbers (after query loop), ensure they are markers.
-;;;Emacs19 (defun perform-replace (from-string replacements query-flag regexp-flag
-;;;Emacs19                                     delimited-flag &optional repeat-count map)
-;;;Emacs19   "Subroutine of `query-replace'.  Its complexity handles interactive queries.
-;;;Emacs19 Don't use this in your own program unless you want to query and set the mark
-;;;Emacs19 just as `query-replace' does.  Instead, write a simple loop like this:
-;;;Emacs19   (while (re-search-forward \"foo[ \t]+bar\" nil t)
-;;;Emacs19     (replace-match \"foobar\" nil nil))
-;;;Emacs19 which will run faster and probably do what you want."
-;;;Emacs19   (unless map (setq map query-replace-map))
-;;;Emacs19   (let ((nocasify (not (and case-fold-search case-replace
-;;;Emacs19                             (string-equal from-string
-;;;Emacs19                                           (downcase from-string)))))
-;;;Emacs19         (literal (not regexp-flag))
-;;;Emacs19         (search-function (if regexp-flag 're-search-forward 'search-forward))
-;;;Emacs19         (search-string from-string)
-;;;Emacs19         (real-match-data nil)           ; The match data for the current match.
-;;;Emacs19         (next-replacement nil)
-;;;Emacs19         (replacement-index 0)
-;;;Emacs19         (keep-going t)
-;;;Emacs19         (stack nil)
-;;;Emacs19         (next-rotate-count 0)
-;;;Emacs19         (replace-count 0)
-;;;Emacs19         (lastrepl nil)                  ; Position after last match considered.
-;;;Emacs19         (match-again t)
-;;;Emacs19         (message (and query-flag (substitute-command-keys "Query replacing %s \
-;;;Emacs19 with %s: (\\<query-replace-map>\\[help] for help) "))))
-;;;Emacs19     (if (stringp replacements)
-;;;Emacs19         (setq next-replacement replacements)
-;;;Emacs19       (unless repeat-count (setq repeat-count 1)))
-;;;Emacs19     (when delimited-flag
-;;;Emacs19       (setq search-function 're-search-forward)
-;;;Emacs19       (setq search-string (concat "\\b" (if regexp-flag
-;;;Emacs19                                             from-string
-;;;Emacs19                                           (regexp-quote from-string))
-;;;Emacs19                                   "\\b")))
-;;;Emacs19     (push-mark)
-;;;Emacs19     (undo-boundary)
-;;;Emacs19     (unwind-protect
-;;;Emacs19         ;; Loop finding occurrences that perhaps should be replaced.
-;;;Emacs19         (while (and keep-going
-;;;Emacs19                     (not (eobp))
-;;;Emacs19                     (funcall search-function search-string nil t)
-;;;Emacs19                     ;; If the search string matches immediately after
-;;;Emacs19                     ;; the previous match, but it did not match there
-;;;Emacs19                     ;; before the replacement was done, ignore the match.
-;;;Emacs19                     (or (not (or (eq lastrepl (point))
-;;;Emacs19                                  (and regexp-flag
-;;;Emacs19                                       (eq lastrepl (match-beginning 0))
-;;;Emacs19                                       (not match-again))))
-;;;Emacs19                         (and (not (eobp))
-;;;Emacs19                              ;; Don't replace the null string
-;;;Emacs19                              ;; right after end of previous replacement.
-;;;Emacs19                              (progn (forward-char 1)
-;;;Emacs19                                     (funcall search-function search-string
-;;;Emacs19                                              nil t)))))
-;;;Emacs19           ;; Save the data associated with the real match.
-;;;Emacs19           (setq real-match-data (match-data))
-;;;Emacs19           ;; Before we make the replacement, decide whether the search string
-;;;Emacs19           ;; can match again just after this match.
-;;;Emacs19           (when regexp-flag (setq match-again (looking-at search-string)))
-;;;Emacs19           ;; If time for a change, advance to next replacement string.
-;;;Emacs19           (when (and (listp replacements) (= next-rotate-count replace-count))
-;;;Emacs19             (incf next-rotate-count repeat-count)
-;;;Emacs19             (setq next-replacement (nth replacement-index replacements))
-;;;Emacs19             (setq replacement-index (% (1+ replacement-index)
-;;;Emacs19                                        (length replacements))))
-;;;Emacs19           (if (not query-flag)
-;;;Emacs19               (progn (store-match-data real-match-data)
-;;;Emacs19                      (replace-match next-replacement nocasify literal)
-;;;Emacs19                      (incf replace-count))
-;;;Emacs19             (undo-boundary)
-;;;Emacs19             (let (done replaced key def)
-;;;Emacs19               ;; Loop reading commands until one of them sets DONE,
-;;;Emacs19               ;; which means it has finished handling this occurrence.
-;;;Emacs19               (while (not done)
-;;;Emacs19                 (store-match-data real-match-data)
-;;;Emacs19                 (replace-highlight (match-beginning 0) (match-end 0))
-;;;Emacs19              ;; Bind message-log-max so we don't fill up the message log
-;;;Emacs19              ;; with a bunch of identical messages.
-;;;Emacs19              (let ((message-log-max nil))
-;;;Emacs19                (message message from-string next-replacement))
-;;;Emacs19              (setq key (read-event))
-;;;Emacs19              (setq key (vector key))
-;;;Emacs19              (setq def (lookup-key map key))
-;;;Emacs19              ;; Restore the match data while we process the command.
-;;;Emacs19              (cond ((eq def 'help)
-;;;Emacs19                     (with-output-to-temp-buffer "*Help*"
-;;;Emacs19                       (princ
-;;;Emacs19                        (concat "Query replacing "
-;;;Emacs19                                (if regexp-flag "regexp " "")
-;;;Emacs19                                from-string " by "
-;;;Emacs19                                next-replacement ".\n\n"
-;;;Emacs19                                (substitute-command-keys
-;;;Emacs19                                 query-replace-help)))
-;;;Emacs19                       (save-excursion
-;;;Emacs19                         (set-buffer standard-output)
-;;;Emacs19                         (help-mode))))
-;;;Emacs19                    ((eq def 'exit)
-;;;Emacs19                     (setq keep-going nil)
-;;;Emacs19                     (setq done t))
-;;;Emacs19                    ((eq def 'backup)
-;;;Emacs19                     (if stack
-;;;Emacs19                         (let ((elt (car stack)))
-;;;Emacs19                           (goto-char (car elt))
-;;;Emacs19                           (setq replaced (eq t (cdr elt)))
-;;;Emacs19                           (unless replaced
-;;;Emacs19                                (store-match-data (cdr elt)))
-;;;Emacs19                           (pop stack))
-;;;Emacs19                       (message "No previous match")
-;;;Emacs19                       (ding 'no-terminate)
-;;;Emacs19                       (sit-for 1)))
-;;;Emacs19                    ((eq def 'act)
-;;;Emacs19                     (unless replaced
-;;;Emacs19                          (replace-match next-replacement nocasify literal))
-;;;Emacs19                     (setq done t) (setq replaced t))
-;;;Emacs19                    ((eq def 'act-and-exit)
-;;;Emacs19                     (unless replaced
-;;;Emacs19                         (replace-match next-replacement nocasify literal))
-;;;Emacs19                     (setq keep-going nil)
-;;;Emacs19                     (setq done t) (setq replaced t))
-;;;Emacs19                    ((eq def 'act-and-show)
-;;;Emacs19                     (unless replaced
-;;;Emacs19                          (replace-match next-replacement nocasify literal)
-;;;Emacs19                          (setq replaced t)))
-;;;Emacs19                    ((eq def 'automatic)
-;;;Emacs19                     (unless replaced
-;;;Emacs19                          (replace-match next-replacement nocasify literal))
-;;;Emacs19                     (setq done t)
-;;;Emacs19                        (setq query-flag nil)
-;;;Emacs19                        (setq replaced t))
-;;;Emacs19                    ((eq def 'skip)
-;;;Emacs19                     (setq done t))
-;;;Emacs19                    ((eq def 'recenter)
-;;;Emacs19                     (recenter nil))
-;;;Emacs19                    ((eq def 'edit)
-;;;Emacs19                        (message (substitute-command-keys
-;;;Emacs19                                  "Recursive edit.  Type \\[exit-recursive-edit] \
-;;;Emacs19 to return to top level."))
-;;;Emacs19                     (store-match-data
-;;;Emacs19                      (prog1 (match-data)
-;;;Emacs19                        (save-excursion (recursive-edit))))
-;;;Emacs19                     ;; Before we make the replacement,
-;;;Emacs19                     ;; decide whether the search string
-;;;Emacs19                     ;; can match again just after this match.
-;;;Emacs19                     (when regexp-flag
-;;;Emacs19                          (setq match-again (looking-at search-string))))
-;;;Emacs19                    ((eq def 'delete-and-edit)
-;;;Emacs19                        (message (substitute-command-keys
-;;;Emacs19                                  "Recursive edit.  Type \\[exit-recursive-edit] \
-;;;Emacs19 to return to top level."))
-;;;Emacs19                     (delete-region (match-beginning 0) (match-end 0))
-;;;Emacs19                     (store-match-data
-;;;Emacs19                      (prog1 (match-data)
-;;;Emacs19                        (save-excursion (recursive-edit))))
-;;;Emacs19                     (setq replaced t))
-;;;Emacs19                    ;; Note: we do not need to treat `exit-prefix'
-;;;Emacs19                    ;; specially here, since we reread
-;;;Emacs19                    ;; any unrecognized character.
-;;;Emacs19                    (t
-;;;Emacs19                     (setq this-command 'mode-exited)
-;;;Emacs19                     (setq keep-going nil)
-;;;Emacs19                     (setq unread-command-events
-;;;Emacs19                           (append (listify-key-sequence key)
-;;;Emacs19                                   unread-command-events))
-;;;Emacs19                     (setq done t))))
-;;;Emacs19            ;; Record previous position for ^ when we move on.
-;;;Emacs19            ;; Change markers to numbers in the match data
-;;;Emacs19            ;; since lots of markers slow down editing.
-;;;Emacs19            (push (cons (point)
-;;;Emacs19                           (or replaced
-;;;Emacs19                               (mapcar (lambda (elt)
-;;;Emacs19                                         (and (markerp elt)
-;;;Emacs19                                              (prog1 (marker-position elt)
-;;;Emacs19                                                (set-marker elt nil))))
-;;;Emacs19                                       (match-data))))
-;;;Emacs19                     stack)
-;;;Emacs19            (when replaced (incf replace-count))))
-;;;Emacs19        (setq lastrepl (point)))
-;;;Emacs19       (replace-dehighlight))
-;;;Emacs19     (or unread-command-events
-;;;Emacs19      (message "Replaced %d occurrence%s"
-;;;Emacs19               replace-count
-;;;Emacs19               (if (= replace-count 1) "" "s")))
-;;;Emacs19     (and keep-going stack)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -285,6 +285,13 @@ Also Known As  links -g
 set links in browse-url-generic-program
 set -g in browse-url-generic-args
 
+=== Xwidget Webkit ===
+If you try the Emacs Xwidget branch you can do:
+
+  (setq browse-url-browser-function 'xwidget-webkit-browse-url)
+
+Then a webkit browser will show up inside an Emacs buffer.
+
 == Discussion ==
 
 === "Bug" in browse-url-default-windows-browser ===
@@ -382,6 +389,9 @@ Emacs 23 comes with a way to execute applescript with a handy function.  It's us
 		       "tell application \"Safari\" to activate") url))
     (start-process (concat "open " url) nil "open" url)))
 }}}
+
+[new]
+On the other hand, if you want the browser to reuse an existing tab if it has one already showing the URL, the applescript is somewhat more complicated.  [http://qwan.org/2011/09/01/reloading-a-page-in-chrome-from-aquamacs/ Instructions are here.]
 
 === Is there a package which makes URLs clickable? ===
 
