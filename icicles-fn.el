@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 10:18:58 2011 (-0700)
+;; Last-Updated: Fri Sep  2 16:40:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12510
+;;     Update #: 12549
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -65,7 +65,8 @@
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion-try-completion', `icicle-current-TAB-method',
 ;;    `icicle-custom-type', `icicle-define-crm-completion-map',
-;;    `icicle-delete-count', `icicle-delete-whitespace-from-string',
+;;    `icicle-delete-count', `icicle-delete-dups',
+;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dired-smart-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
@@ -2820,7 +2821,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 
                        ;; Highlight, inside the candidate, what the input expression matches.
                        (unless (and icicle-current-raw-input (string= "" icicle-current-raw-input)
-                                    icicle-apropos-complete-match-fn) ; Do nothing if no match fn.
+                                    icicle-apropos-complete-match-fn)
                          (save-excursion
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
@@ -2842,9 +2843,11 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                                       bound noerror))
                                                're-search-forward))
                                             (otherwise 're-search-forward)))))
-                               (when (funcall fn (icicle-minibuf-input-sans-dir
-                                                  icicle-current-raw-input)
-                                              nil t)
+                               (when (and (funcall fn (icicle-minibuf-input-sans-dir
+                                                       icicle-current-raw-input)
+                                                   nil t)
+                                          (not (eq (match-beginning 0) (point))))
+
                                  (setq faces  (cons 'icicle-match-highlight-Completions faces))
                                  (put-text-property (match-beginning 0) (point) 'face faces))))))
 
@@ -3037,7 +3040,7 @@ The optional second arg is ignored."
                                (max 1 (min (/ (* 100 wwidth)
                                               (* icicle-candidate-width-factor max-cand-len))
                                            nb-cands))))
-           (colwidth         (/ wwidth columns))
+           (colwidth         (if (eq 1 columns) (min max-cand-len wwidth) (/ wwidth columns)))
            (column-nb        0)
            (rows             (ceiling nb-cands columns))
  	   (row              0)
@@ -3084,7 +3087,8 @@ The optional second arg is ignored."
         ;; the newline back as part of the candidate.
         (cond ((atom cand)              ; No annotation.
                (put-text-property (point) (progn (insert string)
-                                                 (if (eq ?\n (char-before (point)))
+                                                 (if (and (eq ?\n (char-before (point)))
+                                                          (> (length string) 1)) ; Not just "\n".
                                                      (1- (point))
                                                    (point)))
                                   'mouse-face 'highlight)
@@ -3092,7 +3096,8 @@ The optional second arg is ignored."
                  (put-text-property (1- (point)) (point) 'icicle-keep-newline t)))
               (t                        ; Candidate plus annotation.
                (put-text-property (point) (progn (insert string)
-                                                 (if (eq ?\n (char-before (point)))
+                                                 (if (and (eq ?\n (char-before (point)))
+                                                          (> (length string) 1)) ; Not just "\n".
                                                      (1- (point))
                                                    (point)))
                                   'mouse-face 'highlight)
@@ -5082,6 +5087,20 @@ defined)."
   "Delete all user input in the minibuffer.
 This must be called from the minibuffer."
   (if (fboundp 'delete-minibuffer-contents)  (delete-minibuffer-contents)  (erase-buffer)))
+
+;; Same as `delete-dups' from Emacs 22+.
+(if (fboundp 'delete-dups)
+    (defalias 'icicle-delete-dups (symbol-function 'delete-dups))
+  (defun icicle-delete-dups (list)
+    "Destructively remove `equal' duplicates from LIST.
+Store the result in LIST and return it.  LIST must be a proper list.
+Of several `equal' occurrences of an element in LIST, the first
+one is kept."
+    (let ((tail list))
+      (while tail
+        (setcdr tail (delete (car tail) (cdr tail)))
+        (setq tail (cdr tail))))
+    list))
 
 ;; Borrowed from `ps-print.el'
 (defun icicle-remove-duplicates (list)

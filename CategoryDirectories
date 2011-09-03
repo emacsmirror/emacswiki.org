@@ -8,7 +8,7 @@ Click the heading to search for all pages related to manipulating files and dire
 * DiMode -- Simple directory editor for Emacs.
 * [[Dired+]] -- Many Dired extensions.
 * `dired-virtual' command from DiredX.
-* dired-launch -- simple launching from dired [https://github.com/thomp/dired-launch]
+* [[DiredLaunch]] -- simple launching from dired [https://github.com/thomp/dired-launch]
 * [[Eshell]]
 ** Read directories. See [[option]] `eshell-ls-use-in-dired'.
 ** `eshell-ls-use-in-dired' -- change em-ls.el to narrow the listing

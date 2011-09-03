@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 14:38:52 2011 (-0700)
+;; Last-Updated: Fri Sep  2 15:51:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7539
+;;     Update #: 7566
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,22 +18,23 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
+;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `cl', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `custom', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cl', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2117,30 +2118,26 @@ Used on `pre-command-hook'."
     (define-key comint-mode-map [(control ?c) tab] 'icicle-comint-command))
 
   ;; Bind keys in Shell mode.
-  (when (and (boundp 'shell-mode-map) icicle-functions-to-redefine)
+  (when (and (boundp 'shell-mode-map) (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (define-key shell-mode-map "\t" 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in Shell Script mode.
-  (when (and (boundp 'sh-mode-map) icicle-functions-to-redefine)
+  (when (and (boundp 'sh-mode-map) (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (icicle-remap 'comint-dynamic-complete 'icicle-comint-dynamic-complete sh-mode-map))
 
   ;; Bind keys in Ielm mode.
-  (when (and (boundp 'ielm-map) icicle-functions-to-redefine)
+  (when (and (boundp 'ielm-map) (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (define-key ielm-map "\t" 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in Tcl mode.
-  (when (and (boundp 'inferior-tcl-mode-map) icicle-functions-to-redefine)
+  (when (and (boundp 'inferior-tcl-mode-map) (memq 'comint-dynamic-complete
+                                                   icicle-functions-to-redefine))
     (define-key inferior-tcl-mode-map "\t" 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in GUD (Debugger) mode.
-  (when (and (boundp 'gud-minibuffer-local-map) icicle-functions-to-redefine)
+  (when (and (boundp 'gud-minibuffer-local-map) (memq 'comint-dynamic-complete-filename
+                                                      icicle-functions-to-redefine))
     (define-key gud-minibuffer-local-map "\t" 'icicle-comint-dynamic-complete-filename))
-
-  ;; Bind keys in Info mode.
-  (when (and (boundp 'Info-mode-map) icicle-functions-to-redefine)
-    (icicle-remap 'Info-goto-node  'icicle-Info-goto-node-cmd  Info-mode-map) ; `g'
-    (icicle-remap 'Info-index      'icicle-Info-index-cmd      Info-mode-map) ; `i'
-    (icicle-remap 'Info-menu       'icicle-Info-menu-cmd       Info-mode-map)) ; `m'
 
   ;; Bind some keys in `bookmark-bmenu-mode' mode (*Bookmark List*) - requires Bookmark+.
   (when (and (featurep 'bookmark+) (boundp 'bookmark-bmenu-mode-map))
@@ -2253,30 +2250,31 @@ from keymap MAP."
     (define-key comint-mode-map [(control ?c) tab] nil))
 
   ;; Unbind keys in Shell mode.
-  (when (and (boundp 'shell-mode-map) icicle-functions-to-redefine)
-    (define-key shell-mode-map "\t" 'comint-dynamic-complete))
+  (when (and (boundp 'shell-mode-map) (memq 'icicle-comint-dynamic-complete
+                                            icicle-functions-to-redefine))
+    (define-key shell-mode-map "\t" (if (> emacs-major-version 23)
+                                        'completion-at-point
+                                      'comint-dynamic-complete)))
 
   ;; Unbind keys in Shell Script mode.
-  (when (and (boundp 'sh-mode-map) icicle-functions-to-redefine)
+  (when (and (boundp 'sh-mode-map) (memq 'icicle-comint-dynamic-complete
+                                         icicle-functions-to-redefine))
     (icicle-unmap 'comint-dynamic-complete sh-mode-map 'icicle-comint-dynamic-complete))
 
   ;; Unbind keys in Ielm mode.
-  (when (and (boundp 'ielm-map) icicle-functions-to-redefine)
+  (when (and (boundp 'ielm-map) (memq 'icicle-comint-dynamic-complete
+                                      icicle-functions-to-redefine))
     (define-key ielm-map "\t" 'comint-dynamic-complete))
 
   ;; Unbind keys in Tcl mode.
-  (when (and (boundp 'inferior-tcl-mode-map) icicle-functions-to-redefine)
+  (when (and (boundp 'inferior-tcl-mode-map) (memq 'icicle-comint-dynamic-complete
+                                                   icicle-functions-to-redefine))
     (define-key inferior-tcl-mode-map "\t" 'comint-dynamic-complete))
 
   ;; Bind keys in GUD (Debugger) mode.
-  (when (and (boundp 'gud-minibuffer-local-map) icicle-functions-to-redefine)
+  (when (and (boundp 'gud-minibuffer-local-map) (memq 'icicle-comint-dynamic-complete-filename
+                                                      icicle-functions-to-redefine))
     (define-key gud-minibuffer-local-map "\t" 'comint-dynamic-complete-filename))
-
-  ;; Unbind keys in Info mode.
-  (when (and (boundp 'Info-mode-map) icicle-functions-to-redefine)
-    (icicle-unmap 'Info-goto-node Info-mode-map 'icicle-Info-goto-node-cmd)
-    (icicle-unmap 'Info-index     Info-mode-map 'icicle-Info-index-cmd)
-    (icicle-unmap 'Info-menu      Info-mode-map 'icicle-Info-menu-cmd))
 
   ;; Unbind keys in `bookmark-bmenu-mode' mode (*Bookmark List*) - requires Bookmark+.
   (when (and (featurep 'bookmark+) (boundp 'bookmark-bmenu-mode-map))
@@ -4018,6 +4016,16 @@ if `icicle-change-region-background-flag' is non-nil."
                                                           'gud-gdb-complete-command)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'gud) (eval-after-load "icicles-mode" form) (eval-after-load "gud" form)))
+
+;;; `info.el' - `Info-goto-node', `Info-index', `Info-menu'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (featurep 'info) (not (fboundp 'old-Info-goto-node)))
+                 (defalias 'old-Info-goto-node (symbol-function 'Info-goto-node))
+                 (defalias 'old-Info-index     (symbol-function 'Info-index))
+                 (defalias 'old-Info-menu      (symbol-function 'Info-menu)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'info) (eval-after-load "icicles-mode" form) (eval-after-load "info" form)))
 
 ;;; `bbdb-com.el' -  `bbdb-complete-name'.
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))

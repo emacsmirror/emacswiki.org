@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 30 07:26:37 2011 (-0700)
+;; Last-Updated: Fri Sep  2 16:25:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22194
+;;     Update #: 22215
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -394,7 +394,7 @@
   ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
   ;; icicle-re-no-dot, icicle-saved-completion-candidates
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
-  ;; icicle-highlight-lighter, icicle-read-from-minibuf-nil-default
+  ;; icicle-delete-dups, icicle-highlight-lighter, icicle-read-from-minibuf-nil-default
 
 
 
@@ -5386,6 +5386,9 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
                                        color-themes))))
   (color-theme-snapshot))               ; Undo code
 
+
+;; Make delete-selection mode recognize yanking, so it replaces region text.
+(put 'icicle-completing-yank 'delete-selection 'yank)
 ;; Bound to `C-- C-y' via `icicle-yank-maybe-completing'.
 ;;;###autoload (autoload 'icicle-completing-yank "icicles-cmd1.el")
 (icicle-define-command icicle-completing-yank
@@ -5396,16 +5399,18 @@ You can sort the candidates to yank - use `C-,'.
 You can use `S-delete' during completion to remove a candidate entry
 from the `kill-ring'."                  ; Doc string
   icicle-insert-for-yank                ; Action function
-  "Insert: " (mapcar #'list kill-ring) nil t nil 'icicle-kill-history ; `completing-read' args
-  (car kill-ring) nil
+  "Insert: " (mapcar #'list kills-in-order) nil t nil 'icicle-kill-history ; `completing-read' args
+  (car kills-in-order) nil
   ((icicle-transform-function       'icicle-remove-duplicates) ; Bindings
    (icicle-sort-comparer            nil)
-   (icicle-delete-candidate-object  'kill-ring)))
-
+   (icicle-delete-candidate-object  'kill-ring)
+   (kills-in-order                  (icicle-delete-dups
+                                     (append kill-ring-yank-pointer kill-ring nil)))))
 
 (defun icicle-insert-for-yank (string)
   "`insert-for-yank', if defined; else, `insert' with `read-only' removed.
 Pushes the mark first, so the inserted text becomes the region."
+  (setq this-command  'yank)
   (push-mark)
   (if (fboundp 'insert-for-yank)        ; Defined in `subr.el' (not required).
       (insert-for-yank string)

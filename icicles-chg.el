@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 30 18:04:01 2011 (-0700)
+;; Last-Updated: Fri Sep  2 16:36:26 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7006
+;;     Update #: 7038
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/09/02 dadams
+;;     icicle-completing-yank: Put kills in order, respecting kill-ring-yank-pointer.
+;;                             (put 'icicle-completing-yank 'delete-selection 'yank).
+;;     icicle-insert-for-yank: Set this-command to yank.
 ;; 2011/08/30 dadams
 ;;     icicle-yank-maybe-completing: Put delete-selection prop, so region is deleted.
 ;; 2011/08/26 dadams
@@ -437,6 +441,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/02 dadams
+;;     Removed: icicle-Info-index-cmd, icicle-Info-menu-cmd, icicle-Info-goto-node-cmd.
+;;     icicle-Info-index(-20|-action): Use old-Info-index.
+;;     icicle-Info-goto-node-1: Use old-Info-goto-node.
 ;; 2011/08/27 dadams
 ;;     icicle-search-char-property-scan: Added optional ACTION arg.  Move hit-end after ACTION.
 ;;     Added: icicle-imenu-1.  Created from old icicle-imenu*, but: (1) added args FULLP for full,
@@ -937,6 +945,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/09/02 dadams
+;;     Added: icicle-delete-dups.
+;;     icicle-display-candidates-in-Completions: Don't highlight an empty match.
+;;     icicle-insert-candidates:
+;;       If only one column then colwidth should not be more than max-cand-len.
+;;       If whole cand is a single \n then do not treat it as the last \n (do not remove mouse-face).
 ;; 2011/08/27 dadams
 ;;     icicle-recentf-make-menu-items, icicle-display-candidates-in-Completions,
 ;;       icicle-command-abbrev-save, icicle-kill-a-buffer: 
@@ -3846,6 +3860,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/09/02 dadams
+;;     icicle-(bind|restore)-other-keymap-keys:
+;;       Test fn memq in icicle-functions-to-redefine, not just non-nil icicle-functions-to-redefine.
+;;       Removed remap/unmap of Info commands.
+;;       Restore completion-at-point, not comint-dynamic-complete, for Emacs 24.
+;;     At end: defalias old-Info commands (instead of remapping in icicle-(bind|restore)-*-keys).
 ;; 2011/08/13 dadams
 ;;     Bound icicle-toggle-search-complementing-domain to C-M-~ and added to menus.
 ;; 2011/08/12 dadams
@@ -4855,6 +4875,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/09/02 dadams
+;;     icicle-functions-to-redefine: Added: Info-goto-node, Info-index, Info-menu.
 ;; 2011/08/30 dadams
 ;;     icicle-thing-at-point-functions:
 ;;       symbol-name-nearest-point -> icicle-thing-at-point-functions

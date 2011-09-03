@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 15:44:49 2011 (-0700)
+;; Last-Updated: Fri Sep  2 16:28:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22959
+;;     Update #: 22963
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -264,13 +264,11 @@
 ;;    `icicle-imenu-user-option', `icicle-imenu-user-option-full',
 ;;    `icicle-imenu-variable', `icicle-imenu-variable-full',
 ;;    `icicle-increment-option', `icicle-increment-variable',
-;;    `icicle-Info-goto-node', `icicle-Info-goto-node-cmd',
-;;    `icicle-Info-index', `icicle-Info-index-20',
-;;    `icicle-Info-index-cmd', `icicle-Info-menu',
-;;    `icicle-Info-menu-cmd', `icicle-Info-virtual-book',
-;;    `icicle-insert-buffer', `icicle-insert-char',
-;;    `icicle-insert-thesaurus-entry', `icicle-keyword-list',
-;;    `icicle-kill-buffer', `icicle-kmacro',
+;;    `icicle-Info-goto-node', `icicle-Info-index',
+;;    `icicle-Info-index-20', `icicle-Info-menu',
+;;    `icicle-Info-virtual-book', `icicle-insert-buffer',
+;;    `icicle-insert-char', `icicle-insert-thesaurus-entry',
+;;    `icicle-keyword-list', `icicle-kill-buffer', `icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', `icicle-locate-file',
 ;;    `icicle-locate-file-no-symlinks',
 ;;    `icicle-locate-file-no-symlinks-other-window',
@@ -847,7 +845,7 @@
 ;;    `icicle-delete-backward-char-dots',
 ;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
 ;;    `icicle-delete-count', `icicle-delete-current-candidate-object',
-;;    `icicle-delete-file-or-directory',
+;;    `icicle-delete-dups', `icicle-delete-file-or-directory',
 ;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-ding',

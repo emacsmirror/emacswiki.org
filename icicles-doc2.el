@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 16:26:49 2011 (-0700)
+;; Last-Updated: Fri Sep  2 17:06:10 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28186
+;;     Update #: 28192
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2356,7 +2356,7 @@
 ;;  it does not provide substring or regexp completion, and it will
 ;;  not accept a regexp as final input.
 ;;
-;;  Icicles binds `g', `i', and `m' to multi-commands
+;;  Icicle mode binds `g', `i', and `m' to multi-commands
 ;;  `icicle-Info-goto-node', `icicle-Info-index', and
 ;;  `icicle-Info-menu', which means that you can also use `g', `i',
 ;;  and `m' with `C-next', `C-RET', `C-mouse-2', and so on, to browse
@@ -6101,10 +6101,19 @@
 ;;
 ;;  Option `icicle-top-level-key-bindings' remaps not only these
 ;;  standard Emacs commands but also some commands provided by other
-;;  libraries.  For example, if you use package Bookmark+, then
+;;  libraries.  For example, if you use package `Bookmark+', then
 ;;  type-specific bookmark jump commands such as
 ;;  `bmkp-dired-jump-other-window' are remapped to Icicles
 ;;  multi-command versions.
+;;
+;;  In addition, option `icicle-functions-to-redefine' redefines some
+;;  vanilla functions to their Icicles versions while in Icicle mode.
+;;  Any redefined functions that are bound to keys keep those
+;;  bindings.  For example, `Info-index' is by default redefined to
+;;  `icicle-Info-index' in Icicle mode, so `i' in Info mode is
+;;  effectively bound to `icicle-Info-index'.  Commands listed in
+;;  option `icicle-functions-to-redefine' are typically bound in
+;;  keymaps other than the global map.
 ;;
 ;;  Here are some other Icicles commands that you might want to bind
 ;;  to keys in Icicle mode - they are not bound by Icicles (except to

@@ -16,3 +16,7 @@ Simpler than C-x C-s, isn't it?
 
 Using the windows key this way works sometimes, but not always.
 You need the patched version of %%Emacs+EmacsW32%% (see [[EmacsW32]]) to get it to work always.
+
+[new]
+
+For everyone, who doesn't know: The windows key on GNU/Linux is <b>s-</b> in Emacs. 

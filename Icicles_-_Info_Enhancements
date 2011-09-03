@@ -28,7 +28,7 @@ Although vanilla Emacs also accepts a substring as input for `i',
 it does not provide substring or regexp completion, and it will not
 accept a [[regexp]] as final input.
 
-'''Icicles''' binds `g', `i', and `m' to ''[[multi-command]]s''
+''Icicle'' mode binds `g', `i', and `m' to ''[[multi-command]]s''
 `icicle-Info-goto-node', `icicle-Info-index', and `icicle-Info-menu', which means that
 you can also use `g', `i', and `m' with `C-next', `C-RET', `C-mouse-2',
 and so on, to browse among matching Info nodes. Unlike browsing with repeated use of `##,##' after `i' in vanilla

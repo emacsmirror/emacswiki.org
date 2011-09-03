@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 30 17:57:34 2011 (-0700)
+;; Last-Updated: Fri Sep  2 12:37:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4425
+;;     Update #: 4426
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1459,7 +1459,10 @@ and you must load library `filesets.el'."
     ;; dired-read-shell-command
     ;; read-shell-command
     ess-complete-object-name
-    gud-gdb-complete-command             lisp-complete-symbol
+    gud-gdb-complete-command
+    Info-goto-node                       Info-index
+    Info-menu
+    lisp-complete-symbol
     lisp-completion-at-point             minibuffer-default-add-completions
     read-color                           read-from-minibuffer
     read-string

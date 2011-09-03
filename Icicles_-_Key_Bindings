@@ -202,6 +202,16 @@ For example, if you use package '''[[Bookmark+]]''', then type-specific
 [[bookmark]] jump commands such as `bookmarkp-dired-jump-other-window'
 are remapped to '''Icicles''' multi-command versions.
 
+In addition, option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' redefines some
+vanilla functions to their '''Icicles''' versions while in ''Icicle'' mode.
+Any redefined functions that are bound to keys keep those
+bindings.  For example, `Info-index' is by default redefined to
+`icicle-Info-index' in ''Icicle'' mode, so `i' in InfoMode is
+effectively bound to `icicle-Info-index'.  Commands listed in option
+`icicle-functions-to-redefine' are typically bound in keymaps
+other than the global map.
+
+
 Here are some other '''Icicles''' commands that you might want to bind
 to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to menu items):
 

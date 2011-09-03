@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 15:14:13 2011 (-0700)
+;; Last-Updated: Fri Sep  2 16:17:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4111
+;;     Update #: 4129
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -95,19 +95,17 @@
 ;;    (+)`icicle-imenu-user-option',
 ;;    (+)`icicle-imenu-user-option-full', (+)`icicle-imenu-variable',
 ;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode',
-;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-goto-node-cmd',
-;;    (+)`icicle-Info-index', (+)`icicle-Info-index-20',
-;;    (+)`icicle-Info-index-cmd', (+)`icicle-Info-menu',
-;;    `icicle-Info-menu-cmd', `icicle-Info-virtual-book',
-;;    `icicle-insert-char', (+)`icicle-insert-thesaurus-entry',
-;;    (+)`icicle-keyword-list', (+)`icicle-map',
-;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
-;;    (+)`icicle-object-action', (+)`icicle-occur',
-;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
-;;    `icicle-previous-visible-thing', `icicle-read-color',
-;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
-;;    `icicle-save-string-to-variable', (+)`icicle-search',
-;;    (+)`icicle-search-all-tags-bookmark',
+;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-index',
+;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
+;;    `icicle-Info-virtual-book', `icicle-insert-char',
+;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-keyword-list',
+;;    (+)`icicle-map', `icicle-next-visible-thing',
+;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
+;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
+;;    (+)`icicle-plist', `icicle-previous-visible-thing',
+;;    `icicle-read-color', `icicle-read-kbd-macro',
+;;    (+)`icicle-regexp-list', `icicle-save-string-to-variable',
+;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-bookmark',
@@ -1032,15 +1030,6 @@ name to use."
               (expt (- (nth 2 s2-hsv) base-val) 2)))))
     ))
 
-;; Bind this, not `icicle-Info-index', to `i' in Info mode,
-;; so plain `Info-index' will be used when not also in Icicle mode.
-;;;###autoload
-(defun icicle-Info-index-cmd ()         ; Bound to `i' in Info mode.
-  "If in Icicle mode, run `icicle-Info-index'; else, run `Info-index'.
-Note: In Emacs versions prior to version 22, this runs `Info-index'."
-  (interactive)
-  (call-interactively (if icicle-mode 'icicle-Info-index 'Info-index)))
-
 (defvar icicle-info-buff nil
   "Info buffer before command was invoked.")
 
@@ -1049,7 +1038,7 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
 
 ;;;###autoload
 (defun icicle-Info-index ()
-  "Like `Info-index', but you can use Icicles keys `C-RET', `C-up' etc."
+  "Like vanilla `Info-index', but you can use multi-command keys `C-RET', `C-up' etc."
   (interactive)
   (when (and (boundp 'Info-current-file) (equal Info-current-file "dir"))
     (error "The Info directory node has no index; use `m' to select a manual"))
@@ -1060,7 +1049,7 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
       (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
     (unwind-protect
-         (call-interactively (if (> emacs-major-version 21) 'Info-index 'icicle-Info-index-20))
+         (call-interactively (if (> emacs-major-version 21) 'old-Info-index 'icicle-Info-index-20))
       (define-key minibuffer-local-completion-map "\C-xm" C-x-m))))
 
 ;; Thx to Tamas Patrovics for this Emacs 20 version.
@@ -1072,12 +1061,12 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
                         (symbol-nearest-point))
                    (symbol-at-point)))
          (topic (and symb (symbol-name symb))))
-    (Info-index "")
+    (old-Info-index "")
     (let ((pattern     "\\* +\\([^:]*\\):.")
           (candidates  ()))
       (goto-char (point-min))
       (while (re-search-forward pattern nil t) (push (list (match-string 1)) candidates))
-      (Info-index (completing-read "Index topic: " candidates nil t nil nil topic)))))
+      (old-Info-index (completing-read "Index topic: " candidates nil t nil nil topic)))))
 
 ;; Free vars here: `icicle-info-buff' and `icicle-info-window' are bound in `icicle-Info-index'.
 (defun icicle-Info-index-action (topic)
@@ -1085,16 +1074,8 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
   (let ((minibuf-win  (selected-window)))
     (set-buffer icicle-info-buff)
     (select-window icicle-info-window)
-    (Info-index topic)
+    (old-Info-index topic)
     (select-window minibuf-win)))
-
-;; Bind this, not `icicle-Info-menu', to `m' in Info mode,
-;; so plain `Info-menu' will be used when not also in Icicle mode.
-;;;###autoload
-(defun icicle-Info-menu-cmd ()    ; Bound to `m' in Info mode.
-  "In Icicle mode, run `icicle-Info-menu'; else, `Info-menu'."
-  (interactive)
-  (call-interactively (if icicle-mode 'icicle-Info-menu 'Info-menu)))
 
 ;; Free vars here: `Info-menu-entry-name-re' is bound in `info.el'.
 (icicle-define-command icicle-Info-menu
@@ -1126,14 +1107,6 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
                                                    (reverse
                                                     (all-completions "" 'Info-complete-menu-item))))
    menu-eol))
-
-;; Bind this, not `icicle-Info-goto-node', to `g' in Info mode,
-;; so plain `Info-goto-node' will be used when not also in Icicle mode.
-;;;###autoload
-(defun icicle-Info-goto-node-cmd ()     ; Bound to `g' in Info mode.
-  "In Icicle mode, run `icicle-Info-goto-node'; else, `Info-goto-node'."
-  (interactive)
-  (call-interactively (if icicle-mode 'icicle-Info-goto-node 'Info-goto-node)))
 
 ;;;###autoload
 (defun icicle-Info-goto-node (nodename &optional arg)
@@ -1196,12 +1169,12 @@ This is an Icicles command - see command `icicle-mode'."
   (icicle-Info-goto-node-1 nodename arg))
 
 (defun icicle-Info-goto-node-1 (nodename &optional arg)
-  "Same as `Info-goto-node', but go up for `..' pseudo-node."
+  "Same as vanilla `Info-goto-node', but go up for `..' pseudo-node."
   (if (and (string= nodename "..") (Info-check-pointer "up"))
       (Info-up)
     (if (> emacs-major-version 20)
-        (Info-goto-node nodename (and (not icicle-Info-only-rest-of-book-p) arg))
-      (Info-goto-node nodename))))
+        (old-Info-goto-node nodename (and (not icicle-Info-only-rest-of-book-p) arg))
+      (old-Info-goto-node nodename))))
 
 (defun icicle-Info-read-node-name (prompt &optional include-file-p)
   "Read a node name, prompting with PROMPT.
@@ -5143,7 +5116,8 @@ information about the arguments, see the doc for command
 ;;;###autoload (autoload 'icicle-comint-command "icicles-cmd2.el")
 (icicle-define-command icicle-comint-command ; Bound to `C-c TAB' in `comint-mode'.
   "Retrieve a previously used command.
-Use this in a `comint-mode' buffer such as *shell* or *inferior-lisp*.
+Use this in a `comint-mode' buffer such as `*shell*' or
+`*inferior-lisp*'.
 
 Note, depending on your shell, you might want to customize variables
 such as the following:

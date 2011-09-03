@@ -93,8 +93,27 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 ----
 <pre>
-
 </pre>
+
+I am using Icicles with emacs 24.0.50 (a pretty recent built right from the bzr repository) on GNU/Linux x86_64.
+So far Icicles is working, but I notices one issue: File name completion in shell work does not work. Entering ./ and pressing TAB does not open the Completions buffer. When icicles is disabled, everything works fine. -- ''tor-exit-router42-readme.formlessnetworking.net''
+
+
+[new:DrewAdams:2011-09-03 00:12 UTC]
+Emacs 24 is not yet released, hence not supported by '''Icicles'''.  I have nevertheless tracked some Emacs 24 changes and updated '''Icicles''' accordingly.  But not very much in this regard.
+
+Here is one workaround, after you download the latest '''Icicles''' files:
+
+  (add-hook 'comint-mode-hook
+            (lambda () (setq comint-dynamic-complete-functions
+                        '(comint-replace-by-expanded-history
+                          comint-dynamic-complete-filename))))
+
+That gives you essentially the Emacs 23 '''Icicles''' completion for this.
+
+If you do not want '''Icicles''' to get involved with such completion, then you can instead customize `icicle-comint-dynamic-complete-replacements' to `nil' and customize `icicle-functions-to-redefine' to remove the comint functions that are there by default. HTH -- DrewAdams
+
+
 
 ----
 
