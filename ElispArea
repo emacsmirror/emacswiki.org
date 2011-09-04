@@ -80,6 +80,8 @@ Here are some other places to download and distribute elisp code:
 
 * [[ELPA]] -- packages included in ELPA can be installed using the package.el package manager.  The number of packages is limited but the ones that are included are of good quality.
 
+* [[el-get]] -- gives apt-get user experience to emacs, includes support for emacswiki elisp files
+
 * [[DELPS]] -- packages which are made available in DELPS format,
 called /epackages/, can be installed using the reference
 implementation ##epackage.el## package manager. This a modern implementation of ELPA: from centralized package repository to individually maintained distributed [[Git]] repositories with Debian style of packaging.
@@ -116,7 +118,7 @@ Additional tips can be found on ElispAreaDiscussions
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 263%
+%Id: 275%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

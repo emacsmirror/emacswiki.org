@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Mon May 16 07:48:40 2011 (-0700)
+;; Last-Updated: Sat Sep  3 18:29:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 410
+;;     Update #: 412
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -152,7 +152,8 @@
     "*Highlighting of the current locus in selected source buffer.
 Highlighting means use face `next-error' or show a fringe arrow.
 Value:
-* `fringe-arrow' means indicate the locus using a fringe arrow.
+* `fringe-arrow' means indicate the locus using a fringe arrow (which
+  is moved when the locus is moved).
 * `until-move' means highlight the locus until it is moved.
 * A number means highlight the locus for that many seconds, or until
   the next command is executed.
@@ -178,7 +179,8 @@ Value:
     "*Highlighting of locations in `next-error-no-select'.
 Highlighting means use face `next-error' or show a fringe arrow.
 Value:
-* `fringe-arrow' means indicate the locus using a fringe arrow.
+* `fringe-arrow' means indicate the locus using a fringe arrow (which
+  is moved when the locus is moved)..
 * `until-move' means highlight the locus until it is moved.
 * A number means highlight the locus for that many seconds, or until
   the next command is executed.

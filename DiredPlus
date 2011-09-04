@@ -479,6 +479,13 @@ Actually, I made another change to it. The new version should still work for you
 [new]
 It works fine as well. Thx. :)
 
+
+
+
+
+
+----
+
 [new]
 Hello. I have found a bug: when subdirectory is inserted in dired buffer (using command `dired-maybe-insert-subdir'), marking the last file before included subdir also marks first file in that subdir. It's face stays normal, but when performing actions on marked items, it affects that file. Behavior is normal when using dired without the dired+.
 Here is [http://xmages.net/storage/10/1/0/a/3/upload/049671bd.png screenshot] illustrating the bug: one file is marked and one more file is affected by the action, performing on marked items. -- [[Anonymous]]
@@ -488,6 +495,12 @@ Thanks very much for this bug report. Should be fixed now. Let me know if you se
 
 [new]
 Works fine now, thanks for fast fixing. -- [[Anonymous]]
+
+
+
+
+
+----
 
 [new]
 Is there any way to disable the dired+ color customizations and just fall back to the colorscheme installed instead? Or do I have to override each individual setting? I use the zenburn colorscheme and the colors specified in dired+ look unreadable with it. Thanks. -- Christoph
@@ -513,6 +526,13 @@ Thx -- DrewAdams
 [new]
 Perfect! This was exactly what I was looking for. Thanks Drew! -- Christoph
 
+
+
+
+
+
+----
+
 [new]
 Something is broken in 2010/09/29 version of dired+.el. When I call `dired-up-directory' function — instead of visiting parent dir, emacs starts eating all CPU and freezes, until gets killed or interrupted by `C-g'. No errors are displayed in the minibuffer or `*Messages*' buffer. 2010/09/27 works fine. -- [[Anonymous]]
 
@@ -521,6 +541,13 @@ Thanks.  Please try the latest.  Let me know if you encounter a problem.  -- Dre
 
 [new]
 Latest version works good, thanks. -- [[Anonymous]]
+
+
+
+
+
+
+----
 
 [new]
 I noticed one annoying regression in recent version of dired+: when function `dired-do-flagged-delete' called it takes few seconds for it to show deletion prompt (or show message than no files selected for deletion). Used to work without noticeable delay few weeks ago. -- [[Anonymous]]
@@ -538,8 +565,14 @@ I think that message is not really important, users who read dired manual alredy
 [new:DrewAdams:2011-01-13 07:28 UTC]
 OK, I removed the `sit-for'.  Thanks for the feedback. -- DrewAdams
 
-[new]
 
+
+
+
+
+----
+
+[new]
 Here is a fresh bug: you added a "p" to dired-toggle-find-file-reuse-dir. From the changelog: "toggle-dired-find-file-reuse-dir: Swapped which one is the alias."  -- [[PasJa]]
 
    (defalias 'toggle-dired-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)  ; <--- Here is the bug!
@@ -562,9 +595,20 @@ Thanks.  Should be OK now. -- DrewAdams
 
 
 
+----
+
+[new]
+
+When using `diredp-do-grep' interactively on marked files, the filenames are not quoted in the grep command line.
+This means that if there are spaces in any of the file names they will not be read correctly. -- [[JoeBloggs]]
+
+[new:DrewAdams:2011-09-03 21:34 UTC]
+Should be OK now.  Thx -- DrewAdams
 
 
 
+
+----
 
 ----
 CategoryDirectories

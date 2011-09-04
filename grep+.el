@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 30 17:36:13 2011 (-0700)
+;; Last-Updated: Sat Sep  3 17:52:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 532
+;;     Update #: 534
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -85,6 +85,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/09/03 dadams
+;;     Removed unneeded require of font-lock.el.
 ;; 2011/08/30 dadams
 ;;     grepp-default-regexp-fn: symbol-name-nearest-point -> non-nil-symbol-name-nearest-point.
 ;;                              Use functionp, not fboundp.
@@ -140,7 +142,6 @@
 ;;; Code:
 
 (require 'compile+ nil t) ;; (no error if not found) - to pick up enhancements for grep too.
-(require 'font-lock) ;; font-lock-keyword-face
 (require 'grep)
 (require 'thingatpt+ nil t) ;; (no error if not found) non-nil-symbol-name-nearest-point
 

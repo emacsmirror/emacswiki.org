@@ -100,6 +100,12 @@ And sometimes even binary:
           (replace-match (my-format-bin answer field-width)))))))
 </pre>
 
+----
+
+A package that supports Vim-like incrementing and decrementing is [https://github.com/cofi/evil-numbers evil-numbers], it supports binary, octal, hex and decimal numbers.
+
+----
+
 See ReplaceRegexp, ReplaceCount, RenumberList and MacroMath for other ways to deal with automatic incrementation.
 
 ----

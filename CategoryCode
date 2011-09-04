@@ -116,6 +116,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 [:Installers]
 == Emacs Lisp Installers ==
 
+* [[el-get]] - apt-get user experience for Emacs Lisp, with full support for emacswiki
 * [http://www.xemacs.org/Documentation/packageGuide.html XEmacs package manager] -- (Could an XEmacs please describe her experience with this)
 * InstallElisp - Retrieve and install elisp from Internet
 * [[elinstall]] - An installer for elisp code. It sets up autoloads, load-path, etc. by Tom Breton (Tehom)

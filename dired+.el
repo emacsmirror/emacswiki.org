@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Aug  7 13:15:50 2011 (-0700)
+;; Last-Updated: Sat Sep  3 14:31:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4176
+;;     Update #: 4179
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -255,6 +255,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/09/03 dadams
+;;     diredp-do-grep-1: Map shell-quote-argument over file names.  Thx to Joe Bloggs.
 ;; 2011/08/07 dadams
 ;;     diredp-bookmark (need to keep in sync with bmkp-make-record-for-target-file):
 ;;       Instead of image-bookmark-make-record, use explicit function that includes file, type.
@@ -3323,15 +3325,17 @@ files in the Dired buffer."
 Non-nil optional arg FILES are the files to grep, overriding the files
 choice described for `diredp-do-grep'."
   (let ((default  (and (fboundp 'grep-default-command) (grep-default-command))))
-    (read-from-minibuffer "grep <pattern> <files> :  "
-                          (let ((up-to-files  (concat grep-command "   ")))
-                            (cons (concat up-to-files
-                                          (mapconcat #'identity
-                                                     (or files (dired-get-marked-files
-                                                                nil current-prefix-arg))
-                                                     " "))
-                                  (- (length up-to-files) 2)))
-                          nil nil 'grep-history default)))
+    (read-from-minibuffer
+     "grep <pattern> <files> :  "
+     (let ((up-to-files  (concat grep-command "   ")))
+       (cons (concat up-to-files
+                     (mapconcat #'identity
+                                (or files
+                                    (mapcar 'shell-quote-argument
+                                            (dired-get-marked-files nil current-prefix-arg)))
+                                " "))
+             (- (length up-to-files) 2)))
+     nil nil 'grep-history default)))
 
 ;;;###autoload
 (define-derived-mode diredp-w32-drives-mode fundamental-mode "Drives"
