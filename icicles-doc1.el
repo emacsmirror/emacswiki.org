@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 30 17:57:12 2011 (-0700)
+;; Last-Updated: Sun Sep  4 15:52:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26140
+;;     Update #: 26155
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5133,19 +5133,6 @@
 ;;  sequences.  Key `next' matches substrings (regexps, actually),
 ;;  which makes choice even quicker.
 ;;
-;;  Why only "almost" everything in Emacs?  Because you cannot use
-;;  Icicles `S-TAB' to input multi-byte characters (e.g. Chinese,
-;;  Japanese, Unicode).  Such characters are grouped in Emacs into
-;;  character groups called "generic characters", and it is the
-;;  generic characters, not the individual multi-byte characters that
-;;  are bound to `self-insert-command'.  Icicles excludes these
-;;  special key bindings, because you cannot simply execute
-;;  `self-insert-command' to insert these characters.  (It is possible
-;;  to implement a completion extension to input such characters, but
-;;  that feature has not yet been implemented in Icicles.)
-;;
-;;  Enjoy!
-;;
 ;;(@* "Entering Special and Foreign Characters")
 ;;  ** Entering Special and Foreign Characters **
 ;;
@@ -5156,39 +5143,31 @@
 ;;  correspond to special or odd characters and characters in other
 ;;  languages.
 ;;
-;;  To Icicles key completion, these keys are like any other keys, and
-;;  `self-insert-command' is like any other command.  However, because
-;;  there are many, many keys bound to it, it can be distracting to
-;;  allow such keys as completion candidates.  If option
-;;  `icicle-complete-keys-self-insert-flag' is `nil' (the default
-;;  value), then such keys are excluded as candidates.
+;;  To Icicles key completion, these keys are like other keys.
+;;  However, because there are many, many keys bound to
+;;  `self-insert-command', it can be distracting and slow to allow
+;;  such keys as completion candidates.  If option
+;;  `icicle-complete-keys-self-insert-ranges' is `nil' (the default
+;;  value), then such keys are excluded as candidates.  This is
+;;  probably what you want, always.
 ;;
-;;  If it is non-`nil', then you can use key completion to insert
-;;  characters that your keyboard has no keys for.  This provides a
-;;  sort of universal input-method feature that works, in principle,
-;;  for all characters (but see below, for exceptions).
+;;  If the option is non-`nil', then you can use key completion to
+;;  insert the characters whose codes are in the range(s) defined by
+;;  the option value.  This lets you see the candidate characters in
+;;  `*Completions*' (WYSIWYG), but it is not a terribly convenient or
+;;  quick way to insert characters.
 ;;
-;;  To use this feature, just choose a character description (name)
-;;  with the mouse or by cycling, if you cannot type its description
-;;  (name) with your keyboard.  You can even insert characters this
-;;  way that your system has no font for - they will be displayed as
-;;  empty boxes, but they will be correctly inserted.
+;;  Starting with Emacs 23, vanilla Emacs has Unicode support, and you
+;;  can insert any Unicode characters using either an input method or
+;;  command `ucs-insert', which lets you complete against the Unicode
+;;  character name.
 ;;
-;;  There is an exception, however.  There are some characters that
-;;  you cannot insert this way, because they do not have a one-to-one
-;;  relation with keys that are bound to `self-insert-command'.  In
-;;  such cases, "keys" are bound to `self-insert-command' that
-;;  represent not single characters but groups of characters.  Icicles
-;;  filters out these keys, so they are not available as completion
-;;  candidates.  The problematic keys are in Korean, Chinese,
-;;  Japanese, Ethiopic, Indian, Tibetan, and some Unicode character
-;;  sets.
-;;
-;;  Because insertion of special characters is useful, but is a
-;;  special case of key completion, there is a separate Icicles
-;;  command that you can use just for that: `icicle-insert-char'.  It
-;;  is a specialized version of `icicle-complete-keys' that uses
-;;  `self-insert-command' as the only possible command for completion.
+;;  If you do use a non-`nil' value for
+;;  `icicle-complete-keys-self-insert-ranges' then use only small
+;;  ranges for better performance, e.g., `((0 . 687))' covers Latin
+;;  characters.  For Emacs 22, the option is effectively Boolean: any
+;;  non-`nil' value allows all self-inserting keys as candidates
+;;  (there are far fewer available characters in Emacs 22).
 ;;
 ;;(@* "Handling Keymaps That Are Inaccessible From the Global Map")
 ;;  ** Handling Keymaps That Are Inaccessible From the Global Map **

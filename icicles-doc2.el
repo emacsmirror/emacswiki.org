@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 17:06:10 2011 (-0700)
+;; Last-Updated: Sun Sep  4 15:17:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28192
+;;     Update #: 28199
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5603,11 +5603,11 @@
 ;;    value of `nil' means bind `S-TAB' only if there is not already a
 ;;    binding.
 ;;
-;;  * Non-`nil' option `icicle-complete-keys-self-insert-flag' means
-;;    that `icicle-complete-keys' includes self-inserting keys as
+;;  * Non-`nil' option `icicle-complete-keys-self-insert-ranges' means
+;;    that `icicle-complete-keys' includes some self-inserting keys as
 ;;    completion candidates.  You will probably want to leave this
-;;    `nil' and use command `icicle-insert-char', not
-;;    `icicle-complete-keys', to insert special characters.
+;;    `nil'.  This option has no effect before Emacs 22.
+;;    See (@file :file-name "icicles-doc1.el" :to "Entering Special and Foreign Characters")
 ;;
 ;;  * User option `icicle-yank-function' is a function to use to yank
 ;;    text.  By default, it is `yank'.  Command

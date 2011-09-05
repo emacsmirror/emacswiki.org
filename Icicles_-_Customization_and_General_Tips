@@ -1728,14 +1728,16 @@ binding.
 
 
 ----
-[:icicle-complete-keys-self-insert-flag]
-==== Option icicle-complete-keys-self-insert-flag ====
+[:icicle-complete-keys-self-insert-ranges]
+==== Option icicle-complete-keys-self-insert-ranges ====
 
-Non-nil option '''`icicle-complete-keys-self-insert-flag'''' means that 
-`icicle-complete-keys' includes self-inserting keys as
-completion candidates.  You will probably want to leave this `nil'
-and use command '''`icicle-insert-char'''', not
-`icicle-complete-keys', to insert special characters.
+Non-nil option '''`icicle-complete-keys-self-insert-ranges'''' means that 
+`icicle-complete-keys' includes some self-inserting keys as
+completion candidates.  You will probably want to leave this `nil'.
+This option has no effect before Emacs 22.  See [[Icicles - Key Completion#SelfInsert|Entering Special and Foreign Characters]].
+
+
+
 
 ----
 [:icicle-yank-function]

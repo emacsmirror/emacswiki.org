@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 13 14:25:52 2011 (-0700)
+;; Last-Updated: Sun Sep  4 14:56:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1526
+;;     Update #: 1534
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,10 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-opt', `kmacro', `levenshtein', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
+;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
+;;   `hexrgb', `icicles-face', `icicles-mac', `icicles-opt',
+;;   `kmacro', `levenshtein', `regexp-opt', `thingatpt',
+;;   `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -536,7 +537,7 @@ noted in parentheses.
 * `icicle-comint-dynamic-complete-replacements' - Comint complete fns
 * `icicle-command-abbrev*'               - Command abbrev behavior
 * `icicle-complete-key-anyway-flag'      - `S-TAB' must complete keys
-* `icicle-complete-keys-self-insert-flag'- `S-TAB' for self-insert?
+* `icicle-complete-keys-self-insert-ranges'- `S-TAB' for self-insert?
 * `icicle-completing-read+insert-keys'   - Keys for complete-on-demand
 * `icicle-completion-history-max-length' - Completion history length
 * `icicle-Completions-display-min-input-chars'- Remove `*Completions*'

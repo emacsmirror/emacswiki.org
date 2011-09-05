@@ -26,6 +26,7 @@ Libraries <tt>[[diff+.el]]</tt> and <tt>[[diff+20.el]]</tt> extend the functiona
 * DiffSaveBuffer -- replacement `save-buffer' offering a filename for a diff file
 * [[Diff2Ediff]] -- Spawn an `ediff' session from within diff mode.
 * PickBackup - Diffing specific versioned backup files
+* [[Diffstat]] - Show summary and histograms of modification for the complicated diff file.
 
 ----
 CategoryExternalUtilities

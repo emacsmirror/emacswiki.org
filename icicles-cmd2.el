@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 16:17:11 2011 (-0700)
+;; Last-Updated: Sun Sep  4 14:58:26 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4129
+;;     Update #: 4149
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -97,15 +97,15 @@
 ;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode',
 ;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-index',
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
-;;    `icicle-Info-virtual-book', `icicle-insert-char',
-;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-keyword-list',
-;;    (+)`icicle-map', `icicle-next-visible-thing',
-;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
-;;    (+)`icicle-plist', `icicle-previous-visible-thing',
-;;    `icicle-read-color', `icicle-read-kbd-macro',
-;;    (+)`icicle-regexp-list', `icicle-save-string-to-variable',
-;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
+;;    `icicle-Info-virtual-book', (+)`icicle-insert-thesaurus-entry',
+;;    (+)`icicle-keyword-list', (+)`icicle-map',
+;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
+;;    (+)`icicle-object-action', (+)`icicle-occur',
+;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
+;;    `icicle-previous-visible-thing', `icicle-read-color',
+;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
+;;    `icicle-save-string-to-variable', (+)`icicle-search',
+;;    (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-bookmark',
@@ -331,7 +331,7 @@
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
-  ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-flag,
+  ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-ranges,
   ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag, icicle-recenter,
   ;; icicle-require-match-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
@@ -6320,18 +6320,7 @@ filtering:
 (defvar icicle-this-cmd-keys ()
   "Value of `this-command-keys-vector' at some point in key completion.")
 
-(when (fboundp 'map-keymap)             ; Emacs 22.
-
-  ;; This is a quick-and-dirty definition, not an efficient one.
-  ;; It gathers all key bindings and then throws most of them away!  Good enough.
-  (defun icicle-insert-char ()
-    "Insert a character, using key completion.
-Keys bound to `self-insert-command' are completion candidates."
-    (interactive)
-    (barf-if-buffer-read-only)
-    (let ((icicle-complete-keys-self-insert-flag  t)
-          (icicle-must-match-regexp               "^.+  =  self-insert-command"))
-      (icicle-complete-keys)))
+(when (fboundp 'map-keymap)             ; Emacs 22+.
 
   (defun icicle-complete-keys ()        ; Bound to prefix keys followed by `S-TAB' (unless defined).
     "Complete a key sequence for the currently invoked prefix key.
@@ -6356,17 +6345,32 @@ currently completing prefix key `C-x 5', and you choose candidate
 
 Except at the top level, the default value for completion is `..'.
 
-If option `icicle-complete-keys-self-insert-flag' is non-nil, then
-keys bound to `self-insert-command' are included as possible
-completion candidates; otherwise (the default), they are not.  Command
-`icicle-insert-char' works like `icicle-complete-keys', but in
-includes only keys bound to `self-insert-command' - use it to insert a
-character that is difficult or impossible to type with your keyboard.
-
 You can use `C-M-,' at any time to switch between sorting with local
 bindings first and sorting with prefix keys first.  You can use `C-,'
 at any time to change the sort order among these two and sorting by
 command name.
+
+If option `icicle-complete-keys-self-insert-ranges' is non-nil, then
+some keys bound to `self-insert-command' are included as possible
+key-completion candidates; otherwise they are not.  The default is
+nil.
+
+For Emacs 22, the option is effectively Boolean: any non-nil value
+means allow all self-inserting keys as candidates.
+
+In Emacs 23+, there are thousands of self-inserting keys, so it is not
+practical to allow all as candidates.  Instead, a non-nil value is a
+list of character ranges of the form (MIN . MAX).  Characters in the
+inclusive range MIN through MAX are possible key-completion
+candidates.
+
+For Emacs 23+, if you use a non-nil value for
+`icicle-complete-keys-self-insert-ranges' then use only small ranges
+for good performance.  In general, you will want to leave this option
+value as nil and use the vanilla Emacs 23+ command `ucs-insert' to
+insert characters by completing against their Unicode names.  With
+Icicles key completion you do not complete against the Unicode names.
+Instead, you can see the characters in `*Completions*'.
 
 While cycling, these keys describe candidates:
 
@@ -6545,12 +6549,29 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 
     ;; `icicle-key-prefix-2' and `icicle-active-map' are free here, bound in
     ;; `icicle-keys+cmds-w-prefix'.
-    (cond ((and (or (keymapp binding)
+    (cond ((and (eq binding 'self-insert-command) ; Insert `self-insert-command' char ranges.
+                icicle-complete-keys-self-insert-ranges
+                (consp event)           ; Emacs 23+ uses char ranges.
+                (fboundp 'characterp) (characterp (car event)))
+           (let ((chr1  (car event))
+                 (chr2  (cdr event)))
+             (loop for range in icicle-complete-keys-self-insert-ranges do
+                   (loop for char from (max chr1 (car range)) to (min chr2  (cdr range)) do
+                         (let* ((key-desc   (propertize (single-key-description
+                                                         char
+                                                         (not icicle-key-descriptions-use-<>-flag))
+                                                        'face 'icicle-candidate-part))
+                                (candidate  (intern (concat key-desc "  =  self-insert-command"))))
+                           (push (cons candidate (cons (vector char) 'self-insert-command))
+                                 icicle-complete-keys-alist)
+                           (when (eq icicle-active-map (current-local-map))
+                             (put candidate 'icicle-special-candidate t)))))))
+          ((and (or (keymapp binding)
                     (and (commandp binding)
                          (equal binding (key-binding (vconcat icicle-key-prefix-2 (vector event))))
                          (not (eq binding 'icicle-complete-keys))))
                 (or (not (eq binding 'self-insert-command)) ; Command, keymap.
-                    (and icicle-complete-keys-self-insert-flag ; Insert normal char.
+                    (and icicle-complete-keys-self-insert-ranges ; Insert char (Emacs 22).
                          (char-valid-p event))))
            (let* ((key-desc   (propertize (single-key-description
                                            event
@@ -6564,7 +6585,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                (push (cons candidate (cons (vector event) binding)) icicle-complete-keys-alist))
              (when (eq icicle-active-map (current-local-map))
                (put candidate 'icicle-special-candidate t))))
-          ((and (integerp event) (generic-char-p event) ; Insert generic char.
+          ((and (integerp event) (generic-char-p event) ; Insert generic char (Emacs 22).
                 (eq 'self-insert-command binding))
            (ignore))))                  ; Placeholder for future use.
 

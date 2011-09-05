@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 12:37:25 2011 (-0700)
+;; Last-Updated: Sun Sep  4 15:31:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4426
+;;     Update #: 4442
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -76,7 +76,7 @@
 ;;    `icicle-command-abbrev-match-all-parts-flag',
 ;;    `icicle-command-abbrev-priority-flag',
 ;;    `icicle-complete-key-anyway-flag',
-;;    `icicle-complete-keys-self-insert-flag',
+;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
@@ -956,11 +956,44 @@ Note: the keys in `icicle-key-complete-keys' are always bound to
 the binding of those keys in `icicle-keymaps-for-key-completion'."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
-;;;###autoload
-(defcustom icicle-complete-keys-self-insert-flag nil
-  "*Non-nil means `icicle-complete-keys' includes self-inserting keys.
-That means keys bound to `self-insert-command'."
-  :type 'boolean :group 'Icicles-Key-Completion)
+(when (fboundp 'map-keymap)             ; Emacs 22+.
+  (defcustom icicle-complete-keys-self-insert-ranges ()
+    "*Non-nil means `icicle-complete-keys' includes self-inserting keys.
+That means keys bound to `self-insert-command'.
+
+For Emacs 22, this is effectively Boolean: any non-nil value allows
+all self-inserting keys as candidates.
+
+In Emacs 23+, there are thousands of self-inserting keys, so it is not
+practical to allow all as candidates.  Instead, a non-nil value is a
+list of character ranges of the form (MIN . MAX).  Characters in the
+inclusive range MIN through MAX are possible key-completion
+candidates.
+
+For Emacs 23+, if you use a non-nil value then use only small ranges
+for better performance, e.g., `((0 . 687))' covers Latin characters.
+
+In general, leave the value as nil.  Use vanilla Emacs 23+ command
+`ucs-insert' to insert characters by completing against their Unicode
+names.  With Icicles key completion you do not complete against the
+Unicode names.  Instead, you can see the characters in
+`*Completions*'.
+
+For reference, below are the ranges supported by `ucs-insert' (Emacs
+23+).  But unless you have a very powerful computer, choose only only
+one or two small ranges of characters you actually might use.
+
+BMP ranges:
+ (0 . 13311)       = (#x0000 . #x33FF)
+ (19904 . 19967)   = (#x4DC0 . #x4DFF)
+ (40960 . 55295)   = (#xA000 . #x0D7FF)
+ (64256 . 65533)   = (#xFB00 . #xFFFD)
+
+Upper ranges:
+ (65536 . 79103)   = (#x10000 . #x134FF)
+ (118784 . 131071) = (#x1D000 . #x1FFFF)
+ (917504 . 918015) = (#xE0000 . #xE01FF)"
+    :type '(alist :key-type integer :value-type integer) :group 'Icicles-Key-Completion))
 
 ;;;###autoload
 (defcustom icicle-completing-read+insert-keys '([(control meta shift ?c)]) ; `C-M-S-c'

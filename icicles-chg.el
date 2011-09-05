@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 16:36:26 2011 (-0700)
+;; Last-Updated: Sun Sep  4 15:36:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7038
+;;     Update #: 7047
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -441,6 +441,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/04 dadams
+;;     icicle-add-key+cmd: Handle Emacs 23+ consp char-range events, for self-insert.
+;;                         Applied renaming of icicle-complete-keys-self-insert-flag to *-ranges.
+;;     Removed: icicle-insert-char.
 ;; 2011/09/02 dadams
 ;;     Removed: icicle-Info-index-cmd, icicle-Info-menu-cmd, icicle-Info-goto-node-cmd.
 ;;     icicle-Info-index(-20|-action): Use old-Info-index.
@@ -4875,6 +4879,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/09/04 dadams
+;;     Renamed: icicle-complete-keys-self-insert-flag to icicle-complete-keys-self-insert-ranges.
+;;       Define it only for Emacs 22+.
+;;       Made it an alist of char ranges, for Emacs 23+.
 ;; 2011/09/02 dadams
 ;;     icicle-functions-to-redefine: Added: Info-goto-node, Info-index, Info-menu.
 ;; 2011/08/30 dadams

@@ -17,7 +17,27 @@ Emacs 23 has built-in [[IncrementalSearch|Isearch]] for [[Dired]]. You might wan
 
 [new:DrewAdams:2006-08-20 19:44 UTC]
 Another way to find only file (and directory) names in Dired: Hide everything but the file names, using `dired-details-toggle' (in Lisp:dired-details+.el). When the details are hidden, search doesn't find them. See DiredDetails. -- DrewAdams
+[new:Joseph:2011-09-05 02:57 UTC]
+ I don't use Isearch ,I use this function .   -- [[Joseph]]
 
+     (defun dired-name-filter-only-show-matched-lines(filter-regexp)
+       (interactive "s(only show matched):")
+       (let ((dired-marker-char 16)
+             (files (directory-files default-directory t)))
+         ;;(dired-unmark-all-files dired-marker-char)
+         (save-excursion
+           (dolist (file files)
+             (when (and (dired-goto-file  (expand-file-name file))
+                        (not (string= "" filter-regexp))
+                        (string-match filter-regexp (file-name-nondirectory file)))
+               (dired-mark 1)
+               )))
+         (dired-toggle-marks)
+         (dired-do-kill-lines nil (concat "Filter:'" filter-regexp "' omitted %d line%s"))
+         (dired-move-to-filename)
+         )
+       )
+     (define-key dired-mode-map  "z" 'dired-name-filter-only-show-matched-lines)
 
 
 

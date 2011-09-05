@@ -67,6 +67,14 @@ Note: You must create a dummy ##environment.plist## file to seed the process.
    (if (string-equal "darwin" (symbol-name system-type))
       (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
 
+== Yet another PATH solution ==
+
+I had some trouble with the above suggestions on Mac OS X Lion. I use bash as the default shell and adding the following lines to emacs init file did the trick.
+
+   ;; read in PATH from .bashrc
+   (if (not (getenv "TERM_PROGRAM"))
+       (setenv "PATH"
+               (shell-command-to-string "source $HOME/.bashrc && printf $PATH")))
 
 == Launching from Spotlight ==
 

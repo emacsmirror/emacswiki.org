@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 16:28:53 2011 (-0700)
+;; Last-Updated: Sun Sep  4 14:38:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22963
+;;     Update #: 22965
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -267,8 +267,8 @@
 ;;    `icicle-Info-goto-node', `icicle-Info-index',
 ;;    `icicle-Info-index-20', `icicle-Info-menu',
 ;;    `icicle-Info-virtual-book', `icicle-insert-buffer',
-;;    `icicle-insert-char', `icicle-insert-thesaurus-entry',
-;;    `icicle-keyword-list', `icicle-kill-buffer', `icicle-kmacro',
+;;    `icicle-insert-thesaurus-entry', `icicle-keyword-list',
+;;    `icicle-kill-buffer', `icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', `icicle-locate-file',
 ;;    `icicle-locate-file-no-symlinks',
 ;;    `icicle-locate-file-no-symlinks-other-window',
@@ -646,7 +646,7 @@
 ;;    `icicle-command-abbrev-match-all-parts-flag',
 ;;    `icicle-command-abbrev-priority-flag',
 ;;    `icicle-complete-key-anyway-flag',
-;;    `icicle-complete-keys-self-insert-flag',
+;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
