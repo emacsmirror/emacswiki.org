@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 15:51:30 2011 (-0700)
+;; Last-Updated: Mon Sep  5 11:51:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7566
+;;     Update #: 7572
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -454,6 +454,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
 `icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
+`icicle-toggle-hiding-non-matching-lines'- Toggle no-match lines
 `icicle-toggle-highlight-all-current'  - Toggle max search highlight
 `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
@@ -749,6 +750,7 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
 `icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
+`icicle-toggle-hiding-non-matching-lines'- Toggle no-match lines
 `icicle-toggle-highlight-all-current'  - Toggle max search highlight
 `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
@@ -1211,6 +1213,10 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Showing Multi-Completions"
                icicle-toggle-show-multi-completion :visible icicle-mode
                :help "Toggle option `icicle-show-multi-completion-flag'"))
+           (define-key icicle-options-menu-map [icicle-toggle-hiding-non-matching-lines]
+             '(menu-item "Toggle Hiding Non-Matching Lines"
+               icicle-toggle-hiding-non-matching-lines :visible icicle-mode :keys "C-u C-x ."
+               :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-hiding-common-match]
              '(menu-item "Toggle Hiding Common Match"
                icicle-toggle-hiding-common-match :visible icicle-mode :keys "C-x ."
@@ -1379,6 +1385,10 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
                :help "Toggle option `icicle-show-multi-completion-flag'"))
+           (define-key icicle-menu-map [icicle-toggle-hiding-non-matching-lines]
+             '(menu-item "Toggle Hiding Non-Matching Lines"
+               icicle-toggle-hiding-non-matching-lines
+               :keys "C-u C-x ." :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
            (define-key icicle-menu-map [icicle-toggle-hiding-common-match]
              '(menu-item "Toggle Hiding Common Match" icicle-toggle-hiding-common-match
                :keys "C-x ." :help "Toggle option `icicle-hide-common-match-in-Completions-flag'"))
@@ -3331,7 +3341,7 @@ complete)"))
   (define-key map "\M-v"                     'icicle-scroll-Completions-backward) ; `M-v'
   (define-key map "."                        'icicle-insert-dot-command) ; `.'
   (define-key map "\M-m"                     'icicle-toggle-show-multi-completion) ; `M-m'
-  (define-key map "\C-x."                    'icicle-toggle-hiding-common-match) ; `C-x .'
+  (define-key map "\C-x."                    'icicle-dispatch-C-x.) ; `C-x .'
   (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
     (define-key map "\C-xt"                  'icicle-cycle-image-file-thumbnail)) ; `C-x t'
   (when (fboundp 'doremi)

@@ -311,6 +311,12 @@ See the following blog post for using alt as your meta key:
 
 http://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
 
+=== Maximize Emacs 23.3 and 24+ in Mac OS X Lion ===
+
+Fullscreen mode is not offered in either 23.3 or 24+.  In trying to adapt the "maximize-frame" function below I inadvertently discovered that if one uses the maximize control button once the frame is maximized vertically, twice the frame is maximized both vertically and horizontally and three times results in the frame restored to its original size.  Good enough for me!
+
+-pmr
+
 === Command to Maximize Emacs 23.1 (vanilla) ===
 
 Fullscreen mode doesn't work in Vanilla Emacs 23.1.  This at least maximizes your session to take up as much room as possible.

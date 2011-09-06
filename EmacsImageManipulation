@@ -26,6 +26,8 @@ Switch the minor mode on for all image-mode buffers with:
 : ''Question: I cannot save eimp-edited result. What was saved is the original image. - [[DoveYoung]]
 
 : ''Non-answer: Well, it worked for me.  I tried it again:  I just resized and image in eimp, saved it, and then the on-disk image was also resized.  I'm using GNU/Linux, could it be an operating system issue?''
+
+: ''Question'': Is there a way to make eimp always use the original image for resizing, so the quality does not decrease with multiple scale operations? - [[ArneBab]]
 ----
 MultimediaModes,
 CategoryExternalUtilities

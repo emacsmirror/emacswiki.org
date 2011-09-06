@@ -51,6 +51,7 @@
 ;; You can, of course, put that in an eval-after-load clause.
 ;;
 
+(require 'cl)
 
 (defvar flyc--e-at-point nil
   "Error at point, after last command")

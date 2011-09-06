@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  2 16:40:51 2011 (-0700)
+;; Last-Updated: Mon Sep  5 12:44:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12549
+;;     Update #: 12563
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -272,13 +272,15 @@
   ;; icicle-with-selected-window
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-Completions-display-min-input-chars, icicle-cycle-into-subdirs-flag,
-  ;; icicle-expand-input-to-common-match-flag, icicle-highlight-historical-candidates-flag,
+  ;; icicle-expand-input-to-common-match-flag, icicle-hide-common-match-in-Completions-flag,
+  ;; icicle-hide-non-matching-lines-flag, icicle-highlight-historical-candidates-flag,
   ;; icicle-highlight-input-initial-whitespace-flag, icicle-ignore-space-prefix-flag,
   ;; icicle-incremental-completion-delay, icicle-incremental-completion-flag,
   ;; icicle-incremental-completion-threshold, icicle-default-value, icicle-list-join-string,
   ;; icicle-mark-position-in-candidate, icicle-point-position-in-candidate, icicle-regexp-quote-flag,
-  ;; icicle-require-match-flag, icicle-show-Completions-help-flag, icicle-sort-comparer,
-  ;; icicle-special-candidate-regexp, icicle-transform-function, icicle-use-~-for-home-dir-flag
+  ;; icicle-require-match-flag, 
+  ;; icicle-show-Completions-help-flag, icicle-sort-comparer, icicle-special-candidate-regexp,
+  ;; icicle-transform-function, icicle-use-~-for-home-dir-flag
 (require 'icicles-var)
   ;; icicle-candidate-nb, icicle-candidate-action-fn, icicle-candidate-properties-alist,
   ;; icicle-cmd-calling-for-completion, icicle-common-match-string, icicle-complete-input-overlay,
@@ -2843,13 +2845,36 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                                       bound noerror))
                                                're-search-forward))
                                             (otherwise 're-search-forward)))))
-                               (when (and (funcall fn (icicle-minibuf-input-sans-dir
-                                                       icicle-current-raw-input)
-                                                   nil t)
-                                          (not (eq (match-beginning 0) (point))))
+                               (save-excursion
+                                 (when (and (funcall fn (icicle-minibuf-input-sans-dir
+                                                         icicle-current-raw-input)
+                                                     nil t)
+                                            (not (eq (match-beginning 0) (point))))
+                                   (setq faces  (cons 'icicle-match-highlight-Completions faces))
+                                   (put-text-property (match-beginning 0) (point) 'face faces)))
 
-                                 (setq faces  (cons 'icicle-match-highlight-Completions faces))
-                                 (put-text-property (match-beginning 0) (point) 'face faces))))))
+                               ;; If `icicle-hide-non-matching-lines-flag' then hide all lines
+                               ;; of candidate that do not match current input.
+                               (let ((candidate  (icicle-current-completion-in-Completions))
+                                     (input      (icicle-minibuf-input-sans-dir
+                                                  icicle-current-raw-input))
+                                     (cbeg       beg))
+                                 (when (and icicle-hide-non-matching-lines-flag
+                                            (string-match "\n" candidate)
+                                            (not (string= "\n" candidate)))
+                                   (goto-char cbeg)
+                                   (while (not (eobp))
+                                     (unless (funcall fn input (line-end-position) t)
+                                       (if (> emacs-major-version 20)
+                                           (put-text-property
+                                            (line-beginning-position)
+                                            (min (1+ (line-end-position)) (point-max))
+                                            'display "...\n")
+                                         (put-text-property
+                                          (line-beginning-position)
+                                          (min (1+ (line-end-position)) (point-max))
+                                          'invisible t)))
+                                     (forward-line 1))))))))
 
                        ;; Highlight candidate if it has been saved.
                        (when (and icicle-highlight-saved-candidates-flag

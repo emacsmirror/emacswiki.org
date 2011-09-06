@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 30 07:35:36 2011 (-0700)
+;; Last-Updated: Mon Sep  5 14:34:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17132
+;;     Update #: 17168
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -80,8 +80,9 @@
 ;;    `icicle-delete-char', `icicle-delete-windows-on',
 ;;    `icicle-describe-file', `icicle-digit-argument',
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
-;;    `icicle-dispatch-M-_', `icicle-dispatch-M-comma',
-;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor+',
+;;    `icicle-dispatch-C-x.', `icicle-dispatch-M-_',
+;;    `icicle-dispatch-M-comma', `icicle-dispatch-M-q',
+;;    `icicle-doremi-candidate-width-factor+',
 ;;    `icicle-doremi-increment-max-candidates+',
 ;;    `icicle-doremi-increment-swank-prefix-length+',
 ;;    `icicle-doremi-increment-swank-timeout+',
@@ -178,6 +179,7 @@
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-dot', `icicle-toggle-expand-to-common-match',
 ;;    `icicle-toggle-hiding-common-match',
+;;    `icicle-toggle-hiding-non-matching-lines',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
 ;;    `icicle-toggle-highlight-saved-candidates',
@@ -210,6 +212,8 @@
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-dot', `toggle-icicle-expand-to-common-match',
+;;    `toggle-icicle-hiding-common-match',
+;;    `toggle-icicle-hiding-non-matching-lines',
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
 ;;    `toggle-icicle-highlight-saved-candidates',
@@ -351,6 +355,7 @@
   ;; icicle-alternative-sort-comparer, icicle-move-Completions-frame,
   ;; icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
   ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match-flag,
+  ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
   ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-flag, icicle-input-string,
   ;; icicle-key-descriptions-use-<>-flag, icicle-regexp-quote-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
@@ -1769,7 +1774,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
      Delete object named by candidate        S-delete
      Object-action: apply a fn to candidate  M-RET"))
         (when icicle-candidate-alt-action-fn
-          (princ "\nFor alt action, use `C-S-' instead of `C-', but use `C-|' or `M-|',\n\
+          (princ "\n\nFor alt action, use `C-S-' instead of `C-', but use `C-|' or `M-|',\n\
      instead of `C-!' or `M-!', to act on all.\n")))
       (if icicle-completing-p
           (with-current-buffer standard-output
@@ -1847,7 +1852,8 @@ These are the main Icicles actions and their minibuffer key bindings:
      Escaping of special regexp chars        \\[icicle-toggle-regexp-quote]\t%S
      Incremental completion                  \\[icicle-toggle-incremental-completion]\t%S
      Input expansion to common match         \\[icicle-toggle-expand-to-common-match]\t%S
-     Hiding common match in `*Completions*'  \\[icicle-toggle-hiding-common-match]\t%S
+     Hiding common match in `*Completions*'  \\[icicle-dispatch-C-x.]\t%S
+     Hiding no-match lines in `*Completions*' C-u \\[icicle-dispatch-C-x.]\t%S
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
      Showing image-file thumbnails (E22+)    C-x t\t%S
@@ -2029,6 +2035,7 @@ editing."
              icicle-incremental-completion-flag
              icicle-expand-input-to-common-match-flag
              icicle-hide-common-match-in-Completions-flag
+             icicle-hide-non-matching-lines-flag
              (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
              (icicle-current-TAB-method)
              icicle-add-proxy-candidates-flag
@@ -7018,13 +7025,23 @@ Bound to `C-^' in the minibuffer during Icicles searching (only)."
        "Highlighting current input match in each main search hit is now ON"
      "Highlighting current input match in each main search hit is now OFF")))
 
+;;;###autoload
+(defun icicle-dispatch-C-x. (arg)       ; Bound to `C-x .' in minibuffer.
+  "Do the right thing for `C-x .'.
+With a prefix arg, call `icicle-toggle-hiding-non-matching-lines'.
+With no prefix arg, call `icicle-toggle-hiding-common-match'.
+Bound to `C-x .' in the minibuffer."
+  (interactive "P")
+  (if arg (icicle-toggle-hiding-non-matching-lines) (icicle-toggle-hiding-common-match)))
+
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
 (defalias 'toggle-icicle-hiding-common-match 'icicle-toggle-hiding-common-match)
 ;;;###autoload
-(defun icicle-toggle-hiding-common-match () ; Bound to `C-M-.' in minibuffer.
+(defun icicle-toggle-hiding-common-match () ; Bound to `C-x .' in minibuffer.
   "Toggle `icicle-hide-common-match-in-Completions-flag'.
-Bound to `C-M-.' in the minibuffer."
+Bound to `C-x .' (no prefix arg) in the minibuffer.
+See also option `icicle-hide-non-matching-lines-flag'."
   (interactive)
   (setq icicle-hide-common-match-in-Completions-flag
         (not icicle-hide-common-match-in-Completions-flag))
@@ -7032,6 +7049,22 @@ Bound to `C-M-.' in the minibuffer."
   (icicle-msg-maybe-in-minibuffer (if icicle-hide-common-match-in-Completions-flag
                                       "Hiding common match in `*Completions*' is now ON"
                                     "Hiding common match in `*Completions*' is now OFF")))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;;###autoload
+(defalias 'toggle-icicle-hiding-non-matching-lines 'icicle-toggle-hiding-non-matching-lines)
+;;;###autoload
+(defun icicle-toggle-hiding-non-matching-lines () ; Bound to `C-u C-x .' in minibuffer.
+  "Toggle `icicle-hide-non-matching-lines-flag'.
+Bound to `C-u C-x .' in the minibuffer.
+See also option `icicle-hide-common-match-in-Completions-flag'."
+  (interactive)
+  (setq icicle-hide-non-matching-lines-flag  (not icicle-hide-non-matching-lines-flag))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer
+   (if icicle-hide-non-matching-lines-flag
+       "Hiding non-matching candidate lines in `*Completions*' is now ON"
+     "Hiding non-matching candidate lines in `*Completions*' is now OFF")))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
@@ -7143,7 +7176,7 @@ Bound to `C-.' in minibuffer during file-name input."
 (defun icicle-toggle-search-cleanup ()  ; Bound to `C-.' in minibuffer during Icicles search.
   "Toggle removal of `icicle-search' highlighting after a search.
 This toggles option `icicle-search-cleanup-flag'.
-Bound to `C-.' in the minibuffer, except for file-name input."
+Bound to `C-.' in the minibuffer during Icicles search."
   (interactive)
   (setq icicle-search-cleanup-flag  (not icicle-search-cleanup-flag))
   (icicle-complete-again-update)

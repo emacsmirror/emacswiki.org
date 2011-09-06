@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 14:58:26 2011 (-0700)
+;; Last-Updated: Mon Sep  5 14:35:21 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4149
+;;     Update #: 4167
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -371,6 +371,7 @@
 (defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'
 (defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
+(defvar icicle-complete-keys-self-insert-ranges) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar replace-count)                  ; In `replace.el'.
@@ -2547,7 +2548,21 @@ then all search highlighting is removed from the search buffer when
 you are finished searching.  If it is nil, then you can remove this
 highlighting later using command `icicle-search-highlight-cleanup'.
 You can toggle `icicle-search-cleanup-flag' during Icicles search
-using `C-.'  in the minibuffer.
+using `C-.' in the minibuffer.
+
+
+`*Completions*' Display
+-----------------------
+
+In buffer `*Completions*', in addition to eliding the common match
+\(option `icicle-hide-common-match-in-Completions-flag', toggled
+anytime using `C-x .' - no prefix arg), you can elide all lines of a
+multi-line candidate that do not match your current minibuffer input.
+This hiding is governed by option
+`icicle-hide-non-matching-lines-flag', which you can toggle anytime
+during completion using `C-u C-x .' (this is not specfic to Icicles
+search).  This can be useful when candidates are very long, as can be
+the case for instance for the `icicle-imenu-*-full' commands.
 
 
 Search and Replace
@@ -5275,7 +5290,13 @@ procedure name."
   "Search/go to an Imenu entry using `icicle-search'.
 Same as `icicle-imenu', except candidates are full definitions.
 This really means that a candidate is the text between the beginning
-of the Imenu regexp match and `forward-sexp' from there."
+of the Imenu regexp match and `forward-sexp' from there.
+
+Remember that non-nil option
+`icicle-hide-common-match-in-Completions-flag' hides, in
+`*Completions*', all lines of multi-line candidates that do not match
+your current minibuffer input.  You can toggle this at anytime during
+completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -5288,7 +5309,7 @@ of the Imenu regexp match and `forward-sexp' from there."
   "Search/go to an Emacs command definition using `icicle-search'.
 This uses `commandp', so it finds only currently defined commands.
 That is, if the buffer has not been evaluated, then its function
-definitions are not considered commands by `icicle-imenu-command'.
+definitions are NOT considered commands by `icicle-imenu-command'.
 
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
@@ -5302,14 +5323,20 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-command-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Functions" menus)) (car (assoc "Other" menus))
                         (error "No command definitions in buffer")))))
 
 ;;;###autoload
 (defun icicle-imenu-command-full (beg end require-match &optional where)
   "Search/go to an Emacs command definition using `icicle-search'.
 Same as `icicle-imenu-command', except candidates are complete command
-definitions."
+definitions.
+
+Remember that non-nil option
+`icicle-hide-common-match-in-Completions-flag' hides, in
+`*Completions*', all lines of multi-line candidates that do not match
+your current minibuffer input.  You can toggle this at anytime during
+completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -5320,7 +5347,7 @@ definitions."
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where
                   'icicle-imenu-command-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Functions" menus)) (car (assoc "Other" menus))
                         (error "No command definitions in buffer")))))
 
 (defun icicle-imenu-command-p (ignored-hit-string ignored-marker)
@@ -5336,7 +5363,7 @@ Both arguments are ignored here."
   "Search/go to an Emacs non-command function definition with `icicle-search'.
 This uses `commandp' to distinguish currently defined commands from
 other functions.  This means that if the buffer has not yet been
-evaluated, then all of its function definitions are considered
+evaluated, then ALL of its function definitions are considered
 non-interactive by `icicle-imenu-non-interactive-function'.
 
 This command is intended only for use in Icicle mode.  It is defined
@@ -5351,14 +5378,20 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Functions" menus)) (car (assoc "Other" menus))
                         (error "No non-command function definitions in buffer")))))
 
 ;;;###autoload
 (defun icicle-imenu-non-interactive-function-full (beg end require-match &optional where)
   "Search/go to an Emacs non-command function definition with `icicle-search'.
 Same as `icicle-imenu-non-interactive-function', except candidates are
-complete function definitions."
+complete function definitions.
+
+Remember that non-nil option
+`icicle-hide-common-match-in-Completions-flag' hides, in
+`*Completions*', all lines of multi-line candidates that do not match
+your current minibuffer input.  You can toggle this at anytime during
+completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -5369,7 +5402,7 @@ complete function definitions."
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
                   'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Functions" menus)) (car (assoc "Other" menus))
                         (error "No non-command function definitions in buffer")))))
 
 (defun icicle-imenu-non-interactive-function-p (ignored-hit-string ignored-marker)
@@ -5395,14 +5428,20 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-macro-p
                   (lambda (menus)
-                    (or (car (assoc "Macros" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Macros" menus)) (car (assoc "Other" menus))
                         (error "No macro definitions in buffer")))))
 
 ;;;###autoload
 (defun icicle-imenu-macro-full (beg end require-match &optional where)
   "Search/go to an Emacs macro definition using `icicle-search'.
 Same as `icicle-imenu-non-interactive-function', except candidates are
-complete function definitions."
+complete function definitions.
+
+Remember that non-nil option
+`icicle-hide-common-match-in-Completions-flag' hides, in
+`*Completions*', all lines of multi-line candidates that do not match
+your current minibuffer input.  You can toggle this at anytime during
+completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -5413,7 +5452,7 @@ complete function definitions."
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
                   'icicle-imenu-macro-p
                   (lambda (menus)
-                    (or (car (assoc "Macro" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Macro" menus)) (car (assoc "Other" menus))
                         (error "No macro definitions in buffer")))))
 
 ;;;###autoload
@@ -5431,14 +5470,20 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Variables" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Variables" menus)) (car (assoc "Other" menus))
                         (error "No non-option variable definitions in buffer")))))
 
 ;;;###autoload
 (defun icicle-imenu-variable-full (beg end require-match &optional where)
   "Search/go to an Emacs non-option variable definition using `icicle-search'.
 Same as `icicle-imenu-variable', except candidates are complete
-variable definitions."
+variable definitions.
+
+Remember that non-nil option
+`icicle-hide-common-match-in-Completions-flag' hides, in
+`*Completions*', all lines of multi-line candidates that do not match
+your current minibuffer input.  You can toggle this at anytime during
+completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -5448,7 +5493,7 @@ variable definitions."
     (error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Variables" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Variables" menus)) (car (assoc "Other" menus))
                         (error "No non-option variable definitions in buffer")))))
 
 ;;;###autoload
@@ -5466,14 +5511,20 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "User Options" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "User Options" menus)) (car (assoc "Other" menus))
                         (error "No user option definitions in buffer")))))
 
 ;;;###autoload
 (defun icicle-imenu-user-option-full (beg end require-match &optional where)
   "Search/go to an Emacs user option definition using `icicle-search'.
 Same as `icicle-imenu-user-option', except candidates are complete
-option definitions."
+option definitions.
+
+Remember that non-nil option
+`icicle-hide-common-match-in-Completions-flag' hides, in
+`*Completions*', all lines of multi-line candidates that do not match
+your current minibuffer input.  You can toggle this at anytime during
+completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -5483,7 +5534,7 @@ option definitions."
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "User Options" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "User Options" menus)) (car (assoc "Other" menus))
                         (error "No user option definitions in buffer")))))
 
 ;;;###autoload
@@ -5504,7 +5555,7 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Keys" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Keys" menus)) (car (assoc "Other" menus))
                         (error "No implicit-map key definitions in buffer")))))
 
 ;;;###autoload
@@ -5521,7 +5572,7 @@ definitions."
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Keys" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Keys" menus)) (car (assoc "Other" menus))
                         (error "No implicit-map key definitions in buffer")))))
 
 ;;;###autoload
@@ -5539,7 +5590,7 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Keys in Maps" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Keys in Maps" menus)) (car (assoc "Other" menus))
                         (error "No explicit-map key definitions in buffer")))))
 
 ;;;###autoload
@@ -5556,7 +5607,7 @@ complete key definitions."
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Keys in Maps" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Keys in Maps" menus)) (car (assoc "Other" menus))
                         (error "No explicit-map key definitions in buffer")))))
 
 ;;;###autoload
@@ -5574,7 +5625,7 @@ search multiple regions, buffers, or files, see the doc for command
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Faces" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Faces" menus)) (car (assoc "Other" menus))
                         (error "No face definitions in buffer")))))
 
 ;;;###autoload
@@ -5591,7 +5642,7 @@ definitions."
     (error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
-                    (or (car (assoc "Faces" menus)) (car (assoc "Others" menus))
+                    (or (car (assoc "Faces" menus)) (car (assoc "Other" menus))
                         (error "No face definitions in buffer")))))
 
 (defun icicle-imenu-1 (fullp beg end require-match &optional where predicate submenu-fn)
@@ -5619,17 +5670,17 @@ The other args are as for `icicle-search'."
            (set-syntax-table table)
            (let* ((others   0)
                   (menus    (mapcar #'(lambda (menu)
-                                        (when (equal (car menu) "Others")
+                                        (when (equal (car menu) "Other")
                                           (setq others  (1+ others))
                                           (when (> others 1)
-                                            (setcar menu (format "Others<%d>" others))))
+                                            (setcar menu (format "Other<%d>" others))))
                                         menu)
                                     (icicle-remove-if-not
                                      #'icicle-imenu-in-buffer-p ; Use only menus that match buffer.
-                                     (mapcar #'(lambda (menu) ; Name unlabeled menu(s) `Others[<N>]'.
+                                     (mapcar #'(lambda (menu) ; Name unlabeled menu(s) `Other[<N>]'.
                                                  (if (stringp (car menu))
                                                      menu
-                                                   (cons "Others" (cdr menu))))
+                                                   (cons "Other" (cdr menu))))
                                              imenu-generic-expression))))
                   (submenu  (if submenu-fn
                                 (funcall submenu-fn menus)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 15:31:14 2011 (-0700)
+;; Last-Updated: Mon Sep  5 14:33:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4442
+;;     Update #: 4465
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -99,6 +99,7 @@
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
+;;    `icicle-hide-non-matching-lines-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
 ;;    `icicle-highlight-input-completion-failure',
 ;;    `icicle-highlight-input-completion-failure-delay',
@@ -419,6 +420,8 @@
         icicle-toggle-incremental-completion)
        (expanding-to-common menu-item "Toggle Common Match Expansion"
         icicle-toggle-expand-to-common-match)
+       (hiding-non-matching-lines menu-item "Toggle Hiding Non-Matching Lines"
+        icicle-toggle-hiding-non-matching-lines)
        (hiding-common-match menu-item "Toggle Hiding Common Match"
         icicle-toggle-hiding-common-match)
        (oneoff-next-S-TAB menu-item "ONE-OFF Next S-TAB Completion Method (`C-u')"
@@ -1589,12 +1592,24 @@ display is finished."
 ;;;###autoload
 (defcustom icicle-hide-common-match-in-Completions-flag nil
   "*Non-nil means hide the common match for your input, in `*Completions*'.
-The common match is elided using ellipsis (`...').
-You can use `C-M-.' during completion to toggle this option.
+You can toggle this option during completion using `C-x .' (no prefix
+arg).  See also option `icicle-hide-non-matching-lines-flag'.
 
- The common match used here is governed by option
-`icicle-expand-input-to-common-match-flag'."
+The common match used here is governed by option
+`icicle-expand-input-to-common-match-flag'.  It is elided using
+ellipsis (`...')."
   :type 'boolean :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-hide-non-matching-lines-flag nil
+  "*Non-nil means hide search candidate lines that do not match input.
+This applies only to multi-line candidates in buffer `*Completions*'.
+Lines that do not contain text matched by your current
+minibuffer input are elided using ellipsis (`...').
+You can toggle this option during completion using `C-u C-x .'.
+
+See also option `icicle-hide-common-match-in-Completions-flag'."
+  :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-highlight-historical-candidates-flag t ; Toggle with `C-pause'.
@@ -2460,7 +2475,10 @@ Instead, you add or remove sets using commands
 (defcustom icicle-search-cleanup-flag t
   "*Controls whether to remove highlighting after a search.
 If this is nil, highlighting can be removed manually with
-`\\[icicle-search-highlight-cleanup]'."
+`\\[icicle-search-highlight-cleanup]'.
+
+You can toggle this option from the minibuffer during Icicles
+search (e.g., `C-c`') using `C-.'."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
@@ -2488,7 +2506,8 @@ different keyboards - for example, `S-tab' and `S-iso-lefttab'."
   "*Non-nil means highlight input match in each context search hit.
 Setting this to non-nil can impact performance negatively, because the
 highlighting is updated with each input change.  You can toggle this
-option from the minibuffer during `C-c`' search using `C-^'."
+option from the minibuffer during Icicles search (e.g., `C-c`') using
+`C-^'."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload

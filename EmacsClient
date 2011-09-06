@@ -845,86 +845,10 @@ Set -a and/or -c as you like.
 
 == Piping stdout to an Emacs buffer using emacsclient ==
 
-There is a script example about this issue at GnuClient, however that is using gnudoit, thus I though of sharing my solution for emacsclient.
-Being inspired by the mentioned script this solution also uses perl.
+See [[e-pipe]]
 
-<pre>
-#! /usr/bin/perl
+-- LeWang
 
-# This script uses emacsclient, be sure to have a running server session.
-# A server-session can be started by "M-x server-start".
-
-my $status = system("emacsclient -n --eval '(progn (pop-to-buffer (get-buffer-create \"*piped*\")))'");
-if($status!=0){ exit 1; }
-while(<STDIN>){ 
-     system("emacsclient -n --eval '(with-current-buffer \"*piped*\" (insert \"" . $_ . "\"))'");
-}
-</pre>
-
-This script inserts the piped content line by line into your emacs server, creating (if not already open) a buffer called <code>*piped*</code>.
-
-Usage: Put the shown script into a file (you might want to call it "emacs-pipe") and save it in your PATH (e.g. move it to /usr/bin/). Do not forget to make it executable (by chmod ugo+x emacs-pipe).
-
-Now you can experience the beauty of:
-
-<pre>
-echo "This will go into my emacs! :)" | emcas-pipe
-</pre>
-
--- hf & gl erazortt
-
-[new]
-
-This is a great idea, but very slow for large amounts of data (an eval per line), breaks on quotes and inserts at the cursor not the end. Here is a perl script I wrote based on the above. You use it in exactly the same way.
-
-<pre>
-#!/usr/bin/perl
-
-use strict;
-use warnings;
-
-use IO::Select;
-
-my $emacsclient = "/usr/local/bin/emacsclient";
-
-# This script uses emacsclient, be sure to have a running server session.
-# A server-session can be started by "M-x server-start".
-
-exit 1
-    if 0 != system("$emacsclient -n --eval '(progn (pop-to-buffer (get-buffer-create \"*piped*\")))'");
-
-my $s = IO::Select->new;
-$s->add(\*STDIN);
-
-while (1)
-{
-    # block until data available
-    my $data = <STDIN>;
-
-    # exit if STDIN closed
-    exit(0)
-        if ! $data;
-
-    # keep reading while data is available, or we have a bunch of lines
-    my $lines = 0;
-    $data .= <STDIN>
-        while $lines++ < 100 && $s->can_read(.5);
-
-    $data =~ s/"/\\"/g;
-    $data =~ s/'/'\\''/g;
-    $data =~ s/\\/\\\\/g;
-    system(qq{$emacsclient -n --eval '(with-current-buffer "*piped*" (goto-char (point-max)) (insert "} . $data . qq{"))'});
-}
-</pre>
-
--- Mark Aufflick
-
-[new]
-Nice, but this does not work on w32.
-However I think on must platforms (including w32) you can pipe to putclip instead and just paste into a buffer in Emacs.
-
-[new]
-This did work for me on w32 once I added a symlink to put emacsclient on the path.  Using ntemacs, cygwin, and cygwin-perl.
 [new]
 I defined the following function within .bashrc and start emacs under cygwin with the command <tt>e</tt>.
 <pre>

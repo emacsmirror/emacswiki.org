@@ -689,9 +689,21 @@ time using '''`##C-;##'''' in the minibuffer.  See [[Icicles - Expanded-Common-M
 [:icicle-hide-common-match-in-Completions-flag]
 ==== Option icicle-hide-common-match-in-Completions-flag ====
 
-Non-nil user option '''`icicle-hide-common-match-in-Completions-flag'''' hides the common match for your current input from each candidate in
-`*Completions*'.  You can toggle this at any time during
-completion using '''`##C-x .##'''' (`icicle-toggle-hiding-common-match').
+Non-`nil' user option '''`icicle-hide-common-match-in-Completions-flag'''' hides, in buffer `*Completions*', the common match for your current input from each candidate.  You can toggle this anytime during
+completion using '''`##C-x .##'''' (no [[prefix argument]]), which is bound to command `icicle-toggle-hiding-common-match'.    The common match used is governed by option `<tt>[[#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]'.
+
+
+
+----
+[:icicle-hide-non-matching-lines-flag]
+==== icicle-hide-non-matching-lines-flag ====
+
+Non-`nil' option '''`icicle-hide-non-matching-lines-flag'''' hides, in
+buffer `*Completions*', all lines in multi-line candidates that
+do not match your current minibuffer input.  In Emacs 22+,
+consecutive such lines are elided as '''`##...##''''.  You can toggle this
+option anytime during completion using '''`##C-u C-x .##'''', which is
+bound to command '''`icicle-toggle-hiding-non-matching-lines''''.
 
 
 
@@ -1205,6 +1217,8 @@ a search replacement replaces the [[Icicles - Expanded-Common-Match Completion|e
 otherwise, it replaces only the exact match.  You can ''toggle'' the
 value at any time using '''`##M-;##'''' in the minibuffer.
 
+
+
 ----
 [:icicle-search-cleanup-flag] [:icicle-search-highlight-cleanup]
 ==== Option icicle-search-cleanup-flag ====
@@ -1215,8 +1229,7 @@ search.  This is the default behavior. If you set this to `nil' then you can rem
 highlighting manually later using command
 '''`icicle-search-highlight-cleanup''''.  You can ''toggle'' this search
 highlight removal at any time using command
-`icicle-toggle-search-cleanup', bound to '''`##C-.##'''' in the minibuffer
-(except during file-name completion).  
+'''`icicle-toggle-search-cleanup'''', which is bound to '''`##C-.##'''' in the minibuffer during '''Icicles''' search.
 
 One use of `nil' `icicle-search-cleanup-flag' is to ''highlight'' regexp matches throughout a region or buffer (or multiple files or...).  In that capacity, '''Icicles''' search functions act like some of the highlighting commands in my library <tt>[[highlight.el]]</tt> (see HighLight).  Note that when `icicle-search-cleanup-flag' is `nil', ''all'' '''Icicles''' search highlighting remains: last-visited
 search context, other context matches, current-input matches, and even

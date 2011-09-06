@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 15:36:53 2011 (-0700)
+;; Last-Updated: Mon Sep  5 14:57:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7047
+;;     Update #: 7077
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -441,6 +441,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/05 dadams
+;;     icicle-imenu-*: Others -> Other, as submenu name.
+;;     icicle-search, icicle-imenu*-full: Mention C-x . in doc strings.
 ;; 2011/09/04 dadams
 ;;     icicle-add-key+cmd: Handle Emacs 23+ consp char-range events, for self-insert.
 ;;                         Applied renaming of icicle-complete-keys-self-insert-flag to *-ranges.
@@ -949,6 +952,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/09/05 dadams
+;;     icicle-display-candidates-in-Completions: Act on new option icicle-hide-non-matching-lines-flag.
 ;; 2011/09/02 dadams
 ;;     Added: icicle-delete-dups.
 ;;     icicle-display-candidates-in-Completions: Don't highlight an empty match.
@@ -2626,6 +2631,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/09/05 dadams
+;;     Added: icicle-dispatch-C-x., icicle-toggle-hiding-non-matching-lines.
+;;     icicle-help-string-completion: Added hiding no-match lines.  Use icicle-dispatch-C-x..
 ;; 2011/08/30 dadams
 ;;     icicle-backward-delete-char-untabify, icicle-delete(-backward)-char:
 ;;       Put delete-selection prop, so region is deleted.
@@ -3864,6 +3872,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/09/05 dadams
+;;     icicle-mode: Update doc string: icicle-toggle-hiding-non-matching-lines.
+;;     icicle-define-icicle-maps: Added icicle-toggle-hiding-non-matching-lines to menus.
+;;     icicle-bind-completion-keys: Bind C-x . to icicle-dispatch-C-x. (new).
 ;; 2011/09/02 dadams
 ;;     icicle-(bind|restore)-other-keymap-keys:
 ;;       Test fn memq in icicle-functions-to-redefine, not just non-nil icicle-functions-to-redefine.
@@ -4879,6 +4891,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/09/05 dadams
+;;     Added: icicle-hide-non-matching-lines-flag.
+;;     icicle-Completions-toggle-submenu: Added icicle-toggle-hiding-non-matching-lines to menu.
+;;     icicle-hide-common-match-in-Completions-flag: Updated doc string (new toggle key).
 ;; 2011/09/04 dadams
 ;;     Renamed: icicle-complete-keys-self-insert-flag to icicle-complete-keys-self-insert-ranges.
 ;;       Define it only for Emacs 22+.
@@ -5487,6 +5503,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/09/05 dadams
+;;     icicle-general-help-string: Added icicle-hide-non-matching-lines-flag.
+;;                                 Removed -other-window from *-bookmark-(bookmark-list|desktop).
 ;; 2011/08/13 dadams
 ;;     Added: icicle-search-complement-domain-p.
 ;; 2011/08/12 dadams

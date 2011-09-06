@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 15:17:43 2011 (-0700)
+;; Last-Updated: Mon Sep  5 14:36:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28199
+;;     Update #: 28226
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -773,13 +773,13 @@
 ;;    using command `icicle-toggle-highlight-all-current', bound to
 ;;    `C-^' in the minibuffer during Icicles search.
 ;;
-;;  * If `icicle-search-cleanup-flag' is non-`nil' (the default value)
-;;    then search highlighting is removed after the search.  If you
-;;    set this to `nil' then you can remove search highlighting
+;;  * If option `icicle-search-cleanup-flag' is non-`nil' (the default
+;;    value) then search highlighting is removed after the search.  If
+;;    you set this to `nil' then you can remove search highlighting
 ;;    manually later using command `icicle-search-highlight-cleanup'.
 ;;    You can toggle this search highlight removal at any time using
-;;    command `icicle-toggle-search-cleanup', bound to `C-.' in the
-;;    minibuffer (except during file-name completion).
+;;    command `icicle-toggle-search-cleanup', which is bound to `C-.'
+;;    in the minibuffer during Icicles search.
 ;;
 ;;    One use of `nil' `icicle-search-cleanup-flag' is to highlight
 ;;    regexp matches throughout a region or buffer (or multiple files
@@ -4823,10 +4823,19 @@
 ;;    See (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion").
 ;;
 ;;  * Non-`nil' user option
-;;    `icicle-hide-common-match-in-Completions-flag' hides the common
-;;    match for your current input from each candidate in
-;;    `*Completions*'.  You can toggle this at any time during
-;;    completion using `C-x .' (`icicle-toggle-hiding-common-match').
+;;    `icicle-hide-common-match-in-Completions-flag' hides, in buffer
+;;    `*Completions*', the common match for your current input from
+;;    each candidate.  You can toggle this anytime during completion
+;;    using `C-x .' (no prefix arg), which is bound to command
+;;    `icicle-toggle-hiding-common-match'.  The common match used is
+;;    governed by option `icicle-expand-input-to-common-match-flag'.
+;;
+;;  * Non-`nil' option `icicle-hide-non-matching-lines-flag' hides, in
+;;    buffer `*Completions*', all lines in multi-line candidates that
+;;    do not match your current minibuffer input.  In Emacs 22+,
+;;    consecutive such lines are elided as `...'.  You can toggle this
+;;    option anytime during completion using `C-u C-x .', which is
+;;    bound to command `icicle-toggle-hiding-non-matching-lines'.
 ;;
 ;;  * User option `icicle-show-Completions-initially-flag' controls
 ;;    whether or not buffer `*Completions*' is shown initially,
@@ -5206,8 +5215,8 @@
 ;;    remove search highlighting manually later using command
 ;;    `icicle-search-highlight-cleanup'.  You can toggle this search
 ;;    highlight removal at any time using command
-;;    `icicle-toggle-search-cleanup', bound to `C-.' in the minibuffer
-;;    (except during file-name completion).
+;;    `icicle-toggle-search-cleanup', which is bound to `C-.' in the
+;;    minibuffer during Icicles search.
 ;;
 ;;    One use of `nil' `icicle-search-cleanup-flag' is to highlight
 ;;    regexp matches throughout a region or buffer (or multiple files

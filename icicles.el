@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 14:38:45 2011 (-0700)
+;; Last-Updated: Mon Sep  5 14:55:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22965
+;;     Update #: 22975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -347,6 +347,7 @@
 ;;    `icicle-toggle-angle-brackets',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-hiding-common-match',
+;;    `icicle-toggle-hiding-non-matching-lines',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
 ;;    `icicle-toggle-highlight-saved-candidates',
@@ -376,6 +377,8 @@
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-fuzzy-completion',
+;;    `toggle-icicle-hiding-common-match',
+;;    `toggle-icicle-hiding-non-matching-lines',
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
 ;;    `toggle-icicle-highlight-saved-candidates',
@@ -449,8 +452,9 @@
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
 ;;    `icicle-delete-char', `icicle-digit-argument',
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
-;;    `icicle-dispatch-M-_', `icicle-dispatch-M-comma',
-;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor+',
+;;    `icicle-dispatch-C-x.', `icicle-dispatch-M-_',
+;;    `icicle-dispatch-M-comma', `icicle-dispatch-M-q',
+;;    `icicle-doremi-candidate-width-factor+',
 ;;    `icicle-doremi-increment-max-candidates+',
 ;;    `icicle-doremi-increment-swank-prefix-length+',
 ;;    `icicle-doremi-increment-swank-timeout+',
@@ -542,6 +546,8 @@
 ;;    `icicle-toggle-angle-brackets',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-dot',
 ;;    `icicle-toggle-expand-to-common-match',
+;;    `icicle-toggle-hiding-common-match',
+;;    `icicle-toggle-hiding-non-matching-lines',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
 ;;    `icicle-toggle-highlight-saved-candidates',
@@ -573,6 +579,8 @@
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-dot',
 ;;    `toggle-icicle-expand-to-common-match',
 ;;    `toggle-icicle-fuzzy-completion',
+;;    `toggle-icicle-hiding-common-match',
+;;    `toggle-icicle-hiding-non-matching-lines',
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
 ;;    `toggle-icicle-ignored-extensions',
@@ -669,6 +677,7 @@
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
+;;    `icicle-hide-non-matching-lines-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
 ;;    `icicle-highlight-input-completion-failure',
 ;;    `icicle-highlight-input-completion-failure-delay',

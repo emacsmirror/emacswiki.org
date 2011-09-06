@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 14:56:56 2011 (-0700)
+;; Last-Updated: Mon Sep  5 12:49:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1534
+;;     Update #: 1538
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -563,6 +563,7 @@ noted in parentheses.
 * `icicle-guess-commands-in-path'        - Shell commands to complete
 * `icicle-help-in-mode-line-delay'       - Secs to show candidate help
 * `icicle-hide-common-match-in-Completions-flag'- Show common match?
+* `icicle-hide-non-matching-lines-flag'  - Hide non-match lines?
 * `icicle-highlight-historical-candidates-flag'
                                          - Highlight past input?
 * `icicle-highlight-input-completion-failure*'- Input non-match sign
@@ -705,8 +706,8 @@ input prompt is prefixed by `+'.
   `icicle-apropos-variable'            - Enhanced `apropos-variable'
   `icicle-apropos-zippy'               - Show matching Zippy quotes
 + `icicle-bookmark'(`-other-window')   - Jump to a bookmark
-+ `icicle-bookmark-bookmark-list-other-window' - Jump to bookmark list
-+ `icicle-bookmark-desktop-other-window' - Jump to desktop bookmark
++ `icicle-bookmark-bookmark-list'      - Jump to bookmark list
++ `icicle-bookmark-desktop'            - Jump to desktop bookmark
 + `icicle-bookmark-dired-other-window' - Jump to a Dired bookmark
 + `icicle-bookmark-file-other-window'  - Jump to a file bookmark
 + `icicle-bookmark-gnus-other-window'  - Jump to a Gnus bookmark
