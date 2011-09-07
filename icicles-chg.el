@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 14:57:04 2011 (-0700)
+;; Last-Updated: Tue Sep  6 16:24:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7077
+;;     Update #: 7084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2631,6 +2631,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/09/06 dadams
+;;     Added: icicle-resolve-file-name.
+;;     icicle-minibuffer-help: Call help-setup-xref, for back/forward buttons.
 ;; 2011/09/05 dadams
 ;;     Added: icicle-dispatch-C-x., icicle-toggle-hiding-non-matching-lines.
 ;;     icicle-help-string-completion: Added hiding no-match lines.  Use icicle-dispatch-C-x..
@@ -3872,6 +3875,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/09/06 dadams
+;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
+;;       Bind icicle-resolve-file-name to C-x C-f.
 ;; 2011/09/05 dadams
 ;;     icicle-mode: Update doc string: icicle-toggle-hiding-non-matching-lines.
 ;;     icicle-define-icicle-maps: Added icicle-toggle-hiding-non-matching-lines to menus.

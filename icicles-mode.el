@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 11:51:07 2011 (-0700)
+;; Last-Updated: Tue Sep  6 16:22:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7572
+;;     Update #: 7583
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2452,10 +2452,11 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [M-S-backspace]           'icicle-erase-minibuffer) ; `M-S-backspace'
        (define-key map [M-S-delete]              'icicle-erase-minibuffer) ; `M-S-delete'
        (define-key map [(meta ?.)]               'icicle-insert-string-at-point) ; `M-.'
+       (define-key map "\C-x\C-f"                'icicle-resolve-file-name) ; `C-x C-f'
        (define-key map [(control ?=)]            'icicle-insert-string-from-variable) ; `C-='
        (define-key map [(meta ?o)]               'icicle-insert-history-element) ; `M-o'
        (define-key map [(meta ?i)]               'icicle-clear-current-history) ; `M-i'
-       (define-key map [(meta ?k)]             'icicle-erase-minibuffer-or-history-element) ; `M-k'
+       (define-key map [(meta ?k)]               'icicle-erase-minibuffer-or-history-element) ; `M-k'
        (define-key map [(meta ?:)]               'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
        (define-key map [(control ?a)]            'icicle-beginning-of-line+) ; `C-a'
        (define-key map [(control ?e)]            'icicle-end-of-line+) ; `C-e'
@@ -2551,6 +2552,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [M-S-backspace]           'icicle-erase-minibuffer) ; `M-S-backspace'
          (define-key map [M-S-delete]              'icicle-erase-minibuffer) ; `M-S-delete'
          (define-key map [(meta ?.)]               'icicle-insert-string-at-point) ; `M-.'
+         (define-key map "\C-x\C-f"                'icicle-resolve-file-name) ; `C-x C-f'
          (define-key map [(control ?=)]            'icicle-insert-string-from-variable) ; `C-='
          (define-key map [(meta ?o)]               'icicle-insert-history-element) ; `M-o'
          (define-key map [(meta ?i)]               'icicle-clear-current-history) ; `M-i'
@@ -2650,6 +2652,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [M-S-backspace]           'icicle-erase-minibuffer) ; `M-S-backspace'
          (define-key map [M-S-delete]              'icicle-erase-minibuffer) ; `M-S-delete'
          (define-key map [(meta ?.)]               'icicle-insert-string-at-point) ; `M-.'
+         (define-key map "\C-x\C-f"                'icicle-resolve-file-name) ; `C-x C-f'
          (define-key map [(control ?=)]            'icicle-insert-string-from-variable) ; `C-='
          (define-key map [(meta ?o)]               'icicle-insert-history-element) ; `M-o'
          (define-key map [(meta ?i)]               'icicle-clear-current-history) ; `M-i'
@@ -2773,6 +2776,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [M-S-backspace]           nil) ; `M-S-DEL'
        (define-key map [M-S-delete]              nil) ; `M-S-delete'
        (define-key map [(meta ?.)]               nil) ; `M-.'
+       (define-key map "\C-x\C-f"                nil) ; `C-x C-f'
        (define-key map [(control ?=)]            nil) ; `C-='
        (define-key map [(meta ?o)]               nil) ; `M-o'
        (define-key map [(meta ?i)]               nil) ; `M-i'
@@ -2823,6 +2827,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [M-S-backspace]           nil) ; `M-S-DEL'
          (define-key map [M-S-delete]              nil) ; `M-S-delete'
          (define-key map [(meta ?.)]               nil) ; `M-.'
+         (define-key map "\C-x\C-f"                nil) ; `C-x C-f'
          (define-key map [(control ?=)]            nil) ; `C-='
          (define-key map [(meta ?o)]               nil) ; `M-o'
          (define-key map [(meta ?i)]               nil) ; `M-i'
@@ -2873,6 +2878,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [M-S-backspace]           nil) ; `M-S-DEL'
          (define-key map [M-S-delete]              nil) ; `M-S-delete'
          (define-key map [(meta ?.)]               nil) ; `M-.'
+         (define-key map "\C-x\C-f"                nil) ; `C-x C-f'
          (define-key map [(control ?=)]            nil) ; `C-='
          (define-key map [(meta ?o)]               nil) ; `M-o'
          (define-key map [(meta ?i)]               nil) ; `M-i'
@@ -3271,6 +3277,7 @@ complete)"))
     (define-key map [(meta ?k)]              'icicle-erase-minibuffer-or-history-element) ; `M-k'
     (define-key map [(meta ?o)]              'icicle-insert-history-element) ; `M-o'
     (define-key map [(meta ?.)]              'icicle-insert-string-at-point) ; `M-.'
+    (define-key map "\C-x\C-f"               'icicle-resolve-file-name) ; `C-x C-f'
     (define-key map [(meta ?:)]              'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
     (when (fboundp 'yank-secondary)     ; In `second-sel.el'.
       (define-key map "\C-\M-y"              'icicle-yank-secondary)) ; `C-M-y'
@@ -3527,6 +3534,7 @@ MAP is `minibuffer-local-completion-map',
     (define-key map [(meta ?k)]              nil)
     (define-key map [(meta ?o)]              nil)
     (define-key map [(meta ?.)]              nil)
+    (define-key map "\C-x\C-f"               nil)
     (define-key map [(meta ?:)]              nil)
     (define-key map "\C-\M-y"                nil)
     (define-key map [M-S-backspace]          nil)

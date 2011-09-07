@@ -1,13 +1,13 @@
 ;;; highline.el --- minor mode to highlight current line in buffer
 
-;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
-;;   Vinicius Jose Latorre
+;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+;;   2010, 2011  Vinicius Jose Latorre
 
 ;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp: <2008/12/19 11:42:46 vlatorre>
+;; Time-stamp: <2011/09/06 22:46:13 vinicius>
 ;; Keywords: faces, frames, editing
-;; Version: 7.2.1
+;; Version: 7.2.2
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
@@ -59,7 +59,7 @@
 ;; This will generate highline.elc, which will be loaded instead of
 ;; highline.el.
 ;;
-;; highline was tested with GNU Emacs 21, 22 and 23, XEmacs 21.4.20, and
+;; highline was tested with GNU Emacs 21, 22, 23 and 24, XEmacs 21.4.20, and
 ;; Aquamacs Emacs 1.5.
 ;;
 ;;
@@ -251,6 +251,9 @@
 ;; Acknowledgements
 ;; ----------------
 ;;
+;; Thanks to Le Wang <l26wang@gmail.com> for not highlight a line when region
+;; is active.
+;;
 ;; Thanks to David Reitter <david.reitter@gmail.com> for `highline-face' less
 ;; contrastive default values.
 ;;
@@ -291,6 +294,45 @@
     ;; XEmacs needs overlay emulation package
     (or (require 'overlay)
 	(error "`highline' requires `overlay' package."))))
+
+
+;; Emacs 21 and 22 compatibility
+(unless (fboundp 'use-region-p)
+  (defcustom use-empty-active-region nil
+    "Whether \"region-aware\" commands should act on empty regions.
+If nil, region-aware commands treat empty regions as inactive.
+If non-nil, region-aware commands treat the region as active as
+long as the mark is active, even if the region is empty.
+
+Region-aware commands are those that act on the region if it is
+active and Transient Mark mode is enabled, and on the text near
+point otherwise."
+    :type 'boolean
+    :version "23.1"
+    :group 'editing-basics)
+
+  (defun use-region-p ()
+    "Return t if the region is active and it is appropriate to act on it.
+This is used by commands that act specially on the region under
+Transient Mark mode.
+
+The return value is t if Transient Mark mode is enabled and the
+mark is active; furthermore, if `use-empty-active-region' is nil,
+the region must not be empty.  Otherwise, the return value is nil.
+
+For some commands, it may be appropriate to ignore the value of
+`use-empty-active-region'; in that case, use `region-active-p'."
+    (and (region-active-p)
+	 (or use-empty-active-region (> (region-end) (region-beginning)))))
+
+  (defun region-active-p ()
+    "Return t if Transient Mark mode is enabled and the mark is active.
+
+Some commands act specially on the region when Transient Mark
+mode is enabled.  Usually, such commands should use
+`use-region-p' instead of this function, because `use-region-p'
+also checks the value of `use-empty-active-region'."
+    (and transient-mark-mode mark-active)))
 
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -386,7 +428,7 @@ Valid values are:
 			It must: INTEGER > 0.
 
    FUNCTION             function symbol which is called without arguments and
-                        must return one of the values above (see above).
+			must return one of the values above (see above).
 
 Any other value is treated as t.
 
@@ -406,7 +448,7 @@ visual line; otherwise, highlight the current line."
 		 (cons :tag "Range" :value (0 . 0)
 		       (integer :tag "From")
 		       (integer :tag "To"))
-                 (function :tag "Function Symbol"))
+		 (function :tag "Function Symbol"))
   :group 'highline)
 
 
@@ -593,7 +635,7 @@ Only useful with a windowing system."
 	(set-buffer temp)
 	(add-hook 'mouse-leave-buffer-hook
 		  #'highline-maybe-unhighlight-current-line)
-        (add-hook 'change-major-mode-hook
+	(add-hook 'change-major-mode-hook
 		  #'highline-unhighlight-current-line)
 	(add-hook 'pre-command-hook
 		  #'highline-maybe-unhighlight-current-line)
@@ -624,7 +666,7 @@ Only useful with a windowing system."
 	(set-buffer temp)
 	(remove-hook 'mouse-leave-buffer-hook
 		     #'highline-maybe-unhighlight-current-line)
-        (remove-hook 'change-major-mode-hook
+	(remove-hook 'change-major-mode-hook
 		     #'highline-unhighlight-current-line)
 	(remove-hook 'pre-command-hook
 		     #'highline-maybe-unhighlight-current-line)
@@ -816,42 +858,44 @@ See also `highline-view-mode' for documentation."
 
 
 (defun highline-highlight-current-line (&rest ignore)
-  "Highlight current line."    
-  (unless (save-match-data
-	    (and highline-ignore-regexp
-		 (not (equal "" highline-ignore-regexp))
-		 (string-match highline-ignore-regexp (buffer-name))))
-    (save-excursion
-      (highline-delete-overlays)	  ; clean highline overlays
-      (let ((inhibit-field-text-motion t) ; due to line-beginning-position
-	    (column (highline-current-column))
-	    (lines  (highline-vertical))
-	    current-line)
-	(setq current-line (cdr lines)
-	      lines        (car lines))
-	(highline-line-option)		; check highline-line value
-	(when (> lines 0)
-	  (while (progn
-		   ;; move highlight to the current line
-		   (highline-move-overlay
-		    ;; overlay
-		    (car (setq highline-overlays
-			       (cons (make-overlay 1 1) ; hide it
-				     highline-overlays)))
-		    ;; overlay face
-		    (if (= lines current-line)
-			highline-face
-		      highline-vertical-face)
-		    ;; current column
-		    column)
-		   ;; prepare next iteration
-		   (setq lines (1- lines))
-		   (> lines 0))
-	    (highline-forward-line 1)))))
-    (save-excursion
-      ;; to avoid problems with displaying an overlay during window
-      ;; scrolling/splitting
-      (redisplay t))))			; force redisplay!!!
+  "Highlight current line."
+  (if (use-region-p)
+      (highline-unhighlight-current-line)
+    (unless (save-match-data
+	      (and highline-ignore-regexp
+		   (not (equal "" highline-ignore-regexp))
+		   (string-match highline-ignore-regexp (buffer-name))))
+      (save-excursion
+	(highline-delete-overlays)	  ; clean highline overlays
+	(let ((inhibit-field-text-motion t) ; due to line-beginning-position
+	      (column (highline-current-column))
+	      (lines  (highline-vertical))
+	      current-line)
+	  (setq current-line (cdr lines)
+		lines        (car lines))
+	  (highline-line-option)	; check highline-line value
+	  (when (> lines 0)
+	    (while (progn
+		     ;; move highlight to the current line
+		     (highline-move-overlay
+		      ;; overlay
+		      (car (setq highline-overlays
+				 (cons (make-overlay 1 1) ; hide it
+				       highline-overlays)))
+		      ;; overlay face
+		      (if (= lines current-line)
+			  highline-face
+			highline-vertical-face)
+		      ;; current column
+		      column)
+		     ;; prepare next iteration
+		     (setq lines (1- lines))
+		     (> lines 0))
+	      (highline-forward-line 1)))))
+      (save-excursion
+	;; to avoid problems with displaying an overlay during window
+	;; scrolling/splitting
+	(redisplay t)))))		; force redisplay!!!
 
 
 (defun highline-delete-overlays ()
@@ -908,22 +952,22 @@ returned.
 The global variable `highline-line-value' is set to an apropriate
 value."
   (setq highline-line-value (if (functionp highline-line)
-                                (funcall highline-line)
-                              highline-line))
+				(funcall highline-line)
+			      highline-line))
   (setq highline-line-option
-        (cond ((null highline-line-value)     nil)
-              ((integerp highline-line-value) 'integer)
-              ((and (consp highline-line-value)
-                    (integerp (cdr highline-line-value))
-                    (> (cdr highline-line-value) 0))
-               (cond ((eq (car highline-line-value) 'beyond) 'beyond)
-                     ((eq (car highline-line-value) 'point)  'point)
-                     ((and (integerp (car highline-line-value))
-                           (>= (car highline-line-value) 0)
-                           (< (car highline-line-value)
-                              (cdr highline-line-value)))    'range)
-                     (t t)))
-              (t t))))
+	(cond ((null highline-line-value)     nil)
+	      ((integerp highline-line-value) 'integer)
+	      ((and (consp highline-line-value)
+		    (integerp (cdr highline-line-value))
+		    (> (cdr highline-line-value) 0))
+	       (cond ((eq (car highline-line-value) 'beyond) 'beyond)
+		     ((eq (car highline-line-value) 'point)  'point)
+		     ((and (integerp (car highline-line-value))
+			   (>= (car highline-line-value) 0)
+			   (< (car highline-line-value)
+			      (cdr highline-line-value)))    'range)
+		     (t t)))
+	      (t t))))
 
 
 (defun highline-move-overlay (ov ov-face column)

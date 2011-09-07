@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 30 11:48:21 2011 (-0700)
+;; Last-Updated: Tue Sep  6 15:26:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1290
+;;     Update #: 1355
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -82,6 +82,11 @@
 ;;      `beginning-of-thing', `end-of-sexp', `end-of-thing',
 ;;      `forward-symbol', `forward-thing'.
 ;;
+;;  For older Emacs releases that do not have these functions, they
+;;  are defined here as no-ops:
+;;
+;;  `constrain-to-field', `field-beginning', `field-end'.
+;;
 ;;
 ;;  This file should be loaded after loading the standard GNU file
 ;;  `thingatpt.el'.  So, in your `~/.emacs' file, do this:
@@ -92,6 +97,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/09/06 dadams
+;;     thing/form-nearest-point-with-bounds: If only one line then do not try to access others.
+;;     bounds-of-thing-at-point-1, thing-at-point, thing/form-nearest-point-with-bounds:
+;;       Respect field boundaries.
+;;     Define constrain-to-field, field-(beginning|end) as no-ops for older Emacs releases.
 ;; 2011/08/30 dadams
 ;;     Added: region-or-non-nil-symbol-name-nearest-point.
 ;;     region-or-*: Use region only if transient-mark-mode, non-empty (and active).
@@ -237,6 +247,13 @@ To constrain search to the same line as point, set this to zero.
 Used by functions that provide default text for minibuffer input.
 Some functions might ignore or override this setting temporarily."
   :type 'integer :group 'minibuffer)
+
+
+;; Make these no-ops for Emacs versions that don't have it.  Easier than `fboundp' everywhere.
+(unless (fboundp 'constrain-to-field) (defun constrain-to-field (&rest _ignore) (point)))
+
+(unless (fboundp 'field-beginning) (defalias 'field-beginning (symbol-function 'ignore)))
+(unless (fboundp 'field-end) (defalias 'field-end (symbol-function 'ignore)))
  
 ;;; THINGS -----------------------------------------------------------
 
@@ -280,19 +297,21 @@ Do all except handle the optional SYNTAX-TABLE arg."
             ;; Try moving forward, then back.
             (funcall (or (get thing 'end-op) ; Move to end.
                          (lambda () (forward-thing thing 1))))
+            (constrain-to-field nil orig)
             (funcall (or (get thing 'beginning-op) ; Move to beg.
                          (lambda () (forward-thing thing -1))))
+            (constrain-to-field nil orig)
             (let ((beg  (point)))
               (if (<= beg orig)
                   ;; If that brings us all the way back to ORIG,
                   ;; it worked.  But END may not be the real end.
                   ;; So find the real end that corresponds to BEG.
                   ;; FIXME: in which cases can `real-end' differ from `end'?
-                  (let ((real-end  (progn
-                                     (funcall
-                                      (or (get thing 'end-op)
-                                          (lambda () (forward-thing thing 1))))
-                                     (point))))
+                  (let ((real-end  (progn (funcall
+                                           (or (get thing 'end-op)
+                                               (lambda () (forward-thing thing 1))))
+                                          (constrain-to-field nil orig)
+                                          (point))))
                     (and (< orig real-end) (< beg real-end)
                          (cons beg real-end)))
                 (goto-char orig)
@@ -300,14 +319,16 @@ Do all except handle the optional SYNTAX-TABLE arg."
                 ;; so that we can find a thing that ends at ORIG.
                 (funcall (or (get thing 'beginning-op) ; Move to beg.
                              (lambda () (forward-thing thing -1))))
+                (constrain-to-field nil orig)
                 (funcall (or (get thing 'end-op) ; Move to end.
                              (lambda () (forward-thing thing 1))))
+                (constrain-to-field nil orig)
                 (let ((end       (point))
-                      (real-beg  (progn
-                                   (funcall
-                                    (or (get thing 'beginning-op)
-                                        (lambda () (forward-thing thing -1))))
-                                   (point))))
+                      (real-beg  (progn (funcall
+                                         (or (get thing 'beginning-op)
+                                             (lambda () (forward-thing thing -1))))
+                                        (constrain-to-field nil orig)
+                                        (point))))
                   (and (<= real-beg orig) (< orig end) (< real-beg end)
                        (cons real-beg end))))))
         (error nil)))))
@@ -331,7 +352,9 @@ SYNTAX-TABLE is a syntax table to use."
 Return nil if no such THING is found.
 SYNTAX-TABLE is a syntax table to use."
   (if (get thing 'thing-at-point)
-      (funcall (get thing 'thing-at-point))
+      (let ((opoint  (point)))
+        (prog1 (funcall (get thing 'thing-at-point))
+          (constrain-to-field nil opoint)))
     (let ((bounds  (bounds-of-thing-at-point thing syntax-table)))
       (and bounds (buffer-substring (car bounds) (cdr bounds))))))
 
@@ -347,58 +370,75 @@ SYNTAX-TABLE is a syntax table to use."
   "Thing or form nearest point, with bounds.
 FN is a function returning a thing or form at point, with bounds.
 Other arguments are as for `thing-nearest-point-with-bounds'."
-  (let ((f-or-t+bds  (if pred
-                         (funcall fn thing pred syntax-table)
-                       (funcall fn thing syntax-table)))
-        (ind1        0)
-        (ind2        0)
-        (bobp        (bobp))
-        (updown      1)
-        (eobp        (eobp))
-        (bolp        (bolp))
-        (eolp        (eolp))
-        (max-x       (abs near-point-x-distance))
-        (max-y       (abs near-point-y-distance)))
-    ;; IND2: Loop over lines (alternately up and down).
-    (while (and (<= ind2 max-y)  (not f-or-t+bds)  (not (and bobp eobp)))
-      (setq updown  (- updown))         ; Switch directions up/down (1/-1).
-      (save-excursion
-        (condition-case ()
-            (previous-line (* updown ind2)) ; 0, 1, -1, 2, -2, ...
-          (beginning-of-buffer (setq bobp  t))
-          (end-of-buffer (setq eobp  t))
-          (error nil))
-        ;; Don't try to go beyond buffer limit.
-        (unless (or (and bobp (natnump updown)) (and eobp (< updown 0)))
-          (setq f-or-t+bds  (if pred
-                                (funcall fn thing pred syntax-table)
-                              (funcall fn thing syntax-table))
-                bolp        (bolp)
-                eolp        (eolp)
-                ind1        0)
-          (save-excursion
-            ;; IND1: Loop over chars in same line (alternately left and right),
-            ;; until either found thing/form or both line limits reached.
-            (while (and (not (and bolp eolp))
-                        (<= ind1 max-x)
-                        (not f-or-t+bds))
-              (unless bolp (save-excursion ; Left.
-                             (setq bolp        (forward-char-same-line (- ind1))
-                                   f-or-t+bds  (if pred
-                                                   (funcall fn thing pred syntax-table)
-                                                 (funcall fn thing syntax-table)))))
-              (unless (or f-or-t+bds eolp) ; Right.
-                (save-excursion
-                  (setq eolp        (forward-char-same-line ind1)
-                        f-or-t+bds  (if pred
-                                        (funcall fn thing pred syntax-table)
-                                      (funcall fn thing syntax-table)))))
-              (setq ind1  (1+ ind1)))
-            (setq bobp  (bobp)
-                  eobp  (eobp)))))
-      ;; Increase search line distance every second time (once up, once down).
-      (when (or (< updown 0) (zerop ind2)) (setq ind2  (1+ ind2)))) ; 0,1,1,2,2...
-    f-or-t+bds))
+  (let ((opoint  (point)))
+    (let ((f-or-t+bds  (prog1 (if pred
+                                  (funcall fn thing pred syntax-table)
+                                (funcall fn thing syntax-table))
+                         (constrain-to-field nil opoint)))
+          (ind1        0)
+          (ind2        0)
+          (updown      1)
+          (bobp        (or (eq (field-beginning nil) (point)) (bobp)))
+          (eobp        (or (eq (field-end nil) (point)) (eobp)))
+          (bolp        (or (eq (field-beginning nil) (point)) (bolp)))
+          (eolp        (or (eq (field-end nil) (point)) (eolp)))
+          (max-x       (abs near-point-x-distance))
+          (max-y       (if (zerop (save-excursion
+                                    (goto-char (point-max))
+                                    (prog1 (forward-line -1)
+                                      (constrain-to-field nil opoint))))
+                           (abs near-point-y-distance)
+                         1)))           ; Only one line.
+      ;; IND2: Loop over lines (alternately up and down).
+      (while (and (<= ind2 max-y)  (not f-or-t+bds)  (not (and bobp eobp)))
+        (setq updown  (- updown))       ; Switch directions up/down (1/-1).
+        (save-excursion
+          (when (> max-y 1)             ; Skip this if only one line.
+            (condition-case ()
+                (prog1 (previous-line (* updown ind2)) ; 0, 1, -1, 2, -2, ...
+                  (constrain-to-field nil opoint))
+              (beginning-of-buffer (setq bobp  t))
+              (end-of-buffer (setq eobp  t))
+              (error nil)))
+          ;; Do not try to go beyond buffer or field limit.
+          (unless (or (and bobp (> (* updown ind2) 0)) ; But do it for ind2=0.
+                      (and eobp (< updown 0)))
+            (setq f-or-t+bds  (prog1 (if pred
+                                         (funcall fn thing pred syntax-table)
+                                       (funcall fn thing syntax-table))
+                                (constrain-to-field nil opoint))
+                  bolp        (or (eq (field-beginning nil) (point)) (bolp))
+                  eolp        (or (eq (field-end nil) (point)) (eolp))
+                  ind1        0)
+            (save-excursion
+              ;; IND1: Loop over chars in same line (alternately left and right),
+              ;; until either found thing/form or both line limits reached.
+              (while (and (not (and bolp eolp))
+                          (<= ind1 max-x)
+
+                          (not f-or-t+bds))
+                (unless bolp (save-excursion ; Left.
+                               (setq bolp        (prog1 (forward-char-same-line (- ind1))
+                                                   (constrain-to-field nil opoint))
+                                     f-or-t+bds  (if pred
+                                                     (funcall fn thing pred syntax-table)
+                                                   (funcall fn thing syntax-table)))
+                               (constrain-to-field nil opoint)))
+                (unless (or f-or-t+bds eolp) ; Right.
+                  (save-excursion
+                    (setq eolp        (prog1 (forward-char-same-line ind1)
+                                        (constrain-to-field nil opoint))
+                          f-or-t+bds  (if pred
+                                          (funcall fn thing pred syntax-table)
+                                        (funcall fn thing syntax-table)))
+                    (constrain-to-field nil opoint)))
+                (setq ind1  (1+ ind1)))
+              (setq bobp  (or (eq (field-beginning nil) (point)) (bobp))
+                    eobp  (or (eq (field-end nil) (point)) (eobp))))))
+        ;; Increase search line distance every second time (once up, once down).
+        (when (and (> max-y 1) (or (< updown 0) (zerop ind2))) ; 0,1,1,2,2...
+          (setq ind2  (1+ ind2))))
+      f-or-t+bds)))
 
 (defun bounds-of-thing-nearest-point (thing &optional syntax-table)
   "Return (START . END) with START and END of  type THING.

@@ -18,7 +18,20 @@ for DiffMode (`diff-mode' provides only `diff-goto-source'):
 How is this supposed to be used, and what does it do?  My understanding is it
 takes the region of a diff and runs Ediff on it. 
 
-I just noticed a similar function in [GIT:diff-mode.el?rev=HEAD diff-mode.el] called `diff-ediff-patch'. -- AaronHawley
+I just noticed a similar function in [GIT:vc/diff-mode.el?rev=HEAD diff-mode.el] called `diff-ediff-patch'. -- AaronHawley
+
+[new]
+Looks like this function only looks at the old and new file paths and runs ediff on them.
+Is there a way to produce ediff formatted output of the patch file without having both files present? For example I have file.txt and file.patch only. Is there a way to see file.patch in ediff format without applying the patch file?
+
+[new]
+`M-x epatch' or `M-x epatch-buffer'? -- AaronHawley
+
+[new]
+Thank you. I looked at the two functions and don't see how they could be used to do what I am looking for. I have a patch file, file.patch (unified diff format). that describes what changes need to be done to file.v1.txt to make it file.v2.txt which doesn't exist yet. I don't want to patch file.v1.txt just yet. I just want to view the patch file in ediff format instead of unified diff format.
+
+[new]
+I don't know what you mean by the "ediff format".  I assumed you wanted to apply your patch to a file and see what the changes in an Ediff session would be with help of Ediff's nice color highlighting. -- AaronHawley
 
 ----
 CategoryExternalUtilities

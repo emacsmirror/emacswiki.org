@@ -51,6 +51,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * XModMap -- Keys to work outside of Emacs as well; the X Windowing System uses xmodmap and xev, or xkeycaps
 * LoadKeys -- Same thing, but for the Linux console using loadkeys, dumpkeys, and showkey
 * XKeyCaps -- Graphical tool by JamieZawinski
+* [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A macro for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
 
 [:CoolBindings]
 == Cool Bindings ==

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 14:36:06 2011 (-0700)
+;; Last-Updated: Tue Sep  6 17:23:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28226
+;;     Update #: 28227
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -72,6 +72,10 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "If You Are an Emacs-Lisp Programmer")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Inserting Text Found Near the Cursor")
+;;    (@file :file-name "icicles-doc1.el" :to "FFAP: Find File At Point")
+;;    (@file :file-name "icicles-doc1.el" :to "Proxy Candidates, `M-.'")
+;;    (@file :file-name "icicles-doc1.el" :to "Repeat `M-.' To Grab More or Different")
+;;    (@file :file-name "icicles-doc1.el" :to "Resolve File Names")
 ;;  (@file :file-name "icicles-doc1.el" :to "Background on Vanilla Emacs Input Completion")
 ;;  (@file :file-name "icicles-doc1.el" :to "Cycling Completions")
 ;;  (@file :file-name "icicles-doc1.el" :to "Traversing Minibuffer Histories")

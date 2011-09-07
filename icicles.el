@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 14:55:05 2011 (-0700)
+;; Last-Updated: Tue Sep  6 16:07:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22975
+;;     Update #: 22977
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -287,8 +287,8 @@
 ;;    `icicle-remove-file-from-recentf-list',
 ;;    `icicle-remove-saved-completion-set',
 ;;    `icicle-repeat-complex-command', `icicle-reset-option-to-nil',
-;;    `icicle-save-string-to-variable', `icicle-search',
-;;    `icicle-search-all-tags-bookmark',
+;;    `icicle-resolve-file-name', `icicle-save-string-to-variable',
+;;    `icicle-search', `icicle-search-all-tags-bookmark',
 ;;    `icicle-search-all-tags-regexp-bookmark',
 ;;    `icicle-search-autofile-bookmark', `icicle-search-bookmark',
 ;;    `icicle-search-bookmark-list-bookmark',
@@ -522,8 +522,9 @@
 ;;    `icicle-previous-prefix-candidate-alt-action',
 ;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
 ;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
-;;    `icicle-retrieve-last-input', `icicle-retrieve-next-input',
-;;    `icicle-retrieve-previous-input', `icicle-reverse-sort-order',
+;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
+;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
+;;    `icicle-reverse-sort-order',
 ;;    `icicle-save-predicate-to-variable',
 ;;    `icicle-save/unsave-candidate',
 ;;    `icicle-scroll-Completions-backward',

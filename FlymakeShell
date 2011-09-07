@@ -2,6 +2,8 @@ flymake-shell works with any shell of your choice. Default it uses [[Bash]].
 
 This doesn't actually seem to do anything for me. Can you give an example of some code that would cause an error to crop up? I tried some "fi" without if, but it does nothing.
 
+It does work for me but the "-n" option doesn't find all errors.  For example, <i>exit ""</i> is syntactically correct but <i>exit</i> needs an argument which you will not be told.
+
     ;;; Flymake Shell mode
     
     (require 'flymake)

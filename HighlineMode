@@ -1,6 +1,6 @@
 This page describes package Lisp:highline.el, by ViniciusJoseLatorre.
 
-: .:: ''v7.2.1'' ::.
+: .:: ''v7.2.2'' ::.
 
 
 == About highline ==
@@ -26,7 +26,7 @@ For good performance, be sure to byte-compile Lisp:highline.el, e.g.
 This will generate highline.elc, which will be loaded instead of
 Lisp:highline.el.
 
-Lisp:highline.el was tested with GNU Emacs 21, 22 and 23, XEmacs 21.4.20,
+Lisp:highline.el was tested with GNU Emacs 21, 22, 23 and 24, XEmacs 21.4.20,
 and Aquamacs Emacs 1.5.
 
 [new]
@@ -227,6 +227,9 @@ Through this way, you may choose if the settings are kept or not when you leave 
 
 
 == Acknowledgements ==
+
+Thanks to LeWang for not highlight a line when region
+is active.
 
 Thanks to DavidReitter for `highline-face' less contrastive default values.
 

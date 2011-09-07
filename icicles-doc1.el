@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  4 15:52:44 2011 (-0700)
+;; Last-Updated: Tue Sep  6 17:19:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26155
+;;     Update #: 26179
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -190,6 +190,10 @@
 ;;    (@> "If You Are an Emacs-Lisp Programmer")
 ;;
 ;;  (@> "Inserting Text Found Near the Cursor")
+;;    (@> "FFAP: Find File At Point")
+;;    (@> "Proxy Candidates, `M-.'")
+;;    (@> "Repeat `M-.' To Grab More or Different")
+;;    (@> "Resolve File Names")
 ;;  (@> "Background on Vanilla Emacs Input Completion")
 ;;  (@> "Cycling Completions")
 ;;  (@> "Traversing Minibuffer Histories")
@@ -228,8 +232,8 @@
 ;;  (@> "More about Multi-Commands")
 ;;    (@> "Alternative Actions")
 ;;    (@> "Deleting Objects")
-;;    (@* "Option `icicle-use-C-for-actions-flag'")
-;;    (@* "Accessing Saved Locations (Bookmarks) on the Fly")
+;;    (@> "Option `icicle-use-C-for-actions-flag'")
+;;    (@> "Accessing Saved Locations (Bookmarks) on the Fly")
 ;;
 ;;  (@> "Icicles Tripping")
 ;;    (@> "Highlighting the Destination")
@@ -1489,6 +1493,10 @@
 ;;  insert the default value into the minibuffer as an initial value,
 ;;  if you prefer that optional behavior (I do; many people do not).
 ;;
+;;
+;;(@* "FFAP: Find File At Point")
+;;  ** FFAP: Find File At Point **
+;;
 ;;  Sometimes you would like to use the text at the cursor, but the
 ;;  command asking for input does not let you retrieve that text as
 ;;  the default value.  For example, if the text at point is a file
@@ -1520,7 +1528,10 @@
 ;;  the minibuffer.  One of the alternative types of thing it grabs is
 ;;  whatever text `ffap-guesser' guesses.
 ;;
-;;  Another way is to use one of the proxy completion candidates
+;;(@* "Proxy Candidates, `M-.'")
+;;  ** Proxy Candidates, `M-.' **)
+;;
+;;;;  Another way is to use one of the proxy completion candidates
 ;;  `*point file name*' or `*mouse-2 file name*' whenever Emacs asks
 ;;  you to input a file name (provided option
 ;;  `icicle-add-proxy-candidates-flag' is non-`nil' - toggle with
@@ -1534,6 +1545,9 @@
 ;;  name, URL, and so on).  You can change the behavior of `M-.'
 ;;  (which string-inserting functions are used) by customizing user
 ;;  option `icicle-thing-at-point-functions'.
+;;
+;;(@* "Repeat `M-.' To Grab More or Different")
+;;  ** Repeat `M-.' To Grab More or Different **
 ;;
 ;;  Actually, `M-.' acts differently if you use it successively.
 ;;  Successive uses of `M-.' grab and insert either 1) alternative
@@ -1651,6 +1665,26 @@
 ;;
 ;;  If you used `M--3 M-.', then you would immediately insert
 ;;  `differently if you'.
+;;
+;;(@* "Resolve File Names")
+;;  ** Resolve File Names **
+;;
+;;  Finally, something that is not directly related to the topic of
+;;  this page, but fits here as well as anywhere: you can use `C-x
+;;  C-f' in the minibuffer to resolve a file name to its true,
+;;  absolute name.  Yes, that's the same key that is bound at top
+;;  level to `icicle-file' or `find-file' or whatever, but this is
+;;  about its use when you are already in the minibuffer.
+;;
+;;  `C-x C-f' (`icicle-resolve-file-name'), replaces a file name at or
+;;  near point (in the minibuffer) with its true, absolute name.  (For
+;;  it to work near but not precisely at point, you need library
+;;  `thingatpt+.el'.)  If the file name is relative, it first converts
+;;  it to absolute (using the default directory).  It then converts an
+;;  absolute name that is a symbolic link to its target name.  You can
+;;  use this anytime in the minibuffer, and you can use it on multiple
+;;  parts of the same minibuffer input (e.g. shell command arguments).
+;;  (This feature does not work for Emacs 20 or 21.)
 ;;
 ;;  See Also:
 ;;
@@ -1827,7 +1861,7 @@
 ;;  alternative candidate actions.  In particular, `C-' with the wheel
 ;;  gives you a very quick way to visit search hits during Icicles
 ;;  search (and `C-S-' works for search-and-replace).
-;;  (See (@* "Icicles Search Commands, Overview").)
+;;  (See (@> "Icicles Search Commands, Overview").)
 ;;
 ;;  If you are an Emacs-Lisp programmer, then you can use
 ;;  `completing-read' and `read-file-name' to define your own
@@ -3125,7 +3159,7 @@
 ;;
 ;;    Note: For visual clarity, a `vertical' value is overridden
 ;;    (ignored) when multi-line multi-completions are used - the
-;;    layout is horizontal.  See (@* "Customization and General Tips")
+;;    layout is horizontal.  See (@> "Customization and General Tips")
 ;;    for more information.
 ;;
 ;;  * In some cases, Icicles adds one or more additional, proxy
@@ -4416,10 +4450,10 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@* "Perform Alternative Operations on the Fly")
+;;  * (@> "Perform Alternative Operations on the Fly")
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles OO: Object-Action Interaction")
 ;;  * (@file :file-name "icicles-doc2.el" :to "Search and Replace")
-;;  * (@* "Choose All Completion Candidates")
+;;  * (@> "Choose All Completion Candidates")
 ;;
 ;;(@* "Deleting Objects")
 ;;  ** Deleting Objects **
@@ -4707,7 +4741,7 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@* "Icicles Commands that Read File Names") for information
+;;  * (@> "Icicles Commands that Read File Names") for information
 ;;    about `icicle-find-file', `icicle-find-file-absolute',
 ;;    `icicle-find-file-in-tags-table', `icicle-locate-file', and
 ;;    `icicle-recent-file'.

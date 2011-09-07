@@ -1,9 +1,9 @@
 [[fr:NouvelUtilisateurEmacsRéférenceSéquencesDeTouches]]
 This is a reference for an EmacsNewbie of commonly used Emacs [[key sequence]]s. See also:
+
+* EmacsKeyNotation -- Explain the convention of Emacs key sequences found below.
 * EmacsNewbieHelpReference -- The [[key]]s that help you learn Emacs.
-* CategoryReferenceSheet -- More key lists.
-
-
+* ReferenceCards, CategoryReferenceSheet -- More key lists.
 
 == General ==
 
@@ -124,11 +124,7 @@ See also: [[Region]].
 
 == Common User Access (CUA) Keys ==
 
-CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z' and visible region selection. This mimics the familiar behavior found on in Windows, Mac and Motif. *Note*: If region is not active -- no visible selection -- then `C-x' works as it as it does normally in Emacs (without cua-mode).
- 
-On the other hand if the region is active you can use C-S-x (or two rapid C-x C-x) instead C-x to do what C-x normally does in Emacs.
-The same goes for the other CUA keys. 
-See cua-mode help for more information.
+CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z' and visible region selection. This mimics the familiar behavior found on in Windows, Mac and Motif.
 
 == VI Keys ==
 

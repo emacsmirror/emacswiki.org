@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Tue May 10 18:48:32 2011 (-0700)
+;; Last-Updated: Tue Sep  6 09:52:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2928
+;;     Update #: 2955
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -37,8 +37,8 @@
 ;;    `mark-buffer-before-point', `recenter-top-bottom',
 ;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
 ;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `revert-buffer-no-confirm', `selection-length',
-;;    `view-X11-colors'.
+;;    `resolve-file-name', `revert-buffer-no-confirm',
+;;    `selection-length', `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/09/06 dadams
+;;     Added: resolve-file-name.
 ;; 2011/05/10 dadams
 ;;     Removed hide/show-comments - moved it to thing-cmds.el.
 ;; 2011/05/06 dadams
@@ -930,6 +932,48 @@ just the REGION? "
 ;  (message
 ;   "Click in X window you want to capture as image file `%s'." xwd-file)
 ;  (shell-command (concat "xwd " options " -out " xwd-file)))
+
+(defun resolve-file-name (bounds &optional killp)
+  "Replace the file name at/near point by its absolute, true file name.
+If the region is active, replace its content instead, treating it as a
+file name.
+
+If library `thingatpt+.el' is available then use the file name
+*nearest* point.  Otherwise, use the file name *at* point.
+
+With a prefix arg, add both the original file name and the true name
+to the kill ring.  Otherwise, add neither to the kill ring.  (If the
+region was active then its content was already added to the ring.)"
+  (interactive
+   (let* ((regionp   (and transient-mark-mode mark-active))
+          (thg+bnds  (and (not regionp)
+                          (require 'thingatpt+ nil t)
+                          (thing-nearest-point-with-bounds 'filename)))
+          (bnds      (if regionp
+                         (cons (region-beginning) (region-end))
+                       (if thg+bnds
+                           (cdr thg+bnds)
+                         (bounds-of-thing-at-point 'filename))))
+          (fname     (if bnds
+                         (buffer-substring (car bnds) (cdr bnds))
+                       (message "No file name at point"))))
+     (list bnds current-prefix-arg)))
+  (when bounds
+    (let* ((file       (buffer-substring (car bounds) (cdr bounds)))
+           (absfile    (expand-file-name (buffer-substring (car bounds) (cdr bounds))))
+           (dir        (or (file-name-directory absfile) default-directory))
+           (true-dir   (file-truename dir))
+           (relfile    (file-name-nondirectory absfile))
+           (true-file  (concat true-dir relfile)))
+      (unless (equal file true-file)
+        (cond (killp
+               (if (and transient-mark-mode mark-active)
+                   (delete-region (car bounds) (cdr bounds)) ; Don't add it twice.
+                 (kill-region (car bounds) (cdr bounds)))
+               (insert (kill-new true-file)))
+              (t
+               (delete-region (car bounds) (cdr bounds))
+               (insert true-file)))))))
 
 (defun read-shell-file-command (command)
   "Prompt for shell COMMAND, using current buffer's file as default arg.

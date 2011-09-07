@@ -9,6 +9,8 @@ Examples of ''THING'' are `word', `sentence', and `defun'. For example, words ha
 
 Library <tt>[[thingatpt+.el]]</tt> also provides functions to pick up things that are ''near'' the cursor, not just things that are exactly under the cursor. For this feature, you can customize two user options that control what "'''near'''" means, that is, how far from the cursor to look.
 
+In addition, the code in <tt>[[thingatpt+.el]]</tt> respects Emacs ''field'' boundaries.  This means, for example, that if you pick up a thing near the minibuffer prompt you won't get "##Text is read-only##" errors etc.
+
 The following categories are detailed below:
 
 * '''things''' -- See [[#Things]].

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 14:34:44 2011 (-0700)
+;; Last-Updated: Tue Sep  6 16:06:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17168
+;;     Update #: 17190
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -151,8 +151,9 @@
 ;;    `icicle-previous-prefix-candidate-alt-action',
 ;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
 ;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
-;;    `icicle-retrieve-last-input', `icicle-retrieve-next-input',
-;;    `icicle-retrieve-previous-input', `icicle-reverse-sort-order',
+;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
+;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
+;;    `icicle-reverse-sort-order',
 ;;    `icicle-save-predicate-to-variable',
 ;;    `icicle-save/unsave-candidate',
 ;;    `icicle-scroll-Completions-backward',
@@ -1753,6 +1754,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
   (interactive)
   (let ((cur-buf  (current-buffer)))
     (with-output-to-temp-buffer "*Help*"
+      (help-setup-xref (list #'icicle-minibuffer-help) (interactive-p))
       (when (icicle-completing-p)
         (princ (concat "You are completing input" (and icicle-candidate-action-fn
                                                        " for an Icicles multi-command")
@@ -1796,6 +1798,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
             (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
             (insert "\n\n")
             (goto-char (point-max))
+            (insert (make-string 70 ?_))
             (insert (funcall
                      (if (fboundp 'help-commands-to-key-buttons) ; In `help-fns.el'.
                          #'help-commands-to-key-buttons
@@ -4094,6 +4097,50 @@ This is the similar to `beginning-of-line', but:
       (forward-line -1)
     (forward-line (- n)))
   (when (bobp) (goto-char (icicle-minibuffer-prompt-end))))
+
+;; Same as `resolve-file-name' in `misc-cmds.el'.
+;;;###autoload
+(defun icicle-resolve-file-name (bounds &optional killp) ; Bound to `C-x C-f' in minibuffer.
+  "Replace the file name at/near point by its absolute, true file name.
+If the region is active, replace its content instead, treating it as a
+file name.
+
+If library `thingatpt+.el' is available then use the file name
+*nearest* point.  Otherwise, use the file name *at* point.
+
+With a prefix arg, add both the original file name and the true name
+to the kill ring.  Otherwise, add neither to the kill ring.  (If the
+region was active then its content was already added to the ring.)"
+  (interactive
+   (let* ((regionp   (and transient-mark-mode mark-active))
+          (thg+bnds  (and (not regionp)
+                          (require 'thingatpt+ nil t)
+                          (thing-nearest-point-with-bounds 'filename)))
+          (bnds      (if regionp
+                         (cons (region-beginning) (region-end))
+                       (if thg+bnds
+                           (cdr thg+bnds)
+                         (bounds-of-thing-at-point 'filename))))
+          (fname     (if bnds
+                         (buffer-substring (car bnds) (cdr bnds))
+                       (message "No file name at point"))))
+     (list bnds current-prefix-arg)))
+  (when bounds
+    (let* ((file       (buffer-substring (car bounds) (cdr bounds)))
+           (absfile    (expand-file-name (buffer-substring (car bounds) (cdr bounds))))
+           (dir        (or (file-name-directory absfile) default-directory))
+           (true-dir   (file-truename dir))
+           (relfile    (file-name-nondirectory absfile))
+           (true-file  (concat true-dir relfile)))
+      (unless (equal file true-file)
+        (cond (killp
+               (if (and transient-mark-mode mark-active)
+                   (delete-region (car bounds) (cdr bounds)) ; Don't add it twice.
+                 (kill-region (car bounds) (cdr bounds)))
+               (insert (kill-new true-file)))
+              (t
+               (delete-region (car bounds) (cdr bounds))
+               (insert true-file)))))))
 
 
 (put 'icicle-all-candidates-action 'icicle-action-command t)
