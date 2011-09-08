@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep  6 16:06:45 2011 (-0700)
+;; Last-Updated: Wed Sep  7 11:39:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17190
+;;     Update #: 17208
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -804,7 +804,7 @@ POSITION is a buffer position."
                  (next-history-element 1)
                  (previous-history-element 1)
                  (setq this-command  'previous-history-element)))
-        (error (condition-case nil
+        (error (icicle-condition-case-no-debug nil
                    (cond ((memq last-command '(next-history-element next-matching-history-element))
                           (previous-history-element 1)
                           (setq this-command  'previous-history-element))
@@ -3288,7 +3288,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
           (message "Computing completion candidates..."))
         (if (not word-p)
             (setq icicle-completion-candidates
-                  (condition-case nil
+                  (icicle-condition-case-no-debug nil
                       (if (icicle-file-name-input-p)
                           (icicle-file-name-prefix-candidates icicle-current-input)
                         (icicle-prefix-candidates icicle-current-input))
@@ -3310,7 +3310,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                     (> (length icicle-current-input) (length word-complete-input))
                     (not (eq this-command last-command)))
             (setq word-complete-input           icicle-current-input
-                  icicle-completion-candidates  (condition-case nil
+                  icicle-completion-candidates  (icicle-condition-case-no-debug nil
                                                     (if (icicle-file-name-input-p)
                                                         (icicle-file-name-prefix-candidates
                                                          icicle-current-input)
@@ -3405,7 +3405,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                       (set minibuffer-history-variable
                            (cons icicle-current-input
                                  (symbol-value minibuffer-history-variable)))
-                      (condition-case icicle-prefix-complete-1
+                      (icicle-condition-case-no-debug icicle-prefix-complete-1
                           (throw 'icicle-read-top
                             (if (and (icicle-file-name-input-p) insert-default-directory
                                      (or (not (member icicle-current-input
@@ -3568,7 +3568,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
     (setq icicle-dot-string-internal  (icicle-anychar-regexp)))
   (let* ((error-msg  nil)               ; Apropos complete.
          (candidates
-          (condition-case lossage
+          (icicle-condition-case-no-debug lossage
               (icicle-apropos-complete-1)
             (invalid-regexp
              (setq error-msg  (cadr lossage))
@@ -3595,7 +3595,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (let* ((error-msg  nil)
          (candidates
-          (condition-case lossage
+          (icicle-condition-case-no-debug lossage
               (icicle-apropos-complete-1 (if no-msg-p 'no-msg 'no-display))
             (invalid-regexp
              (setq error-msg  (cadr lossage))
@@ -3645,7 +3645,7 @@ message either.  NO-DISPLAY-P is passed to
                  (or (get last-command 'icicle-apropos-completing-command)
                      (get last-command 'icicle-action-command)))
       (setq icicle-completion-candidates
-            (condition-case nil
+            (icicle-condition-case-no-debug nil
                 (if (icicle-file-name-input-p)
                     (icicle-file-name-apropos-candidates icicle-current-input)
                   (icicle-apropos-candidates icicle-current-input))
@@ -3733,7 +3733,7 @@ message either.  NO-DISPLAY-P is passed to
                          (sit-for icicle-top-level-when-sole-completion-delay))
                     (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                            (symbol-value minibuffer-history-variable)))
-                    (condition-case icicle-apropos-complete-1
+                    (icicle-condition-case-no-debug icicle-apropos-complete-1
                         (throw 'icicle-read-top
                           (if (and (icicle-file-name-input-p) insert-default-directory
                                    (or (not (member (car icicle-completion-candidates)
@@ -4269,7 +4269,7 @@ ALTP is passed to `icicle-candidate-action-1'."
     (if listp
         (funcall fn-var candidates)
       (while candidates
-        (let ((error-msg  (condition-case act-on-each
+        (let ((error-msg  (icicle-condition-case-no-debug act-on-each
                               (icicle-candidate-action-1 fn-var altp (car candidates))
                             (error (error-message-string act-on-each)))))
           (when error-msg (setq failures  (cons (cons (car candidates) error-msg) failures)))
@@ -4940,7 +4940,7 @@ this case, a prefix arg shows the internal form of the bookmark."
     (let ((attrs (file-attributes filename))
           ;; Functions `bmkp-*' are defined in `bookmark+.el'.
           (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
-      (unless attrs (error(format "Cannot open file `%s'" filename)))
+      (unless attrs (error "Cannot open file `%s'" filename))
       (let* ((type            (nth 0 attrs))
              (numlinks        (nth 1 attrs))
              (uid             (nth 2 attrs))
@@ -4981,7 +4981,7 @@ this case, a prefix arg shows the internal form of the bookmark."
                                      (save-match-data
                                        (string-match (image-file-name-regexp) filename)))
                                    (progn (message "Gathering image data...") t)
-                                   (condition-case nil
+                                   (icicle-condition-case-no-debug nil
                                        (let ((all  (icicle-all-exif-data (expand-file-name filename))))
                                          (concat
                                           (and all (not (zerop (length all)))
@@ -5117,15 +5117,14 @@ Optional arg TYPE is the type of object that FUNCTION applies to."
                      icicle-saved-completion-candidate)))
     ;; Actually, we should test more than `functionp', to rule out macros and special forms.
     (unless (functionp real-fn) (error "Not a function: `%S'" real-fn))
-    (condition-case icicle-apply-to-saved-candidate
+    (icicle-condition-case-no-debug icicle-apply-to-saved-candidate
         (if current-prefix-arg
             (icicle-pp-eval-expression '(funcall real-fn real-obj))
           (funcall real-fn real-obj)
           (when (and (not icicle-all-candidates-action) (current-message))
             (sit-for 3)))               ; In case the function displays a message.
-      (error (message  (format "ERROR invoking `%S' on `%s': %s" real-fn
-                               icicle-saved-completion-candidate
-                               (error-message-string icicle-apply-to-saved-candidate)))
+      (error (message  "ERROR invoking `%S' on `%s': %s" real-fn icicle-saved-completion-candidate
+                       (error-message-string icicle-apply-to-saved-candidate))
              (sleep-for 6)))
     (select-window (minibuffer-window))
     (select-frame-set-input-focus (selected-frame))
@@ -5320,7 +5319,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                                     (symbol-value minibuffer-history-variable)))
              ;; $$$$$$ Should this now use `icicle-current-input'
              ;;        instead of (car icicle-completion-candidates), for PCM?
-             (condition-case i-narrow-candidates
+             (icicle-condition-case-no-debug i-narrow-candidates
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p) insert-default-directory
                             (or (not (member (car icicle-completion-candidates)
@@ -5383,7 +5382,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
              ;; Normally, `icicle-narrow-candidates' is called from the minibuffer.
              ;; If not, just return the result read.
              (if (> (minibuffer-depth) 0)
-                 (condition-case i-narrow-candidates
+                 (icicle-condition-case-no-debug i-narrow-candidates
                      (throw 'icicle-read-top result)
                    (no-catch (setq icicle-current-input  result)
                              (icicle-retrieve-last-input)
@@ -5467,7 +5466,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                                                     (symbol-value minibuffer-history-variable)))
              ;; $$$$$$ Should this now use `icicle-current-input'
              ;;        instead of (car icicle-completion-candidates), for PCM?
-             (condition-case i-narrow-candidates
+             (icicle-condition-case-no-debug i-narrow-candidates
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p) insert-default-directory
                             (or (not (member (car icicle-completion-candidates)

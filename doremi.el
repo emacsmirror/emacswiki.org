@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Tue Jan  4 08:44:07 2011 (-0800)
+;; Last-Updated: Wed Sep  7 15:53:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1570
+;;     Update #: 1600
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi.el
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,6 +104,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/09/07 dadams
+;;     doremi: Use mouse-wheel-(up|down)-event everywhere.  Thx to Michael Heerdegen.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;;     Added autoload cookies for defgroup, defcustom.
@@ -364,6 +366,12 @@ For examples of using `doremi', see the source code of libraries
           (keys             (append doremi-up-keys doremi-down-keys
                                     doremi-boost-up-keys doremi-boost-down-keys))
           (echo-keystrokes  0)          ; Suppress keystroke echoing.
+          (wheel-down       (if (boundp 'mouse-wheel-up-event)
+                                mouse-wheel-up-event
+                              'wheel-down)) ; Emacs 20.
+          (wheel-up         (if (boundp 'mouse-wheel-down-event)
+                                mouse-wheel-down-event
+                              'wheel-up)) ; Emacs 20.
           evnt save-prompt)
       (unless enum (setq prompt  (concat prompt " (modifier key: faster)")))
       (setq prompt       (format (concat prompt ".  Value now: %s") init-val)
@@ -373,7 +381,8 @@ For examples of using `doremi', see the source code of libraries
                     (or (member evnt keys)
                         (and (consp evnt)
                              (member (event-basic-type (car evnt))
-                                     '(switch-frame mouse-wheel mouse-2 wheel-up wheel-down)))))
+                                     `(switch-frame mouse-wheel mouse-2
+                                       ,wheel-up ,wheel-down)))))
         ;; Set up the proper increment value.
         (cond ((member evnt doremi-up-keys) (setq new-incr  incr)) ; +
               ((member evnt doremi-down-keys) ; -
@@ -403,12 +412,14 @@ For examples of using `doremi', see the source code of libraries
               ;; Emacs 21+ mouse wheel: `mwheel.el'
               ;; Free vars here: `mouse-wheel-down-event', `mouse-wheel-up-event'.
               ;; Those vars and function `mwheel-event-button' are defined in `mwheel.el'.
-              ((and (consp evnt) (member (event-basic-type (car evnt)) '(wheel-up wheel-down)))
+              ((and (consp evnt) (member (event-basic-type (car evnt))
+                                         `(,wheel-up ,wheel-down)))
                (let ((button  (mwheel-event-button evnt)))
                  (cond ((eq button mouse-wheel-down-event) (setq new-incr  incr))
                        ((eq button mouse-wheel-up-event)
                         (setq new-incr  (if (atom incr) (- incr) (mapcar #'- incr))))
-                       (t (error "`doremi' - Bad binding in mwheel-scroll"))))
+                       (t (error "`doremi', bad mwheel-scroll binding - report bug to %s%s%s%s"
+                                 "drew.adams" "@" "oracle" ".com"))))
                (when (if (> emacs-major-version 22) ; Boost it
                          (doremi-intersection (event-modifiers evnt)
                                               '(shift control meta alt hyper super))
@@ -416,7 +427,9 @@ For examples of using `doremi', see the source code of libraries
                  (setq new-incr
                        (if (atom new-incr)
                            (* doremi-boost-scale-factor new-incr)
-                         (mapcar #'(lambda (in) (* doremi-boost-scale-factor in)) new-incr))))))
+                         (mapcar #'(lambda (in) (* doremi-boost-scale-factor in)) new-incr)))))
+              (t (error "`doremi', unexpected event: `%S' - report bug to %s%s%s%s"
+                        evnt "drew.adams" "@" "oracle" ".com")))
         (if (and (consp evnt) (memq (event-basic-type (car evnt)) '(mouse-2 switch-frame)))
             (message save-prompt)       ; Just skip mouse-2 event (ignore while using wheel).
 

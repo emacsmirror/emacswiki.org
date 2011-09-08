@@ -5,7 +5,7 @@
 
 ;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp: <2011/09/06 22:46:13 vinicius>
+;; Time-stamp: <2011/09/07 09:24:25 vinicius>
 ;; Keywords: faces, frames, editing
 ;; Version: 7.2.2
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
@@ -295,45 +295,6 @@
     (or (require 'overlay)
 	(error "`highline' requires `overlay' package."))))
 
-
-;; Emacs 21 and 22 compatibility
-(unless (fboundp 'use-region-p)
-  (defcustom use-empty-active-region nil
-    "Whether \"region-aware\" commands should act on empty regions.
-If nil, region-aware commands treat empty regions as inactive.
-If non-nil, region-aware commands treat the region as active as
-long as the mark is active, even if the region is empty.
-
-Region-aware commands are those that act on the region if it is
-active and Transient Mark mode is enabled, and on the text near
-point otherwise."
-    :type 'boolean
-    :version "23.1"
-    :group 'editing-basics)
-
-  (defun use-region-p ()
-    "Return t if the region is active and it is appropriate to act on it.
-This is used by commands that act specially on the region under
-Transient Mark mode.
-
-The return value is t if Transient Mark mode is enabled and the
-mark is active; furthermore, if `use-empty-active-region' is nil,
-the region must not be empty.  Otherwise, the return value is nil.
-
-For some commands, it may be appropriate to ignore the value of
-`use-empty-active-region'; in that case, use `region-active-p'."
-    (and (region-active-p)
-	 (or use-empty-active-region (> (region-end) (region-beginning)))))
-
-  (defun region-active-p ()
-    "Return t if Transient Mark mode is enabled and the mark is active.
-
-Some commands act specially on the region when Transient Mark
-mode is enabled.  Usually, such commands should use
-`use-region-p' instead of this function, because `use-region-p'
-also checks the value of `use-empty-active-region'."
-    (and transient-mark-mode mark-active)))
-
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; User Variables:
@@ -594,6 +555,44 @@ into account variable-width characters and line continuation."))
 ;; With argument N not nil or 1, move forward N - 1 visual lines first.
 ;; If point reaches the beginning or end of buffer, it stops there.
 ;; To ignore intangibility, bind `inhibit-point-motion-hooks' to t."))
+
+
+;; GNU Emacs 21 and 22 compatibility
+(unless (fboundp 'use-region-p)
+  (defcustom use-empty-active-region nil
+    "Whether \"region-aware\" commands should act on empty regions.
+If nil, region-aware commands treat empty regions as inactive.
+If non-nil, region-aware commands treat the region as active as
+long as the mark is active, even if the region is empty.
+
+Region-aware commands are those that act on the region if it is
+active and Transient Mark mode is enabled, and on the text near
+point otherwise."
+    :type 'boolean
+    :group 'editing-basics)
+
+  (defun use-region-p ()
+    "Return t if the region is active and it is appropriate to act on it.
+This is used by commands that act specially on the region under
+Transient Mark mode.
+
+The return value is t if Transient Mark mode is enabled and the
+mark is active; furthermore, if `use-empty-active-region' is nil,
+the region must not be empty.  Otherwise, the return value is nil.
+
+For some commands, it may be appropriate to ignore the value of
+`use-empty-active-region'; in that case, use `region-active-p'."
+    (and (region-active-p)
+	 (or use-empty-active-region (> (region-end) (region-beginning)))))
+
+  (defun region-active-p ()
+    "Return t if Transient Mark mode is enabled and the mark is active.
+
+Some commands act specially on the region when Transient Mark
+mode is enabled.  Usually, such commands should use
+`use-region-p' instead of this function, because `use-region-p'
+also checks the value of `use-empty-active-region'."
+    (and transient-mark-mode mark-active)))
 
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

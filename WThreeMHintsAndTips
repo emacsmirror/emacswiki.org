@@ -23,6 +23,7 @@ needed for run time as well.  Adding this to .emacs fixed it for me.
 
 == Browse URL in new tabs ==
 
+
 Allows browse-url to open URLs in a new tab instead of the current one:
 
  (defun w3m-new-tab ()
@@ -506,17 +507,16 @@ to show firefox bookmarks.
 == Conkeror/Vimperator functionality ==
 
 If you like Conkeror/Vimperator style element selection/search, try
-w3m-lnum.el (part of emacs-w3m) as of X.2010.
+w3m-lnum.el (part of emacs-w3m).
 
 It enhances many point commands beyond current point.  For example, if
 you're not over link and invoke the enhanced version of
-w3m-print-this-url (w3m-linknum-print-this-url), you'll be asked to
-select a link to be copied by entering number, where entering letters
-will filter currently visible links on their text part
-(<ctrl>+<number> will add <number> to the search string and
- <ctrl>+<space> adds space).
+w3m-print-this-url (w3m-lnum-this-url), you'll be asked to select a
+link to be copied by entering number, where entering letters will
+filter currently visible links on their text part (<ctrl>+<number>
+will add <number> to the search string and <ctrl>+<space> adds space).
 
-The swiss-army knife is w3m-linknum-follow which depending on selected
+The swiss-army knife is w3m-lnum-follow which depending on selected
 element may visit link, activate form field, toggle image or push a
 button.  With prefix arguments its behaviour may be further
 controlled.
@@ -524,17 +524,17 @@ controlled.
 For full list of such commands try `L C-h' within emacs-w3m buffer.
 
 You may replace original point commands with their enhanced versions
-(and also put w3m-linknum-follow at `f' as in Conkeror and
-w3m-go-to-linknum at `F' for quickly moving cursor to some link,
-image, form field or button) by activating the w3m-link-numbering-mode
-minor mode (`M-x w3m-link-numbering-mode' toggles it).  You can
-automatically activate it by adding
+(and also put w3m-lnum-follow at `f' as in Conkeror and
+w3m-linknum-goto at `F' for quickly moving cursor to some link, image,
+form field or button) by activating the w3m-lnum-mode minor mode (`M-x
+w3m-lnum-mode' toggles it).  You can automatically activate it by
+adding
 
-(w3m-link-numbering-mode 1)
+(w3m-lnum-mode 1)
 
 to your .emacs-w3m file or
 
-(add-hook 'w3m-mode-hook 'w3m-link-numbering-mode)
+(add-hook 'w3m-mode-hook 'w3m-lnum-mode)
 
 before loading w3m.
 

@@ -50,9 +50,6 @@ If mingus stays home, i.e. the daemon mpd is run from the same computer as the c
 [new:NielsGiesen:2009-07-15 18:27 UTC]Code is lifted in version 0.29. Even tested using tramp on a win32 machine.
 [new:NielsGiesen:2009-07-15 18:27 UTC]
 
-* [http://niels.kicks-ass.org/index.php/emacs/mingus/ My homepage] includes ChangeLog,
-  a ToDo-list, a screenshot and further blabla.  This will be gradually moved to [http://github.com/pft/mingus github] though.
-
 * [http://bugs.gentoo.org/show_bug.cgi?id=147381 Mingus ebuild of version 0.20] (for
   Gentoo GNU/Linux) (note that this is *way* older than the current version)
 

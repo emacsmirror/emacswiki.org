@@ -325,6 +325,8 @@ context-help to false"
 Fetches function documentation from the net on demand:
 
 <pre>
+(require 'xml)
+
 (setq my-php-function-doc-hash (make-hash-table :test 'equal))
 
 

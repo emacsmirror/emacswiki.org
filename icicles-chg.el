@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Sep  6 16:24:55 2011 (-0700)
+;; Last-Updated: Wed Sep  7 11:46:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7084
+;;     Update #: 7095
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2631,6 +2631,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/09/07 dadams
+;;     icicle-erase-minibuffer-or-history-element, icicle-prefix-complete-1,
+;;       icicle-apropos-complete(-1|-no-display), icicle-all-candidates-action-1, icicle-describe-file,
+;;       icicle-apply-to-saved-candidate, icicle-narrow-candidates(-with-predicate): 
+;;         Use icicle-condition-case-no-debug instead of condition-case.  Thx to Michael Heerdegen.
 ;; 2011/09/06 dadams
 ;;     Added: icicle-resolve-file-name.
 ;;     icicle-minibuffer-help: Call help-setup-xref, for back/forward buttons.

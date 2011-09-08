@@ -22,7 +22,7 @@ Ideally, they would fit nicely on a mug.  :)
 * [[Reference Sheet by Aaron Hawley]] -- Longer list of keys. 
 * ReferenceSheetHelpUtils -- Started as a set of utilities extending [[Reference Sheet by Aaron Hawley]]. Has since become an animal unto itself.
 * [[V_E_R_A]] -- V.E.R.A. -- Virtual Entity of Relevant Acronyms
-* [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A macro for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
+* [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
 
 == See Also ==
 

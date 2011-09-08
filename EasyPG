@@ -112,7 +112,6 @@ I use this to temporarily unset the GPG_AGENT_INFO environment variable if runni
           (setenv "GPG_AGENT_INFO" agent))))
 
 ----
-
 == Problems Decrypting == 
 
 With Emacs 23 and the default epg that comes bundled.  I am able to save (and encrypt) a *.gpg file, but when I try to reopen it in emacs, I get the following:  'File exists, but cannot be read'.  I am able to decrypt it fine outside of emacs with gpg -d
@@ -131,9 +130,9 @@ to get it and import it to your system.
 
 ----
 
- I was getting the error 'File exists, but cannot be read' because emacs could not find the gpg command.
+I was getting the error 'File exists, but cannot be read' because emacs could not find the gpg command.
 
- Another way to test if emacs can find it would be to do M-x epa-list-keys
+Another way to test if emacs can find it would be to do M-x epa-list-keys
 
  -johan
 
@@ -153,6 +152,36 @@ One reason for 'File exists, but cannot be read' can be that it cannot find gpg.
 To fix, you can either set epg-gpg-program to the full path (e.g. /sw/bin/gpg2) or set it to a relative path (e.g. gpg2) and make sure that exec-path contains the right directory.  Setting $PATH from inside Emacs is NOT adequate, it has to be in exec-path.  (Setting $PATH outside Emacs would probably do but with Emacs.app invoked from Finder that might not be convenient.)
 
  -rjk
+
+----
+
+== Problems Encrypting Mails ==
+I found a problem when I use [[Wanderlust]] Version 201107150352 with EasyPG 0.0.16(is this the last one?). I changed Wanderlust throught the emacs customization to put a default "Bcc" pointing to my own mail so I have copies of whatever I send.
+
+    ; In ~/.emacs says: 
+    '(wl-bcc "My name <my-mail@the-server.com>
+
+When I try to send an encrypted mail, for example to myself, it's says something like 
+
+    "No public key for my-mail@the-server.com,my-mail@the-server.com; skip it?".
+
+To solve this problem, you must download the source code of epg, and edit epa-mail.el. 
+In the implementation of the function epa-mail-encrypt:
+
+    ;;;###autoload
+    (defun epa-mail-encrypt (start end recipients sign signers)
+
+there are some lines that says as follow:
+
+       (if recipients
+           (setq recipients (delete ""
+                                    (split-string recipients "[ \t\n]+"))))
+
+Just change them to this ones:
+
+       (if recipients
+           (setq recipients (delete ""
+                                    (split-string recipients "[, \t\n]+"))))
 
 ----
 

@@ -1,4 +1,3 @@
-[[ru:ПоискМеста]]
 Vim has the mighty `*' and <code>‘#’</code> keys that do an IncrementalSearch for the label under the TextCursor.
 
 So let's say your cursor is in the middle of "anotherVeryLongIdentifier" (like after the first letter "I").

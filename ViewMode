@@ -144,7 +144,14 @@ I had a look at it, for me it works if I advice two functions. Try the following
 Great Thanks!  Works for me. I hesitate to reveal the path I went down to attempt accomplishing the same :P I've been wondering about a solution for that puzzle for quite awhile now. I'd be curious to learn if there is a way to accomplish the same without advice... --mon_key
 
 [new]
-A different approach might be to set auto-mode-alist to use view-mode on anything in the standard Emacs lisp directories. --AmitPatel
+You can use DirectoryVariables to make the Lisp directory read-only, but not in view-mode.
+
+  ;; Always open installed Emacs files as read-only.
+  (dir-locals-set-class-variables
+   'unwritable-directory
+   '((nil . ((buffer-read-only . t)))))
+  (dir-locals-set-directory-class "/usr/share/emacs/" 'unwritable-directory)
+
 
 ----
 CategoryFiles

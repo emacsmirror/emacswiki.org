@@ -9,7 +9,41 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+=== save and load position in doc-view-mode ===
+I like to visit/read pdf-files in emacs, but one (or two) thing(s) that I miss: to save/load (automatically) the current/saved position or pagenumber.
+And if possible also the slice that I had set. -- Michael
+
 [new]
+I don't know about the latter, but it should be possible to use BookMarks to save the last position within DocView.  It would take making an EmacsLisp function and adding it to `kill-buffer-hook' -- AaronHawley
+
+=== loading dos.el fails===
+I dropped dos.el in my lisp dir. and added in my .emacs
+
+<pre>
+(autoload 'dos-mode "dos" "Edit Dos scripts." t)
+(add-to-list 'auto-mode-alist '("\\.bat$" . dos-mode))
+</pre>
+
+and I see 
+<pre>
+Loading c:/emacs/emacs-22.3/lisp/progmodes/dos.el (source)...
+File mode specification error: (void-variable <!--)
+</pre>
+
+in Messages. if I try to evaluate the line in scratch it shows
+
+  autoload 'dos-mode "dos" "Edit Dos scripts." t nil
+
+in the status bar.
+Please, help in loading dos.el
+
+[new]
+Sounds like you saved the HTML version of the file, Lisp:dos.el when you should have clicked the "Download" link/button to get the plain text version, Download:dos.el.
+[new]
+Wow that was stupid of me. using Chrome clicking the download opens the text in a tab and I just did save page as. it had added html tags at the top and bottom. should've looked at the dos.el in emacs itself before posting.
+[new]
+Glad you figured it out.
+
 === extent-at function ===
 The latest available spice-mode, http://spice-mode.4t.com/, uses the *extent-at* function. This is not found in emacs 23.3. Did this function go away with some release? (That is hard to believe). Is it Xemacs-only? Note, this is also used in the verilog-mode (same URL). -- KevinBuchs
 

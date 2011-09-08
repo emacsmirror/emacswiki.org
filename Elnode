@@ -5,11 +5,14 @@ elnode is an asynchronous HttpServer framework. You can use it to write HTTP ser
 
 elnode is basically an ELisp version of [http://nodejs.org/ node.js], the asynchronous HTTP framework for Google's Javascript engine.
 
-Potentially, elnode could be more useful than node.js because elnode has the Emacs editing and debugging framework around it. It is extremely easy to debug elnode handler code because of Emacs.
+Hacking HTTP servers with Elnode is quite easy because of the Emacs editing and debugging framework around it. 
 
-elnode's performance is better than I expected, although we haven't done a formal test.
+Elnode's performance is better than I expected, although we haven't done a formal test.
 
-If you're interested in helping it's best to contact NicFerrier or leave a note on this page.
+
+== Talking about Elnode ==
+
+[[https://convore.com/elnode/|Convore group for discussing Elnode]]
 
 == What can you do with Elnode? ==
 
