@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 27 16:38:36 2011 (-0700)
+;; Last-Updated: Thu Sep  8 13:35:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 811
+;;     Update #: 813
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -777,7 +777,8 @@ Elements of ALIST that are not conses are ignored."
              "\\>[ \t'\(]*\\(\\sw+\\)?")
     (1 font-lock-keyword-face)
     ;; Index (2 or 3) depends on whether or not shy groups are supported.
-    ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))))
+    ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))
+   ("(\\(icicle-condition-case-no-debug\\)\\>" 1 font-lock-keyword-face)))
 
 ;; Make Icicles macros indent better.
 (put 'icicle-define-command              'common-lisp-indent-function '(4 &body))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 14:35:21 2011 (-0700)
+;; Last-Updated: Thu Sep  8 14:33:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4167
+;;     Update #: 4173
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -139,6 +139,7 @@
 ;;    (+)`icicle-search-text-property', (+)`icicle-search-thing',
 ;;    (+)`icicle-search-this-buffer-bookmark',
 ;;    (+)`icicle-search-url-bookmark',
+;;    `icicle-search-w-isearch-string',
 ;;    (+)`icicle-search-w3m-bookmark', (+)`icicle-search-word',
 ;;    (+)`icicle-search-xml-element',
 ;;    (+)`icicle-search-xml-element-text-node',
@@ -5219,6 +5220,13 @@ If `crosshairs.el' is loaded, then the target position is highlighted."
   "Hook setting `icicle-search-command' for compilation modes.
 Used on `compilation-mode-hook' and `compilation-minor-mode-hook'."
   (set (make-local-variable 'icicle-search-command) 'icicle-compilation-search))
+
+;;;###autoload
+(defun icicle-search-w-isearch-string () ; Bound to `S-TAB' in Isearch.
+  "Icicles search current buffer using an Isearch string chosen by completion."
+  (interactive)
+  (isearch-done)
+  (icicle-search (point-min) (point-max) (icicle-isearch-complete-past-string) t))
 
 ;;;###autoload
 (defalias 'icicle-search-defs 'icicle-imenu)

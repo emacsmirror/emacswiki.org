@@ -2,7 +2,7 @@ A word of warning before we start: Multi-line regular expressions rarely work as
 
 With that out of the way, back to basics:
 
-To match any number of characters, use this: ##.*## -- the problem is that ##.## matches any character /except/ newline.  What many people propose next works, but is inefficient if you assume that newlines are not /that/ common in your text: ##\(.|\n\)##.  Better match multiple lines instead: ##\(.*\n?\)*##.  The newline is optional so that the expression can end in the middle of a line.
+To match any number of characters, use this: ##.*## -- the problem is that ##.## matches any character /except/ newline.  What many people propose next works, but is inefficient if you assume that newlines are not /that/ common in your text: ##\(.|\n\)##.  Better match multiple lines instead: ##\(.*\n?\)*##.  The newline is optional so that the expression can end in the middle of a line.  Better yet: ##[\0-\377[:nonascii:]]*## avoids "Stack overflow in regexp matcher" for huge texts, e.g., > 34k.
 
 Note: For a newline in IncrementalSearch use `C-q C-j'.  Typing "\n" does not work.  You don't have to use C-q C-m C-q C-j or similar variants for Windows or Mac files. 
 

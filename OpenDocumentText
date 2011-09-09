@@ -1,11 +1,7 @@
 [[OpenDocument]] text files carry the <code>.odt</code> extension.   Emacs provides varied support for working with such files.
 
 ==Create==
-[[OrgMode]] files can be exported to OpenDocumentText. 
-
-To do this you need to install the org-odt package via the package manager. Just update your package-archives with the following URL - http://repo.or.cz/w/org-mode/org-jambu.git/blob_plain/HEAD:/packages/.
-
-See [http://repo.or.cz/w/org-mode/org-jambu.git/blob_plain/HEAD:/packages/README.html Release Notes] for more information.
+[[OrgMode]] files can be exported to OpenDocumentText. See http://orgmode.org/worg/org-faq.html#convert-to-open-office.
 
 ==View and edit==
 

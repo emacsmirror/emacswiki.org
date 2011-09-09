@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jul  7 20:11:29 2011 (-0700)
+;; Last-Updated: Thu Sep  8 14:13:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 638
+;;     Update #: 643
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,7 +26,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `isearchp-toggle-invisible',
+;;    `isearchp-init-edit', `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-set-region', `isearch-toggle-word',
 ;;    `isearchp-yank-sexp-symbol-or-char',
@@ -99,6 +99,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/09/08 dadams
+;;     Added isearchp-init-edit (from anonymous fn), so can see it in keymap help.
 ;; 2011/07/07 dadams
 ;;     Added: isearchp-highlight-lighter, isearch-toggle-case-fold (redefinition).
 ;;     Put isearchp-highlight-lighter on isearch-update-post-hook.
@@ -218,17 +220,18 @@
     :group 'isearch))
 
 (when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
+
+  (defun isearchp-init-edit (&rest ignored)
+    "Invoke current key sequence, but after calling `isearch-edit-string'."
+    (interactive)
+    (isearch-unread-key-sequence
+     (listify-key-sequence (this-command-keys)))
+    (isearch-edit-string))
+
   (defun isearchp-update-edit-init-commands ()
     "Make `isearchp-initiate-edit-commands' edit the search string."
     (dolist (cmd  isearchp-initiate-edit-commands)
-      (substitute-key-definition cmd
-                                 (lambda (&rest ignored)
-                                   (interactive)
-                                   (isearch-unread-key-sequence
-                                    (listify-key-sequence (this-command-keys)))
-                                   (isearch-edit-string))
-                                 isearch-mode-map
-                                 (current-global-map))))
+      (substitute-key-definition cmd 'isearchp-init-edit isearch-mode-map (current-global-map))))
 
   ;; No autoload cookie - need function `isearchp-update-edit-init-commands'.
   (defcustom isearchp-initiate-edit-commands

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep  6 16:22:00 2011 (-0700)
+;; Last-Updated: Thu Sep  8 14:32:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7583
+;;     Update #: 7595
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -173,7 +173,8 @@
   ;; icicle-select-bookmarked-region
 (require 'icicles-cmd2)
   ;; icicle-imenu, icicle-occur, icicle-search, icicle-search-bookmark,
-  ;; icicle-search-bookmarks-together, icicle-search-buffer, icicle-search-file
+  ;; icicle-search-bookmarks-together, icicle-search-buffer, icicle-search-file,
+  ;; icicle-search-w-isearch-string
 
 ;; Use `condition-case' because if `mb-depth.el' can't be found, `mb-depth+.el' is not provided.
 (when (>= emacs-major-version 22) (condition-case nil (require 'mb-depth+ nil t) (error nil)))
@@ -2213,11 +2214,7 @@ Used on `pre-command-hook'."
 (defun icicle-bind-isearch-keys ()
   "Bind Icicles Isearch commands."
   (dolist (key icicle-search-from-isearch-keys)
-    (define-key isearch-mode-map key
-      (lambda ()
-        (interactive)
-        (isearch-done)
-        (icicle-search (point-min) (point-max) (icicle-isearch-complete-past-string) t))))
+    (define-key isearch-mode-map key 'icicle-search-w-isearch-string)) ; In `icicles-cmd2.el'.
   (dolist (key icicle-isearch-complete-keys)
     (define-key isearch-mode-map key 'icicle-isearch-complete))
   (cond ((fboundp 'isearch-moccur)      ; In `moccur.el'.

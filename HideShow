@@ -131,6 +131,22 @@ SteveWainstead contributes the following code for Emacs 20, which automatically 
     (add-hook 'perl-mode-hook 'hs-minor-mode)
     (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
 
+== Hiding initial comment block ==
+
+It is possible to hide the initial comment block (a somewhat analog feature as the one provided by ElideHead) with <code>hs-hide-initial-comment-block</code>.
+
+== Displaying overlay content in echo area or tooltip ==
+
+Try the following to display the overlay content in a tooltip:
+
+    (defun display-code-line-counts (ov)
+      (when (eq 'code (overlay-get ov 'hs))
+        (overlay-put ov 'help-echo
+                     (buffer-substring (overlay-start ov)
+ 		                      (overlay-end ov)))))
+ 
+    (setq hs-set-up-overlay 'display-code-line-counts)
+
 == Other Options ==
 
 Here is a set of perhaps other useful options you can customize:

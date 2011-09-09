@@ -28,7 +28,7 @@ Then turn on the desired options and press the apply button:
 == X (using xmodmap) ==
 In the X Windowing System you can use <code>xmodmap(1)</code> to change the keymaping.  Some desktop environments, like Gnome and KDE, which use X, have specialized preference menus to make this easier.  The advantage of using <code>xmodmap</code> is that it will work with any desktop or Window Manager.
 
-See the man page command [http://vmlinux.org/cgi-bin/man2html?xmodmap xmodmap(1x)] for more information.  I swap their functions throughout my environment, not just for Emacs.
+See the man page command [http://www.xfree86.org/4.2.0/xmodmap.1.html xmodmap(1x)] for more information.  I swap their functions throughout my environment, not just for Emacs.
 
 On Unix-like systems, I have a ~/.xmodmap file:
 <pre>

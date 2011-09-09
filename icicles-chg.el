@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  7 11:46:52 2011 (-0700)
+;; Last-Updated: Thu Sep  8 14:42:13 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7095
+;;     Update #: 7102
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -441,6 +441,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/08 dadams
+;;     Added: icicle-search-w-isearch-string, from a lambda in icicles-mode.el.
 ;; 2011/09/05 dadams
 ;;     icicle-imenu-*: Others -> Other, as submenu name.
 ;;     icicle-search, icicle-imenu*-full: Mention C-x . in doc strings.
@@ -2490,6 +2492,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/09/08 dadams
+;;     font-lock-add-keywords - Use font-lock-keyword-face for icicle-condition-case-no-debug.
 ;; 2011/08/27 dadams
 ;;     icicle-condition-case-no-debug: Redefined so it respects debug-on-quit and keeps other handlers.
 ;; 2011/08/24 dadams
@@ -3880,6 +3884,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/09/08 dadams
+;;     icicle-bind-isearch-keys: Replace lambda with icicle-search-w-isearch-string.
 ;; 2011/09/06 dadams
 ;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
 ;;       Bind icicle-resolve-file-name to C-x C-f.
