@@ -945,7 +945,8 @@ There is nothing wrong with doing what you tried (but it is currently bugged), b
 
 Yes, cycling can sometimes be handy (no need to think about/recognize patterns), especially if there are few candidates.  Yes, there is a bug wrt cycling in `*Completions*'.  There are two workarounds/alternatives: completing instead and cycling from the minibuffer instead.  -- DrewAdams
 
-
+[new:DrewAdams:2011-09-09 17:38 UTC]
+That bug should be fixed now. Let me know if you still see a problem here. Thx -- DrewAdams
 
 
 

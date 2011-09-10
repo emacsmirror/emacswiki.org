@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  8 14:42:13 2011 (-0700)
+;; Last-Updated: Fri Sep  9 14:13:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7102
+;;     Update #: 7120
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -441,6 +441,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/09 dadams
+;;     icicle-search-w-isearch-string: Added prefix-arg treatment.
 ;; 2011/09/08 dadams
 ;;     Added: icicle-search-w-isearch-string, from a lambda in icicles-mode.el.
 ;; 2011/09/05 dadams
@@ -2635,6 +2637,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/09/09 dadams
+;;     icicle-switch-to-Completions-buf:
+;;       Do not set icicle-current-input to minibuffer content.  Use that content sans dir, locally.
+;;       If icicle-candidate-nb is defined, use it: just call icicle-move-to-next-completion.
+;;     icicle-insert-completion:
+;;       Set icicle-last-completion-candidate to COMPLETION.
+;;       Set icicle-candidate-nb to icicle-nb-of-cand-at-Completions-pos (point).
+;;       Use icicle-insert-cand-in-minibuffer COMPLETION, not just insert of directory + COMPLETION.
+;;       Set icicle-last-input to icicle-current-input.  Set icicle-cycling-p to t.
+;;       Call icicle-show-help-in-mode-line.
 ;; 2011/09/07 dadams
 ;;     icicle-erase-minibuffer-or-history-element, icicle-prefix-complete-1,
 ;;       icicle-apropos-complete(-1|-no-display), icicle-all-candidates-action-1, icicle-describe-file,

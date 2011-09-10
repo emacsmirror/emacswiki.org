@@ -327,5 +327,30 @@ In addition to the 20 or so files identified as "data", I get one mistaken for a
 
 -- SamuelBronson
 
+== Newly created files not being added to the svn repository ==
+
+New pages are not added to the svn repository anymore. The last time such a file was added was on the 30th of May. That's 101 commits ago - most likely new pages have been added since then :-)
+
+<pre>
+$ svn log -l 101 -v | grep -E '   A ' -C 8
+updates
+------------------------------------------------------------------------
+r630 | as | 2011-05-30 10:40:46 +0200 (Mon, 30 May 2011) | 1 line
+Changed paths:
+   M /emacswikipages/ButtonLockMode
+   M /emacswikipages/NicFerrier
+   M /emacswikipages/PhpMode
+   M /emacswikipages/RainbowDelimiters
+   A /emacswikipages/Sweat
+...
+</pre>
+
+Have you made changes to emacs-svn-update, updated svn? -- JonasBernoulli
+
+
+[new]
+not that I know of. I'll take a look over the weekend... -- Alex
+    
+
 ----
 CategoryEmacsWikiSite

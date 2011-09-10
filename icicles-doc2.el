@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep  6 17:23:41 2011 (-0700)
+;; Last-Updated: Fri Sep  9 14:08:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28227
+;;     Update #: 28228
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -655,6 +655,7 @@
 ;;  passes its search string to `icicle-search'.  This can be a handy
 ;;  way to start `icicle-search', picking up its search pattern by
 ;;  using, say, `C-s C-w C-w...'.
+;;  See (@file :file-name "icicles-doc1.el" :to "Launch Icicles Search using the Isearch Search String")
 ;;
 ;;
 ;;(@* "Search Multiple Buffers, Files, and Bookmarks")

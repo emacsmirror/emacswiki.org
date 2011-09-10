@@ -98,6 +98,16 @@ phrase.  Type some more text to narrow the candidate lines to
 those that match what you type.  Then use `C-next' to visit search
 hits.
 
+With Emacs 22 and later, and provided option
+`isearch-allow-scrolling' (a misnomer) is non-`nil', you can use a
+[[prefix argument]] with `S-TAB' to change the behavior.  You still
+choose an Isearch search string using completion.  But in this
+case the string does not define the '''Icicles''' search contexts.
+Instead, you are prompted for a search-context [[regexp]] to do that.
+The Isearch string is copied to the `kill-ring', so you can yank
+it into your minibuffer input anytime, to search for it ''within'' each of the
+search contexts.
+
 The key to initiate '''Icicles''' search from Isearch is `S-TAB' only by
 default.  You can change this key by customizing option '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>''''.
 

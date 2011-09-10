@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep  6 17:19:44 2011 (-0700)
+;; Last-Updated: Fri Sep  9 14:22:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26179
+;;     Update #: 26186
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1327,6 +1327,8 @@
 ;;    search string becomes the starting point for the Icicles search
 ;;    regexp.  You can edit it or type something different.  And you
 ;;    can complete what you type against the Isearch regexp history.
+;;    You can optionally define search contexts with a regexp and then
+;;    search for the Isearch string within those contexts.
 ;;
 ;;  See Also:
 ;;
@@ -7195,6 +7197,16 @@
 ;;  phrase.  Type some more text to narrow the candidate lines to
 ;;  those that match what you type.  Then use `C-next' to visit search
 ;;  hits.
+;;
+;;  With Emacs 22 and later, and provided option
+;;  `isearch-allow-scrolling' (a misnomer) is non-`nil', you can use a
+;;  prefix argument with `S-TAB' to change the behavior.  You still
+;;  choose an Isearch search string using completion.  But in this
+;;  case the string does not define the Icicles search contexts.
+;;  Instead, you are prompted for a search-context regexp to do that.
+;;  The Isearch string is copied to the `kill-ring', so you can yank
+;;  it into your minibuffer input anytime, to search for it within
+;;  each of the search contexts.
 ;;
 ;;  The key to initiate Icicles search from Isearch is `S-TAB' only by
 ;;  default.  You can change this key by customizing option

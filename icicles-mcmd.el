@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  7 11:39:27 2011 (-0700)
+;; Last-Updated: Fri Sep  9 10:26:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17208
+;;     Update #: 17246
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3828,7 +3828,6 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-switch-to-Completions-buf]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
-  (setq icicle-current-input  (icicle-input-from-minibuffer))
   (let ((window     (get-buffer-window "*Completions*" 0))
         (search-fn  'search-forward))
     (unless window                      ; Make sure we have a completions window.
@@ -3844,19 +3843,21 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                  read-file-name-completion-ignore-case
                completion-ignore-case)))
         (goto-char (icicle-start-of-candidates-in-Completions))
-        (when (icicle-file-name-input-p)
-          (setq icicle-current-input  (icicle-file-name-nondirectory icicle-current-input)))
-        (when (and (get icicle-last-completion-command 'icicle-apropos-completing-command)
-                   ;; $$ Previously allowed the -action's.
-                   (not (and (symbolp last-command) (get last-command 'icicle-cycling-command))))
-          (setq search-fn  're-search-forward)) ; Use regexp search: input is not yet complete.
-        (while (and (not (eobp))
-                    (save-restriction
-                      (narrow-to-region (point) (next-single-property-change (point) 'mouse-face
-                                                                             nil (point-max)))
-                      (not (funcall search-fn icicle-current-input nil 'leave-at-end)))))
+        (cond (icicle-candidate-nb
+               (icicle-move-to-next-completion icicle-candidate-nb 'NO-MINIBUFFER-FOLLOW-P))
+              (t
+               (let ((inp  (icicle-minibuf-input-sans-dir icicle-current-input)))
+                 (when (and (get icicle-last-completion-command 'icicle-apropos-completing-command)
+                            ;; $$ Previously allowed the -action's.
+                            (not (and (symbolp last-command) (get last-command 'icicle-cycling-command))))
+                   (setq search-fn  're-search-forward)) ; Use regexp search: input is not yet complete.
+                 (while (and (not (eobp))
+                             (save-restriction
+                               (narrow-to-region (point) (next-single-property-change (point) 'mouse-face
+                                                                                      nil (point-max)))
+                               (not (funcall search-fn inp nil 'leave-at-end))))))))
         (unless (eobp)
-          (goto-char (match-beginning 0))
+          (unless icicle-candidate-nb (goto-char (match-beginning 0)))
           (let ((prop  (get-text-property (1- (point)) 'mouse-face)))
             ;; If in a completion, move to the start of it.
             (when (and prop (eq prop (get-text-property (point) 'mouse-face)))
@@ -3877,24 +3878,25 @@ to switch to the `*Completions*' window.
 You can use this command only from buffer `*Completions*' (`\\<completion-list-mode-map>\
 \\[icicle-insert-completion]').
 
-Non-interactively, optional arg COMPLETION is the completion inserted."
+Non-interactively, optional arg COMPLETION is the completion to insert."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions))
   (when (active-minibuffer-window)
     (unwind-protect                     ; If no current completion, return to minibuffer anyway.
          (progn
-           (setq completion  (or completion (icicle-current-completion-in-Completions)))
+           (setq completion                        (or completion
+                                                       (icicle-current-completion-in-Completions))
+                 icicle-last-completion-candidate  completion
+                 icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos (point)))
            (select-window (active-minibuffer-window))
            (with-current-buffer (window-buffer) ; Needed if `*Completions*' is redirected to minibuffer.
              (goto-char (icicle-minibuffer-prompt-end))
              (icicle-clear-minibuffer)
-             (insert (if (and (icicle-file-name-input-p) insert-default-directory
-                              (or (not (member icicle-current-input icicle-extra-candidates))
-                                  icicle-extra-candidates-dir-insert-p))
-                         (icicle-file-name-directory-w-default icicle-current-input)
-                       "")
-                     completion)
-             (setq icicle-current-input  (icicle-input-from-minibuffer))))
+             (icicle-insert-cand-in-minibuffer completion
+                                               (not (eq icicle-current-completion-mode 'prefix)))
+             (setq icicle-last-input  icicle-current-input
+                   icicle-cycling-p   t)
+             (icicle-show-help-in-mode-line icicle-last-completion-candidate)))
       (select-window (active-minibuffer-window)))))
 
 (defun icicle-current-completion-in-Completions ()

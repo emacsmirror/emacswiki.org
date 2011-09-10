@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  8 14:33:24 2011 (-0700)
+;; Last-Updated: Fri Sep  9 13:53:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4173
+;;     Update #: 4206
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5222,11 +5222,27 @@ Used on `compilation-mode-hook' and `compilation-minor-mode-hook'."
   (set (make-local-variable 'icicle-search-command) 'icicle-compilation-search))
 
 ;;;###autoload
-(defun icicle-search-w-isearch-string () ; Bound to `S-TAB' in Isearch.
-  "Icicles search current buffer using an Isearch string chosen by completion."
-  (interactive)
+(defun icicle-search-w-isearch-string (&optional use-context-p) ; Bound to `S-TAB' in Isearch.
+  "Icicles-search the buffer using an Isearch string chosen by completion.
+The Isearch string you choose is used as the Icicles search context.
+You can navigate among its occurrences or search within those
+occurrences for a subpattern.
+
+For Emacs 22 and later, if option `isearch-allow-scroll' is non-nil
+then a prefix argument changes the behavior, as follows:
+
+1. You are prompted for an Icicles search-context regexp.
+2. You choose an Isearch string using completion.  It is copied to the
+   `kill-ring'.
+3. You can yank that string anytime during Icicles search, to search
+   for it within the search contexts defined by the regexp matches."
+  (interactive "P")
   (isearch-done)
-  (icicle-search (point-min) (point-max) (icicle-isearch-complete-past-string) t))
+  (if (or (not use-context-p) (not (boundp 'isearch-allow-scroll)))
+      (icicle-search (point-min) (point-max) (icicle-isearch-complete-past-string) t)
+    (let ((regexp  (icicle-search-read-context-regexp)))
+      (kill-new (icicle-isearch-complete-past-string))
+      (icicle-search (point-min) (point-max) regexp t))))
 
 ;;;###autoload
 (defalias 'icicle-search-defs 'icicle-imenu)

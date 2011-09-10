@@ -992,6 +992,8 @@ offers some enhancements to the standard Emacs incremental search,
   search string becomes the starting point for the '''Icicles''' search
   regexp.  You can edit it or type something different.  And you
   can complete what you type against the Isearch regexp history.
+  You can optionally define search contexts with a regexp and then
+  search for the Isearch string within those contexts.
 
 '''See Also:'''
 
