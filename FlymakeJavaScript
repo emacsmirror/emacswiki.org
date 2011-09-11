@@ -54,6 +54,34 @@ You can control options of JSLint by using special comments in your source code 
 
 Seems like you really want <code>(flymake-mode 1)</code> in that hook, not <code>(flymake-mode t)</code>.  According to the documentation, to turn on the minor mode explicitly requires that the arg be *positive*, not non-nil.  --DinoChiesa
 
+== With jslint command line from node.js ==
+
+Install jslint from node
+
+<pre>
+$ npm -g install jslint
+</pre>
+
+Now you should have a jslint command on your path, you can set it up in a similar way as the Rhino example above or put this in your .emacs
+
+<pre>
+(when (load "flymake" t)
+  (defun flymake-jslint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+		       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "jslint" (list local-file))))
+
+  (setq flymake-err-line-patterns 
+	(cons '("^  [[:digit:]]+ \\([[:digit:]]+\\),\\([[:digit:]]+\\): \\(.+\\)$"  
+		nil 1 2 3)
+	      flymake-err-line-patterns))
+  
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.js\\'" flymake-jslint-init)))
+</pre>
 
 
 == With JSLint server on node.js (lintnode) ==

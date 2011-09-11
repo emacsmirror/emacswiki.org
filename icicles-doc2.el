@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  9 14:08:15 2011 (-0700)
+;; Last-Updated: Sat Sep 10 11:54:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28228
+;;     Update #: 28247
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -194,6 +194,7 @@
 ;;    (@> "Introduction: On Beyond Occur...")
 ;;    (@> "How Icicles Search Works")
 ;;    (@> "Why Use 2 Search Patterns?")
+;;    (@> "Search Outside the Defined Search Contexts")
 ;;    (@> "Search Multiple Buffers, Files, and Bookmarks")
 ;;    (@> "User Options for Icicles Searching")
 ;;    (@> "Using Regexps with Icicles Search")
@@ -417,7 +418,8 @@
 ;;  There are several Icicles search commands, some of which are bound
 ;;  to keys in Icicle mode:
 ;;
-;;  `C-c '',  `icicle-occur'             - An `occur' with icompletion
+;;  `C-c '',  `icicle-occur' (aka `icicle-search-lines') -
+;;               An `occur' with incremental completion
 ;;  `C-c `'   `icicle-search'   - Seach buffer areas that match regexp
 ;;            `icicle-search-buffer' (`C-1') - Search selected buffers
 ;;            `icicle-search-buff-menu-marked' - BufferMenu marked
@@ -445,7 +447,8 @@
 ;;            `icicle-search-xml-element' - Search XML elements
 ;;            `icicle-search-xml-element-text-node'- Search text nodes
 ;;
-;;  `C-c ='   `icicle-imenu' - Navigate among Imenu entries.
+;;  `C-c ='   `icicle-imenu' (aka `icicle-search-defs') -
+;;               Navigate among Imenu entries.
 ;;            `icicle-imenu-command' -
 ;;               Navigate among Emacs command definitions.
 ;;            `icicle-imenu-non-interactive-function' -
@@ -453,7 +456,12 @@
 ;;               definitions.
 ;;  `C-c TAB' `icicle-comint-command' - Retrieve a past shell command.
 ;;
-;;  All operate in the same general way:
+;;  There are many `icicle-search-*-bookmark' commands, for searching
+;;  within bookmarks of various types.  And for each of the
+;;  `icicle-menu*' commands there is a `-full' version that searches
+;;  the full text of a command etc. definition.
+;;
+;;  All Icicles search commands operate in the same general way:
 ;;
 ;;  1. Unlike standard incremental search, Icicles search commands
 ;;     search the entire buffer, not just the part that follows the
@@ -657,6 +665,28 @@
 ;;  using, say, `C-s C-w C-w...'.
 ;;  See (@file :file-name "icicles-doc1.el" :to "Launch Icicles Search using the Isearch Search String")
 ;;
+;;(@* "Search Outside the Defined Search Contexts")
+;;  ** Search Outside the Defined Search Contexts **
+;;
+;;  For each of the predefined Icicles search commands, including for
+;;  `icicle-search' itself, you can alternatively choose to search,
+;;  not the search contexts as you define them, but the non-contexts,
+;;  that is, the buffer text that is outside (in between) the search
+;;  contexts as defined.
+;;
+;;  For example, if you use `icicle-search-thing' and you define sexps
+;;  as the search contexts, then this feature lets you search the
+;;  zones of text that are not within a sexp.  Or if you use
+;;  `icicle-search-text-property' (`C-c "'), you can search the zones
+;;  of text that do not have a text-property value that you specify
+;;  (e.g., property `face' with faces `font-lock-comment-face' and
+;;  `font-lock-comment-delimiter-face' - which means all code outside
+;;  comments).
+;;
+;;  To turn this context-complementing feature on and off, hit `C-M-~'
+;;  (`icicle-toggle-search-complementing-domain') during completion.
+;;  This is a toggle, and it affects only future search commands, not
+;;  the current one.
 ;;
 ;;(@* "Search Multiple Buffers, Files, and Bookmarks")
 ;;  ** Search Multiple Buffers, Files, and Bookmarks **

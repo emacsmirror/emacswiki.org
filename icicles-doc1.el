@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  9 14:22:12 2011 (-0700)
+;; Last-Updated: Sat Sep 10 11:47:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26186
+;;     Update #: 26187
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -309,6 +309,7 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Introduction: On Beyond Occur...")
 ;;    (@file :file-name "icicles-doc2.el" :to "How Icicles Search Works")
 ;;    (@file :file-name "icicles-doc2.el" :to "Why Use 2 Search Patterns?")
+;;    (@file :file-name "icicles-doc2.el" :to "Search Outside the Defined Search Contexts?")
 ;;    (@file :file-name "icicles-doc2.el" :to "Search Multiple Buffers, Files, and Bookmarks")
 ;;    (@file :file-name "icicles-doc2.el" :to "User Options for Icicles Searching")
 ;;    (@file :file-name "icicles-doc2.el" :to "Using Regexps with Icicles Search")

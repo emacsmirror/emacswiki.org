@@ -24,6 +24,11 @@ This section provides an overview of '''Icicles''' search.
 
 
 
+
+
+
+
+
 [:Introduction]
 === Introduction: On Beyond Occur... ===
 
@@ -107,6 +112,12 @@ Here is a screenshot that shows some of the highlighting features of `icicle-sea
 
 
 
+
+
+
+
+
+
 [:HowIciclesSearchWorks]
 === How Icicles Search Works ===
 
@@ -117,6 +128,7 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 [:icicle-search-buffer]
 [:icicle-search-buff-menu-marked]
 [:icicle-search-ibuffer-marked]
+[:icicle-search-defs]
 [:icicle-search-dired-marked]
 [:icicle-search-file]
 [:icicle-search-bookmarks-together]
@@ -129,6 +141,7 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 [:icicle-search-file-bookmark]
 [:icicle-search-gnus-bookmark]
 [:icicle-search-info-bookmark]
+[:icicle-search-lines]
 [:icicle-search-local-file-bookmark]
 [:icicle-search-man-bookmark]
 [:icicle-search-non-file-bookmark]
@@ -158,7 +171,7 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 [:icicle-imenu-non-interactive-function]
 [:icicle-comint-command]
 
-* '''`##C-c '##'''' -- '''`icicle-occur'''' -- An `occur' with [[Icicles - Icompletion|icompletion]].
+* '''`##C-c '##'''' -- '''`icicle-occur'''' (aka '''`icicle-search-lines'''') -- An `occur' with [[Icicles - Icompletion|incremental completion]].
 * '''`##C-c `##'''' -- '''`icicle-search'''' -- Seach buffer areas that match a regexp.
 * '''`icicle-search-buffer''''  ('''`C-1'''') -- Search selected buffers.
 * '''`icicle-search-buff-menu-marked'''' -- Search BufferMenu marked buffers.
@@ -179,12 +192,17 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 * '''`icicle-search-thing'''' -- Search ThingAtPoint things as contexts, optionally ignoring comments.
 * '''`icicle-search-xml-element'''' -- Search the contents of XML elements as contexts.
 * '''`icicle-search-xml-element-text-node'''' -- Search the text() nodes of XML elements as contexts.
-* '''`##C-c =##'''' -- '''`icicle-imenu'''' -- Navigate among [[ImenuMode|Imenu]] entries.
+* '''`##C-c =##'''' -- '''`icicle-imenu'''' (aka '''`icicle-search-defs'''') -- Navigate among [[ImenuMode|Imenu]] entries.
 * '''`icicle-imenu-command'''' -- Navigate among Emacs command definitions.
 * '''`icicle-imenu-non-interactive-function'''' -- Navigate among Emacs ''non''-interactive function definitions.
 * '''`C-c TAB'''' -- '''`icicle-comint-command'''' -- Retrieve a previously used shell command.
 
-All operate in the same general way:
+There are many `icicle-search-*-bookmark' commands, for searching
+within bookmarks of various types.  And for each of the
+`icicle-menu*' commands there is a '''`-full'''' version that searches
+the full text of a command etc. definition.
+
+All '''Icicles''' search commands operate in the same general way:
 
 # Unlike standard [[incremental search]], '''Icicles''' search commands search the ''entire buffer'', not just the
 part that follows the [[cursor]].  If the ''[[region]]'' is active, however,
@@ -345,6 +363,39 @@ do this by hitting '''`S-TAB'''' during Isearch.  This ends Isearch and
 passes its search string to `icicle-search'.  This can be a handy
 way to start `icicle-search', picking up its search pattern by
 using, say, `##C-s C-w C-w...##'.  See [[Icicles - Isearch Enhancements#IciclesSearchFromIsearch|Icicles Search from Isearch]].
+
+
+
+
+
+
+
+
+
+
+
+[:SearchOutsideContexts]
+=== Search Outside the Defined Search Contexts ===
+
+For each of the predefined '''Icicles''' search commands, including for
+`icicle-search' itself, you can alternatively choose to search,
+not the search contexts as you define them, but the '''''non'''''-contexts,
+that is, the buffer text that is ''outside'' (in between) the search
+contexts as defined.
+
+For example, if you use `icicle-search-thing' and you define [[sexp]]s
+as the search contexts, then this feature lets you search the
+zones of text that are ''not'' within a sexp.  Or if you use
+`icicle-search-text-property' (`##C-c "##'), you can search the zones
+of text that do ''not'' have a text-property value that you specify
+(e.g., property `face' with faces `font-lock-comment-face' and
+`font-lock-comment-delimiter-face' -- which means all code ''outside
+comments'').
+
+To turn this context-complementing feature on and off, hit '''`##C-M-~##''''
+('''`icicle-toggle-search-complementing-domain'''') during completion.
+This is a toggle, and it affects only future search commands, not
+the current one.
 
 
 

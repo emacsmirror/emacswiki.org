@@ -63,3 +63,19 @@ Then we need to set up org-mode to use a new display function for informing the 
 </pre>
 
 I did try the window manager neutral OSD equivalent but it simply did not work well enough but if anyone does get it to work then please update here accordingly.
+
+[new]
+With osd_cat (package xosd-bin from debian) the function is similar:
+
+<pre>
+(defun org-osd-display (min time msg)
+  (let ((vpos "middle")
+	(hpos "center")
+	(font "-adobe-courier-*-r-*-*-34-*")
+	(delay 5))
+    (save-window-excursion
+      (shell-command (format "echo '%s' | osd_cat --pos=%s --align=%s --font=%s --delay=%d"
+			     msg vpos hpos font delay)))))
+</pre>
+
+Olaf Dietsche
