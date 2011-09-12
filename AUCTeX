@@ -276,7 +276,7 @@ It's nice to have the same behavior for the '##'##' key -- inserting "##`##" or 
 
 == Automagic detection of master file ==
 
-When editing a multifile document, it is necessary to set the ##TeX-master## variable for !AUCTeX and !RefTeX to work properly. Whilst this can be done using file-local variables, it has the disadvantage of adding noise in your source files. An alternative is to add the following line to your ##latex-mode-hook##:
+When editing a multifile document, it is necessary to set the ##TeX-master## variable for !AUCTeX and !RefTeX to work properly. Whilst this can be done using file-local variables, it has the disadvantage of adding noise in your source files. An alternative is to add the following line to your ##LaTeX-mode-hook##:
 
     (setq TeX-master (guess-TeX-master (buffer-file-name)))
 
