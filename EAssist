@@ -54,5 +54,7 @@ This will add M-o and M-m combinations to your c-mode. M-m will produce method/f
 
 * It would be great if the .cpp/.h switching also searched in the ../include and ../src directory as that is quite a common way of organizing the files.
 * Flex matching/fuzzy completion would be great.
+* a fixed line at the top/bottom of the screen showing which letters you already entered
+
 ----
 CategoryProgrammerUtils

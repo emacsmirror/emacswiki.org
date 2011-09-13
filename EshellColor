@@ -9,6 +9,8 @@ In order for eshell to understand these commands, you have to add an output filt
                                   eshell-last-output-end))
     (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
 
+This should no longer be necessary in Emacs 23+.
+
 ----
 CategoryEshell
 CategoryFaces

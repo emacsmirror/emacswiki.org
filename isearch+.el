@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Sep  8 14:13:17 2011 (-0700)
+;; Last-Updated: Mon Sep 12 08:02:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 643
+;;     Update #: 651
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -99,6 +99,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/09/12 dadams
+;;     isearchp-fail-pos: Replaced isearch-message* with isearch-string*.  Thx to Juri Linkov.
 ;; 2011/09/08 dadams
 ;;     Added isearchp-init-edit (from anonymous fn), so can see it in keymap help.
 ;; 2011/07/07 dadams
@@ -568,13 +570,13 @@ Bindings in Isearch minor mode:
     (let ((cmds  isearch-cmds)
           succ-msg)
       (if (and isearch-success (not isearch-error))
-          (length isearch-message)
+          (length isearch-string)
         (while (or (not (isearch-success-state (car cmds)))
                    (isearch-error-state (car cmds)))
           (pop cmds))
-        (setq succ-msg  (and cmds (isearch-message-state (car cmds))))
-        (if (and (stringp succ-msg)  (< (length succ-msg) (length isearch-message))
-                 (equal succ-msg (substring isearch-message 0 (length succ-msg))))
+        (setq succ-msg  (and cmds (isearch-string-state (car cmds))))
+        (if (and (stringp succ-msg)  (< (length succ-msg) (length isearch-string))
+                 (equal succ-msg (substring isearch-string 0 (length succ-msg))))
             (length succ-msg)
           0))))
 

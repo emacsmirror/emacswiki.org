@@ -47,6 +47,8 @@ Or you could use the more simple eshell-bol that is already defined.
 
 Why doesn't C-a already bind to eshell-bol or something similar to Shaleh's definition? Why is the convention to bind to C-c C-a instead? -- EthanGlasserCamp
 
+It does in Emacs 23. -- PhilHagelberg
+
 ----
 CategoryEshell
 

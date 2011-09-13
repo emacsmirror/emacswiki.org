@@ -110,6 +110,8 @@ I forgot to say that TAB should still show the completion candidates window as I
 [new:DrewAdams:2009-05-02 05:13 UTC]
 That's exactly what happens -- try it. -- DrewAdams
 
+[new:]
+
 
 
 <pre>
@@ -898,55 +900,6 @@ Do not hesitate to ask questions or mention problems you encounter, but the doc 
 <pre>
 
 </pre>
-
-
-[new]
-
-Hi Drew!
-
-Some quick questions:
-
-How to go to `*completions*' buffer automatically when i hit TAB or S-TAB? Now i have to hit C-INS to go to the `*completions*' buffer.
-
-I cycling in the completions buffer and if i go through some directories, they've been cocatenated to the path. I vant the same behaviour as i've got for files (replace not concatenate).
-
-Screenshot for clarification: http://imageshack.us/photo/my-images/833/icicles.png/
-
-Thanks for your answer! --PasJa
-
-[new:DrewAdams:2011-08-31 14:50 UTC]
-
-1. I cannot get to the image you posted. Try posting the image on ThisWiki instead.
-
-2. You should not need to go to (i.e., select) `*Completions*'. I almost never do that.  What is the use case?  Why not just cycle candidates using `down' etc. from the minibuffer?
-
-3. Give me a recipe to reproduce.  I don't understand what it is that you're doing/seeing.
-
-4. But I do see a bug, which I don't have time now to look into: Yes, cycling when in `*Completions*' appends directories. It should not do that.  A workaround is to do your cycling from the minibuffer, as usual.
-
-Thx -- DrewAdams
-
-[new]
-
-1. CompBug
-
-2. Use case for `*Completions*' cycling: directory with maaaany files, i've want to select the 3rd row, 4th column file which has a long and ugly name which i don't want to type. If i am in the `*Completions*'  i hit `*down*' 3 times and `*right*' four times and i am free of misspelling and other problems. Like if you use [http://www.zsh.org/|zsh] and [http://grml.org/zsh/|grml-zshrc]
-
-3. and 4. This is the bug!
-
-Thx --PasJa
-
-[new:DrewAdams:2011-09-07 12:58 UTC]
-Yes, I already acknowledged the bug -- directories should not be appended. I do not have a fix for it now.  And I understand and recognize your use case -- nothing wrong with doing that. 
-
-However, in general, it is better to privilege completion --- in particular, progressive completion --- than it is to privilege [[Icicles - Cycling Completions#Drone|cycling]] (either in `*Completions*' or using minibuffer keys).
-
-There is nothing wrong with doing what you tried (but it is currently bugged), but in general you will want to get in the habit of using completion rather than cycling.  In your example (and I do realize it was just a test case to communicate the problem), for instance, you can just type  `##c S-TAB##' (since only one candidate has the substring `c').
-
-Yes, cycling can sometimes be handy (no need to think about/recognize patterns), especially if there are few candidates.  Yes, there is a bug wrt cycling in `*Completions*'.  There are two workarounds/alternatives: completing instead and cycling from the minibuffer instead.  -- DrewAdams
-
-[new:DrewAdams:2011-09-09 17:38 UTC]
-That bug should be fixed now. Let me know if you still see a problem here. Thx -- DrewAdams
 
 
 

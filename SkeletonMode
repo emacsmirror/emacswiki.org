@@ -123,12 +123,9 @@ I like the way you can make a skeleton repeat until you don't want anymore input
   (define-skeleton add-tags
     "Enter tags in any case and the output will be upcased."
      nil
-  "Tags: "
-   ((upcase (read-string "Tag: ")) ":"  str) ":" \n ;interacter=expression for complex read functions ->
-						  ;including transforming strings.
-   )
+    "Tags: "
+    ((upcase (read-string "Tag: ")) ":"  str) ":" \n)
 
-Gosh I like skeletons!
 
 == Using Multiple Variables with Skeleton Mode ==
 
@@ -145,16 +142,21 @@ The skeleton provides a) the two symbols ##v1## and ##v2## (preserved for the us
 
 == More things to do with Variables in Skeleton Mode ==
 
-  (define-skeleton vote
-   ""
-  nil
-  >"|----------------+----------+--------------|" \n
-  >"|Vote:           |For: " (setq v1 (skeleton-read "How many for? "))"    |Against: " (setq v2 (skeleton-read "How many against? "))"    |" \n
-  >"|----------------+----------+--------------|" \n
-  "|" (if (< (string-to-number v1)(string-to-number v2)) (insert "Not Carried                               |")
-  (insert "Carried                                    |")) \n
-  >"|------------------------------------------|" \n
-  )
+    (define-skeleton vote
+      "Electoral motion results"
+      nil
+      > "|----------------+----------+--------------|" \n
+      > "|Vote:           |For: "
+      (setq v1 (skeleton-read "How many for? "))
+      "    |Against: "
+      (setq v2 (skeleton-read "How many against? "))
+      "    |" \n
+      > "|----------------+----------+--------------|" \n
+      "|" (if (< (string-to-number v1)(string-to-number v2))
+	      "Not Carried                               |"
+	    "Carried                                    |")
+      \n
+      > "|------------------------------------------|" \n)
 
 This is a use of unquoted S-expressions to both write immediate text and set variables that are to be reused later. As you can see, so long as the S-expression finally inserts text some numerical calculations can be done.
 
