@@ -5,8 +5,10 @@
 First you should have installed
  AutoComplete and  [http://yasnippet.googlecode.com/svn/trunk/doc/index.html Yasnippet]
    Then install this one for java completion.
+
+ Please Do not forget to read 
+[https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ajc-java-complete.el ajc-java-complete.el] 
 [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/Install Install] 
- Please Do not forget to read  [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ajc-java-complete.el ajc-java-complete.el] 
 [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/README.txt README.txt] 
 [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ChangeLog ChangeLog] 
 

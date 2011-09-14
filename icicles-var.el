@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 12:49:41 2011 (-0700)
+;; Last-Updated: Tue Sep 13 16:24:57 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1538
+;;     Update #: 1545
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -77,8 +77,8 @@
 ;;    `icicle-fundoc-last-initial-cand-set',
 ;;    `icicle-general-help-string',
 ;;    `icicle-get-alist-candidate-function',
-;;    `icicle-hist-cands-no-highlight', `icicle-ignored-extensions',
-;;    `icicle-ignored-extensions-regexp',
+;;    `icicle-hist-cands-no-highlight', `icicle-hist-var',
+;;    `icicle-ignored-extensions', `icicle-ignored-extensions-regexp',
 ;;    `icicle-incremental-completion-p',
 ;;    `icicle-Info-only-rest-of-book-p', `icicle-inhibit-sort-p',
 ;;    `icicle-inhibit-try-switch-buffer', `icicle-initial-value',
@@ -875,6 +875,11 @@ The signature must match that of the default value,
 Bind, don't assign this, since the same string can have different
 meanings in different contexts.")
 
+(defvar icicle-hist-var nil
+  "A history variable.
+`let'-bind this to a history variable.
+Leave the global value as `nil', to use it conditionally: (or ...).")
+
 (defvar icicle-ignored-extensions completion-ignored-extensions
   "Copy of `completion-ignored-extensions', serving as a control flag.
 When `completion-ignored-extensions' changes, we remake
@@ -1141,8 +1146,10 @@ These are inputs typed but not necessarily entered with `RET'.")
 (defvar icicle-progressive-completing-p nil
   "Non-nil means this completion is a narrowing completion.")
 
-(defvar icicle-prompt ""
-  "A minibuffer prompt.")
+(defvar icicle-prompt nil
+  "A minibuffer prompt.
+`let'-bind this to a string.
+Leave the global value as `nil', to use it conditionally: (or ...).")
 
 (defvar icicle-proxy-candidate-regexp nil
   "Regexp to match proxy candidates, or nil to do nothing.

@@ -42,8 +42,6 @@ plugin are.  Are they different things?)
 
 There are a lot of goodies in RubikitchAnythingConfiguration, the current maintainer's configuration. Feel free to copy and paste!
 
-See also Lisp:init-anything-thierry.el 
-
 AndyStewart has added some cool extensions : Lisp:anything-extension.el
 
 = Glossary =
@@ -63,7 +61,7 @@ You can clone the git repository:
 Then add this to your <tt>~/.emacs.el</tt>:
 
     (add-to-list 'load-path "/path/to/anything/")
-    (require 'anything-startup)
+    (require 'anything-config)
 
 Or you if you want to start with a minimal configuration download just Lisp:anything.el and Lisp:anything-config.el and add the following to your <tt>~/.emacs.el</tt>:
 

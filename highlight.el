@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Aug 15 08:48:03 2011 (-0700)
+;; Last-Updated: Tue Sep 13 22:29:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3042
+;;     Update #: 3052
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -539,6 +539,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/09/13 dadams
+;;     hlt-highlight-property-with-value: Corrected interactive spec for VALUES.
 ;; 2011/07/24 dadams
 ;;     Moved to icicles-cmd2.el, renamed with prefix icicle- from hlt-, and corrected them:
 ;;       hlt-(hide|show)(-only)-faces, hlt-choose(-(in)visible)-faces.
@@ -1820,7 +1822,9 @@ Only highlighting faces are included, that is, faces associated with a
                                             type msg-p mouse-p)
     "Highlight text in region with property PROP of a value in VALUES.
 Non-nil VALUES means do this only where PROP has a value in VALUES.
-Interactively, you are prompted for PROP and a single value in VALUES.
+Interactively, you are prompted for PROP and VALUES.  For VALUES you
+  can enter either a list or a single, non-list value.  A list is
+  always interpreted as a list of values, not as a single list value.
   Using `RET' with no input means highlight for any non-nil value.
 
 Optional args START and END are the limits of the area to act on.
@@ -1838,11 +1842,12 @@ Optional 8th arg MOUSE-P non-nil means use the `mouse-face' property,
   is provided by the prefix arg."
     (interactive
      `(,(intern (read-string "Property to highlight: " nil 'highlight-property-history))
-       ,(let* ((strg  (read-string "Property value: " nil))
+       ,(let* ((strg  (read-string "Property value: "))
                (vals  (if (string= "" strg)
                           ()
-                        (list
-                         (car (read-from-string (read-string "Property value: " nil))))))))
+                        (car (read-from-string strg)))))
+              (unless (listp vals) (setq vals  (list vals)))
+              vals)
        ,@(hlt-region-or-buffer-limits)
        nil
        ,(if hlt-use-overlays-flag

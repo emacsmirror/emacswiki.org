@@ -1,10 +1,11 @@
 ;;; typing.el --- The Typing Of Emacs
 
 ;; Copyright (C)  2000, 2001  Alex Schroeder <alex@gnu.org>
+;; Zombie mode and Q&A game (c) 2011 Sacha Chua <sacha@sachachua.com>
 
 ;; Author: Alex Schroeder <alex@gnu.org>
 ;; Maintainer: Alex Schroeder <alex@gnu.org>
-;; Version: 1.1.3
+;; Version: 1.1.4
 ;; Keywords: games
 ;; URL: http://www.geocities.com/kensanata/emacs.html
 
@@ -134,7 +135,7 @@ game to use."
 
 (defcustom toe-failure-messages 
   '("Ouch!" "No!" "Nooooo!" "Argh!" "Go away!" "Desist!" "Stop now!"
-    "Miserable!" "Shame on you!" "Looser!" "You'll never get it.")
+    "Miserable!" "Shame on you!" "Loser!" "You'll never get it.")
   "Messages printed after a wrong answer."
   :type '(repeat string)
   :group 'typing-of-emacs)
@@ -190,9 +191,38 @@ for the words is `toe-starting-length'."
 	      wordhash-alist))))
 
 (defun toe-parse-region-questions (start end)
-  "Return questions and answers from the region as an alist."
-  nil)
-
+  "Return questions and answers from the region as an alist.
+The alist is made of elements (LENGTH (question answer) ...)
+where LENGTH is an integer describing the length of the answer.
+Each ANSWER in the list is treated accourding to `toe-treat-words'.
+The minimum length for the words is `toe-starting-length'."
+  (save-excursion
+    (goto-char start)
+    (let (results)
+      (while (re-search-forward "^\\(.*\\?\\)[ \t]*\r?\n\\(.*\\)$" end t)
+	(let* ((question (match-string-no-properties 1))
+	       (answer
+		(if toe-treat-words
+		    (funcall toe-treat-words (match-string-no-properties 2))
+		  (match-string-no-properties 2)))
+	       (qhash (cdr (assq (length answer) results))))
+	  (if qhash
+	      (setf (gethash question qhash) answer)
+	    (setq qhash (make-hash-table :test 'equal))
+	    (setf (gethash question qhash) answer)
+	    (push (cons (length answer) qhash) results))))
+      ;; now transform (LENGTH HASH) elements into (LENGTH
+      ;; (question answer) ...) elements
+      (mapcar (lambda (pair)
+		(cons (car pair)
+		      (let (questions)
+			(maphash
+			 (lambda (question answer)
+			   (push (cons question answer) questions))
+			 (cdr pair))
+			questions)))
+	      results))))
+	
 (defun toe-parse-region (start end)
   "Parse region and return words, questions, and answers.
 Words are defined as strings consisting of word characters per syntax
@@ -244,15 +274,16 @@ Answers are the sentences following a question."
 (defun toe-success ()
   "Give success feedback."
   (toe-feedback toe-success-messages)
-  t)
+  'success)
 
-(defun toe-failure ()
+(defun toe-failure (&optional zombie)
   "Give failure feedback."
   (toe-feedback toe-failure-messages)
-  ;; dynamic binding!
-  (setq toe-lives (1- toe-lives))
-  (insert (format " - %d LIVES LEFT!" toe-lives))
-  (> toe-lives 0))
+  (unless zombie
+    ;; dynamic binding!
+    (setq toe-lives (1- toe-lives))
+    (insert (format " - %d LIVES LEFT!" toe-lives)))
+  'failure)
 
 (defun toe-feedback (stuff)
   "Give feedback by choosing a random phrase from STUFF."
@@ -331,16 +362,51 @@ second."
 	(error "Internal error in the typing game"))
     (copy-sequence words)))
 
+(defun typing-of-emacs-questions (&optional zombie)
+  "Play the game The Typing of Emacs, Q&A version."
+  (interactive "P")
+  (if (string-equal (buffer-name) toe-buffer-name)
+      (progn
+	(set-buffer-modified-p nil)
+	(kill-buffer (current-buffer))))
+  (let* ((toe-level 1)
+	 (toe-length toe-starting-length)
+	 (toe-time-per-word toe-starting-time-per-word)
+	 (toe-lives toe-starting-lives)
+	 (question-alist (cadr (toe-parse-region (point-min) (point-max))))
+	 (game-start (current-time))
+	 (game-in-progress 'success) 
+	 (letter-count 0) (total-word-count 0) (level-word-count 0)
+	 questions)
+    (if (null question-alist)
+	(error "No usable questions found in this buffer"))
+    (toe-setup-buffer)
+    (while (if zombie game-in-progress (eq game-in-progress 'success))
+      ;; Choose new and longer word list if is exhausted
+      (or questions (setq toe-length (1+ toe-length)
+			  questions (toe-new-words question-alist)))
+      ;; Choose a word from the list and require user to type it.
+      (let ((pair (elt questions (random (length questions)))))
+	(if (eq (setq game-in-progress (toe-ask-for (car pair) (cdr pair))) 'success)
+	    (setq letter-count (+ letter-count toe-length)
+		  total-word-count (1+ total-word-count)
+		  level-word-count (1+ level-word-count)
+		  questions (delete pair questions)))
+	;; If next level is reached, force finding of new words.
+	(if (>= level-word-count toe-words-per-level)
+	    (setq level-word-count 0
+		  questions nil))))
+    (toe-score letter-count total-word-count game-start (current-time))))
+  
 ;; Main entry point
-
-(defun typing-of-emacs ()
+(defun typing-of-emacs (&optional zombie)
   "Play the game The Typing Of Emacs.
 The game builds a list of words from the current buffer.
 In the buffer *The Typing Of Emacs* you will be asked to
 type the words.  Should you take more than a certain
 number of seconds to do the typing, you loose.  As you
 continue playing the words will get longer and longer."
-  (interactive)
+  (interactive "P")
   (if (string-equal (buffer-name) toe-buffer-name)
       (progn
 	(set-buffer-modified-p nil)
@@ -351,18 +417,18 @@ continue playing the words will get longer and longer."
 	 (toe-lives toe-starting-lives)
 	 (word-alist (car (toe-parse-region (point-min) (point-max))))
 	 (words (toe-new-words word-alist))
-	 (game-start (current-time)) (game-in-progress t) 
+	 (game-start (current-time)) (game-in-progress 'success) 
 	 (letter-count 0) (total-word-count 0) (level-word-count 0))
     (if (null word-alist)
 	(error "No usable words found in this buffer"))
     (toe-setup-buffer)
-    (while game-in-progress
+    (while (if zombie game-in-progress (eq game-in-progress 'success))
       ;; Choose new and longer word list if is exhausted
       (or words (setq toe-length (1+ toe-length)
 		      words (toe-new-words word-alist)))
       ;; Choose a word from the list and require user to type it.
       (let ((word (elt words (random (length words)))))
-	(if (setq game-in-progress (toe-ask-for word))
+	(if (eq (setq game-in-progress (toe-ask-for word)) 'success)
 	    (setq letter-count (+ letter-count toe-length)
 		  total-word-count (1+ total-word-count)
 		  level-word-count (1+ level-word-count)
