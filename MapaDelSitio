@@ -19,7 +19,8 @@
 [:AcercaEmacs]
 Acerca de Emacs:
 * CategoríaHistoria -- Evolución histórica.
-* RazonesPracticas -- Razones de uso.
+* [RazonesPracticas Razones Prácticas]
+* [RazonesPoliticas Razones Políticas]
 
 [:AprendiendoEmacs]
 Aprendiendo a usar Emacs:

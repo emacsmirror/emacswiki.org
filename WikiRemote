@@ -170,8 +170,8 @@ installed INSTEAD of w3.
         (goto-char (point-min))
         (and (search-forward "<!-- Page title -->" nil t)
     	 ;; Strip out localized "<h1>Saved: " message
-    	 ;; An unsuccessful save has <h1><a h r e f="HomePage?action=BackLinks"
-    	 (search-forward (concat "<a "href" "=\"" page "\" class=\"wiki\">" 
+    	 ;; An unsuccessful save has <h1><a href="HomePage?action=BackLinks"
+    	 (search-forward (concat "<a href=\"" page "\" class=\"wiki\">" 
     				 page 
     				 "</a></h1>\n<!-- End top -->") nil t))))
 
@@ -250,4 +250,4 @@ Function `guti-narrow-to-textarea' is supposed to be called from
 explicitly in the minibuffer. -- CristianGutierrez
 
 ----
-CategoryModes CategoryInterface
+CategoryModes

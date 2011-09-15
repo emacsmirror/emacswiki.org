@@ -175,7 +175,7 @@ Note that, if you'd like to disable <code>cua-mode</code> and enable <code>trans
 
 == Working the Mouse - mouse button functions in Aquamacs==
 
-Because Macs usually have mice with one or maybe two buttons, Aquamacs emulates the emacs-specfic mouse buttons as follows:
+Because Macs usually have mice with one or maybe two buttons [Note: this is no longer true; most macs have trackpads that recognize presses with anywhere between one and four fingers. However, Emacs does not recognize the difference in number of fingers for a trackpad press.], Aquamacs emulates the emacs-specfic mouse buttons as follows:
 
 * mouse button (left) is mouse-1: use to set the point or select text.
 * command-click (left) is mouse-2: use to yank from the kill-ring (or follow certain links)
