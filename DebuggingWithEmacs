@@ -1,3 +1,15 @@
+== Debugging without a Debugger ==
+
+If you like to debug your code by inserting output statements at critical/interesting points, have a look at ll-debug.el, available at
+
+http://www.cbrunzema.de/software.html#ll-debug
+
+It has functions to insert output statements that display unique strings and skeletons to construct code to print out values of variables. There are some routines to comment lines or regions of code in an uniform way, too. Among the supported languages are Lisp, C, C++, Perl etc.
+
+Elisp newbie needs to debug an init.el problem. Can someone point me to a howto to "just print stuff" (e.g., value of a variable) to ##*Messages*## and the minibuffer? Oldschool debugging printf wanted, though I'm definitely open to better ways. --tlroche
+
+== Debugging with GUD ==
+
 Both Emacs and XEmacs ship with the GrandUnifiedDebugger (GUD) for
 interacting with a command-line debugger (such as gdb). GUD does
 useful things like displaying source code listings in an Emacs buffer
@@ -5,9 +17,7 @@ useful things like displaying source code listings in an Emacs buffer
 providing consistent Emacs-like keybindings for various debugger
 commands (such as setting breakpoints and stepping through code), and
 a variety of other enhancements that make using a debugger with Emacs
-a more productive experience.
-
-For more information on GUD, see:
+a more productive experience. For more information on GUD, see:
 
 * http://www.gnu.org/software/emacs/manual/html_node/emacs/Debuggers.html#Debuggers
 
@@ -47,15 +57,6 @@ The Perl debugger cannot (yet) be used via the GUD interface.  It has
 its own interface.  Start it via M-x perldb.
 
 M-x perldb is _part_ of the GUD interface.  GUD stands for grand unified debugger.  --NickRoberts
-
-----
-Debugging without debugger
-
-If you like to debug your code by inserting output statements at critical/interesting points, have a look at ll-debug.el, available at
-
-http://www.cbrunzema.de/software.html#ll-debug
-
-It has functions to insert output statements that display unique strings and skeletons to construct code to print out values of variables. There are some routines to comment lines or regions of code in an uniform way, too. Among the supported languages are Lisp, C, C++, Perl etc.
 
 ----
 

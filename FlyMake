@@ -172,6 +172,12 @@ http://i.imgur.com/34ceS.png
 
 FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  It works with any language.  Just require it, and it works.
 
+Example:
+
+http://i.imgur.com/CK6kg.png
+
+Note the highlights, and the error message for the current line, shown beneath the modeline. 
+
 
 == More Tips and Questions ==
 
@@ -266,7 +272,11 @@ If you do not want to use mouse hover to check out the error messages, I've made
 -- JorikBlaas
 
 [new]
-Quickly show next err-menu:
+
+Jorik, you can use FlymakeCursor to address that. --DinoChiesa
+
+
+=== Quickly show next err-menu === 
 
   ;; flymake
   (defun my-flymake-show-next-error()

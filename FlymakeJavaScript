@@ -1,6 +1,6 @@
-There are two javascript engines that can be used, %%SpiderMonkey%% and Rhino.  Alternatively, you might want to use Douglas Crockfords rather handy JSLint [http://www.jslint.com], which will be much less forgiving of bad syntax, and can enforce a sensible coding style.
+There are  multiple options for checking Javascript syntax that can be used within flymake.  The javascript engines %%SpiderMonkey%% and Rhino can both check Javascript syntax.  Alternatively, you can use Douglas Crockford's rather handy [http://www.jslint.com JSLint], which is much less forgiving of bad syntax, and can enforce a sensible coding style. Another option is [http://jshint.com/ JSHint], which is a fork of JSLint, modified to be not as strict and more configurable in its requirements than the original.  The following describe some of these options.  
 
-== With JSLint ==
+== With JSLint on Rhino ==
 
 First, you will need to install Rhino (**not necessary on Windows, see below), and download jslint.js for Rhino [http://www.jslint.com/rhino/index.html].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
 
@@ -203,12 +203,11 @@ I get a lot of errors on the first line, like
 
 That is this?
 
-== With JSLint on Windows using Cscript.exe ==
+== With JSLINT or JSHINT on Windows using Cscript.exe ==
 
-There's no need for Rhino on Windows; Windows has a built-in Javascript engine in WSH.  And Douglas Crockford, creator of jslint, provides [http://www.jslint.com/wsh/ a release of jslint built specifically for WSH].
+There's no need to install Rhino on Windows; Windows has a built-in Javascript engine in WSH.  Therefore you can run a JS program on any Windows, via WSH.  
 
-There is also a [http://code.google.com/p/jslint-for-wsh/source/browse/#svn/trunk flymake-for-jslint-for-wsh.el], built to use jslint within WSH. 
-
+Relying on WSH, the community provides [http://code.google.com/p/jslint-for-wsh/source/browse/#svn/trunk flymake-for-jslint-for-wsh.el], to allow you to use jslint or JSHINT as the flymake tool for .js buffers on windows.  
 
 A sample of using jslint-for-wsh.js as a "compile" command in emacs:
 

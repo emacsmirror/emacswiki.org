@@ -37,14 +37,20 @@ The advantage of reporting a bug here is that others can share in the discussion
 
 === Debugging Tips ===
 
-1. If you use the debugger to report a backtrace, first delete all '''Icicles''' byte-compiled files, so that you use only the source files (##icicles*.el##) for debugging.
+1. If you use the debugger to report a backtrace then you should first ensure that you are using the '''Icicles''' ''source'' files (##icicles*.el##) and not their byte-compiled versions (##icicles*.elc##).  If you normally use byte-compiled files (recommended), then either load the source files after the byte-compiled files or do not load the byte-compiled files at all.  To prevent loading the byte-compiled files you can either delete them or temporarily move them out of your `load-path'.
 
-2. By default, in ''Icicle'' mode, `M-x' is bound to command '''`icicle-execute-extended-command''''. This is a multi-command, which presents certain advantages over the standard command bound to `M-x' in Emacs, `execute-extended-command' -- see [[Icicles - Multi M-x]] for details.
+2. By default, in ''Icicle'' mode, some code captures errors that are raised, so that you can continue working.  For example, when you initiate an action command from the minibuffer and it raises an error, the error is suppressed so that you can continue with completion.
 
-However, `icicle-execute-extended-command' has one disadvantage: an error backtrace is less informative, which can make debugging more difficult. If you want to see a normal backtrace at the point of error, then do what I do:
+For debugging you will often want to turn off this capture of errors.  You can do this by temporarily setting `debug-on-error' to non-`nil'.  This will cause an error that would normally be captured (handled, not raised) to enter the debugger.
 
-  M-: (define-key icicle-mode-map "\M-x" 'execute-extended-command)
-  M-x set-variable debug-on-error t
+Similarly, to enter the debugger on `C-g', even in contexts that would normally handle a `quit' signal specially, set `debug-on-quit' to non-`nil'.
+
+
+
+
+
+
+
 
 
 
