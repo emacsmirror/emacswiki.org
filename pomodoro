@@ -2,3 +2,27 @@ Pomodoro is a time management technique. http://www.pomodorotechnique.com
 
 There are at least two emacs modes specifically for this.
 They can be found at http://github.com/docgnome/pomodoro.el and http://kanis.fr/hg/lisp/ivan/pomodoro.el
+
+
+ --8<-------------------------- §separator§ ------------------------>8--
+
+DennyZhang: 
+
+Below are my two customizations compared to default behavior. Hope it's useful for others.
+<pre>
+(defun pomodoro-message (msg)
+  "Display a message in a buffer and maybe raise emacs frame."
+  (when pomodoro-raise-frame
+    (raise-frame (selected-frame)))
+  (let ((this-window (selected-window)))
+    (with-current-buffer (get-buffer-create pomodoro-buffer-name)
+      (erase-buffer)
+      (insert msg))
+    (pop-to-buffer pomodoro-buffer-name)
+    ;; suggest not to change window height, since it will distract users' work environment
+    ;;(fit-window-to-buffer)
+    ;; auto kill the buffer, after some wait
+    (run-at-time "5 sec" nil 'kill-buffer pomodoro-buffer-name)
+    (select-window this-window))
+  (run-hook-with-args 'pomodoro-message-hook msg))
+</pre>

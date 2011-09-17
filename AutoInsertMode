@@ -136,6 +136,27 @@ A second way of using autoinsert is to define skeletons (see SkeletonMode) that 
         ;;}}}
   ))
 
+[new:OlafDietsche:2011-09-16 14:34 UTC]
+I use Yasnippet for initial skeletons:
+
+    (defun my/autoinsert-yas-expand()
+      "Replace text in yasnippet template."
+      (yas/expand-snippet (buffer-string) (point-min) (point-max)))
+
+    (custom-set-variables
+     '(auto-insert 'other)
+     '(auto-insert-directory "~/autoinsert/")
+     '(auto-insert-alist '((("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header") . ["template.h" c++-mode my/autoinsert-yas-expand])
+                           (("\\.\\([C]\\|cc\\|cpp\\)\\'" . "C++ source") . ["template.cc" my/autoinsert-yas-expand])
+                           (("\\.sh\\'" . "Shell script") . ["template.sh" my/autoinsert-yas-expand])
+                           (("\\.el\\'" . "Emacs Lisp") . ["template.el" my/autoinsert-yas-expand])
+                           (("\\.pl\\'" . "Perl script") . ["template.pl" my/autoinsert-yas-expand])
+                           (("\\.pm\\'" . "Perl module") . ["template.pm" my/autoinsert-yas-expand])
+                           (("\\.py\\'" . "Python script") . ["template.py" my/autoinsert-yas-expand])
+                           (("[mM]akefile\\'" . "Makefile") . ["Makefile" my/autoinsert-yas-expand])
+                           (("\\.tex\\'" . "TeX/LaTeX") . ["template.tex" my/autoinsert-yas-expand]))))
+
+-- OlafDietsche
 == Running manually ==
 
 You can also use the functions that auto-insert uses manually, on pre-existing source files.
