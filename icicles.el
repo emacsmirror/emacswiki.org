@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  8 14:34:00 2011 (-0700)
+;; Last-Updated: Sun Sep 18 01:28:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22978
+;;     Update #: 22987
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -269,8 +269,8 @@
 ;;    `icicle-Info-virtual-book', `icicle-insert-buffer',
 ;;    `icicle-insert-thesaurus-entry', `icicle-keyword-list',
 ;;    `icicle-kill-buffer', `icicle-kmacro',
-;;    `icicle-lisp-complete-symbol', `icicle-locate-file',
-;;    `icicle-locate-file-no-symlinks',
+;;    `icicle-lisp-complete-symbol', `icicle-locate',
+;;    `icicle-locate-file', `icicle-locate-file-no-symlinks',
 ;;    `icicle-locate-file-no-symlinks-other-window',
 ;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
@@ -323,7 +323,7 @@
 ;;    `icicle-select-window-by-name', `icicle-send-bug-report',
 ;;    `icicle-set-option-to-t',
 ;;    `icicle-set-S-TAB-methods-for-command',
-;;    `icicle-set-TAB-methods-for-command',
+;;    `icicle-set-TAB-methods-for-command', `icicle-sexp-list',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename', `icicle-show-faces',
@@ -341,8 +341,8 @@
 ;;    `icicle-sort-proxy-candidates-first',
 ;;    `icicle-sort-special-candidates-first',
 ;;    `icicle-sort-special-candidates-first',
-;;    `icicle-sort-turned-OFF', `icicle-synonyms',
-;;    `icicle-tag-a-file', `icicle-tags-search',
+;;    `icicle-sort-turned-OFF', `icicle-string-list',
+;;    `icicle-synonyms', `icicle-tag-a-file', `icicle-tags-search',
 ;;    `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets',
@@ -1028,6 +1028,7 @@
 ;;    `icicle-scroll-or-update-Completions', `icicle-search-action',
 ;;    `icicle-search-action-1', `icicle-search-bookmark-action',
 ;;    `icicle-search-char-property-scan',
+;;    `icicle-search-char-prop-matches-p',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
 ;;    `icicle-search-define-candidates-1', `icicle-search-final-act',
@@ -1036,7 +1037,9 @@
 ;;    `icicle-search-highlight-and-maybe-replace',
 ;;    `icicle-search-highlight-input-matches-here',
 ;;    `icicle-search-in-context-default-fn',
-;;    `icicle-search-property-args', `icicle-search-quit-or-error',
+;;    `icicle-search-property-args',
+;;    `icicle-search-property-default-match-fn',
+;;    `icicle-search-quit-or-error',
 ;;    `icicle-search-read-context-regexp', `icicle-search-read-word',
 ;;    `icicle-search-regexp-scan',
 ;;    `icicle-search-replace-all-search-hits',
@@ -1054,7 +1057,7 @@
 ;;    `icicle-shell-dynamic-complete-as-command',
 ;;    `icicle-shell-dynamic-complete-as-environment-variable',
 ;;    `icicle-show-help-in-mode-line', `icicle-show-in-mode-line',
-;;    `icicle-signum', `icicle-S-iso-lefttab-to-S-TAB',
+;;    `icicle-signum', `icicle-S-iso-lefttab-to-S-TAB', `icicle-some',
 ;;    `icicle-special-candidates-first-p',
 ;;    `icicle-start-of-candidates-in-Completions',
 ;;    `icicle-strip-ignored-files-and-sort',
@@ -1151,8 +1154,8 @@
 ;;    `icicle-fundoc-last-initial-cand-set',
 ;;    `icicle-general-help-string',
 ;;    `icicle-get-alist-candidate-function',
-;;    `icicle-hist-cands-no-highlight', `icicle-ignored-extensions',
-;;    `icicle-ignored-extensions-regexp',
+;;    `icicle-hist-cands-no-highlight', `icicle-hist-var',
+;;    `icicle-ignored-extensions', `icicle-ignored-extensions-regexp',
 ;;    `icicle-incremental-completion-p', `icicle-info-buff',
 ;;    `icicle-info-menu-map', `icicle-Info-only-rest-of-book-p',
 ;;    `icicle-info-window', `icicle-inhibit-sort-p',

@@ -103,6 +103,7 @@ navigate.
 [:icicle-Info-goto-node]
 [:icicle-Info-index]
 [:icicle-Info-menu]
+[:icicle-locate]
 [:icicle-locate-file]
 [:icicle-occur]
 [:icicle-recent-file]
@@ -206,7 +207,7 @@ Here are some of the '''Icicles''' tripping commands:
 * '''`icicle-Info-goto-node'''' ('''`g'''' in Info)-- Trip among [[InfoMode|Info]] nodes
 * '''`icicle-Info-index'''' ('''`i'''' in Info) -- Trip among Info nodes
 * '''`icicle-Info-menu'''' ('''`m'''' in Info)-- Trip among Info nodes
-* '''`icicle-locate-file'''' -- Trip among files
+* '''`icicle-locate'''' , '''`icicle-locate-file'''' -- Trip among files
 * '''`icicle-occur'''' ('''`##C-c '##'''') -- Trip among `occur' hits
    (`icicle-search' among single-line hits)
 * '''`icicle-recent-file'''' -- Trip among [[RecentFiles|recent files]]
@@ -282,7 +283,7 @@ This page has additional screenshots for '''Icicles''' search commands: [[Icicle
 
 * [[Icicles - File-Name Input]] for information
   about `icicle-find-file', `icicle-find-file-absolute', `icicle-find-file-in-tags-table', 
-  `icicle-locate-file', and `icicle-recent-file'.
+  `icicle-locate', `icicle-locate-file', and `icicle-recent-file'.
 * [[Icicles - Emacs Tags Enhancements]]
   for information about `icicle-find-first-tag' and
   `icicle-find-tag'.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 14:33:18 2011 (-0700)
+;; Last-Updated: Sun Sep 18 00:35:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4465
+;;     Update #: 4473
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1771,7 +1771,7 @@ This has no effect if your Emacs version does not have image support.
 You can cycle the value during completion using `C-x t'."
   :type '(choice
           (const :tag "Both name and thumbnail"  t)
-          (const :tag "Thumbnail image only"     'image-only)
+          (const :tag "Thumbnail image only"     image-only)
           (const :tag "File name only"           nil))
   :group 'Icicles-Completions-Display)
 
@@ -2521,8 +2521,12 @@ the entire search regexp."
 ;;;###autoload
 (defcustom icicle-search-highlight-threshold 100000
   "*Max number of context search hits to highlight at once.
+If the value is `t' then there is no limit.
 This highlighting uses face `icicle-search-main-regexp-others'."
-  :type 'integer :group 'Icicles-Searching)
+  :type '(choice
+          (const    :tag "Highlight all search hits (no limit)" t)
+          (integer  :tag "Max number of search hits to highlight"))
+  :group 'Icicles-Searching)
 
 ;;;###autoload
 (defcustom icicle-search-hook nil

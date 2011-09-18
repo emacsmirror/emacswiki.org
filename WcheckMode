@@ -131,7 +131,8 @@ an actions menu for marked text. Commands `wcheck-jump-forward' and
 == Examples ==
 
 See the [https://github.com/tlikonen/wcheck-mode/blob/master/README.org 
-README] file for configuration examples.
+README] file for configuration examples. Wcheck mode users are encouraged
+to put their configuration examples here, though.
 
 ----
 CategorySpelling

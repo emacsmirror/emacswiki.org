@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  5 12:44:24 2011 (-0700)
+;; Last-Updated: Sun Sep 18 00:41:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12563
+;;     Update #: 12578
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -91,8 +91,8 @@
 ;;    `icicle-filter-alist', `icicle-filter-wo-input',
 ;;    `icicle-first-matching-candidate', `icicle-first-N',
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
-;;    `icicle-frames-on', `icicle-fuzzy-candidates',
-;;    `icicle-get-alist-candidate',
+;;    `icicle-flat-list', `icicle-frames-on',
+;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set',
 ;;    `icicle-dired-guess-shell-command', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file',
@@ -160,7 +160,7 @@
 ;;    `icicle-set-union', `icicle-shell-command',
 ;;    `icicle-shell-command-on-region',
 ;;    `icicle-show-help-in-mode-line', `icicle-show-in-mode-line',
-;;    `icicle-special-candidates-first-p',
+;;    `icicle-some', `icicle-special-candidates-first-p',
 ;;    `icicle-start-of-candidates-in-Completions',
 ;;    `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
@@ -1472,6 +1472,7 @@ whose value is compatible with type `character'."
          char)
     (setq icicle-proxy-candidates  ())))
 
+;; Not used in Icicles code, but used by other libraries.
 (defun icicle-read-string-completing (prompt &optional default pred hist)
   "Read a string in the minibuffer, prompting with PROMPT (a string).
 If the user hits `RET' without typing anything, return DEFAULT, or \"\"
@@ -3039,8 +3040,9 @@ The optional second arg is ignored."
   (when (consp candidates)
     (let* ((multilinep       #'(lambda (cand)
                                  (if (consp cand)
-                                     (or (string-match "\n" (car cand)) (string-match "\n" (cdr cand)))
-                                   (string-match "\n" cand))))
+                                     (or (string-match "\n" (car cand))
+                                         (string-match "\n" (cdr cand)))
+                                  (string-match "\n" cand))))
            (any-multiline-p  (loop for cand in candidates
                                    if (funcall multilinep cand) return t
                                    finally return nil))
@@ -4623,6 +4625,26 @@ avoid corrupting the original LIST1 and LIST2."
         (unless (member (car list1) list2)  (setq result  (cons (car list1) result)))
         (setq list1  (cdr list1)))
       result)))
+
+(defun icicle-some (list arg2 predicate)
+  "Apply binary PREDICATE successively to an item of LIST and ARG2.
+Return the first non-nil value returned by PREDICATE, or nil if none.
+PREDICATE must be a function with two required arguments."
+  (let ((result  nil))
+    (catch 'icicle-some
+      (dolist (arg1  list)
+        (when (setq result  (funcall predicate arg1 arg2))  (throw 'icicle-some result))))
+    result))
+
+;; No longer used.
+(defun icicle-flat-list (val1 val2)
+  "Return a flat list with all values in VAL1 and VAL2."
+  (let ((result  nil))
+    (unless (listp val1) (setq val1  (list val1)))
+    (unless (listp val2) (setq val2  (list val2)))
+    (while val1 (add-to-list 'result (pop val1)))
+    (while val2 (add-to-list 'result (pop val2)))
+    result))
 
 (defun icicle-get-candidates-from-saved-set (set-name &optional dont-expand-filesets-p)
   "Return the saved set of completion candidates named SET-NAME.

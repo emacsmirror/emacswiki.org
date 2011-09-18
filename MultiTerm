@@ -225,6 +225,25 @@ Of course I can copy a ^R charactor from somewhere else and paste it into termin
 [new]
 Hi.  I'm wondering how I can get the ESC key to forward on an actual terminal escape (C-[) to the shell process.  Currently it's being interpreted as meta.  Since I am able to actually successfully press the meta key on my own, I don't need ESC to duplicate that functionality.  I've tried removing "<ESC>" from term-unbind-key-list, but still when I hit the ESC key, it's being used by Emacs.
 
+[new]
+May be the following code will help you.
+
+Define a function like the following one.
+{{{
+(defun term-send-esc ()
+  "Send ESC in term mode."
+  (interactive)
+  (term-send-raw-string "\e"))
+}}}
+
+Then use a convenient key to send ESC to terminal. I am fine with "C-c C-e"
+
+{{{
+(add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-escape))
+}}}
+
+--Noorul
+
 ----
 CategoryShell
  

@@ -1,19 +1,62 @@
 ;;; Sylecn's ~/.emacs file
+;;; keep this .emacs portable across different linux machines.
+;;;
+;;; use hostname to decide which machine you are on
+;;; use file-exists-p before load some specific file
+;;; use featurep before using a feature
+
+;; (defvar *emacs-load-start* (current-time))
 
 ;;======================================================================
 ;; preload
 
-;; my main script direcotry, mostly one file script
-(add-to-list 'load-path "~/.emacs.d/sylecn-scripts")
+(require 'cl)
 
+;; my main script direcotry
+(add-to-list 'load-path "~/.emacs.d/extension/")
+;; my site-lisp
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+
+;; utils contain simple reusable elisp functions
+(load "utils")
 ;; extensions contain user defined functions and customizable variables
-(load "extensions-sylecn")
+(load "extensions-bundle")
+
+;; variables for customize emacs init
+(defvar pre-23.2
+  (version-list-<
+   (version-to-list emacs-version)
+   '(23 2))
+  "this variable is t if emacs version is < 23.2")
+
+(defvar hostname
+  (or (getenv "HOSTNAME") (getenv "COMPUTERNAME") "unknown")
+  "hostname of this machine")
+
+(defvar in-windows
+  (equal window-system 'w32)
+  "t if emacs is running in windows")
+
+(defvar has-x
+  (equal window-system 'x)
+  "if X is running. When X is running, some initial settings are done in X resources and do not need to repeat in init file.")
+
+;; if running in Windows
+(and in-windows
+     (load "~/.emacs.d/startup/windows"))
+
+;;======================================================================
+;; byte compile emacs lisp files
+
+;; disabled, load source file is fast on freebsd!
+;; quite stable now
+;; (byte-recompile-my-emacs-dir)
 
 ;;======================================================================
 ;; customization
 
 ;;--------------------------------------------------
-;; info only
+;; information about customization
 
 ;;{{{ info only
 
@@ -23,40 +66,26 @@
 
 ;; my good prefix and keys
 ;; C-c	        default prefix for user
-;; C-;          another prefix for user, add by me:)
+;; C-;          another prefix for user, add by me :)
 ;;              C-; would be a great key for switch windows in X if I have not
 ;;              use it as a prefix key.
+;;              C-; is not available in terminal.
+;;              because of that all my C-; prefix keys works in term mode (char)
+;; C-; Fn       another large key set for the user to use
 ;; C-'          hippie-expand
 ;; C-h h        hippie-expand
 ;;              (yes. you can always stole keys from unused functions. safe.)
 ;; M-n          scroll-up-half-screen
-;; C-x c        ??
+;; C-x c/w/y/...        ??
 ;; M-[/]
 
 ;; use prefix is really easy, for example
 ;; define key C-c w w makes C-c w a prefix.
 ;; and define C-c e e makes C-c e a prefix.
 
-;; said to be a nice color theme:
-;; http://www.brockman.se/software/zenburn/
-;; my tested color themes
-;;these themes are ok. in case the default color is not good for some language
-;blue on grey
-;(color-theme-gnome2)
-;blue on black
-;(color-theme-comidia)
-;black on white, I guess this is close to orgin color
-;(color-theme-standard)
-;white on black
-;(color-theme-clarity)
-;white on blue
-;(color-theme-resolve)
-;a little too dark
-;(color-theme-gtk-ide)
-;this is difinitely dark, but seems ok for deep night
-;(color-theme-late-night)
-
 ;; you can always get default variable vaule by emacs -Q.
+;; avoid using append to set new value, if you must do so, use the defvar trick.
+;; that can prevent duplicates when the file is loaded more than once.
 
 ;;}}}
 
@@ -66,9 +95,10 @@
 ;;--------------------------------------------------
 ;;*absolutely* should be default
 
+;;on freebsd, the default is nil
+(setq require-final-newline t)
+
 ;;show matching parentheses
-;; TODO add support on {}
-;;      {} is supported on Shell-script mode
 (show-paren-mode 1)
 
 ;;don't swap point and mark when doing M-w
@@ -79,28 +109,36 @@
 
 ;;hide startup message
 (setq inhibit-startup-message t)
+(setq inhibit-startup-echo-area-message "sylecn")
+
+;;show nothing in *scratch* when started
+(setq initial-scratch-message nil)
+
+(unless has-x
+  ;;don't blink
+  (blink-cursor-mode -1)
+
+  ;;disable menu, toolbar and scrollbar
+  ;;for X, use ~/.Xdefaults
+  ;;for console emacs
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+
+  )
 
 ;;disable both beeping and visible-bell
 (setq visible-bell nil)
 (setq ring-bell-function 'ignore)
 
-;;don't blink
-(blink-cursor-mode -1)
-
-;;show nothing in *scratch* when started
-(setq initial-scratch-message nil)
+;;don't use dialog when using mouse click
+(setq use-dialog-box nil)
 
 ;;turn off transient mark mode
-(transient-mark-mode -1)
+;; testing.
+;; (transient-mark-mode -1)
 
-;;disable menu, toolbar and scrollbar
-;;for X, use ~/.Xdefaults
-;;for console emacs
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-
-(defvar use-session nil 
+(defvar use-session nil
   "use session or not.
 If non-nil use session, else use saveplace and savehist.")
 (setq use-session nil)
@@ -112,17 +150,17 @@ If non-nil use session, else use saveplace and savehist.")
   (progn
     ;;when opening file keep point at the pos last closed
     (require 'saveplace)
+    (setq save-place-file "~/.emacs.d/.emacs-places")
     (setq-default save-place t)
     ;;keep hist
     (savehist-mode 1)))
 
-;;ido
-;;ref: http://www.emacswiki.org/emacs/InteractivelyDoThings
-;;ref: Directory /home/sylecn/fromsource/emacs/lisp/ido.el
+;;ido is now part of emacs. good.
 (require 'ido)
 (ido-mode 'buffers)
 ;;long list makes me nevous
 (setq ido-max-window-height 1)
+(setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 
 ;;minibuffer size
 ;;  default in v23: 25% frame's height
@@ -130,6 +168,9 @@ If non-nil use session, else use saveplace and savehist.")
 
 ;;never yank at mouse position, always at point
 (setq mouse-yank-at-point t)
+
+;; default is 100 !
+(setq message-log-max 5000)
 
 ;;--------------------------------------------------
 ;;display related
@@ -140,52 +181,65 @@ If non-nil use session, else use saveplace and savehist.")
 ;;I just get rid of the ^L, replace it with "".
 (setq pp^L-^L-string "")
 
-;;show time on mode bar
+;;show time on mode line
 ;;TODO how to customize the Mail and system load display
 ;;     or how to make mail notice available and disable system load
 (display-time-mode 1)
 (setq display-time-format "%I:%M%p %b%d %a")
 (setq display-time-use-mail-icon t)
 
-;;cursor style
-;;(setq default-cursor-type 'bar)
-;;(setq cursor-type 'bar)
-
 ;; show column number
 ;(column-number-mode 1)
 
-;; if you want show line number in each line
-;; see LineNumbers in emacswiki
-;; http://www.emacswiki.org/emacs/LineNumbers
+;; color-theme
+(defvar use-color-theme nil
+  "set to t to use color-theme feature if it's available.
+set to nil to disable all color/face customization.
+set to other symbol to use that theme. I prefix my themes with \"my\", to distinguish themes in color-theme package.")
 
-;; Color theme
-;; ref: http://www.nongnu.org/color-theme/
-;; ref: http://www.emacswiki.org/cgi-bin/wiki/ColorTheme
-;;BUG color-theme-select is not working on emacs cvs version
+(if in-windows
+    (setq use-color-theme 'my-white-on-win7-blue)
+  (setq use-color-theme 'my-white-on-dark-green))
 
-;; only use color-theme when we have 256 colors or more
-;(if (>= (display-color-cells) 256)
-(if nil
-    (progn
-      (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
-      
-      (require 'color-theme)
-      ;;keep a list of used color-theme
-      
-      (setq color-theme-history-max-length 50)
-
-      ;;NOTE: you have to run the command *twice* to get it fully effective!
-      ;;      no matter in gtk or in terminal
-      (defun color-theme-set-default-theme ()
-	"set default color theme"
-	(progn
-	  (color-theme-gnome2)
-	  (color-theme-gnome2)))
-
-      (color-theme-set-default-theme)))
+(case use-color-theme
+  (my-white-on-dark-green
+   (unless has-x
+     (set-background-color "#003c3c")
+     (set-foreground-color "#FFFFFF")
+     (set-face-background 'fringe "#253c3c")
+     (set-face-background 'cursor "#FFFFFF")
+     (set-face-foreground 'ido-only-match "cyan")
+     (set-face-background 'region "gray25")
+     ;; default-frame-alist
+     ))
+  (my-white-on-gray
+   ;; TODO read more about frames and frame properties
+   ;;      default-frame-alist
+   ;; (set-background-color "gray25")
+   (set-background-color "gray35")
+   (set-foreground-color "AntiqueWhite1")
+   (set-face-background 'fringe "gray35")
+   (set-face-foreground 'ido-only-match "cyan")
+   ;; default chocolate1 is difficult to read.
+   (set-face-foreground 'font-lock-comment-face "gold")
+   )
+  (my-white-on-win7-blue
+   (set-background-color "#0A3B76")
+   (set-foreground-color "#FFFFFF")
+   (set-cursor-color "gray")    ;; white text can't shown on white cursor.
+   (set-face-background 'fringe "#003070")
+   )
+  (none
+   ;; on white bg
+   (set-face-background 'region "#ddddbb")
+   )
+  (t (load "~/.emacs.d/startup/color-theme")))
 
 ;;view images in emacs
 (auto-image-file-mode 1)
+(eval-after-load 'image-mode
+  '(define-key image-mode-map (kbd "g")
+     'revert-buffer))
 
 ;; hl-line-mode extended
 ;; ref: http://www.emacswiki.org/emacs/DrewAdams
@@ -195,38 +249,114 @@ If non-nil use session, else use saveplace and savehist.")
 (require 'hl-line+)
 (toggle-hl-line-when-idle 1)
 (hl-line-when-idle-interval 20)
-;;TODO disable it for info mode, view mode, man mode, Help mode
+(setq hl-line-inhibit-highlighting-for-modes
+      '(Info-mode help-mode view-mode Man-mode))
 
 ;;======================================================================
 ;;user configs
 ;;
 ;;all configurations for built-in features in GNU Emacs comes here
 ;;you can add new features in
-;;~/.emacs.d/sylecn-scripts/extension-sylecn.el
+;; ~/.emacs.d/extension/extensions-bundle.el
 ;;and customize those in ??
 
 ;;--------------------------------------------------
 ;; need for keys
-(load "~/.emacs.d/startup-scripts/need-for-keys")
+(load "~/.emacs.d/startup/need-for-keys")
 
 ;;--------------------------------------------------
 ;; my compiler options
-(load "~/.emacs.d/startup-scripts/compile-extended")
+(load "~/.emacs.d/startup/compile")
 
 ;;--------------------------------------------------
 ;; copy paste use clipboard or primary
-(load "~/.emacs.d/startup-scripts/use-clipboard")
+(load "~/.emacs.d/startup/use-clipboard")
 
 ;;--------------------------------------------------
 ;;choose major mode based on filename pattern
 ;;DONE low, find major mode for .muttrc .procmailrc etc
 ;;     It's on emacswiki. see email related pages.
+(defvar auto-mode-alist-init
+  auto-mode-alist "emacs default value for `auto-mode-alist'.")
 (setq auto-mode-alist
-      (append '(("\\.m$" . octave-mode)
+      (append '(
+		;; this list is first come first go match, put more specific
+		;; matches on the top. put dir name matches to the end.
+
+		("\\.git/COMMIT_EDITMSG\\'" . gcm-mode)
+
+		;; programming mode
+		("\\.acl2\\'" . myacl2-mode)
+		("acl2-customization.lisp\\'" . myacl2-mode)
+		("\\.m\\'" . octave-mode)
+		("\\.flex\\'" . flex-mode)
+		("\\.l\\'" . flex-mode)
+		("\\.bison\\'" . bison-mode)
+		("\\.y\\'" . bison-mode)
+		("/scripts/" . shell-script-mode)    ;my sh scripts dir
+		("\\.cmd\\'" . dos-mode)
+		("\\.cs\\'" . csharp-mode)
+
+		;; mail
+		("mutt-[a-z]+-[^-]+-[0-9]+.*" . mail-mode)
+		("\\.mail\\'" . mail-mode)
+
+		;; config files
 		("\\.bash.*" . shell-script-mode)
-		("\\.acl2.*" . lisp-mode)
-		("crontab" . conf-mode))
-	      auto-mode-alist))
+		("\\.\\(xsessionrc\\|Xresources\\)" . shell-script-mode)
+		("crontab" . conf-mode)
+		("fromsource/yasnippet-snippets-active/" . snippet-mode)
+		("non-lisp-data/yasnippets/" . snippet-mode)
+		("yasnippet/snippets/" . snippet-mode)
+		("CMakeLists\\.txt\\'" . cmake-mode)
+		("\\.cmake\\'" . cmake-mode)
+		("SConscript\\'" . python-mode)
+		("SConstruct\\'" . python-mode)
+		("\\.po\\'" . po-mode)
+
+		;; html and webdev
+		("\\.html\\'" . html-mode)
+		("\\.\\(rng\\|xml\\)\\'" . nxml-mode)
+		;("\\.js\\'" . js2-mode)
+		("\\.js\\'" . js-mode)
+		("\\.dbl\\'" . js-mode)    ; dbl used in D2BS (a D2 bot)
+		("\\.json\\'" . json-mode)
+		("blogs.*\\.txt" . html-mode)
+		("\\.inc\\'" . php-mode)
+		("\\.php[34]?\\'\\|\\.phtml\\'" . php-mode)
+		("www\\.emacswiki\\.org\\..*\\.txt" . really-simple-wiki-mode)
+		("code\\.google\\.com\\..*\\.txt" . really-simple-wiki-mode)
+
+		;; other
+		("\\.org\\'" . org-mode)
+		("\\.dot\\'" . graphviz-dot-mode)
+
+		;; special
+		("species/.*_program.txt" . linum-mode)
+		("google-project-hosting.*/.*\\.h\\'" . c++-mode)
+		("proj./.*\\.h\\'" . c++-mode)
+		;; ("helps/info/dir" . org-mode)
+		;; ("helps/info/" . Info-mode)
+		("\\.manpage\\'" . Man-mode)
+		)
+	      auto-mode-alist-init))
+
+;;--------------------------------------------------
+;; load-path
+
+;;freebsd site-lisp, should be there automatically via global emacs setup.
+;;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
+
+;; add top level subdirs in my site-lisp
+;; note: direcotry-files return list contains . and ..
+(dolist (d (directory-files "~/.emacs.d/site-lisp" t))
+  (or (string-match "\\(/\\.\\.?\\|\\.el\\)$" d)
+      (and (file-directory-p d)
+	   (add-to-list 'load-path d))))
+
+;; other entries
+(add-to-list 'load-path "~/lisp/elisp/dog")
+;;(add-to-list 'load-path "~/fromsource/haskell-mode")
 
 ;;choose major mode based on file contents
 ;;magic-mode-alist
@@ -236,16 +366,52 @@ If non-nil use session, else use saveplace and savehist.")
 ;;   open when emacs starts
 ;;   not be closed by clean-buffer-list
 ;;   <add future usage here>
-(defvar myfiles '("todo" "low" "done"
-		  "learnlinux" "notes" "bugs" "helps/emacs/kemacs"
-		  "progress" "texts/lwords"
-		  "~/helps/html/my-html-notes" "~/bak/backup.userlist"
-		  "~/html/mysite/contents"
-		  ".emacs"
-		  ".emacs.d/sylecn-scripts/extensions-sylecn.el"
-		  ".emacs.d/startup-scripts/need-for-keys.el")
+(defvar myfiles
+  (cond
+   ((equal hostname "sylecn")
+    '("todo" "low"
+      ;; "done"
+      ;; "low.c"
+      "~/texts/bugs/bugs"
+      "learnlinux"
+      ;; "debian_my"
+      ;; "~/projects/mbackup/lists/userdata.list"
+      ;; "~/projects/mbackup/lists/config.list"
+      "notes" "log" "progress" "url"
+      "kemacs"
+      ;; "elisp"
+      ;;"texts/lwords"
+      ;; "~/office/austin-view/bills-and-payments"
+      "projects/lword/words"
+      "texts/lword"
+      ;; "musiclog"
+      ;; "projects/music_collection/music_collection"
+      ;; temporally, for now
+      ;; "~/office/parent-travelling-to-US/parent-travelling"
+      ;; "~/helps/html/my-html-notes"
+      ;; "~/html/mysite/contents"
+      ".emacs.d/.emacs"
+      ;; ".emacs.d/extension/extensions-bundle.el"
+      ;; ".emacs.d/startup/need-for-keys.el"
+      ))
+   ((string-match "cs.utexas.edu" hostname)
+    '("notes-cs" "cs_my" ".emacs"))
+   ((string-match "PERSONAL-C51A67" hostname)
+    ;; windows xp
+    '(".emacs"
+      "wintext/notes" "wintext/learnwin" "wintext/kemacs"
+      "wintext/log"
+      "wintext/progress"
+      "wintext/tvlog" "wintext/zylog"
+      "wintext/todo" "wintext/low"
+      "wintext/movielog" "wintext/tvlog"
+      "wintext/gamelog" "wintext/music"
+      "wintext/wecn"
+      "d:/Projects/PESIndex/wecnindex.xml"
+      ))
+   (t nil))
   "My important daily files, which will be opened (and protected) when emacs starts.
-By convention, files not start with / are under ~.")
+By convention, emacs will look for files not start with / under ~/ and ~/texts/, in that order.")
 
 ;;--------------------------------------------------
 ;; my second most often used files
@@ -257,21 +423,153 @@ By convention, files not start with / are under ~.")
 if element is a string, it is the filename with path.
 if element is a cons, the car is a alias for the file, the cdr is the filename with path.")
 
-;;general emacs customization, no mode related content.
-;;ADD-new-user-config-here
+;;ADD general emacs customize, no modes here
+
+(defalias 'cal 'calendar)
+
+(defvar completion-ignored-extensions-init
+  completion-ignored-extensions)
+(setq completion-ignored-extensions
+      (cons "TAGS" completion-ignored-extensions-init))
+
+;; added date time in title
+(setq frame-title-format
+      '(multiple-frames "%b"
+			("" invocation-name "@" system-name " | %M")))
+
+;; inspired by icicles
+(defun insert-word-under-point ()
+  "insert word under point.
+For minibuffer ordinary input, like M-x occur"
+  (interactive)
+  (insert (with-current-buffer (window-buffer (minibuffer-selected-window))
+	    (thing-at-point 'symbol))))
+(defun insert-buffer-filename (&optional arg)
+  "insert `buffer-file-name'. With prefix, insert file name with full path.
+For minibuffer ordinary input, like M-x shell-command"
+  (interactive "P")
+  (let ((fn (buffer-file-name (window-buffer (minibuffer-selected-window)))))
+    (insert (if arg fn (file-name-nondirectory fn)))))
+(define-key minibuffer-local-map (kbd "M-.")
+  'insert-word-under-point)
+(define-key minibuffer-local-map (kbd "M-,")
+  'insert-buffer-filename)
+
+(defalias 'debug-on-error 'toggle-debug-on-error)
+
+(setq copyright-limit 500)
+
+(defalias 'wrap 'toggle-truncate-lines)
+
+;; default is "~/.emacs.bmk"
+(setq bookmark-default-file "~/.emacs.d/bookmarks")
+
+;; uniquified buffers with parts of directory name, instead of foo<1>
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+
+;; new in 23.2
+;; save clipboard strings into kill ring before replacing them.
+(setq save-interprogram-paste-before-kill t)
+;(setq kill-do-not-save-duplicates t)
+
+;; rename buffer for specific files
+;; /usr/share/doc/aptitude/README
+(defun my-find-file-hook ()
+  (cond
+   ((string-equal (buffer-file-name) "/usr/share/doc/aptitude/README")
+    (rename-buffer "*aptitude*"))
+   ((and buffer-file-name
+	 (string-match "/\\(fromsource\\|site-lisp\\)/" (buffer-file-name)))
+    (view-mode 1))
+   ;; this is like (setq-default 'major-mode 'org-mode), but only for buffers
+   ;; that doesn't have a major mode.
+   ;;
+   ;; why I do this? Because emacs enable default major-mode for all buffers,
+   ;; even when a file clearly has a major mode different from the default
+   ;; one. see id1 in bugs file.
+   ((eq major-mode 'fundamental-mode) (org-mode))
+   (t nil)))
+(add-hook 'find-file-hook 'my-find-file-hook)
+
+;; set default web browser
+(setq browse-url-browser-function 'browse-url-generic)
+;; browse-url-generic-args (list "--no-remote" "-P" "temp")
+(case window-system
+  (x (setq browse-url-generic-program "firefox4"
+	   browse-url-generic-args (list "-P" "v4")))
+  (w32 (setq browse-url-generic-program "C:\\Program Files (x86)\\Mozilla Firefox4\\firefox.exe")
+  (t (setq browse-url-generic-program "firefox"))))
+
+;; run whitespace-clean before writing some programming source code
+(defun wsclean-for-some-mode ()
+  ;; TODO not using wsclean-mode-list
+  "do `whitespace-cleanup' for modes in `wsclean-mode-list'"
+  (if (member major-mode '(java-mode c-mode emacs-lisp-mode
+			   makefile-gmake-mode
+			   python-mode
+			   html-mode js-mode js2-mode nxml-mode
+			   sh-mode))
+      (whitespace-cleanup))
+  nil)
+
+(add-hook 'write-file-functions 'wsclean-for-some-mode)
+
+;; safe local variables
+(add-to-list 'safe-local-variable-values '(org-odd-levels-only . nil))
+(add-to-list 'safe-local-variable-values '(org-odd-levels-only . t))
+
+;; allow turn off auto-fill in file variable, without asking
+(defvar safe-local-eval-forms-init
+  safe-local-eval-forms "emacs default value for `safe-local-eval-forms'.")
+(setq safe-local-eval-forms
+      (cons '(auto-fill-mode -1)
+	    safe-local-eval-forms-init))
+
+;; a regular expression that matches ends of sentences.
+;; used in M-a/e
+(setq sentence-end "[.?!]\s*")
+
+;; enable C-x C-l/u
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; testing, emacs provides a variable for this purpose
+(setq view-read-only t)
+;; Note: you need to disable view-mode in po-mode-hook
+
+;; (defun enable-view-mode-for-readonly-file ()
+;;   (and (buffer-file-name)
+;;        buffer-read-only
+;;        (view-mode 1)))
+;; (add-hook 'find-file-hook 'enable-view-mode-for-readonly-file)
+
+;;htmlfontify-buffer is not marked as autoload in htmlfontify.el
+;; it's marked as autoload in 23.2.
+;; TODO testing
+;; (autoload 'htmlfontify-buffer "htmlfontify.el"
+;;   "reproduces the look of the current Emacs buffer as closely as possible in html and css" t nil)
+
+;;reread a TAGS table without querying, if it has changed.
+(setq tags-revert-without-query t)
+
+;;don't wrap long lines
+(setq-default truncate-lines nil)
+
+;;let C-v M-v brings back where you were.
+(setq scroll-preserve-screen-position t)
 
 ;;enable auto update time-stamp
 (add-hook 'before-save-hook 'time-stamp)
 ;;default format "%:y-%02m-%02d %02H:%02M:%02S %u"
 (setq time-stamp-format "%:y-%02m-%02d")
 
+;;auto update copyright year
+(add-hook 'before-save-hook 'copyright-update)
+
 ;;open manpage in same window
-;;TODO not working. may need restart emacs?
-;(defvar same-window-buffer-names-init same-window-buffer-names)
-(defvar same-window-regexps-init same-window-regexps)
-(setq same-window-regexps
-      (append '("\\*Man.*")
-	      same-window-regexps-init))
+;;TODO not working.
+(add-to-list 'same-window-regexps '("\\*Man.*"))
 
 ;;for xterm
 (xterm-mouse-mode 1)
@@ -279,11 +577,8 @@ if element is a cons, the car is a alias for the file, the cdr is the filename w
 ;;for emacs daemon
 ;;if emacs is started as daemon, the path is not the same as current user.
 ;;add my bin dir
-(defvar exec-path-init
-  exec-path
-  "Init value for exec-path")
-(setq exec-path
-      (cons "~/bin" exec-path-init))
+;; I don't use -daemon now, comment out.
+;(add-to-list 'exec-path "/home/sylecn/bin")
 
 ;;TODO *Shell Command Output* should use View mode by default
 
@@ -298,13 +593,17 @@ if element is a cons, the car is a alias for the file, the cdr is the filename w
 ;;  let it depend on the mode (by setting it in the mode-hooks).
 (setq hippie-expand-try-functions-list
       '(;try-expand-all-abbrevs
+	yas/hippie-try-expand
 	try-complete-file-name
 	try-expand-list
-	try-expand-dabbrev-visible
+	;; FIXME this function is causing unexpected point movement.
+	;; try-expand-dabbrev-visible
 	try-expand-dabbrev-all-buffers
 	try-expand-dabbrev-from-kill
 	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol))
+	try-complete-lisp-symbol
+	try-expand-all-abbrevs
+	))
 
 ;;this is set in Customize section.
 ;(setq standard-indent 8)
@@ -313,28 +612,775 @@ if element is a cons, the car is a alias for the file, the cdr is the filename w
 ;(setq enable-recursive-minibuffers nil)
 
 ;; default mode
-(setq default-major-mode 'org-mode)
+(if pre-23.2
+    (setq default-major-mode 'fundamental-mode))
+(setq-default major-mode 'fundamental-mode)
+;; TODO switch to org-mode if no match entry in auto-mode-alist and no magic
+;; #! line detected.
+;;
+;; how emacs assign major-modes?
+;; Info: (emacs) Choosing Modes
 
-;; open Org-mode file unfold
-;; TODO feature request, keep the file as it was when visited last time
-(setq org-startup-folded "unfold")
+;; fill-column, can be changed via C-x f
+(setq-default fill-column 78)
 
-;;fill-column, can be changed via C-x f
-;(setq default-fill-column 74)
-
-;;additional chinese input support
+;; additional chinese input support
 (setq default-input-method "chinese-py")
 
-;;set fonts
-(load "~/.emacs.d/startup-scripts/fonts.el")
+;; set fonts
+(load "~/.emacs.d/startup/fonts")
 
 ;;======================================================================
 ;; built-in modes configurations
 
-;;ADD-new-user-config-here
+;; org-mode
+(load "~/.emacs.d/startup/org-mode")
+
+;; shell-mode and comint-mode
+;; not in hook, global.
+;; (eval-after-load 'comint
+;;   '(setq comint-scroll-show-maximum-output nil))
+(setq comint-scroll-show-maximum-output nil)
+(load "~/.emacs.d/startup/shell-mode")
+
+(load "~/.emacs.d/startup/flymake-ex")
+
+;;ADD built-in [modes|features] configurations
+
+;;--------------------------------------------------
+;; vc
+
+(setq vc-follow-symlinks t)
+
+;;--------------------------------------------------
+;; auto-fill-mode
+
+;; show " F" instead of " Fill" in mode line.
+(setcar (cdr (assq 'auto-fill-function minor-mode-alist)) " F")
+
+;;--------------------------------------------------
+;; fundamental-mode
+
+(defun my-fundamental-mode-hook ()
+  (interactive)
+  (setq mode-name "F"))
+(add-hook 'fundamental-mode-hook 'my-fundamental-mode-hook)
+
+;;--------------------------------------------------
+;; diff-mode
+
+;; use standard GNU diff colors
+;; not sure why emacs does not define these faces.
+;;
+;; note: this list is not complete, I just added the most obvious colors that
+;; I see in diff output.
+(eval-after-load 'diff-mode
+  '(progn
+     (set-face-attribute 'diff-hunk-header nil
+			 :foreground "cyan"
+			 :bold nil)
+     (set-face-foreground 'diff-hunk-header "cyan")
+     (set-face-foreground 'diff-added "green")
+     ;; testing. have never seen this one.
+     (set-face-foreground 'diff-changed "yellow")
+     (case use-color-theme
+       (my-white-on-dark-green
+	(set-face-foreground 'diff-removed "VioletRed1"))
+       (t (set-face-foreground 'diff-removed "red")))))
+;; other diff faces
+;; diff-changed
+;; diff-file-header
+;; diff-function    function doesn't work on elisp file.
+;; diff-index
+;; diff-nonexistent
+;; diff-refine-change
+
+;;--------------------------------------------------
+;; Man-mode
+
+(defun my-Man-mode-search-option (arg)
+  "search command line option in Man page."
+  (interactive "sSearch Option: ")
+  ;; (search-forward-regexp (concat "^[ \t]*" arg))
+  (when (null (let ((case-fold-search nil))
+		(occur (concat "^[ \t]*" arg))))
+    ;;occur return nil when some lines are matched, return t when no match.
+    (next-error)
+    (other-window 1)
+    (bury-buffer)
+    (delete-window)))
+
+(defun my-Man-mode-hook ()
+  (interactive)
+  (define-key Man-mode-map (kbd "o")
+    'my-Man-mode-search-option)
+  )
+(add-hook 'Man-mode-hook 'my-Man-mode-hook)
+
+;;--------------------------------------------------
+;; grep-mode
+
+(defun my-grep-mode-hook ()
+  (interactive)
+  (setq truncate-lines t))
+(add-hook 'grep-mode-hook 'my-grep-mode-hook)
+
+;;--------------------------------------------------
+;; dired mode
+
+;; When open a binary file using another program, do not use
+;; `dired-do-async-shell-command' (which in turn calls `shell-command'), it
+;; only allows one command running at background. On second command, it will
+;; ask you:
+;;
+;;     A command is running.  Kill it?  (yes or no)
+;;
+;; Just use start-process.
+
+(setq dired-listing-switches "-alh")
+;;can add additional garbage files in
+;;dired-garbage-files-regexp
+
+;; recursive deletes without asking for each dir
+(setq dired-recursive-deletes 'always)
+
+(defvar dired-regexp-binary-files nil
+  "a regexp to match binary files, which when open will call run-mailcap instead of `find-file'")
+
+;; TODO rmvb doesn't have a mime type.
+(setq dired-regexp-binary-files
+  (concat "\\." (regexp-opt (list "flv" "pdf" "mp3" "mov" "rmvb" "wmv"
+				  "mp4" "avi" "rm" "mkv")) "$"))
+
+(defun my-dired-find-file ()
+  "like `dired-find-file', but use see (part of run-mailcap) to open file for file types in `dired-regexp-binary-files'."
+  (interactive)
+  (let ((find-file-run-dired t))
+    (let ((f (dired-get-file-for-visit)))
+      (if (string-match dired-regexp-binary-files f)
+	  (start-process "my-dired-find-file" "*see*" "see" f)
+	(find-file f)))))
+
+(defun my-dired-mouse-find-file-other-window (event)
+  "In Dired, visit the file or directory name you click on.
+
+Like `dired-mouse-find-file-other-window', but honors `dired-regexp-binary-files'."
+  (interactive "e")
+  (let (window pos file)
+    (save-excursion
+      (setq window (posn-window (event-end event))
+	    pos (posn-point (event-end event)))
+      (if (not (windowp window))
+	  (error "No file chosen"))
+      (set-buffer (window-buffer window))
+      (goto-char pos)
+      (setq file (dired-get-file-for-visit)))
+    (if (file-directory-p file)
+	(or (and (cdr dired-subdir-alist)
+		 (dired-goto-subdir file))
+	    (progn
+	      (select-window window)
+	      (dired-other-window file)))
+      (select-window window)
+      ;; TODO use Function Advice instead of writing my own function.
+      ;; why call file-name-sans-versions?
+      (if (string-match dired-regexp-binary-files file)
+	  (start-process "my-dired-find-file" " *see*" "see" file)
+	(find-file-other-window (file-name-sans-versions file t))))))
+
+(defun my-dired-mode-hook ()
+  (interactive)
+  (define-key dired-mode-map [remap dired-find-file]
+    'my-dired-find-file)
+  (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+    'my-dired-mouse-find-file-other-window)
+  )
+(add-hook 'dired-mode-hook 'my-dired-mode-hook)
+
+;;--------------------------------------------------
+;; woman mode
+
+(setq woman-fill-column (if (< fill-column 70) 78 fill-column))
+
+;;--------------------------------------------------
+;; html mode
+
+(defun w3-html-validator (&optional synchronous)
+  "run w3 html validator http://validator.w3.org/ on current buffer.
+Show result in *w3-validator* buffer. You can jump to error like in *compile-log* buffer.
+
+For XHTML file, you can use nxml-mode, which can verify XHTML offline."
+
+  )
+(defun my-html-mode-hook ()
+  (interactive)
+  (require 'find-file)
+  (add-to-list 'ff-other-file-alist
+	       '("\\.html\\'" (".js")))
+
+  ;; multi-web-mode, auto select major mode for HTML files when point is moving
+  ;; around.
+  ;; using local copy at ~/.emacs.d/site-lisp/multi-web-mode.el
+  ;; age: April 09, 2010
+  ;; check updates at https://github.com/fgallina/multi-web-mode
+  (require 'multi-web-mode)
+  (setq mweb-default-major-mode 'html-mode)
+  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+		    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+		    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+  (setq mweb-filename-extensions
+	'("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+  (multi-web-global-mode 1)
+  )
+(add-hook 'html-mode-hook 'my-html-mode-hook)
+
+;;--------------------------------------------------
+;; python-mode
+;; I'm using python-mode from Fabian
+;; https://github.com/fgallina/python.el
+
+(setq python-check-command "flymake-python")
+
+(defun python-unit-test-filep (filename)
+  "return non-nil if given filename is a python unit test"
+  (let ((case-fold-search t))
+    (string-match "test" filename)))
+
+(defun python-find-other-file ()
+  "toggle between unit test file and source file. create the other file if needed."
+  (interactive)
+  (let ((filename (file-name-nondirectory (buffer-file-name))))
+    (if (python-unit-test-filep filename)
+	;; go from test to src
+	(let ((src-file (cond
+			 ((string-match "^\\(test_\\|Test\\)\\(.*\\)" filename)
+			  (match-string 2 filename))
+			 ((string-match "\\(.*\\)_test\\(\\.py\\)$" filename)
+			  (concat (match-string 1) (match-string 2))))))
+	  (find-file src-file))
+      ;; go from src to test
+      (let* ((prefix (file-name-sans-extension filename))
+	     (suffix (file-name-extension filename))
+	     (test-file (or (first-existing-file
+			     (list
+			      (concat "Test" filename)
+			      (concat prefix "Test." suffix)
+			      (concat prefix "_test." suffix)))
+			    (concat "test_" filename))))
+	(find-file test-file)))))
+
+;; (defun flymake-python-init ()
+;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;; 		     'flymake-create-temp-inplace))
+;; 	 (local-file (file-relative-name
+;; 		      temp-file
+;; 		      (file-name-directory buffer-file-name))))
+;;     (list "flymake-python" (list local-file))))
+
+(defun my-inferior-python-mode-hook ()
+  (interactive)
+  ;; TODO do not remove '' from sys.path
+  )
+(add-hook 'inferior-python-mode-hook 'my-inferior-python-mode-hook)
+
+(defun my-python-mode-hook ()
+  (interactive)
+  (setq python-indent-offset 4)
+  (define-key python-mode-map (kbd "C-; a")
+    'python-find-other-file)
+  (define-key python-mode-map (kbd "C-; t")
+    'python-find-other-file)
+  )
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+
+;;--------------------------------------------------
+;; log-edit
+
+(defun my-log-edit-done-hook ()
+  (interactive)
+  (let ((buf (get-buffer "*vc-diff*")))
+    (and buf
+	 (bury-buffer buf))))
+(add-hook 'log-edit-done-hook 'my-log-edit-done-hook)
+
+;;--------------------------------------------------
+;; imenu, which-func-mode
+
+;; which-func.el
+;; (eval-after-load 'which-func
+;;   '(set-face-foreground 'which-func "black"))
+
+;;--------------------------------------------------
+;; auto-insert
+
+;;read `auto-insert-alist' for more info
+(require 'autoinsert)
+(setq auto-insert-directory "~/.emacs.d/non-lisp-data/skeletons")
+(setq auto-insert-query nil)
+;; TODO yas/expand doesn't work well with auto-insert.
+;; error:
+;; yas/on-protection-overlay-modification: Exit the snippet first!
+;; when this is fixed, add yas/expand for java and gtest.
+;; TODO how to add support for TAB field for default emacs skeletons?
+;; first match win.
+(defvar auto-insert-alist-init
+  auto-insert-alist "emacs default value for `auto-insert-alist'.")
+(setq auto-insert-alist
+      (append
+       '(;; java
+	 ((".+Test\\.java$" . "insert java unit test") .
+	  '(nil "tf"))
+	 (("\\.java$" . "insert java class") .
+	  '(nil "class"))
+	 ;; python
+	 (("test_.*\\.py$" . "insert python unit test") .
+	  '(nil "tf"))
+	 (("_test\\.py$" . "insert python unit test") .
+	  '(nil "tf"))
+	 (("\\.py$" . "insert python standard header") .
+	  '(nil "sh"))
+	 ;; c and cpp
+	 (("\\.\\(h\\|hpp\\)$" . "insert c/c++ header guard") .
+	  '(nil "once" '(yas/expand)))
+	 (("_test\\.\\(cc\\|cpp\\)$" . "insert c++ gtest") .
+	  '(nil "gtest"))
+	 (("_test\\.c$" . "insert c check test") .
+	  '(nil "check"))
+	 ;; other
+	 (("build\\.xml$" . "insert default ant build file, build.xml") .
+	  '(nil "ant"))
+	 (("CMakeLists\\.txt$" . "insert default cmake build file") .
+	  "CMakeLists.txt")
+	 (("\\.el\\'" . "Emacs Lisp header") .
+	  '(nil "el"))
+	 (("\\.html\\'" . "insert HTML5 header") .
+	  '(nil "html"))
+	 ;for xhtml, insert xhtml
+	 (("\\.tex\\'" . "insert std latex header") .
+	  '(nil "tex" '(yas/expand)))
+	 )
+       auto-insert-alist-init))
+
+(add-hook 'find-file-hook 'auto-insert)
+
+;;--------------------------------------------------
+;; whitespace-mode
+
+(require 'whitespace)
+
+(setq whitespace-style
+      '(trailing))
+
+(setq whitespace-global-modes
+      '(python-mode
+	))
+
+;; face for trailing whitespace
+(set-face-background 'whitespace-trailing "grey50")
+
+;; whitespace-mode is distracting, disabled by default.
+;; (global-whitespace-mode 1)
+
+;; TODO it's better to add a whitespace-cleanup hook when write files
+;;      in these mode.
+
+;; (defun turn-on-whitespace-mode ()
+;;   (interactive)
+;;   (whitespace-mode 1))
+
+;; (add-hook 'c-mode-common-hook   'turn-on-whitespace-mode)
+;; (add-hook 'python-mode-hook     'turn-on-whitespace-mode)
+
+;;--------------------------------------------------
+;; text-mode
+(defun my-text-mode-hook ()
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if filename
+	(cond ((string-match "长安乱.txt" filename)
+	       (view-mode 1))
+	      (t nil)))))
+
+(add-hook 'text-mode-hook 'my-text-mode-hook)
+
+;;--------------------------------------------------
+;; linum-mode
+;;
+;; show line number in each line
+;; http://www.emacswiki.org/emacs/LineNumbers
+(autoload 'linum "linum")
+
+;;--------------------------------------------------
+;; calendar
+(setq cal-html-directory "~/life/calendar")
+
+;;--------------------------------------------------
+;; gnus
+
+;; gnus-startup-file
+;; gnus-init-file
+(setq gnus-dribble-directory "~/.emacs.d/gnus")
+(setq gnus-inhibit-startup-message t)
+
+;; Mailing lists via news
+;; http://www.emacswiki.org/emacs/EmacsMailingLists#toc6
+(setq gnus-select-method '(nntp "news.gmane.org"))
+(setq gnus-secondary-select-methods '((nntp "cu.mi.it")))
+(setq gnus-expert-user t)
+
+;; (setq gnus-select-method '(nntp "news.cs.utexas.edu"))
+
+(defun my-gnus-started-hook ()
+  (interactive)
+  (gnus-topic-mode nil t))
+(add-hook 'gnus-started-hook 'my-gnus-started-hook)
+
+;;--------------------------------------------------
+;; makefile-mode
+;; makefile-gmake-mode
+
+(defun my-makefile-mode-hook ()
+  (interactive)
+  (yas/minor-mode 1)
+  (auto-fill-mode -1)
+  )
+(add-hook 'makefile-mode-hook 'my-makefile-mode-hook)
+
+;;--------------------------------------------------
+;; CC mode - for all CC Mode modes
+;; c-mode-common-hook
+;; c-mode-base-map
+;; TODO disable abbrev-mode for all mode based on cc-mode
+;;      then remove some code from my c++-mode and java-mode hook
+
+(defun my-c-mode-common-hook ()
+  (interactive)
+  (abbrev-mode -1)
+  (auto-fill-mode 1)
+  (define-key c-mode-map (kbd "C-c C-k")
+    'kill-compilation)
+  (define-key c++-mode-map (kbd "C-c C-k")
+    'kill-compilation)
+  (define-key java-mode-map (kbd "C-c C-k")
+    'kill-compilation)
+  )
+
+(defun four ()
+  "use four space for indentation."
+  (interactive)
+  (setq c-basic-offset 4)
+  (setq indent-tabs-mode nil))
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;;--------------------------------------------------
+;; c-mode
+
+(defun is-c-test-file (filename)
+  "return non-nil if given file is a C test file."
+  (string-match "_test\\.c" filename))
+
+(defun c-find-test-file ()
+  "find test file for current c file or vice versa.
+for foo.* find foo_test.c;
+for foo_test.c find foo.h"
+  (interactive)
+  (let ((fn (buffer-file-name)))
+    (if (is-c-test-file fn)
+	;; TODO find source file
+	(message "already at test file.")
+      (let ((base (file-name-sans-extension fn)))
+	(find-file (concat base "_test.c"))))))
+
+;; TODO add cppunit support if I would ever be forced to use that tool again
+(defun c-register-test-case ()
+  "auto register test case at point for check"
+  (interactive)
+  (save-excursion
+    ;; just in case user put point at the function name
+    (end-of-line)
+    ;; get the function name
+    (if (search-backward-regexp "START_TEST(\\(test_.*\\))")
+	(let* ((func (match-string 1))
+	       (reg-stmt (concat "tcase_add_test(tc, " func ");")))
+	  (if (search-forward-regexp reg-stmt nil t)
+	      (message "test %s already registered." func)
+	    (if (search-forward-regexp "/\\* REGISTER ")
+		(progn
+		  (end-of-line)
+		  (newline-and-indent)
+		  (insert reg-stmt)
+		  (message "%s added in tc." func))
+	      (message "register test failed. can't find insert anchor."))))
+      (message "register test failed. can't get function name."))))
+
+(defun check-sync-test-case-and-registration ()
+  "C check unit test. register new test case, remove deleted test case in reg section"
+  (interactive)
+  )
+
+(defun my-c-mode-hook ()
+  (interactive)
+  (define-key c-mode-map (kbd "C-; t")
+    'c-find-test-file)
+  (define-key c-mode-map (kbd "C-; u")    ; u for Update register section
+    'c-register-test-case)
+  (require 'find-file)
+  (add-to-list 'cc-other-file-alist
+  	       '("_test\\.c" (".h")))
+  )
+(add-hook 'c-mode-hook 'my-c-mode-hook)
+
+;;--------------------------------------------------
+;; c++-mode
+
+(add-hook 'c++-mode-hook 'my-c-mode-common-hook)
+
+(require 'c++-extensions)
+
+(defun remove-test-suffix (basefn)
+  "abc_test -> abc"
+  (if (string-match "\\(.*\\)_test" basefn)
+      (match-string 1 basefn)
+    basefn))
+;; (equal (remove-test-suffix "abc_test") "abc")
+
+(defun c++-register-test ()
+  "register current test file in Makefile.
+Makefile has special markers to help this function. see yasnippet template cpp"
+  (interactive)
+  (require 'ucompile)
+  (let* ((fn (file-name-nondirectory (buffer-file-name)))
+	 (basefn (file-name-sans-extension fn))
+	 (ext (file-name-extension fn))
+	 (makefile (get-makefile-for-edit)))
+    (if (null makefile)
+	(message "Error: No Makefile found.")
+      (let ((buf (get-file-buffer makefile)))
+	(with-current-buffer (or buf (find-file makefile))
+	  (save-excursion
+	    (goto-char (point-min))
+	    (if (null (search-forward-regexp "^TESTS =" nil t))
+		(message "Error: no TESTS variable found in Makefile")
+	      ;; add basefn to "TESTS = ..."
+	      (end-of-line)
+	      (insert " " basefn)
+	      (if (null (search-forward-regexp "^# TESTS" nil t))
+		  (message "Error: no \"# TESTS marker found in Makefile\"")
+		;; add basefn: fn under "# TESTS"
+		(forward-line 1)
+		(insert (format "%s: %s.o %s.o" basefn basefn (remove-test-suffix basefn) "\n"))))))))))
+
+
+(defun first-existing-file (l)
+  "return the first existing file in given file name list"
+  (interactive)
+  (cond
+   ((null l) nil)
+   ((file-exists-p (car l)) (car l))
+   (t (first-existing-file (cdr l)))))
+
+(defun is-cpp-test-file (filename)
+  "return non-nil if given file is a cpp test file"
+  (string-match "_test\\.c\\(c\\|pp\\)" filename))
+
+;;low maybe for foo.cc also find test/foo.cc, does any project use this
+;;    convention?
+(defun c++-find-test-file ()
+  "find test file for current c++ file or vice versa.
+
+For foo.* find finds foo_test.cc foo_test.cpp, in that order."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (is-cpp-test-file filename)
+	(message "already at test file.")
+      (let ((ext (file-name-extension filename))
+	    (base (file-name-sans-extension filename)))
+	(let ((testfile (first-existing-file
+			 (list
+			  (concat base "_test.cc")
+			  (concat base "_test.cpp")))))
+	  (cond
+	   (testfile (find-file testfile))
+	   ((string-match "^h\\(pp\\)?$" ext)
+	    (find-file (concat base "_test.cc")))
+	   (t (find-file (concat base "_test." ext)))))))))
+
+(defun my-c++-mode-hook ()
+  (interactive)
+  (auto-fill-mode 1)
+  (define-key c++-mode-map (kbd "C-c a")
+    'c++-register-test)
+  (define-key c++-mode-map (kbd "C-c k f")
+    'c++-generate-definition-as-kill)
+  (define-key c++-mode-map (kbd "C-y")
+    'c++-yank)
+  ;; C-; a is in gloabl keymap
+  (define-key c++-mode-map (kbd "C-; t")
+    'c++-find-test-file)
+  (require 'find-file)
+  (add-to-list 'cc-other-file-alist
+  	       '("_test\\.cc" (".h" ".hpp" ".hh")))
+  )
+
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+
+;;--------------------------------------------------
+;; speedbar-mode
+
+;; TODO when speedbar is enabled, the attached emacs frame's title was changed
+;; to be a buffer name.
+;; for example, emacs@sylecn  -->  *cmd*
+
+(setq speedbar-default-position 'left)
+
+;; when (setq view-read-only t), speedbar should not enable view-mode.
+(put 'speedbar-mode 'mode-class 'special)
+
+;; TODO report speedbar-mode bug. step to reproduce:
+;;
+;;      1. let speedbar show a dir containing more than one page of dirs.
+;;      2. scroll to next page.
+;;      3. press e on a dir containing less than one page of files.
+;;      4. now that dir is opened, but the speedbar buffer is not scrolled up to
+;;         show the files.
+;;
+;;      tested when auto update is enabled or disabled. same problem.
+(defun my-speedbar-edit-line ()
+  "call `speedbar-edit-line'. and fix the bug above."
+  (interactive)
+  (speedbar-edit-line)
+  (recenter 1))
+
+;; BUG update using g does not update dir to current default-directory
+;; this is the temporary fix
+(defun my-speedbar-refresh ()
+  "call `speedbar-refresh'. also check whether `default-directory' has changed in assoc frame."
+  (interactive)
+  (let ((af (selected-frame)))
+    (dframe-select-attached-frame speedbar-frame)
+    ;; make sure we at least choose a window to
+    ;; get a good directory from
+    (if (window-minibuffer-p (selected-window))
+	nil
+      (let ((dir default-directory))
+	(select-frame af)
+	(setq default-directory dir)
+	(speedbar-refresh)))))
+
+;; speedbar-file-key-map
+;; speedbar-buffers-key-map
+(defun my-speedbar-mode-hook ()
+  (interactive)
+  (setcdr (assoc 'width speedbar-frame-parameters) 30)
+  (speedbar-disable-update)
+  (define-key speedbar-key-map (kbd "q")
+    'speedbar-get-focus)
+  ;; this will hide the frame, but not delete the frame
+  (define-key speedbar-key-map (kbd "Q")
+    'dframe-close-frame)
+  ;; key e needs at least two rebinding.
+  (define-key speedbar-file-key-map (kbd "e")
+    'my-speedbar-edit-line)
+  (define-key speedbar-buffers-key-map (kbd "e")
+    'my-speedbar-edit-line)
+  (define-key speedbar-key-map (kbd "<return>")
+    'my-speedbar-edit-line)
+  (define-key speedbar-file-key-map (kbd "g")
+    'my-speedbar-refresh)
+  )
+
+(add-hook 'speedbar-mode-hook 'my-speedbar-mode-hook)
+
+;;--------------------------------------------------
+;; java-mode
+
+(defun java-unit-test-filep (filename)
+  "return non-nil if given file name is a unit test file"
+  (string-match "Test.java$" filename))
+
+(defun java-find-other-file ()
+  "toggle between unit test file and source file. create the other file and dir if needed."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (java-unit-test-filep filename)
+	;; go from test to src
+	(progn
+	  ;; "/home/sylecn/P1/test/ga/MainTest.java"
+	  (let* ((fn1 (replace-regexp-in-string "/test/" "/src/" filename))
+		 (fn2 (replace-regexp-in-string "Test\\.java" ".java" fn1))
+		 (dir (file-name-directory fn2)))
+	    (unless (file-exists-p dir)
+	      (mkdir dir t))
+	    (find-file fn2)))
+      ;; go from src to test
+      (let* ((fn1 (replace-regexp-in-string "/src/" "/test/" filename))
+	     (fn2 (replace-regexp-in-string "\\.java" "Test.java" fn1))
+	     (dir (file-name-directory fn2)))
+	(unless (file-exists-p dir)
+	  (mkdir dir t))
+	(find-file fn2)))))
+
+(defun my-java-mode-hook ()
+  (interactive)
+  (require 'java-project)
+  (setq c-basic-offset 4)
+  (abbrev-mode -1)
+  (define-key java-mode-map (kbd "C-; a")
+    'java-find-other-file)
+  (define-key java-mode-map (kbd "C-c C-f")
+    'java-project-find-file)
+  (define-key java-mode-map (kbd "C-c C-n")
+    'java-project-new)
+  )
+
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+
+;;--------------------------------------------------
+;; flyspell-mode
+
+(defun my-flyspell-mode-hook ()
+  (interactive)
+  (local-unset-key (kbd "C-;")))
+
+;;TODO disable C-; key binding in flyspell-mode
+;;belows are *not* working.
+;; (setq flyspell-auto-correct-binding nil)
+;; (setq flyspell-mode-map nil)
+
+;;--------------------------------------------------
+;; css-mode
+
+;;BUG `css-electric-keys' and related functions is already defined
+;;    but } (may be also ;) is not bind to electric functions
+
+;; (defun css-electric-brace (arg)
+;;   "insert brace and indent the line (should it be block as well?). see `c-electric-brace' and other c-electric functions."
+;;   (interactive "*P")
+;;   (self-insert-command (prefix-numeric-value arg))
+;;   (css-indent-line))
+
+;;FIXME not working now! where on hell is css-electric-brace defined?
+;; I'm defining my own css-electric-brace now:
+(defun css-electric-brace (c)
+  "'self-insert-command` then indent"
+  (interactive "P")
+  (self-insert-command 1)
+  (indent-according-to-mode))
+
+(defun my-css-mode-hook ()
+  (interactive)
+  (define-key css-mode-map (kbd "}")
+    'css-electric-brace)
+  (define-key css-mode-map (kbd ";")
+    'css-electric-brace))
+
+(add-hook 'css-mode-hook 'my-css-mode-hook)
 
 ;;--------------------------------------------------
 ;; nxml-mode
+
+(setq nxml-sexp-element-flag t)
 
 ;;ref: http://sinewalker.wordpress.com/2008/06/26/pretty-printing-xml-with-emacs-nxml-mode/
 (defun bf-pretty-print-xml-region (begin end)
@@ -352,33 +1398,113 @@ by using nxml's indentation rules."
       (indent-region begin end))
     (message "Ah, much better!"))
 
+(defadvice rng-xsd-check-pattern (around do-case-sensitive-match)
+  "nxml should do case sensitive match"
+  (let (case-fold-search)
+    ad-do-it))
+
+(defun my-nxml-mode-hook ()
+  (interactive)
+  (setq comment-start "<!-- ")
+  (setq comment-end " -->")
+  ;; TODO when emacs bug#8516 is solved, disable this.
+  (ad-activate 'rng-xsd-check-pattern)
+  )
+(add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
+
 ;;--------------------------------------------------
 ;; mail
+;; mail-mode, rmail, mutt
+
+;;
+;; general options
+;;
 
 ;;not needed anymore for cvs version
 (if (equal emacs-major-version 22)
     (setq sendmail-program "/usr/sbin/sendmail"))
 
 (setq user-full-name "Yuanle Song")
-(setq user-mail-address "ANTISPAM")
-(setq mail-default-directory "~/mail/emacs-compose/")
+(setq user-mail-address "sylecn@gmail.com")
+(setq mail-default-directory "~/Mail/emacs-compose/")
 ;;set a default FCC field
-(setq mail-archive-file-name "~/mail/sent-emacs")
+(setq mail-archive-file-name "~/Mail/sent-emacs")
+
+;; use mutt alias file instead of default "~/.mailrc"
+;; (setq mail-personal-alias-file "~/.mutt/aliases")
+
+;; TODO mutt alias is not fully compatible with emacs
+;; for example, if I have
+;;     alias peter_dorfman Peter Dorfman <peterdorfman@gmail.com>
+;; in mutt, it expands to
+;;     Peter Dorfman <peterdorfman@gmail.com>
+;; while in emacs, it expands to
+;;     Peter, Dorfman, <peterdorfman@gmail.com>
+;; That's three receipts which is wrong. Use function in mutt-alias.el instead.
+;; TODO config mutt-alias.el to comfort my need
+
+;; use mail mode for C-x m
+;; see help on `mail-user-agent' for more info
+(setq mail-user-agent 'sendmail-user-agent)
+
+(defun my-kill-mail-buffer ()
+  "kill mail buffer"
+  (interactive)
+  (if server-buffer-clients
+      ;; don't save, mark as done directly
+      (server-buffer-done (current-buffer))
+    (kill-buffer)))
+
+(defun my-send-mail ()
+  "if doing emacsclient edit, do save and `server-done'; otherwise, do `mail-send-and-exit'"
+  (interactive)
+  (if server-buffer-clients
+      (progn
+	(basic-save-buffer)
+	(server-done))
+    (mail-send-and-exit)))
+
+(defun my-mail-move-point ()
+  "move point to the first none empty line"
+  (interactive)
+  (search-forward-regexp "^$" nil t 1)
+  (and (< (point-max) 200)
+       (forward-line)))
+
+(defun my-mail-mode-hook ()
+  (interactive)
+  (auto-fill-mode 1)
+  (flyspell-mode 1)
+  (footnote-mode 1)
+  (abbrev-mode -1)
+  (setq fill-column 72)
+  (define-key mail-mode-map (kbd "C-c C-k")
+    'my-kill-mail-buffer)
+  (define-key mail-mode-map (kbd "C-c C-c")
+    'my-send-mail)
+  (my-mail-move-point)
+  )
+;; I'm using mail-mode for mutt-* in auto-mode-alist and C-x m
+(add-hook 'mail-mode-hook 'my-mail-mode-hook)
+;; (add-hook 'message-setup-hook 'my-mail-mode-hook)
 
 ;;TODO for emacs modeline mail indicator
 
+;;
+;; rmail mode
+;;
 
+;; rmail is too slow when save a big RMAIL file.
+;; much slower than mutt.
+;; I'll stick with mutt for now.
+;; an empty RMAIL file
+(setq rmail-file-name "~/Mail/RMAIL")
+
+;;
 ;; for mutt
-;; a major mode for use with mutt
-;; ref: http://www.modeemi.cs.tut.fi/drdoom/mutt.el
-;; TODO temperately disabled, try whether default mail mode is enough for me
-;;(require 'mutt)
+;;
 
-(add-to-list 'auto-mode-alist '("mutt-[a-z]+-[0-9]+-[0-9]+.*" . mail-mode))
 ;; TODO see mail-setup-hook, for sending wesnoth translations
-(add-hook 'mail-mode-hook
-	  '(lambda ()
-	     (auto-fill-mode 1)))
 
 ;;--------------------------------------------------
 ;; view-mode
@@ -388,88 +1514,234 @@ by using nxml's indentation rules."
 
 ;;add vim like key bindings
 ;;now with j,k,g,u,d its easy to navigate around
-(add-hook 'view-mode-hook
-	  '(lambda ()
-	     (define-key view-mode-map (kbd "j")
-	       'next-line)
-	     (define-key view-mode-map (kbd "k")
-	       'previous-line)
-	     (define-key view-mode-map (kbd "l")
-	       'forward-char)
-	     (define-key view-mode-map (kbd "h")
-	       'backward-char)
-	     ;;;default key is g, which is also good.
-	     (define-key view-mode-map (kbd "G")
-	       'View-goto-line)
-	     (define-key view-mode-map (kbd "f")
-	       'go-to-char)
-	     ;;;since / is forward search, ? should be backward search
-	     (define-key view-mode-map (kbd "?")
-	       'View-search-regexp-backward)))
+(defun my-view-mode-hook ()
+  (interactive)
+  ;; basic move
+  (define-key view-mode-map (kbd "j")
+    'next-line)
+  (define-key view-mode-map (kbd "k")
+    'previous-line)
+  (define-key view-mode-map (kbd "l")
+    'forward-char)
+  (define-key view-mode-map (kbd "h")
+    'backward-char)
+  ;; basic search
+  ;; I don't why there is `View-search-regexp-forward', how is it different
+  ;; from `isearch-forward-regexp'
+  ;; s was on isearch-forward
+  (define-key view-mode-map (kbd "s")
+    'View-search-regexp-forward)
+  (define-key view-mode-map (kbd "/")
+    'View-search-regexp-forward)
+  (define-key view-mode-map (kbd "?")
+    'View-search-regexp-backward)
+  ;; advanced move
+  (define-key view-mode-map (kbd "0")
+    'beginning-of-line)
+  (define-key view-mode-map (kbd "^")
+    'back-to-indentation)
+  (define-key view-mode-map (kbd "$")
+    'end-of-line)
+  (define-key view-mode-map (kbd "b")
+    'backward-word)
+  ;; hs-minor-mode
+  ;; TODO ERROR: hs-grok-mode-type: Help Mode doesn't support Hideshow Minor Mode
+  ;; disabled.
+  ;; (hs-minor-mode 1)
+  (define-key view-mode-map (kbd "o")
+    'hs-toggle-hiding)
+  )
+
+(add-hook 'view-mode-hook 'my-view-mode-hook)
+
+;;--------------------------------------------------
+;; lisp-mode
+
+(defun my-lisp-new-test ()
+  "insert new test case for lisp"
+  (interactive)
+  (insert "(mytest )")
+  (forward-char -1))
+
+(defun insert-star-pair ()
+  "insert a star pair"
+  (interactive)
+  (insert "**")
+  (forward-char -1))
+
+(defun my-lisp-mode-hook ()
+  (interactive)
+  (define-key lisp-mode-map (kbd "C-c ;")
+    'my-lisp-new-test)
+  (define-key lisp-mode-map (kbd "C-M-;")
+    'my-toggle-comment-sexp)
+  (define-key lisp-mode-map (kbd "8")
+    'insert-star-pair)
+  )
+(add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
 
 ;;--------------------------------------------------
 ;; emacs-lisp-mode
-(add-hook 'emacs-lisp-mode-hook
-	  '(lambda()
-	     (define-key emacs-lisp-mode-map
-	       (kbd "C-c C-r") 'eval-region)
-	     (define-key emacs-lisp-mode-map
-	       (kbd "C-c C-b") 'eval-buffer)
-	     (define-key emacs-lisp-mode-map
-	       (kbd "C-; C-r") 'eval-buffer)
-	     (define-key emacs-lisp-mode-map
-	       (kbd "C-; C-e") 'eval-last-sexp)))
+;; elisp, emacs lisp
+
+(defun eval-defvar-as-setq ()
+  "eval defvar at point as if it were setq."
+  (interactive)
+  (save-excursion
+    (beginning-of-defun)
+    (let ((start (point)))
+      ;; setq doesn't like docstring in defvar
+      (forward-char)
+      (forward-sexp 3)
+      (let ((code (concat (buffer-substring-no-properties start (point)) ")")))
+	(eval-expression
+	 (read (replace-regexp-in-string "(defvar" "(setq" code)))))))
+
+(defun my-comment-sexp ()
+  "comment sexp at point"
+  (interactive)
+  (comment-region (point) (save-excursion
+			    (forward-sexp)
+			    (point))))
+
+;; a question is asked here, so I'm sure this function is not written yet.
+;; http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/a84d621c26df9c10
+(defun my-uncomment-line ()
+  (uncomment-region (line-beginning-position) (line-end-position)))
+
+(require 'thingatpt)
+(defun sexp-at-point-p (pos)
+  (save-excursion
+    (goto-char pos)
+    ;; or call (sexp-at-point) which is in thingatpt.el
+    (condition-case nil
+	(progn (forward-sexp)
+	       t)
+      (error nil))))
+
+(defun my-uncomment-sexp ()
+  "uncommon sexp at point"
+  (interactive)
+  (let* ((beg (line-beginning-position))
+	 (end (save-excursion
+		(comment-forward (point-max))
+		(point))))
+    (save-restriction
+      (narrow-to-region beg end)
+      (my-uncomment-line)
+      (while (not (sexp-at-point-p beg))
+	(forward-line 1)
+	(my-uncomment-line))
+      (goto-char beg))))
+
+(defun my-toggle-comment-sexp ()
+  (interactive)
+  (let ((beg (line-beginning-position))
+	(end (line-end-position)))
+    (funcall (if (save-excursion ;; check for already commented region
+		   (goto-char beg)
+		   (forward-comment (point-max))
+		   (<= end (point)))
+		 'my-uncomment-sexp 'my-comment-sexp))))
+
+(defun my-emacs-lisp-mode-hook ()
+  (interactive)
+  (setq mode-name "EL")
+  (define-key emacs-lisp-mode-map (kbd "C-c C-c")
+    'eval-defvar-as-setq)
+  (define-key emacs-lisp-mode-map (kbd "C-c C-r")
+    'eval-region)
+  (define-key emacs-lisp-mode-map (kbd "C-c C-b")
+    'eval-buffer)
+  (define-key emacs-lisp-mode-map (kbd "C-M-;")
+    'my-toggle-comment-sexp)
+  (define-key emacs-lisp-mode-map (kbd "C-c .")
+    'find-function-other-window)
+  (if (featurep 'slime)
+      (define-key emacs-lisp-mode-map (kbd "]")
+	'slime-close-all-parens-in-sexp))
+  )
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+
+;; lisp-interaction-mode, *scratch* buffer use this mode by default
+(defun my-lisp-interaction-mode-hook ()
+  (interactive)
+  (define-key lisp-interaction-mode-map (kbd "C-c C-b")
+    'eval-buffer)
+  (define-key emacs-lisp-mode-map (kbd "C-c C-r")
+    'eval-region)
+  )
+(add-hook 'lisp-interaction-mode-hook 'my-lisp-interaction-mode-hook)
 
 ;;--------------------------------------------------
 ;; Info-mode
-(add-hook 'Info-mode-hook
-	  '(lambda ()
-	     (define-key Info-mode-map "/"
-	       'isearch-forward-regexp)))
+
+;; tempfix on freebsd
+(setq Info-directory-list Info-default-directory-list)
+
+(defun my-Info-copy-current-node-name ()
+  "like `Info-copy-current-node-name', but prepend 'info: ' at beginning."
+  (interactive)
+  (Info-copy-current-node-name)
+  ;; replace the string just killed by `Info-copy-current-node-name'.
+  (kill-new (concat "Info: " (current-kill 0)) t))
+
+(defun my-Info-mode-hook ()
+  (interactive)
+  (protect-buffer-from-kill-mode 1 (current-buffer))
+  (define-key Info-mode-map (kbd "c")
+    'my-Info-copy-current-node-name)
+  (define-key Info-mode-map (kbd "j")
+    'next-line)
+  (define-key Info-mode-map (kbd "k")
+    'previous-line)
+  )
+(add-hook 'Info-mode-hook 'my-Info-mode-hook)
 
 ;;--------------------------------------------------
-;; shell mode
-;; comint mode
+;; sh-mode
+;; shell script mode
+;;
+;; note that inferior shell use shell-mode. it's a different major mode.
+;; see ~/.emacs.d/startup/shell-mode.el
 
-;;add correct color char control
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(defun alias-to-function ()
+  "convert sh alias at point to function"
+  (interactive)
+  (forward-line 0)
+  (when (or (looking-at "^[ \t]*alias \\(.*\\)=\\([^ \t]*\\) *\n")
+	    (looking-at "^[ \t]*alias \\(.*\\)=['\"]\\(.*\\)['\"] *\n"))
+    (let ((name (match-string-no-properties 1))
+	  (body (match-string-no-properties 2)))
+      (kill-line 1)
+      (let ((start (point)))
+	(insert (format "%s() {\n%s $*\n}\n" name body))
+	(indent-region start (point))))))
 
-;; maximum number of lines in shell buffer
-(setq comint-buffer-maximum-size 5000)
+(setq-default sh-basic-offset 8)
 
-;; auto truncate output after each command
-;; will this be a performance issue?
-(add-hook 'comint-output-filter-functions
-	  'comint-truncate-buffer)
-
-;; clear buffer, leave only prompt
-;; this is generated using kbd macro
-;; (fset 'comint-clear-buffer
-;;    "\C-[>\C-b\C-a\C-@\C-[<\C-w\C-e")
-(defun comint-clear-buffer ()
-    (interactive)
-    (goto-char (point-max))
-    (move-beginning-of-line nil)
-    (backward-char)
-    (move-beginning-of-line nil)
-    (delete-region (point-min) (point))
-    (goto-char (point-max)))
-
-;; TODO finished this function, do the same thing as C-l in urxvt
-;; (defun comint-clear-screen ()
-;;   (interactive)
-;;   (recenter-top-bottom 0))
-
-(add-hook 'shell-mode-hook
-	  '(lambda ()
-	     (define-key shell-mode-map (kbd "C-c l")
-	       'comint-clear-buffer)))
-
-;; bind for all comint mode
-(add-hook 'comint-mode-hook
-	  '(lambda ()
-	     (define-key comint-mode-map (kbd "C-c l")
-	       'comint-clear-buffer)))
+(defun my-sh-mode-hook ()
+  (interactive)
+  ;; basic
+  (setq sh-indent-comment t)
+  ;; (setq sh-basic-offset 8)
+  ;;(set-fill-column 72)
+  (auto-fill-mode -1)
+  ;; lisp like eval functions
+  (define-key sh-mode-map (kbd "C-x C-e")
+    'sh-send-last-command)
+  (define-key sh-mode-map (kbd "C-M-e")
+    'sh-eval-defun)
+  (define-key sh-mode-map (kbd "C-c C-b")
+    'sh-eval-buffer)
+  ;; TODO write this function
+  (define-key sh-mode-map (kbd "C-c C-z")
+    'switch-to-shell-buffer-other-window)
+  ;; handy copy, but now with `sh-eval-defun' seldom used.
+  (define-key sh-mode-map (kbd "C-c k f")
+    'sh-copy-function-at-point)
+  )
+(add-hook 'sh-mode-hook 'my-sh-mode-hook)
 
 ;;--------------------------------------------------
 ;; ansi-term
@@ -479,67 +1751,19 @@ by using nxml's indentation rules."
   "Toggle between term-char-mode and term-line-mode."
   (interactive)
   (if (term-in-line-mode)
-      (progn 
+      (progn
         (term-char-mode)
         (term-send-raw-string "\C-e"))
     (term-line-mode)))
 
-(add-hook 'term-mode-hook
-	  '(lambda ()
-	     (define-key term-mode-map (kbd "C-c C-j")
-	       'term-toggle-mode)
-	     (define-key term-mode-map (kbd "C-c j")
-	       'term-toggle-mode)))
-
-;;--------------------------------------------------
-;; org-mode
-
-;; A few very annoying bug/config problem.
-;; TODO why paste will make the pasted item fold?
-;;      temp fix:
-;;          If what you are copying is full text expanded,
-;;          don't use org-yank, use yank instead.
-;; TODO why move item will make *all* items fold?
-;; TODO 
-
-;;setup
-(global-set-key (kbd "C-c a") 'org-agenda)
-;I don't use link that much, disabled
-;(global-set-key (kbd "C-c l") 'org-store-link)
-;This has conflict with ido-switch-buffer
-;  and because my org files are just under ~, no strong need for this
-;(global-set-key (kbd "C-c b") 'org-iswitchb)
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-
-;jump to top and add a new empty header
-(fset 'org-add-item-on-top
-   [?\M-< ?\C-s ?* ?  ?$ ?\C-m C-return])
-
-;move current item to bottom
-;don't use C-c C-n/p that won't work when there is sub level headers
-(fset 'org-move-item-to-bottom
-   [?\C-r ?^ ?* ?  ?\C-m ?\C-  ?\C-s ?^ ?* ?  ?\C-s ?\C-m ?\C-a ?\C-w ?\M-> ?\M-x ?y ?a ?n ?k return ?\C-u ?\C-  ?\C-u ?\C-  ?\C-p ?\C-e])
-
-;use C-c [ to add files in org-agenda-files
-(setq org-hide-leading-stars t)
-
-;;remove C-c C-v, conflict with my key settings
-(defun my-org-mode-hook ()
+(defun my-term-mode-hook ()
   (interactive)
-  (set-fill-column 78)
-  (auto-fill-mode 1)
-  (local-unset-key (kbd "C-c C-v"))
-  (local-unset-key (kbd "C-'"))
-  (local-unset-key (kbd "C-c '"))
-  (local-set-key (kbd "C-c l") 'org-add-item-on-top)
-  (local-set-key (kbd "C-c d") 'org-move-item-to-bottom))
-
-(add-hook 'org-mode-hook 'my-org-mode-hook)
-
-;;--------------------------------------------------
-;; shell script mode
-
-(setq-default sh-basic-offset 8)
+  (define-key term-mode-map (kbd "C-c C-j")
+    'term-toggle-mode)
+  (define-key term-mode-map (kbd "C-c j")
+    'term-toggle-mode)
+  )
+(add-hook 'term-mode-hook 'my-term-mode-hook)
 
 ;;--------------------------------------------------
 ;;for c/c++
@@ -554,62 +1778,77 @@ by using nxml's indentation rules."
 (c-set-offset 'innamespace 0)
 
 ;;--------------------------------------------------
-;; emacs-lisp-mode
-
-;;--------------------------------------------------
 ;; hs-minor-mode
 
-;(add-hook 'c-mode-common-hook   'hs-minor-mode)
-(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
-;(add-hook 'java-mode-hook       'hs-minor-mode)
-;(add-hook 'lisp-mode-hook       'hs-minor-mode)
-;(add-hook 'perl-mode-hook       'hs-minor-mode)
-;(add-hook 'sh-mode-hook         'hs-minor-mode)
+(defvar my-hs-hide-all-flag nil
+  "if t means all blocks are hided")
+
+(defun hs-toggle-hide-all ()
+  "do `hs-hide-all' or `hs-show-all' depending on current status"
+  (interactive)
+  (if my-hs-hide-all-flag
+      (progn
+	(hs-show-all)
+	(setq my-hs-hide-all-flag nil))
+    (hs-hide-all)
+    (setq my-hs-hide-all-flag t)))
 
 ;;--------------------------------------------------
 ;; midnight mode
 ;; you can customize midnight-mode with midnight-hook
 
-(require 'midnight)
-;Non-nil means run `midnight-hook' at midnight.
-;(setq midnight-mode nil)
+;; disabled midnight.
+;; need to rewrite this old piece of code to not kill too many buffers.
+;; also do not show "xxx killed" in echo area.
 
-;;kill buffers if they were last disabled more than this seconds ago
-(setq clean-buffer-list-delay-special 900)
+;; (require 'midnight)
+;; ;Non-nil means run `midnight-hook' at midnight.
+;; ;(setq midnight-mode nil)
 
-(defvar clean-buffer-list-timer nil
-  "Stores clean-buffer-list timer if there is one. You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
+;; ;;kill buffers if they were last displayed more than this seconds ago
+;; (setq clean-buffer-list-delay-special 900)
 
-;; run clean-buffer-list every 2 hours
-;; then turn off midnight-mode
-(setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
+;; (defvar clean-buffer-list-timer nil
+;;   "Stores clean-buffer-list timer if there is one. You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
 
-;; kill everything, clean-buffer-list is very intelligent at not killing
-;; unsaved buffer.
-(setq clean-buffer-list-kill-regexps
-      '(".*"))
+;; ;; run clean-buffer-list every 2 hours
+;; ;; then turn off midnight-mode
+;; (setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
 
-;; keep these buffer untouched
-;; because "*Man " in buffer-names, I try "*EMMS Playlist*" for
-;; "*EMMS Playlist*<2>" etc.
-(defvar clean-buffer-list-kill-never-buffer-names-init
-  clean-buffer-list-kill-never-buffer-names
-  "Init value for clean-buffer-list-kill-never-buffer-names")
-(setq clean-buffer-list-kill-never-buffer-names
-      (append
-       (append
-	'("*Messages*" "*cmd*" "*scratch*" "*w3m*" "*w3m-cache*" "*Inferior Octave*")
-	(mapcar 'myfiles-buffer-name myfiles))
-       clean-buffer-list-kill-never-buffer-names-init))
+;; ;; kill everything, clean-buffer-list is very intelligent at not killing
+;; ;; unsaved buffer.
+;; (setq clean-buffer-list-kill-regexps
+;;       '(".*"))
 
-;; prevent append multiple times
-(defvar clean-buffer-list-kill-never-regexps-init
-  clean-buffer-list-kill-never-regexps
-  "Init value for clean-buffer-list-kill-never-regexps")
-;; append to *-init instead of itself
-(setq clean-buffer-list-kill-never-regexps
-      (append '("\\*EMMS Playlist\\*.*" ".*irc\\.freenode\\.net.*")
-	      clean-buffer-list-kill-never-regexps-init))
+;; ;; What need to be here:
+;; ;;   buffers with associated running process
+;; ;;   buffers that I want to keep open
+;; ;;   music play lists
+
+;; ;; keep these buffer untouched
+;; ;; TODO don't kill any *foo* buffer. add buffers I want to kill in kill list.
+;; (defvar clean-buffer-list-kill-never-buffer-names-init
+;;   clean-buffer-list-kill-never-buffer-names
+;;   "Init value for clean-buffer-list-kill-never-buffer-names")
+;; (setq clean-buffer-list-kill-never-buffer-names
+;;       (append
+;;        (append
+;; 	'("*Messages*" default-shell-buffer "*scratch*" "*w3m*" "*w3m-cache*"
+;; 	  "*Inferior Octave*" "*info*" "*info*<2>" "*aptitude*"
+;; 	  "*slime-repl sbcl*" "*inferior-lisp*" "*mail*" "*Groups*")
+;; 	(mapcar 'myfiles-buffer-name myfiles))
+;;        clean-buffer-list-kill-never-buffer-names-init))
+
+;; ;; prevent append multiple times
+;; (defvar clean-buffer-list-kill-never-regexps-init
+;;   clean-buffer-list-kill-never-regexps
+;;   "Init value for clean-buffer-list-kill-never-regexps")
+;; ;; append to *-init instead of itself
+;; (setq clean-buffer-list-kill-never-regexps
+;;       (append '("\\*EMMS Playlist\\*.*" ".*irc\\.freenode\\.net.*"
+;; 		"\\*-jabber-.*"
+;; 		" dog.*")
+;; 	      clean-buffer-list-kill-never-regexps-init))
 
 
 ;;======================================================================
@@ -619,46 +1858,285 @@ by using nxml's indentation rules."
 ;; loading external file
 
 ;; protbuf - keep buffer from being killed
-(load "~/.emacs.d/startup-scripts/protbuf")
+(require 'protbuf)
+;; TODO this file should be obsolete. testing.
+;;(load "~/.emacs.d/startup/protbuf")
 
 ;; highlight-fixmes-mode - highlight upper case fixme, todo etc
-;now that org-mode becomes default mode, I don't need it.
-(load "~/.emacs.d/startup-scripts/highlight-fixme")
+(load "~/.emacs.d/startup/highlight-fixme")
 
 ;; slime
-(load "~/.emacs.d/startup-scripts/slime")
+(load "~/.emacs.d/startup/slime")
+
+;; quack and scheme
+;; quack is not well maintained, disabled for now
+;;(load "~/.emacs.d/startup/scheme")
+
+;; cedet and jde
+;(load "~/.emacs.d/startup/cedet")
+
+;; rcirc
+(load "~/.emacs.d/startup/rcirc")
+
+;; w3m
+(load "~/.emacs.d/startup/w3m")
+
+;; haskell
+;; (and (file-exists-p "~/fromsource/haskell-mode/")
+;;      (load "~/.emacs.d/startup/haskell"))
 
 ;;--------------------------------------------------
 ;; config right here (compared to in external el file)
 
-;;3rd party extentions and modes configurations
-;;ADD-new-user-config-here
+;;ADD 3rd party extentions
+
+;;--------------------
+;; csharp mode
+
+(autoload 'csharp-mode "csharp-mode-0.8.5.el" "Major mode for editing C# code." t)
+(defun my-csharp-mode-hook ()
+  (interactive)
+  (flymake-mode -1)
+  (setq c-basic-offset 4)
+  (define-key csharp-mode-map (kbd "{")
+    'self-insert-command)
+  )
+(add-hook 'csharp-mode-hook 'my-csharp-mode-hook)
+
+;;--------------------
+;; scim-bridge
+;;
+;; finally I have stable scim in emacs
+
+;; Load scim-bridge.
+(require 'scim-bridge)
+;; enable scim-mode after loading .emacs
+(add-hook 'after-init-hook 'scim-mode-on)
+;; key to toggle scim
+(scim-define-common-key (kbd "<f12>") t)
+;; TODO which keys are pre-defined. the defaults should be nil.
+;; let user bind keys.
+;; do not use C-SPC and C-/
+(scim-define-common-key (kbd "C-SPC") nil)
+(scim-define-common-key (kbd "C-/") nil)
+(scim-define-common-key (kbd "C-.") nil)
+(scim-define-common-key (kbd "C-,") nil)
+;; cursor color when SCIM is on
+(setq scim-cursor-color "red")
+
+(setq scim-mode-line-string " IM")
+
+;;--------------------
+;; graphviz-dot-mode
+
+(autoload 'graphviz-dot-mode "graphviz-dot-mode" nil t)
+
+;;--------------------
+;; auto-install
+
+;; (require 'auto-install)
+(autoload 'auto-install-from-emacswiki "auto-install" nil t)
+(autoload 'auto-install-batch "auto-install" nil t)
+
+(setq auto-install-directory "~/.emacs.d/site-lisp/"
+      auto-install-save-confirm nil
+      auto-install-replace-confirm t)
+;; (auto-install-update-emacswiki-package-name t)
+
+
+;;--------------------
+;; xrefactory
+
+;; (let ((xrefdir "~/fromsource/xref"))
+;;   (add-to-list 'exec-path xrefdir)
+;;   (add-to-list 'load-path (concat xrefdir "/emacs")))
+;; (load "xrefactory")
+
+;;--------------------
+;; cscope
+
+;; (require 'xcscope)
+;; ;; xcscope is written long ago before `define-minor-mode'.
+;; TODO disable C-c s bindings.
+;; (defun my-cscope-minor-mode-hooks ()
+;;    (interactive)
+;;    (setq cscope:map nil)
+;;    )
+;; (add-hook 'cscope-minor-mode-hook 'my-cscope-minor-mode-hooks)
+
+;;--------------------
+;; pastebin
+
+;; my old version is at `pastebinit-current-buffer', which is not working,
+;; because the script pastebinit-my is not working on latest pastebin.com.
+
+;; only use my usual nick, don't use full name
+;; edit in source code directly, I don't know how to define advice yet.
+;; TODO use defadvice to change the source code?       :low:
+(require 'pastebin)
+
+;;--------------------
+;; octave-mode
+;; matlab
+(defun my-octave-mode-hook ()
+  (interactive)
+  (define-key octave-mode-map (kbd "C-x C-e")
+    'sh-send-last-command)
+  )
+(add-hook 'octave-mode-hook 'my-octave-mode-hook)
+
+;;--------------------
+;; dos-mode
+;; batch file mode
+(autoload 'dos-mode "dos" "Edit Dos scripts." t)
+
+;;--------------------
+;; jabber
+;;(add-to-list 'load-path "/var/fromsource/emacs-jabber-0.8.0/")
+;;(require 'jabber-autoloads)
+
+;;--------------------
+;; javascript-mode
+;; js2-mode
+
+;; json-mode is based on js-mode
+(require 'json-mode)
+
+;; javascript-mode
+
+;; temp fix for greasemonkey script
+;; see BUG in /fat32/bugs.win
+(eval-after-load 'js
+  '(progn
+     (setq js--regexp-literal-fix
+	   "[^=][=(,:]\\(?:\\s-\\|\n\\)*\\(/\\)\\(?:\\\\.\\|[^/*\\]\\)\\(?:\\\\.\\|[^/\\]\\)*\\(/\\)"
+	   )
+
+     (setq js-font-lock-syntactic-keywords-fix
+	   `((,js--regexp-literal-fix (1 "|") (2 "|"))))
+     ;; "|" means generic string fence
+
+     (setq js-font-lock-syntactic-keywords js-font-lock-syntactic-keywords-fix)
+     ))
+
+(defun my-js-mode-hook ()
+  (interactive)
+  (setq comment-multi-line t)
+  (define-key js-mode-map [remap indent-new-comment-line]
+    'c-indent-new-comment-line)
+  ;; BUG the default , binding is very broken.
+  ;; GNU Emacs 23.2.1 (i686-pc-linux-gnu, GTK+ Version 2.12.12) of 2010-12-05 on sylecn
+  (define-key js-mode-map (kbd ",")
+    'self-insert-command)
+  ;; TODO doesn't work
+  ;; (add-to-list 'ff-other-file-alist
+  ;; 	       '("\\.js\\'" (".html")))
+  )
+(add-hook 'js-mode-hook 'my-js-mode-hook)
+
+;; js2-mode
+(autoload 'js2-mode "js2" nil t)
+
+(defun my-js2-mode-hook ()
+  (interactive)
+  (setq js2-basic-offset 4)
+  (define-key js2-mode-map (kbd "C-j")
+    'newline-and-indent)
+  ;; TODO error:
+  ;; my-js2-mode-hook: Symbol's value as variable is void: ff-other-file-alist
+  ;; (add-to-list 'ff-other-file-alist
+  ;; 	       '("\\.js\\'" (".html")))
+  )
+(add-hook 'js2-mode-hook 'my-js2-mode-hook)
+
+;;--------------------
+;; C-c j dict-search
+(require 'dict-search)
+(setq dict-search-function 'longman-dict-search)
+
+;;--------------------
+;; dog
+;;
+;; run mplayer in emacs
+
+;; for *shell*
+;; (require 'dog-shell)
+(autoload 'dog-cmd-play "dog-shell"
+  "for shell mp command" t nil)
+(autoload 'dog-cmd-add-file "dog-shell"
+  "for shell mpa command" t nil)
+
+;;--------------------
+;; learnlinux-mode
+
+(autoload 'learnlinux-mode "learnlinux-mode"
+  "major mode for editing a special ini like files." t nil)
+
+(defun my-learnlinux-mode-hook ()
+  (interactive)
+  (define-key learnlinux-mode-map (kbd "C-c l")
+    'll-jump-to-section)
+  (define-key learnlinux-mode-map (kbd "M-;")
+    'comment-dwim)
+  (define-key learnlinux-mode-map (kbd "C-c c")
+    'll-formalize-pasted)
+  )
+(add-hook 'learnlinux-mode-hook 'my-learnlinux-mode-hook)
+
+;;--------------------
+;; fullscreen
+;; use `x-send-client-message' to maximum and restore window.
+(require 'fullscreen)
+
+;;--------------------
+;; copy-kill-thing
+;; copy/kill things under point
+
+(require 'copy-kill-thing)
+
+;;--------------------
+;; flex & bison
+(autoload 'flex-mode "flex-mode")
+(autoload 'bison-mode "bison-mode")
+
+;;--------------------
+;; cmake-mode
+(autoload 'cmake-mode "cmake-mode")
+
+(defun my-cmake-mode-hook ()
+  (interactive)
+  (yas/minor-mode 1))
+
+(add-hook 'cmake-mode-hook 'my-cmake-mode-hook)
+
+;;--------------------
+;; php-mode
+(autoload 'php-mode "php-mode")
 
 ;;--------------------
 ;; wiki
 ;; really-simple-wiki-mode
 ;; ref: http://www.emacswiki.org/emacs/ReallySimpleWikiMode
-(require 'really-simple-wiki)
-(add-to-list 'auto-mode-alist '("www\\.emacswiki\\.org\\..*\\.txt" . really-simple-wiki-mode))
+(autoload 'really-simple-wiki "really-simple-wiki")
 
 (defalias 'wiki-mode 'really-simple-wiki-mode)
 
 ;;--------------------
 ;; highlight *surrounding* parentheses
-(require 'highlight-parentheses)
-(highlight-parentheses-mode 1)
+;;
+;; since it can be distractive, not enabled by default.
+(autoload 'highlight-parentheses-mode "highlight-parentheses")
 
 ;;--------------------
 ;; mit-scheme 6001
-;;(load<-library "xscheme")
+;; (load<-library "xscheme")
 
 ;;--------------------
 ;; acl2/lisp
-;;TODO acl2-mode is not working
-(add-to-list 'load-path "~/.emacs.d/acl2")
-(autoload 'run-acl2
-  "top-start-inferior-acl2" 
-  "Open communication between acl2 running in shell and prooftree." t)
+
+;; (autoload 'run-acl2
+;;   "top-start-inferior-acl2"
+;;   "Open communication between acl2 running in shell and prooftree." t)
 
 (defvar *acl2-user-map-interface*
   '((inferior-acl2-mode-map keys)
@@ -666,16 +2144,59 @@ by using nxml's indentation rules."
     (acl2-mode-map          keys)
     (prooftree-mode-map     keys)))
 
+;; myacl2-mode
+(autoload 'myacl2-mode "myacl2-mode.el"
+  "major mode for editing acl2 files" t)
+
+;; TODO LOW when myacl2-mode use the generic send-to-shell mode, bind a key to
+;; this function.
+;; currently there is a global binding C-c e.
+(defun my-myacl2-ediff-subgoal ()
+  "do a `ediff-regions-linewise' on subgoal at point.
+A subgoal looks like:
+ (IMPLIES
+  (...)
+  (EQUAL
+   (sexp1)
+   (sexp2)))"
+  (interactive)
+  (let (beg-A end-A beg-B end-B)
+    (save-excursion
+      (forward-word)
+      (forward-sexp)
+      (forward-word)
+      (forward-line)
+      (setq beg-A (point))
+      (forward-sexp)
+      (setq end-A (point))
+      (forward-line)
+      (setq beg-B (point))
+      (forward-sexp)
+      (setq end-B (point)))
+    ;; now the two things to compare is in kill ring.
+    (ediff-regions-internal
+     (current-buffer) beg-A end-A
+     (current-buffer) beg-B end-B
+     nil 'ediff-regions-linewise nil nil)
+    ))
+
+(defun my-myacl2-mode-hook ()
+  (interactive)
+  ;; TODO acl2-describe-sym is still not loaded with
+  ;; (require 'acl2-mode).
+  ;; install the newer version of acl2-mode in v4.2
+  (define-key myacl2-mode-map (kbd "C-c d")
+    'acl2-describe-sym)
+  (slime-mode -1)
+  (if (featurep 'slime)
+      (define-key myacl2-mode-map (kbd "]")
+	'slime-close-all-parens-in-sexp))
+  )
+(add-hook 'myacl2-mode-hook 'my-myacl2-mode-hook)
+
 ;;--------------------
 ;; scons
 ;; ref: http://www.scons.org/wiki/IDEIntegration
-
-(setq auto-mode-alist
-      (cons '("SConstruct" . python-mode) auto-mode-alist))
-(setq auto-mode-alist
-      (cons '("SConscript" . python-mode) auto-mode-alist))
-;;it's easier to add a simple Makefile stub to your project to call scons
-;;(defvar compile-command "scons") 
 
 ;;--------------------
 ;; git
@@ -684,173 +2205,73 @@ by using nxml's indentation rules."
 ;; either check out dvc which is for all distributed vcs or
 ;; git.el which is part of git project
 ;; finally I decide to stick to git commands directly instead.
-;; that's more nature than git.el and more powerful than vc-git.
+;; that's easier to use then git.el and more powerful than vc-git.
 
 ;;----------
 ;; integration to emacs
-
 ;;I use git.el. because currently I don't use any other dvs
-(add-to-list 'load-path "~/fromsource/git/contrib/emacs")
-;;provides git-status
-(require 'git)
-;;git-blame-mode minor mode
-(require 'git-blame)
 
-(defun git-status-current-dir ()
-  "call git-status with current dir. Don't ask."
-  (interactive)
-  (git-status default-directory))
+(when (file-exists-p "~/fromsource/git")
+  ;;provides git-status
+  (require 'git)
+  ;;git-blame-mode minor mode
+  (require 'git-blame)
 
-(global-set-key (kbd "C-c v") 'git-status-current-dir)
+  (defun git-status-current-dir ()
+    "call git-status with current dir. Don't ask."
+    (interactive)
+    (git-status default-directory))
 
-(defalias 'gs 'git-status)
+  (defalias 'gs 'git-status))
 
-;;----------
-;; for involking git directly from terminal
+;; other git
 
-(add-hook 'org-mode-hook
-	  '(lambda ()
-	     (if (equal (buffer-file-name) "COMMIT_EDITMSG")
-		 ;; save-place is useless and annoy for COMMIT_EDITMSG buffer
-		 ;; TODO save-place ask save place in Tutorial?
-		   (goto-char (point-min)))) t)
+;; note: to remove existing entries in save-place-alist: get the var
+;; value using C-h v, copy the list to *scratch* (C-M-k), then do a
+;; M-x query-replace-regexp. replace ([^()]*COMMIT_EDITMSG.*) with
+;; empty. finally set the value using setq.
 
-;; TODO give a warning when killing a tracked file, if it is modified and
-;;      not committed.  there is an indicator there already. it should be
-;;      as easy as add a hook function
+;; gcm-mode
+(autoload 'gcm-mode "gcm"
+  "Major mode for editing (or highlighting) git commit messages." t nil)
+;; (require 'gcm)
 
-;;--------------------
-;; emms
+;; turn off save-place for some files.
+(defun inhibit-save-place-for-git-commit-msg ()
+  "save-place is useless and annoying for COMMIT_EDITMSG buffer."
+  (let ((filename (buffer-file-name)))
+    (and filename
+	 (string-equal "COMMIT_EDITMSG" (file-name-nondirectory filename))
+	 (setq save-place nil))))
 
-(add-to-list 'load-path "~/fromsource/emms/lisp")
-
-;; simple setup
-(require 'emms-setup)
-(emms-standard)
-(emms-default-players)
-;; more than simple
-;(require 'emms-browser)
-;; save playlist and load at emacs start
-(require 'emms-history)
-(emms-history-load)
-
-;; user options
-(setq emms-source-file-default-directory "~/musics/")
-(setq emms-repeat-playlist t)
-;;TODO add lyrics support
-;;not using
-;(setq emms-lyrics-dir "~/musics/lyrics/")
-
-(global-set-key (kbd "C-c e e") 'emms)
-(global-set-key (kbd "C-c e f") 'emms-play-file)
-(global-set-key (kbd "C-c e l") 'emms-play-playlist)
-(global-set-key (kbd "C-c e s") 'emms-start)
-(global-set-key (kbd "C-c e p") 'emms-pause)
-(global-set-key (kbd "C-c e r") 'emms-toggle-repeat-track)
-
-;;--------------------
-;; w3m
-
-;;TODO in-page link jump like C-0 C-l, don't put the line in center of screen.
-
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m")
-(require 'w3m)
-
-;;let default word be the word under/around point
-;;  code borrowed from C-h v
-(defun w3m-dict-cn-search (&optional word)
-  "search word on dict.cn, create w3m buffer if necessary."
-  (interactive
-   (let ((v (word-at-point))
-	 (enable-recursive-minibuffers t)
-	 (completion-ignore-case t)
-	 val)
-     (setq val
-	   (completing-read
-	    (if (stringp v)
-		(format "Search word on dict.cn (default %s): " v)
-	      "Search word on dict.cn: ")
-	    ;;TODO set collection to english words
-	    ;;TODO should allow space in input. for phrases
-	    ;;     space is bind to complete word, you can type C-q SPC to
-	    ;;     input a raw space.
-	    obarray))
-     (list (if (equal val "")
-	       v val))))
-  (w3m-goto-url (concat "http://dict.cn/" word)))
-
-(defun w3m-google-dict-search (&optional word)
-  "search word on google dict cn, create w3m buffer if necessary."
-  (interactive
-   (let ((v (word-at-point))
-	 (enable-recursive-minibuffers t)
-	 (completion-ignore-case t)
-	 val)
-     (setq val
-	   (completing-read
-	    (if (stringp v)
-		(format "Search word on google dict cn (default %s): " v)
-	      "Search word on google dict cn: ")
-	    ;;TODO set collection to english words
-	    obarray))
-     (list (if (equal val "")
-	       v val))))
-  (w3m-goto-url (format "http://www.google.cn/dictionary?langpair=en|zh-CN&q=%s&hl=zh-CN&aq=f" word)))
-
-
-
-;; FIXME  ~/.emacs-w3m not loaded by w3m
-
-;; global keys
-
-(global-set-key (kbd "C-c j") 'w3m-dict-cn-search)
-(global-set-key (kbd "C-c w w") 'w3m-goto-url)
-(global-set-key (kbd "C-c w f") 'w3m-find-file)
-
-;; local keys
-(add-hook 'w3m-mode-hook
-	  '(lambda ()
-	     (define-key w3m-mode-map (kbd "C-j")
-	       'w3m-dict-cn-search)
-	     (define-key w3m-mode-map (kbd "/")
-	       'isearch-forward-regexp)
-	     (define-key w3m-mode-map (kbd "n")
-	       'isearch-repeat-forward)
-	     ;;keep it the same with w3m outside emacs
-	     (define-key w3m-mode-map (kbd "f")
-	       'w3m-view-url-with-external-browser)))
+(add-hook 'find-file-hook 'inhibit-save-place-for-git-commit-msg 'append)
 
 ;;--------------------
 ;; po-mode
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/gettext")
-(require 'po-mode)
-
-;; see po-mode bugs in ~/bugs
-
-(setq auto-mode-alist
-      (cons '("\\.po\\'\\|\\.po\\." . po-mode)
-	    auto-mode-alist))
-
 (autoload 'po-mode
   "po-mode" "Major mode for translators to edit PO files" t)
+
+;; see po-mode bugs in ~/bugs
 
 ;; Turn on and off longlines-mode to wrap when editing a message
 ;; and unwrap before putting it back.
 (add-hook 'po-subedit-mode-hook '(lambda () (longlines-mode 1)))
 (add-hook 'po-subedit-exit-hook '(lambda () (longlines-mode 0)))
 
-
-;;BUG there is no po-mode-hook
-;;    maybe it's just because the "autoload", try after loading a po file
-;;all po-mode-map is modified here directly, without using hook
-;; key bindings
-(define-key po-mode-map (kbd "/")
-  'isearch-forward-regexp)
-(define-key po-mode-map (kbd "'")
-  'po-show-percent)
-(define-key po-mode-map (kbd "`")
-  'po-wrap)
+(defun my-po-mode-hook ()
+  (interactive)
+  (view-mode -1)
+  )
+;; there is no po-mode-hook
+;; (add-hook 'po-mode-hook 'my-po-mode-hook)
+(eval-after-load 'po-mode
+  '(progn
+     (define-key po-mode-map (kbd "'")
+       'po-show-percent)
+     (define-key po-mode-map (kbd "`")
+       'po-wrap)
+     ))
 
 ;; do po wrap
 ;; ref: http://www.emacswiki.org/emacs/PoMode
@@ -870,7 +2291,7 @@ by using nxml's indentation rules."
 		  (let ((saved (point))
 			(inhibit-read-only t))
 		    (delete-region (point-min) (point-max))
-		    (insert-buffer tmp-buf)
+		    (insert-buffer-substring tmp-buf)
 		    ;;TODO Warning: `insert-buffer' used from Lisp code
 		    (goto-char (min saved (point-max))))
 		(with-current-buffer tmp-buf
@@ -886,11 +2307,46 @@ by using nxml's indentation rules."
 
 ;;--------------------------------------------------
 ;; yasnippet
-;;ref: http://code.google.com/p/yasnippet/
-;; If all you need is to use the builtin templates, download the
-;; bundle one. If you want to add your own templates, download the
-;; normal one.
-(require 'yasnippet-bundle)
+;; ref: http://code.google.com/p/yasnippet/
+;; now using svn version, will auto byte-compile on startup (and when M-x uu)
+
+;; if something goes wrong, run M-x yas/reload-all will usually fix it.
+
+;; FIXED yas/new-snippet should not adds suffix for snip,
+;;       for ex should use incl instead of incl.yasnippet
+;; in yasnippet.el:2195 yas/new-snippet removed the long suffix.
+(require 'yasnippet)
+(yas/global-mode 1)
+
+;; my helper functions which can be used in expand-env section of snippet
+(load "~/.emacs.d/startup/yasnippet-functions")
+
+;; user's snippet dir
+(setq yas/root-directory "~/.emacs.d/non-lisp-data/yasnippets")
+
+(yas/load-directory yas/root-directory)
+
+(require 'dropdown-list)
+(setq yas/prompt-functions '(yas/dropdown-prompt))
+
+;;--------------------------------------------------
+;; snippet-mode (from yasnippet)
+
+(defun my-yas/load-snippet-buffer ()
+  "don't change point pos when C-c C-c"
+  (interactive)
+  (save-excursion
+    (yas/load-snippet-buffer)))
+
+;; C-c C-c in snippet-mode will load that snippet. that's handy.
+(defun my-snippet-mode-hook ()
+  (interactive)
+  ;; (setq require-final-newline 'ask)
+  (define-key snippet-mode-map (kbd "C-c C-c")
+    'my-yas/load-snippet-buffer)
+  )
+
+(add-hook 'snippet-mode-hook 'my-snippet-mode-hook)
 
 ;;--------------------------------------------------
 ;; nXhtml
@@ -898,82 +2354,6 @@ by using nxml's indentation rules."
 ;;(byte-recompile-directory "~/fromsource/nxhtml/" 0 t)
 ;;BUG after adding this. I'm having lots of lisp debug info when doing things.
 ;(load "~/fromsource/nxhtml/autostart.el")
-
-;;--------------------------------------------------
-;; folding-mode minor
-
-;; ref: http://www.emacswiki.org/emacs/FoldingMode
-;; it's not stable. generally not good for use yet.
-
-;; Always make sure that you have a closing fold mark for every opening
-;; mark! Otherwise the opening of files might be difficult.
-
-;;TODO Warning: reference to free variable `folding-narrow-by-default'
-;(load "folding" 'nomessage)
-
-;;BUG folding-mode bind M-g, thus make M-g not a prefix anymore.
-
-;;--------------------------------------------------
-;; for rcirc
-
-;;TODO don't show online user list when join a channel
-;;TODO don't connect to #rcirc after connection
-(setq rcirc-server-alist
-      '(("irc.freenode.net" :channels
-	 ("#emacs"))))
-
-;; load auth info which is protected in external file
-(load "~/.emacs.d/startup-scripts/rcirc-auth")
-
-;; TODO finish this function, and 
-;; 	rebind C-x k to rcirc-part-channel
-(defun rcirc-part-channel ()
-  "if current buffer is connected to a channel, part that channel.
-if current buffer is not connected, kill the buffer."
-  (interactive)
-  (kill-buffer))
-
-;; TODO remove C-; binding for rcirc mode
-(defun my-rcirc-mode-hook ()
-  (interactive)
-  (progn
-    (flyspell-mode 1)
-    (define-key rcirc-mode-map (kbd "C-c l")
-      'comint-clear-buffer)
-    (define-key rcirc-mode-map (kbd "C-c q")
-      'rcirc-cmd-quit)))
-
-(add-hook 'rcirc-mode-hook 'my-rcirc-mode-hook)
-
-;;ref: rcirc info page
-;;provides /reconnect command, reconnect after laptop suspend or losing network
-(eval-after-load 'rcirc
-       '(defun-rcirc-command reconnect (arg)
-          "Reconnect the server process."
-          (interactive "i")
-          (unless process
-            (error "There's no process for this target"))
-          (let* ((server (car (process-contact process)))
-                 (port (process-contact process :service))
-                 (nick (rcirc-nick process))
-                 channels query-buffers)
-            (dolist (buf (buffer-list))
-              (with-current-buffer buf
-                (when (eq process (rcirc-buffer-process))
-                  (remove-hook 'change-major-mode-hook
-                               'rcirc-change-major-mode-hook)
-                  (if (rcirc-channel-p rcirc-target)
-                      (setq channels (cons rcirc-target channels))
-                    (setq query-buffers (cons buf query-buffers))))))
-            (delete-process process)
-            (rcirc-connect server port nick
-                           rcirc-default-user-name
-                           rcirc-default-user-full-name
-                           channels))))
-
-(rcirc-track-minor-mode 1)
-;; use C-c C-SPC to jump to that buffer
-
 
 ;;======================================================
 ;; postload
@@ -984,56 +2364,50 @@ if current buffer is not connected, kill the buffer."
 
 ;;------------------------------
 ;; use emacs server and emacsclient
-;; only start emacs server when it's not started, I hate warnings.
-;(setq server-socket-file (concat server-socket-dir server-name))
-(setq server-socket-file "/tmp/emacs1000/server")
-(unless (file-exists-p server-socket-file)
-  (server-start))
+;; only start emacs server when it's not started yet
+(require 'server)
+(setq server-socket-file
+      ;; `server-auth-dir' is set in ~/.emacs.d/startup/windows.el
+      (expand-file-name server-name (or server-socket-dir server-auth-dir)))
+(or (file-exists-p server-socket-file)
+;;(or server-process
+    (server-start))
 
 ;;------------------------------
 ;;open my files in myfiles variable
-(mapc '(lambda (x)
-	 (find-file (myfiles-file-name x))
-	 (protect-buffer-from-kill-mode
-	  1
-	  (get-buffer (myfiles-buffer-name x))))
-      myfiles)
+(dolist (file myfiles)
+  (let ((fn (myfiles-file-name file)))
+    (if (file-exists-p fn)
+	(progn
+	  (find-file fn)
+	  (protect-buffer-from-kill-mode 1 (get-buffer fn)))
+      (message "warning: myfiles file doesn't exist: %s" fn))))
 
 ;;------------------------------
-;;start a *cmd* shell
-
-(defun start-shell-in-home-dir (&optional buffer)
-  "Start shell in home dir."
-  (interactive)
-  (let ((old-buffer (buffer-name))
-	(old-default-dir default-directory))
-    (cd "~")
-    (shell buffer)
-    (switch-to-buffer old-buffer)
-    (cd old-default-dir)
-    (shell buffer)
-    (delete-other-windows)))
-
-(start-shell-in-home-dir "*cmd*")
+;;start a shell
+(start-shell-in-home-dir default-shell-buffer)
 
 ;;protect this buffer
-(protect-buffer-from-kill-mode 1 (get-buffer "*cmd*"))
+(protect-buffer-from-kill-mode 1 (get-buffer default-shell-buffer))
 
-;;======================================================
-;; for emacs Easy Customize
-;; do *not* add content after this section
-;;======================================================
+;;======================================================================
+;; post load
 
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/notes" "~/low" "~/todo" "~/bugs" "~/progress")))
- '(standard-indent 8))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(org-todo ((t (:background "khaki" :foreground "black" :weight bold)))))
+;;emacs customizations.
+(setq custom-file "~/.emacs.d/custom.el")
+;;load byte-compiled version.
+(load "~/.emacs.d/custom")
+
+;; (message "My .emacs loaded in %ds"
+;; 	   (destructuring-bind (hi lo ms) (current-time)
+;; 	     (- (+ hi lo) (+ (first *emacs-load-start*)
+;; 			     (second *emacs-load-start*)))))
+
+;; TODO this is not working.
+(defun show-init-time ()
+  (message "My .emacs loaded in %s" (emacs-init-time)))
+(add-hook 'after-init-hook 'show-init-time)
+
+;;;; end of my .emacs
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-region 'disabled nil)

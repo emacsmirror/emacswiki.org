@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  9 13:53:30 2011 (-0700)
+;; Last-Updated: Sun Sep 18 01:28:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4206
+;;     Update #: 4339
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -98,12 +98,11 @@
 ;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-index',
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    `icicle-Info-virtual-book', (+)`icicle-insert-thesaurus-entry',
-;;    (+)`icicle-keyword-list', (+)`icicle-map',
-;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
-;;    (+)`icicle-object-action', (+)`icicle-occur',
-;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
-;;    `icicle-previous-visible-thing', `icicle-read-color',
-;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
+;;    (+)`icicle-map', `icicle-next-visible-thing',
+;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
+;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
+;;    (+)`icicle-plist', `icicle-previous-visible-thing',
+;;    `icicle-read-color', `icicle-read-kbd-macro',
 ;;    `icicle-save-string-to-variable', (+)`icicle-search',
 ;;    (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
@@ -173,8 +172,8 @@
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
 ;;    `icicle-defined-thing-p', `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-doc-action',
-;;    `icicle-edmacro-parse-keys', `icicle-flat-list',
-;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
+;;    `icicle-edmacro-parse-keys', `icicle-fn-doc-minus-sig',
+;;    `icicle-font-w-orig-size',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
@@ -206,6 +205,7 @@
 ;;    `icicle-region-or-buffer-limits', `icicle-search-action',
 ;;    `icicle-search-action-1', `icicle-search-bookmark-action',
 ;;    `icicle-search-char-property-scan',
+;;    `icicle-search-char-prop-matches-p',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
 ;;    `icicle-search-define-candidates-1', `icicle-search-final-act',
@@ -214,7 +214,9 @@
 ;;    `icicle-search-highlight-and-maybe-replace',
 ;;    `icicle-search-highlight-input-matches-here',
 ;;    `icicle-search-in-context-default-fn',
-;;    `icicle-search-property-args', `icicle-search-quit-or-error',
+;;    `icicle-search-property-args',
+;;    `icicle-search-property-default-match-fn',
+;;    `icicle-search-quit-or-error',
 ;;    `icicle-search-read-context-regexp', `icicle-search-read-word',
 ;;    `icicle-search-regexp-scan',
 ;;    `icicle-search-replace-all-search-hits',
@@ -348,12 +350,12 @@
   ;; icicle-search-refined-overlays
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history,
-  ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer
+  ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer, icicle-some
 (require 'icicles-cmd1)
   ;; custom-variable-p, icicle-bookmark-cleanup,
   ;; icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
   ;; icicle-bookmark-history, icicle-bookmark-propertize-candidate, icicle-buffer-list,
-  ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-make-frame-alist,
+  ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-frame-alist,
   ;; icicle-select-bookmarked-region
 
 
@@ -737,7 +739,8 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
       (if (< emacs-major-version 22)
           (require 'eyedropper nil t)
         (or (require 'palette nil t) (require 'eyedropper nil t)))
-      (put-text-property 0 1 'icicle-fancy-candidates t icicle-prompt)
+      (when (stringp icicle-prompt)     ; Sanity check - should be true.
+        (put-text-property 0 1 'icicle-fancy-candidates t icicle-prompt))
       (icicle-highlight-lighter)
       (setq icicle-candidate-help-fn           'icicle-color-help
             completion-ignore-case             t
@@ -2532,7 +2535,8 @@ does the following:
   regexp, using face `icicle-search-main-regexp-current'.
 
 - Highlights the first `icicle-search-highlight-threshold' context
-  matches, using face `icicle-search-main-regexp-others'.
+  matches (or all, if the option value is `t'), using face
+  `icicle-search-main-regexp-others'.
 
 - Highlights 1-8 context levels, within each search context.  This
   happens only if your initial (context) regexp has \\(...\\) groups
@@ -2827,14 +2831,17 @@ The arguments are for use by `completing-read' to read the regexp.
          (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
          (message "Searching multiple bookmarks...") (sit-for 1)
          (let ((icicle-show-Completions-initially-flag  t)
-               (icicle-bookmark-types                   '(all)))
+               (icicle-bookmark-types                   '(all))
+               (icicle-prompt
+                "Choose bookmark to search (`RET' when done): "))
            (save-selected-window (icicle-bookmark-list))))
         ((wholenump current-prefix-arg)
          (message "Searching multiple buffers...") (sit-for 1)
          (icicle-search-choose-buffers (= 99 (prefix-numeric-value current-prefix-arg))))
         (current-prefix-arg
          (message "Searching multiple files...") (sit-for 1)
-         (let ((icicle-show-Completions-initially-flag  t))
+         (let ((icicle-show-Completions-initially-flag  t)
+               (icicle-prompt                           "Choose file to search (`RET' when done): "))
            (save-selected-window (icicle-file-list))))
         (t nil)))
 
@@ -2843,9 +2850,13 @@ The arguments are for use by `completing-read' to read the regexp.
 FILES-ONLY-P non-nil means that only buffers visiting files are
 candidates."
   (let ((icicle-show-Completions-initially-flag  t))
-    (mapcar #'get-buffer (let ((icicle-buffer-require-match-flag  'partial-match-ok)
-                               (current-prefix-arg                files-only-p))
-                           (save-selected-window (icicle-buffer-list))))))
+    (mapcar #'get-buffer
+            (let ((icicle-buffer-require-match-flag  'partial-match-ok)
+                  (current-prefix-arg                files-only-p)
+                  (icicle-prompt
+                   (format "Choose %sbuffer to search (`RET' when done): "
+                           (if files-only-p "file " ""))))
+              (save-selected-window (icicle-buffer-list))))))
 
 ;;; $$$$$$ (defun icicle-search-read-word ()
 ;;;   "Read a word to search for (whole-word search).
@@ -3025,8 +3036,9 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                                 end-marker)
                           temp-list)
                     ;; Highlight search context in buffer.
-                    (when (<= (+ (length temp-list) (length icicle-candidates-alist))
-                              icicle-search-highlight-threshold)
+                    (when (or (eq t icicle-search-highlight-threshold)
+                              (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                  icicle-search-highlight-threshold))
                       (let ((ov  (make-overlay hit-beg hit-end)))
                         (push ov icicle-search-overlays)
                         (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
@@ -3401,7 +3413,9 @@ No such highlighting is done if any of these conditions holds:
 ;; Free var here: `icicle-search-ecm' is bound in `icicle-search'.
 (defun icicle-search-highlight-input-matches-here ()
   "Highlight all input matches in the current search context."
-  (unless (or (> 0 icicle-search-highlight-threshold) (string= "" icicle-current-input))
+  (unless (or (eq t icicle-search-highlight-threshold)
+              (> 0 icicle-search-highlight-threshold)
+              (string= "" icicle-current-input))
     (goto-char (point-min))
     (when (and (not icicle-search-highlight-all-current-flag)
                (overlayp icicle-search-refined-overlays))
@@ -3526,25 +3540,6 @@ documentation."
        ,(not icicle-show-multi-completion-flag)
        ,(icicle-search-where-arg)))
   (icicle-search beg end keywords (not icicle-show-multi-completion-flag) where))
-
-;;;###autoload
-(defalias 'icicle-regexp-list 'icicle-keyword-list)
-;;;###autoload (autoload 'icicle-keyword-list "icicles-cmd2.el")
-(icicle-define-command icicle-keyword-list ; Command name
-  "Choose a list of keywords. The list of keywords (strings) is returned.
-You can choose from keywords entered previously or enter new keywords
-using `C-RET'.  Each keyword is a regexp.  The regexps are OR'd, and
-the resulting regexp is usable for `icicle-search'." ; Doc string
-  (lambda (name)                        ; Action function
-    (push name keywords)
-    (message "Added keyword `%s'" name))
-  "Choose keyword (regexp) (`RET' when done): " ; `completing-read' args
-  (mapcar #'list (icicle-remove-duplicates regexp-history)) nil nil nil 'regexp-history nil nil
-  ((keywords                              nil) ; Bindings
-   (icicle-use-candidates-only-once-flag  t))
-  nil nil                               ; First code, undo code
-  (prog1 (setq keywords  (nreverse (delete "" keywords))) ; Last code - return the list of keywords.
-    (when (interactive-p) (message "Keywords (regexps): %S" keywords))))
 
 (defun icicle-group-regexp (regexp)
   "Wrap REGEXP between regexp parens, as a regexp group."
@@ -3898,91 +3893,6 @@ command")))
   "Type of thing last used by `icicle-next-visible-thing' (or previous).")
 
 ;;;###autoload
-(defun icicle-search-xml-element (beg end require-match where element)
-  "`icicle-search' with XML ELEMENTs as search contexts.
-ELEMENT is a regexp that is matched against actual element names.
-
-The search contexts are the top-level matching elements within the
-search limits, BEG and END.  Those elements might or might not contain
-descendent elements that are themselves of type ELEMENT.
-
-You can alternatively choose to search, not the search contexts as
-defined by the element-name regexp, but the non-contexts, that is, the
-buffer text that is outside such elements.  To do this, use `C-M-~'
-during completion.  (This is a toggle, and it affects only future
-search commands, not the current one.)
-
-You probably need nXML for this command.  It is included in vanilla
-Emacs, starting with Emacs 23."
-  (interactive
-   (let* ((where    (icicle-search-where-arg))
-          (beg+end  (icicle-region-or-buffer-limits))
-          (beg1     (car beg+end))
-          (end1     (cadr beg+end))
-          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
-     `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
-  (let ((nxml-sexp-element-flag  t))
-    (icicle-search-thing
-     'sexp beg end require-match where
-     `(lambda (thg+bds)
-       (and thg+bds
-        (if (fboundp 'string-match-p)
-            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
-          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))))))
-
-;;;###autoload
-(defun icicle-search-xml-element-text-node (beg end require-match where element)
-  "`icicle-search', with text() nodes of XML ELEMENTs as search contexts.
-ELEMENT is a regexp that is matched against actual XML element names.
-
-The search contexts are the text() nodes of the top-level matching
-elements within the search limits, BEG and END.  (Those elements might
-or might not contain descendent elements that are themselves of type
-ELEMENT.)
-
-You can alternatively choose to search, not the search contexts as
-defined by the element-name regexp, but the non-contexts, that is, the
-buffer text that is outside the text nodes of such elements.  To do
-this, use `C-M-~' during completion.  (This is a toggle, and it
-affects only future search commands, not the current one.)
-
-You probably need nXML for this command.  It is included in vanilla
-Emacs, starting with Emacs 23."
-  (interactive
-   (let* ((where    (icicle-search-where-arg))
-          (beg+end  (icicle-region-or-buffer-limits))
-          (beg1     (car beg+end))
-          (end1     (cadr beg+end))
-          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
-     `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
-  (let ((nxml-sexp-element-flag  t))
-    (icicle-search-thing
-     'sexp beg end require-match where
-     `(lambda (thg+bds)
-       (and thg+bds
-        (if (fboundp 'string-match-p)
-            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
-          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))
-     `(lambda (thg+bds)
-       (save-excursion
-         (let* ((tag-end     (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element)
-                                           (car thg+bds)))
-                (child       (icicle-next-visible-thing
-                              'sexp (+ (match-end 0) (cadr thg+bds)) (cddr thg+bds)))
-                (tag-regexp  (concat "\\`\\s-*<\\s-*"
-                                     (if (> emacs-major-version 20)
-                                         (if (boundp 'xmltok-ncname-regexp)
-                                             xmltok-ncname-regexp
-                                           "\\(?:[_[:alpha:]][-._[:alnum:]]*\\)")
-                                       "\\([_a-zA-Z][-._a-zA-Z0-9]\\)")
-                                     "\\s-*>")))
-           (and child
-                (not (if (fboundp 'string-match-p)
-                         (string-match-p tag-regexp (car child))
-                       (string-match tag-regexp (car child))))
-                child)))))))
-
-;;;###autoload
 (defun icicle-search-thing (thing &optional beg end require-match where predicate transform-fn)
   "`icicle-search' with THINGs as search contexts.
 Enter the type of THING to search: `sexp', `sentence', `list',
@@ -4259,8 +4169,9 @@ This function respects both `icicle-search-complement-domain-p' and
                                temp-list)
                          ;; Highlight search context in buffer.
                          (when (and (not (equal hit-beg hit-end))
-                                    (<= (+ (length temp-list) (length icicle-candidates-alist))
-                                        icicle-search-highlight-threshold))
+                                    (or (eq t icicle-search-highlight-threshold)
+                                        (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                            icicle-search-highlight-threshold)))
                            (let ((ov  (make-overlay hit-beg hit-end)))
                              (push ov icicle-search-overlays)
                              (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
@@ -4420,28 +4331,124 @@ the bounds of THING.  Return nil if no such THING is found."
                nil))))))
 
 ;;;###autoload
-(defun icicle-search-char-property (beg end require-match
-                                    &optional where prop values predicate)
-  "Search for text that has a character property with a certain value.
-If the property is `face' or `font-lock-face', then you can pick
-multiple faces, using completion.  Text is then searched that has a
-face property that includes any of the selected faces.  If you choose
-no face (empty input), then text with any face is found.
+(defun icicle-search-xml-element (beg end require-match where element)
+  "`icicle-search' with XML ELEMENTs as search contexts.
+ELEMENT is a regexp that is matched against actual element names.
 
+The search contexts are the top-level matching elements within the
+search limits, BEG and END.  Those elements might or might not contain
+descendent elements that are themselves of type ELEMENT.
+
+You can alternatively choose to search, not the search contexts as
+defined by the element-name regexp, but the non-contexts, that is, the
+buffer text that is outside such elements.  To do this, use `C-M-~'
+during completion.  (This is a toggle, and it affects only future
+search commands, not the current one.)
+
+You probably need nXML for this command.  It is included in vanilla
+Emacs, starting with Emacs 23."
+  (interactive
+   (let* ((where    (icicle-search-where-arg))
+          (beg+end  (icicle-region-or-buffer-limits))
+          (beg1     (car beg+end))
+          (end1     (cadr beg+end))
+          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
+     `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
+  (let ((nxml-sexp-element-flag  t))
+    (icicle-search-thing
+     'sexp beg end require-match where
+     `(lambda (thg+bds)
+       (and thg+bds
+        (if (fboundp 'string-match-p)
+            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
+          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))))))
+
+;;;###autoload
+(defun icicle-search-xml-element-text-node (beg end require-match where element)
+  "`icicle-search', with text() nodes of XML ELEMENTs as search contexts.
+ELEMENT is a regexp that is matched against actual XML element names.
+
+The search contexts are the text() nodes of the top-level matching
+elements within the search limits, BEG and END.  (Those elements might
+or might not contain descendent elements that are themselves of type
+ELEMENT.)
+
+You can alternatively choose to search, not the search contexts as
+defined by the element-name regexp, but the non-contexts, that is, the
+buffer text that is outside the text nodes of such elements.  To do
+this, use `C-M-~' during completion.  (This is a toggle, and it
+affects only future search commands, not the current one.)
+
+You probably need nXML for this command.  It is included in vanilla
+Emacs, starting with Emacs 23."
+  (interactive
+   (let* ((where    (icicle-search-where-arg))
+          (beg+end  (icicle-region-or-buffer-limits))
+          (beg1     (car beg+end))
+          (end1     (cadr beg+end))
+          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
+     `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
+  (let ((nxml-sexp-element-flag  t))
+    (icicle-search-thing
+     'sexp beg end require-match where
+     `(lambda (thg+bds)
+       (and thg+bds
+        (if (fboundp 'string-match-p)
+            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
+          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))
+     `(lambda (thg+bds)
+       (save-excursion
+         (let* ((tag-end     (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element)
+                                           (car thg+bds)))
+                (child       (icicle-next-visible-thing
+                              'sexp (+ (match-end 0) (cadr thg+bds)) (cddr thg+bds)))
+                (tag-regexp  (concat "\\`\\s-*<\\s-*"
+                                     (if (> emacs-major-version 20)
+                                         (if (boundp 'xmltok-ncname-regexp)
+                                             xmltok-ncname-regexp
+                                           "\\(?:[_[:alpha:]][-._[:alnum:]]*\\)")
+                                       "\\([_a-zA-Z][-._a-zA-Z0-9]\\)")
+                                     "\\s-*>")))
+           (and child
+                (not (if (fboundp 'string-match-p)
+                         (string-match-p tag-regexp (car child))
+                       (string-match tag-regexp (car child))))
+                child)))))))
+
+;;;###autoload
+(defun icicle-search-char-property (beg end require-match
+                                    &optional where prop values predicate match-fn)
+  "Search for text that has a character property with a certain value.
 By \"character property\" is meant either an overlay property or a
 text property.  If you want to search for only an overlay property or
 only a text property, then use `icicle-search-overlay-property' or
 `icicle-search-text-property' instead.
 
-Non-interactively, arguments BEG, END, REQUIRE-MATCH, and WHERE are as
-for `icicle-search'.  Arguments PROP, VALUES, and PREDICATE are passed
-to `icicle-search-char-property-scan' to define the search contexts.
+Interactively, you are prompted for the property to search and its
+value.  By default, an actual value of the property matches the value
+you specify if it is `equal'.  Properties `mumamo-major-mode' and
+`face' (or `font-lock-face') are exceptions.
+
+For `mumamo-major-mode' you specify the major mode whose zones of text
+you want to search.  The actual property value is a list whose car is
+the major mode symbol.
+
+For properties `face' and `font-lock-face', you can pick multiple
+faces, using completion (e.g., `C-RET' and finally `RET').  Text is
+searched that has a face property that includes any of the faces you
+choose.  If you choose no face (empty input), then text with any face
+at all is searched.
 
 You can alternatively choose to search, not the search contexts as
 defined, but the zones of buffer text that do NOT have the given
-character property value.  To do this, use `C-M-~' during completion.
-\(This is a toggle, and it affects only future search commands, not
+character property value.  In other words, search the complement
+zones.  To toggle such complementing, use `C-M-~' anytime during
+completion.  (This toggling affects only future search commands, not
 the current one.)
+
+Non-interactively, arguments BEG, END, REQUIRE-MATCH, and WHERE are as
+for `icicle-search'.  Arguments PROP, VALUES, and PREDICATE are passed
+to `icicle-search-char-property-scan' to define the search contexts.
 
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
@@ -4450,43 +4457,63 @@ search multiple regions, buffers, or files, see the doc for command
 `icicle-search'."
   (interactive (icicle-search-property-args))
   (icicle-search beg end 'icicle-search-char-property-scan require-match where prop values nil
-                 predicate))
+                 predicate match-fn))
 
 ;;;###autoload
-(defun icicle-search-overlay-property (beg end require-match &optional where prop values predicate)
+(defun icicle-search-overlay-property (beg end require-match where prop values predicate match-fn)
   "Same as `icicle-search-char-property', except only overlay property.
 That is, do not also search a text property."
   (interactive (icicle-search-property-args))
   (icicle-search beg end 'icicle-search-char-property-scan require-match where prop values 'overlay
-                 predicate))
+                 predicate match-fn))
 
 ;;;###autoload
 (defun icicle-search-text-property (beg end require-match ; Bound to `C-c "'.
-                                    &optional where prop values predicate)
+                                    where prop values predicate match-fn)
   "Same as `icicle-search-char-property', except only text property.
 That is, do not also search an overlay property."
   (interactive (icicle-search-property-args))
+  ;; Because font-lock is just-in-time or lazy, if PROP is `face' we fontify the region.
+  ;; Should this be an option, so users who want to can font-lock on demand instead of each time?
+  (when (and (eq prop 'face) font-lock-mode)
+    (save-excursion (font-lock-fontify-region beg end 'VERBOSE)))
   (icicle-search beg end 'icicle-search-char-property-scan require-match where prop values 'text
-                 predicate))
+                 predicate match-fn))
 
 (defun icicle-search-property-args ()
   "Read and return interactive arguments for `icicle-search-*-property'."
-  (let* ((where    (icicle-search-where-arg))
-         (beg+end  (icicle-region-or-buffer-limits))
-         (beg1     (car beg+end))
-         (end1     (cadr beg+end))
-         (props    (mapcar #'(lambda (prop) (list (symbol-name prop)))
-                           (icicle-char-properties-in-buffers where beg1 end1)))
-         (prop     (intern (completing-read
-                            (format "Property %sto search: "
-                                    (if icicle-search-complement-domain-p "*NOT* " ""))
-                            props nil nil nil nil "face")))
-         (values   (if (memq prop '(face font-lock-face))
-                       (let ((faces  (icicle-face-list)))
-                         (if faces (mapcar #'intern faces) (face-list))) ; Default: all faces.
-                     (list (intern (icicle-completing-read-history
-                                    "Property value: " 'icicle-char-property-value-history))))))
-    `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,prop ,values)))
+  (let* ((where            (icicle-search-where-arg))
+         (beg+end          (icicle-region-or-buffer-limits))
+         (beg1             (car beg+end))
+         (end1             (cadr beg+end))
+         (props            (mapcar #'(lambda (prop) (list (symbol-name prop)))
+                                   (icicle-char-properties-in-buffers where beg1 end1)))
+         (prop             (intern (completing-read
+                                    (format "Property %sto search: "
+                                            (if icicle-search-complement-domain-p "*NOT* " ""))
+                                    props nil nil nil nil "face")))
+         (icicle-prompt    "Choose property value (`RET' when done): ")
+         (icicle-hist-var  'icicle-char-property-value-history)
+         (values           (if (memq prop '(face font-lock-face))
+                               (let ((faces  (icicle-face-list)))
+                                 (if faces (mapcar #'intern faces) (face-list))) ; Default: all faces.
+                             (icicle-sexp-list)))
+         (match-fn         (icicle-search-property-default-match-fn prop)))
+    `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,prop ,values nil ,match-fn)))
+
+(defun icicle-search-property-default-match-fn (prop)
+  "Return the default match function for text or overlay property PROP.
+Properties `face' and `mumamo-major-mode' are handled specially.
+For other properties the values are matched using `equal'."
+  (case prop
+    ((face font-lock-face) (lambda (val rprop)
+                             (if (consp rprop)
+                                 (condition-case nil ; Allow for dotted cons.
+                                     (member val rprop)
+                                   (error nil))
+                               (eq val rprop))))
+    ((mumamo-major-mode)   (lambda (val rprop) (equal val (car rprop))))
+    (t                     #'equal)))
 
 (defun icicle-char-properties-in-buffers (where beg end &optional type)
   "List of all character properties in WHERE.
@@ -4545,7 +4572,7 @@ text properties, or both, respectively."
               (setq curr-props  (cddr curr-props)))))))
     props))
 
-(defun icicle-search-char-property-scan (buffer beg end prop values type predicate)
+(defun icicle-search-char-property-scan (buffer beg end prop values type predicate match-fn)
   "Scan BUFFER from BEG to END for character property PROP with VALUES.
 Push hits onto `icicle-candidates-alist'.
 If BUFFER is nil, scan the current buffer.
@@ -4563,10 +4590,15 @@ property - nil means look for both overlay and text properties.
 If PREDICATE is non-nil, then push only the hits for which it holds.
 PREDICATE is nil or a Boolean function that takes these arguments:
   - the search-context string
-  - a marker at the end of the search-context"
+  - a marker at the end of the search-context
+
+MATCH-FN is a binary predicate that is applied to each item of VALUES
+and a zone of text with property PROP.  If it returns non-nil then the
+zone is a search hit."
+  (setq match-fn  (or match-fn  (icicle-search-property-default-match-fn prop)))
   (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
         (temp-list      ())
-        (last-beg       nil)
+        (last           nil)
         (zone-end       nil))
     (unless buffer (setq buffer  (current-buffer)))
     (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
@@ -4575,76 +4607,86 @@ PREDICATE is nil or a Boolean function that takes these arguments:
                                     end  (point-max)))
         (icicle-condition-case-no-debug icicle-search-char-property-scan
             (save-excursion
-              (setq last-beg  beg)
-              (while (and (< beg end)
-                          (let* ((charval  (and (or (not type) (eq type 'overlay))
-                                                (get-char-property beg prop)))
-                                 (textval  (and (or (not type) (eq type 'text))
-                                                (get-text-property beg prop)))
-                                 (currval  (icicle-flat-list charval textval)))
-                            (not (icicle-set-intersection values currval))))
+              (setq last  beg)
+              (while (and beg (< beg end) ; Skip to first zone.
+                          (not (icicle-search-char-prop-matches-p type prop values match-fn beg)))
                 (setq beg  (icicle-next-single-char-property-change beg prop nil end)))
-              (while (and beg  (< last-beg end))
+              (while (and beg  (< last end)) ; We have a zone.
                 (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end) end))
-                (let* ((hit-beg     (if icicle-search-complement-domain-p
-                                        last-beg
-                                      beg))
-                       (hit-end     (if icicle-search-complement-domain-p
-                                          beg
-                                        zone-end))
-                       (hit-string  (buffer-substring-no-properties hit-beg hit-end))
-                       end-marker)
-                  (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
-                             (setq end-marker  (copy-marker hit-end))
+                (let ((hit-beg  (if icicle-search-complement-domain-p last beg))
+                      (hit-end  (if icicle-search-complement-domain-p beg zone-end))
+                      saved-hit-beg saved-hit-end)
+                  (when (and (not (= hit-beg hit-end)) ; Do nothing if hit is empty.
+                             (setq hit-end  (if (markerp hit-end) hit-end (copy-marker hit-end)))
                              (or (not predicate)
-                                 (save-match-data (funcall predicate hit-string end-marker))))
-                    (icicle-candidate-short-help
-                     (concat (and add-bufname-p
-                                  (format "Buffer: `%s', " (buffer-name (marker-buffer end-marker))))
-                             (format "Position: %d, Length: %d"
-                                     (marker-position end-marker) (length hit-string)))
-                     hit-string)
-                    (push (cons (if add-bufname-p
-                                    (list hit-string
-                                          (let ((string  (copy-sequence (buffer-name))))
-                                            (put-text-property 0 (length string)
-                                                               'face 'icicle-candidate-part string)
-                                            string))
-                                  hit-string)
-                                end-marker)
-                          temp-list)
-                    ;; Highlight search context in buffer.
-                    (when (and (<= (+ (length temp-list) (length icicle-candidates-alist))
-                                   icicle-search-highlight-threshold))
-                      (let ((ov  (make-overlay hit-beg hit-end)))
-                        (push ov icicle-search-overlays)
-                        (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
-                        (overlay-put ov 'face 'icicle-search-main-regexp-others)))))
-                (setq beg       zone-end
-                      last-beg  zone-end)
-                (while (and (< beg end)
-                            (let* ((charval  (and (or (not type) (eq type 'overlay))
-                                                  (get-char-property beg prop)))
-                                   (textval  (and (or (not type) (eq type 'text))
-                                                  (get-text-property beg prop)))
-                                   (currval  (icicle-flat-list charval textval)))
-                              (not (icicle-set-intersection values currval))))
+                                 (save-match-data
+                                   (funcall predicate (buffer-substring hit-beg hit-end) hit-end))))
+                    (setq saved-hit-beg  hit-beg
+                          saved-hit-end  hit-end)
+                    ;; Try to extend zone.
+                    (let (hit-beg hit-end)
+                      (while (and beg  (< last end)
+                                  (icicle-search-char-prop-matches-p type prop values match-fn beg))
+                        (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end)
+                                            end))
+                        (setq hit-beg  (if icicle-search-complement-domain-p last beg)
+                              hit-end  (if icicle-search-complement-domain-p beg zone-end))
+                        (when (and (not (= hit-beg hit-end)) ; Do nothing if hit is empty.
+                                   (setq hit-end  (if (markerp hit-end)
+                                                      hit-end
+                                                    (copy-marker hit-end)))
+                                   (or (not predicate)
+                                       (save-match-data
+                                         (funcall predicate
+                                                  (buffer-substring hit-beg hit-end) hit-end))))
+                          (setq saved-hit-end  hit-end))
+                        (setq beg   zone-end
+                              last  zone-end))
+                      zone-end)
+                    ;; Add candidate to `temp-list'.
+                    (let ((hit-string  (buffer-substring hit-beg saved-hit-end)))
+                      (icicle-candidate-short-help
+                       (concat (and add-bufname-p
+                                    (format "Buffer: `%s', "
+                                            (buffer-name (marker-buffer saved-hit-end))))
+                               (format "Position: %d, Length: %d"
+                                       (marker-position saved-hit-end) (length hit-string)))
+                       hit-string)
+                      (push (cons (if add-bufname-p
+                                      (list hit-string
+                                            (let ((string  (copy-sequence (buffer-name))))
+                                              (put-text-property 0 (length string)
+                                                                 'face 'icicle-candidate-part string)
+                                              string))
+                                    hit-string)
+                                  saved-hit-end)
+                            temp-list)
+                      ;; Highlight search context in buffer.
+                      (when (or (eq t icicle-search-highlight-threshold)
+                                (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                    icicle-search-highlight-threshold))
+                        (let ((ov  (make-overlay hit-beg saved-hit-end)))
+                          (push ov icicle-search-overlays)
+                          (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
+                          (overlay-put ov 'face 'icicle-search-main-regexp-others))))))
+                (setq beg   zone-end
+                      last  zone-end)
+                (while (and beg (< beg end) ; Skip to next zone.
+                            (not (icicle-search-char-prop-matches-p type prop values match-fn beg)))
                   (setq beg  (icicle-next-single-char-property-change beg prop nil end))))
               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
                  (error "%s" (error-message-string icicle-search-char-property-scan))))))))
 
-(defun icicle-flat-list (val1 val2)
-  "Return a flat list with all values in VAL1 and VAL2."
-  (let ((result  nil))
-    (unless (listp val1) (setq val1  (list val1)))
-    (unless (listp val2) (setq val2  (list val2)))
-    (while val1 (add-to-list 'result (pop val1)))
-    (while val2 (add-to-list 'result (pop val2)))
-    result))
+(defun icicle-search-char-prop-matches-p (type property values match-fn position)
+  "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
+TYPE, VALUES, MATCH-FN are as in `icicle-search-char-property-scan'."
+  (let* ((ovlyval  (and (or (not type) (eq type 'overlay)) (get-char-property position property)))
+         (textval  (and (or (not type) (eq type 'text))    (get-text-property position property))))
+    (or (and ovlyval (icicle-some values ovlyval match-fn))
+        (and textval (icicle-some values textval match-fn)))))
 
-;; Same as `thgcmd-next-single-char-property-change' in `thing-cmds.el'.
 (if (fboundp 'next-single-char-property-change)
     (defalias 'icicle-next-single-char-property-change 'next-single-char-property-change)
   (defun icicle-next-single-char-property-change (position prop &optional object limit)
@@ -4672,7 +4714,6 @@ valid buffer position."
                           (next-single-property-change (point) prop nil end)))))
       (point))))
 
-;; Same as `thgcmd-previous-single-char-property-change' in `thing-cmds.el'.
 (if (fboundp 'previous-single-char-property-change)
     (defalias 'icicle-previous-single-char-property-change 'previous-single-char-property-change)
   (defun icicle-previous-single-char-property-change (position prop &optional object limit)
@@ -4806,8 +4847,11 @@ affects only future search commands, not the current one.)"
                  ,(not icicle-show-multi-completion-flag)))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match
          (let ((icicle-show-Completions-initially-flag  t))
-           (mapcar #'get-buffer (let ((icicle-buffer-require-match-flag  'partial-match-ok))
-                                  (icicle-buffer-list))))
+           (mapcar #'get-buffer
+                   (let ((icicle-buffer-require-match-flag  'partial-match-ok)
+                         (icicle-prompt
+                          "Choose buffer to search (`RET' when done): "))
+                     (icicle-buffer-list))))
          args))
 
 ;;;###autoload
@@ -4829,7 +4873,9 @@ future search commands, not the current one.)"
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match
-         (let ((icicle-show-Completions-initially-flag  t)) (icicle-file-list))
+         (let ((icicle-show-Completions-initially-flag  t)
+               (icicle-prompt                           "Choose file to search (`RET' when done): "))
+           (icicle-file-list))
          args))
 
 ;;;###autoload

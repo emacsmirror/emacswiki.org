@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  9 14:13:24 2011 (-0700)
+;; Last-Updated: Sun Sep 18 01:13:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7120
+;;     Update #: 7201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/09/18 dadams
+;;     Added: icicle-sexp-list, icicle-string-list.
+;;     Moved here from icicles-cmd2.el: icicle-keyword-list.
+;;     Added: icicle-locate.  Thx to Michael Heerdegen.
+;;     icicle-bookmarked-(buffer|file)-list, icicle-define-add-to-alist-command,
+;;       icicle-(bookmark|buffer|face|file|directory|regexp|keyword)-list, icicle-add-buffer-config:
+;;         Bind icicle-prompt.
+;;     icicle-(bookmark|buffer|face|file|directory|regexp|keyword)-list:
+;;       Added msg saying Added... when interactive.
 ;; 2011/09/02 dadams
 ;;     icicle-completing-yank: Put kills in order, respecting kill-ring-yank-pointer.
 ;;                             (put 'icicle-completing-yank 'delete-selection 'yank).
@@ -441,6 +450,29 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/18 dadams
+;;     Added: icicle-search-property-default-match-fn.  Handles MuMaMo major mode zones.
+;;            icicle-search-char-prop-matches-p.  Doesn't just flatten overlay & text props and use
+;;                                                set intersect.  Uses icicle-some with MATCH-FN.
+;;     Moved to icicles-fn.el: icicle-flat-list (no longer used).
+;;     Moved to icicles-cmd1.el: icicle-(keyword|regexp)-list.
+;;     icicle-color-completion-setup: Ensure icicle-prompt is a string before adding property.
+;;     icicle-search-where-arg, icicle-search-choose-buffers, icicle-search-(buffer|file):
+;;       Bind icicle-prompt.
+;;     icicle-search-char-property: Added arg MATCH-FN.  Add it to the return value.
+;;     icicle-search-(overlay|text)-property:
+;;       Added arg MATCH-FN (pass to icicle-search).  Made all args mandatory.
+;;     icicle-search-text-property: When PROP is face, call font-lock-fontify-region.
+;;     icicle-search-property-args:
+;;       Bind match-fn to icicle-search-property-default-match-fn.  Add it to return value.
+;;       Bind icicle-prompt and icicle-hist-var.
+;;       For values: for non-face prop, use icicle-sexp-list, not icicle-completing-read-history.
+;;     icicle-search-char-property-scan:
+;;       Added arg MATCH-FN.  Use icicle-search-char-prop-matches-p.
+;;       Extend zone if matching prop values also in contiguous zone.
+;;     icicle-search-(regexp|thing)-scan, icicle-search-highlight-input-matches-here,
+;;       icicle-search-char-property-scan:
+;;         Handle t value for icicle-search-highlight-threshold.
 ;; 2011/09/09 dadams
 ;;     icicle-search-w-isearch-string: Added prefix-arg treatment.
 ;; 2011/09/08 dadams
@@ -956,6 +988,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/09/14 dadams
+;;     Added: icicle-some.
+;;     Moved here from icicles-cmd2.el: icicle-flat-list (but no longer used).
 ;; 2011/09/05 dadams
 ;;     icicle-display-candidates-in-Completions: Act on new option icicle-hide-non-matching-lines-flag.
 ;; 2011/09/02 dadams
@@ -4920,6 +4955,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/09/18 dadams
+;;     icicle-search-highlight-threshold: Added possibility of a t value.
+;;     icicle-image-files-in-Completions: Removed quote for image-only value.
 ;; 2011/09/05 dadams
 ;;     Added: icicle-hide-non-matching-lines-flag.
 ;;     icicle-Completions-toggle-submenu: Added icicle-toggle-hiding-non-matching-lines to menu.
@@ -5532,6 +5570,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/09/14 dadams
+;;     Added: icicle-hist-var.
+;;     icicle-prompt: Changed default value to nil from "".
 ;; 2011/09/05 dadams
 ;;     icicle-general-help-string: Added icicle-hide-non-matching-lines-flag.
 ;;                                 Removed -other-window from *-bookmark-(bookmark-list|desktop).
