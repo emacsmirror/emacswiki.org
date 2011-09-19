@@ -198,6 +198,58 @@ The differences mean that '''Icicles''' Imenu commands do not provide a substitu
 
 
 
+[:SearchingThingAtPointThings]
+=== Searching Thing-At-Point Things ===
+
+Command '''`icicle-search-thing'''' lets you search the content of
+buffer zones whose text represents things of a particular kind:
+`sexp', `defun', `sentence', and so on.
+
+Library [[ThingAtPoint+]] provides many enhancements and some bug
+fixes for the basic `thing-at-point' functionality provided by
+vanilla library ##thingatpt.el##.  I strongly recommend that you use
+it if you use command `icicle-search-thing'.
+
+
+Be aware that the thing-at-point functions have as their main
+purpose to let you retrieve a textual thing at point.  In many
+cases they rely on `forward-THING' functions that do not move past
+the thing if point is already inside it.
+
+One result of this is that in some cases the thing returned is
+composed only of whitespace.  That can sometimes be what you want:
+whitespace text is non-empty text.  But in other cases you are not
+interested in whitespace-only targets.  (This is not specific to
+'''Icicles''' search.)
+
+'''Quiz:''' How would you remove whitespace-only completion candidates?
+By matching them and then [[Icicles - Nutshell View#ChippingAway|complementing]] that match.  A regexp such
+as this matches most of them: '''##\` \n\t]\'##'''.   (You could also include ##\r##, ##\f##, and
+##\v##.)  To get that you would hit these keys:
+
+    \ ` [ SPC C-q C-j C-q TAB ] + \ '
+
+Then, to match the whitespace-only candidates and remove them
+you would hit `##S-TAB C-~ S-TAB##'.
+
+(Be aware, BTW, that character class ##[:space:]## does not match
+newline or carriage-return characters in some common Emacs modes.
+For example, in Emacs-Lisp mode, a newline character has syntax
+class `##comment ender##', and a carriage return character has syntax
+class `symbol'. Character class ##[:space:]## corresponds only to
+characters with syntax class `whitespace'.)
+
+
+
+
+
+
+
+
+
+
+
+
 [:IciclesCompileOrGrep]
 === Compile/Grep Search: `icicle-compilation-search' ===
 
@@ -209,6 +261,14 @@ set of [[search context]]s by typing a regexp.
 
 Using `icicle-compilation-search' with `grep' gives you two levels
 of regexp searching: 1) the `grep' regexp and 2) your current input regexp. And you can of course use [[progressive completion]] (`##M-*##') to add any number of additional levels. (And, starting with Emacs 22, you can pipe to other `grep' commands in the same `M-x grep'.)
+
+
+
+
+
+
+
+
 
 
 ==== Use `grep' and Compilation Output for Search-and-Replace ====
@@ -225,6 +285,12 @@ You can also use a non-`grep' compilation buffer to perform search and replace. 
 '''Icicles''' thus gives you several ways to perform search-and-replace throughout multiple files: `grep'/compilation, `icicle-occur', and `icicle-search'.  The latter is of course not limited to line-by-line search.
 
 '''See Also:''' [[Icicles - Search-And-Replace]].  
+
+
+
+
+
+
 
 
 [:IciclesShell]
@@ -244,6 +310,16 @@ Another '''Icicles''' command, '''`icicle-comint-command'''', which is not a
 search command, does use `comint-input-ring' and does give you completion and cycling against
 previous inputs that might not have come from the current session.
 It is bound to '''`C-c TAB'''' in `comint-mode' and derived modes.
+
+
+
+
+
+
+
+
+
+
 
 
 [:DefineSearchCommands]

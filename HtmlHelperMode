@@ -39,6 +39,8 @@ to
 
   (set-face-foreground 'html-tag-face "dodger blue")))
 
+[new]
+Is anything done with this mode to meet html5?
 
 ----
 CategoryHypermedia CategoryModes

@@ -1185,10 +1185,9 @@ them.  See [[Icicles - Search Commands, Overview]].
 
 User option '''`icicle-search-highlight-threshold'''' controls
 highlighting with face `<tt>[[#icicle-search-main-regexp-others]]</tt>': this
-many matches, maximum, are highlighted.  If zero, then only the
-current match is highlighted. The effect is
-similar to the Emacs 22+ ''lazy search highlighting'' of IncrementalSearch
-(except that the highlighting is not in fact lazy).  See [[Icicles - Search Commands, Overview]].
+many matches, maximum, are highlighted.  If `t' then there is no
+maximum (no limit).  If zero, then only the
+current match is highlighted.  See [[Icicles - Search Commands, Overview]].
 
 
 ----

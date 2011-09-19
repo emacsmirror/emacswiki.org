@@ -146,5 +146,6 @@ undo the filling in files saved by ErcLogging.
         ;; `erc-fill' fills the whole buffer, no need to set region
         (erc-fill)))
 
+: Can I use this somehow to not have filling in my logs but still have filling in windows? -- Samgee
 ----
 [[ERC]]

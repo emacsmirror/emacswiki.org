@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 17 08:36:43 2011 (-0700)
+;; Last-Updated: Sun Sep 18 02:25:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22364
+;;     Update #: 22367
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6183,8 +6183,8 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
     (push sexp sexps)
     (when (interactive-p) (message "Added sexp `%s'" sexp) (sit-for 1)))
   prompt                                ; `completing-read' args
-  (mapcar #'list (icicle-remove-duplicates (symbol-value icicle-hist-var)))
-  nil nil nil icicle-hist-var nil nil
+  (mapcar #'list (icicle-remove-duplicates (symbol-value history)))
+  nil nil nil history nil nil
   ((sexps                                 ()) ; Bindings
    (icicle-use-candidates-only-once-flag  t)
    (prompt                                (or icicle-prompt "Choose sexp (`RET' when done): "))

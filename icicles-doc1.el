@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 10 11:47:15 2011 (-0700)
+;; Last-Updated: Sun Sep 18 01:41:41 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26187
+;;     Update #: 26199
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4684,7 +4684,7 @@
 ;;  * `icicle-Info-goto-node' (`g' in Info)- Trip among Info nodes
 ;;  * `icicle-Info-index' (`i' in Info) - Trip among Info nodes
 ;;  * `icicle-Info-menu' (`m' in Info) - Trip among Info nodes
-;;  * `icicle-locate-file'             - Trip among files
+;;  * `icicle-locate', `icicle-locate-file' - Trip among files
 ;;  * `icicle-occur' (`C-c '')         - Trip among `occur' hits
 ;;                                       (`icicle-search' among
 ;;                                       single-line hits)
@@ -4746,8 +4746,8 @@
 ;;
 ;;  * (@> "Icicles Commands that Read File Names") for information
 ;;    about `icicle-find-file', `icicle-find-file-absolute',
-;;    `icicle-find-file-in-tags-table', `icicle-locate-file', and
-;;    `icicle-recent-file'.
+;;    `icicle-find-file-in-tags-table', `icicle-locate',
+;;    `icicle-locate-file', and `icicle-recent-file'.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Enhancements for Emacs Tags")
 ;;    for information about `icicle-find-first-tag' and
 ;;    `icicle-find-tag'.
@@ -6149,9 +6149,9 @@
 ;;  Icicles commands that use `completing-read' to read file names
 ;;  include the multi-commands `icicle-find-file-absolute',
 ;;  `icicle-find-file-in-tags-table', `icicle-recent-file',
-;;  `icicle-locate-file', and `icicle-locate-file-no-symlinks'.  These
-;;  are defined using `icicle-define-command', not
-;;  `icicle-define-file-command'.
+;;  `icicle-locate', `icicle-locate-file', and
+;;  `icicle-locate-file-no-symlinks'.  These are defined using
+;;  `icicle-define-command', not `icicle-define-file-command'.
 ;;
 ;;  There are also `-other-window' versions of all of the Icicles
 ;;  commands that read file names.
@@ -6192,40 +6192,55 @@
 ;;  You can use `icicle-recent-file' to open any file that you have
 ;;  visited recently, perhaps in a previous Emacs session.
 ;;
-;;  You can use `icicle-locate-file' to find a file when you do not
-;;  know what directory it is in.  It looks throughout a given
-;;  directory, including throughout all of its subdirectories.
-;;  Command `icicle-locate-file-no-symlinks' is the same, except that
-;;  it does not follow symbolic links.  Both of these locate commands
-;;  respect option `icicle-ignored-directories', which is a list of
-;;  directories to ignore - by default, version-control directories.
+;;  You can use `icicle-locate' or `icicle-locate-file' to find a file
+;;  when you do not know what directory it is in.  The former requires
+;;  GNU/Linux or UNIX command `locate', to work.  The latter does not
+;;  require any external program.
+;;
+;;  Because it takes advantage of `locate' having indexed files on you
+;;  file system, `icicle-locate' can be much faster than
+;;  `icicle-locate-file'.  Otherwise, these two Icicles commands work
+;;  similarly.
+;;
+;;  Since it does not use an index, `icicle-locate-file' looks
+;;  throughout a given directory, including throughout all of its
+;;  subdirectories.  Command `icicle-locate-file-no-symlinks' is the
+;;  same, except that it does not follow symbolic links.  Both of
+;;  these commands respect option `icicle-ignored-directories', which
+;;  is a list of directories to ignore - by default, version-control
+;;  directories.
 ;;
 ;;  By default, the target directory for `icicle-locate-file' is the
 ;;  current directory, but if you supply a non-negative numeric prefix
 ;;  argument (non-positive means include the date), then you are
-;;  prompted for the directory to search.  If you use the root of your
-;;  file system as the search directory, then the locate-file commands
-;;  will match completion candidates anywhere in your file system.
+;;  prompted for the directory to search.
+;;
+;;  If you use the root of your file system as the search directory,
+;;  then the Icicles file-locating commands will match completion
+;;  candidates anywhere in your file system.
 ;;
 ;;  This can be quite useful.  It gives you much of the power of the
-;;  Unix `find' command just for completing input!  And with
+;;  Unix `find' command just for completing input.  And with
 ;;  incremental completion (see (@> "Icompletion")), you can see what
 ;;  matches your input as you type.
 ;;
 ;;  Obviously, if you use your entire file system as the set of
-;;  completion candidates, then gathering and matching such a large
-;;  set of file names can take some time.  On my hard drive, for
-;;  instance, there are 36 GB full of files, and it takes about 40
-;;  seconds to gather all of the file names.  In spite of this
-;;  inconvenience, this functionality can be useful.  And of course
-;;  searching a shallower directory tree presents less of a
-;;  performance penalty - you pay for what you get.
+;;  completion candidates and you use `icicle-locate-file' (because
+;;  you do not have available the external program `locate'), then
+;;  gathering and matching such a large set of file names can take
+;;  some time.
 ;;
-;;  There is a way, however, of having your cake and eating it too.
-;;  You can gather all of the file names in your file system once, and
-;;  save that list of completion candidates to a cache file on disk,
-;;  as a snapshot.
-;;  See (@> "Persistent Sets of Completion Candidates"), for how to do
+;;  On my hard drive, for instance, there are 36 GB full of files, and
+;;  it takes about 40 seconds to gather all of the file names.  In
+;;  spite of this inconvenience, this functionality can be useful.
+;;  And of course searching a shallower directory tree presents less
+;;  of a performance penalty - you pay for what you get.
+;;
+;;  However, even if you do not have command `locate', there is a way
+;;  of having your cake and eating it too.  You can gather all of the
+;;  file names in your file system once, and save that list of
+;;  completion candidates to a cache file on disk, as a snapshot.  See
+;;  (@> "Persistent Sets of Completion Candidates"), for how to do
 ;;  this.
 ;;
 ;;(@* "Absolute File Names and Different Directories")

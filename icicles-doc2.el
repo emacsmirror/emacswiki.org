@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 10 11:54:56 2011 (-0700)
+;; Last-Updated: Sun Sep 18 17:54:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28247
+;;     Update #: 28277
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -206,6 +206,7 @@
 ;;      (@> "Imenu Commands that Search Full Definitions")
 ;;      (@> "Icicles Imenu Combines Benefits of Imenu and Emacs Tags")
 ;;
+;;    (@* "Searching Thing-At-Point Things")
 ;;    (@> "Compile/Grep Search")
 ;;    (@> "Input Reuse in Interactive Interpreter Modes")
 ;;    (@> "Define Your Own Icicles Search Commands")
@@ -591,6 +592,8 @@
 ;;     the part that matches your input is highlighted in face
 ;;     `icicle-search-current-input'.  All other search contexts are
 ;;     also highlighted (in face `icicle-search-main-regexp-others').
+;;     The effect is similar to the Emacs 22+ lazy search highlighting
+;;     of Isearch (except that the highlighting is not in fact lazy).
 ;;
 ;;  13. User option `icicle-search-highlight-all-current-flag'
 ;;     controls whether the input matches are highlighted within each
@@ -880,8 +883,8 @@
 ;;    `C-prior').
 ;;
 ;;  It can sometimes be useful to highlight all regexp matches using a
-;;  large value of `icicle-search-highlight-threshold' and a `nil'
-;;  value of `icicle-search-cleanup-flag', and then set
+;;  large (or `t') value of `icicle-search-highlight-threshold' and a
+;;  `nil' value of `icicle-search-cleanup-flag', and then set
 ;;  `icicle-search-highlight-threshold' to zero and use an Icicles
 ;;  search function again with a different regexp to search through
 ;;  the same region or buffer.  This lets you see the relation between
@@ -1444,6 +1447,46 @@
 ;;  situations.
 ;;
 ;;  See Also: (@> "Icicles Enhancements for Emacs Tags")
+;;
+;;(@* "Searching Thing-At-Point Things")
+;;  ** Searching Thing-At-Point Things **
+;;
+;;  Command `icicle-search-thing' lets you search the content of
+;;  buffer zones whose text represents things of a particular kind:
+;;  `sexp', `defun', `sentence', and so on.
+;;
+;;  Library `thingatpt+.el' provides many enhancements and some bug
+;;  fixes for the basic `thing-at-point' functionality provided by
+;;  vanilla library `thingatpt.el'.  I strongly recommend that you use
+;;  it if you use command `icicle-search-thing'.
+;;
+;;  Be aware that the thing-at-point functions have as their main
+;;  purpose to let you retrieve a textual thing at point.  In many
+;;  cases they rely on `forward-THING' functions that do not move past
+;;  the thing if point is already inside it.
+;;
+;;  One result of this is that in some cases the thing returned is
+;;  composed only of whitespace.  That can sometimes be what you want:
+;;  whitespace text is non-empty text.  But in other cases you are not
+;;  interested in whitespace-only targets.  (This is not specific to
+;;  Icicles search.)
+;;
+;;  Quiz: How would you remove whitespace-only completion candidates?
+;;  By matching them and then complementing that match.  A regexp such
+;;  as this matches most of them: "\` \n\t]\'".  (You could also
+;;  include \r, \f, and \v.)  To get that you would hit these keys:
+;;
+;;    \ ` [ SPC C-q C-j C-q TAB ] + \ '
+;;
+;;  Then, to match the whitespace-only candidates and remove them you
+;;  would hit `S-TAB C-~ S-TAB'.
+;;
+;;  (Be aware, BTW, that character class [:space:] does not match
+;;  newline or carriage-return characters in some common Emacs modes.
+;;  For example, in Emacs-Lisp mode, a newline character has syntax
+;;  class `comment ender', and a carriage return character has syntax
+;;  class `symbol'.  Character class [:space:] corresponds only to
+;;  characters with syntax class `whitespace'.)
 ;;
 ;;(@* "Compile/Grep Search")
 ;;  ** Compile/Grep Search **
@@ -5217,10 +5260,9 @@
 ;;
 ;;  * User option `icicle-search-highlight-threshold' controls
 ;;    highlighting with face `icicle-search-main-regexp-others': this
-;;    many matches, maximum, are highlighted.  If zero, then only the
-;;    current match is highlighted.  The effect is similar to the
-;;    Emacs 22+ lazy search highlighting of Isearch (except that the
-;;    highlighting is not in fact lazy).
+;;    many matches, maximum, are highlighted.  If `t' then there is no
+;;    maximum (no limit).  If zero, then only the current match is
+;;    highlighted.
 ;;
 ;;  * Non-`nil' user option `icicle-search-highlight-all-current-flag'
 ;;    means highlight the current input match in all main search hits

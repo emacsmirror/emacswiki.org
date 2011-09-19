@@ -894,6 +894,18 @@ But I still don't see it. Normal spaces are displayed as intented by whitespace.
 : Now, if you are only testing, use ##setq## instead of ##defcustom##, reevaluate the region containing ##setq## (##M-x eval-region RET##), go to the file containing ##?\x200B## characters, turn off WhiteSpace (because it is using the old ##whitespace-display-mappings## value), and turn on WhiteSpace (now use the new ##whitespace-display-mappings## value).
 : -- ViniciusJoseLatorre
 
+
+----
+
+[new]
+
+Hi! I have what I think is a bug with whitespace-newline-mode in Emacs 24. When I start it with -Q and then do M-x whitespace-newline-mode twice, it does not get disabled. I discovered this because I tried to duplicate the source of whitespace-newline-mode to make a whitespace-longline-mode mode, and originally thought it was my own bug. It appears it isn't.
+-- Sarah
+
+
+[new:DrewAdams:2011-09-18 23:35 UTC]
+Yup, looks like a bug. Please file a report: `M-x report-emacs-bug'. -- DrewAdams
+
 ----
 
 CategoryCode,

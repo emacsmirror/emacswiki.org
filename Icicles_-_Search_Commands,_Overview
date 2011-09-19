@@ -50,7 +50,7 @@ on the fly to match different sets of lines.
 Another, major advantage is that you can use [[progressive completion]] to find lines using multiple regexps.  A similar,
 but less interactive, effect can be had using chained `grep'
 commands, but it is otherwise not possible with other search
-methods such as regexp Isearch.  A regexp simply cannot express
+methods such as [[regexp]] [[Isearch]].  A regexp simply cannot express
 intersection ("and") except in the limited form of "followed by".
 
 Here's a screenshot of using `icicle-occur' to find lines that match the regexp `##regexp.*match##'. The text matching the input regexp is highlighted with green. The line highlighted with pink corresponds to the current candidate during cycling (with `C-next'). The current cycling candidate is shown in the [[minibuffer]] and is highlighted in `*Completions*'.
@@ -283,7 +283,8 @@ replacement string; it is used thereafter.  You can use
 
 # When you visit a search context (using `C-mouse-2' or
 `C-down', for example), the part of the candidate that matches
-your input is highlighted.  An entire search context is highlighted in [[face]] '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-current|icicle-search-main-regexp-current]]</tt>'''', and the part that matches your input is highlighted in face '''`<tt>[[Icicles - Customization and General Tips#icicle-search-current-input|icicle-search-current-input]]</tt>''''.    All other search contexts are also highlighted (in face '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-others|icicle-search-main-regexp-others]]</tt>'''').  
+your input is highlighted.  An entire search context is highlighted in [[face]] '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-current|icicle-search-main-regexp-current]]</tt>'''', and the part that matches your input is highlighted in face '''`<tt>[[Icicles - Customization and General Tips#icicle-search-current-input|icicle-search-current-input]]</tt>''''.    All other search contexts are also highlighted (in face '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-others|icicle-search-main-regexp-others]]</tt>'''').  The effect is similar to the Emacs 22+ lazy search highlighting
+of [[Isearch]] (except that the highlighting is not in fact lazy).
 
 # User option '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>''''
 controls whether the input matches are highlighted within each
@@ -577,11 +578,18 @@ current command again.
   `C-prior').
 
 It can sometimes be useful to highlight all regexp matches using
-a large value of `icicle-search-highlight-threshold' and a `nil' value of 
+a large (or `t') value of `icicle-search-highlight-threshold' and a `nil' value of 
 `icicle-search-cleanup-flag', and then set `icicle-search-highlight-threshold' to zero and use an '''Icicles''' search function 
 again with a different regexp to search through the same region or
 buffer.  This lets you see the relation between the two sets of
 regexp matches.
+
+
+
+
+
+
+
 
 
 
