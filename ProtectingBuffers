@@ -33,5 +33,16 @@ In case you need a function to kill a buffer protected by protbuf.el, here is on
 }}}
 
 This function also works with protbuf-by-name.el.
+
+
+===keep-buffers===
+
+[https://github.com/lewang/le_emacs_libs/blob/master/keep-buffers.el github]
+
+  * Simpler and more robust than above.
+  * Protect buffers by regexp.
+  * Protected buffers can be buried when killed or have their contents erased prior to burial.  Erasure can be undone. 
+
+It's like 10 lines of real code.
 ----
 CategoryBufferSwitching

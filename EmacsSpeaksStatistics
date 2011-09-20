@@ -123,6 +123,9 @@ Although R functions are no "headings" really, I still imagine this could be a n
 
 -- Sven
 
+== Working with brew syntax files including R and HTML code ==
+
+Find html-brew.el at https://gist.github.com/1094918 .
 
 == Question: ==
 [new]

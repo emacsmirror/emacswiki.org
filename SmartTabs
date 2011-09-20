@@ -21,7 +21,8 @@ This page provides code which improves on Emacs' auto-indenting, so that wheneve
 [:Implementations]
 == Code ==
 
-: ''This should probably be packaged to make things easier. <tt>[http://gist.github.com/188961 smart-tabs.el]</tt>, anyone?''
+: ''This should probably be packaged to make things easier. <tt>[http://gist.github.com/188961 smart-tabs.el]</tt>, anyone?
+See <tt>[http://github.com/jcsalomon/smarttabs jcsalomon/smarttabs]</tt> on GitHub where I’ve merged all the branches I could find.''
 
 Add the code below to <tt>[InitFile .emacs]</tt> to make Emacs insert the proper amount of tabs and spaces automatically, provided ##indent-tabs-mode## is not disabled (see [[#Toggling|toggling]]). Then, to indent ''and'' align, just press '##<tab>##' as usual.
 

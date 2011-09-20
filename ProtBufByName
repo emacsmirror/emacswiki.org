@@ -3,3 +3,6 @@ This addon to ProtBuf is used for ProtectingBuffers with certain names, or match
 Lisp:protbuf-by-name.el
 
 Install this library and ProtBuf, load it, then M-x customize-group protect-buffer.
+
+
+See also [https://github.com/lewang/le_emacs_libs/blob/master/keep-buffers.el keep-buffers], which is 10 lines of code, not 2 libraries.

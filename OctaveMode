@@ -162,3 +162,6 @@ advantage of it in Emacs:
                              (listify-key-sequence key))))))))))
 
 -- SeanO
+
+This is great. But for me the completion buffer doesn't disappear when I make a choice or hit tab (sometimes it does when I hit space). Is there a way to make it disappear after typing the next character?
+-- [[WCBeard]]

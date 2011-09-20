@@ -35,6 +35,7 @@
          ;; Icicles.
          ("icicles" 21 5
           (
+           "http://www.emacswiki.org/emacs/download/ring+.el" ; Extensions to `ring.el'
            "http://www.emacswiki.org/emacs/download/col-highlight.el" ; Column highlighting
            "http://www.emacswiki.org/emacs/download/crosshairs.el" ; Crosshairs highlighting
            "http://www.emacswiki.org/emacs/download/doremi.el" ; Change *Completions* display incrementally
