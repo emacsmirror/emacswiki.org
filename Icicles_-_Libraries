@@ -40,7 +40,7 @@ in your `load-path', otherwise ignored).  They are enhanced by '''Icicles''', or
 
 
 ||<tt>[[apropos-fn+var.el]]</tt> ||Apropos enhancements for functions and [[variable]]s. ||
-||<tt>[[bookmark+.el]]</tt> ||Many bookmark enhancements. See '''[[Bookmark+]]''' and [[Icicles - Bookmark Enhancements]].||
+||<tt>[[bookmark+.el]]</tt> etc.||Many bookmark enhancements. See '''[[Bookmark+]]''' and [[Icicles - Bookmark Enhancements]].||
 ||<tt>[[col-highlight.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentColumn.||
 ||<tt>[[crosshairs.el]]</tt> ||Highlight target positions -- see CrosshairHighlighting.||
 ||<tt>[[doremi.el]]</tt>, <tt>[[doremi-frm.el]]</tt> ||Incremental changes -- see [[Icicles - Completions Display]], [[Icicles - Fuzzy Completion#SwankCompletion|Icicles - Fuzzy Symbol Completion]], and [[option]] <tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>.||

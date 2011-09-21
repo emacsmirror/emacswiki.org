@@ -54,6 +54,10 @@ environment.  That way you'll get maximum buffer size of 2^62 bytes, and large f
 
 Good luck with editing those files, by the way.
 
+== Viewing Overly Large Files ==
+
+See [[vlf.el]] for a method of viewing awkwardly large files (larger than physical, virtual, or whatever limit you choose for performance issues) a portion at a time.
+
 ----
 CategoryBuilding
 

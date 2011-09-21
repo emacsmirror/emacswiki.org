@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 01:41:41 2011 (-0700)
+;; Last-Updated: Tue Sep 20 07:48:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26199
+;;     Update #: 26201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -69,7 +69,10 @@
 ;;    http://www.emacswiki.org/cgi-bin/wiki/ElispArea.
 ;;
 ;;     `apropos-fn+var.el' - Apropos enhancements for fns and vars.
-;;     `bookmark+.el'      - Many bookmark enhancements.
+;;     `bookmark+.el' etc. - Many bookmark enhancements.  Includes:
+;;                           `bookmark+-1.el', `bookmark+-bmu.el',
+;;                           `bookmark+-doc.el', `bookmark+-key.el',
+;;                           `bookmark+-lit.el', `bookmark+-mac.el'.
 ;;     `col-highlight.el'  - Required by `crosshairs.el'.  Emacs 22+
 ;;     `crosshairs.el'     - Highlight target positions.  Emacs 22+
 ;;     `doremi.el' and

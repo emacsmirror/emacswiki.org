@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 02:25:35 2011 (-0700)
+;; Last-Updated: Tue Sep 20 07:17:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22367
+;;     Update #: 22373
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6130,7 +6130,7 @@ Ido-like behavior."                     ; Doc string
   "Return a multi-completion candidate: FILE + last modification date."
   (list (list file (format-time-string "%Y %m %d %T " (nth 5 (file-attributes file))))))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-string-list "icicles-cmd1.el")
 (icicle-define-command icicle-string-list ; Command name
   "Choose a list of strings.  The list is returned.
 You can choose from strings used previously or enter new strings.
@@ -6171,7 +6171,7 @@ custom type is compatible with type `string'." ; Doc string
   (prog1 (setq strings  (nreverse (delete "" strings))) ; Last code - return the list of strings.
     (when (interactive-p) (message "Strings: %S" strings))))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-sexp-list "icicles-cmd1.el")
 (icicle-define-command icicle-sexp-list ; Command name
   "Choose a list of sexps.  The list is returned.
 The list entries are Lisp objects, not strings (unless you use \"...\").
@@ -6196,7 +6196,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
 
 ;;;###autoload
 (defalias 'icicle-regexp-list 'icicle-keyword-list)
-;;;###autoload (autoload 'icicle-keyword-list "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-keyword-list "icicles-cmd1.el")
 (icicle-define-command icicle-keyword-list ; Command name
   "Choose a list of keywords. The list of keywords (strings) is returned.
 Each keyword is a regexp.  The regexps are OR'd, and the resulting

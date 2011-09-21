@@ -78,4 +78,4 @@ With osd_cat (package xosd-bin from debian) the function is similar:
 			     msg vpos hpos font delay)))))
 </pre>
 
-Olaf Dietsche
+-- OlafDietsche

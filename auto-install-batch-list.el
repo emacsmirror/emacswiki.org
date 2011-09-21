@@ -35,18 +35,10 @@
          ;; Icicles.
          ("icicles" 21 5
           (
-           "http://www.emacswiki.org/emacs/download/ring+.el" ; Extensions to `ring.el'
-           "http://www.emacswiki.org/emacs/download/col-highlight.el" ; Column highlighting
-           "http://www.emacswiki.org/emacs/download/crosshairs.el" ; Crosshairs highlighting
-           "http://www.emacswiki.org/emacs/download/doremi.el" ; Change *Completions* display incrementally
-           "http://www.emacswiki.org/emacs/download/hexrgb.el" ; Color manipulation
-           "http://www.emacswiki.org/emacs/download/hl-line+.el" ; Line highlighting
+           ;; Required ----------------------------------------
            "http://www.emacswiki.org/emacs/download/icicles.el" ; Main library
-           "http://www.emacswiki.org/emacs/download/icicles-chg.el" ; Change logs
            "http://www.emacswiki.org/emacs/download/icicles-cmd1.el" ; Top-level Icicles commands, part 1
            "http://www.emacswiki.org/emacs/download/icicles-cmd2.el" ; Top-level Icicles commands, part 2
-           "http://www.emacswiki.org/emacs/download/icicles-doc1.el" ; Doc, part 1
-           "http://www.emacswiki.org/emacs/download/icicles-doc2.el" ; Doc, part 2
            "http://www.emacswiki.org/emacs/download/icicles-face.el" ; Faces
            "http://www.emacswiki.org/emacs/download/icicles-fn.el" ; Non-interactive functions
            "http://www.emacswiki.org/emacs/download/icicles-mac.el" ; Macros
@@ -54,28 +46,53 @@
            "http://www.emacswiki.org/emacs/download/icicles-mode.el" ; Icicle (Icy) mode
            "http://www.emacswiki.org/emacs/download/icicles-opt.el" ; User options
            "http://www.emacswiki.org/emacs/download/icicles-var.el" ; Internal variables
-           "http://www.emacswiki.org/emacs/download/icomplete+.el" ; Enhancements to `icomplete.el'
-           "http://www.emacswiki.org/emacs/download/lacarte.el" ; Menu-bar access from keyboard
-           "http://www.emacswiki.org/emacs/download/synonyms.el" ; Look up synonyms
-           "http://www.emacswiki.org/emacs/download/vline.el" ; Column highlighting
-           ;; Optional:
-           ;; "http://www.emacswiki.org/emacs/download/apropos-fn+var.el" ; `apropos' enhancements
-           ;; "http://www.emacswiki.org/emacs/download/bookmark+.el" ; Bookmark enhancements
-           ;; "http://www.emacswiki.org/emacs/download/dired+.el" ; Dired enhancements
-           ;; "http://www.emacswiki.org/emacs/download/doremi-frm.el" ; Zoom *Completions*
-           ;; "http://www.emacswiki.org/emacs/download/ffap-.el" ; Extensions to ffap.el
-           ;; "http://www.emacswiki.org/emacs/download/fit-frame.el" ; Fit frames to their (sole) buffers
-           ;; "http://www.emacswiki.org/emacs/download/fuzzy-match.el" ; Fuzzy matching
-           ;; "http://www.emacswiki.org/emacs/download/info+.el" ; Info enhancements
-           ;; "http://www.emacswiki.org/emacs/download/linkd.el" ; Provides hypertext links for Icicles doc
-           ;; "http://www.emacswiki.org/emacs/download/menu-bar+.el" ; Menu-bar menus (Apropos, Describe, Frames, Tags)
-           ;; "http://www.emacswiki.org/emacs/download/misc-cmds.el" ; Clear search history.  Kill buffer deletes window.
-           ;; "http://www.emacswiki.org/emacs/download/palette.el" ; Pick up foreground/background color
-           ;; "http://www.emacswiki.org/emacs/download/pp+.el" ; Enhanced version of `pp-eval-expression', for `M-:'
 
-           ;; "http://www.emacswiki.org/emacs/download/thingatpt+.el" ; Use names near, not just at, point as defaults
-           ;; "http://www.emacswiki.org/emacs/download/wid-edit+.el" ; Color widget for Customize
+           ;; Optional, loaded by default ---------------------
+           "http://www.emacswiki.org/emacs/download/apropos-fn+var.el" ; `apropos' enhancements
+           "http://www.emacswiki.org/emacs/download/hexrgb.el" ; Color manipulation
+           "http://www.emacswiki.org/emacs/download/icicles-chg.el" ; Change logs
+           "http://www.emacswiki.org/emacs/download/icicles-doc1.el" ; Doc, part 1 (comments only)
+           "http://www.emacswiki.org/emacs/download/icicles-doc2.el" ; Doc, part 2 (comments only)
+           "http://www.emacswiki.org/emacs/download/lacarte.el" ; Menu-bar access from keyboard
+           "http://www.emacswiki.org/emacs/download/mb-depth+.el" ; Extensions to `mb-depth.el'
+           "http://www.emacswiki.org/emacs/download/thingatpt+.el" ; Extensions to `thingatpt.el'
+           ;; These belong together:
+           "http://www.emacswiki.org/emacs/download/crosshairs.el" ; Crosshairs highlighting
+           "http://www.emacswiki.org/emacs/download/hl-line+.el" ; Extensions to `hl-line.el'
+           "http://www.emacswiki.org/emacs/download/col-highlight.el" ; Column highlighting
+           "http://www.emacswiki.org/emacs/download/vline.el" ; Column highlighting
+           ;; These belong together:
+           "http://www.emacswiki.org/emacs/download/doremi.el" ; Change *Completions* display incrementally
+           "http://www.emacswiki.org/emacs/download/ring+.el" ; Extensions to `ring.el'
+           ;; These belong together:
+           "http://www.emacswiki.org/emacs/download/doremi-frm.el" ; Zoom *Completions*
+           "http://www.emacswiki.org/emacs/download/faces+.el" ; Extensions to `faces.el'
+           "http://www.emacswiki.org/emacs/download/frame-fns.el" ; Frame functions
+
+           ;; Optional, not loaded by default -----------------
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+.el" ; Extensions to `bookmark.el'.  With:
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+-1.el"
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+-bmu.el"
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+-doc.el"
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+-key.el"
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+-lit.el"
+            ;; "http://www.emacswiki.org/emacs/download/bookmark+-mac.el"
+           ;; "http://www.emacswiki.org/emacs/download/dired+.el" ; Dired enhancements
+           ;; "http://www.emacswiki.org/emacs/download/ffap-.el" ; Extensions to `ffap.el'
+           ;; "http://www.emacswiki.org/emacs/download/fit-frame.el" ; Fit frames to their (sole) buffers
+           ;; "http://www.emacswiki.org/emacs/download/frame-cmds.el" ; Frame commands
+           ;; "http://www.emacswiki.org/emacs/download/fuzzy-match.el" ; Fuzzy matching
+           ;; "http://www.emacswiki.org/emacs/download/icomplete+.el" ; Enhancements to `icomplete.el'
+           ;; "http://www.emacswiki.org/emacs/download/info+.el" ; Extensions to `info.el'
+           ;; "http://www.emacswiki.org/emacs/download/linkd.el" ; Provides hypertext links for Icicles doc
+           ;; "http://www.emacswiki.org/emacs/download/menu-bar+.el" ; Extensions to `menu-bar.el'
+           ;; "http://www.emacswiki.org/emacs/download/misc-cmds.el" ; Miscellaneous commands
+           ;; "http://www.emacswiki.org/emacs/download/palette.el" ; Pick up foreground/background color
+           ;; "http://www.emacswiki.org/emacs/download/pp+.el" ; Extensions to `pp.el'
+           ;; "http://www.emacswiki.org/emacs/download/synonyms.el" ; Look up synonyms (thesaurus)
+           ;; "http://www.emacswiki.org/emacs/download/wid-edit+.el" ; Extensions to `wid-edit.el'
            ))
+
          ;; AutoComplete development version.
          ("auto-complete development version" nil nil
           (

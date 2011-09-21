@@ -94,6 +94,24 @@ Screenshot, where "ov" is replaced with "moccur-ov":
 
 http://www.bookshelf.jp/emacswiki/moccur-edit.png
 
+=== restrict moccur search to current major mode ===
+
+The following function does the same thing as moccur, but the search is restricted to
+buffers with the same major mode as the current buffer. 
+
+ (defun moccur-in-same-major-mode ()
+  "MOccur, but restricts search to buffers with the same major mode as
+ the current buffer."
+  (interactive)
+  (let ((buf-names nil)
+        (current-major-mode major-mode))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (eql major-mode current-major-mode)
+          (push (buffer-name buf) buf-names))))
+    (let ((*moccur-buffer-name-inclusion-list* (list (regexp-opt buf-names))))
+      (call-interactively 'moccur))))
+
 == grep-buffers ==
 
 M-x grep-buffers

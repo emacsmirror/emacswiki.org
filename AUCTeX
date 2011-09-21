@@ -335,6 +335,15 @@ http://permalink.gmane.org/gmane.emacs.auctex.general/4074
 
 Finally, in your .tex buffer you need to do M-x TeX-source-correlate-mode so that the synctex information is written when you compile your documents.
 
+== Evince (and other viewers) in 11.85 (Debian Squeeze) ==
+AUCTeX 11.85 does this differently than later versions.  All viewers are set with the TeX-output-view-style variable:
+{{{
+(setq TeX-output-view-style
+      (quote
+       (("^pdf$" "." "evince -f %o")
+        ("^html?$" "." "iceweasel %o"))))
+}}}
+for example.  (Solution based on code here: https://cosinepi.wordpress.com/2010/09/10/emacs-configurations-auctex/ which was designed for windows configuration.)
 
 == Discussion ==
 
