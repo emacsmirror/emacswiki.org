@@ -30,7 +30,7 @@ See also ReplaceRegexp, IncrementNumber and RenumberList for additional details.
 
 
 [new:DrewAdams:2007-04-29 04:12 UTC]
-In Emacs 22, you can just use '''`<tt>\#</tt>'''' in the replacement string of `query-replace', to get the number of the current replacement. Use that to increment instead of using ##(format "%03d" replace-count)## with `query-replace-regexp-eval'.  You can also use '''`<tt>\#</tt>'''' in a replacement string in [[Icicles]] -- see [[Icicles - Search-And-Replace]]. -- DrewAdams
+In Emacs 22, you can just use '''`<tt>\#</tt>'''' in the replacement string of `query-replace-regexp', to get the number of the current replacement. Use that to increment instead of using ##(format "%03d" replace-count)## with `query-replace-regexp-eval'.  You can also use '''`<tt>\#</tt>'''' in a replacement string in [[Icicles]] -- see [[Icicles - Search-And-Replace]]. -- DrewAdams
 
 ----
 

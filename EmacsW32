@@ -1275,6 +1275,16 @@ Can someone more familiar with the release procedure confirm whether this is in 
 It is not in the released 23.1.
 It will be in the next release.
 
+[new]
+At least for now, you have to set the application identifier in your shortcut yourself.
+
+You can use the tool at 
+http://code.google.com/p/win7appid/
+
+Set the AppID for your shortcut to runemacs.exe to be GNU.Emacs and it works for me on GNU Emacs 23.3.1 (i386-mingw-nt6.1.7601).
+
+MichaelHoffman
+
 === Bug in w32shell.el ===
 
 Hi, I think I found a bug in w32shell.el, in /EmacsW32/ version: "GNU Emacs 23.1.50.1 (i386-mingw-nt6.0.6002) of 2009-11-04 on LENNART-69DE564 (patched)".

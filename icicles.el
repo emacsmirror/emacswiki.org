@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 01:28:44 2011 (-0700)
+;; Last-Updated: Wed Sep 21 11:46:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22987
+;;     Update #: 22989
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -272,14 +272,14 @@
 ;;    `icicle-lisp-complete-symbol', `icicle-locate',
 ;;    `icicle-locate-file', `icicle-locate-file-no-symlinks',
 ;;    `icicle-locate-file-no-symlinks-other-window',
-;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
-;;    `icicle-next-visible-thing', `icicle-object-action',
-;;    `icicle-occur', `icicle-other-window-or-frame',
-;;    `icicle-pick-color-by-name', `icicle-plist',
-;;    `icicle-pop-tag-mark', `icicle-pp-eval-expression',
-;;    `icicle-previous-visible-thing', `icicle-read-color',
-;;    `icicle-read-kbd-macro', `icicle-recent-file',
-;;    `icicle-recent-file-other-window',
+;;    `icicle-locate-file-other-window', `icicle-locate-other-window',
+;;    `icicle-mode', `icy-mode', `icicle-next-visible-thing',
+;;    `icicle-object-action', `icicle-occur',
+;;    `icicle-other-window-or-frame', `icicle-pick-color-by-name',
+;;    `icicle-plist', `icicle-pop-tag-mark',
+;;    `icicle-pp-eval-expression', `icicle-previous-visible-thing',
+;;    `icicle-read-color', `icicle-read-kbd-macro',
+;;    `icicle-recent-file', `icicle-recent-file-other-window',
 ;;    `icicle-recompute-shell-command-candidates',
 ;;    `icicle-regexp-list', `icicle-remove-buffer-candidate',
 ;;    `icicle-remove-buffer-config',
@@ -945,6 +945,7 @@
 ;;    `icicle-local-keys-first-p', `icicle-locate-file-1',
 ;;    `icicle-locate-file-action',
 ;;    `icicle-locate-file-other-window-action',
+;;    `icicle-locate-file-use-locate-p',
 ;;    `icicle-looking-at-anychar-regexp-p',
 ;;    `icicle-looking-back-at-anychar-regexp-p',
 ;;    `icicle-major-mode-name-less-p', `icicle-make-color-candidate',

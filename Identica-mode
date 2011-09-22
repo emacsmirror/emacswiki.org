@@ -2,7 +2,7 @@ GNU Emacs mode for laconi.ca microblogging service. You can view your friend's u
 
 Works with Emacs23 and has support for groups and tags, and highlights replies for better reading.
 
-Instructions and download at [http://blog.gabrielsaldana.org/identica-mode-for-emacs/|http://blog.gabrielsaldana.org/identica-mode-for-emacs/] or get the elisp file only at: Lisp:identica-mode.el.
+Instructions and download at [http://blog.gabrielsaldana.org/identica-mode-for-emacs/|http://blog.gabrielsaldana.org/identica-mode-for-emacs/] or get the elisp file only at: Lisp:identica-mode.el. &lt;&lt;&lt; way out of date
 
 Also hosted on savannah: [http://savannah.nongnu.org/projects/identica-mode/|http://savannah.nongnu.org/projects/identica-mode/]
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Apr 25 10:34:37 2011 (-0700)
+;; Last-Updated: Wed Sep 21 19:15:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 582
+;;     Update #: 592
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -59,6 +59,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/09/21 dadams
+;;     update-dired-files-count: Ignore any error when adding mouse-face.
 ;; 2011/04/25 dadams
 ;;     Removed: describe-file, dired(-mouse)-describe-file.
 ;;     dired-list-directory: raise error if describe-file not defined.
@@ -283,6 +285,7 @@ documentation for additional customization information."
 ;;;###autoload
 (defun switch-to-buffer-other-frame (buffer &optional norecord)
   "Switch to buffer BUFFER in another frame.
+The same frame will be used only if there is no other choice.
 Optional second arg NORECORD non-nil means
 do not put this buffer at the front of the list of recently selected ones.
 
@@ -651,6 +654,7 @@ and `..'."
                         end t))))
         (if dots-p (- (count-lines beg end) 2) (count-lines beg end))))))
 
+
 (add-hook 'dired-after-readin-hook 'update-dired-files-count)
 (defun update-dired-files-count ()
   "Update file count in Dired header for each directory listed."
@@ -672,11 +676,14 @@ and `..'."
                               (- (length (directory-files default-directory
                                                           nil nil t)) 2)))
                            nil nil nil 2)
-            (add-text-properties
-             (save-excursion (beginning-of-line) (+ 2 (point))) (match-end 2)
-             `(mouse-face highlight keymap ,map
-               help-echo "Files shown / total files in directory \
-\[RET, mouse-2: more info]")))
+            ;; Ignore any error, e.g. from `dired-details.el' hiding text.
+            (condition-case nil
+                (add-text-properties
+                 (save-excursion (beginning-of-line) (+ 2 (point))) (match-end 2)
+                 `(mouse-face highlight keymap ,map
+                   help-echo "Files shown / total files in directory \
+\[RET, mouse-2: more info]"))
+              (error nil)))
           (set-buffer-modified-p nil))))))
 
 ;;;###autoload

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 20 07:17:15 2011 (-0700)
+;; Last-Updated: Wed Sep 21 18:39:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22373
+;;     Update #: 22420
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -189,6 +189,7 @@
 ;;    (+)`icicle-locate-file-no-symlinks',
 ;;    (+)`icicle-locate-file-no-symlinks-other-window',
 ;;    (+)`icicle-locate-file-other-window',
+;;    (+)`icicle-locate-other-window',
 ;;    (+)`icicle-other-window-or-frame', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', (+)`icicle-recent-file',
 ;;    (+)`icicle-recent-file-other-window',
@@ -252,7 +253,8 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-locate-file-action-fn',
-;;    `icicle-locate-file-no-symlinks-p'.
+;;    `icicle-locate-file-no-symlinks-p',
+;;    `icicle-locate-file-use-locate-p'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dabbrev.el' have
@@ -899,13 +901,12 @@ argument."
     (if (memq success '(sole shortest))
         (let* ((var           (shell-match-partial-variable))
                (variable      (substring var (string-match "[^$({]" var)))
-               (protection    (cond ((string-match "{" var) "}")
-                                    ((string-match "(" var) ")")
-                                    (t "")))
-               (suffix        (cond ((null addsuffix) "")
-                                    ((file-directory-p
-                                      (comint-directory (getenv variable))) "/")
-                                    (t " "))))
+               (protection    (cond ((string-match "{" var)                                    "}")
+                                    ((string-match "(" var)                                    ")")
+                                    (t                                                         "")))
+               (suffix        (cond ((null addsuffix)                                          "")
+                                    ((file-directory-p (comint-directory (getenv variable)))   "/")
+                                    (t                                                         " "))))
           (insert protection  suffix)))
     success))
 
@@ -5349,8 +5350,7 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-hiding-common-match]' to hide the common match portion of
+Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -5393,7 +5393,7 @@ Ido-like behavior."                     ; Doc string
    ((prompt                             "File or dir (absolute): ")
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
-                                                          (concat file "/")
+                                                          (file-name-as-directory file)
                                                         file))
                                           ,(if current-prefix-arg
                                                '(icicle-make-file+date-candidate file)
@@ -5427,7 +5427,7 @@ Ido-like behavior."                     ; Doc string
    ((prompt                             "File or dir (absolute): ")
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
-                                                          (concat file "/")
+                                                          (file-name-as-directory file)
                                                         file))
                                           ,(if current-prefix-arg
                                                '(icicle-make-file+date-candidate file)
@@ -5464,7 +5464,7 @@ Ido-like behavior."                     ; Doc string
   (cd dir)
   (let ((icicle-abs-file-candidates
          (mapcar #'(lambda (file)
-                     (setq file  (if (file-directory-p file) (concat file "/") file))
+                     (setq file  (if (file-directory-p file) (file-name-as-directory file) file))
                      (if icicle-list-use-nth-parts (icicle-make-file+date-candidate file) (list file)))
                  (directory-files default-directory 'full nil 'nosort))))
     (setq minibuffer-completion-table
@@ -5609,8 +5609,7 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-hiding-common-match]' to hide the common match portion of
+Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -5654,7 +5653,7 @@ Ido-like behavior."                     ; Doc string
    ((prompt                                 "Recent file (absolute): ")
     (icicle-full-cand-fn                `(lambda (file)
                                               (setq file  (if (file-directory-p file)
-                                                              (concat file "/")
+                                                              (file-name-as-directory file)
                                                             file))
                                               ,(if current-prefix-arg
                                                    '(icicle-make-file+date-candidate file)
@@ -5696,7 +5695,7 @@ Ido-like behavior."                     ; Doc string
    ((prompt                                 "Recent file (absolute): ")
     (icicle-full-cand-fn                    `(lambda (file)
                                               (setq file  (if (file-directory-p file)
-                                                              (concat file "/")
+                                                              (file-name-as-directory file)
                                                             file))
                                               ,(if current-prefix-arg
                                                    '(icicle-make-file+date-candidate file)
@@ -5753,6 +5752,10 @@ Ido-like behavior."                     ; Doc string
 (defvar icicle-locate-file-no-symlinks-p nil
   "Flag bound in `icicle-locate-file* for use by `icicle-files-within'.")
 
+(defvar icicle-locate-file-use-locate-p nil
+  "Flag bound to non-nil in `icicle-locate(-other-window)'.
+Non-nil means `icicle-locate-file-1' uses external command `locate'.")
+
 
 (put 'icicle-locate-file 'icicle-Completions-window-max-height 200)
 ;;;###autoload
@@ -5768,8 +5771,7 @@ The absolute names of all files within the directory and all of its
 subdirectories are targets for completion.  Regexp input is matched
 against all parts of the absolute name, not just the file-name part.
 
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-hiding-common-match]' to hide the common match portion of
+Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -5829,6 +5831,88 @@ does not follow symbolic links."
         (icicle-locate-file-no-symlinks-p  nil))
     (icicle-locate-file-1)))
 
+
+(put 'icicle-locate 'icicle-Completions-window-max-height 200)
+;;;###autoload
+(defun icicle-locate ()
+  "Run the external program `locate', then visit files.
+Unlike `icicle-locate-file' this is a wrapper for the external program
+`locate', which searches an index of files in your file system, which
+is normally created by external program `updatedb'.  Because of this
+indexing, this command can be much faster than `icicle-locate-file'.
+
+`icicle-locate' first prompts for a `locate' search pattern, which it
+passes to `locate'.  The absolute file names that match this pattern
+are targets for Icicles completion.
+
+`icicle-locate' uses settings from library `locate.el' where
+appropriate.  In particular, you can customize
+`locate-make-command-line' to use either regexp matching or file-name
+globbing.  Here is an example of a setup to use regexp matching:
+
+\(setq locate-make-command-line
+      (lambda (ss) (list locate-command \"--regex\" ss)))
+
+Which particular options `locate' accepts, and how matching is
+performed, depend on your operating system and its implementation of
+`locate'.
+
+After you input the `locate' search pattern, normal Icicles input
+pattern matching is available for completion.  This is absolute
+file-name completion, so your input can match any parts of the name,
+including directory components.
+
+Remember that you can use `C-x .' to hide the common match portion of
+each candidate.  That can be particularly helpful for files that are
+in a common directory.
+
+Remember that you can save the set of files matching your input using
+`\\[icicle-candidate-set-save]' or \
+`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
+`\\[icicle-candidate-set-retrieve]' or \
+`\\[icicle-candidate-set-retrieve-persistent]'.
+
+Note that completion here matches candidates as ordinary strings.  It
+knows nothing of file names per se.  In particular, you cannot use
+remote file-name syntax.
+
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir.
+
+These options control candidate matching and filtering:
+
+ `icicle-file-extras'           - Extra file names to display
+ `icicle-file-match-regexp'     - Regexp that file names must match
+ `icicle-file-no-match-regexp'  - Regexp file names must not match
+ `icicle-file-predicate'        - Predicate file names must satisfy
+ `icicle-file-require-match-flag' - See `icicle-require-match-flag'
+ `icicle-file-sort'             - Sort function for candidates
+
+For example, to show only names of files larger than 5000 bytes, set
+`icicle-file-predicate' to:
+
+  (lambda (file) (> (nth 7 (file-attributes file)) 5000))"
+  (interactive)
+  (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
+        (icicle-locate-file-use-locate-p   t))
+    (icicle-locate-file-1)))
+
+;;;###autoload
+(defun icicle-locate-other-window ()
+  "Same as `icicle-locate' except uses another window."
+  (interactive)
+  (let ((icicle-locate-file-action-fn      'icicle-locate-file-other-window-action)
+        (icicle-locate-file-use-locate-p   t))
+    (icicle-locate-file-1)))
+
+
 (put 'icicle-locate-file-no-symlinks 'icicle-Completions-window-max-height 200)
 ;;;###autoload
 (defun icicle-locate-file-no-symlinks ()
@@ -5857,37 +5941,46 @@ does not follow symbolic links."
 ;;;###autoload (autoload 'icicle-locate-file-1 "icicles-cmd1.el")
 (icicle-define-command icicle-locate-file-1
   "Helper function for `icicle-locate-file(-other-window)'." ; Doc string
-  ;; `icicle-locate-file-action-fn' is free here.
+  ;; `icicle-locate-file-action-fn' and `icicle-locate-file-use-locate-p' are free here.
   (lambda (f) (funcall icicle-locate-file-action-fn f)) ; Action function
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File (absolute): ")
-    (dir                                (if (and current-prefix-arg
-                                                 (wholenump (prefix-numeric-value
-                                                             current-prefix-arg)))
-                                            (read-file-name "Locate under which directory: " nil
-                                                            default-directory nil)
-                                          default-directory))
-    (IGNORED--FOR-SIDE-EFFECT           (progn
+    (dir                                (and (not icicle-locate-file-use-locate-p)
+                                             (if (and current-prefix-arg
+                                                      (wholenump (prefix-numeric-value
+                                                                  current-prefix-arg)))
+                                                 (read-file-name "Locate under which directory: " nil
+                                                                 default-directory nil)
+                                               default-directory)))
+    (IGNORED--FOR-SIDE-EFFECT           (unless icicle-locate-file-use-locate-p
                                           (icicle-highlight-lighter)
                                           (message "Gathering files within `%s' (this could take \
 a while)..." dir)))
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
-                                                          (concat file "/")
+                                                          (file-name-as-directory file)
                                                         file))
                                           ,(if (<= (prefix-numeric-value current-prefix-arg) 0)
                                                '(icicle-make-file+date-candidate file)
                                                '(list file))))
-    (icicle-abs-file-candidates         ; `icicle-locate-file-no-symlinks-p' is free here.
+    (icicle-abs-file-candidates
      (mapcar #'(lambda (file)
                  (if (<= (prefix-numeric-value current-prefix-arg) 0)
                      (icicle-make-file+date-candidate file)
                    (list file)))
-             (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
-                                  nil icicle-locate-file-no-symlinks-p)))
+             (if icicle-locate-file-use-locate-p
+                 (let ((current-prefix-arg  nil)
+                       (cands               ()))
+                   (call-interactively #'locate)
+                   (dired-repeat-over-lines
+                    (count-lines (point-min) (point-max))
+                    (lambda () (push (dired-get-filename nil t) cands)))
+                   (nreverse cands))
+               (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
+                                    nil icicle-locate-file-no-symlinks-p))))
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
@@ -5930,77 +6023,6 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
     (setq minibuffer-completion-table
           (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
 
-;;;###autoload (autoload 'icicle-locate "icicles-cmd1.el")
-(icicle-define-command icicle-locate
-  "Run the external program `locate', then visit files.
-Unlike `icicle-locate-file' this is a wrapper for the program
-`locate', which indexes files in your file system.  Because of this
-indexing, this command can be much faster than `icicle-locate-file'.
-
-The absolute names of all indexed files are targets for completion.
-Regexp input is matched against all parts of the absolute name, not
-just the file-name part.
-
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-hiding-common-match]' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
-
-You can use this command to find all files within your file system
-that match a regexp.
-
-See also command `icicle-locate-file-no-symlinks', which does the same
-thing but without following symbolic links.
-
-Remember that you can save the set of files matching your input using
-`\\[icicle-candidate-set-save]' or \
-`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
-`\\[icicle-candidate-set-retrieve]' or \
-`\\[icicle-candidate-set-retrieve-persistent]'.
-
-Note that completion here matches candidates as ordinary strings.  It
-knows nothing of file names per se.  In particular, you cannot use
-remote file-name syntax.
-
-During completion (`*': requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
-  You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
-
-These options control candidate matching and filtering:
-
- `icicle-file-extras'           - Extra file names to display
- `icicle-file-match-regexp'     - Regexp that file names must match
- `icicle-file-no-match-regexp'  - Regexp file names must not match
- `icicle-file-predicate'        - Predicate file names must satisfy
- `icicle-file-require-match-flag' - See `icicle-require-match-flag'
- `icicle-file-sort'             - Sort function for candidates
-
-For example, to show only names of files larger than 5000 bytes, set
-`icicle-file-predicate' to:
-
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))"
-  find-file                             ; Action function
-  "File: " (mapcar #'list               ; `completing-read' args
-                   (if (> emacs-major-version 21)
-                       (split-string (shell-command-to-string
-                                      (mapconcat #'identity
-                                                 (funcall locate-make-command-line query) " "))
-                                     "\n"
-                                     t)
-                     (split-string (shell-command-to-string
-                                    (mapconcat #'identity
-                                               (funcall locate-make-command-line query) " "))
-                                   "\n")))
-  nil t nil 'locate-history-list nil nil
-  (icicle-file-bindings                 ; Bindings
-   ((query (progn (require 'locate) (locate-prompt-for-search-string))))))
-
 
 (put 'icicle-find-file-in-tags-table 'icicle-Completions-window-max-height 200)
 ;;;###autoload (autoload 'icicle-find-file-in-tags-table "icicles-cmd1.el")
@@ -6021,8 +6043,7 @@ directory components).
 `find-file' is called for the candidate(s) you choose, with the
 directory of the tags file as `default-directory'.
 
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-hiding-common-match]' to hide the common match portion of
+Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -6071,7 +6092,7 @@ Ido-like behavior."                     ; Doc string
    ((prompt                             "File (in tags table): ")
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
-                                                          (concat file "/")
+                                                          (file-name-as-directory file)
                                                         file))
                                           ,(if current-prefix-arg
                                                '(icicle-make-file+date-candidate file)
@@ -6108,7 +6129,7 @@ Ido-like behavior."                     ; Doc string
    ((prompt                             "File (in tags table): ")
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
-                                                          (concat file "/")
+                                                          (file-name-as-directory file)
                                                         file))
                                           ,(if current-prefix-arg
                                                '(icicle-make-file+date-candidate file)

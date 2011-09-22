@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 01:13:38 2011 (-0700)
+;; Last-Updated: Wed Sep 21 11:41:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7201
+;;     Update #: 7209
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/09/21 dadams
+;;     Added: icicle-locate-other-window, icicle-locate-file-use-locate-p.  Improved doc string.
+;;     icicle-locate: Use icicle-locate-file-1 (not icicle-define-command).
+;;     icicle-locate-file-1: Use locate external program, if non-nil icicle-locate-file-use-locate-p.
 ;; 2011/09/18 dadams
 ;;     Added: icicle-sexp-list, icicle-string-list.
 ;;     Moved here from icicles-cmd2.el: icicle-keyword-list.

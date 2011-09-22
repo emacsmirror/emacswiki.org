@@ -315,6 +315,10 @@ How can I set the number of characters that the name will truncate to? Right now
 [new:stepnem:2010-04-20 11:23 UTC]
 Read the documentation for `ibuffer-formats' and you shall be enlightened.
 
+----
+I use ibuffer with the scratch buffer hidden. Sometimes I want to kill all the unhidden buffers, but then ibuffer complains about there being "No buffers!". The relevant error code is in ibuffer-update and ibuffer-redisplay. Currently I've just redefined these functions with the error code commented out. Is there a better way to do this? Perhaps there could be a simple flag to determine whether ibuffer complains about killing all buffers.
+
+/ Geoff
 
 ----
 CategoryBufferSwitching

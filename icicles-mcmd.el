@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  9 10:26:30 2011 (-0700)
+;; Last-Updated: Wed Sep 21 18:37:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17246
+;;     Update #: 17250
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3378,7 +3378,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      (cond ((string= "" cand) ; This indicates an empty dir.
                             (setq icicle-last-completion-candidate  icicle-current-input))
                            ((eq ?\/  (aref cand (1- (length cand)))) ; Add `/', so cycling expands dir.
-                            (setq icicle-current-input (concat icicle-current-input "/")
+                            (setq icicle-current-input (file-name-as-directory icicle-current-input)
                                   icicle-last-completion-candidate  icicle-current-input))
                            (t           ; Non-dir - use the candidate file, but without any dir.
                             (setq icicle-last-completion-candidate
@@ -3708,7 +3708,8 @@ message either.  NO-DISPLAY-P is passed to
                    (cond ((string= "" cand) ; This indicates an empty dir.
                           (setq icicle-last-completion-candidate  icicle-current-input))
                          ((eq ?\/  (aref cand (1- (length cand)))) ; Add `/', so cycling expands dir.
-                          (setq icicle-current-input              (concat icicle-current-input "/")
+                          (setq icicle-current-input              (file-name-as-directory
+                                                                   icicle-current-input)
                                 icicle-last-completion-candidate  icicle-current-input))
                          (t             ; Non-dir - use the candidate file.
                           (setq icicle-last-completion-candidate  (car icicle-completion-candidates)))))
@@ -7086,7 +7087,7 @@ Bound to `C-x .' in the minibuffer."
 ;;;###autoload
 (defalias 'toggle-icicle-hiding-common-match 'icicle-toggle-hiding-common-match)
 ;;;###autoload
-(defun icicle-toggle-hiding-common-match () ; Bound to `C-x .' in minibuffer.
+(defun icicle-toggle-hiding-common-match () ; Bound to `C-x .' in minibuffer, via `icicle-dispatch-C-x.'.
   "Toggle `icicle-hide-common-match-in-Completions-flag'.
 Bound to `C-x .' (no prefix arg) in the minibuffer.
 See also option `icicle-hide-non-matching-lines-flag'."
