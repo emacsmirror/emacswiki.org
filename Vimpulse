@@ -1,3 +1,5 @@
+[[Evil]] will be the successor to [[Vimpulse]] [https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html] and to [[VimMode]]
+
 '''Vimpulse''' extends [ViperMode Viper] with Vim features like Visual mode and text objects.
 
 : '''Latest release: [[vimpulse.el|Vimpulse 0.5]]''' (always on !EmacsWiki)

@@ -6,6 +6,6 @@ Fancy quoting...
 
 * http://www.davep.org/emacs/boxquote.el
 
-See also [[rebox2]], where the default boxquote style is available (style 26), and seamless editing of boxed text is offered.  Note that title text is not available in rebox2.
+See also [[rebox2]], where the default boxquote style is available (style 26), and seamless editing of boxed text is offered, and a top title is supported.
 ----
 CategoryEditing [[Quotes]]

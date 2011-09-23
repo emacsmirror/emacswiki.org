@@ -13,6 +13,19 @@ Use the [http://code.google.com/p/elisp-cache/ elisp-cache] library, by Dominiqu
 == Byte Compile on Load ==
 [[byte-code-cache.el]] will automatically compile ##.el## files as they're loaded. It keeps the compiled files in ##~/.emacs.d/byte-cache## by default, and will automatically recompile any files that change, even if they're loaded more than once in the same session. Recompiling files manually is a pain, and other Lisp systems don't make you do it. :-)
 
+[new:DaveAbrahams:2011-09-23 02:52 UTC]
+This package would do exactly what I want if it worked, and for the longest time I thought it did, but sadly it doesn't seem to be working properly on emacs 22, 23, or 24.  packages that are require'd during initialization when byte-code-cache is enabled don't seem to get loaded.  To reproduce, put this .emacs file in a temporary directory along with byte-code-cache.el:
+{{{
+(add-to-list 'load-path "~")
+(with-temp-file "~/foo.el"
+  (insert "(provide 'foo)\n"))
+(require 'byte-code-cache)
+(require 'foo)
+}}}
+Then, with <tt>$HOME</tt> in your environment set to the temporary directory, launch emacs and check <tt>(featurep 'foo)</tt>
+
+[new]
+
 * Becareful, it seems that [[byte-code-cache.el]] doesn't handle well Windows drive letters when writing .elc files onto .emacs.d directory. I have things like this when using byte-code-cache on GNU Emacs on windows (GNU Emacs 22.2.1 (i386-mingw-nt5.1.2600) of 2008-03-26 on RELEASE) :
 <pre>
 Lisp error: (file-error "Opening output file" "invalid argument" "i:/home/.emacs.d/byte-cache/i:!home!.abbrev_defs.elc")

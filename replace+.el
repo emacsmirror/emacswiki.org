@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Sep  1 07:52:30 2011 (-0700)
+;; Last-Updated: Thu Sep 22 16:30:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1142
+;;     Update #: 1144
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -96,6 +96,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/09/22 dadams
+;;     Applied renaming of set-region-around-search-target to isearchp-set-region-around-search-target.
 ;; 2011/08/30 dadams
 ;;     search/replace-default-fn:
 ;;       defvar -> defcustom.
@@ -230,7 +232,7 @@
 (require 'fit-frame nil t) ;; (no error if not found): fit-frame
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight-regexp-region
 (require 'isearch+ nil t) ;; (no error if not found):
-                          ;; isearchp-set-region-flag, set-region-around-search-target
+                          ;; isearchp-set-region-around-search-target, isearchp-set-region-flag
 (require 'menu-bar+ nil t) ;; menu-bar-options-menu, menu-bar-search-replace-menu
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -504,7 +506,7 @@ replacement."
        (if (< emacs-major-version 21) (query-replace old new) (query-replace old new nil start end))))
     (when (interactive-p) (message "query-replace %s `%s' by `%s'...done" kind old new)))
   (when (and (boundp 'isearchp-set-region-flag) isearchp-set-region-flag)
-    (set-region-around-search-target))) ; Defined in `isearch+.el'.
+    (isearchp-set-region-around-search-target))) ; Defined in `isearch+.el'.
 
 
 ;; REPLACES ORIGINAL in `replace.el'.

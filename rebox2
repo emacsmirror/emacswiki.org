@@ -69,5 +69,9 @@ the list of styles. Any other input exits the loop."
 
 }}}
 
+[new]
+As of 09/2011 the entry system of rebox2 has been revamped to be quite similar to the above.  I'll leave the code here because of the interesting read-event/push combo.
+
+
 ----
 CategoryComments

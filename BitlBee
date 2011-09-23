@@ -24,6 +24,43 @@ server list: http://www.bitlbee.org/main.php/servers.html
 Lisp:bitlbee.el allows you to start and stop the bitlbee process from within Emacs.  
 That way you can run a local bitlbee server without having to worry about inetd.
 
+If you are using Mac OS X, the simplest way to have BitlBee start "on demand"
+is using launchd.  Put this text in <tt>~/Library/LaunchAgents/mac.bitlbee.plist</tt>:
+
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC
+            "-//Apple//DTD PLIST 1.0//EN"
+            "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>mac.bitlbee</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/opt/local/sbin/bitlbee</string>
+      <string>-I</string>
+      <string>-n</string>
+    </array>
+    <key>Sockets</key>
+    <dict>
+      <key>Listeners</key>
+      <dict>
+        <key>SockNodeName</key>
+        <string>127.0.0.1</string>
+        <key>SockServiceName</key>
+        <string>6667</string>
+      </dict>
+    </dict>
+    <key>inetdCompatibility</key>
+    <dict>
+      <key>Wait</key>
+      <false/>
+    </dict>
+  </dict>
+  </plist>
+
+Then logout and log back in for it to become active. -- JohnWiegley
+
 == Auto-authenticating to BitlBee ==
 
 === rcirc ===

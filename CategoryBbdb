@@ -12,6 +12,9 @@ BBDB stands for The Insidious Big Brother Database -- an address book that you c
 * BbdbAndGnusAuthorNames
 * SplitMailUsingBbdb -- use the BBDB to split mail in Gnus
 
+==Upgrade to BBDB3==
+* UpgradeBBDB 3.0
+
 ==Importing and Exporting==
 
 * BbdbMerging -- merging two databases
