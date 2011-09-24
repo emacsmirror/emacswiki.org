@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Sep 22 14:24:10 2011 (-0700)
+;; Last-Updated: Fri Sep 23 16:13:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 808
+;;     Update #: 844
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -69,13 +69,15 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `isearchp-char-prop-1', `isearchp-char-prop-end',
-;;    `isearchp-char-properties-in-buffer',
-;;    `isearchp-char-prop-filter-pred', `isearchp-fail-pos',
+;;    `isearchp-char-prop-1', `isearchp-char-prop-default-match-fn',
+;;    `isearchp-char-prop-end', `isearchp-char-properties-in-buffer',
+;;    `isearchp-char-prop-filter-pred',
+;;    `isearchp-char-prop-matches-p', `isearchp-fail-pos',
 ;;    `isearchp-highlight-lighter', `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
 ;;    `isearchp-remove-duplicates', `isearchp-set-region',
-;;    `isearchp-update-edit-init-commands' (Emacs 22+).
+;;    `isearchp-some', `isearchp-update-edit-init-commands' (Emacs
+;;    22+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -134,6 +136,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/09/23 dadams
+;;     Added (renamed from icicle- versions): isearchp-char-prop-default-match-fn,
+;;                                            isearchp-char-prop-matches-p, isearchp-some.
+;;     isearchp-char-prop-1: Use isearchp-read-sexps, not icicle-sexp-list.
+;;     isearchp-char-prop-filter-pred: Use isearchp-char-prop-matches-p,
+;;                                     isearchp-char-prop-default-match-fn, not icicle-*.
 ;; 2011/09/22 dadams
 ;;     Added: isearchp-char-prop-(backward|forward)(-regexp), isearchp-fontify-buffer-now,
 ;;            isearchp-char-prop-(1|end|filter-pred), isearchp-char-properties-in-buffer,
@@ -1006,7 +1014,7 @@ See `isearchp-char-prop-backward'."
            (values   (if (or arg  (not isearchp-char-prop-values))
                          (if (memq prop '(face font-lock-face))
                              (isearchp-read-face-names)
-                           (icicle-sexp-list))
+                           (isearchp-read-sexps))
                        isearchp-char-prop-values)))
       (setq isearchp-filter-predicate-orig  isearch-filter-predicate
             isearch-filter-predicate        (isearchp-char-prop-filter-pred type prop values)
@@ -1016,8 +1024,38 @@ See `isearchp-char-prop-backward'."
     (add-hook 'isearch-mode-end-hook 'isearchp-char-prop-end)
     (funcall search-fn))
 
+  ;; Same as `icicle-char-properties-in-buffer', defined in `icicles-cmd2.el'.
+  (defun isearchp-char-properties-in-buffer (&optional buffer beg end type)
+    "List of all character properties in BUFFER between BEG and END.
+Only the character properties are included, not their values.
+TYPE can be `overlay', `text', or nil, meaning overlay properties,
+text properties, or both, respectively."
+    (unless buffer (setq buffer  (current-buffer)))
+    (let ((props  ())
+          ovrlays curr-props)
+      (when (bufferp buffer)            ; Do nothing if BUFFER is not a buffer.
+        (with-current-buffer buffer
+          (unless (and beg end)
+            (setq beg  (point-min)
+                  end  (point-max)))
+          (when (or (not type) (eq type 'overlay)) ; Get overlay properties.
+            (setq ovrlays  (overlays-in beg end))
+            (dolist (ovrly  ovrlays)
+              (setq curr-props  (overlay-properties ovrly))
+              (while curr-props
+                (unless (memq (car curr-props) props) (push (car curr-props) props))
+                (setq curr-props  (cddr curr-props)))))
+          (when (or (not type) (eq type 'text)) ; Get text properties.
+            (while (< beg end)
+              (setq beg         (or (next-property-change beg nil end) end)
+                    curr-props  (text-properties-at beg))
+              (while curr-props
+                (unless (memq (car curr-props) props) (push (car curr-props) props))
+                (setq curr-props  (cddr curr-props)))))))
+      props))
+
   (defun isearchp-char-prop-filter-pred (type prop values)
-    "Return a predicate that uses `icicle-search-char-prop-matches-p'.
+    "Return a predicate that uses `isearchp-char-prop-matches-p'.
 TYPE, PROP, and VALUES are used by that function.
 The predicate is suitable as a value of `isearch-filter-predicate'."
     (let ((tag  (make-symbol "isearchp-char-prop-filter-pred")))
@@ -1025,48 +1063,67 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
         (and (isearch-filter-visible beg end)
          (catch ',tag
            (while (< beg end)
-             (unless (icicle-search-char-prop-matches-p
+             (unless (isearchp-char-prop-matches-p
                       ',type ',prop ',values
-                      (icicle-search-property-default-match-fn ',prop)
+                      (isearchp-char-prop-default-match-fn ',prop)
                       beg)
                (throw ',tag nil))
              (setq beg  (1+ beg)))
            t)))))
+
+  ;; Same as `icicle-search-char-prop-matches-p', defined in `icicles-cmd2.el'.
+  (defun isearchp-char-prop-matches-p (type property values match-fn position)
+    "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
+TYPE is `overlay', `text', or nil, and specifies the type of character
+property - nil means look for both overlay and text properties.
+
+Find text with a PROPERTY value that overlaps with VALUES: If the
+value of PROPERTY is an atom, then it must be a member of VALUES.  If
+it is a list, then at least one list element must be a member of
+VALUES.
+
+MATCH-FN is a binary predicate that is applied to each item of VALUES
+and a zone of text with property PROP.  If it returns non-nil then the
+zone is a search hit."
+    (let* ((ovlyval  (and (or (not type) (eq type 'overlay))
+                          (get-char-property position property)))
+           (textval  (and (or (not type) (eq type 'text))
+                          (get-text-property position property))))
+      (or (and ovlyval (isearchp-some values ovlyval match-fn))
+          (and textval (isearchp-some values textval match-fn)))))
+
+  ;; Same as `icicle-some', defined in `icicles-fn.el'.
+  (defun isearchp-some (list arg2 predicate)
+    "Apply binary PREDICATE successively to an item of LIST and ARG2.
+Return the first non-nil value returned by PREDICATE, or nil if none.
+PREDICATE must be a function with two required arguments."
+    (let ((result  nil))
+      (catch 'isearchp-some
+        (dolist (arg1  list)
+          (when (setq result  (funcall predicate arg1 arg2))  (throw 'isearchp-some result))))
+      result))
+
+  ;; Same as `icicle-search-property-default-match-fn', defined in `icicles-cmd2.el'.
+  (defun isearchp-char-prop-default-match-fn (prop)
+    "Return the default match function for text or overlay property PROP.
+Properties `face' and `mumamo-major-mode' are handled specially.
+For other properties the values are matched using `equal'."
+    (case prop
+      ((face font-lock-face) (lambda (val rprop)
+                               (if (consp rprop)
+                                   (condition-case nil ; Allow for dotted cons.
+                                       (member val rprop)
+                                     (error nil))
+                                 (eq val rprop))))
+      ((mumamo-major-mode)   (lambda (val rprop) (equal val (car rprop))))
+      (t                     #'equal)))
 
   (defun isearchp-char-prop-end ()
     "End Isearch for a character property."
     (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
     (remove-hook 'isearch-mode-end-hook 'isearchp-char-prop-end))
 
-  ;; Same as `icicle-char-properties-in-buffer', defined in `icicles-cmd2.el'.
-  (defun isearchp-char-properties-in-buffer (&optional buffer beg end type)
-  "List of all character properties in BUFFER between BEG and END.
-Only the character properties are included, not their values.
-TYPE can be `overlay', `text', or nil, meaning overlay properties,
-text properties, or both, respectively."
-  (unless buffer (setq buffer  (current-buffer)))
-  (let ((props  ())
-        ovrlays curr-props)
-    (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
-      (with-current-buffer buffer
-        (unless (and beg end)
-          (setq beg  (point-min)
-                end  (point-max)))
-        (when (or (not type) (eq type 'overlay)) ; Get overlay properties.
-          (setq ovrlays  (overlays-in beg end))
-          (dolist (ovrly  ovrlays)
-            (setq curr-props  (overlay-properties ovrly))
-            (while curr-props
-              (unless (memq (car curr-props) props) (push (car curr-props) props))
-              (setq curr-props  (cddr curr-props)))))
-        (when (or (not type) (eq type 'text)) ; Get text properties.
-          (while (< beg end)
-            (setq beg         (or (next-property-change beg nil end) end)
-                  curr-props  (text-properties-at beg))
-            (while curr-props
-              (unless (memq (car curr-props) props) (push (car curr-props) props))
-              (setq curr-props  (cddr curr-props)))))))
-    props)))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

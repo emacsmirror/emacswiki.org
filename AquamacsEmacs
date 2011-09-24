@@ -35,34 +35,10 @@ Aquamacs is a cutting-edge Emacs based on  GNU Emacs (stable branch, version 22.
 
 Aquamacs is maintained by DavidReitter. A number of people have contributed.
 
-== Starting Aquamacs with multiple files in tabs ==
+==Still have questions?==
 
-I have a minor annoyance with the way Aquamacs handles tabbed buffers. It seems that until a new tab has been opened, new files are not opened in tabs. This means that I have to press 'Apple-T' first, then open the file, then close the untitled tab. After that new files are automatically put in tabs. Also, if opening multiple files from the command-line, the window is split horizontally in two - I'd like to specify that it puts the files in separate tabs. Is there a way to do this?
-
-[new]
-Opening multiple tabs from the command line works for me with the latest release (1.8). Maybe you need to enable tabs in the Options menu.  This gets turned on automatically when you press Command-T.  See the support mailing list (Emacs on OSX) for more assistance. -- DavidReitter
-[new]
-Thanks, that improves things somewhat (I selected Options/Show Tabs, then Save Options). Now it works as expected when I open Aquamacs with only one (or no) file. However, when I specify two files on the command line, it opens with two panes, with the top pane containing the first file and another tab for the %%*scratch*%% buffer, and the bottom pane containing the second file.
-
-==Total Newbie Question: Where Do The Aquamacs .el Files Live?==
-
-Hi, I'm just getting started with Aquamacs on OS X 10.6 and I'm not sure where I'm supposed to add customizations.  For example, I'm trying to install a markdown mode (http://jblevins.org/projects/markdown-mode/) but I don't know where to put the actual .el file.  Also, I'm just putting my .emacs files in my home directory.  Is that the best place for it?
-
-Thank you for your help.
-
-==Turn off scratch buffer when Aquamacs starts==
-
-[new]
-I installed Aquamacs 2.0 on my mac and I can't get rid of the *scratch* buffer. I tried setting the option in Preferences>Aquamacs>Aquamacs Scratch File to "nil" and nil without quotations, but it just changed the file path of the scratch buffer if you want to save it. In the Aquamacs-Scratch-File option it does not give me a toggle option as to turn it on or off. Please tell me a way to stop opening up the scratch buffer when Aquamacs starts.
-
-==Windows-style Editing Keys Under Aquamacs==
-
-[new]
-Aquamacs is a nicely polished package. Thanks. One thing I'm looking for is editing keyes for page up/down, home/end on my MacBook Pro. Any ideas?
-
-==Still have questions? We have an IRC channel now!==
-We've just started an IRC channel, #aquamacs on Freenode. If we get the official blessing from the other Aquamacs devs, this could become official.
-
+The Aquamacs website lists support options besides the manuals and Google, primarily the Emacs on OS X mailing list, and an e-mail address for bug reports.
+Users have started an (inofficial) IRC channel,  #aquamacs on Freenode.  
 ----
 CategoryPorts
 EmacsForMacOS

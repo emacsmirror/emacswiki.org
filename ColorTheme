@@ -566,6 +566,10 @@ I am running 6.6.0 with the Carbon XEmacs port of 21.5.beta27.  Whenever I choos
 
 [new:XavierMaillard:2009-04-15 22:59 UTC] Please report it back to our bug tracker. -- XavierMaillard
 
+=== Cursor faces are OS dependent ===
+
+Just a note that after spending several hours trying to figure out why a color-theme wasn't displaying the text under the cursor correctly for me on OSX, it appears according to the people on the emacs irc channel that the cursor is controlled by the operating system. Under OSX, apparently the foreground color cannot be adjusted. If you change this value within emacs you won't see the result reflected as it will be ignored. It appears to work fine under Windows and Linux. The issues with OSX were noticed using OSX 10.6 and 10.7. This is not an issue with color-theme as such, but I just wanted to highlight it here also since I ran into this issue while trying to use color-theme and wasted several hours on it. I hope others won't do the same. -- Josh
+
 == Gallery ==
 
 To have an idea of what a theme looks like, I think we could all take a screenshot of our prefered and running theme. 
