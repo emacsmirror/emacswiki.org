@@ -38,4 +38,5 @@ BBDB stands for The Insidious Big Brother Database -- an address book that you c
 * CategorizingInformationManager -- provides ee-bbdb to browse bbdb records
 * [[Icicles - Completion in Other Buffers | Icicles - BBDB Completion]] -- enhanced completion for BBDB
 * Lisp:bbdb-sms.el -- Use BBDB for sending text messages
+* BbdbDial -- Use BBDB to start a call.
 * [[Anything]] -- `M-x anything-bbdb' narrows the list by multiple patterns and sends a mail or views person's data.

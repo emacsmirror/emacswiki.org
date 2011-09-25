@@ -1,18 +1,23 @@
 I’m [::nicferrier], a hacker trying to do interesting things. I use Emacs every day all the time.
 
-I am currently the CTO at [http://woome.com woome.com]. Anyone who may
-be interested in a job hacking at woome.com can come talk to
-[mailto:nic@woome.com me]. We use python and gnu-linux and all good
-things.
+I am currently the CTO at [http://woome.com woome.com]. 
 
-I've done a few things with emacs which I'm trying to push into this wiki:
+I've used Emacs for about 20 years, every day, all the time for the last 15 years. The last couple of years I've started to look at ELisp as a practical language (since it had closures basically) in which I might one day do all my work.
 
-* [[pastebin]] -- a simple interface to the [http://www.pastebin.com pastebin.com] webservice
-* [[rcircPresence]] -- for syncing rcirc with some other presence thing (eg: skype)
-* [[imapua]] -- a purely IMAP based email client for Emacs
-* [[trac_editor]] -- a very simple interface to trac.py
-* [[WikiDoc]] -- a program to make wiki documentation from Elisp functions
-* [[tzhelp]] -- a small set of tools for dealing with timezones
+
+== Recent Emacs related blog posts ==
+
+[http://nic.ferrier.me.uk/blog/2011_09/elisp_testing ERT has been included in trunk so now EmacsLISP TDD is possible]
+
+[http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLISP asycnc HTTP server]
+
+
+== asynchronous HTTP servers for Emacs (EmacsLISP node.js)  == 
+[[Elnode]] is an asynchronous TCP server handling HTTP.
+
+As of now elnode is just about functional. I am starting to write things with it including a port of my wiki based blog.
+
+It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
 
 == Emacs under Mercurial ==
 
@@ -23,22 +28,60 @@ Mercurial is really good at making upstream/downstream hacks. Is
 anyone interested in a clone of Emacs with, say auto-install,
 pre-installed.
 
-== Things I am interested in doing ==
 
-* getting the smallest most adaptable init file I can
-* getting emacs to talk to dbus for things like IM alerts
-** I use bitlbee/rcirc for all my im... but it's not good notification wise
-* improving emacs as a mail client
-* xml edting
-* python editing
-* exploting emacs async nature
+== Email under Emacs ==
 
-== node js for emacs == 
-[[Elnode]] is an asynchronous TCP server handling HTTP.
+I've never liked gnus. But I do like Emacs as a mail platform so I've always maintained my own mail code.
 
-As of now elnode is just about functional. I am starting to write things with it including a port of my wiki based blog.
+Back in the last 90s I wrote an [[imapua|Emacs IMAP user agent based on the GNUs IMAP library]].
+It worked pretty well but IMAP didn't really scale for me once my
+inbox got really really big (20k messages plus). The IMAP protocol is
+actually quite difficult to deal with asynchrnously so I got more and
+more stuck with email.
 
-It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
+Eventually I decided to bite the bullet and write my own low level
+email handling. [https://github.com/nicferrier/md the md command] is
+the result. [https://github.com/nicferrier/md md] is a command for
+reading mail stored in a Maildir. It is ''just'' a unix command
+tool. It is completely stateless (apart from the Maildir).
+
+My primary usage of the [https://github.com/nicferrier/md md] tool is
+via an
+[https://github.com/nicferrier/md/blob/master/useragents/emacs/mdmua.el Emacs user agent]. 
+This is currently very simple but already most powerful enough for
+everyday use.
+
+The user agent doesn't need to do complex tasks because I can script
+those with regular unix pipelines. Here's an example BASH script which
+uses [https://github.com/nicferrier/md md] to move all the messages
+with a particular month pattern to a different folder:
+
+{{{
+#!/bin/bash
+# A script to pull all the email for a particular month pattern out of
+# the INBOX and into a separate dir.
+DATEPAT=$1
+echo $DATEPAT | grep -E '[0-9]{4}-[0-9]{2}' > /dev/null
+if [ $? -ne 0 ]
+then
+    echo "incorrect date pattern - eg: mdmonthmove 2011-09"
+    exit 1
+fi
+# Date pattern must be ok
+DATEDIR=$(echo $DATEPAT | sed -rne 's/([0-9]{4})-([0-9]{2})/\1\2/p')
+md ls \
+    | awk -v DATEPAT=$DATEPAT '$2 ~ DATEPAT {print $1}' \
+    | sed -rne 's/^INBOX#(.*)/\1/p' \
+    | while read message
+do 
+    echo $message >> $MAILDIR/$DATEPAT--move.log
+    mv $MAILDIR/cur/$message* $MAILDIR/.$DATEDIR/cur/
+done
+}}}
+
+I am continuing to develop this despite the fact that no one but me
+seems interested. It's actually quite cheap to maintain and improve.
+
 
 == Templating in emacs ==
 
@@ -64,8 +107,10 @@ I had a few cracks at this before coming up with [[Sweat|'''sweat''']] which is 
            "</ul></body></html>")
 }}}
 
-Go see the wiki page for slightly more info. I'll update if it's useful.
+Go see the wiki page for slightly more info.
 
+I mainly think it was fun playing with macros for HTML representation. There may be mileage in this but I am now of the view that LISP spitting back JSON is probably better.
+ 
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).
 
@@ -160,6 +205,19 @@ when auto-install is required."
 Hopefully [[rubikitch]] will be able to add that to
 auto-install. Ideally, it would do the kind of things that [[ELPA]]
 does.
+
+
+== List of various other ELisp bits and pieces ==
+
+I've done a few things with emacs which I'm trying to push into this wiki:
+
+* [[pastebin]] -- a simple interface to the [http://www.pastebin.com pastebin.com] webservice
+* [[rcircPresence]] -- for syncing rcirc with some other presence thing (eg: skype)
+* [[imapua]] -- a purely IMAP based email client for Emacs
+* [[trac_editor]] -- a very simple interface to trac.py
+* [[WikiDoc]] -- a program to make wiki documentation from Elisp functions
+* [[tzhelp]] -- a small set of tools for dealing with timezones
+
 
 ---- 
 CategoryHomepage

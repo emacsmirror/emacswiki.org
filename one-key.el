@@ -824,16 +824,18 @@ TITLE is title name of the menu. It can be any string you like."
       (one-key-template-mode)
       ;; Insert template.
       (erase-buffer)
-      (insert (concat ";; one-key menu for " title "\n\n"))
-      (insert (one-key-make-template keymap title))
-      (insert "\n;; Use the `one-key-get-menu' command to show menu/keybindings for this buffer.\n")
+      (insert (concat ";; one-key menu for " title "\n"))
+
+      (insert "\n;; To change to appropriate mode for this buffer: M-x `one-key-template-mode'.")
+      (insert "\n;; Then use the `one-key-get-menu' command to show menu/keybindings for this buffer.\n")
       (insert "\n;; Uncomment and edit following line to set this menu as default for mode.")
       (insert (concat "\n;;(add-to-list 'one-key-mode-alist '("
                       (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-"
                       (replace-regexp-in-string " " "-" title) "))"))
       (insert "\n;; Uncomment and edit following line to add this menu to toplevel menu.")
       (insert (concat "\n;;(add-to-list 'one-key-toplevel-alist '((\"type key here\" . \""
-                      title "\") . one-key-menu-" (replace-regexp-in-string " " "-" title) "))"))
+                      title "\") . one-key-menu-" (replace-regexp-in-string " " "-" title) "))\n\n"))
+      (insert (one-key-make-template keymap title))
       ;; Pop to buffer.
       (switch-to-buffer (current-buffer))
       (forward-line -3)

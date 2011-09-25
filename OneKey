@@ -240,3 +240,7 @@ I wrote a new routine to bind e.g. `ESC C-x' to the one-key-menu. `C-x' is still
 [new]
 
 I found that when I have (one-key-default-setup-keys) in my .emacs, I do not get the eshell prompt.
+[new]
+That is strange, it works fine for me [[JoeBloggs]]
+
+[new]

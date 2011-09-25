@@ -410,6 +410,23 @@ You can switch to dark mode and back again with the following in your ~/.emacs:
 The function assumes that default `background-mode' is `light'.
 You may wish to modify the name of [dark] theme and the key binding.
 
+== Day/night toggling based on time of day ==
+You can also automatically change your color theme based on the time of day using [https://github.com/hadronzoo/theme-changer theme-changer.el]. In your ~/.emacs, make sure your location is set:
+
+    (setq calendar-location-name "Dallas, TX") 
+    (setq calendar-latitude 32.85)
+    (setq calendar-longitude -96.85)
+
+And then specify the day and night color themes:
+
+    (require 'theme-changer)
+    (change-theme 'color-theme-solarized-light 'color-theme-solarized-dark)
+
+Note: you may need to add the theme-changer.el path to your loadpath. For
+example:
+
+    (add-to-list 'load-path "~/.emacs.d/elisp/theme-changer")
+
 == More Color Themes ==
 I added my tweaked port of ColorThemeInkpot from VIM. -- Per Vognsen
 

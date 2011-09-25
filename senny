@@ -1,6 +1,7 @@
 I recently discovered my passion for emacs and lisp programming. I began using emacs in 2008 and I'm using it daily ever since.
 
 == Projects ==
+* [[e-max]] -- https://github.com/senny/e-max
 * [RvmEl rvm.el] -- http://github.com/senny/rvm.el
 * [ThemeRollerEl theme-roller.el] -- http://github.com/senny/theme-roller.el
 * EmacsEclim -- http://github.com/senny/emacs-eclim
