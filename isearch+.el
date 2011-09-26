@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Sep 23 16:13:38 2011 (-0700)
+;; Last-Updated: Sun Sep 25 10:42:18 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 844
+;;     Update #: 903
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -37,6 +37,7 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
+;;  (@> "Overview of Features")
 ;;  (@> "Change log")
 ;;  (@> "Faces and Variables")
 ;;  (@> "Keys and Hooks")
@@ -52,6 +53,7 @@
 ;;    `isearchp-char-prop-forward',
 ;;    `isearchp-char-prop-forward-regexp',
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
+;;    `isearchp-put-prop-on-region',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-sexp-symbol-or-char', `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
@@ -129,6 +131,102 @@
 ;;  `isearch.el'.  So, in your `~/.emacs' file, do this:
 ;;
 ;;  (eval-after-load "isearch" '(require 'isearch+))
+;;
+ 
+;;(@* "Overview of Features")
+;;
+;;; Overview of Features ---------------------------------------------
+;;
+;;  * Ability to search ''within character-property zones''.  Example:
+;;    search within zones having a `face' text property with a value
+;;    of `font-lock-comment-face' or `font-lock-string-face'.  Search
+;;    overlays or text properties.  From within Isearch: `C-t' (or
+;;    `C-M-t' for regexp search).  First time, or with a prefix
+;;    argument, you are prompted for the property and its values.  See
+;;    the doc string of command `isearchp-char-prop-forward'.
+;;
+;;  * Besides relying on other code to set `face' and other text
+;;    properties for use with `C-t', you can use command
+;;    `isearchp-put-prop-on-region' (outside of Isearch) to add a text
+;;    property to a zone of text.  By default, it applies the last
+;;    property and value whose zones you searched using `C-t', but a
+;;    prefix arg lets you specify the property and value to apply.
+;;    This gives you an interactive way to set up zones for
+;;    text-property search (`C-t').  For property `face', empty input
+;;    removes all faces from the region.
+;;
+;;  * Option and commands to let you select the last target occurrence
+;;    (set the region around it):
+;;
+;;    - Option `isearchp-set-region-flag' - Non-`nil' means
+;;      automatically set the region around the last search target.
+;;    - Command `isearchp-toggle-set-region', bound to `C-SPC' during
+;;      isearch - toggle `isearchp-set-region-flag'.
+;;    - Command `set-region-around-search-target' - manually set the
+;;      region around the last search target.
+;;
+;;  * option (`isearchp-regexp-quote-yank-flag') and command
+;;    (`isearchp-toggle-regexp-quote-yank', bound to `C-`') to toggle
+;;    quoting (escaping) of regexp special characters.  With escaping
+;;    turned off, you can yank text such as `^\*.*' without it being
+;;    transformed to `\^\\\*\.\*'.
+;;
+;;  * `C-M-y' yanks the secondary selection into the search string, if
+;;    you also use library `second-sel.el'.
+;;
+;;  * `C-_' yanks successive symbols (or words or chars) into the
+;;    search string.
+;;
+;;  * `C-(' yanks successive sexps (or symbols or words or chars) into
+;;    the search string.
+;;
+;;  * Command and binding to toggle (incremental) word search:
+;;    `isearch-toggle-word', bound to `M-w'.
+;;
+;;  * Command and binding to toggle invisible-text sensitivity while
+;;    searching: `isearchp-toggle-invisible, bound to `C-+'.
+;;
+;;  * Bindings during Isearch (the standard bindings for some of these
+;;    use the Meta modifier, `M-',  instead):
+;;
+;;    - `next', `prior' repeat the last Isearch forward and backward
+;;      (easier than using the chords `C-s', `C-r'.
+;;    - `C-h' provides help on Isearch while isearching.  This library
+;;      also redefines `isearch-mode-help' so that it lists all
+;;      Isearch bindings and ends Isearch properly
+;;    - `C-c' lets you toggle case-sensitivity while isearching.
+;;      (Standard binding is `M-c'.)
+;;    - `C-+' lets you toggle invisible-text sensitivity while
+;;      isearching.
+;;    - `C-SPC' lets you toggle setting the region around the last
+;;      found occurrence.
+;;    - `C-end' - go to the longest line.  Repeat to go to the longest
+;;      line following that one in the buffer.  As usual, `C-g' puts
+;;      you back where you started.  This binding is made only if you
+;;      also use `misc-cmds.el'.
+;;
+;;  * Highlighting of the mismatched portion of your search string in
+;;    the minibuffer (actually, Isearch uses the echo area) - that is,
+;;    the portion that will be removed if you do `C-g'.  (I added this
+;;    feature to vanilla Emacs in release 23.1.)
+;;
+;;  * `M-e' (`isearch-edit-string') automatically puts the cursor at
+;;    the first mismatch position in the search string, for easy
+;;    editing.  Whereas `C-g' removes all of the mismatch, this
+;;    feature lets you change or insert a character or two, without
+;;    losing the rest of the search string.
+;;
+;;  * A user option, `isearchp-initiate-edit-commands', that specifies
+;;    commands whose keys will not exit Isearch but will instead
+;;    initiate editing of the search string.  For example, if
+;;    `backward-char' is included in the list then `C-b' and `left'
+;;    will just move the cursor backward over the search string so you
+;;    can change, delete, or insert chars in the middle somewhere.
+;;    This makes the search string more minibuffer-like.\
+;;
+;;  * Case-sensitivity is indicated in the mode line minor-mode
+;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
+;;    case-sensitive.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -136,6 +234,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/09/25 dadams
+;;     Added: isearchp-put-prop-on-region.
+;;     isearchp-read-face-names: Added optional args empty-means-none-p, only-one-p.
+;;     isearchp-read-sexps: Added optional arg only-one-p.
 ;; 2011/09/23 dadams
 ;;     Added (renamed from icicle- versions): isearchp-char-prop-default-match-fn,
 ;;                                            isearchp-char-prop-matches-p, isearchp-some.
@@ -805,11 +907,17 @@ not necessarily fontify the whole buffer."
             (length succ-msg)
           0)))))
 
-(defun isearchp-read-face-names  ()
+(defun isearchp-read-face-names  (&optional empty-means-none-p only-one-p)
   "Read face names with completion, and return a list of their symbols.
 If user hits `RET' with empty input immediately, then include all
 faces.  Otherwise, read faces one by one, until user hits `RET' twice
-consecutively."
+consecutively.
+
+Non-nil optional arg EMPTY-MEANS-NONE-P means return nil (no face
+names) for empty user input.
+
+Non-nil optional arg ONLY-ONE-P means read only one face name and
+return its symbol."
   (let ((icicle-list-nth-parts-join-string           ": ")
         (icicle-list-join-string                     ": ")
         (icicle-list-use-nth-parts                   '(1))
@@ -836,15 +944,19 @@ consecutively."
     (when (and (boundp 'icicle-mode) icicle-mode)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt1)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt2))
-    (setq face        (isearchp-read-face-names--read prompt1 face-cands))
-    (if (string= "" face)
-        (setq faces (face-list))
-      (setq face-cands  (delete (assoc face face-cands) face-cands))
-      (while (not (string= "" face))
-        (add-to-list 'faces (intern face))
-        (setq face        (isearchp-read-face-names--read prompt2 face-cands)
-              face-cands  (delete (assoc face face-cands) face-cands)))
-      (nreverse faces))))
+    (setq face  (isearchp-read-face-names--read prompt1 face-cands))
+    (if (and empty-means-none-p (string= "" face))
+        ()
+      (if only-one-p
+          face
+        (if (string= "" face)
+            (setq faces (face-list))
+          (setq face-cands  (delete (assoc face face-cands) face-cands))
+          (while (not (string= "" face))
+            (add-to-list 'faces (intern face))
+            (setq face        (isearchp-read-face-names--read prompt2 face-cands)
+                  face-cands  (delete (assoc face face-cands) face-cands)))
+          (nreverse faces))))))
 
 (defun isearchp-read-face-names--read (prompt candidates)
   "Read a face name using PROMPT and face-name completion CANDIDATES."
@@ -855,24 +967,28 @@ consecutively."
         (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history)))
     (completing-read prompt candidates nil t nil 'face-name-history)))
 
-(defun isearchp-read-sexps  ()
+(defun isearchp-read-sexps  (&optional only-one-p)
   "Read sexps with completion, and return them as a list.
-Read sexps one by one, until user hits `RET' twice consecutively."
+Read sexps one by one, until user hits `RET' twice consecutively.
+Non-nil ONLY-ONE-P means read only one sexp and return it."
   (let ((sexp-cands                         (mapcar #'list (isearchp-remove-duplicates
                                                             read-expression-history)))
         (sexps                              ())
         (prompt1                            "Sexp (RET for each, empty input to finish): ")
         (prompt2                            "Sexp: ")
         sexp)
-    (setq sexp        (completing-read prompt1 sexp-cands nil nil nil 'read-expression-history)
+    (setq sexp        (completing-read (if only-one-p prompt2 prompt1) sexp-cands
+                                       nil nil nil 'read-expression-history)
           sexp-cands  (delete (assoc sexp sexp-cands) sexp-cands))
-    (while (not (string= "" sexp))
-      (add-to-list 'sexps sexp)
-      (setq sexp        (completing-read prompt2 sexp-cands nil nil nil 'read-expression-history)
-            sexp-cands  (delete (assoc sexp sexp-cands) sexp-cands)))
-    (prog1 (setq sexps  (nreverse (delete "" sexps)) ; Return the list of sexps.
-                 sexps  (mapcar (lambda (sx) (car (read-from-string sx))) sexps))
-      (when (interactive-p) (message "Sexps: %S" sexps)))))
+    (if only-one-p
+        (car (read-from-string sexp))
+      (while (not (string= "" sexp))
+        (add-to-list 'sexps sexp)
+        (setq sexp        (completing-read prompt2 sexp-cands nil nil nil 'read-expression-history)
+              sexp-cands  (delete (assoc sexp sexp-cands) sexp-cands)))
+      (prog1 (setq sexps  (nreverse (delete "" sexps)) ; Return the list of sexps.
+                   sexps  (mapcar (lambda (sx) (car (read-from-string sx))) sexps))
+        (when (interactive-p) (message "Sexps: %S" sexps))))))
 
 ;; Borrowed from `ps-print.el'
 (defun isearchp-remove-duplicates (list)
@@ -1122,6 +1238,37 @@ For other properties the values are matched using `equal'."
     "End Isearch for a character property."
     (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
     (remove-hook 'isearch-mode-end-hook 'isearchp-char-prop-end))
+
+  (defun isearchp-put-prop-on-region (property value beg end)
+    "Add text PROPERTY with VALUE to the region from BEG to END.
+If you have already used any of the commands `isearchp-char-prop-*'
+and you do not use a prefix argument, then use the property and (the
+first of) its values that you last specified for such searching.
+
+Otherwise, you are prompted for the property and its value.
+
+If the property is not `face' or `font-lock-face', then you enter a
+sexp, which is read as the Lisp value to use.  E.g., if the property
+is `mumamo-major-mode' then you might enter `(emacs-lisp-mode)' as the
+value.
+
+If the property is `face' or `font-lock-face' then you can specify
+more than one face - their union is used as the property value.  If
+you specify none (empty input immediately) then *all* faces are
+*removed* from the region."
+    (interactive
+     (if (and (not current-prefix-arg)  isearchp-char-prop-prop  (car isearchp-char-prop-values))
+         (list isearchp-char-prop-prop isearchp-char-prop-values (region-beginning) (region-end))
+       (let* ((props  (and (or current-prefix-arg  (not isearchp-char-prop-prop))
+                           (mapcar #'(lambda (prop) (list (symbol-name prop)))
+                                   (isearchp-char-properties-in-buffer
+                                    (current-buffer) (point-min) (point-max) 'text))))
+              (prop   (intern (completing-read "Text property: " props nil nil nil nil "face")))
+              (vals   (if (memq prop '(face font-lock-face))
+                          (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
+                        (isearchp-read-sexps 'ONLY-ONE-P))))
+         (list prop vals (region-beginning) (region-end)))))
+    (add-text-properties beg end (list property value)))
 
   )
 

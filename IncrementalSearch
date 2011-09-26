@@ -38,25 +38,28 @@ There's a key binding withing `isearch-mode' to use your current search term as 
 * `M-s o' -- call `occur' with the current search term
 
 [:MoreIsearchKeys]
-= More Isearch Keys: Adding Key Bindings =
+== More Isearch Keys: Adding Key Bindings ==
 
 * '''[[Icicles]]''' lets you use `S-TAB' to complete the current search string against all previous search strings. This is thus similar to `M-TAB' (see [[#StdIsearchKeys]], above), but it gives you all of the '''Icicles''' [[Completion]] features: regexp matching, candidate cycling, ... In particular, you can see all matching previous searches in buffer `*Completions*' and either click one (`mouse-2') or cycle to it with '''Page Up'''/'''Down'''.  See [[Icicles - Isearch Enhancements]].
 
-* IsearchPlus adds the following bindings (the standard bindings for some of these use the Meta modifier (`M-') instead).
-** `C-h' provides '''''help''''' on Isearch while isearching. Library IsearchPlus also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
-** `C-t' lets you toggle between ''regular-expression'' isearching and normal isearching. (Standard binding `M-r'.)
-** `C-c' lets you toggle ''case-sensitivity'' while isearching. (Standard binding `M-c'.)
-** `C-SPC' lets you toggle setting the region around the last found occurrence. IsearchPlus adds a function to `isearch-mode-end-hook' that respects the state of this toggle.
-** `C-j' lets you edit the search string. It also provides other options, like changing to ''word search'' (`C-w' as first char) or ''non-incremental search'' (RET). (Standard binding `M-e'.)
+* [[Isearch+]] adds the following bindings.
+** '''`C-h'''' provides help on Isearch while isearching.  It also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
+** '''`##C-+##’''' toggles searching through invisible text.
+** '''`M-w'''' toggles whole-word search.
+** '''`C-SPC'''' toggles setting the [[region]] around the last found occurrence.  It adds a function to `isearch-mode-end-hook' that respects the state of this toggle.
+** '''`##C-`##'''' toggles quoting (escaping) of [[regexp]] special characters.
+** '''`C-c'''' toggles case-sensitivity while isearching. (Standard binding `M-c'.)
+** '''`##C-_##'''' yanks successive [[symbol]]s into the search string.
+** '''`##C-(##'''' yanks successive [[sexp]]s into the search string.
+** '''`C-j'''' lets you edit the search string. It also provides other options, like changing to ''word search'' (`C-w' as first char) or ''non-incremental search'' (RET). (Standard binding `M-e'.)
 
-* Make `C-h' in Isearch provide help on Isearch.  See IncrementalSearchHelp. This is also done by IsearchPlus (see above).
+* Make `C-h' in Isearch provide help on Isearch.  See IncrementalSearchHelp. This is also done by [[Isearch+]] (see above).
 
 * Make `C-y' in Isearch act like `M-y' does in the default map:
 
        (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 
 :: Why? By default, `C-y' in Isearch doesn't do what you might expect: Instead of yanking from the `kill-ring' to the search string, it acts on the current line.
-
 
 * `isearch-occur' -> OccurFromIsearch: Invoke `occur' on Isearch hits.
 
