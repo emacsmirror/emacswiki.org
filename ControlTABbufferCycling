@@ -341,6 +341,9 @@ Yet another way to do it. It cycles only through the normal text buffers (i.e., 
 * Author: ChristianRovner
 * Code: Lisp:mybuffers.el
 
+= buffcycle =
+[https://github.com/troydm/emacs-stuff/blob/master/buffcycle.el buffcycle.el] is a simple Control-Tab way to switch only between file buffers
+
 ---- 
 CategoryBufferSwitching
 

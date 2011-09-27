@@ -1,4 +1,4 @@
-This page is about the keyboard key typically labeled '''Caps Lock'''. It covers different ways to use the key, including changing its behavior.
+This page is about the keyboard key typically labeled '''[::CapsLock]'''. It covers different ways to use the key, including changing its behavior.
 
 
 ==Discussion==
@@ -9,7 +9,7 @@ Beware of some PS/2 to USB adapters. The two I've used so far don't send repeat 
 
 ==Redefining as the "Undo" key.==
 
-MeatBall:HumaneInterface says that the [::CapsLock] key is useless, and
+MeatBall:HumaneInterface says that the CapsLock key is useless, and
 that an UNDO key would be better.  Here's how.
 
 In ~/.Xmodmap, remove the Lock modifier bit from the Caps_Lock key,

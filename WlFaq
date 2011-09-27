@@ -1,11 +1,3 @@
-== How can I prevent WL from splitting large attachments into many messages? ==
-
-Add the following to your ##.wl## file:
-
-{{{
-(setq mime-edit-split-message nil)
-}}}
-
 == If I add folders to an access group outside of Wanderlust, how do I make Wanderlust pick up those changes? ==
 
 In the folder manager, close the access group, then use ##C-u <RET>## to open it again. Wanderlust will scan the access group for new folders.
@@ -58,6 +50,24 @@ Create a filter folder,
 Release 2.14 was created before emacs23 was released. As a consequence, there may occur some problems with unicode
 support. They can be fixed by using a snapshot from the CVS repository. For a working variant, please see
 [http://permalink.gmane.org/gmane.mail.wanderlust.general/2768] .
+
+
+== Attachments ==
+
+=== How to attach files? ===
+There is no `wl-attach-file'.
+
+Try M-x mime-edit-insert-file RET and answer some questions (file name, content type and subtype and transfer encoding). Encoding base64 seems to work. Then don't touch the text that is added to your message. When you send the mail, the file will be included.
+
+If you find a simpler, sane version (e.g. choose just a file and then you're sure it will work) please describe it here.
+
+=== How can I prevent WL from splitting large attachments into many messages? ==
+
+Add the following to your ##.wl## file:
+
+{{{
+(setq mime-edit-split-message nil)
+}}}
 
 == How can I change which headers wl displays when viewing a message? ==
 

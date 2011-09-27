@@ -112,6 +112,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * HttpServer -- Emacs as a web-server
 * LibraryDependencies -- Keep track automatically of Emacs Lisp libraries `require'd by another library
 * LiterateEmacsLisp -- documenting and writing lisp, simultaneously.
+* [http://user42.tuxfamily.org/elisp-docstring-preview/index.html elisp-docstring-preview.el] -- preview <code>defun</code> etc docstrings
 
 [:Installers]
 == Emacs Lisp Installers ==

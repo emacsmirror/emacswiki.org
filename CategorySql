@@ -27,6 +27,10 @@ Click on the header to list all SQL related pages.
 * Lisp:oracle-query.el executing sql query using sqlplus (faster than oracle-shell-query.el)
 * Lisp:sqlparser-sqlserver-complete.el -- completing tablename or column name when editing sql for  sqlserver2005 and later
 * Lisp:sqlserver-query.el -- execute sql query using sqlcmd.exe or osql.exe * for sql server 
+* Lisp:sqlserver-table2entity-4java.el -- generate entity for java from sqlserver tables [2011-09-27 14:26] 
+* Lisp:sqlserver-table2entity-4csharp.el  -- generate entity for csharp from sqlserver tables [2011-09-27 14:26]  
+* Lisp:oracle-table2entity-4java.el  -- generate entity for java  from oracle tables [2011-09-27 14:26] 
+* Lisp:oracle-table2entity-4csharp.el   -- generate entity for csharp from oracle tables [2011-09-27 14:26] 
 
 * MySqlHelp -- alist and completion function for MySQL's `mysql' help facility e.g. mysql> help contents
 * http://lispsql.sourceforge.net Mysql front-end for Emacs, access mysql without tying up your shell prompt, and many other useful mysql things.  
