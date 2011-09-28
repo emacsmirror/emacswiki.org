@@ -19,7 +19,7 @@ Your personal bookmark file is defined by [[option]] `bookmark-default-file', wh
 
 
 
-
+[:BookmarkList]
 == `*Bookmark List*' ==
 
 The bookmark list (buffer `##*Bookmark List*##') is like [[DiredMode|Dired]] or BufferMenu for bookmarks.  You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list", which is a misnomer.)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 01:28:41 2011 (-0700)
+;; Last-Updated: Tue Sep 27 18:06:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4339
+;;     Update #: 4369
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -50,7 +50,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `icicle-define-search-bookmark-command',
+;;    `icicle-define-search-bookmark-command', `icicle-search-modes',
 ;;    `icicle-with-comments-hidden'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
@@ -2484,7 +2484,7 @@ same as command `icicle-search-bookmarks-together'.  (To search
 bookmarks one at a time instead of together, use multi-command
 `icicle-search-bookmark'.)
 
-- With a non-negative numeric prefix arg, search multiple buffers
+- With a positive numeric prefix arg, search multiple buffers
 completely.  You are prompted for the buffers to search - all of each
 buffer is searched.  Any existing buffers can be chosen.  If the
 prefix arg is 99, then only buffers visiting files are candidates.
@@ -2494,6 +2494,13 @@ This is the same as command `icicle-search-buffer'.
 completely.  You are prompted for the files to search - all of each
 file is searched.  Any existing files in the current directory can be
 chosen.  This is the same as command `icicle-search-file'.
+
+- With a zero (0) prefix arg, search contexts that are determined in a
+  context-dependent way.  For example:
+
+  . in Dired, search the marked files
+  . in a `buffer-menu' or `ibuffer' buffer, search the marked buffers
+  . in a bookmark list buffer, search the marked bookmarks
 
 
 Navigation and Help
@@ -2825,6 +2832,12 @@ The arguments are for use by `completing-read' to read the regexp.
                                          0))
     regexp))
 
+(defmacro icicle-search-modes ()
+  `(case major-mode
+    ,@(append icicle-search-modes
+              '((t (error "Icicles search WHERE is not implemented for this mode")))
+              nil)))
+
 (defun icicle-search-where-arg ()
   "Return WHERE arg for `icicle-search*' commands, based on prefix arg."
   (cond ((consp current-prefix-arg)
@@ -2835,6 +2848,7 @@ The arguments are for use by `completing-read' to read the regexp.
                (icicle-prompt
                 "Choose bookmark to search (`RET' when done): "))
            (save-selected-window (icicle-bookmark-list))))
+        ((= 0 (prefix-numeric-value current-prefix-arg)) (icicle-search-modes))
         ((wholenump current-prefix-arg)
          (message "Searching multiple buffers...") (sit-for 1)
          (icicle-search-choose-buffers (= 99 (prefix-numeric-value current-prefix-arg))))
@@ -2937,6 +2951,9 @@ The arguments are the same as for `icicle-search'."
                    buf      (car buf+beg)
                    beg      (cdr buf+beg)
                    end      (bmkp-get-end-position bmk))
+             (when (= beg end)          ; Prevent using an empty search region with bookmarks etc.
+               (setq beg  nil
+                     end  nil))
              (if (bufferp buf)
                  (icicle-search-define-candidates-1 buf beg end scan-fn-or-regexp args)
                (push buf non-existent-buffers)))
@@ -4942,54 +4959,48 @@ BEG, END, and WHERE."
 ;;;###autoload
 (defalias 'icicle-search-lines 'icicle-occur)
 ;;;###autoload
-(defun icicle-occur (beg end &optional buffers) ; Bound to `C-c ''.
+(defun icicle-occur (beg end &optional where) ; Bound to `C-c ''.
   "`icicle-search' with a regexp of \".*\".  An `occur' with icompletion.
-Type a regexp to match within each line of one or more buffers.  Use
-`S-TAB' to show matching lines.  Use `C-RET' or `C-mouse-2' to go to
-the line of the current candidate.  Use `C-down', `C-up', `C-next',
+Type a regexp to match within each line of one or more buffers, files,
+or bookmarks.
+
+Use `S-TAB' to show matching lines.  Use `C-RET' or `C-mouse-2' to go
+to the line of the current candidate.  Use `C-down', `C-up', `C-next',
 `C-prior', `C-end', or `C-home', to cycle among the matching lines.
 
-By default, search only the current buffer.  Search the active region,
-or, if none, the entire buffer.  With a prefix argument, you are
-prompted for the buffers to search.  You can choose buffers using
-completion (`C-RET' and so on).  If the prefix argument is 99, then
-only buffers visiting files are candidates.
-
-You can use `M-*' to further narrow the match candidates, typing
-additional regexps to match.
+If you use this command with a prefix argument then multiple buffers,
+files, or bookmarks are used (see `icicle-search' for information
+about prefix arg behavior).
 
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
-  (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(and current-prefix-arg
-                       (icicle-search-choose-buffers (= 99 (prefix-numeric-value
-                                                            current-prefix-arg))))))
+  (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
   (let ((fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end ".*" (not icicle-show-multi-completion-flag) buffers))
+                (icicle-search beg end ".*" (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-search-sentences (beg end &optional buffers)
+(defun icicle-search-sentences (beg end &optional where)
   "`icicle-search' with sentences as contexts.
-Type a regexp to match within each sentence of one or more buffers.
+Type a regexp to match within each sentence of one or more buffers,
+files, or bookmarks.
+
 Use `S-TAB' to show matching sentences.  Use `C-RET' or `C-mouse-2' to
 go to the line of the current candidate.  Use `C-down', `C-up',
 `C-next', `C-prior', `C-end', or `C-home' to cycle among the matching
 sentences.
 
-By default, search only the current buffer.  Search the active region,
-or, if none, the entire buffer.  With a prefix argument, you are
-prompted for the buffers to search.  You can choose buffers using
-completion (`C-RET' and so on).  If the prefix argument is 99, then
-only buffers visiting files are candidates.
+If you use this command with a prefix argument then multiple buffers,
+files, or bookmarks are used (see `icicle-search' for information
+about prefix arg behavior).
 
 You can use `M-*' to further narrow the match candidates, typing
 additional regexps to match.
@@ -5003,10 +5014,7 @@ the current one.)
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
-  (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(and current-prefix-arg
-                       (icicle-search-choose-buffers (= 99 (prefix-numeric-value
-                                                            current-prefix-arg))))))
+  (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
   (let ((fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
@@ -5014,25 +5022,25 @@ using `icicle-search'.  For more information, see the doc for command
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
                 (icicle-search beg end (concat "[A-Z][^.?!]+[.?!]")
-                               (not icicle-show-multi-completion-flag) buffers))
+                               (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-search-paragraphs (beg end &optional buffers)
+(defun icicle-search-paragraphs (beg end &optional where)
   "`icicle-search' with paragraphs as contexts.
-Type a regexp to match within each paragraph of one or more buffers.
+Type a regexp to match within each paragraph of one or more buffers,
+files, or bookmarks.
+
 Use `S-TAB' to show matching paragraphs.  Use `C-RET' or `C-mouse-2'
 to go to the line of the current candidate.  Use `C-down', `C-up',
 `C-next', `C-prior', `C-end', or `C-home' to cycle among the matching
 paragraphs.
 
-By default, search only the current buffer.  Search the active region,
-or, if none, the entire buffer.  With a prefix argument, you are
-prompted for the buffers to search.  You can choose buffers using
-completion (`C-RET' and so on).  If the prefix argument is 99, then
-only buffers visiting files are candidates.
+If you use this command with a prefix argument then multiple buffers,
+files, or bookmarks are used (see `icicle-search' for information
+about prefix arg behavior).
 
 You can use `M-*' to further narrow the match candidates, typing
 additional regexps to match.
@@ -5040,10 +5048,7 @@ additional regexps to match.
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
-  (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(and current-prefix-arg
-                       (icicle-search-choose-buffers (= 99 (prefix-numeric-value
-                                                            current-prefix-arg))))))
+  (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
   (let ((fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
@@ -5051,24 +5056,24 @@ using `icicle-search'.  For more information, see the doc for command
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
                 (icicle-search beg end "\\(.+\n\\)+"
-                               (not icicle-show-multi-completion-flag) buffers))
+                               (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-search-pages (beg end &optional buffers)
+(defun icicle-search-pages (beg end &optional where)
   "`icicle-search' with pages as contexts.
-Type a regexp to match within each page of one or more buffers.  Use
-`S-TAB' to show matching page.  Use `C-RET' or `C-mouse-2' to go to
-the line of the current candidate.  Use `C-down', `C-up', `C-next',
+Type a regexp to match within each page of one or more buffers, files,
+or bookmarks.
+
+Use `S-TAB' to show matching page.  Use `C-RET' or `C-mouse-2' to go
+to the line of the current candidate.  Use `C-down', `C-up', `C-next',
 `C-prior', `C-end', or `C-home', to cycle among the matching pages.
 
-By default, search only the current buffer.  Search the active region,
-or, if none, the entire buffer.  With a prefix argument, you are
-prompted for the buffers to search.  You can choose buffers using
-completion (`C-RET' and so on).  If the prefix argument is 99, then
-only buffers visiting files are candidates.
+If you use this command with a prefix argument then multiple buffers,
+files, or bookmarks are used (see `icicle-search' for information
+about prefix arg behavior).
 
 You can use `M-*' to further narrow the match candidates, typing
 additional regexps to match.
@@ -5076,10 +5081,7 @@ additional regexps to match.
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
-  (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(and current-prefix-arg
-                       (icicle-search-choose-buffers (= 99 (prefix-numeric-value
-                                                            current-prefix-arg))))))
+  (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
   (let ((fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
@@ -5087,7 +5089,7 @@ using `icicle-search'.  For more information, see the doc for command
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
                 (icicle-search beg end "\\([^\f]*[\f]\\|[^\f]+$\\)"
-                               (not icicle-show-multi-completion-flag) buffers))
+                               (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))

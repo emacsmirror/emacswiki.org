@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 21 11:41:43 2011 (-0700)
+;; Last-Updated: Tue Sep 27 15:42:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7209
+;;     Update #: 7236
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -86,6 +86,9 @@
 ;;     Added: icicle-locate-other-window, icicle-locate-file-use-locate-p.  Improved doc string.
 ;;     icicle-locate: Use icicle-locate-file-1 (not icicle-define-command).
 ;;     icicle-locate-file-1: Use locate external program, if non-nil icicle-locate-file-use-locate-p.
+;;     icicle-(find-file-(absolute|in-tags-table)|recent-file)(-other-window), icicle-locate-file-1,
+;;       icicle-cd-for-abs-files:
+;;         Use file-name-as-directory instead of concat with /.
 ;; 2011/09/18 dadams
 ;;     Added: icicle-sexp-list, icicle-string-list.
 ;;     Moved here from icicles-cmd2.el: icicle-keyword-list.
@@ -454,6 +457,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/09/27 dadams
+;;     Added: icicle-search-modes (macro).
+;;     icicle-search-where-arg: Use icicle-search-modes - handle zero prefix arg.
+;;     icicle-(occur|sentences|paragraphs|pages), Use *-search-where-arg, to search files & bookmarks.
+;;     icicle-search-define-candidates: Use nil for BEG and END if region is empty.
+;;     Thx to Michael Heerdegen.
 ;; 2011/09/18 dadams
 ;;     Added: icicle-search-property-default-match-fn.  Handles MuMaMo major mode zones.
 ;;            icicle-search-char-prop-matches-p.  Doesn't just flatten overlay & text props and use
@@ -2003,7 +2012,7 @@
 ;;     icicle-get-alist-candidate:
 ;;       If icicle-whole-candidate-as-text-prop-p, try to get full candidate from text prop.
 ;; 2007/08/16 dadams
-;;     icicle-insert-candidates: Don't reset text props if endpos > point.  Thx Chris Hecker.
+;;     icicle-insert-candidates: Don't reset text props if endpos > point.  Thx to Chris Hecker.
 ;; 2007/08/14 dadams
 ;;     icicle-increment-cand-nb+signal-end: Removed audible bell - use visible bell only.
 ;; 2007/07/22 dadams
@@ -2676,6 +2685,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/09/21 dadams
+;;     icicle-(prefix|apropos)-complete-1: Use file-name-as-directory instead of concat with /.
 ;; 2011/09/09 dadams
 ;;     icicle-switch-to-Completions-buf:
 ;;       Do not set icicle-current-input to minibuffer content.  Use that content sans dir, locally.
@@ -5574,6 +5585,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/09/27 dadams
+;;     Added: icicle-search-modes (var).
 ;; 2011/09/14 dadams
 ;;     Added: icicle-hist-var.
 ;;     icicle-prompt: Changed default value to nil from "".

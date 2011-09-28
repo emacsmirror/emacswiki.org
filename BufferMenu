@@ -21,7 +21,7 @@ The relation between `list-buffers' and `buffer-menu' is a bit like that between
 Enhancements to vanilla buffer menu:
 
 [:BufferMenuPlus]
-* BufferMenuPlus -- Highlighting using local faces. More commands. Better sorting. New columns. Column width resizing.
+* [[BufferMenu+]] -- Highlighting using local faces. More commands. Better sorting. New columns. Column width resizing.
 * BufferMenuHighlighting -- Highlighting using font-lock faces.
 * BufferMenuSorting -- Sorting the listing in buffer menu.
 * FixBuffersList -- New modification status and colors in buffers list.

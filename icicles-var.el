@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 13 16:24:57 2011 (-0700)
+;; Last-Updated: Tue Sep 27 15:26:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1545
+;;     Update #: 1554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -134,8 +134,8 @@
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',
 ;;    `icicle-searching-p', `icicle-search-level-overlays',
-;;    `icicle-search-overlays', `icicle-search-refined-overlays',
-;;    `icicle-search-replacement',
+;;    `icicle-search-modes', `icicle-search-overlays',
+;;    `icicle-search-refined-overlays', `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
@@ -463,7 +463,7 @@ Can be bound to nil to prevent adding a directory to non file-name
 extra candidates during file-name completion.  An extra candidate is
 one that is a member of `icicle-extra-candidates'.")
 
-(defvar icicle-face-name-history nil "History for font names.")
+(defvar icicle-face-name-history nil "History for face names.")
 
 (defvar icicle-fancy-candidates-p nil
   "Non-nil means we are completing using possibly fancy candidates.
@@ -1287,6 +1287,17 @@ current search context.")
 
 (defvar icicle-search-level-overlays nil
   "Overlays used to highlight context levels other than the top level.")
+
+(defvar icicle-search-modes
+  '((dired-mode           (dired-get-marked-files))
+    (ibuffer-mode         (nreverse (ibuffer-get-marked-buffers)))
+    (Buffer-menu-mode     (Buffer-menu-marked-buffers))
+    (bookmark-bmenu-mode  (progn (unless (fboundp 'bmkp-bmenu-get-marked-files)
+                                   (error "You need Bookmark+ for this"))
+                                 (bmkp-bmenu-get-marked-files))))
+  "Alist that maps `major-mode' values to sexps that return WHERE.
+Each entry is a two-element list (MODE SEXP).
+SEXP returns the WHERE argument for `icicle-search', for MODE.")
 
 (defvar icicle-search-overlays nil
   "Overlays used to highlight match of `icicle-search' regexp argument.")

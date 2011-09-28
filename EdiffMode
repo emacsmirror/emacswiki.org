@@ -84,10 +84,9 @@ To make ediff to be horizontally split use:
 
 ''Note that you can also split the window depending on the frame width:
 
-    (setq ediff-split-window-function (lambda (&optional arg)
-                                        (if (> (frame-width) 150)
-                                            (split-window-horizontally arg)
-                                          (split-window-vertically arg))))
+    (setq ediff-split-window-function (if (> (frame-width) 150)
+                                          'split-window-horizontally
+                                        'split-window-vertically))
 
 ''This will split the window horizontally if the frame is wider than 150 chars
 and vertically otherwise.  --EmilioLopes

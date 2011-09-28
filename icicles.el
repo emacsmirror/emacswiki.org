@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 21 11:46:06 2011 (-0700)
+;; Last-Updated: Tue Sep 27 15:20:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22989
+;;     Update #: 22991
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -105,8 +105,8 @@
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
 ;;    `icicle-maybe-byte-compile-after-load'
-;;    `icicle-maybe-cached-action', `icicle-with-comments-hidden',
-;;    `icicle-with-selected-window'.
+;;    `icicle-maybe-cached-action', `icicle-search-modes',
+;;    `icicle-with-comments-hidden', `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
@@ -1220,9 +1220,9 @@
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',
 ;;    `icicle-searching-p', `icicle-search-level-overlays',
-;;    `icicle-search-menu-map', `icicle-search-tags-menu-map',
-;;    `icicle-search-overlays', `icicle-search-refined-overlays',
-;;    `icicle-search-replacement',
+;;    `icicle-search-modes', `icicle-search-menu-map',
+;;    `icicle-search-tags-menu-map', `icicle-search-overlays',
+;;    `icicle-search-refined-overlays', `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',

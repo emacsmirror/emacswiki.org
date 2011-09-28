@@ -5,3 +5,59 @@ The following add-on hotlist packages are available:
 
 * http://www.neilvandyke.org/webjump/webjump-plus.el Some general-purpose items by NeilVanDyke.
 * ...
+
+
+--8<-------------------------- §separator§ ------------------------>8--
+
+DennyZhang:
+
+Below are some customizations compared to default behavior. Hope it's useful for others.
+<pre>
+
+(global-set-key [(super j)] 'webjump)
+;; C-u super j: browse webjump link in the way of w3m, instead of default web browser
+(defun webjump (use-w3m-p)
+  "The behaviour is different from standard webjump in the following:
+ - Users can input web host and search keyword in a single inpute, instead of two
+ - User can choose whether to view link in w3m or not, by given the use-w3m-p parameter
+ - Set the default web host as google
+ - The matching of web host is case insensitive
+ "
+  (interactive "P")
+  (let* ((completion-ignore-case t) user-input
+         search-engine search-keywords item name expr)
+    ;; read customer input for search engine and search keywords, like "google emacs webjump"
+    (make-local-variable 'minibuffer-local-completion-map)
+    (define-key minibuffer-local-completion-map " " nil)
+    (setq user-input (split-string
+                      (completing-read "WebJump to site: " webjump-sites nil nil "google ")
+                      " "))
+    (setq search-engine (car user-input))
+    (setq search-keywords (mapconcat #'identity
+                                     (cdr user-input) " "))
+    (setq item (assoc-string search-engine webjump-sites nil))
+    (setq name (car item))
+    (setq expr (cdr item))
+    (when use-w3m-p
+      (make-local-variable 'browse-url-browser-function)
+      (setq browse-url-browser-function 'w3m-browse-url))
+    (browse-url (webjump-url-fix
+                 (cond ((not expr) "")
+                       ((stringp expr) expr)
+                       ((vectorp expr) (webjump-builtin-keywords expr name search-keywords))
+                       ((listp expr) (eval expr))
+                       ((symbolp expr)
+                        (if (fboundp expr)
+                            (funcall expr name)
+                          (error "WebJump URL function \"%s\" undefined"
+                                 expr)))
+                       (t (error "WebJump URL expression for \"%s\" invalid"
+                                 name)))))))
+
+(defun webjump-builtin-keywords (expr name &optional keywords)
+  "If keywords are given, no need to ask users' input"
+  (if (and keywords (not (string-equal keywords "")))
+      (concat (aref expr 2) (webjump-url-encode keywords) (aref expr 3))
+      (webjump-builtin expr name)))
+
+</pre>

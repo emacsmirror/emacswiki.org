@@ -1,4 +1,4 @@
-Library <tt>[[buff-menu+.el]]</tt> ('''Buffer Menu+''') provides the following enhancements to the standard BufferMenu:
+Library <tt>[[buff-menu+.el]]</tt> ('''[::BufferMenu+]''') provides the following enhancements to the standard BufferMenu:
 
 * A new column, '''Time''', which is the time that a buffer was last accessed (displayed).  Short and long time formats (option). (Emacs 22 or later.)
 * You can selectively ''hide'' any of the columns '''Time''', '''Mode''', and '''File''', using user options or toggle commands.  This is useful to save horizontal space. (Emacs 22 or later.)

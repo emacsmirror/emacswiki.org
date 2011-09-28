@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Jul 25 14:48:15 2011 (-0700)
+;; Last-Updated: Tue Sep 27 11:06:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2887
+;;     Update #: 2894
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,12 +17,13 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `appt', `apropos', `apropos+',
-;;   `apropos-fn+var', `assoc', `autofit-frame', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `browse-kill-ring',
-;;   `browse-kill-ring+', `buff-menu+', `cal-dst', `cal-julian',
-;;   `cal-menu', `cal-opts', `cal-persia', `calendar', `calendar+',
-;;   `cl', `color-moccur', `compile', `compile+20', `compile-20',
+;;   `apropos-fn+var', `assoc', `autofit-frame', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
+;;   `bookmark+-mac', `browse-kill-ring', `browse-kill-ring+',
+;;   `buff-menu+', `bytecomp', `cal-dst', `cal-julian', `cal-menu',
+;;   `cal-opts', `cal-persia', `calendar', `calendar+', `cl',
+;;   `color-moccur', `compile', `compile+20', `compile-20',
 ;;   `cus-edit', `cus-edit+', `cus-face', `cus-load', `cus-start',
 ;;   `custom', `diary-lib', `dired', `dired+', `dired-aux',
 ;;   `dired-details', `dired-details+', `dired-sort-menu',
@@ -90,6 +91,9 @@
 ;;
 ;; Change Log:
 ;;
+;; 2011/09/27 dadams
+;;     Use eval-after-load for isearch+.el.
+;;     Require color-moccur only for Emacs 22+.  It needs ibuffer-unmark-all.
 ;; 2011/07/25 dadams
 ;;     Moved to start-opt.el: Savehist settings, color-moccur settings.
 ;; 2011/05/10 dadams
@@ -487,7 +491,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'menu-bar+ nil t)              ; Extensions to `menu-bar.el'.  Also loads `info+.el'.
 
 (eval-after-load "pp" '(require 'pp+ nil t)) ; Extensions to `pp.el'.
-(require 'isearch+ nil t)               ; Bug fix, more keys, help.
+(eval-after-load "isearch" '(require 'isearch+ nil t)) ; Extensions to `isearch.el'.
+;; $$$$$$(require 'isearch+ nil t)    ; Extensions to `isearch.el'.
 (require 'occur-schroeder nil t)        ; Occur alternative & isearch option.
 (load-library "delsel")
 (require 'thingatpt+ nil t)             ; Thing-at-point extensions.
@@ -508,7 +513,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;(setq *moccur-buffer-name-exclusion-list* '(".+TAGS.+" "*Completions*" "*Messages*"))
 (setq dmoccur-use-list t)
 (setq dmoccur-list '(("dir" default-directory (".*") dir)))
-(require 'color-moccur nil t)
+(when (> emacs-major-version 21) (require 'color-moccur nil t)) ; Needs `ibuffer-unmark-all'.
 (require 'moccur-edit nil t)            ; Edit files by editing the Moccur buffer.
 
 (when (fboundp 'define-minor-mode) (require 'linkd nil t)) ; Hyperlinks.

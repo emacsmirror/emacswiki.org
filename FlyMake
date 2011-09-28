@@ -116,6 +116,11 @@ Using flymake for CMake is not difficult, the trick is to generate Makefiles usi
 
 -- Nil Geisweiller
 
+[new:SeanFisk:2011-09-28 08:24 UTC]
+Nil's scripts didn't work for me out of the box, so I've modified them to generate the correct Makefiles. You can [https://github.com/seanfisk/cmake-flymake|find my modified scripts on GitHub].
+
+-- SeanFisk
+
 === Mozart/Oz ===
 
 Here are instructions how to make flymake work with Mozart/Oz: 

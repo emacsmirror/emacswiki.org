@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 17:54:53 2011 (-0700)
+;; Last-Updated: Tue Sep 27 16:18:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28277
+;;     Update #: 28282
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -701,28 +701,26 @@
 ;;    various kinds.  To use this feature, you must also use library
 ;;    `bookmark+.el'.  See (@> "Icicles Bookmark Enhancements").
 ;;
-;;  * Non-negative numeric prefix argument (e.g. `C-9') - Search
-;;    multiple buffers - you are prompted for the buffers to search.
-;;    If the prefix argument is 99, then only buffers that are
-;;    visiting files are candidates.  You can use `C-RET' and so on to
-;;    choose individual buffers with completion.  You can use `C-!' to
-;;    choose all buffers or all buffers that match a regexp.
+;;  * Positive numeric prefix argument (e.g. `C-9') - Search multiple
+;;    buffers - you are prompted for the buffers to search.  If the
+;;    prefix argument is 99, then only buffers that are visiting files
+;;    are candidates.  You can use `C-RET' and so on to choose
+;;    individual buffers with completion.  You can use `C-!' to choose
+;;    all buffers or all buffers that match a regexp.
 ;;    (See (@file :file-name "icicles-doc1.el" :to "Multi-Commands").)
-;;
-;;    Note: You can use `M-s i' in Ibuffer or Buffer Menu to search
-;;    all marked buffers using Icicles search.  In Ibuffer, menu item
-;;    `Icicles Search (and Replace)...' does the same thing as `M-s
-;;    i'.
 ;;
 ;;  * Negative numeric prefix argument (e.g. `C--') - Search multiple
 ;;    files in the current directory - you are prompted for the files
 ;;    to search.  As for multiple-buffer searching, you can use
 ;;    `C-RET' and so on.
 ;;
-;;    Note: You can use `M-s i' in Dired to search all marked files
-;;    using Icicles search.  Menu item `Search (and Replace)...' is
-;;    added to the Icicles submenu of menu `Multiple' (or `Operate'),
-;;    and it does the same thing as `M-s i'.
+;;  * Zero numeric prefix argument (e.g. `C-0') - Search multiple
+;;    bookmarks, buffers, or files appropriate for the current major
+;;    mode.  In Dired, this means the marked files.  In Ibuffer or
+;;    Buffer Menu, it means the marked buffers.  In the bookmark list,
+;;    it means the marked bookmarks (you need `Bookmark+' for this).
+;;    In such modes the same behavior is typically available on
+;;    another key as well (e.g. `M-s i'), as a separate command.
 ;;
 ;;  As a convenience, some specialized Icicles commands are defined
 ;;  that correspond to `icicle-search' with the various
