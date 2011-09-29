@@ -1,5 +1,5 @@
 ;;; anything-etags+.el ---Another Etags anything.el interface
-;;; Time-stamp: <Joseph 2011-04-10 20:44:29>
+;; Time-stamp: <Joseph 2011-09-29 03:01:39 星期四>
 
 ;; Filename: anything-etags+.el
 ;; Description: Another Etags anything.el interface
@@ -7,9 +7,10 @@
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-02-23
-;; Version: 0.1.2
+;; Version: 0.1.3
 ;; URL:http://www.emacswiki.org/emacs/anything-etags+.el
-;; Keywords: anything, etags ,go back and forward
+;; screencast:http://screencast-repos.googlecode.com/files/emacs-anything-etags-puls.mp4.bz2
+;; Keywords: anything, etags
 ;; Compatibility: (Test on GNU Emacs 23.2.1)
 ;;   I am trying to make it work with XEmacs ,
 ;;   but I haven't tested it on XEmacs.
@@ -404,7 +405,7 @@ hits the start of file."
     (if (string-match "^ \\*Anything" (buffer-name))
         buf
        (rename-buffer (concat" *Anything etags+:" (buffer-name) "*") t)
-      )))
+      ))buf)
 
 (defun anything-etags+-get-tag-table-buffer (tag-file)
   "Get tag table buffer for a tag file."
@@ -489,10 +490,10 @@ needn't search tag file again."
             (end-of-line)
             ;;(setq src-file-name (etags-file-of-tag))
             (setq src-file-name (anything-etags+-file-of-tag))
-            (let ((tag-table-parent (file-name-directory (buffer-file-name tag-table-buffer))))
-              (when (string-match  tag-table-parent src-file-name)
-                (setq src-file-name (substring src-file-name (length  tag-table-parent)))))
             (let ((display)(real (list  src-file-name tag-info full-tagname)))
+              (let ((tag-table-parent (file-name-directory (buffer-file-name tag-table-buffer))))
+                (when (string-match  tag-table-parent src-file-name)
+                  (setq src-file-name (substring src-file-name (length  tag-table-parent)))))
               (if anything-etags+-use-short-file-name
                   (setq src-file-name (file-name-nondirectory src-file-name)))
               (setq display (concat tag-line
@@ -564,6 +565,7 @@ needn't search tag file again."
               ;; Initialize input with current symbol
               init-pattern  prompt nil))
 
+;;;###autoload
 (defun anything-etags+-select()
   "Tag jump using etags and `anything'.
 If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
@@ -573,6 +575,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
         (anything-idle-delay anything-idle-delay-4-anything-etags+))
     (anything-etags+-select-internal nil "Find Tag(require 3 char): ")))
 
+;;;###autoload
 (defun anything-etags+-select-at-point()
   "Tag jump with current symbol using etags and `anything'."
   (interactive)
@@ -585,6 +588,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
              (if (featurep 'anything-match-plugin) " "))
      "Find Tag: ")))
 
+;;;###autoload
 (defun anything-etags+-select-one-key (&optional args)
   "you can bind this to `M-.'"
   (interactive "P")
@@ -592,6 +596,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
       (anything-etags+-select)
       (anything-etags+-select-at-point)))
 
+;;;###autoload
 (defvar anything-c-source-etags+-select
       '((name . "Etags+")
         (init . anything-etags+-get-available-tag-table-buffers)
@@ -691,6 +696,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
           (ring-remove anything-etags+-tag-marker-ring)))
 
 
+;;;###autoload
 (defun anything-etags+-history-go-back()
   "Go Back. "
   (interactive)
@@ -702,6 +708,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
         (anything-etags+-history-go-internel next-marker)
         (setq anything-etags+-current-marker-in-tag-marker-ring next-marker))))
 
+;;;###autoload
 (defun anything-etags+-history-go-forward()
   "Go Forward. "
   (interactive)
@@ -746,6 +753,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
         (action . (("Go" . anything-etags+-history-action-go)
                    ("Clear all history" . anything-etags+-history-clear-all)))))
 
+;;;###autoload
 (defun anything-etags+-history()
   "show all tag historys using `anything'"
   (interactive)
