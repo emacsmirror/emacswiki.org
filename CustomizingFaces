@@ -78,9 +78,11 @@ If you use MultiTty and want different colors for X and TTY, does customize work
 Start with M-x anything-colors, narrow the face list by typing some patterns(multiple patterns are space-delimited string),
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to customize selected face,
 
-== Cursor faces are OS dependent ==
+== Cursor faces are OS dependent (fixed in v24) ==
 
 Just a note that after spending several hours trying to figure out why a color-theme wasn't displaying the text under the cursor correctly for me on OSX, it appears according to the people on the emacs irc channel that the cursor is controlled by the operating system. Under OSX, apparently the foreground color cannot be adjusted. If you change this value within emacs you won't see the result reflected as it will be ignored. It appears to work fine under Windows and Linux. The issues with OSX were noticed using OSX 10.6 and 10.7. -- Josh
+
+Edit: The cursor colors function correctly with gnu emacs for osx v24, so they appear to have fixed whatever prevented it working with earlier versions. -- Josh
 
 ----
 CategoryFaces CategoryFrames CategoryCustomize

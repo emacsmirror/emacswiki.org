@@ -5,13 +5,13 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 27 08:14:43 2010 (-0500)
-;; Version: 0.8
-;; Last-Updated: Thu May 12 15:29:10 2011 (-0500)
+;; Version: 0.8.2
+;; Last-Updated: Thu Sep 29 16:16:11 2011 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 132
+;;     Update #: 141
 ;; URL: http://www.emacswiki.org/emacs/download/yas-jit.el
 ;; Keywords: Yasnippet fast loading.
-;; Compatibility: Emacs 23.2 with Yasnippet on svn trunk as of release date.
+;; Compatibility: Emacs 23.2 with Yasnippet 0.6 or 0.7
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -30,20 +30,32 @@
 ;;   (setq yas/root-directory snippet-directory)
 ;;   (yas/jit-load)
 ;;
-;;   Note this works assuming that each load directory contains a list
-;;   of modes. Currently the release version of yasnippet does not use
-;;   this paradigm. However the svn trunk does.
+;;   For yasnippet 0.6 the root directory is something like:
+;;   (setq yas/root-directory "~/.emacs.d/snippets/text-mode/")
+;;
+;;   For yasnippet 0.7 the root directory is something like:
+;;
+;;   (setq yas/root-directory "~/.emacs.d/snippets/");;
+;;
+;;   This is because the root directory assumes that each load-path
+;;   contains directories of modes with snippets. 
 ;;
 ;;   Also note that yasnippet requires something in the hash,
 ;;   otherwise it loads everything.  Therefore text-mode snippets are
 ;;   loaded by default.
 ;;
-;;   This may be put into the trunk of Yasnippet.
+;;   This will probably not be put in the trunk of yasnippet.
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 29-Sep-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Sep 29 16:09:31 2011 (-0500) #137 (Matthew L. Fidler)
+;;    Updated documentation section of file
+;; 29-Sep-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Sep 29 08:31:22 2011 (-0500) #133 (Matthew L. Fidler)
+;;    Fixed bug checking for yasnippet loading.  Thanks Sandro Munda
 ;; 12-May-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu May 12 09:42:24 2011 (-0500) #119 (Matthew L. Fidler)
 ;;    Made alias for yas/snippet-dirs for backward-compatibility with yasnippet 0.6
@@ -112,7 +124,7 @@
 (require 'cl)
 (require 'yasnippet nil t)
 (require 'yasnippet-bundle nil t)
-(when (or (not (featurep 'yasnippet)) (not (featurep 'yasnippet-bundle)))
+(when (and (not (featurep 'yasnippet)) (not (featurep 'yasnippet-bundle)))
   (error "Cannot load yasnippet."))
 
 (if (and (not (fboundp 'yas/snippet-dirs))

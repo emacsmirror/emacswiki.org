@@ -14,37 +14,7 @@ I use it for
 * Editing this wiki (YaoddMuse)
 * Browsing the web (EmacsW3m, conkeror alternatively)
 
-Most resources stress how great emacs is for programming. Only few stress, that it is great
-for everything related to text. I think emacs is great for _everyone_ who uses computers
-extensively. Sadly enough, it takes some time (and effort) to appreciate the power emacs
-offers in **every** text related task. Yes, tailoring emacs to your needs takes some effort.
-My advice: Start slowly! I started with OrgMode; only OrgMode. Very quickly, I went through
-the pain configuring Gnus. Then, I heard AUCTeX is great for Latex, so I started using that, too.
-And that was it for several month! But soon, writing my mails and organizing my life into OrgMode
-files, I discovered the advantage of "One Interface to do the Job", i.e. Text editing.
-I used ispell to check my texts, then added FlySpell to my repertoire of tools.
-I started to use DictEm to let emacs show me quickly the meaning of unknown words.
-(I distinctly remember the moment: I read the word 'plethora' [http://www.gnu.org/software/emacs/manual/html_node/gnus/Select-Methods.html here] ;).)
-And these are features available **all the time**: In your mails, in IRC/IM, editing any kind of text ... 
-if you use emacs ;). 
-
-Now, after more than a year, I feel like I only start to grasp what this means for my relationship
-to computers and userinterfaces: It feels like - after my first contact with MS Dos 5.0 at the age of 13 - for the first
-time I see computers and the possibilities they are offering from a completely different POV.  
-(Or maybe the second time: Win 95 and the concept of everything is a Gui was a profound paradigm shift, too of course).
-So, if you are an avid computer user, but alas without any "coding" skills, I want to encourage you: 
-**Have no fear! It //is// worth it.**
-
-=.emacs=
-I just added some more lines to my .emacs when I suddenly realized
-it is not that small anymore ;). I learned from alle the init files 
-out there, so [http://memnon.sdf-eu.org/emacs.org here (.org)] and [http://memnon.sdf-eu.org/emacs.html here (.html)] is mine.
-It definately lacks more comments ... I'll add them when I will find the time.
-
 =My favorites=
-
-I really need to get some structure into this page, but "release early, release often", I
-add links to (imho) the best features/addons/whatever for emacs.
 
 * OrgMode
 * [[http://www.emacswiki.org/emacs/CategoryGnus Gnus]]
@@ -59,10 +29,6 @@ Welcome to the wiki. -- DrewAdams
 
 [new:Memnon Anon:2010-01-22 10:49 UTC]
 Thanks Drew. ;) 
-
-
-
-
 
 ----
 CategoryHomepage
