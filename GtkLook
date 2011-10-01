@@ -13,6 +13,7 @@ See also:
 
 * Lisp:gtk-perl.el by [[Ye Wenbin]] -- completions and eldoc for functions etc in Perl-Gtk2
 * [[Icicles]] -- for advanced completions browsing (good on a big list like <code>gtk-look</code>)
+* [http://user42.tuxfamily.org/wx-look/index.html wx-look.el] -- similar for wxWidgets
 
 ----
 

@@ -120,19 +120,24 @@ A long time ago I used pc-selection-mode.  Then I got a Kinesis keyboard (did no
 Later I decided to get rid of delete-selection-mode, because getting out of an isearch (and stay) required me to type RET, and getting out of an active region required me to type C-g.  Hitting C-g in isearch returns to the start of the search.  And hitting RET with an active region replaced the text.  Bad usability, here.
 
 [new:DrewAdams:2004-12-24 21:58 UTC]
-Sorry, I must be low on coffee today. I don't understand how/why Delete Selection mode would affect isearch, and I don't know what you mean by "getting out of an active region". I use Delete Selection mode and isearch with no problems such as you suggest, but I'm probably missing something in your explanation. Could you list the steps you take that lead to a problem? -- DrewAdams
+: Sorry, I must be low on coffee today. I don't understand how/why Delete Selection mode would affect isearch, and I don't know what you mean by "getting out of an active region". I use Delete Selection mode and isearch with no problems such as you suggest, but I'm probably missing something in your explanation. Could you list the steps you take that lead to a problem? -- DrewAdams
 
 [new]
-Without delete-selection-mode, I now got an extra newline, which is less surprising than replacing the region with a newline.  But then I finally saw the light: Without transient-mark-mode, even the last problem disappears!  So now I am trying that -- the default setting!
+:: Without delete-selection-mode, I now got an extra newline, which is less surprising than replacing the region with a newline.  But then I finally saw the light: Without transient-mark-mode, even the last problem disappears!  So now I am trying that -- the default setting!
 
-Note that I bind a key (f3 in my case) to comment-region.  This key was bound to comment-dwim, but that function only works on regions in transient-mark-mode.
+:: Note that I bind a key (f3 in my case) to comment-region.  This key was bound to comment-dwim, but that function only works on regions in transient-mark-mode.
 
 [new:DrewAdams:2006-03-09 16:36 UTC]
-Coming back to this old thread on 2006-03-09 (sorry if this interrupts the flow). I still don't understand the problem. You seem to be saying that if 1) the region is active and 2) `transient-mark-mode' is enabled and 3) `delete-selection-mode' is enabled, then if you search within the active region and end the search by `RET' (some or all of) the region is replaced by a newline.
+::: Coming back to this old thread on 2006-03-09 (sorry if this interrupts the flow). I still don't understand the problem. You seem to be saying that if 1) the region is active and 2) `transient-mark-mode' is enabled and 3) `delete-selection-mode' is enabled, then if you search within the active region and end the search by `RET' (some or all of) the region is replaced by a newline.
 
-Do I understand you correctly? If so, that's not what I see on MS Windows in Emacs 22 (or Emacs 20). When I hit `RET' the search stops; that's all. The buffer is not modified. I get this (good) behavior in ##emacs -q## with either the standard ##delsel.el## or my own version (Lisp:delsel.el).
+::: Do I understand you correctly? If so, that's not what I see on MS Windows in Emacs 22 (or Emacs 20). When I hit `RET' the search stops; that's all. The buffer is not modified. I get this (good) behavior in ##emacs -q## with either the standard ##delsel.el## or my own version (Lisp:delsel.el).
 
-If I misunderstood you, can you please provide a recipe to demonstrate the problem, so I can understand it? Thanks. -- DrewAdams
+::: If I misunderstood you, can you please provide a recipe to demonstrate the problem, so I can understand it? Thanks. -- DrewAdams
+
+
+[new:DrewAdams:2011-09-30 14:01 UTC]
+:::: Ditto for Emacs 23 and 24.  For me, `RET' just ends Isearch, without modifying the buffer, leaving the [[active region]] active (of course [[point]] has moved, so the region has likely been reduced or extended.  -- DrewAdams
+
 
 [new]
 LeWang adds:
