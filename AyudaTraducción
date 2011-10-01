@@ -1,0 +1,16 @@
+La Wiki tiene un número de <i>idiomas conocidos</i>. Véase [[TraduciendoPáginas]] para más información.
+
+Aquí está lo que hay que hacer para traducir la página como nuestro [[SandBox]]:
+
+# Visitar [[SandBox]]
+# Ir hasta el final de la página y haz clic en el link <u>Add Translation</u>
+# Escoje un idioma como "Español"(sólo se ofrecerán los idiomas que no tienen un <i>link de traducción</u> existente...)
+# Escoje el nombre de la página traducida, ej.: SandBox <i>(1)</i>
+# Clic en el botón *Go!* 
+# Esto agregará un <i>link de traducción</i> <nowiki>[[es:SandBox]]</nowiki> a la página de [[SandBox]], indicándole a la wiki que SandBox(en español) es una traducción de SandBox(en inglés).
+# Finalmente, estarás editando la página de SandBox en español
+  
+
+
+----
+<i>(1) : Nota del traductor: SandBox es un sustantivo propio y por ello se escribe tal cual en vez de escribir "ArenaCaja"</i>

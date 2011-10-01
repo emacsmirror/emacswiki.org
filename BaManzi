@@ -1,0 +1,31 @@
+I'm a Emacs newbie, started using Emacs since late of 2009.
+
+I'm a Chinese guy. Fortunately, the first version of Emacs that I used in GNU Emacs 23.1, which supports unicode and xft. Thus I was not bothered with those font and charset problems described in many articles of other earlier user. 
+
+Twitter: bamanzi
+
+Blog:    
+  http://bamanzi.cnblogs.com  (mostly in Chinese)
+  http://bamanzi3.blogspot.com  (old blog. not longer updated because f**king GFW prevents our access)
+
+
+My emacs configurations:
+  http://code.google.com/p/bamanzi-misc/source/browse/trunk/_emacs.d/
+
+Some my stuff:
+  * [http://www.cnblogs.com/bamanzi/archive/2011/03/07/emacs-auto-complete-scite-api.html auto-complete-scite-api] auto-completion source with scite API files  (please read the [http://bamanzi-misc.googlecode.com/svn/trunk/_emacs.d/lisp/auto-complete-scite-api.el source code] for English introduction.)
+  * [http://bamanzi.iteye.com/blog/635812 imenu parser for emacs delphi-mode]
+  * [http://www.cnblogs.com/bamanzi/archive/2011/04/06/emacs-delphi-jump-to-decl-impl.html jump to function declation/implementation in delphi-mode]
+  * more to come...
+
+
+
+[new:DrewAdams:2011-06-11 14:15 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+----
+CategoryHomepage

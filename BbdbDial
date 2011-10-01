@@ -1,0 +1,15 @@
+= BBDB 3.0 =
+
+BBDB has a dial interface which allows you to call an external interface to make a call.
+This is done by modifying bbdb-dial-function. This is an example which interfaces with
+Skype to make a call on Mac OS X.
+
+{{{
+(setq bbdb-dial-function
+      '(lambda (phone-number)
+         (do-applescript
+          (concat
+           "tell application \"Skype\"\n"
+           "send command \"CALL +" phone-number "\" script name \"Call from BBDB\"\n"
+           "end tell"))))
+}}}

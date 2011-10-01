@@ -1,0 +1,68 @@
+AceJump-mode is a minor mode for Emacs, enabling fast/direct cursor movement in current view.
+
+[:WantDemo]
+= Is there a demo? =
+Yes, refer to [http://dl.dropbox.com/u/3254819/AceJumpModeDemo/AceJumpDemo.htm here]
+
+[:WhereItComesFrom]
+= Where does this minor mode come from? =
+I first saw this kind of movement style is in a vim plugin called !EasyMotion. It was really attractive. !EasyMotion provides a much simpler way to use some motions in vim. It takes the <number> out of <number>w or <number>f{char} by highlighting all possible choices and allowing you to press one key to jump directly to the target. So I decided to write a similar mode for Emacs.
+
+So I must thank:
+
+  Bartlomiej P.    for his PreciseJump
+
+  Kim Silkebækken  for his EasyMotion
+
+
+[:WhatIsAceJumpMode]
+= What's ace-jump-mode? =
+ace-jump-mode is an fast/direct cursor location minor mode. It will create the N-Branch search tree internal
+and marks all the possible position with predefined keys in current view. Allowing you to move to the 
+character/word/line almost directly.
+
+[:WhatDoYouImplement]
+= What is implemented now ? =
+I have not implemented everything from !EasyMotion. Because I what to make it as simple as possible, you don't 
+need to spend more than 2 minutes to learn how to use it. Right now, there are only three commands, which can 
+help you to quick move to a specific character, word and (non-empty) line. Enjoy it!
+
+Of course, if you have any cool suggestions, feel free to tell me at anytime and I will put them to top of my TODO list :D
+
+[:HowToInstall]
+= How do I install it? =
+Add the following code to your init file, assigning whatever keys you prefer.
+
+    (add-to-list 'load-path "which-folder-ace-jump-mode-file-in/")
+    (require 'ace-jump-mode)
+    (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+    
+    ;;If you also use viper mode:
+    (define-key viper-vi-global-user-map (kbd "SPC") 'ace-jump-mode)
+
+
+For more details, see the help of `ace-jump-mode'.
+
+[:HowToUseIt]
+= How do I use it? =
+If you use the default configuration, which binds to "C-c SPC".
+
+* "C-c SPC" ==>  ace-jump-word-mode
+
+  enter first char of a word, select the highlight key to move to.
+
+* "C-u C-c SPC" ==>  ace-jump-char-mode
+
+  enter a char for query, select the highlight key to move to.
+
+* "C-u C-u C-c SPC" ==>  ace-jump-line-mode
+
+  each non-empty line will be marked, select the highlight key to move to.
+
+[:WhereIGetIt]
+= Where can I get it? =
+Please refer to the !GitHub site [https://github.com/winterTTr/ace-jump-mode AceJumpMode on github]
+
+[:AboutMe]
+= About You? =
+[http://about.me/winterTTr winterTTr]

@@ -1,0 +1,12 @@
+[new]
+I can't seem to open either a unix style directory (eg /etc or /bin) or a "hidden" file (eg .profile) from with in the File, Open. Same is true for Open Dir. For that matter, I can't even see a file /usr. Is there a way to do this?
+
+[new] 
+: I can only assume that this is happening to you with the recent GtkFileChooser which is controversial.  Try to hit just '/' or '~' or C-l to get into the (completing) location bar.  Use a right click to toggle the showing of hidden files in the dialog.  Does this help?
+
+----
+
+See also DiredOmitMode.
+
+----
+CategoryFiles

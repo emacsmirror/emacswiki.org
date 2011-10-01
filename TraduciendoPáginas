@@ -1,0 +1,69 @@
+Para pedir que se agreguen nuevos idiomas, o para enviar sugerencias
+en cómo mejorar el sistema, contactar con [[AlexSchroeder]]. 
+
+[[AyudaTraducción]] tiene instrucciones paso a paso indicando cómo
+traducir una página. Ésta, en cambio, es acerca de la infraestructura
+técnica que da soporte al inter-linking(inter-vínculo) de las
+distintas traducciones. 
+
+== Idiomas Conocidos ==
+
+La wiki intenta determinar automáticamente el idioma en que una página
+está escrita por medio del uso de una expresión regular. Si esta
+expresión acierta más de tres veces, se considera un "hit". 
+Las páginas pueden ser escritas en varios idiomas.
+
+* en -- English -- ' (the|that|and|why|what) '
+* de -- Deutsch -- ' (der|das|und|oder) '
+* fr -- Français -- ' (et|une|les|est|je|avec|même) '
+* it -- Italiano -- ' (gli|che|perchè|così) '
+* es -- Español -- '(¡|¿|ñ|ción)'
+* ru -- Русский -- '\b(и|или|это|тот|для|как)\b'
+* zh -- 中文 -- '(是|但|這|这|你|了|啊|沒)'
+* pt -- Português -- '(ã|õ)'
+* se -- Svenska -- ' (är|från|för) '
+* ja -- 日本語 -- '(ま|す|ん|し|ょ|う|の|は)'
+* ko -- 한국어 -- '(이)'
+
+Esta heurística está lejos de ser perfecta, pero por lo menos es
+automática. :) 
+
+Hazme conocer si tu quieres algún cambio en esta lista. --
+[[AlexSchroeder]] 
+
+== Vínculos de Traducción ==
+
+Esto es un vínculo de traducción:
+[[<nowiki>de:SeitenÜbersetzen]]</nowiki>. Le indica a la wiki que la
+traducción alemana de la página actual está en la página llamada
+SeitenÜbersetzen.  
+La wiki ofrecerá un vínculo a esta traducción alemana al final de la
+página actual. 
+
+== Idiomas Ofrecidos ==
+
+Cuando haces clic en el vínculo <i>Add Translation</i>, se te ofrecerá
+una lista de idiomas conocidos en base a la mostrada más arriba menos
+los lenguajes que ya tiene un vínculo de traducción. 
+Si hay sólo un idioma restante que no está realizado, la wiki asume
+que esta es la copia que tu estás buscando, y no lo ofrecerá más. 
+
+Siempre es posible editar la página y cambiar el vínculo de traducción
+manualmente. 
+
+Usando el vínculo <i>Add Translation</i> automáticamente agregará un
+vínculo de traducción basado en la información que tu proveíste de la
+página que acabas de dejar. 
+
+== Cómo Traducir la Interface ==
+
+La interfaz de la wiki también necesita traducirse. Chequea
+[[Oddmuse:Translations]]. Cada idioma necesita uno de estos archivos. 
+
+Además, cada idioma necesita del **nombre de algunas páginas
+importantes** que aparecen en la parte superior e inferior de todos los
+lados. 
+Las páginas más importantes son: MapaDelSitio y CambiosRecientes. Algún tipo
+de WikiCómo también sería bueno. La página AyudaTraducción es de alguna
+manera importante. :) 
+

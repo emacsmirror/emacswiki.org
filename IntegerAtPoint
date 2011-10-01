@@ -1,0 +1,83 @@
+This page illustrates how you can define a new ThingAtPoint type ---  new ''things'', in this case, an '''integer'''.
+
+Function `thing-at-point' can find numbers: ##(thing-at-point 'number)##, aka `number-at-point'.  This uses Emacs's `read-from-string' function to convert the string to a Lisp value, and then verifies that this is a number.  It returns the number if so or `nil' if not.
+
+This approach can sometimes be too general.  Sometimes you want a function that retrieves only integers or floating-point numbers, rather than allowing both.  Another disadvantage is that `number-at-point' is an incomplete implementation of `thing-at-point'.  Information about the number's location (buffer bounds) in the buffer is not available.
+
+A further limitation, or at least a ''gotcha'', of `number-at-point' is that it does not return `nil', indicating ''no'' number at [[point]], when the cursor is on a character [[sexp]], such as ##?A##.  This is because to EmacsLisp a character ''is'' a number.  Recall that the implementation uses `read-from-string', and this reads ##?A## as a character, which is a number.  If what you really want is the number represented by the ''numeral'' at point, and `nil' if there is no numeral at point, then you need something such as `number-at-point-decimal' or `number-at-point-hex', defined in library [[ThingAtPoint+]].
+
+The code presented on this page shows one way of extending `thing-at-point' to return the integer at point.  Like `number-at-point', it does not distinguish a character sexp from a numeral.  The point here is just to show some of the ways to use the thing-at-point features.
+
+The simplest way is perhaps to define `forward-thing' and `backward-thing' functions for the ''thing'' you want it to handle.  Creating simple `forward-thing' and `backward-thing' functions is easy, but providing the proper implementation that handles the UniversalArgument is a bit more difficult. A compromise is to create a `bounds-of-thing-at-point' function for integers, e.g., `integer-bounds-of-integer-at-point'. (All functions defined here have their names prefixed with `##integer-##').
+
+  (defun integer-bounds-of-integer-at-point ()
+     "Return the start and end points of an integer at the current point.
+   The result is a paired list of character positions for an integer
+   located at the current point in the current buffer.  An integer is any
+   decimal digit 0 through 9 with an optional starting minus symbol
+   \(\"-\")."
+     (save-excursion
+       (skip-chars-backward "-0123456789")
+       (if (looking-at "-?[0-9]+")
+           (cons (point) (1- (match-end 0))) ; bounds of integer
+         nil))) ; no integer at point
+
+After defining how to find the bounds, we need only to tell
+`thing-at-point' that this definition exists, and it will instantly understand integers.
+
+Emacs Lisp has a convenient property-list system allowing the values of properties to be associated with symbols.  This is used in ##thingatpt.el## to associate properties `thing-at-point' and `bounds-of-thing-at-point' with a particular type of ''thing''.  The following sets function `integer-bounds-of-integer-at-point' as the `bounds-of-thing-at-point' for integers.
+
+  (put 'integer 'bounds-of-thing-at-point
+       'integer-bounds-of-integer-at-point)
+
+Function `thing-at-point' can now retrieve an integer, because it knows how to find the bounds of integers. It can also get the beginning and end positions of an integer with `beginning-of-thing' and `end-of-thing', respectively.
+
+  (thing-at-point 'integer)
+  (beginning-of-thing 'integer)
+  (end-of-thing 'integer)
+
+However, based on our definition of `integer-bounds-of-integer-at-point', any "integer" found by `thing-at-point' is returned as a string.
+
+We can define a new function, `integer-at-point', that changes the value of this string to a number.  This function can also verify that the integer found is indeed a integer.
+
+  (defun integer-integer-at-point ()
+    (let ((i  (thing-at-point 'integer))) ; The string (integer numeral)
+      (if (numberp i)
+          (string-to-number i)
+	nil)))
+
+We can next define `beginning-of-integer' and `end-of-integer' functions by
+passing the symbol `integer' to the respective `beginning-of-thing'
+and `end-of-thing' functions.
+
+  (defun integer-beginning-of-integer ()
+    (beginning-of-thing 'integer))
+
+  (defun integer-end-of-integer ()
+    (end-of-thing 'integer))
+
+We can now create functions `forward-integer' and `backward-integer', which were considered above but passed over.
+
+  (defun forward-integer (&optional arg)
+    "Move point forward ARG (backward if ARG is negative).
+  Normally returns t if integer moved, else nil."
+    (interactive "p")
+    (let ((arg (or arg 1)))
+      (while (< arg 0)
+	(integer-beginning-of-integer)
+	(setq arg (1+ arg)))
+      (while (> arg 0)
+	(integer-end-of-integer)
+	(setq arg (1- arg)))))
+
+  (defun backward-integer (&optional arg)
+    "Move backward until encountering the beginning of an integer.
+  With argument, do this ARG many times."
+    (interactive "p")
+    (let ((arg (or arg 1)))
+      (forward-integer (- 0 arg))))
+
+These forward and backward functions cannot move among other kinds of things besides integers.  Specifically, they cannot skip non-integer text such as whitespace or words.  Being able to do that would make them more useful.  Compare these with command `forward-word', for instance.
+
+----
+CategoryCode

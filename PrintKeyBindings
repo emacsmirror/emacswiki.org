@@ -1,0 +1,16 @@
+PKB (Print Key-Bindings) is a package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys. Currently the output is in html format.
+
+As an example, here is the output for the global map of a default emacs installation:  [http://www.ph.utexas.edu/~jonganc/emacs/example.html example.html].
+
+The macro itself is two files:
+Lisp:pkb-0.2.el
+Lisp:pkb-html-0.2.el
+
+== Some notes on the current version ==
+
+* Customizing: The functions are designed so that the output can be extensively customized to adapt to the end-user's desires. Look at the help function for `pkb-html-save-keymap' for more info.
+* The current default settings are aimed at me and my keyboard. Again, by customizing the various default variables (e.g. `pkb-include-base-key-list', `pkb-html-event-replace-bk', `pkb-key-groups', etc.) it should be fairly straightforward to adapt the code for different keyboards. (In fact, it would probably be possible to set these settings by detecting some system variables.)
+* The formatting of the output is not terribly pretty. This should be very easy to change; I haven't spent too much time on that since it otherwise does what I want. Also, if you are using an older browser that doesn't support CSS 3 (e.g. IE 6 or 7), the output will be particularly unattractive.
+
+----
+CategoryKeys

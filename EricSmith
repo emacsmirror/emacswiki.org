@@ -1,0 +1,39 @@
+Avid technology geek. Currently enrolled at [http://www.coloradotech/edu/CTU-Online/ Colorado Technical University].
+
+[:AboutMe]
+==About Me:==
+  I use Emacs (GNU Emacs 23.3.1).
+  I used to use Vim until I found Common Lisp. The need for an efficient way
+  to code in lisp drove me towards Emacs. I began to be serious with Emacs. I
+  once thought the keybindings were horribly arcane and difficult to understand,
+  but as I progressed, I saw the beauty in them. Since then I have not looked
+  back (except to wonder how I ever used Vim. And I thought Emacs was arcane...)
+
+[:Contact]
+==Contact:==
+  I can be reached by email at nirn1608 [AT] gmail [DOT] com.
+  http://about.me/ewsmith is my central web profile
+
+==Init File:==
+  I will upload my init file when I have finished mutilating it.
+
+==Emacs Modes I'm Using:==
+  OrgMode: This is a must
+  Lisp-Mode: Kind of self-explanatory
+  Slime: For Common Lisp
+  ERC: Just found it recently
+
+==Comments and Questions:==
+
+[new:DrewAdams:2011-06-27 03:22 UTC]
+Welcome to the wiki. -- DrewAdams
+
+[new:EricSmith:2001-07-10 21:27 UTC]
+It seems that I cannot create a link.  The first link works, but anything else modeled after it does not. -- EricSmith
+
+
+[new:DrewAdams:2011-07-10 23:50 UTC]
+I assume you mean a link on the wiki (?).  Please provide a recipe of what you tried.  If you think there is a general problem you can report it by clicking `Problems' at the top of the page. -- DrewAdams
+  
+----
+CategoryHomepage

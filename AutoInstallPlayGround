@@ -1,0 +1,138 @@
+=Some Ideas to Improve AutoIntstall=
+==Introduction==
+/This introduction is total my responsibility. In advance I apologize to anyone I may offend. That being said, I'm going to say it anyway./
+--NeilSmithline
+
+There are a ton of these silly EmacsLisp installers. I think they all suck. That being said, I do understand that the problem space is huge. Emacs 24 has decided to go with ELPA as its package installer. This is based on the Debian OS package installer system. I'll simply say that this is a non-trivial system. 
+
+That being said, the Debian package system makes installing packages from source code, with configurable options, with builds and installs that orecustomized for what is already installed on your system. It also downloads any dependencies you may need, upgrades packages to newer versions as needed, warns you if they'll be a conflict withother packages, etc... 
+
+You can also remove packages with the option of undoing changes that occurred during installation. And there is no need to add configuration or startup code. Reasonable defaults are installed and they are done such that packages get correctly ordered. 
+
+Until a tool like ELPA has develops a large package base (I believe that even a single EmacsLisp file package requires custom configuration files), I think it is a big too heavy.
+
+But AutoIntstall, on the other hand, is simple and light. So, while I hate all of the installers, I think AutoIntstall sucks the least -- by far. Thank you [[rubikitch]]!
+
+While I like how light way it is, there are a few features that I feel it is missing. I had given some thought to writing my own, silly Emacs Lisp installer, but decided that it made more sense to see if we could work together. That way we can have a two person silly EmacsLisp installer.
+
+The improvements I'd like to see are:
+* Lack of directory isolation for packages. Especially multi-file packages.
+* No attention given to Info files. I'm sure they feel left out.
+* Automatic configuration (very nice [[rubikitch]]) but no ability to tweak the default settings as one becomes more advanced at using the package.
+* Dependency installation. This one scares me the most as I think the best way to do it is with LibraryDependencies and there's a 50-50 chance that once you include any file written by DrewAdams, you'll have to include every EmacsLisp package he's written, including [[Icicles]], of course :-).
+
+
+[new:DrewAdams:2011-07-07 13:29 UTC]
+: I imagine you are being a bit tongue-in-cheek here ;-).  But to clarify for someone who might not be familiar with this: No, most of the apparent dependencies among my libraries are ''soft'': ##(require 'foo nil t)##, which does nothing (no error raised) if the given library (`foo') is not present in your `load-path'.  You do ''not'' need to include any library that is only soft-`require'd.
+
+: Without recognizing this, it can look like there are more dependencies than there really are. And of course the reason to use separate libraries that are not interdependent (hard `require's) is to let you pick and choose. 
+
+: Another thing that can mislead along the same lines is the file-header commentary that I use.  It includes an automatically generated statement such as this (see AutomaticFileHeaders):
+
+        ;; Features that might be required by this library:
+        ;;
+        ;;   `bookmark', `bookmark+-1', `bookmark+-mac', `dired',
+        ;;   `dired-aux', `dired-x', `ffap', `pp'.
+
+: This does not mean that these libraries are ''required'', or even ''soft''-required.  It means only that at the time I saved the file those libraries were present in my Emacs session and used by the library in question.  This is just a guideline, mentioning some other libraries that could be useful with this library. It is important to keep this caveat in mind when considering the LibraryDependencies code. -- DrewAdams
+
+
+
+
+==Info Files==
+I mentioned I gave some thought to writing my own installer. That's geek talk for I worked on it but got bored (OK, I give, I got frustrated). So I have a fair amount of the code already working. The Info file processing was actually working before I decided to rework my code model. 
+
+But what I have is very close to actually working for Info. And the part that works does most of the hard stuff. I just haven't gotten to rewiring the top-level code, the part I rewrote, with the nasty code (I hate the Info package).
+
+I think the best way to add Info files is to leave them right where they are. Emacs' idea of installing Info files into the main Info directory is.... I'll restrain myself. I don't like that it forces you to mix files from different packages into the same directory. It makes it very hard to disentangle. It is even worse if you want to install the package in some archive as you need to extract the Info files from the archive, copy them to the system install directory, and then monkey around with the (dir) file in that directory. 
+
+While I don't know for sure, I believe that it is partly due to this crappy design that Emacs' Info root has links to packages that aren't installed. It's just too hard to install an individual file.
+
+    (defun epackages-process-info-files (package-dir)
+      "Search for info files in PACKAGE-DIR' and its subdirectories.
+
+   Return a list of (dir) files for the given `info' files. for
+    `epackage' usable with the `info' command. The files can be
+    absolute paths or relative to `epackages-rootdir'. Besides
+    modifying Info-additional-directory-list, `epackages-add-info-file' will also
+    create an `info' directory file for each of the `info' FILES.
+
+    The created `info' file will be in the `epackages' root directory.
+
+    Note that this hasn't been tested with the use of the `INFODIR'
+    environment variable so YMMV."
+      ;; There are so many info directory paths and behaviors around the
+      ;; paths that they make my head explode. I think that it is always
+      ;; safe to add to Info-default-directory-list but that you should
+      ;; only add to Info-directory-list if it already has a value
+      ;; assigned to it. If you are using INFODIR or running Emacs out
+      ;; of a build directory, more power to you but I don't know know.
+      ;;
+      ;; But, alas, Info-additional-directory-list does just what we
+      ;; need.  same thing added to it. To heck with the other info
+      ;; paths and the environment variable. I think
+      ;; Info-additional-directory-list always works.
+  
+      (mapcar (function epackages-add-info-file)
+	      (epackages-find-info-files)))
+
+    ;; Note that (epackages-add-info-file) does not exist. It is a
+    ;; simple function. It needs to create a (dir) file in each of the
+    ;; directories that have info files. The code to create the (dir)
+    ;; file exists in epackages-make-1-info-dir-entry. It should work
+    ;; provided that the info files in any one directory are all part
+    ;; of a single, Info menu entry. If there are multiple top-level
+    ;; entries, say an entry for the Emacs manual and another for the
+    ;; Elisp manual, then the Info files must be separated into two
+    ;; different directories. Each of those directories (not files,
+    ;; directories) should be added to Info-additional-directory-list.  
+
+    ;; I use find-lisp-find-files because it is all elisp. I question
+    ;; it's performance but being that this only needs to be run on
+    ;; installation, haven't bothered to investigate. 
+    (defun epackages-find-info-files ()
+      "Find all info files that are in or below `package-dir'."
+      (find-lisp-find-files package-dir ".*\.info$"))
+
+    ;; This is an Info file directory scraper. Blecch!!
+    (defun epackages-make-1-info-dir-entry (file)
+      "Return the `info' (dir) entry for FILE.
+    FILE should be an info file containing exactly one entry of the
+    general form
+
+        INFO-DIR-SECTION Emacs
+        START-INFO-DIR-ENTRY
+        * MyPackage: (mypackage).     My wonderful package.
+        END-INFO-DIR-ENTRY
+
+    The string returned is meant to be incorporated into an
+    `info' (dir) file. For the above example, the string returned
+    would be.
+
+        Emacs
+        * MyPackage: (mypackage).     My wonderful package.
+
+    See `epackages-find-info-files' for information as to how this is used."
+      (with-temp-buffer
+	(insert-file-contents file)
+	(goto-char (point-min))
+	(let ((end-of-entry (re-search-forward "^END-INFO-DIR-ENTRY")))
+	  (beginning-of-line 1)
+	  (delete-region (point) (point-max))
+	  (goto-char (point-min))
+	  (re-search-forward "INFO-DIR")
+	  (beginning-of-line 1)
+	  (delete-region (point-min) (point))
+	  (when (looking-at "INFO-DIR-SECTION +")
+	    (delete-region (point) (match-end 0))
+	    (next-line 1)
+	    (beginning-of-line 1))
+	  (if (not (looking-at "START-INFO-DIR-ENTRY"))
+	      (warn "epackages: Cannot parse info file `%s'." file)
+	    (delete-lines 1)))
+	(buffer-substring-no-properties (point-min) (point-max))))
+
+It's 4AM - I'll add more another day.
+
+
+//  LocalWords:  AutoIntstall

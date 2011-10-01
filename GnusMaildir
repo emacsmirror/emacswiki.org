@@ -1,0 +1,1 @@
+As of 20110706, Maildir support in Gnus is still suboptimal, please see [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8055|Emacs bug #8055] for a detailed status.

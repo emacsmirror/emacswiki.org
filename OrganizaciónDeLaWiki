@@ -1,0 +1,26 @@
+La organización de la wiki está escrita a mano. Usamos una aproximación descendente(top-down o también conocida como ForwardIndex) y ascendente(bottom-up o también conocida como ReverseIndex).
+
+# El MapaDelSitio vincula hacia todas las categorías de las páginas
+# Las páginas de categorías vincula hacia todas las páginas en las categorías.
+# Cada página vincula hacia las páginas de categorías que pertenece.
+
+Cuando las páginas tiene páginas "padres" o pertenece a una cierta categoría, vínculos explícitos de retroceso son agregados manualmente.
+Agregue la etiqueta apropiada para el padre o la categoría refiriendola in la página o incorporándola al final de la página.
+Los vínculo de retroceso pueden ser buscados automáticamente. Sólo haga clic en el encabezado para listar todas las otras páginas vinculandolas a la página actual.
+Esto es solamente una búsqueda regular.
+
+Así es como se vería usualmente el final de una página
+    
+    ----
+    CategoryFoo
+
+La razón por la que esto no es del todo automatizado es porque:
+# Va a requerir del mantenimiento de una base de datos de vínculos separada. 
+# En un gráfico con doble vínculos puede existir una cantidad potencial de muchas e irrelevantes páginas apuntando a la actual, por ende, no querrás listarlas siempre. Por ello, se usa la estrategia de agregar etiquetas de categorías o páginas padres al final de forma manual.
+
+Véase también:
+CreateNewPages,
+CómoNavegar.
+
+----
+CategoryEmacsWikiSite

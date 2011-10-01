@@ -1,0 +1,22 @@
+Let [http://en.wikipedia.org/wiki/Nyan_Cat Nyan] [http://nyan.cat Cat] show you your buffer position in mode line.
+Parts of the code and overall inspiration come from SmlModeLine.
+
+
+To get NyanMode, go to [http://nyan-mode.buildsomethingamazing.com mode page] or [https://github.com/TeMPOraL/nyan-mode/ GitHub repository].
+
+http://nyan-mode.buildsomethingamazing.com/screenshot.png
+
+== Customization ==
+
+If you use a custom `mode-line-format', `M-x nyan-mode' may not work for you. Instead, you can put <code>(:eval (list (nyan-create)))</code> somewhere in your `mode-line-format'. 
+
+If you want to use a color other than “space blue”, change <code>#003366</code> in <code>img/*.xpm</code> into another color, or <code>None</code> for transparent. Example:
+
+[[image:NyanModeWithCustomBackground]]
+
+--AmitPatel
+
+----
+ModeLineConfiguration
+CategoryModeLine
+CategoryModeLineConfiguration

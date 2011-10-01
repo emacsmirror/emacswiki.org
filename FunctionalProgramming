@@ -1,0 +1,135 @@
+Emacs Lisp supports *multiple programming styles* or paradigms, including *functional* and *object-oriented*.
+Emacs Lisp is not a [[WikiPedia:Purely functional|purely functional]] programming language since [[WikiPedia:Side effect (computer science)|side effects]] are common.
+Instead, Emacs Lisp is considered [[WikiPedia:Functional_programming|an early functional flavored language]]. The following features contribute to the functional flavor:
+
+* its notation is functional (including a lambda calculus-like notation -- see LambdaExpression)
+* its constructs are expressions ([[sexp]]s), which are evaluated and return values
+* it supports recursive program definition (even though it does not provide for [[WikiPedia:Tail call|optimized tail recursion]] and [[WikiPedia:Lazy evaluation|lazy evaluation]])
+* it supports the creation and use of higher-order programs (using `apply', `funcall', and `eval' in particular)
+
+On the other hand, Emacs Lisp does not treat functions as first-class language constructs -- higher-order support for functions (even true functions) is limited and erroneous ([[WikiPedia:Funarg_problem|funarg]] problems, [[WikiPedia:Scope|dynamic scoping]] problems). Emacs Lisp can be written in a  [[WikiPedia:Declarative_programming|declarative]] style, minimizing [[WikiPedia:Side effect (computer science)|side effects]], but in practice this never happens. Most Emacs Lisp code will be written in an [[WikiPedia:Imperative_programming|imperative]], [[WikiPedia:Procedural_programming|procedural]] style. As a result, programs in purely functional languages enjoy the desirable property of [[WikiPedia:Referential transparency (computer science)|referential transparency]] where as programs written in Emacs Lisp do not.
+
+== Discussion ==
+
+Newbies might get the impression -- as I did -- that Emacs was all about functional programming because all I knew back then was C, SQL, and some weird proprietary stuff at work. We're not an encyclopedia and not the One Manual, thus we can have multiple points of view, no problem. The only difficulty is presenting them well without confusing newcomers. :) -- AlexSchroeder
+
+[new:DrewAdams:2011-08-29 17:04 UTC]
+What is important here is to characterize functional programming (briefly) and relate those characteristics to EmacsLisp.  This '''''is''''' about Emacs Lisp, and some of it is about Lisp as a consequence, to the extent that some things true of Emacs Lisp are true of Lisp in general, and some of those things are pertinent wrt functional programming.  
+There is not one characteristic that I listed that is not pertinent to situating Emacs Lisp wrt functional programming.
+
+As Alex points out, there is room for multiple views.  But it is absolutely incorrect to think that Lisp is ''not'' an imperative, procedural language.  That is not a matter of opinion.  Lisp programmers know this.
+
+And that holds for all Lisps, including Scheme, but with the exception of something sometimes referred to in academic papers (e.g. about program transformation or proof) as "pure Lisp", which has been neutered of all possible side-effects, which includes `set*', `put*', etc. "Pure" Lisp is an abstraction that no one sees in normal programming life.
+
+It is somewhat more a matter of opinion whether Lisp should be called a functional language, that I'll grant you.  That's why Wikipedia finessed the question, calling it a "functional flavored language".
+
+It is true that there are lots of people who are not very familiar with (true) functional languages, lambda calculus, or combinatory logic, and who have the vague notion that Lisp is a functional language because of its functional appearance or the fact that 50 years ago it was the only thing even close to a functional language.
+
+That misconception does not make it so.  For 30 years now we have had real functional programming languages, and nowadays it is nothing but a misnomer to refer to Lisp the same way.  Lisp is to a functional language what [[WikiPedia:Mocklisp|Mock Lisp]] was to Lisp: it has a similar appearance and little more.  
+
+For the record, I am a strong proponent of functional languages and declarative languages generally (have been for 30 years).  I also enjoy programming in Emacs Lisp.   -- DrewAdams
+
+[new]
+Fair enough, then I will explain the substance problems which I've previously suggested be dealt with at Wikipedia.
+
+In the same way that multiple opinions are welcome on this Wiki, multiple paradigms are available in the Lisps.  You are getting hung up on the "true" and "pure" definitions of "functional programming" (probably because you are familiar, as you say, with recent languages that enforce it).  Again, pure functional languages are "an abstraction that no one sees in normal programming life".  Discussing pure functional programming is of little value here as well.  Wikipedia?  Maybe.  I'm sure you'll agree that Lisp has imperative and procedural shortcomings as features, not as bugs.  I never wrote anything here that said Emacs Lisp or even Lisp was or wasn't a functional programming language.  You have, however.  The name of the page is "functional programming", not "functional programming language" or "pure functional programming".  However, the functional programming capabilities of modern Lisps are complete.  It obviously can't be said for McCarthy's 1959 Lisp system nor for Emacs Lisp.  ObjectOrientedProgramming considers some languages to be pure and some not, but that would also be a rather academic exercise.
+
+I say bring back the list of functional programming features as they apply to Emacs Lisp.  Let's incorporate Alex's suggestions and I welcome Drew's corrections, but have seen none of them.  -- AaronHawley
+
+
+[new:DrewAdams:2011-08-29 18:59 UTC]
+I specifically mentioned that Lisp "supports multiple programming styles or paradigms, including functional". You can program in a functional ''style'' to some extent. That does not make Lisp a functional language.
+
+Pure functional languages are not "recent" (30+ years is pretty old now as programming languages go, considering that Fortran and Lisp, the oldest, are themselves only 50 years old).  Nor, unlike "pure Lisp", are they "an abstraction that no one sees in normal programming life".  That someone might not be familiar with functional programming does not make them an academic exercise.  They let you go beyond talking the talk (functional style) and start walking the walk (functional programming).
+
+Discussing functional programming might, as you suggest, be of little value here.  That is why I removed the page and changed the (very few) existing links to it to links to the Wikipedia page for [[WikiPedia:Functional_programming|functional programming]].  But you didn't allow that.
+
+In 2011 (and for a long time now), "functional programming" means what is described at that Wikipedia page.  In short, it means programming using a purely functional language -- or at most programming with a not-quite-pure language such as ML (which language you know, IIUC), but avoiding side effects.  That's not Lisp, I'm afraid.  For someone to try to really use a Lisp as a functional language is not so trivial.  You can do it, but you can also use C that way, or Prolog, or even Fortran (simulated recursion - used for things like CAD/CAM).
+
+If we must have a FunctionalProgramming page on ThisWiki, then it should clarify the relation of EmacsLisp to functional programming (duh).  And that means, first and foremost, pointing out ''that'' it is ''not'' a functional language and in what ways (''how'') it is not.  That entails briefly listing the characteristics of a functional programming language and pointing out which of them are missing/present and to what extent.
+
+Wrt your text:
+
+* Lambda-expression support is not a necessary characteristic of functional programming or a functional language. Anonymous functions can be useful (whatever their form -- not necessarily lambda forms), but they are by no means necessary.
+
+* Lazy evaluation is not a necessary characteristic either.  I'm a strong proponent of lazy evaluation, but it by no means is a determinant of functional languages or functional programming.  (This point can be discussed more, however, since this feature is so important for functional programming.)
+
+* Lexical binding is pretty much an implementation issue.  Saying that it is essential to functional programming is like saying that graph reduction is essential to it -- depends on the implementation.  It is legitimate to point out the problems introduced by dynamic scoping, which I did -- I specifically referred to funarg and dynamic scoping problems, and cross-referenced Wikipedia for more info.  (The same could be said for lazy evaluation, BTW: applicative-order evaluation does not always return a result, which is another way of saying that it can give incorrect results.)
+
+* Optimized tail recursion -- a fortiori an implementation issue.  Totally irrelevant in fact to whether a language is functional or functional programming is possible.  It is important for a comparison of different Lisps, since those that optimize tail recursion facilitate use of a functional programming style.
+
+* "Referential transparency without side effects" -- doesn't even mean anything.  Well, you could have ref. transp. with side effects, but only when the return value is insignificant etc. -- a vacuous case (pointed out by Wikipedia, BTW).  If you perhaps really meant just ref. transp. or just no side effects (which implies ref. transp.), then OK, but those characterize ''declarative'' programming, not specifically ''functional'' programming (the strict subset we're concerned with here).  And I specifically mention these anyway, putting them in context.  Functional programming is both declarative and applicative.  Lisp is only applicative.
+
+* Then there is the link to EmacsLispLimitations.  I left that link for now, but it should be removed IMO.  The text on that page does not help one understand the relationship between EmacsLisp and functional programming.  It is all over the map, and is mainly about implementation.  Someone on this page, wanting to know about how Emacs Lisp relates to functional programming, will not be helped by that page, IMO.
+
+Finally, I am fine with our ''removing'' this apparently controversial page and simply linking to Wikipedia for information about  [[WikiPedia:Functional_programming|functional programming]].  I already tried that once as a reasonable compromise, but you simply reverted everything back to your own text, for the ''N''th time.
+
+You are entitled to your own opinion, but not to your own facts.  If you nevertheless find that your opinion trumps the characteristics of functional programming as I've laid them out here, then I propose (again) that we remove this page and simply link to Wikipedia.  You can take it up with them.  What we should not do is mislead people by having this page indicate that Emacs Lisp is about functional programming.  It is not.  At all.  In fact, unlike Scheme and Common Lisp, Emacs Lisp is not even very supportive of progamming in a functional "style". -- DrewAdams
+
+[new]
+Ok.  So we can have a list that tries to "clarify the relation of EmacsLisp to functional programming".  You suggest that some of the features aren't "a necessary characteristic of functional programming".  I never did nor will I say that they do, but we can agree they are qualities which bear some significance and are worth mentioning for EmacsLisp's functional programming-ness.  To use the OOP analogy again:  Message passing, polymorphism, inheritance these are qualities of OOP but their existence or absence do not necessarily make or break a language's OOP-ness.  -- AaronHawley
+
+[new:DrewAdams:2011-08-29 22:11 UTC]
+Those OOP features/characteristics are not so much implementation concerns/techniques as are memoization, lexical scoping, and tail-recursion optimization.
+
+And OOP is far fuzzier a notion that is functional programming.  At some point or another nearly everything has been called "object-oriented".  Not so, for functional programming features.
+
+Anyway, I repeat my proposal that we remove this page.  Any page of ThisWiki that needs to link to an explanation of FunctionalProgramming can link to Wikipedia.  That is a reasonable compromise wrt our differing points of view about this.  There were only a couple pages that linked here anyway.  -- DrewAdams.
+
+[new]
+Indeed, the OOP analogy is less than perfect.
+
+I'm not looking for a compromise, just a simple page explaining the orientation of Emacs Lisp to functional programming.  I  think it's deserving such a page on the Wiki.  A shorter version of the page also lends itself to emphasizing the links to Wikipedia whose material I think we both agree is more useful. -- AaronHawley
+
+[new]
+(first draft removed) -- AlexSchroeder
+
+[new]
+This is an improvement, especially the intro.
+
+That "Lisp is an imperative, procedural  language, like C and Fortran but unlike C and Fortran it is also an applicative language" may be true, but it unfairly equates Lisp with these languages on a page about functional programming.  I'm sorry, but Lisps' functional programming abilities are not hobbled as C and Fortran's in this category.  The confusing comparison doesn't even seem worth mentioning.
+
+Further, "What makes Lisp stand out from other procedural languages is the degree to which it uses expressions that return values and the ease of higher-order programming (in particular, `apply', `funcall', and `eval')."  This is duplicative of the previous bullet, and the last part isn't even entirely true of Lisp and especially Scheme.  Keep the discussion to Emacs Lisp, no?  You could change the sentence to apply to Emacs Lisp rather than just Lisp, but Elisp isn't deserving a superlative on "higher-order programming".
+
+I'd still like to see mentions of optimized tail recursion and lazy evaluation since they're relevant to Emacs Lisp.
+
+Also, I'd like to try using Alex's suggestion about the commonly seen style used in Emacs Lisp -- with its emphasis on functional programming but reliance on imperative and procedural features. -- AaronHawley
+
+[new]
+(second draft removed) -- AlexSchroeder
+
+-- AlexSchroeder
+
+[new]
+Yes, it looks fine. -- AaronHawley
+
+[new:DrewAdams:2011-08-31 01:34 UTC]
+Sorry, but Emacs Lisp ''cannot'' usefully be written in a declarative style (whatever "style" might mean here, which is probably nothing).  Emacs Lisp is simply not declarative.  Yes, you can write a purely declarative, recursive definition of fibonacci or some such in Emacs Lisp, but such toys really have little to do with programming using Emacs Lisp.
+
+If you want to say that ''you can write Emacs Lisp code so as to minimize side effects'', then just say so.  That is clear and correct.
+
+Things are much stronger than "''nothing prevents'' you from using imperative, procedural style".  Emacs Lisp is inherently imperative and procedural.  You'll be hard pressed to use Emacs Lisp much without side effects.  It's simply not how it is used (usable) as a language.  Telling users, especially newbies, this kind of thing is extremely misleading.
+
+The most important thing we can tell users about the relation between Emacs Lisp and functional programming is that there isn't any.  Or there is very little such relation.  Word it as you like, but anything that gives a different impression, such as it's a realistic choice to program with Emacs Lisp as if in a functional language, just leads people down the garden path and sets them up for disappointment and confusion.
+
+Our advice to Emacs Lisp newbies should be, first of all, to learn the nature of Lisp -- what's particular/special about it.  We should advise newbies to avoid destructive functions (esp. list-modification functions), but also avoid pretending that Emacs Lisp is functional (cascading maps, reduces, etc., creating mountains of conses)...
+
+You simply do not program in Lisp the same way you program in Haskell (or in C, for that matter).  You cannot, at the end of the day.  And you should not try, at the beginning of the day.  Lisp is peculiar.  Users need to know about list structure and symbols etc.  In Emacs they need to know about keymaps and such.
+
+I grant you that if someone is new to Lisp and completely unfamiliar with functional programming, learning about declarative, recursive definitions, higher-order functions, and such can be an eye-opener.  But that is hardly learning Lisp; it is only a first step in learning, and it is hardly typical of Lisp programming.
+
+I'm sorry, but it is completely misguided to give the impression that Lisp is a flavor of functional language, in the sense that you program it the way you program, say, Haskell.  To do that is to do users a real disservice. They deserve better.  
+
+As for how you want to word this page, I leave it up to you.  -- DrewAdams
+
+[new]
+I added a stronger objection and replaced the original text. -- AlexSchroeder
+
+
+[new]
+Yes, that's true.  In order to get things done in Emacs Lisp, you need to make side effects to buffers, keymaps, window configurations, association lists, text properties -- in addition to assigning values to global symbols (variables).
+
+Off topic but, I browsed the Introduction to Emacs Lisp manual and was surprised how little functional programming and "the nature of Lisp" was revealed.  It presents lists, variables, functions, commands but then launches into frobbing buffers.  Clearly, the emphasis was on "Emacs" and not the "Lisp".  This trade-off is unfortunate but likely more practical for teaching readers how to get things done in **Emacs** Lisp. -- AaronHawley
+
+----
+CategoryCode

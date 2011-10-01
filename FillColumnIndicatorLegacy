@@ -1,0 +1,173 @@
+Many modern editors and IDEs can graphically indicate the location of the fill column, either by shading the area to the right of the fill column or by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  The package [[fill-column-indicator-legacy.el]] (by AlpAker) implements both of these facilities in Emacs.
+
+The two different styles of fill-column indication look like this:
+
+|| [[image:FciShadingStyle]] || [[image:FciRuleStyle]] ||
+|| Shading style || Rule style ||
+
+== Installation and Activation ==
+
+Put the package file in your load path (be sure to save the file as "fill-column-indicator.el") and put ##(require 'fill-column-indicator)## in your .emacs.
+
+To toggle graphical indication of the fill column in a buffer, use the command ##fci-mode##.  
+
+== Customization ==
+
+<b>Specifying Rule or Shading.</b> By default, ##fci-mode## uses shading to indicate the fill column.  The style of indication is controlled by the variable ##fci-style##; the recognized values are ##shading## and ##rule##.  To use a rule instead of shading, put:
+
+  (setq fci-style 'rule)
+
+in your ##.emacs##.  Buffer-local values are supported, so one can use different styles in different buffers.
+
+<b>Customizing Shading.</b> The appearance of the shading is controlled by the face ##fci-shading##, whose attributes can be set like those of any face.  Adding the following code to your init file, for example, will set the backround color of the shading to light gray:
+
+  (set-face-background 'fci-shading "light gray")
+
+When customizing colors, it may be helpful to use ##M-x list-colors-display## to see a list of defined [http://www.gnu.org/software/emacs/elisp/html_node/Color-Names.html color names].
+
+<b>Customizing the Rule.</b> The appearance of the rule is controlled by the variables ##fci-rule-width## and ##fci-rule-color##.  By default, the rule is 2 pixels wide.  The default value of ##fci-rule-color## is nil, which means that ##fci-mode## will try to select an appropriate color automatically.  To specify, e.g., a 1-pixel-wide dark blue rule, put the following in your init file:
+
+  (setq fci-rule-width 1)
+  (setq fci-rule-color "darkblue")
+
+<b>Images vs. Characters for Rule Style</b>.  If bitmap images aren't available (e.g., when running on a character terminal), ##fci-mode## draws the fill-column rule using characters.  By default it uses `|' (ascii 124).  To use a different character, set the variable ##fci-rule-character## to your desired value.   To draw the rule with characters even when images are available, set ##fci-always-use-textual-rule## to ##t##.
+
+== Further Customization Examples==
+
+To turn on fci-mode automatically for certain kinds of files, add ##'fci-mode## to the appropriate mode hook.  For example, to turn it on automatically when visiting a file with C code, put: 
+
+  (add-hook 'c-mode-hook 'fci-mode)
+
+in your ##.emacs##.
+
+To enable fci-mode as a global minor mode, add the following code to your init file:
+
+  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode t)))
+  (global-fci-mode t)
+
+== Miscellany ==
+
+There's a [http://github.com/alpaker/Fill-Column-Indicator GitHub] repository for the package, which might provide a more convenient way of ensuring one has the latest version.  (I haven't found the Emacs Wiki RSS feeds to be entirely reliable.)
+
+If you're curious about the color scheme in the screenshots above, the settings are described on [http://www.emacswiki.org/emacs/AlpAker my homepage].
+
+== See also ==
+
+* ColumnMarker
+* HighlightCurrentColumn -- Highlight the current column when Emacs is idle, or momentarily, or in such a way that the highlighting tracks the cursor. An extension of <tt>[[column-marker.el]]</tt>.
+* ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
+* MarginMode
+* EightyColumnRule
+
+==Discussion==
+
+===Problems when Using Emacs as a Daemon===
+[new]
+Really neat stuff :)
+
+I've just spotted a small problem. In order to use with EmacsAsDaemon one needs to comment out these lines:
+
+    (unless window-system
+        (error "Fill-column-indicator only works on window systems"))
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new:AlpAker:2011-04-05 00:17 UTC]
+
+[Some ensuing back and forth edited out.]  After playing around with emacsclient for a while, I think you're right:  The best thing to do is not throw any kind of error when Emacs is running as a daemon, and instead depend on the user to figure out when they can invoke fci-mode and when they can't.  Thanks for pointing out the problem. --AA
+
+[new:AlpAker:2011-04-15 22:59 UTC]
+
+As of 0.30, the package should be able to handle daemon mode gracefully.  Shading style will work fine on both graphical and character terminals.  Rule style will work fine as well, displaying the graphical rule on graphical terminals and the textual rule on character terminals.   (One problematic edge case remains:  If you invoke the mode while on a character terminal then visit the same buffer on a graphical terminal using the same Emacs instance, the textual rule will be displayed on both.  I haven't decided on the best way to detect and handle this case.  The reverse scenario--opening on a graphical terminal then visiting on character terminal--shouldn't be a problem.  I imagine these cases arise quite infrequently.) --AA
+
+===Problem using dabbrev-expand===
+[new]
+With <tt>fci-mode</tt> active in a buffer, using <tt>dabbrev-expand</tt> at the end of a line seems to jump the point down a couple of lines lines. So a buffer containing:
+
+  abcdef
+
+  abc
+
+  foofoo
+
+Position the point after the second <tt>abc</tt> and use <tt>dabbrev-expand</tt>, I get the correct expansion, but the point jumps to the third <tt>o</tt> in <tt>foofoo</tt>. Without <tt>fdi-mode</tt> I get the correct expansion and the point is left after the expanded <tt>abcdef</tt>.
+
+[new:AlpAker:2011-04-06 17:19 UTC]]
+
+I've uploaded a new version (0.28) that fixes the bug.  -- AA
+ 
+[new]
+
+The new version (0.28) works great, thanks for the quick fix!
+
+===Interesting Interaction With show-paren-mode===
+
+[new]
+
+First, awesome package, I've been looking for something like this for years! But, like a typical ungrateful user I'm going to immediately follow my thanks with a bug report!
+
+If I have just the following in my .emacs:
+
+<pre>
+(show-paren-mode t)
+(setq show-paren-style 'expression)
+
+;; So I can load fill-column-indicator
+(defconst elisp-directory (expand-file-name "~/.elisp/"))
+(add-to-list 'load-path elisp-directory)
+(require 'fill-column-indicator)
+</pre>
+
+Then open up a new file in <code>c-mode</code>.
+
+Add the following content to the file,
+
+<pre>
+int
+main ()
+{
+  /* Next line has some whitespace on it, the line after that is completely empty. */
+      
+
+}
+</pre>
+
+At this point we should have <code>{</code> to <code>}</code> highlighting on, and <code>fci-mode</code> off. Position the point at the character immediately after the closing <code>}</code> and hopefully we should see a highlighted block. Next turn on <code>fci-mode</code> and see how the highlighting changes.
+
+I have no idea how easy this would be to fix, and it's not a huge issue, just thought it was worth mentioning.
+
+[new:AlpAker:2011-04-21 18:52 UTC]
+
+Thanks for pointing this out.  The problem is caused by the way fci-mode pads out the end of lines to make the rule or shading appear at the fill column: it puts an overlay on newline characters with a before-string property that contains the necessary amount of padding.  Unfortunately, the face attributes of overlay before-strings aren't merged with those of other overlays that cover the same region, so the show-paren highlighting doesn't appear on the padding.
+
+This will probably be an issue with libraries other than paren.el, and I'm going to have to think about how to fix things in robust fashion.  In the meantime, here's a version with a workaround: [link removed; this code is now part of the main version].  --AA
+
+[new]
+
+I can't comment on the how much of a hack this is, my elisp isn't that great :) But this does seem to fix the problem for me so far. I'll switch to using this at work after the weekend and see how I get on.
+
+[new:AlpAker:2011-04-27 23:50 UTC]
+
+(A few days later).  So far, every way I can think of to make the fill-column padding automatically pick up parenthesis highlighting will break support for character terminals.  So I've cleaned up the earlier hack and made it, for now, the Official Way We Do Things.   (Btw, you might want to have a look at [[mic-paren.el]], which is an improvement on paren.el in just about every respect.) --AA
+
+[new]
+fci-mode also causes the highlighting of the current line by hl-line-mode to be slightly broken. The highlighting between the last character and the fci column marker is lost. Probably has the same cause as the above problem. Maybe just removing the font property for the current line if hl-line-mode is active would fix this.
+
+[new:AlpAker:2011-05-04 14:53 UTC]
+
+You're right; the problem is essentially the same.  Unfortunately, the fix isn't as straightforward as deleting the fill-column indication on a given line.  (That wouldn't work with global-hl-line-mode, or with hl-line-mode when hl-line-sticky-flag is nil.)  I've put up a new version (0.40) that's compatible with hl-line-mode.  -- AA
+
+===From the (E-)Mailbag===
+
+[new]
+
+I want the fill-column indicator to be appear at column 80, but it only appears at column 70.  How do I set it to use a different column?
+
+[new:AlpAker:2011-04-05 00:17 UTC]
+
+Fci-mode uses whatever value you have ##fill-column## set to.  As 70 is the default, you probably haven't set ##fill-column## to your desired value.  You can use the command ##set-fill-column## to change the value of ##fill-column## in a buffer, or put ##(setq-default fill-column 80)## in your .emacs to set it globally. --AA
+
+
+
+----
+CategoryFilling 

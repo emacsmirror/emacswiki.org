@@ -1,0 +1,6 @@
+AsmMode is a simple AssemblyProgramming mode that is based on TextMode.  It is superseded by GasMode and by assembly-specific modes.
+
+As the code's comments say, "Code is indented to the first tab stop level."  As with most Emacs [[MajorMode]]s, setting your tab width won't influence it.  To change your tab stops, see TabStopList.  See also IndentationBasics.
+
+----
+CategoryProgramming

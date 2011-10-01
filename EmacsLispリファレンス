@@ -1,0 +1,39 @@
+==-日本語のEmacsマニュアル-==
+
+* [[http://www.bookshelf.jp/texi/emacs-man/21-3/jp/emacs.html#SEC_Top GNU Emacsマニュアル(bookshelf.jp)]] -- GNU Emacs 21.3.50版対応
+
+* [[http://flex.ee.uec.ac.jp/texi/emacs-jp/emacs-jp_toc.html GNU Emacs Manuals(flex.ee.uec.ac.jp)]]
+
+* [[http://www.geocities.co.jp/SiliconValley-Oakland/3432/man/emacs/emacs-ja.html  GNU Emacs Manuals(SiliconValley-Oakland)]] -- GNU Emacs 20.6版
+
+
+==-日本語のEmacs Lispマニュアル-==
+* [[http://www.bookshelf.jp/texi/elisp-manual/21-2-8/jp/elisp.html GNU Emacs Lispリファレンスマニュアル(bookshelf.jp)]] -- GNU Emacs Lispマニュアル 2.9版、 GNU Emacs 21.3版対応
+
+* [[http://flex.ee.uec.ac.jp/texi/eljman/eljman_toc.html GNU Emacs Lisp Reference Manual(flex.ee.uec.ac.jp)]]
+
+* [[http://www.fan.gr.jp/~ring/doc/elisp_20/elisp.html#Top GNU Emacs Lispリファレンスマニュアル(fan.gr.jp)]] -- GNU Emacs 20.3版対応
+
+* [[http://www.math.s.chiba-u.ac.jp/~matsu/lisp/emacs-lisp-intro-jp.html#SEC_Top GNU Emacs Lisp(math.s.chiba-u.ac.jp)]] -- Programming in Emacs Lisp (An introduction) 1.05 版
+
+
+
+==-最新のEmacsマニュアル-==
+
+[[http://www.gnu.org/software/emacs/manual/ GNU Emacs Manuals Online]]にあるEmacsマニュアルいろいろ。
+
+Emacsエディタのマニュアル
+
+* [[http://www.gnu.org/software/emacs/manual/html_node/emacs/index.html The Emacs Editor]]
+
+Lispの基礎知識について
+
+* [[http://www.gnu.org/software/emacs/emacs-lisp-intro/html_node/index.html An Introduction to Programming in Emacs Lisp]]
+
+Emacs Lispの特殊な関数やEmacsの仕様について
+
+* [[http://www.gnu.org/software/emacs/manual/html_node/elisp/index.html Emacs Lisp]]
+
+その他のEmacsの機能のマニュアル
+
+* [[http://www.gnu.org/software/emacs/manual/index.html Other Emacs manuals]]

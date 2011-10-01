@@ -1,0 +1,9 @@
+Major mode for editing LESS CSS [http://lesscss.org/] files in Emacs. The code is available via ELPA (marmalade-repo.org) and from https://github.com/purcell/less-css-mode/
+
+==  Features ==
+* Optional compilation of current file on save
+* Optional flymake support
+* Indentation and highlighting (Derived from CSS-mode)
+* Syntax highlighting for variables and inline comments.
+        
+-- [[StevePurcell]]

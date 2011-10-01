@@ -1,0 +1,36 @@
+Do you want to try to use eshell as your daily shell? Do you want to popup
+a new frame, showing a new eshell buffer? Do you want that buffer to be deleted
+once the frame closes and vice-versa? Call the following code by executing
+
+    emacs-client -a "" -t -e '(server-eshell)'
+
+{{{
+(require 'cl)
+
+(defun server-eshell ()
+  "Command to be called by emacs-client to start a new shell.
+
+A new eshell will be created. When the frame is closed, the buffer is deleted or the shell exits,
+then hooks will take care that the other actions happen. For example, when the frame is closed,
+then the buffer will be deleted and the client disconnected.
+
+Also creates a local binding of 'C-x #' to kill the buffer."
+  (lexical-let ((buf (eshell t))
+                (client (first server-clients))
+                (frame (selected-frame)))
+    (labels ((close (&optional arg)
+                (when (not (boundp 'cve/recurse))
+                  (let ((cve/recurse t))
+                    (delete-frame frame)
+                    (kill-buffer buf)
+                    (server-delete-client client)))))
+    (add-hook 'eshell-exit-hook #'close t t)
+    (add-hook 'delete-frame-functions #'close t t))
+    (local-set-key (kbd "C-x #") (lambda () (interactive) (kill-buffer buf)))
+    (delete-other-windows)
+    nil))
+}}}
+
+== Ceveats ==
+This doesn't work when you delete the frame while you are visiting a buffer other than
+the eshell created by this function.

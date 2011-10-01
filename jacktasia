@@ -1,0 +1,131 @@
+Howdy. I am a programmer in San Francisco and I like emacs. I am trying to get feedback on this search in project / goto function definition (the latter being the main use case) code below. Working pretty well for me but any feedback on how to make it more modular (or where to get this type of feedback) would be great. Email me at jacktasia@gmail.com (or edit this page) if you have any. Thanks.
+
+<pre>
+
+
+(defcustom gotodef-project-denoter ".project"
+  "File we look for to decide if a folder is project root"
+  :type 'string
+  :group 'gotodef)
+
+(defcustom gotodef-default-project "/"
+  ""
+  :type 'string
+  :group 'gotodef)
+
+(defun gotodef-get-nearest-project ()
+	(let*
+		((path_list (split-string (buffer-file-name) "/"))
+		 (path_root (subseq path_list 0 (1- (length path_list))))
+		 (proj_root nil))
+
+		(while (and (null proj_root)
+				   (not (null path_root)))
+			(let* 
+				((tmp_root (mapconcat 'identity path_root "/"))
+				 (tmp_check (concat tmp_root "/" gotodef-project-denoter)))
+				(if (file-exists-p tmp_check)
+					(set 'proj_root tmp_root)
+					(set 'path_root (subseq path_root 0 (1- (length path_root)))))))
+		(if (null proj_root)
+			gotodef-default-project
+			(concat proj_root ""))))
+
+(defun gotodef-func-at-point ()
+	(interactive)
+    (let ((search_str (thing-at-point 'symbol)))
+	(gotodef-func-in-project search_str)))
+
+(defun gotodef-search-at-point ()
+	(interactive)
+	(let ((search_str (thing-at-point 'symbol)))
+		(gotodef-search-in-project search_str)))
+
+(defun gotodef-search-prompt ()
+	(interactive)
+	(let* ((search_str (read-from-minibuffer "What should we search? "))
+		   (cmd_struct "grep -n -r '%s' %s")
+		   (cmd (format cmd_struct search_str (gotodef-get-nearest-project))))
+		  (gotodef-process cmd)))
+
+(defun gotodef-search-in-project (thesymbol)
+	(let* ((cmd_struct "grep -n -r '%s' %s")
+		   (cmd (format cmd_struct thesymbol (gotodef-get-nearest-project))))
+		  (gotodef-process cmd)))
+
+(defun gotodef-func-in-project (thesymbol)
+	(if (not (null buffer-file-name))
+		(progn 
+			(let* ((file_type '(("php" . "function") ("el" . "defun") (nil . "")))
+				   (file_ext (car (last (split-string buffer-file-name "\\."))))
+				   (lang_func (cdr (assoc file_ext file_type)))
+				   (cmd_struct "grep -n -r '%s %s \\?(' %s") ;;(cmd_struct "ack-grep --%s '%s %s\\s?\\(' %s")
+				   (cmd (format cmd_struct lang_func thesymbol (gotodef-get-nearest-project))))
+				  (gotodef-process cmd)))
+		(message "%s" "Not inside file (cannot find project)")))
+
+(defun gotodef-process (search_str)
+	(let* ((ack_response (shell-command-to-string search_str))
+		  (result_lines (split-string ack_response "\\\n"))
+		  (result_lines (remove (car (last result_lines)) result_lines))
+		  (found_stuff 
+			(mapcar 
+				(lambda (item)
+					(let ((item_parts (split-string item ":")))
+						(list (car item_parts) (cadr item_parts))))
+				result_lines)))
+		(if (= 1 (length found_stuff))
+			(gotodef-file-location (caar found_stuff) (cadar found_stuff))
+			(gotodef-file-pick found_stuff))))
+
+(defun gotodef-file-location (thefile theline)
+	(find-file thefile)
+	(goto-line (string-to-number theline)))
+
+(defun gotodef-file-pick (fileinfo)
+	(let*
+		((counter 0)
+		 (base_prompt_str 
+			(mapcar 
+				(lambda (item) 
+					(format "%d) %s | Line %s" 
+						(incf counter)
+						(car item)
+						(cadr item)))
+					fileinfo))
+		(prompt_str 
+			(concat 
+				(format "%d matches found\n\n" counter)
+				(mapconcat 'identity base_prompt_str "\n") 
+				"\n\nOpen #: "))
+		(user_pick 
+			(1- (string-to-number (read-from-minibuffer prompt_str)))))
+		(when (<= user_pick (length fileinfo))
+			(gotodef-file-location (car (nth user_pick fileinfo)) (cadr (nth user_pick fileinfo))))))
+
+(global-set-key  "\C-cg" 'gotodef-func-at-point)
+(global-set-key  "\C-cs" 'gotodef-search-at-point)
+(global-set-key  "\C-cd" 'gotodef-search-prompt)
+
+(provide 'gotodef)
+
+</pre>
+
+
+
+----
+
+[new]
+Welcome to the wiki! Sorry, no time for code review. Perhaps you can send it to one of the EmacsMailingLists such as gnu.emacs.help? -- AlexSchroeder
+
+[new:DrewAdams:2011-08-28 16:29 UTC]
+I too don't have time to help review.  But I will make this suggestion, in case it helps:
+
+# Save it to a file and post it to ElispArea. 
+# Perhaps write a user-level description page for it.
+
+That way, there's perhaps more chance that folks will (a) understand the use cases and how to use it and (b) try it out.  User feedback can help guide you wrt code changes -- even sometimes code design (e.g., modularity).  And welcome to the wiki! -- DrewAdams
+
+
+----
+CategoryHomepage

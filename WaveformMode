@@ -1,0 +1,10 @@
+Draw digital circuit waveform. 
+
+Essentially, the mode do some translation and font lock. 
+E.g. $4l will be translated into ____
+
+The implementation is rudimentary, but I will update it because I will use it myself.
+
+View the screenshot with example: https://picasaweb.google.com/lh/photo/nKRJ4vz93dhJvgpiD5y6vQ?feat=directlink
+
+Source Lisp:waveform-mode.el

@@ -1,0 +1,8 @@
+[https://raw.github.com/emacsmirror/defaultcontent/master/defaultcontent.el This package], by  ChristianQueinnec , fills files as they are first created, with a default content "template".  Each different file extension gets its own template file. 
+
+This means every time you create a .js file within emacs, you can fill it with your common header, your common code skeleton.  Likewise with creating a new .php file, or a new .java file, etc. 
+
+Simple, helpful. 
+
+[new]
+This looks a lot like AutoInsertMode which is a feature of SkeletonMode.

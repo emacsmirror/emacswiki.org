@@ -1,0 +1,57 @@
+This page illustrates how you can define a new ThingAtPoint type ---  new ''things'', in this case, an '''integer'''.
+
+To define a new thing by writing a "forward" function, consider syntax.  Emacs groups characters by syntax groups, as defined in an EmacsSyntaxTable.  Emacs has skip-syntax commands that make it easy to write a `forward-syntax' function.
+
+  (defun syntax-forward-syntax (&optional arg)
+    "Move ARG times to start of a set of the same syntax characters."
+    (setq arg (or arg 1))
+    (while (and (> arg 0)
+                (not (eobp))
+                (skip-syntax-forward (string (char-syntax (char-after)))))
+      (setq arg (1- arg)))
+    (while (and (< arg 0)
+                (not (bobp))
+                (skip-syntax-backward
+                 (string (char-syntax (char-before)))))
+      (setq arg (1+ arg))))
+
+This tells thing-at-point about the new syntax thing.
+
+  (put 'syntax 'forward-op 'syntax-forward-syntax)
+
+Backward:
+
+  (defun syntax-backward-syntax (&optional arg)
+    "Move ARG times to end of a set of the same syntax characters."
+    (syntax-forward-syntax (- (or arg 1))))
+
+Defining `syntax-at-point', `beginning-of-syntax', `end-of-syntax', `bounds-of-syntax-at-point' is straightforward.
+
+  (defun syntax-syntax-at-point ()
+    (thing-at-point 'syntax))
+
+  (defun syntax-beginning-of-syntax ()
+    (beginning-of-thing 'syntax))
+
+  (defun syntax-end-of-syntax ()
+    (end-of-thing 'syntax))
+
+  (defun syntax-bounds-of-syntax-at-point ()
+    (bounds-of-thing-at-point 'syntax))
+
+And a `kill-syntax' command:
+
+  (defun kill-syntax (&optional arg)
+    "Kill ARG sets of syntax characters after point."
+    (interactive "p")
+    (let ((opoint (point)))
+      (syntax-forward-syntax arg)
+      (kill-region opoint (point))))
+
+  (defun kill-syntax-backward (&optional arg)
+    "Kill ARG sets of syntax characters preceding point."
+    (interactive "p")
+    (kill-syntax (- (or arg 1))))
+
+----
+CategoryCode

@@ -1,0 +1,39 @@
+;; I write a macro named define-key-lazy in 
+Lisp:joseph-util.el
+<pre>
+(define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
+equals to
+(eval-after-load (symbol-name (quote python)) (quote (define-key python-mode-map [(meta return)] (quote eval-print-last-sexp))))
+
+(define-key-lazy ruby-mode-map [(meta return)] 'delete-char)
+equals to
+(progn (eval-after-load "ruby" (quote (define-key ruby-mode-map [(meta return)] (quote delete-char)))) (eval-after-load "ruby-mode" (quote (define-key ruby-mode-map [(meta return)] (quote delete-char)))))
+
+(define-key-lazy ruby-mode-map [(meta return)] 'eval-print-last-sexp 'ruby-mode)
+equals to
+(eval-after-load (symbol-name (quote ruby-mode)) (quote (define-key ruby-mode-map [(meta return)] (quote eval-print-last-sexp))))
+
+(define-key-lazy java-mode-map "\C-o" 'delete-char "cc-mode")
+equals to
+(eval-after-load "cc-mode" (quote (define-key java-mode-map "\C-o" (quote delete-char))))
+
+(define-key-lazy java-mode-map "\C-o" 'delete-char "cc-mode")
+equals to
+(eval-after-load "cc-mode" (quote (define-key java-mode-map "\C-o" (quote delete-char))))
+
+(define-key-lazy java-mode-map "\C-o" 'forward-char 'cc-mode)
+equals to
+(eval-after-load (symbol-name (quote cc-mode)) (quote (define-key java-mode-map "\C-o" (quote forward-char))))
+
+(define-key-lazy emacs-lisp-mode-map [(meta return)] 'eval-print-last-sexp 'lisp-mode)
+equals to
+(eval-after-load (symbol-name (quote lisp-mode)) (quote (define-key emacs-lisp-mode-map [(meta return)] (quote eval-print-last-sexp))))
+
+(define-key-lazy global-map "\C-o" 'delete-backward-char)
+equals to
+(define-key global-map "\C-o" (quote delete-backward-char))
+
+</pre>
+
+----
+CategoryKeys [[Joseph]]

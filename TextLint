@@ -1,0 +1,17 @@
+!TextLint is a tool to check your scientific writing for common style errors.
+
+Video of its integration within Emacs: http://www.youtube.com/watch?v=CsG2DKgHanE
+
+Please follow the [https://github.com/DamienCassou/textlint#emacs-installing installation instructions] if you are interested.
+
+It's written in Smalltalk and is currently accessible through:
+
+* Emacs (https://github.com/DamienCassou/textlint)
+* [http://macromates.com/ TextMate]  (https://github.com/DamienCassou/textlint)
+* The web (http://textlint.lukas-renggli.ch/)
+* A Smalltalk IDE (http://scg.unibe.ch/research/textlint)
+
+Don't hesitate to [https://github.com/DamienCassou/textlint#support ask for support].
+
+----
+CategoryEditing

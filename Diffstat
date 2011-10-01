@@ -1,0 +1,24 @@
+Diffstat is a simple Emacs lisp implementation of [http://invisible-island.net/diffstat/ diffstat utility]. It is useful in reviewing large and complicated diff files.
+
+DiffMode is a really nice mode. However, for the large patch/diff files, which contain changes across many files, it is not easy to see the overall changes. As VersionControl(vc-mode) relies on DiffMode, this situation can happen quite often. Diffstat will solve this problem.
+
+== Download ==
+Lisp:diffstat.el([[Diffstat]])
+
+== How to use ==
+
+Add followings in your .emacs:
+{{{
+;; (require 'diffstat)
+;; (add-hook 'diff-mode-hook (lambda () (local-set-key "\C-c\C-l" 'diffstat)))
+}}}
+
+In any diff-mode buffer, for example after vc-diff, press C-c C-l to show diffstat. In diffstat-mode buffer, press C-c C-l or C-c C-c to go back to the diff buffer and move to the beginning of diff line corresponding to the file on the point.
+
+== Screenshot ==
+[[image:DiffStatScreenShot]]
+
+
+[new:PhilHudson:2011-09-04 20:15 UTC]Seems not to work with DistributedVersionControl's ##dvc-diff-mode##, the docstring of which /says/ it extends DiffMode. In fact ##dvc-diff-mode## extends ##fundamental-mode##, so it's not surprising. Looks like the bug may be in DVC, not this file. 
+
+[new:HansJang:2011-09-04 23:12 UTC] diffstat seemed to be too restrictive. Fixed now. Thanks. -- Hans.

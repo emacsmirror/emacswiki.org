@@ -1,0 +1,14 @@
+"Evil is an extensible vi layer for Emacs. It will emulate the main features of Vim, and provide facilities for writing custom extensions."
+
+Evil will be the successor to [[Vimpulse]]: https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html and to [[VimMode]]
+
+Homepage: http://gitorious.org/evil/pages/Home
+
+=Plugins for evil=
+
+[https://github.com/timcharper/evil-surround evil-surround] Port of Vim's surround script.
+
+[https://github.com/cofi/evil-numbers evil-numbers] Vim-like increment and decrement.
+
+----
+It would be nice with a brief overview over the objectives and difference to ViperMode.

@@ -1,0 +1,134 @@
+Like many avid users, I essentially /live/ in Emacs and have been for over twenty years. What a home it is! I love that I can move a wall, tweak the plumbing, landscape the yard just as I like it whenever I need to. While at times our relationship has bordered on obsessive, Emacs has helped me be efficient and effective at what I need to do. 
+
+
+I use Emacs on Linux and Mac OS X, currently versions 23 and 24. I spend a large portion of every day in Emacs, more than in any other application, with only Firefox even in the running and that a distant second. Within Emacs, I make heavy use of OrgMode, [[Icicles]], [[Yasnippet]],  AucTeX, EmacsSpeaksStatistics,
+[http://www.emacswiki.org/emacs/SlimeMode SLIME], [http://www.emacswiki.org/emacs/CollectionOfEmacsDevelopmentEnvironmentTools CEDET], 
+[http://www.emacswiki.org/emacs/emacs-w3m W3M], and WinSwitch. 
+
+
+== Emacs Lisp Code ==
+
+My packages that are currently on the wiki:
+* WinSwitch -- a dynamic, transient mode that allows easy and efficient navigation among windows (and frames) as well as quick window resizing, splitting, and deleting .
+
+
+Packages in Progress:
+* pde-modes.el -- fully integrated modes for Arduino and Processing. (Status: in testing)
+* quick-nav.el -- new approach to navigation based on dynamic and context sensitive keymaps. (Status: working prototype)
+* nxc-mode.el -- integrated mode for editing NXC code for LEGO Mindstorms robots (Status: in development)
+* power-keys.el -- tools for easily defining three powerful types of key interfaces. (Status: in development)
+* ...
+
+
+== Emacs and the World == 
+
+Using Emacs regularly leads you think about software technology differently,
+to expect that the software environment adapt to you more than you must adapt to it.
+*ATTN:more of this rant/musing coming soon, gotta run now*
+
+Other Emacs Related Items
+* How Emacs Can Change Your Life -- a talk I will be giving soon, with three objectives:
+## Introduce Emacs to those new to it and show some of what makes it special and
+different relative to currently more common tools.
+## Show how Emacs supports building efficient workflows for common tasks of academics
+and students (and others).
+## Show new methods and power tools for current Emacs users who haven't looked at the possibilities
+in a while.
+
+
+== Of Keys and Customization ==
+
+Emacs's massive customizability is central to its facilitating an efficient working environment.
+You can tailor the environment and interface to your style, memory, usage patterns, and tasks.
+The first layer of customization people encounter and the one that has the most immediate effect
+on the user experience is individualized key bindings. 
+
+I have experimented regularly over years, tweaking and adjusting my keybindings for coherence and efficiency, and I make heavy use of non-standard keys. There are many who believe that one should definitely stick to the standard bindings for the main global keys. I reject that view because I think significant mnemonic and physical efficiency can be wrung out of adapting the keybindings to one's own style -- especially for the most commonly used navigation and other global keys. And while I'm sure the standard keys were carefully thought out, they are still arbitrary, and many just don't work well for me. The problem -- really the irony given the customizability of Emacs -- is that using non-standard keys for the most frequently used commands imposes a cost on the user. Every package that hard-codes <code>C-w</code> or <code>M-v</code>, for instance,
+forces me to add a hook to rebind those keys, which is a bit of overhead I'd rather avoid.
+I think this problem is unnecessary. Below, I show some of the non-standard bindings that I find most useful
+along with some of the rationale for them. (This is just for information sharing purposes; I'm live-and-let-live when it comes to keybindings.) Then, I propose, soon with some code to back it up, a mechanism to solve that problem -- an abstraction of the most common functions one level higher up and an interface for package writers to avoid the hard coded global key problem.
+
+
+=== Some Useful Nonstandard Bindings ===
+
+
+The following are some non-standard bindings that I find useful and efficient,
+along with some of my rationales for them.
+
+
+; Help Character and backward kills: While I use Emacs help frequently, I use
+<code>delete-backward-char</code> and <code>backward-kill-word</code> much more,
+and it's especially handy to have both of those on a nice home key.
+This minimizes pinky use and gives a noticeable increase in efficiency.
+Hence, I bind:
+** <code>C-M-h</code>  to <code>help-command</code> (and set `help-char' to that as well)
+** <code>C-h</code> to <code>delete-backward-char</code>
+** <code>M-h</code> to <code>backward-kill-word</code>
+; Scrolling: I use scrolling very frequently, often moving around in both directions in rapid
+succession. I find the standard <code>C-v</code>/<code>M-v</code> combination for scrolling
+annoying and slow because the change is on the modifier keys which are usually pressed by
+the pinky or other weaker fingers. I also like to have access to <code>beginning-of-buffer</code>
+and <code>end-of-buffer</code>, which I also use a lot. (I don't have a home key on my
+keyboard but also would prefer not to move that far.)
+Instead I use <code>C-v</code>/<code>C-w</code> for the scrolling pairs
+and <code>M-v</code>/<code>M-w</code> for the beginning and end of buffer pairs.
+This keeps the modifier thematic and is spaced for quick execution.
+In particular, I bind
+** <code>C-v</code>  to <code>scroll-up-or-beg</code> (like <code>scroll-up</code> but moves to beginning of the buffer near the top instead of signaling an error)
+** <code>C-w</code> to <code>delete-backward-char</code>
+** <code>M-v</code>  to <code>end-of-buffer</code>
+** <code>M-w</code> to <code>beginning-of-buffer</code>
+; Killing: Instead of <code>C-w</code> for <code>kill-region</code>, I associate the most
+common kill commands to k:
+** <code>C-k</code>  to <code>kill-line</code>
+** <code>M-k</code> to <code>kill-region</code>
+** <code>C-M-k</code>  to <code>kill-sexp</code>
+** <code>C-S-k</code> to <code>kill-sentence</code>
+** <code>C-M-S-k</code> to <code>kill-paragraph</code>
+; C-Numeric: On the few cases when I use a nontrivial number (i.e., not - or 0) for
+a numeric prefix argument, the time to make sure I have the right number dominates
+the time required for an extra key stroke. So, I just use <code>C-u</code> followed
+by a number. The good news is that this opens up prime territory for useful key bindings.
+I use most of the C-number for common operations. I leave <code>C--</code> and <code>C-0</code>
+as negative and zero arguments because they come up from time to time, but the rest I almost
+never used until I bound them to keys. For instance:
+** <code>C-3</code>  to <code>kmacro-start-macro-or-insert-counter</code>
+** <code>C-4</code> to <code>kmacro-end-or-call-macr</code>
+** <code>C-5</code>  to <code>query-replace</code>
+** <code>C-6</code>  to <code>query-replace-regexp</code>
+** <code>C-7</code>  to <code>align-regexp</code>
+; Extended Commands: I'm still experimenting with this, but I like binding
+<code>C-x C-m</code> to <code>execute-extended-command</code>. It's just a little
+faster than <code>M-x</code>.
+
+
+=== Logical Keys: A Proposal ===
+
+A simple proposal to make the cost of using non-standard bindings
+negligible without sacrificing backward compatibility.
+
+*Coming Soon*
+
+
+== Wish List ==
+; Closures and Lexical Binding: Yay Emacs 24. (Let me add though that, although commonly criticized, the dynamic bindings that are default in emacs only very rarely cause problems and make for a fun and powerful, if potentially messy, programming environment.) 
+; Namespaces: While prefix naming is a workable system, it would be nice to have genuine packages, even simply designed, with at least minimal encapsulation of internal variables and functions within a package.
+; Parsers and (fast) Regexps as first-class types in Emacs: `Wysent' in the SemanticBovinator is great, but speed and integration, especially for on-the-fly parsers are still an issue.
+; Some Concurrency Support: Even if limited, some concurrency support would enable tasks now done in idle time to be more efficient and robust.
+; Rendering: W3M is surprisingly good, but I still want to use Emacs as my browser as much as possible. Better HTML and CSS rendering, and better PDF rendering, embedded videos would certainly improve things further.
+Hey, this is a wish list. (I have yet to try Conkerer, but it's on my todo list.)
+; More facilities/easier interface for using the fringe: I haven't explored this enough to be sure that these facilities are not currently sufficient, but it seems not. And it could be useful. Window relative and absolute coordinates would be nice.
+
+----
+*Page Still Under Construction*
+
+----
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+[new]
+Thanks! I really appreciate this site and the work
+you all put into it. It's been indispensable to me. -- ChristopherGenovese
+
+----
+[[CategoryHomePage]]

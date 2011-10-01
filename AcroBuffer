@@ -1,0 +1,79 @@
+The following is a macro I wrote to assist in writing documents with a lot of acronym-powered jargon without having to keep track of where I defined the acronyms. It's helpful in org-mode and auctex to me. 
+
+It requires a text file (you'll need to edit the definition of acro-sourcefile in acro-buffer.el to point it to the right file) which keeps a list of all your acronyms, with one per line, acronym first followed by a tab and then the expanded version of that acronym.
+
+The acro-buffer function which is defined therein works to ensure that acronyms are properly treated in documents that don't have glossaries or tables of acronyms. That is, for any acronym with 1 occurrence, it will simply expand that acronym to its long form. For any acronym with 2 or more occurrences, it will expand the first occurrence, with the acronym following in brackets. All further occurrences will just be the acronym.
+
+Every time acro-buffer is called, it first contracts any expanded acronyms it finds, before re-expanding them on the second pass. This works pretty well but be aware that if you have expanded acronyms that are broken across lines, then it won't find them and treat them appropriately, so you may be left with expanded acronyms in the wrong place. I recommend just typing in jargon and then running acro-buffer at the end, it's fairly error free when doing that. 
+
+{{{
+;; An emac to replace the first instance of multiple acronyms with an
+;; expanded version from a list stored in a separate file. 
+
+;; (c) 2010 Raif Sarcich, GPLv3
+
+(defun acro-read-lines (file)
+  "Return a list of lines in FILE."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (split-string
+     (buffer-string) "\n" t)
+    ) 
+  )
+
+(defun acro-buffer ()
+  (interactive)
+  "main loop function to identify and replace acronyms"
+  (let (acroline acrostrings activebuffer)
+    (setq curpt (point))
+    (setq theacro "")
+    (setq theexacro "")
+    (setq acroline "")
+    (setq acrostrings "")
+    (setq splitstr "")
+    (defvar acro-sourcefile "~/tex/texmf/raif/acronyms.txt" 
+      "Location of a list of acronyms and definitions - 1 per
+      line, tab separated")
+
+    (setq acrostrings (acro-read-lines acro-sourcefile))
+    (setq activebuffer (current-buffer))
+
+    (while acrostrings 
+      (setq acroline (car acrostrings))
+      (setq splitstr (split-string acroline "\t" t))
+      (setq theacro (car splitstr))
+      (setq theexacro (nth 1 splitstr))
+      (setq acrostrings (cdr acrostrings))
+      ;; start processing the text
+      ;; look for already expanded versions and wipe
+      (setq case-fold-search 1)
+      (goto-char (point-max))
+      (while (search-backward (format "%s (%s)" theexacro theacro) nil t) (replace-match theacro nil t))
+      (while (search-backward theexacro nil t) (replace-match theacro nil t))
+
+      ;; now go through unexpanded acronyms and replace
+      (setq case-fold-search nil) ; Case-sensitive searching
+      (goto-char (point-max))
+      (setq acroctr 0)
+      (while (search-backward-regexp (format "\\(^\\|\\s-\\)%s\\(['s.,]\\|\\s-\\|$\\)" theacro) nil t) (setq acroctr (+ 1 acroctr)))
+
+      ;; if only one instance - replace with expanded text, if more than one, expand & define acronym
+      (if (> acroctr 0) 
+	   (if (> acroctr 1) 
+	       (replace-match (format "\\1%s (%s)\\2" theexacro theacro) t)
+	     (replace-match (format "\\1%s\\2" theexacro) t)
+	     )
+	)
+
+      )
+    (goto-char curpt)
+    )
+  )
+
+(provide 'acro-buffer)
+}}}
+
+
+-----
+To run this in version 21, I removed the last argument "t" from the two split-string calls.
+This code works great and is very useful!

@@ -1,0 +1,5 @@
+TodoStack https://github.com/EvansWinner/todostack --- keep a to-do list as a stack.
+
+This is a somewhat idiosyncratic todo list manager, mainly useful for quick and dirty stuff that you have to do on the scale of a single day or two, though I tend to let certain things accumulate in my stack.  It does not try to do everything, really, just one thing which you may or may not find useful.  Push something you have to do on to the stack, examine the top of the stack, pop the top off when you are done, etc.  There is some basic org-mode integration (which I would like to expand on a bit) and some other miscellanea.
+
+See the header comments for more info, or [http://thorne.posterous.com/todostackel-keep-a-to-do-list-as-a-simple-sta this blog post].

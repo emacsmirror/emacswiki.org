@@ -1,0 +1,21 @@
+= Description =
+
+The position of cursor and buffer look are automatically remembered when a
+scrolling command is invoked (page-down/page-up, mouse wheel scrolling,
+scroll-bar movement)
+
+This information is stored in a ring; you can go up and down this
+ring restoring you position and text visibility before the scrolling
+command with
+
+* atim-unscroll-down (bound to [M-down])
+* atim-unscroll-up   (bound to [M-up])
+
+these commands travel the ring to older (..-down) and
+newer (..-up) stored points.
+
+= Files =
+Lisp:atim-unscroll.el
+
+----
+CategoryUndo

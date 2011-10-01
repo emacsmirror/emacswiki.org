@@ -1,0 +1,69 @@
+[new:AlexSchroeder:2011-06-30 12:14 UTC]
+Thank you for the Spanish translation!
+
+How would you translate "Add Translation"? "Añadir traducción"? I'll be happy to add it!
+
+[new:ChristianGiménez:2011-07-01 00:54 UTC]
+You are welcome!
+Yes, "Añadir traducción" for me is correct... I didn't translate it because the option isn't translated...
+
+What I translated, are the pages correct? Are there something else you need to be translated?
+
+Thanks for this stupendous wiki!
+
+[new:ChristianGiménez:2011-07-05 04:37 UTC]
+Do you recieve the answer of a discussion if I put the "minor edit" option?
+I try with the "major edit" option now...
+
+¡Saludos!
+
+[new:AlexSchroeder:2011-07-05 09:26 UTC]
+I was in Portugal for a few days with very limited Internet access. :)
+
+I added "Añadir traducción" to the [http://www.oddmuse.org/cgi-bin/oddmuse/spanish-utf8.pl translation file].
+(Note that not all the texts listed on that page are used by Emacs Wiki because I have not installed all the extensions.)
+
+I have only one wiki markup feedback:
+
+You write ##todas ellas están listadas en la página traducida al español de la GNU([http://www.gnu.org/licenses/translations.es.html http://www.gnu.org/licenses/translations.es.html]).##
+
+You can simply write the URL and it will be linked automatically: ##todas ellas están listadas en la página traducida al español de la GNU (http://www.gnu.org/licenses/translations.es.html).##
+
+I would write this even shorter: ##todas ellas están listadas en [http://www.gnu.org/licenses/translations.es.html la página traducida al español de la GNU].## -> "todas ellas están listadas en [http://www.gnu.org/licenses/translations.es.html la página traducida al español de la GNU]."
+
+[new:ChristianGiménez:2011-07-05 18:45 UTC]
+Portugal! wow... How was it?
+
+Nice... that's looks better... I change it now! Thanks!
+
+[new:AlexSchroeder:2011-07-05 20:05 UTC]
+Meeting class mates I had not seen in 24 years, seeing my mom, my half brother, my stepbrother, the beach, the sea, Lisbon, it was a nice long weekend getaway. :)
+
+[new:Christian:2011-07-08 03:34 UTC]
+How nice! I live in Argentina, in a small town... In "La Patagonia"... 
+
+Here we have a little group of GNU/Linux called [http://www.ula.linux.org.ar U.L.A.] (Don't look at the page now! It's so out of date...) and a bunch of "followers" of emacs.
+
+I started using it thanks to my teacher of "logic for computer science" 3 years ago... 
+Think he usually read this wiki! :)
+
+I also know how to do some programming in "[EmacsLisp Elisp]" and in a near future I expect to publish some algorithms I made(but first I have to read some HowTo 's :P).
+ 
+¡Saludos!
+
+[new]
+I want to ask something that maybe is in a wikipage already... but I want to be sure, that's all...
+
+Should I translate pages, writing them tending to be formal, or writing using non-formal ways(could we say as a friend?)?
+
+For example, I'am translating [[ÁreaLisp]] (ElispArea) and realise that it could be written in an informal way... But I don't know if that is wrong and I am misplacing myself...
+
+Thanks in advance... 
+
+¡Saludos!
+
+[new]
+I think either way is fine. The wiki exists somewhere between informal like IRC and formal like the official Emacs documentation. It has pages that act like a manual such as Icicles and it has pages that contain the discussion between various people. I would use whatever you would like to see more of. :) -- Alex
+
+----
+CategoryHomepage
