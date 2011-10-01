@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.3.5
+;; Version: 0.3.6
 ;; Keywords: file, couchdb, json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -47,6 +47,8 @@
 
 
 ;; ChangeLog:
+;;
+;; 0.3.6: Fix `couchdb-document-name-extract', should handle port correctly.
 ;;
 ;; 0.3.5: add function to register file name handler. If emacs try to open couchdb
 ;; document with tramp, then re-call `couchdb-document-register-file-name-handler'.
@@ -221,7 +223,7 @@ Example:
 \"/couchdb:host#p:/a/b\" => (nil \"host\" p \"a\" \"b\" \"/a/b\"."
   (when (and (stringp name)
              (string-match
-              "^/couchdb\\(:\\(\\([^@]+\\)@\\)?\\(.+\\)\\(#\\([0-9]+\\)\\)?\\)?:\\(.*\\)$"
+              "^/couchdb\\(:\\(\\([^@]+\\)@\\)?\\([^#]+\\)\\(#\\([0-9]+\\)\\)?\\)?:\\(.*\\)$"
               name))
     (let (host port user path db id)
       (setq user (match-string 3 name))

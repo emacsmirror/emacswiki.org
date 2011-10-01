@@ -353,7 +353,18 @@ not that I know of. I'll take a look over the weekend... -- Alex
 
 [new]
 Could you please have a look? -- JonasBernoulli
-    
+
+[new]
+Yikes! I had a note saying "SVN" on my todo list but couldn't figure out what this was about. Now I do!
+Looking into it, I found the following line of code:
+
+{{{
+for LINE in `svn status`; do
+    FILE="${LINE:7}"
+}}}
+
+Apparently this added an extra leading space such that all the /add/ and /remove/ calls kept failing silently. 
+I changed it to ##FILE="${LINE:7}"##. Let's hope it works. :) -- AlexSchroeder
 
 ----
 CategoryEmacsWikiSite
