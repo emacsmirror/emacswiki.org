@@ -1,8 +1,8 @@
 ;;; iedit.el --- Edit multiple regions with the same content simultaneously.
 
-;; Copyright (C) 2010 Victor Ren
+;; Copyright (C) 2010, 2011 Victor Ren
 
-;; Time-stamp: <2011-02-25 14:54:30 Victor Ren>
+;; Time-stamp: <2011-10-02 00:04:12 Victor Ren>
 ;; Author: Victor Ren <victorhge@gmail.com>
 ;; Keywords: occurrence region replace simultaneous
 ;; Version: 0.90
@@ -248,9 +248,9 @@ Commands:
       (cond ((and arg iedit-last-occurrence-in-history)
              (setq occurrence iedit-last-occurrence-in-history))
             ((and transient-mark-mode mark-active (not (equal (mark) (point))))
-             (setq occurrence (buffer-substring (mark) (point))))
+             (setq occurrence (buffer-substring-no-properties (mark) (point))))
             ((and isearch-mode (not (string= isearch-string "")))
-             (setq occurrence isearch-string)
+             (setq occurrence (buffer-substring-no-properties (point) isearch-other-end))
              (isearch-exit))
             ((and iedit-current-word-default (current-word t))
              (setq occurrence (current-word)))

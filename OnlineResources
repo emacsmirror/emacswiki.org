@@ -41,6 +41,7 @@ defining interactive functions.)
 *** [http://web.psung.name/emacs/2007/emacs-slides-3.pdf
 Being Productive With Emacs - Part 3 (PDF)] -- Extending Emacs.
 (Interactive arguments; advice; defining new modes.)
+* [http://emacs.dreamwidth.org/ emacs community on Dreamwidth]
 * [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html
 Stevey's Blog Rants: Shiny and New: Emacs 22] -- It has good tips about Emacs,
 specially about <code>replace-regexp</code> use.

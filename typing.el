@@ -276,14 +276,13 @@ Answers are the sentences following a question."
   (toe-feedback toe-success-messages)
   'success)
 
-(defun toe-failure (&optional zombie)
+(defun toe-failure ()
   "Give failure feedback."
   (toe-feedback toe-failure-messages)
-  (unless zombie
-    ;; dynamic binding!
-    (setq toe-lives (1- toe-lives))
-    (insert (format " - %d LIVES LEFT!" toe-lives)))
-  'failure)
+  ;; dynamic binding!
+  (setq toe-lives (1- toe-lives))
+  (insert (format " - %d LIVES LEFT!" toe-lives))
+  (if (> toe-lives 0) 'success 'failure))
 
 (defun toe-feedback (stuff)
   "Give feedback by choosing a random phrase from STUFF."
