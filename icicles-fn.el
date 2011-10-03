@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 00:41:06 2011 (-0700)
+;; Last-Updated: Sun Oct  2 18:04:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12578
+;;     Update #: 12609
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -137,8 +137,8 @@
 ;;    `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-readable-to-markers', `icicle-read-char-exclusive',
-;;    `icicle-read-face-name', `icicle-read-file-name',
-;;    `icicle-read-from-minibuffer',
+;;    `icicle-read-char-by-name', `icicle-read-face-name',
+;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
@@ -180,7 +180,8 @@
 ;;    `old-completing-read-multiple', `old-completion-setup-function',
 ;;    `old-dired-smart-shell-command', `old-display-completion-list',
 ;;    `old-face-valid-attribute-values',
-;;    `old-minibuffer-default-add-completions', `old-read-face-name',
+;;    `old-minibuffer-default-add-completions',
+;;    `old-read-char-by-name', `old-read-face-name',
 ;;    `old-read-from-minibuffer', `old-read-number',
 ;;    `old-read-string', `old-shell-command',
 ;;    `old-shell-command-on-region'.
@@ -1640,6 +1641,59 @@ before you call this function."
            (progn (custom-load-symbol variable) (get variable 'custom-type)))))
 
 
+;; REPLACE ORIGINAL `read-char-by-name' in `mule-cmds.el'.
+;; saving it for restoration when you toggle `icicle-mode'.
+;;
+;; 1. Exclude character names "" and "VARIATION SELECTOR*".
+;; 2. Display the character itself, after its name, in `*Completions*'.
+;;
+(when (fboundp 'read-char-by-name)      ; Emacs 23+
+  (unless (fboundp 'old-read-char-by-name)
+    (defalias 'old-read-char-by-name (symbol-function 'read-char-by-name)))
+
+  (defun icicle-read-char-by-name (prompt)
+    "Read a character by its Unicode name or hex number string.
+Display PROMPT and read a string that represents a character by its
+Unicode property `name' or `old-name'.
+
+This function returns the character as a number.
+
+You can type a few of the first letters of the Unicode name and
+use completion.  If you type a substring of the Unicode name
+preceded by an asterisk `*' and use completion, it will show all
+the characters whose names include that substring, not necessarily
+at the beginning of the name.
+
+This function also accepts a hexadecimal number of Unicode code
+point or a number in hash notation, e.g. #o21430 for octal,
+#x2318 for hex, or #10r8984 for decimal."
+    (dolist (name.char  (ucs-names))
+      (when (and (not (string= "" (car name.char)))
+                 ;; $$$$$$ Maybe make this optional?
+                 (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
+        ;; Display char itself after the name, in `*Completions*'.
+        (let* ((disp-string  (concat (car name.char) " "
+                                     (propertize (char-to-string (cdr name.char))
+                                                 'face 'icicle-candidate-part)))
+               (symb         (intern (car name.char))))
+          (put symb 'icicle-display-string disp-string)
+          (put-text-property 0 1 'icicle-orig-cand symb disp-string))))
+    (let* ((new-prompt  (copy-sequence prompt))
+           (IGNORE-1    (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
+           (completion-ignore-case t)
+           (input (completing-read
+                   new-prompt
+                   (lambda (string pred action)
+                     (if (eq action 'metadata)
+                         '(metadata (category . unicode-name))
+                       (complete-with-action action (ucs-names) string pred))))))
+      (let ((orig-cand  (get-text-property 0 'icicle-orig-cand input)))
+        (when orig-cand  (setq input  (symbol-name orig-cand))))
+      (cond ((string-match-p "^[0-9a-fA-F]+$" input) (string-to-number input 16))
+            ((string-match-p "^#" input)             (read input))
+            (t                                       (cdr (assoc-string input (ucs-names) t)))))))
+
+
 ;; REPLACE ORIGINAL `read-string' (built-in function),
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
@@ -2982,6 +3036,26 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
              (goto-char (icicle-start-of-candidates-in-Completions))
              (set-window-point (get-buffer-window "*Completions*" 0) (point))
              (icicle-fit-completions-window))
+           ;; Use the same font as the starting buffer.
+           ;; But skip this if using `oneonone.el', since `1on1-display-*Completions*-frame' does it.
+           (when (and (not (fboundp '1on1-display-*Completions*-frame))
+                      (get-buffer-window "*Completions*" 'visible))
+             (save-window-excursion
+               (select-window (get-buffer-window "*Completions*" 'visible))
+               (when (and (one-window-p t) (window-dedicated-p (selected-window)))
+                 (let* ((orig-win   (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
+                        (orig-font  (and (window-live-p orig-win)
+                                         (save-window-excursion (select-window orig-win)
+                                                                (frame-parameter nil 'font)))))
+                   (when orig-font (set-frame-font orig-font))))
+               (when (and (fboundp 'zoom-frm-out) ; In `zoom-frm.el'.
+                          (boundp '1on1-completions-frame-zoom-font-difference) ; In `oneonone.el'.
+                          1on1-completions-frame-zoom-font-difference)
+                 (condition-case nil
+                     (let ((frame-zoom-font-difference  
+                            1on1-completions-frame-zoom-font-difference))
+                       (zoom-frm-out))  ; In `zoom-frm.el'.
+                   (error nil)))))
            (message nil)))))            ; Clear out any "Looking for..."
 
 

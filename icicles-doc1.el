@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 20 07:48:15 2011 (-0700)
+;; Last-Updated: Sun Oct  2 18:09:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26201
+;;     Update #: 26219
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3103,6 +3103,13 @@
 ;;    `*Completions*' frame, then see option
 ;;    `1on1-completions-frame-zoom-font-difference'.
 ;;
+;;  * If you use a dedicated frame for buffer `*Completions*' then
+;;    Icicles gives it the same font as the window that was selected
+;;    when `*Completions*' is displayed.  This means, for instance,
+;;    that if that original window has a font tailored to a specific
+;;    locale or Unicode character set then `*Completions*' will use
+;;    that same font.
+;;
 ;;  * Icicles varies the number of columns used to display completion
 ;;    candidates, for a better fit.  You can tweak this with options
 ;;    `icicle-candidate-width-factor' and
@@ -5178,18 +5185,18 @@
 ;;
 ;;  Command `self-insert-command' is bound to each key that is
 ;;  associated with a character that can be inserted in text.  It is
-;;  the binding of the key `a' and the key `$'.  It is also the
-;;  binding of keys that your keyboard might not even have - keys that
-;;  correspond to special or odd characters and characters in other
-;;  languages.
+;;  the binding of the key `a' and the key `$', for example.  It is
+;;  also the binding of keys that your keyboard might not even have -
+;;  keys that correspond to special or odd characters and characters
+;;  in other languages.
 ;;
 ;;  To Icicles key completion, these keys are like other keys.
-;;  However, because there are many, many keys bound to
+;;  However, because there are many, MANY keys bound to
 ;;  `self-insert-command', it can be distracting and slow to allow
 ;;  such keys as completion candidates.  If option
 ;;  `icicle-complete-keys-self-insert-ranges' is `nil' (the default
 ;;  value), then such keys are excluded as candidates.  This is
-;;  probably what you want, always.
+;;  probably what you want.
 ;;
 ;;  If the option is non-`nil', then you can use key completion to
 ;;  insert the characters whose codes are in the range(s) defined by
@@ -5199,15 +5206,26 @@
 ;;
 ;;  Starting with Emacs 23, vanilla Emacs has Unicode support, and you
 ;;  can insert any Unicode characters using either an input method or
-;;  command `ucs-insert', which lets you complete against the Unicode
-;;  character name.
+;;  command `ucs-insert' (`C-x 8 RET'), which lets you complete
+;;  against the Unicode character name.  Icicles enhances `ucs-insert'
+;;  by showing the character to be inserted after its name in
+;;  `*Completions*' (but you complete against only the name).  I
+;;  recommend that you use `ucs-insert', not key completion, to insert
+;;  Unicode characters.
 ;;
-;;  If you do use a non-`nil' value for
-;;  `icicle-complete-keys-self-insert-ranges' then use only small
-;;  ranges for better performance, e.g., `((0 . 687))' covers Latin
-;;  characters.  For Emacs 22, the option is effectively Boolean: any
-;;  non-`nil' value allows all self-inserting keys as candidates
-;;  (there are far fewer available characters in Emacs 22).
+;;  There are thousands of Unicode characters.  So if you do use a
+;;  non-`nil' value for `icicle-complete-keys-self-insert-ranges' then
+;;  you will likely want to use only small ranges for better
+;;  performance, e.g., `((0 . 687))' covers Latin characters.  For
+;;  Emacs 22, the option is effectively Boolean: any non-`nil' value
+;;  allows all self-inserting keys as candidates (there are far fewer
+;;  available characters in Emacs 22).
+;;
+;;  For each Unicode character, the completion candidate is
+;;  `CHAR  =  UNICODE-NAME', where UNICODE-NAME is the name of the
+;;  Unicode character.  This is so that you can complete against the
+;;  name.  But again, I recommend that you use command `ucs-insert',
+;;  not key completion, to insert a Unicode character.
 ;;
 ;;(@* "Handling Keymaps That Are Inaccessible From the Global Map")
 ;;  ** Handling Keymaps That Are Inaccessible From the Global Map **

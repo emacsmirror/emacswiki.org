@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Aug 19 07:44:51 2011 (-0700)
+;; Last-Updated: Sun Oct  2 14:20:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2576
+;;     Update #: 2583
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -259,6 +259,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/10/02 dadams
+;;     1on1-display-*Completions*-frame:
+;;       If using Icicles, use same font as frame that set up minibuffer.
 ;; 2011/08/19 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Removed the scroll-down because it interfered with doing stuff at eob.
@@ -1436,12 +1439,27 @@ BUF and ARGS are the arguments to `special-display-function'."
   "Display *Completions* buffer in its own frame.
 `special-display-function' is used to do the actual displaying.
 Completion input events are redirected to `1on1-minibuffer-frame'.
-BUF and ARGS are the arguments to `special-display-function'."
+BUF and ARGS are the arguments to `special-display-function'.
+
+If Icicles is used, then give `*Completions*' frame the same font as
+the frame that set up the minibuffer.
+
+If `zoom-frm.el' is used, then shrink the text according to
+`1on1-completions-frame-zoom-font-difference'."
   (let ((old-ptr-shape (and (boundp 'x-pointer-shape) x-pointer-shape))
         return-window)
     (when (and 1on1-*Completions*-frame-flag (boundp 'x-pointer-box-spiral))
       (setq x-pointer-shape x-pointer-box-spiral))
     (setq return-window (select-window (funcall special-display-function buf args)))
+
+    ;; In Icicles, use the font of the original window.
+    (when (and (boundp 'icicle-mode) icicle-mode
+               icicle-pre-minibuffer-buffer)
+      (let* ((orig-win   (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
+             (orig-font  (and (window-live-p orig-win)
+                              (save-window-excursion (select-window orig-win)
+                                                     (frame-parameter nil 'font)))))
+        (when orig-font (set-frame-font orig-font))))
     (when (and (fboundp 'zoom-frm-out) 1on1-completions-frame-zoom-font-difference)
       (condition-case nil
           (let ((frame-zoom-font-difference  1on1-completions-frame-zoom-font-difference))

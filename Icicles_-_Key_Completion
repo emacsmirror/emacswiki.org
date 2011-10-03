@@ -321,20 +321,21 @@ even quicker.
 
 
 [:SelfInsert]
+[:UniCode]
 === Entering Special and Foreign Characters ===
 
 Command `self-insert-command' is bound to each key that is
 associated with a character that can be inserted in text.  It is
-the binding of the key `a' and the key `##$##'.  It is also the
+the binding of the key `a' and the key `##$##', for example.  It is also the
 binding of keys that your keyboard might not even have -- keys that
 correspond to special or odd characters and characters in other
 languages.
 
-To '''Icicles''' key completion, these keys are like other keys.  However, because there are many, many keys bound to `self-insert-command', it can be distracting and slow to
+To '''Icicles''' key completion, these keys are like other keys.  However, because there are many, ''many'' keys bound to `self-insert-command', it can be distracting and slow to
 allow such keys as completion candidates.  If option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-self-insert-ranges|icicle-complete-keys-self-insert-ranges]]</tt>'''' is `nil' (the default
 value), then such keys are excluded as candidates.  This is
-probably what you want, always.
+probably what you want.
 
 If the option is non-`nil', then you can use key completion to insert
 the characters whose codes are in the range(s) defined by
@@ -342,19 +343,26 @@ the option value.  This lets you see the candidate characters in
 `*Completions*' (WYSIWYG), but it is not a terribly convenient or
 quick way to insert characters.
 
-Starting with Emacs 23, vanilla Emacs has Unicode support, and you
+Starting with Emacs 23, vanilla Emacs has ''Unicode'' support, and you
 can insert any Unicode characters using either an input method or
-command `ucs-insert', which lets you complete against the Unicode
-character name.
+command '''`ucs-insert'''' (`C-x 8 RET'), which lets you complete against the Unicode
+character name.  '''Icicles''' enhances `ucs-insert' by showing the
+character to be inserted after its name in `*Completions*' (but
+you complete against only the name).  I recommend that you use
+`ucs-insert', not key completion, to insert Unicode characters.
 
-If you do use a non-`nil' value for
+There are thousands of Unicode characters.  So if you do use a non-`nil' value for
 `icicle-complete-keys-self-insert-ranges' then use only small
 ranges for better performance, e.g., `##((0 . 687))##' covers Latin
 characters.  For Emacs 22, the option is effectively Boolean: any
 non-`nil' value allows all self-inserting keys as candidates
 (there are far fewer available characters in Emacs 22).
 
-
+For each Unicode character, the completion candidate is
+`##CHAR  =  UNICODE-NAME##', where ##UNICODE-NAME## is the name of the
+Unicode character.  This is so that you can complete against the
+name.  But again, I recommend that you use command `ucs-insert',
+not key completion, to insert a Unicode character.
 
 
 

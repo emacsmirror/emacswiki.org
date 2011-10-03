@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 27 15:42:48 2011 (-0700)
+;; Last-Updated: Sun Oct  2 15:11:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7236
+;;     Update #: 7245
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -457,6 +457,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/10/02 dadams
+;;     icicle-add-key+cmd:
+;;       Use Unicode char name in place of self-insert-command.  Remove empty and VARIATION* names.
 ;; 2011/09/27 dadams
 ;;     Added: icicle-search-modes (macro).
 ;;     icicle-search-where-arg: Use icicle-search-modes - handle zero prefix arg.
@@ -1001,6 +1004,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/10/02 dadams
+;;     Added: icicle-read-char-by-name.
+;;     icicle-display-candidates-in-Completions: Give *Completions* the same font as starting buffer.
 ;; 2011/09/14 dadams
 ;;     Added: icicle-some.
 ;;     Moved here from icicles-cmd2.el: icicle-flat-list (but no longer used).
@@ -4970,6 +4976,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/10/02 dadams
+;;     icicle-functions-to-redefine: Added read-char-by-name to default value.
 ;; 2011/09/18 dadams
 ;;     icicle-search-highlight-threshold: Added possibility of a t value.
 ;;     icicle-image-files-in-Completions: Removed quote for image-only value.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 18 00:35:25 2011 (-0700)
+;; Last-Updated: Sun Oct  2 18:11:40 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4473
+;;     Update #: 4476
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -976,11 +976,12 @@ candidates.
 For Emacs 23+, if you use a non-nil value then use only small ranges
 for better performance, e.g., `((0 . 687))' covers Latin characters.
 
-In general, leave the value as nil.  Use vanilla Emacs 23+ command
-`ucs-insert' to insert characters by completing against their Unicode
-names.  With Icicles key completion you do not complete against the
-Unicode names.  Instead, you can see the characters in
-`*Completions*'.
+In general, leave the value as nil.  Use Emacs 23+ command
+`ucs-insert' (`C-x 8 RET') to insert characters by completing against
+their Unicode names.  With Icicles, you can see the characters
+themselves in `*Completions*' whether you use key completion or
+`ucs-insert', but in both cases you complete against the character
+name.
 
 For reference, below are the ranges supported by `ucs-insert' (Emacs
 23+).  But unless you have a very powerful computer, choose only only
@@ -1500,8 +1501,8 @@ and you must load library `filesets.el'."
     Info-menu
     lisp-complete-symbol
     lisp-completion-at-point             minibuffer-default-add-completions
-    read-color                           read-from-minibuffer
-    read-string
+    read-char-by-name                    read-color
+    read-from-minibuffer                 read-string
     recentf-make-menu-items              repeat-complex-command)
   "*List of symbols representing functions to be redefined in Icicle mode.
 In Icicle mode, each such FUNCTION is aliased to Icicles function

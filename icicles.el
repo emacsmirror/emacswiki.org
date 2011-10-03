@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 27 15:20:24 2011 (-0700)
+;; Last-Updated: Sun Oct  2 14:45:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22991
+;;     Update #: 22994
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -990,8 +990,9 @@
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
 ;;    `icicle-read-args-for-set-completion-methods',
-;;    `icicle-read-char-exclusive', `icicle-read-face-name',
-;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
+;;    `icicle-read-char-exclusive', `icicle-read-char-by-name',
+;;    `icicle-read-face-name', `icicle-read-file-name',
+;;    `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default',
 ;;    `icicle-read-single-key-description', `icicle-read-number',
 ;;    `icicle-read-shell-command',
@@ -1091,7 +1092,8 @@
 ;;    `old-completing-read-multiple', `old-completion-setup-function',
 ;;    `old-dired-smart-shell-command', `old-display-completion-list',
 ;;    `old-face-valid-attribute-values',
-;;    `old-minibuffer-default-add-completions', `old-read-face-name',
+;;    `old-minibuffer-default-add-completions',
+;;    `old-read-char-by-name', `old-read-face-name',
 ;;    `old-read-from-minibuffer', `old-read-number',
 ;;    `old-read-string', `old-shell-command',
 ;;    `old-shell-command-on-region'.

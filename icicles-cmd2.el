@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 27 18:06:28 2011 (-0700)
+;; Last-Updated: Sun Oct  2 18:09:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4369
+;;     Update #: 4402
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -403,6 +403,7 @@
 
 ;; (< emacs-major-version 23)
 (defvar read-buffer-completion-ignore-case)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -6473,27 +6474,35 @@ bindings first and sorting with prefix keys first.  You can use `C-,'
 at any time to change the sort order among these two and sorting by
 command name.
 
-If option `icicle-complete-keys-self-insert-ranges' is non-nil, then
-some keys bound to `self-insert-command' are included as possible
-key-completion candidates; otherwise they are not.  The default is
-nil.
+If option `icicle-complete-keys-self-insert-ranges' is non-`nil', then
+some keys that are bound to `self-insert-command' are included as
+possible key-completion candidates; otherwise they are not.  The
+default value is `nil'.
 
-For Emacs 22, the option is effectively Boolean: any non-nil value
+For Emacs 22, this option is effectively Boolean: any non-`nil' value
 means allow all self-inserting keys as candidates.
 
 In Emacs 23+, there are thousands of self-inserting keys, so it is not
-practical to allow all as candidates.  Instead, a non-nil value is a
+practical to allow all as candidates.  Instead, a non-`nil' value is a
 list of character ranges of the form (MIN . MAX).  Characters in the
 inclusive range MIN through MAX are possible key-completion
 candidates.
 
-For Emacs 23+, if you use a non-nil value for
-`icicle-complete-keys-self-insert-ranges' then use only small ranges
-for good performance.  In general, you will want to leave this option
-value as nil and use the vanilla Emacs 23+ command `ucs-insert' to
-insert characters by completing against their Unicode names.  With
-Icicles key completion you do not complete against the Unicode names.
-Instead, you can see the characters in `*Completions*'.
+Most of the thousands of self-inserting characters for Emacs 23+ are
+Unicode characters.  For a self-inserting character CHAR, the
+completion candidate is generally `CHAR  =  self-insert-command', but
+if CHAR is a Unicode character then it is `CHAR = UNICODE-NAME',
+where UNICODE-NAME is the name of the Unicode character.  This is so
+that you can complete against the name.
+
+For Emacs 23+, if you use a non-`nil' value for
+`icicle-complete-keys-self-insert-ranges' then I recommend that you
+use only small ranges for good performance.  In general, you might
+want to leave this option value as `nil' and use command `ucs-insert'
+\(`C-x 8 RET') to insert characters.  In Icicle mode, `ucs-insert'
+displays the character itself after its name, though only the name is
+used for completion.  So WYSIWYG.  And you can of course use all
+Icicles completion features when matching the character name.
 
 While cycling, these keys describe candidates:
 
@@ -6680,15 +6689,26 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                  (chr2  (cdr event)))
              (loop for range in icicle-complete-keys-self-insert-ranges do
                    (loop for char from (max chr1 (car range)) to (min chr2  (cdr range)) do
-                         (let* ((key-desc   (propertize (single-key-description
-                                                         char
-                                                         (not icicle-key-descriptions-use-<>-flag))
-                                                        'face 'icicle-candidate-part))
-                                (candidate  (intern (concat key-desc "  =  self-insert-command"))))
-                           (push (cons candidate (cons (vector char) 'self-insert-command))
-                                 icicle-complete-keys-alist)
-                           (when (eq icicle-active-map (current-local-map))
-                             (put candidate 'icicle-special-candidate t)))))))
+                         (let* ((key-desc   (propertize
+                                             (single-key-description
+                                              char (not icicle-key-descriptions-use-<>-flag))
+                                             'face 'icicle-candidate-part))
+                                (name.char  (rassq char (ucs-names)))
+                                (candidate  (and (or (not name.char)
+                                                     (and (not (string= "" (car name.char)))
+                                                          ;; $$$$$$ Maybe make this optional?
+                                                          (not (string-match
+                                                                "\\`VARIATION SELECTOR"
+                                                                (car name.char)))))
+                                                 (intern (concat key-desc
+                                                                 (if name.char
+                                                                     (concat "  =  " (car name.char))
+                                                                   "  =  self-insert-command"))))))
+                           (when candidate
+                             (push (cons candidate (cons (vector char) 'self-insert-command))
+                                   icicle-complete-keys-alist)
+                             (when (eq icicle-active-map (current-local-map))
+                               (put candidate 'icicle-special-candidate t))))))))
           ((and (or (keymapp binding)
                     (and (commandp binding)
                          (equal binding (key-binding (vconcat icicle-key-prefix-2 (vector event))))

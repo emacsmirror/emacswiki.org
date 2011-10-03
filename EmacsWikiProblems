@@ -366,5 +366,8 @@ for LINE in `svn status`; do
 Apparently this added an extra leading space such that all the /add/ and /remove/ calls kept failing silently. 
 I changed it to ##FILE="${LINE:7}"##. Let's hope it works. :) -- AlexSchroeder
 
+[new]
+Thanks. I will let you know if I see any more problems. -- JonasBernoulli
+
 ----
 CategoryEmacsWikiSite

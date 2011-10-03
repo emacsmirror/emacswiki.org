@@ -148,6 +148,24 @@ If you use library <tt>[[oneonone.el]]</tt> with a standalone
 
 
 
+[:SameFont]
+=== `*Completions*' Frame Uses Same Font as Invoking Window ===
+
+If you use a dedicated [[frame]] for [[buffer]] `*Completions*' then
+'''Icicles''' gives it the same font as the window that was selected when
+`*Completions*' was displayed.  This means, for instance, that if
+that original window has a font tailored to a specific locale or
+Unicode character set then `*Completions*' will use that
+same font.
+
+
+
+
+
+
+
+
+
 [:icicle-candidate-width-factor]
 [:icicle-inter-candidates-min-spaces]
 [:ChangeCompletionsSpacingOnTheFly]
