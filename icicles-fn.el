@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  2 18:04:25 2011 (-0700)
+;; Last-Updated: Mon Oct  3 06:33:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12609
+;;     Update #: 12620
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1654,27 +1654,33 @@ before you call this function."
   (defun icicle-read-char-by-name (prompt)
     "Read a character by its Unicode name or hex number string.
 Display PROMPT and read a string that represents a character by its
-Unicode property `name' or `old-name'.
+Unicode property `name' or `old-name'.  Return the char as a number.
 
-This function returns the character as a number.
+You can use Icicles completion against the Unicode name.
 
-You can type a few of the first letters of the Unicode name and
-use completion.  If you type a substring of the Unicode name
-preceded by an asterisk `*' and use completion, it will show all
-the characters whose names include that substring, not necessarily
-at the beginning of the name.
+A completion candidate is a Unicode name.  The Unicode character is
+also displayed next to the name, even though it is not part of the
+completion candidate.
 
-This function also accepts a hexadecimal number of Unicode code
-point or a number in hash notation, e.g. #o21430 for octal,
-#x2318 for hex, or #10r8984 for decimal."
+If you use a dedicated `*Completions*' frame, then the font used in
+`*Completions*' is the same as the frame from which you invoked
+completion.
+
+And remember that if you use library `doremi-frm.el' then you can
+increase the font size for `*Completions*' dynamically using `C-x -'.
+
+As an alternative to completing the Unicode name, you can input a
+number for the Unicode code point: a hexidecimal number or a number in
+hash notation: #o21430 for octal, #x2318 for hex, or #10r8984 for
+decimal."
     (dolist (name.char  (ucs-names))
       (when (and (not (string= "" (car name.char)))
                  ;; $$$$$$ Maybe make this optional?
                  (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
         ;; Display char itself after the name, in `*Completions*'.
-        (let* ((disp-string  (concat (car name.char) " "
+        (let* ((disp-string  (concat (car name.char) "\t"
                                      (propertize (char-to-string (cdr name.char))
-                                                 'face 'icicle-candidate-part)))
+                                                 'face 'icicle-extra-candidate)))
                (symb         (intern (car name.char))))
           (put symb 'icicle-display-string disp-string)
           (put-text-property 0 1 'icicle-orig-cand symb disp-string))))

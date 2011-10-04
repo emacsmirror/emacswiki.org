@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 21 18:39:07 2011 (-0700)
+;; Last-Updated: Mon Oct  3 14:19:50 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22420
+;;     Update #: 22430
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1534,6 +1534,40 @@ Each Icicles file has a header `Update #' that you can use to identify it.\
                       (emacs-version))))
 
 
+;; REPLACE ORIGINAL `customize-face-other-window' defined in `cus-edit.el',
+;; saving it for restoration when you toggle `icicle-mode'.
+;;
+;; Multi-command version.
+;;
+(unless (fboundp 'old-customize-face-other-window)
+  (defalias 'old-customize-face-other-window (symbol-function 'customize-face-other-window)))
+
+;;;###autoload
+(defun icicle-customize-face-other-window (face)
+  "Customize face FACE in another window.
+Same as `icicle-customize-face' except it uses a different window."
+  (interactive
+   (list (let* ((icicle-list-use-nth-parts             '(1))
+                (icicle-candidate-action-fn
+                 #'(lambda (x)
+                     (old-customize-face-other-window (intern (icicle-transform-multi-completion x)))
+                     (select-window (minibuffer-window))
+                     (select-frame-set-input-focus (selected-frame))))
+                (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
+                (icicle-orig-window                    (selected-window)) ; For alt actions.
+                (alt-fn                                nil)
+                (icicle-candidate-alt-action-fn
+                 (or icicle-candidate-alt-action-fn
+                     (setq alt-fn  (icicle-alt-act-fn-for-type "face"))))
+                (icicle-all-candidates-list-alt-action-fn ; M-|'
+                 (or icicle-all-candidates-list-alt-action-fn
+                     alt-fn (icicle-alt-act-fn-for-type "face"))))
+           (if (and (> emacs-major-version 21) current-prefix-arg)
+               (read-face-name "Customize face: " "all faces" t)
+             (read-face-name "Customize face: ")))))
+  (old-customize-face-other-window face))
+
+
 ;; REPLACE ORIGINAL `customize-face' defined in `cus-edit.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
@@ -1543,8 +1577,8 @@ Each Icicles file has a header `Update #' that you can use to identify it.\
   (defalias 'old-customize-face (symbol-function 'customize-face)))
 
 ;;;###autoload
-(defun icicle-customize-face (face)
-  "Customize face FACE.
+(defun icicle-customize-face (face &optional other-window)
+  "Customize face FACE.  If OTHER-WINDOW is non-nil, use another window.
 Input-candidate completion and cycling are available.  While cycling,
 these keys with prefix `C-' are active:
 
@@ -1596,41 +1630,11 @@ This is an Icicles command - see command `icicle-mode'."
            (if (and (> emacs-major-version 21) current-prefix-arg)
                (read-face-name "Customize face: " "all faces" t)
              (read-face-name "Customize face: ")))))
-  (old-customize-face face))
-
-
-;; REPLACE ORIGINAL `customize-face-other-window' defined in `cus-edit.el',
-;; saving it for restoration when you toggle `icicle-mode'.
-;;
-;; Multi-command version.
-;;
-(unless (fboundp 'old-customize-face-other-window)
-  (defalias 'old-customize-face-other-window (symbol-function 'customize-face-other-window)))
-
-;;;###autoload
-(defun icicle-customize-face-other-window (face)
-  "Customize face FACE in another window.
-Same as `icicle-customize-face' except it uses a different window."
-  (interactive
-   (list (let* ((icicle-list-use-nth-parts             '(1))
-                (icicle-candidate-action-fn
-                 #'(lambda (x)
-                     (old-customize-face-other-window (intern (icicle-transform-multi-completion x)))
-                     (select-window (minibuffer-window))
-                     (select-frame-set-input-focus (selected-frame))))
-                (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
-                (icicle-orig-window                    (selected-window)) ; For alt actions.
-                (alt-fn                                nil)
-                (icicle-candidate-alt-action-fn
-                 (or icicle-candidate-alt-action-fn
-                     (setq alt-fn  (icicle-alt-act-fn-for-type "face"))))
-                (icicle-all-candidates-list-alt-action-fn ; M-|'
-                 (or icicle-all-candidates-list-alt-action-fn
-                     alt-fn (icicle-alt-act-fn-for-type "face"))))
-           (if (and (> emacs-major-version 21) current-prefix-arg)
-               (read-face-name "Customize face: " "all faces" t)
-             (read-face-name "Customize face: ")))))
-  (old-customize-face-other-window face))
+  (if other-window
+      (if (> emacs-major-version 23)
+          (old-customize-face face t)
+        (old-customize-face-other-window face))
+    (old-customize-face face)))
 
 (defun icicle-customize-faces (faces)
   "Open Customize buffer on all faces in list FACES."

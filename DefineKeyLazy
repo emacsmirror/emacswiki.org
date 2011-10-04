@@ -1,4 +1,4 @@
-;; I write a macro named define-key-lazy in 
+[[Joseph]] wrote a macro named define-key-lazy in 
 Lisp:joseph-util.el
 <pre>
 (define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
@@ -35,5 +35,8 @@ equals to
 
 </pre>
 
+[new]
+It's usually best to rely on hooks for modes since they build their key maps at run-time not load-time.
+
 ----
-CategoryKeys [[Joseph]]
+CategoryKeys

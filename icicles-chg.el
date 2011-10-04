@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  2 15:11:40 2011 (-0700)
+;; Last-Updated: Mon Oct  3 14:27:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7245
+;;     Update #: 7247
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/10/03 dadams
+;;     icicle-customize-face: Updated for Emacs 24: Added optional arg OTHER-WINDOW.
 ;; 2011/09/21 dadams
 ;;     Added: icicle-locate-other-window, icicle-locate-file-use-locate-p.  Improved doc string.
 ;;     icicle-locate: Use icicle-locate-file-1 (not icicle-define-command).

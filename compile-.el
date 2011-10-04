@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 30 16:56:36 2011 (-0700)
+;; Last-Updated: Mon Oct  3 19:42:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 103
+;;     Update #: 107
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile-.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -55,7 +55,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/08/30 dadams
 ;;     Do not change next-error face - just suggest changes.

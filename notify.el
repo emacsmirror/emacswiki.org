@@ -5,6 +5,7 @@
 ;; Original Author: Mark A. Hershberger <mhersberger@intrahealth.org>
 ;; Modified by Andrey Kotlarski <m00naticus@gmail.com>
 ;; Modified by Andrew Gwozdziewycz <git@apgwoz.com>
+;; Modified by Aidan Gauland <aidalgol@no8wireless.co.nz> October 2011
 ;; Keywords: extensions, convenience, lisp
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -88,17 +89,10 @@ May be overridden with key-value additional arguments to `notify'.")
 		    '(:array :signature "{sv}") ':int32
 		    (get 'notify-defaults :timeout)))
 
-(defun notify-via-libnotify-escape (str)
-  "Escape special STR characters before passing to a shell command."
-  (replace-regexp-in-string "[&<]" (lambda (m)
-				     (cond ((equal m "&") " and ")
-					   ((equal m "<") "{")))
-			    str))
-
 (defun notify-via-libnotify (title body)
   "Notify with TITLE, BODY via `libnotify'."
   (call-process "notify-send" nil 0 nil
-		title (notify-via-libnotify-escape body) "-t"
+		title body "-t"
 		(number-to-string (get 'notify-defaults :timeout))
 		"-i" (get 'notify-defaults :icon)
 		"-u" (get 'notify-defaults :urgency)

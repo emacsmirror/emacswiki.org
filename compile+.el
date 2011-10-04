@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Feb 15 10:32:26 2011 (-0800)
+;; Last-Updated: Mon Oct  3 19:47:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 831
+;;     Update #: 901
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -60,8 +60,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/10/03 dadams
+;;     Added macros from compile.el: compilation--make-cdrloc, compilation--loc->marker,
+;;                                   compilation--file-struct->loc-tree
+;;     compilation-directory-properties: Updated Emacs 24 definition.
 ;; 2011/02/15 dadams
 ;;     compilation-directory-properties, compilation-internal-error-properties,
 ;;       compilation--compat-error-properties:
@@ -179,7 +183,7 @@
 ;; Use mouseover on whole line.  Same as original in `compile.el', except for this.
 (unless (featurep 'compile+)
   (setq compilation-error-regexp-alist-alist
-        (mapcar (lambda (elt)`(,(car elt) ,(concat (cadr elt) ".*") ,@(cddr elt)))
+        (mapcar (lambda (elt) `(,(car elt) ,(concat (cadr elt) ".*") ,@(cddr elt)))
                 compilation-error-regexp-alist-alist)))
 
 ;; Undefine some bindings that would try to modify a Compilation mode buffer.
@@ -213,49 +217,49 @@
 ;;; REPLACE ORIGINAL defined in `compile.el'.
 ;;; Use face `compilation-mouseover', not `highlight'.
 ;;;
-(if (< emacs-major-version 24)
+(if (> emacs-major-version 23)
     ;; Internal function for calculating the text properties of a directory
-    ;; change message.  The `directory' property is important, because it is
-    ;; the stack of nested enter-messages.  Relative filenames on the following
+    ;; change message.  The `compilation-directory' property is important, because it
+    ;; is the stack of nested enter-messages.  Relative filenames on the following
     ;; lines are relative to the top of the stack.
     (defun compilation-directory-properties (idx leave)
       (if leave (setq leave (match-end leave)))
       ;; find previous stack, and push onto it, or if `leave' pop it
-      (let ((dir (previous-single-property-change (point) 'directory)))
-        (setq dir (if dir (or (get-text-property (1- dir) 'directory)
-                              (get-text-property dir 'directory))))
-        `(face ,(if leave
-                    compilation-leave-directory-face
-                    compilation-enter-directory-face)
-               directory ,(if leave
-                              (or (cdr dir)
-                                  '(nil)) ; nil only isn't a property-change
-                              (cons (match-string-no-properties idx) dir))
-               mouse-face compilation-mouseover
-               keymap compilation-button-map
-               help-echo "mouse-2: visit current directory")))
+      (let ((dir (compilation--previous-directory (match-beginning 0))))
+        (setq dir (if dir (or (get-text-property (1- dir) 'compilation-directory)
+                              (get-text-property dir 'compilation-directory))))
+        `(font-lock-face
+          ,(if leave compilation-leave-directory-face compilation-enter-directory-face)
+          compilation-directory ,(if leave
+                                     (or (cdr dir)
+                                         '(nil)) ; nil only isn't a property-change
+                                     (cons (match-string-no-properties idx) dir))
+          ;; Place a `compilation-message' everywhere we change text-properties
+          ;; so compilation--remove-properties can know what to remove.
+          compilation-message ,(compilation--make-message nil 0 nil)
+          mouse-face compilation-mouseover
+          keymap compilation-button-map
+          help-echo "mouse-2: visit destination directory")))
   ;; Internal function for calculating the text properties of a directory
-  ;; change message.  The `compilation-directory' property is important, because it
-  ;; is the stack of nested enter-messages.  Relative filenames on the following
+  ;; change message.  The `directory' property is important, because it is
+  ;; the stack of nested enter-messages.  Relative filenames on the following
   ;; lines are relative to the top of the stack.
   (defun compilation-directory-properties (idx leave)
     (if leave (setq leave (match-end leave)))
     ;; find previous stack, and push onto it, or if `leave' pop it
-    (let ((dir (compilation--previous-directory (point))))
-      (setq dir (if dir (or (get-text-property (1- dir) 'compilation-directory)
-                            (get-text-property dir 'compilation-directory))))
-      `(font-lock-face
-        ,(if leave compilation-leave-directory-face compilation-enter-directory-face)
-        compilation-directory ,(if leave
-                                   (or (cdr dir)
-                                       '(nil)) ; nil only isn't a property-change
-                                   (cons (match-string-no-properties idx) dir))
-        ;; Place a `compilation-message' everywhere we change text-properties
-        ;; so compilation--remove-properties can know what to remove.
-        compilation-message ,(compilation--make-message nil 0 nil)
-        mouse-face compilation-mouseover
-        keymap compilation-button-map
-        help-echo "mouse-2: visit destination directory"))))
+    (let ((dir (previous-single-property-change (point) 'directory)))
+      (setq dir (if dir (or (get-text-property (1- dir) 'directory)
+                            (get-text-property dir 'directory))))
+      `(face ,(if leave
+                  compilation-leave-directory-face
+                  compilation-enter-directory-face)
+             directory ,(if leave
+                            (or (cdr dir)
+                                '(nil)) ; nil only isn't a property-change
+                            (cons (match-string-no-properties idx) dir))
+             mouse-face compilation-mouseover
+             keymap compilation-button-map
+             help-echo "mouse-2: visit current directory"))))
 
 
 ;;; SAME AS ORIGINAL defined in `compile.el'.
@@ -280,7 +284,6 @@
                   (if l2 (eq ,key (caar l2))))
                 l2
               (setcdr l1 (cons (list ,key) l2)))))))
-
 
 
 ;;; REPLACE ORIGINAL defined in `compile.el'.
@@ -379,12 +382,17 @@ and overlay is highlighted between MK and END-MK."
             (copy-marker (line-beginning-position))))))
 
 
+(defmacro compilation--make-cdrloc (line file-struct marker)
+  `(list ,line ,file-struct ,marker nil))
+(defmacro compilation--loc->marker (loc) `(nth 3 ,loc))
+(defmacro compilation--file-struct->loc-tree (fs) `(cdr ,fs))
+
+
 ;;; REPLACE ORIGINAL defined in `compile.el'.
 ;;; Use face `compilation-mouseover', not `highlight'.
 ;;;
-(if (< emacs-major-version 24)
-    (defun compilation-internal-error-properties
-        (file line end-line col end-col type fmts)
+(if (> emacs-major-version 23)
+    (defun compilation-internal-error-properties (file line end-line col end-col type fmts)
       "Get the meta-info that will be added as text-properties.
 LINE, END-LINE, COL, END-COL are integers or nil.
 TYPE can be 0, 1, or 2, meaning error, warning, or just info.
@@ -395,22 +403,25 @@ FMTS is a list of format specs for transforming the file name.
       (let* ((file-struct (compilation-get-file-structure file fmts))
              ;; Get first already existing marker (if any has one, all have one).
              ;; Do this first, as the compilation-assq`s may create new nodes.
-             (marker-line (car (cddr file-struct))) ; a line structure
-             (marker (nth 3 (cadr marker-line)))    ; its marker
+             (marker-line               ; a line structure
+              (cadr (compilation--file-struct->loc-tree file-struct)))
+             (marker
+              (if marker-line (compilation--loc->marker (cadr marker-line))))
              (compilation-error-screen-columns compilation-error-screen-columns)
              end-marker loc end-loc)
         (if (not (and marker (marker-buffer marker)))
             (setq marker nil)      ; no valid marker for this file
           (setq loc (or line 1))   ; normalize no linenumber to line 1
           (catch 'marker       ; find nearest loc, at least one exists
-            (dolist (x (nthcdr 3 file-struct)) ; loop over remaining lines
-              (if (> (car x) loc)              ; still bigger
+            (dolist (x (cddr (compilation--file-struct->loc-tree
+                              file-struct))) ; Loop over remaining lines.
+              (if (> (car x) loc)            ; still bigger
                   (setq marker-line x)
                 (if (> (- (or (car marker-line) 1) loc)
-                       (- loc (car x))) ; current line is nearer
+                       (- loc (car x)))	; current line is nearer
                     (setq marker-line x))
                 (throw 'marker t))))
-          (setq marker (nth 3 (cadr marker-line))
+          (setq marker (compilation--loc->marker (cadr marker-line))
                 marker-line (or (car marker-line) 1))
           (with-current-buffer (marker-buffer marker)
             (save-excursion
@@ -423,7 +434,7 @@ FMTS is a list of format specs for transforming the file name.
                       (end-of-line)
                     (compilation-move-to-column
                      end-col compilation-error-screen-columns))
-                  (setq end-marker (list (point-marker))))
+                  (setq end-marker (point-marker)))
                 (beginning-of-line (if end-line
                                        (- line end-line -1)
                                      (- loc marker-line -1)))
@@ -431,34 +442,47 @@ FMTS is a list of format specs for transforming the file name.
                     (compilation-move-to-column
                      col compilation-error-screen-columns)
                   (forward-to-indentation 0))
-                (setq marker (list (point-marker)))))))
+                (setq marker (point-marker))))))
 
-        (setq loc (compilation-assq line (cdr file-struct)))
-        (if end-line
-            (setq end-loc (compilation-assq end-line (cdr file-struct))
-                  end-loc (compilation-assq end-col end-loc))
-          (if end-col                   ; use same line element
-              (setq end-loc (compilation-assq end-col loc))))
+        (setq loc (compilation-assq line (compilation--file-struct->loc-tree
+                                          file-struct)))
+        (setq end-loc
+              (if end-line
+                  (compilation-assq
+                   end-col (compilation-assq
+                            end-line (compilation--file-struct->loc-tree
+                                      file-struct)))
+                (if end-col             ; use same line element
+                    (compilation-assq end-col loc))))
         (setq loc (compilation-assq col loc))
         ;; If they are new, make the loc(s) reference the file they point to.
-        (or (cdr loc) (setcdr loc `(,line ,file-struct ,@marker)))
+        ;; FIXME-omake: there's a problem with timestamps here: the markers
+        ;; relative to which we computed the current `marker' have a timestamp
+        ;; almost guaranteed to be different from compilation-buffer-modtime, so if
+        ;; we use their timestamp, we'll never use `loc' since the timestamp won't
+        ;; match compilation-buffer-modtime, and if we use
+        ;; compilation-buffer-modtime then we have different timestamps for
+        ;; locations that were computed together, which doesn't make sense either.
+        ;; I think this points to a fundamental problem in our approach to the
+        ;; "omake -P" problem.  --Stef
+        (or (cdr loc)
+            (setcdr loc (compilation--make-cdrloc line file-struct marker)))
         (if end-loc
             (or (cdr end-loc)
-                (setcdr end-loc `(,(or end-line line) ,file-struct ,@end-marker))))
+                (setcdr end-loc
+                        (compilation--make-cdrloc (or end-line line) file-struct
+                                                  end-marker))))
 
         ;; Must start with face
-        `(face ,compilation-message-face
-               message (,loc ,type ,end-loc)
-               ,@(if compilation-debug
-                     `(debug (,(assoc (with-no-warnings matcher) font-lock-keywords)
-                               ,@(match-data))))
-               help-echo ,(if col
-                              "mouse-2: visit this file, line and column"
-                              (if line
-                                  "mouse-2: visit this file and line"
-                                "mouse-2: visit this file"))
-               keymap compilation-button-map
-               mouse-face compilation-mouseover)))
+        `(font-lock-face ,compilation-message-face
+                         compilation-message ,(compilation--make-message loc type end-loc)
+                         help-echo ,(if col
+                                        "mouse-2: visit this file, line and column"
+                                        (if line
+                                            "mouse-2: visit this file and line"
+                                          "mouse-2: visit this file"))
+                         keymap compilation-button-map
+                         mouse-face compilation-mouseover)))
   (defun compilation-internal-error-properties
       (file line end-line col end-col type fmts)
     "Get the meta-info that will be added as text-properties.
@@ -471,25 +495,22 @@ FMTS is a list of format specs for transforming the file name.
     (let* ((file-struct (compilation-get-file-structure file fmts))
            ;; Get first already existing marker (if any has one, all have one).
            ;; Do this first, as the compilation-assq`s may create new nodes.
-           (marker-line                 ; a line structure
-            (cadr (compilation--file-struct->loc-tree file-struct)))
-           (marker
-            (if marker-line (compilation--loc->marker (cadr marker-line))))
+           (marker-line (car (cddr file-struct))) ; a line structure
+           (marker (nth 3 (cadr marker-line)))    ; its marker
            (compilation-error-screen-columns compilation-error-screen-columns)
            end-marker loc end-loc)
       (if (not (and marker (marker-buffer marker)))
           (setq marker nil)    ; no valid marker for this file
         (setq loc (or line 1)) ; normalize no linenumber to line 1
         (catch 'marker         ; find nearest loc, at least one exists
-          (dolist (x (cddr (compilation--file-struct->loc-tree
-                            file-struct))) ; Loop over remaining lines.
-            (if (> (car x) loc)            ; still bigger
+          (dolist (x (nthcdr 3 file-struct)) ; loop over remaining lines
+            (if (> (car x) loc)              ; still bigger
                 (setq marker-line x)
               (if (> (- (or (car marker-line) 1) loc)
-                     (- loc (car x)))	; current line is nearer
+                     (- loc (car x)))   ; current line is nearer
                   (setq marker-line x))
               (throw 'marker t))))
-        (setq marker (compilation--loc->marker (cadr marker-line))
+        (setq marker (nth 3 (cadr marker-line))
               marker-line (or (car marker-line) 1))
         (with-current-buffer (marker-buffer marker)
           (save-excursion
@@ -502,7 +523,7 @@ FMTS is a list of format specs for transforming the file name.
                     (end-of-line)
                   (compilation-move-to-column
                    end-col compilation-error-screen-columns))
-                (setq end-marker (point-marker)))
+                (setq end-marker (list (point-marker))))
               (beginning-of-line (if end-line
                                      (- line end-line -1)
                                    (- loc marker-line -1)))
@@ -510,49 +531,34 @@ FMTS is a list of format specs for transforming the file name.
                   (compilation-move-to-column
                    col compilation-error-screen-columns)
                 (forward-to-indentation 0))
-              (setq marker (point-marker))))))
+              (setq marker (list (point-marker)))))))
 
-      (setq loc (compilation-assq line (compilation--file-struct->loc-tree
-                                        file-struct)))
-      (setq end-loc
-            (if end-line
-                (compilation-assq
-                 end-col (compilation-assq
-                          end-line (compilation--file-struct->loc-tree
-                                    file-struct)))
-              (if end-col               ; use same line element
-                  (compilation-assq end-col loc))))
+      (setq loc (compilation-assq line (cdr file-struct)))
+      (if end-line
+          (setq end-loc (compilation-assq end-line (cdr file-struct))
+                end-loc (compilation-assq end-col end-loc))
+        (if end-col                     ; use same line element
+            (setq end-loc (compilation-assq end-col loc))))
       (setq loc (compilation-assq col loc))
       ;; If they are new, make the loc(s) reference the file they point to.
-      ;; FIXME-omake: there's a problem with timestamps here: the markers
-      ;; relative to which we computed the current `marker' have a timestamp
-      ;; almost guaranteed to be different from compilation-buffer-modtime, so if
-      ;; we use their timestamp, we'll never use `loc' since the timestamp won't
-      ;; match compilation-buffer-modtime, and if we use
-      ;; compilation-buffer-modtime then we have different timestamps for
-      ;; locations that were computed together, which doesn't make sense either.
-      ;; I think this points to a fundamental problem in our approach to the
-      ;; "omake -P" problem.  --Stef
-      (or (cdr loc)
-          (setcdr loc (compilation--make-cdrloc line file-struct marker)))
+      (or (cdr loc) (setcdr loc `(,line ,file-struct ,@marker)))
       (if end-loc
           (or (cdr end-loc)
-              (setcdr end-loc
-                      (compilation--make-cdrloc (or end-line line) file-struct
-                                                end-marker))))
+              (setcdr end-loc `(,(or end-line line) ,file-struct ,@end-marker))))
 
       ;; Must start with face
-      `(font-lock-face
-        ,compilation-message-face
-        compilation-message ,(compilation--make-message loc type end-loc)
-        help-echo           ,(if col
-                                 "mouse-2: visit this file, line and column"
-                                 (if line
-                                     "mouse-2: visit this file and line"
-                                   "mouse-2: visit this file"))
-        keymap              compilation-button-map
-        mouse-face          compilation-mouseover))))
-
+      `(face ,compilation-message-face
+             message (,loc ,type ,end-loc)
+             ,@(if compilation-debug
+                   `(debug (,(assoc (with-no-warnings matcher) font-lock-keywords)
+                             ,@(match-data))))
+             help-echo ,(if col
+                            "mouse-2: visit this file, line and column"
+                            (if line
+                                "mouse-2: visit this file and line"
+                              "mouse-2: visit this file"))
+             keymap compilation-button-map
+             mouse-face compilation-mouseover))))
 
 
 ;;; REPLACE ORIGINAL defined in `compile.el'.
@@ -560,19 +566,20 @@ FMTS is a list of format specs for transforming the file name.
 ;;;
 ;;; Note that they also renamed this function, adding an extra `-'.
 ;;;
-(if (< emacs-major-version 24)
-    (defun compilation-compat-error-properties (err)
+(if (> emacs-major-version 23)
+    (defun compilation--compat-error-properties (err)
       "Map old-style error ERR to new-style message."
       ;; Old-style structure is (MARKER (FILE DIR) LINE COL) or
       ;; (MARKER . MARKER).
       (let ((dst (cdr err)))
         (if (markerp dst)
-            ;; Must start with a face, for font-lock.
-            `(face nil
-                   message ,(list (list nil nil nil dst) 2)
-                   help-echo "mouse-2: visit the source location"
-                   keymap compilation-button-map
-                   mouse-face compilation-mouseover)
+            `(compilation-message ,(compilation--make-message
+                                    (cons nil (compilation--make-cdrloc
+                                               nil nil dst))
+                                    2 nil)
+                                  help-echo "mouse-2: visit the source location"
+                                  keymap compilation-button-map
+                                  mouse-face compilation-mouseover)
           ;; Too difficult to do it by hand: dispatch to the normal code.
           (let* ((file (pop dst))
                  (line (pop dst))
@@ -582,19 +589,18 @@ FMTS is a list of format specs for transforming the file name.
                  (fmt (pop file)))
             (compilation-internal-error-properties
              (cons filename dirname) line nil col nil 2 fmt)))))
-  (defun compilation--compat-error-properties (err)
+  (defun compilation-compat-error-properties (err)
     "Map old-style error ERR to new-style message."
     ;; Old-style structure is (MARKER (FILE DIR) LINE COL) or
     ;; (MARKER . MARKER).
     (let ((dst (cdr err)))
       (if (markerp dst)
-          `(compilation-message ,(compilation--make-message
-                                  (cons nil (compilation--make-cdrloc
-                                             nil nil dst))
-                                  2 nil)
-                                help-echo "mouse-2: visit the source location"
-                                keymap compilation-button-map
-                                mouse-face compilation-mouseover)
+          ;; Must start with a face, for font-lock.
+          `(face nil
+                 message ,(list (list nil nil nil dst) 2)
+                 help-echo "mouse-2: visit the source location"
+                 keymap compilation-button-map
+                 mouse-face compilation-mouseover)
         ;; Too difficult to do it by hand: dispatch to the normal code.
         (let* ((file (pop dst))
                (line (pop dst))

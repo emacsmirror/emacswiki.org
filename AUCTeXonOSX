@@ -1,0 +1,29 @@
+= Solutions for editing LaTeX with Emacs on Mac OS X =
+
+== Use Aquamacs ==
+
+AquamacsEmacs comes with the latest version of AUCTeX, as well as a range of LaTeX-related configurations and packages (such as drag&drop support, close PDF viewer integration, etc.).
+
+== Building AucTeX on OS/X with vanilla Emacs.app ==
+: Borrowed from this [http://superuser.com/questions/171681/installing-auctex-1-86-over-emacs-app-in-os-x forum] 
+# Install the MacTeX 2010 (based on TeXLive 2010) distribution package
+# [http://emacsformacosx.com/ Download OS X emacs], place in /Applications
+# [http://www.gnu.org/software/auctex/ Download the Auctex tarball] and 
+# Go to the Auctex directory, and configure with this specific command (Emacs.app and TeXLive 2010 on OS/X):
+<pre>
+      ./configure --with-emacs=/Applications/Emacs.app/Contents/MacOS/Emacs \
+        --with-lispdir=/Applications/Emacs.app/Contents/Resources/site-lisp \
+        --with-texmf-dir=/usr/local/texlive/texmf-local
+      make 
+      sudo make install 
+</pre>
+:: to install the AucTeX elisp files inside the Emacs.app, the info files to /usr/local/share/info, etc.
+:: Edit your ~/.emacs file to load Auctex/preview-latex, and point Emacs to your Latex executables (you can verify by Esc ! echo $PATH and Ctrl_h v exec-path that they aren't there already):
+
+<pre>
+      (setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH")))
+      (setq exec-path (append '("/usr/texbin" "/usr/local/bin") exec-path))
+      (load "auctex.el" nil t t)
+      (load "preview-latex.el" nil t t)
+</pre>
+:: Auctex and preview-latex should work now. One thing to keep in mind: with older versions of Auctex, the ps pathway seems to work better than pdf; if preview-latex images aren't appearing with the error "/typecheck in --setfileposition--", try disabling "Generate PDF" via "Menu Bar -> Command -> TeXing option".
