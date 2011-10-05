@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 27 15:26:31 2011 (-0700)
+;; Last-Updated: Tue Oct  4 18:09:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1554
+;;     Update #: 1559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -134,8 +134,9 @@
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',
 ;;    `icicle-searching-p', `icicle-search-level-overlays',
-;;    `icicle-search-modes', `icicle-search-overlays',
-;;    `icicle-search-refined-overlays', `icicle-search-replacement',
+;;    `icicle-search-map', `icicle-search-modes',
+;;    `icicle-search-overlays', `icicle-search-refined-overlays',
+;;    `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
@@ -1287,6 +1288,34 @@ current search context.")
 
 (defvar icicle-search-level-overlays nil
   "Overlays used to highlight context levels other than the top level.")
+
+(defvar icicle-search-map
+  (let ((map  (make-sparse-keymap)))
+    (define-key map "b" 'icicle-search-buffer) ; `b'uffer
+    (define-key map "c" 'icicle-search-char-property) ; `c'har property
+    (define-key map "d" 'icicle-search-defs) ; `d'efinitions
+    (define-key map "D" 'icicle-search-defs-full) ; `D'efinitions
+    (define-key map "," 'icicle-tags-search) ; Like `M-,' for `tags-loop-continue'
+    (define-key map "f" 'icicle-search-file) ; `f'ile
+    (define-key map "i" 'icicle-imenu)  ; `i'menu
+    (define-key map "I" 'icicle-imenu-full) ; `I'menu
+    (define-key map "j" 'icicle-search-bookmark) ; `j'ump to the bookmark first
+    (define-key map "J" 'icicle-search-bookmarks-together); `J'ump to the bookmark first
+    (define-key map "k" 'icicle-search-keywords) ; `k'eywords
+    (define-key map "l" 'icicle-search-lines) ; `l'ines
+    (define-key map "\C-l" 'icicle-search-pages) ; `C-l' is the page separator
+    ;; Save `m' for `marked'/`mode-specific'.
+    (define-key map "o" 'icicle-occur)  ; `o'ccur
+    (define-key map "p" 'icicle-search-paragraphs) ; `p'aragraphs
+    (define-key map "O" 'icicle-search-overlay-property) ; `O'verlay
+    (define-key map "s" 'icicle-search-sentences) ; `s'entence
+    (define-key map "\M-s" 'icicle-search-generic)
+    (define-key map "t" 'icicle-search-thing) ; `t'hing
+    (define-key map "T" 'icicle-search-text-property) ; `T'ext
+    (define-key map "w" 'icicle-search-word) ; `w'ord
+    map)
+  "Keymap for Icicles search commands.
+It is bound to the key prefix `icicle-search-key-prefix'.")
 
 (defvar icicle-search-modes
   '((dired-mode           (dired-get-marked-files))

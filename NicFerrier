@@ -7,12 +7,14 @@ I've used Emacs for about 20 years, every day, all the time for the last 15 year
 
 == Recent Emacs related blog posts ==
 
-[http://nic.ferrier.me.uk/blog/2011_09/elisp_testing ERT has been included in trunk so now EmacsLISP TDD is possible]
+* [http://nic.ferrier.me.uk/blog//home/nferrier/blog/2011_10/emacs_lisp_is_good_further_reports_suggest about using lexical scope to code sentinels better, with an example macro]
 
-[http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLISP asycnc HTTP server]
+* [http://nic.ferrier.me.uk/blog/2011_09/elisp_testing ERT has been included in trunk so now EmacsLISP TDD is possible]
+
+* [http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLISP asycnc HTTP server]
 
 
-== asynchronous HTTP servers for Emacs (EmacsLISP node.js)  == 
+== Asynchronous HTTP servers for Emacs (EmacsLISP node.js)  == 
 [[Elnode]] is an asynchronous TCP server handling HTTP.
 
 As of now elnode is just about functional. I am starting to write things with it including a port of my wiki based blog.
@@ -21,12 +23,9 @@ It's pretty good. I hope people pick it up because it's an interesting way to le
 
 == Emacs under Mercurial ==
 
-* I host a mercurial copy of the emacs bzr repo at bitbucket: https://bitbucket.org/nic/emacs
-** and [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I use]
+I host a mercurial copy of the emacs bzr repo at [https://bitbucket.org/nic/emacs bitbucket].
 
-Mercurial is really good at making upstream/downstream hacks. Is
-anyone interested in a clone of Emacs with, say auto-install,
-pre-installed.
+and [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I use].
 
 
 == Email under Emacs ==
@@ -144,67 +143,44 @@ This toggles bold on the dark ones, which I think is all the vim thing is doing.
 == Small Init Files ==
 
 For a long time I've used a complex init file with loads of stuff in
-it. This is great, it means emacs starts up with all my goodies. But
-it also means when I go to another emacs I'm lost. It's also
-non-trivial to move my stuff to another emacs.
+it. This is great, it means Emacs starts up with all my goodies. But
+it also means when I go to another Emacs I'm lost. It's also
+non-trivial to move my stuff to another Emacs.
+
+It's also difficult to test code written in EmacsLISP, which I'm doing more and more of with Elnode.
 
 I am trying to pair down my emacs use to the standard dist delivered
 behaviour and then add obvious extras on top. This is a process I
 started long ago but is still underway.
 
-I've just discovered [[AutoInstall|auto install]] which helps greatly
-in defining a smaller .emacs. Why? Because now I can keep the packages
-I use in the EmacsWiki and just use auto-install to load them:
+Here's the initial bit of my init file:
 
 {{{
 ;; Nic's init file
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
-(require 'auto-install)
+(add-to-list 'load-path (file-name-directory (or (buffer-file-name) load-file-name)))
 
-;; config stuff...
-...
-;; End
+(require 'auto-install)
+(require 'package)
+(setq package-archives '(("tromey" . "http://tromey.com/elpa/")
+			 ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")))
 }}}
 
-I have patched auto-install slightly. It's a very simple patch that
-causes everything that has been auto-installed to be loaded on
-startup:
+The load-path hack is down to [[PhilHagelberg|Technomancy]] and it's a great little hack. I can now take copies of my init directory (say ~/.emacs2.d/) and load it all in a new emacs like:
 
 {{{
-;; Automatic loading
-
-(defcustom auto-install-inhibit-startup-loading nil
-  "Controls whether auto-installed packaged are loaded at startup.
-
-If set to 't this inhibts the automatic loading of auto-load
-files at startup. 
-
-Otherwise all files in the 'auto-install-directory' are loaded
-when auto-install is required."
-  :type 'string
-  :group 'auto-install)
-
-(defun auto-install-on-startup ()
-  "Require everything in the auto-install directory."
-  (when (not auto-install-inhibit-startup-loading)
-    (mapc (lambda (direntry)
-            (let ((path (concat
-                         (file-name-as-directory auto-install-directory)
-                         direntry)))
-              (when (and (file-readable-p path) 
-                         (not (file-directory-p path))
-                         (equal "el" (file-name-extension path)))
-                (load-file path))))
-          (directory-files auto-install-directory))))
-
-;; Attempt to load all the auto-install files
-(auto-install-on-startup)
+emacs -nw -q -l ~/.emacs2.d/init.el
 }}}
 
-Hopefully [[rubikitch]] will be able to add that to
-auto-install. Ideally, it would do the kind of things that [[ELPA]]
-does.
+This is great for testing things. It should also make it easy to clone my config dir's git or hg repository around for testing:
+
+* clone your config repo
+* start a new emacs in the new repo
+* install the new package (from elpa even)
+* does it work?
+* if yes then commit the changes to the config dir and pull them back into the origin
+* if no then don't commit the changes, just throw it away
 
 
 == List of various other ELisp bits and pieces ==

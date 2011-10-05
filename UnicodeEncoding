@@ -1,3 +1,16 @@
+== GNU Emacs 23 and Later ==
+
+Starting with GNU Emacs 23, there is quite complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
+
+* You can use one of the Emacs InputMethods.
+* You can use [[command]] `ucs-insert' (`C-x 8 RET'), which lets you either enter a [[code point]] or complete against the character name.  It can be slow, because there are '''''many''''' candidate characters to choose from.
+* You can define a command that inserts a single Unicode character, and perhaps bind it to a [[key]], effectively adding that character to your keyboard.  (Library <tt>[[ucs-cmds.el]]</tt> provides a macro for defining such commands.)
+
+
+----
+
+== Using Unicode with Emacs Releases Prior to Emacs 23 ==
+
 GNU Emacs 21 has built-in Unicode support which is sufficient for editing,
 for example, UTF-8-encoded Western technical text from the Basic
 Multilingual Plane.  It doesn't support most Far Eastern characters
@@ -26,7 +39,7 @@ Emacs to use Unicode.</em> UTF-8 is just another coding system; the
 only fundamental issue is whether all the relevant characters can be
 represented.
 
-= How To =
+=== Input Characters Using an Input Method ===
 
 Assume you have an UTF-8 file, but your locale uses ISO-8859-1
 (Latin-1).  Typically when you open the file, it will be garbled, depending
@@ -58,7 +71,7 @@ If you always prefer UTF-8 to ISO-8859-1, you can use this:
 
 : You might just want to use Emacs 21.3's UTF-8 language environment.
 
-= Input by Code Point =
+=== Input Characters by Code Point ===
 
 This function, bound to a key, will allow you to enter unicode 
 characters by code point: handy if you do not know which input 
@@ -85,7 +98,7 @@ job?
 If you know the emacs code point of the character, you can enter it
 with C-q instead.
 
-= How To (automatically) =
+=== `auto-coding-regexp-alist'  ===
 
 You need `M-x customize-option RET auto-coding-regexp-alist RET'.  You can then insert items such as
 
@@ -95,7 +108,7 @@ You need `M-x customize-option RET auto-coding-regexp-alist RET'.  You can then 
   <\?xml\b[^>]*\bencoding="utf-8"[^>]*\?>
   utf-8
 
-There may be a better way - these patterns are a little too rigid for
+There may be a better way -- these patterns are a little too rigid for
 reliable identification of all Unicode documents.  At least you can
 edit them to cope with the set of documents you normally deal with.
 
@@ -146,9 +159,8 @@ A further refinement is to add support for auto detecting the line ending.  The 
     (add-to-list 'auto-coding-regexp-alist '("^\xFE\xFF" . utf-16-be) t)
 </pre>
 
-----------
 
-= Saving CJK as Unicode =
+=== Saving CJK as Unicode ===
 
 Some CJK (Chinese, Japanese, Korean) characters have been "unified" in the Unicode standard.  What does that mean?
 The Unicode FAQ by Markus Kuhn [http://www.cl.cam.ac.uk/~mgk25/unicode.html#ucs] says:
@@ -205,7 +217,7 @@ test it, copy a few CJK characters from the etc/HELLO file and
 save them in a UTF-8 file using `C-x C-m c utf-8 RET C-x C-s filename
 RET'.
 
-= Pasting =
+=== Pasting ===
 
 Maybe worth noting that Windows, Mac, and Linux all have character selection tools designed to make cut/paste with special characters a little easier (e.g., linux utilities include gucharmap and kcharselect)?
 
@@ -225,7 +237,7 @@ unstable over different releases, sigh.  The situation for selections is
 particularly complicated by X being a networked window system which may
 involve exchanging selections between old non-XFree86 or X.org releases...
 
-= Comments =
+=== Comments ===
 
 I wrote the support, and I'm unclear what this is about.  It seems
 confused about characters and coding systems.

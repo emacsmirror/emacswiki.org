@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  3 14:27:32 2011 (-0700)
+;; Last-Updated: Tue Oct  4 18:20:29 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7247
+;;     Update #: 7257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3954,6 +3954,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/10/04 dadams
+;;     icicle-define-icicle-maps: Put all search commands on icicle-search-key-prefix.
+;;     icicle-(bind|restore)-other-keymap-keys: Mode-specific search cmds are on M-s M-s m, not M-s i.
 ;; 2011/09/08 dadams
 ;;     icicle-bind-isearch-keys: Replace lambda with icicle-search-w-isearch-string.
 ;; 2011/09/06 dadams
@@ -4978,6 +4981,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/10/04 dadams
+;;     Added: icicle-search-key-prefix.
 ;; 2011/10/02 dadams
 ;;     icicle-functions-to-redefine: Added read-char-by-name to default value.
 ;; 2011/09/18 dadams
@@ -5595,6 +5600,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/10/04 dadams
+;;     Added: icicle-search-map.
 ;; 2011/09/27 dadams
 ;;     Added: icicle-search-modes (var).
 ;; 2011/09/14 dadams

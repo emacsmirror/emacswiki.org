@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  8 14:32:31 2011 (-0700)
+;; Last-Updated: Tue Oct  4 17:51:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7595
+;;     Update #: 7632
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2107,6 +2107,9 @@ Used on `pre-command-hook'."
   ;; Optional `icicle-mode-map' bindings - governed by `icicle-top-level-key-bindings'.
   (icicle-bind-top-level-commands)
 
+  ;; Put all Icicles search commands on a common prefix key, `icicle-search-key-prefix'.
+  (define-key icicle-mode-map icicle-search-key-prefix icicle-search-map)
+
   ;; Install or update `icicle-mode-map'.
   (if icicle-minor-mode-map-entry
       (setcdr icicle-minor-mode-map-entry icicle-mode-map)
@@ -2162,9 +2165,11 @@ Used on `pre-command-hook'."
     (unless (lookup-key bookmark-bmenu-mode-map [(control ?})]) ; *Bookmark List* `C-}'
       (define-key bookmark-bmenu-mode-map [(control ?})]
         'icicle-bookmark-save-marked-files-as-project))
-    (let ((defn  (lookup-key bookmark-bmenu-mode-map "\M-si"))) ; *Bookmark List* `M-s i'
-      (unless (and defn  (not (integerp defn)))
-        (define-key bookmark-bmenu-mode-map "\M-si" 'icicle-search-dired-marked))))    
+    (let* ((key  (apply 'vector (append (listify-key-sequence icicle-search-key-prefix)
+                                        (listify-key-sequence (kbd "m"))))) ; `M-s M-s m'
+           (def  (lookup-key bookmark-bmenu-mode-map key)))
+      (unless (and def  (not (integerp def)))
+        (define-key bookmark-bmenu-mode-map key 'icicle-search-bookmark-list-marked))))    
 
   ;; Bind some keys in Dired mode.
   (when (boundp 'dired-mode-map)
@@ -2181,15 +2186,19 @@ Used on `pre-command-hook'."
       (define-key dired-mode-map [(control meta ?})] 'icicle-dired-save-marked-to-variable))
     (unless (lookup-key dired-mode-map [(control ?})]) ; Dired `C-}'
       (define-key dired-mode-map [(control ?})] 'icicle-dired-save-marked-as-project))
-    (let ((defn  (lookup-key dired-mode-map "\M-si"))) ; Dired `M-s i'
-      (unless (and defn  (not (integerp defn)))
-        (define-key dired-mode-map "\M-si" 'icicle-search-dired-marked))))
+    (let* ((key  (apply 'vector (append (listify-key-sequence icicle-search-key-prefix)
+                                        (listify-key-sequence (kbd "m"))))) ; Dired `M-s M-s m'
+           (def  (lookup-key dired-mode-map key)))
+      (unless (and def  (not (integerp def)))
+        (define-key dired-mode-map key 'icicle-search-dired-marked))))
 
   ;; Bind keys in Ibuffer mode.
   (when (boundp 'ibuffer-mode-map)
-    (let ((defn  (lookup-key ibuffer-mode-map "\M-si"))) ; Ibuffer `M-s i'
-      (unless (and defn  (not (integerp defn)))
-        (define-key ibuffer-mode-map "\M-si" 'icicle-search-ibuffer-marked))
+    (let* ((key  (apply 'vector (append (listify-key-sequence icicle-search-key-prefix)
+                                        (listify-key-sequence (kbd "m"))))) ; Ibuffer `M-s M-s m'
+           (def  (lookup-key ibuffer-mode-map icicle-search-key-prefix)))
+      (unless (and def  (not (integerp def)))
+        (define-key ibuffer-mode-map key 'icicle-search-ibuffer-marked))
       (unless icicle-touche-pas-aux-menus-flag ; Use Ibuffer's `Operate' menu.
         (define-key ibuffer-mode-operate-map [icicle-search-ibuffer-marked]
           '(menu-item "Icicles Search (and Replace)..." icicle-search-ibuffer-marked
@@ -2197,9 +2206,11 @@ Used on `pre-command-hook'."
 
   ;; Bind keys in Buffer Menu mode.
   (when (boundp 'Buffer-menu-mode-map)
-    (let ((defn  (lookup-key Buffer-menu-mode-map "\M-si"))) ; Buffer-Menu `M-s i'
-      (unless (and defn  (not (integerp defn)))
-        (define-key Buffer-menu-mode-map "\M-si" 'icicle-search-buff-menu-marked))))
+    (let* ((key  (apply 'vector (append (listify-key-sequence icicle-search-key-prefix)
+                                        (listify-key-sequence (kbd "m"))))) ; Buffer-Menu `M-s M-s m'
+           (def  (lookup-key Buffer-menu-mode-map icicle-search-key-prefix)))
+      (unless (and def  (not (integerp def)))
+        (define-key Buffer-menu-mode-map key 'icicle-search-buff-menu-marked))))
 
   ;; Bind `S-TAB' in major maps, for key completion.
   (when (fboundp 'map-keymap)           ; Emacs 22+.
@@ -2289,25 +2300,25 @@ from keymap MAP."
     (define-key bookmark-bmenu-mode-map [(control ?>)] nil)
     (define-key bookmark-bmenu-mode-map [(control meta ?})] nil)
     (define-key bookmark-bmenu-mode-map [(control ?})] nil)
-    (define-key bookmark-bmenu-mode-map "\M-si" nil))
+    (define-key bookmark-bmenu-mode-map icicle-search-key-prefix nil))
 
   ;; Unbind keys in Dired mode.
   (when (boundp 'dired-mode-map)
-    (define-key dired-mode-map [(control meta ?<)] nil)
-    (define-key dired-mode-map [(control ?{)]      nil)
-    (define-key dired-mode-map [(control meta ?>)] nil)
-    (define-key dired-mode-map [(control ?>)]      nil)
-    (define-key dired-mode-map [(control meta ?})] nil)
-    (define-key dired-mode-map [(control ?})]      nil)
-    (define-key dired-mode-map "\M-si"             nil))
+    (define-key dired-mode-map [(control meta ?<)]       nil)
+    (define-key dired-mode-map [(control ?{)]            nil)
+    (define-key dired-mode-map [(control meta ?>)]       nil)
+    (define-key dired-mode-map [(control ?>)]            nil)
+    (define-key dired-mode-map [(control meta ?})]       nil)
+    (define-key dired-mode-map [(control ?})]            nil)
+    (define-key dired-mode-map icicle-search-key-prefix  nil))
 
   ;; Unbind keys in Ibuffer mode.
   (when (boundp 'ibuffer-mode-map)
-    (define-key ibuffer-mode-map "\M-si" nil))
+    (define-key ibuffer-mode-map icicle-search-key-prefix nil))
 
   ;; Unbind keys in Buffer Menu mode.
   (when (boundp 'Buffer-menu-mode-map)
-    (define-key Buffer-menu-mode-map "\M-si" nil))
+    (define-key Buffer-menu-mode-map icicle-search-key-prefix nil))
 
   ;; Unbind `S-TAB' in major maps.
   (when (fboundp 'map-keymap)           ; Emacs 22+.

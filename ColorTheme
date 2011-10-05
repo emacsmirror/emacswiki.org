@@ -12,7 +12,7 @@ started.
 line endings from CRLF to LF. skip@pobox.com 2004-03-12)
 
 [new:XavierMaillard:2009-04-15 20:48 UTC]
-if it is still the case, report it as a bug so we can track it down.
+if it is still the case, [https://savannah.nongnu.org/bugs/?group=color-theme&func=additem report it as a bug] so we can track it down.
 
 Latest release is 6.6.0 -- See our webpage for download instructions.
 
@@ -569,7 +569,7 @@ a 256 color terminal?  Might be a bit better. -- AlexSchroeder
 
 [new:DaveAbrahams:2011-10-03 19:03 UTC]
 
-Unfortunately, nothing here says where the bug tracker is, so I can't report anything there.  Should you happen to blow the stack trying to do color-theme-select, you might want to try this patch, which detects and suppresses such infinite recursions: https://gist.github.com/1259919
+Unfortunately, nothing here says where the bug tracker is ([http://savannah.nongnu.org/bugs/?group=color-theme found it!]), so I can't report anything there.  Should you happen to blow the stack trying to do color-theme-select, you might want to try this patch, which detects and suppresses such infinite recursions: https://gist.github.com/1259919
 
 It happened to me because of https://github.com/dbrock/zenburn-el/issues/13
 
@@ -583,13 +583,13 @@ simply a user who wants to have the color themes installed, I believe you are to
 ignore the Makefile, and simply copy color-theme.el and the themes directory to a
 directory on your load-path (say, [[.emacs.d]]).
 
-[new:XavierMaillard:2009-04-15 22:59 UTC] Reported to the bug tracker. Thank you. It will be part of 6.6.1 -- XavierMaillard
+[new:XavierMaillard:2009-04-15 22:59 UTC] Reported to the [http://savannah.nongnu.org/bugs/?group=color-theme bug tracker]. Thank you. It will be part of 6.6.1 -- XavierMaillard
 
 === Choosing a new theme resizes the frame ===
 
 I am running 6.6.0 with the Carbon XEmacs port of 21.5.beta27.  Whenever I choose a new theme, it resizes my frame to 80x40. -- doktorstick
 
-[new:XavierMaillard:2009-04-15 22:59 UTC] Please report it back to our bug tracker. -- XavierMaillard
+[new:XavierMaillard:2009-04-15 22:59 UTC] Please report it back to [http://savannah.nongnu.org/bugs/?group=color-theme our bug tracker]. -- XavierMaillard
 
 === Cursor faces are OS dependent (fixed in v24) ===
 

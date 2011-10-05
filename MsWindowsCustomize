@@ -228,5 +228,13 @@ If you want this page because you use KDE and are used to using windows-style ke
       (kill-buffer buffer)))
   (define-key global-map "\C-o" 'kde-open-file)
 
+= Shell mode =
+
+To suppress the command echo in shell mode, use the following:
+
+  (when (eq system-type 'windows-nt)
+    (setq-default comint-process-echoes 'on))
+
+
 ----
 CategoryWThirtyTwo

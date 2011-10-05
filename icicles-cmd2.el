@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  2 18:09:07 2011 (-0700)
+;; Last-Updated: Tue Oct  4 16:11:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4402
+;;     Update #: 4404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2405,7 +2405,7 @@ then customize option `icicle-top-level-key-bindings'."
              (call-interactively #'icicle-select-bookmarked-region))))))
 
 ;;;###autoload
-(defun icicle-search-generic ()         ; Bound to `C-x `'.
+(defun icicle-search-generic ()         ; Bound to `C-c `'.
   "Run `icicle-search-command'.  By default, this is `icicle-search'.
 In Compilation and Grep modes, this is `icicle-compilation-search'.
 In Comint, Shell, GUD, and Inferior Lisp modes, this is
@@ -5096,7 +5096,7 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-comint-search (beg end)   ; Bound to `C-x `' in `comint-mode'.
+(defun icicle-comint-search (beg end)   ; Bound to `C-c `' in `comint-mode'.
   "Use `icicle-search' to pick up a previous input for reuse.
 Use this in a `comint-mode' buffer, such as *shell* or
 *inferior-lisp*.  This searches your interactive history in the buffer

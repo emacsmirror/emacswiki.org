@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  2 18:11:40 2011 (-0700)
+;; Last-Updated: Tue Oct  4 17:34:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4476
+;;     Update #: 4492
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -156,6 +156,7 @@
 ;;    `icicle-search-highlight-all-current-flag',
 ;;    `icicle-search-highlight-context-levels-flag',
 ;;    `icicle-search-highlight-threshold', `icicle-search-hook',
+;;    `icicle-search-key-prefix',
 ;;    `icicle-search-replace-common-match-flag',
 ;;    `icicle-search-replace-literally-flag',
 ;;    `icicle-search-replace-whole-candidate-flag',
@@ -2534,6 +2535,17 @@ This highlighting uses face `icicle-search-main-regexp-others'."
   "*List of functions run by `icicle-search' after you visit a search hit.
 See `run-hooks'."
   :type 'hook :group 'Icicles-Searching)
+
+;;;###autoload
+(defcustom icicle-search-key-prefix "\M-s\M-s"
+  "*Key sequence prefix for keys bound to Icicles search commands.
+Has the same form as a key-sequence argument to `define-key'.
+
+This same prefix key sequence, followed by `m', is used in some major
+modes for a mode-specific Icicles search command.  E.g., if the prefix
+key is `M-s M-s' then `M-s M-s m' is bound in Dired mode to
+`icicle-search-dired-marked', which searches the marked files."
+  :type 'sexp :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
 (defcustom icicle-search-replace-common-match-flag t ; Toggle with `M-;'.

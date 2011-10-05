@@ -1,5 +1,48 @@
 This page is dedicated to writing Qt programs in emacs
 
+= Build, execute under Windows =
+
+You may have to define the QTDIR environment variable and extend the PATH environment variable:
+
+<pre>
+(setenv "QTDIR" "C:\\QtSDK\\Desktop\\Qt\\4.7.3\\mingw\\")
+(setq qt-base-directory "C:\\QtSDK\\")
+(setenv "PATH" (concat (getenv "PATH") ";" (concat (getenv "QTDIR") "bin" )))
+(setenv "PATH" (concat (getenv "PATH") ";" 
+                       (concat qt-base-directory "mingw\\bin")))
+</pre>
+
+= Integration within Emacs =
+
+You can automaticaly enable CcMode for Qt source files, extend the path where specific files are searched, and feed the SemanticBovinator (note that the variable 'qt-base-directory' is defined in the previous code snippet):
+
+<pre>
+(require 'semantic/bovine/c)
+
+(setq qt-source-directory (expand-file-name "QtSources/4.7.3/src" 
+					    qt-base-directory)
+      qt-include-directory (expand-file-name "Desktop/Qt/4.7.3/mingw/include/" 
+					     qt-base-directory))
+(add-to-list 'auto-mode-alist (cons qt-source-directory 'c++-mode)) 
+(add-to-list 'cc-search-directories qt-source-directory)
+
+(add-to-list 'auto-mode-alist (cons qt-include-directory 'c++-mode))
+(dolist (file (directory-files qt-include-directory))
+  (let ((path (expand-file-name file qt-include-directory)))
+    (when (and (file-directory-p path) 
+	       (not (or (equal file ".") (equal file ".."))))
+      (progn
+	(semantic-add-system-include path 'c++-mode)
+	(add-to-list 'cc-search-directories path)))))
+
+(dolist (file (list "QtCore/qconfig.h" "QtCore/qconfig-dist.h" "QtCore/qconfig-large.h"
+		    "QtCore/qconfig-medium.h" "QtCore/qconfig-minimal.h" "QtCore/qconfig-small.h"
+		    "QtCore/qglobal.h"))
+  (add-to-list 'semantic-lex-c-preprocessor-symbol-file (expand-file-name file qt-include-directory)))
+</pre>
+
+= Handling of Qt specific keywords =
+
 Qt extends the syntax of C++ with the extra keywords "slots", "signals", and "more".  These are used together with the standard keywords "public", "protected", and "private".
 
 CC Mode has supported these extensions since version 5.30 (released in 2003).  GNU Emacs 22 (but not 21) contains a recent enough CC Mode.  If you are using GNU Emacs 21.x (or older) or XEmacs, you are recommended to download and install the most recent version of CC Mode from <http://cc-mode.sourceforge.net/release.php>.

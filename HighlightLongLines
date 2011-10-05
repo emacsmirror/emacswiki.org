@@ -22,7 +22,7 @@ The first part of the RegularExpression, ##"^[^\n]\\{80\\}"##,
 matches any 80 non-newline characters at the beginning of a line.
 The first group in parentheses matches the 81st character and all
 remaining characters.  The digit ##1## tells font-lock to
-fontifiy the first group.  `font-lock-warning-face' is the [[Face]]
+fontify the first group.  `font-lock-warning-face' is the [[Face]]
 to use.  The `prepend' parameter tells font-lock to use this as
 the most important rule.  Therefore even lines that are
 highlighted as comments will have the warning face on every
@@ -30,6 +30,64 @@ character after the 81st.
 
 Note that this will not take the width of ##TAB## characters into account.
 (See EightyColumnRule for a way to do that)
+
+[new:stepnem:2011-10-04 19:27 UTC]
+Here's what I did:
+
+{{{
+(defvar bline-minor-mode-font-lock-keywords
+  ;; cf. `whitespace-color-on'
+  (list
+   (list
+    (let ((line-column (or whitespace-line-column fill-column)))
+      (format
+       "^\\([^\t\n]\\{%s\\}\\|[^\t\n]\\{0,%s\\}\t\\)\\{%d\\}%s\\(.+\\)$"
+       whitespace-tab-width
+       (1- whitespace-tab-width)
+       (/ line-column whitespace-tab-width)
+       (let ((rem (% line-column whitespace-tab-width)))
+         (if (zerop rem)
+             ""
+           (format ".\\{%d\\}" rem)))))
+    (if t   ; was: (memq 'lines whitespace-active-style)
+        0   ; whole line
+      2)    ; line tail
+    whitespace-line t)))
+
+(define-minor-mode bline-minor-mode "Overlong lines can make you blined."
+  nil nil nil
+  (if bline-minor-mode
+      (font-lock-add-keywords nil bline-minor-mode-font-lock-keywords t)
+    (font-lock-remove-keywords nil bline-minor-mode-font-lock-keywords))
+  (font-lock-mode 1))
+
+(defun bline-minor-mode--insin ()
+  (add-hook 'after-change-functions 'bline-minor-mode--uate nil t))
+
+(defun bline-minor-mode--uate (&rest ignore)
+  (bline-minor-mode 1)
+  (remove-hook 'after-change-functions 'bline-minor-mode--uate t))
+
+(add-hook 'prog-mode-hook 'bline-minor-mode--insin)
+}}}
+
+(Some commentary for those so inclined: I like the way `whitespace-mode'
+highlights long lines (i.e., I like it much better than the various column
+marker solutions, because sometimes the column is off the screen etc., in
+short I want the *whole line* highlighted), but I like to keep that mode for
+more heavy-weight whitespace checks and cleanup, so I don't want to mess with
+`whitespace-style' settings. So I just took the appropriate font-lock
+definition and put it into a standalone minor mode, and with some hookery made
+it so that the mode is only auto-activated when I actually edit the buffer, so
+it doesn't bother me when inspecting some UGLY CODE WRITTEN BY PEOPLE WHO
+DON'T KNOW THAT EXCEEDING 80 COLUMNS WILL MAKE THEM BLINED!
+
+Foam-at-mouthy yours, Štěpán
+
+Oh, and the ##(font-lock-mode 1)## is there because otherwise the
+`font-lock-keywords' changes wouldn't take effect. That's the one thing I'd be
+interested in hearing better solutions for. Major headache, this
+`font-lock-mode'.)
 
 See also MarginMode, ColumnMarker, EightyColumnRule
 
