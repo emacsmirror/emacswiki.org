@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  3 06:33:47 2011 (-0700)
+;; Last-Updated: Wed Oct  5 08:50:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12620
+;;     Update #: 12630
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1370,9 +1370,7 @@ functions, which use zero-indexing for POSITION."
                                          (let ((case-fold-search  completion-ignore-case))
                                            (icicle-filter-wo-input cand)))
                                        all))
-      (if (listp def)
-          (append def all)
-        (cons def (delete def all))))))
+      (if (listp def) (append def all) (cons def (delete def all))))))
 
 
 ;; REPLACE ORIGINAL `read-number' defined in `subr.el',
@@ -3042,26 +3040,23 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
              (goto-char (icicle-start-of-candidates-in-Completions))
              (set-window-point (get-buffer-window "*Completions*" 0) (point))
              (icicle-fit-completions-window))
-           ;; Use the same font as the starting buffer.
+           ;; Use the same font family as the starting buffer.  This is particularly for picking up
+           ;; the proper font for Unicode chars in `*Completions*'.  Emacs 23+ only.
            ;; But skip this if using `oneonone.el', since `1on1-display-*Completions*-frame' does it.
            (when (and (not (fboundp '1on1-display-*Completions*-frame))
-                      (get-buffer-window "*Completions*" 'visible))
+                      (get-buffer-window "*Completions*" 'visible)
+                      icicle-pre-minibuffer-buffer
+                      (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
-               (when (and (one-window-p t) (window-dedicated-p (selected-window)))
-                 (let* ((orig-win   (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
-                        (orig-font  (and (window-live-p orig-win)
-                                         (save-window-excursion (select-window orig-win)
-                                                                (frame-parameter nil 'font)))))
-                   (when orig-font (set-frame-font orig-font))))
-               (when (and (fboundp 'zoom-frm-out) ; In `zoom-frm.el'.
-                          (boundp '1on1-completions-frame-zoom-font-difference) ; In `oneonone.el'.
-                          1on1-completions-frame-zoom-font-difference)
-                 (condition-case nil
-                     (let ((frame-zoom-font-difference  
-                            1on1-completions-frame-zoom-font-difference))
-                       (zoom-frm-out))  ; In `zoom-frm.el'.
-                   (error nil)))))
+               (when (one-window-p t) ;; $$$$$ Also this? (window-dedicated-p (selected-window))
+                 (let* ((orig-win       (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
+                        (orig-font-fam  (and (window-live-p orig-win)
+                                             (save-window-excursion
+                                               (select-window orig-win)
+                                               (face-attribute 'default :family)))))
+                   (when orig-font-fam
+                     (set-face-attribute 'default (selected-frame) :family orig-font-fam))))))
            (message nil)))))            ; Clear out any "Looking for..."
 
 

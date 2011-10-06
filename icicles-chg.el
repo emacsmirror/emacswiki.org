@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  4 18:20:29 2011 (-0700)
+;; Last-Updated: Wed Oct  5 08:53:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7257
+;;     Update #: 7261
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1006,6 +1006,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/10/05 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       Use same font family, not same font, as orig buff.  Only for Emacs 23+, and only when
+;;       icicle-pre-minibuffer-buffer is defined.  Removed dedicated-p condition.  Removed zoom-out.
 ;; 2011/10/02 dadams
 ;;     Added: icicle-read-char-by-name.
 ;;     icicle-display-candidates-in-Completions: Give *Completions* the same font as starting buffer.
