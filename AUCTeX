@@ -64,6 +64,10 @@ To compile documents to PDF by default add the following to your <tt>[InitFile ~
 
 [http://www.ctan.org/tex-archive/support/emacs-modes/swiftex/swiftex-doc.txt SwifTeX] (by the author of !docTeX, the mode for editing self-documenting !LaTeX code) is derived from the !LaTeX mode in "tex-mode.el" (distributed with Emacs) using the autoloaded function <code>`define-derived-mode'</code>. It has untested option to derive from !AUCTeX's !LaTeX-mode.
 
+== Synchronize with Zotero ==
+
+[http://www.zotero.org/ Zotero] is an excellent bibliography manager. With [http://code.google.com/p/zotexo/ zotexo.el] you can associate a zotero collection with your .tex file and make it automatically synchronize with zotero. 
+
 == Add-Ons ==
 
 * [http://people.debian.org/~psg/elisp/latex-units.el latex-units.el] -- Add a Units sub-menu to !AUCTeX's math-mode's menu (by Peter S. Galbraith).

@@ -140,6 +140,8 @@ multi-commands `icicle-find-file-absolute', `icicle-find-file-in-tags-table', `i
 There are also `-other-window' versions of all of the '''Icicles'''
 commands that read file names.
 
+
+
 [:LocateByDate]
 The '''Icicles''' commands that use `completing-read' to read file names have an
 additional feature: you can use a [[prefix argument]] to tell them to
@@ -174,6 +176,10 @@ defined by the tags table''.
 You can use '''`icicle-recent-file'''' to open any file that you have
 visited recently, perhaps in a previous Emacs session.
 
+
+
+[:icicle-locate]
+[:icicle-locate-file]
 You can
 use '''`icicle-locate'''' or '''`icicle-locate-file'''' to ''find a file when you do not know what
 directory'' it is in.  The former requires

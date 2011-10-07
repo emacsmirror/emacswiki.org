@@ -33,9 +33,13 @@ CDLaTeX is a minor mode providing template based insertion of !LaTeX environment
 
 RefTeX (minor mode) provides distinct support for doing labels, references and citations in !LaTeX, and it provides support for generating indices. It works with both Emacs and XEmacs and runs as a minor mode with any of the !LaTeX major modes around, most notably AUCTeX. It is included in both GnuEmacs and [[XEmacs]].
 
+[http://code.google.com/p/zotexo/ Zotexo] allows you to synchronize on the fly your Zotero collection with local BibTeX file.
+
 XSymbolMode gives some WYSIWYG capabilities when editing !LaTeX or HTML in Emacs, but mainly it assists the input of symbols in some token languages (MarkupModes like TeX and SGML/HTML).
 
 The LaTeXSymbols package provides commands for [[XEmacs]] (and only [[XEmacs]]--it doesn't work with GnuEmacs) to open up a window with a table of !LaTeX symbols. Similar functionality (and more) is offered by XSymbolMode.
+
+[http://code.google.com/p/ac-math/ ac-math] is an AutoComplete add-on for LaTeX and Unicode symbols and LaTeX commands.
 
 PreviewLaTeX replaces the LaTeX code (more exactly headers, tables, figures, graphics and math) by the final output in Emacs. You can revert from preview to code, make some changes and then regenerate preview at point.
 

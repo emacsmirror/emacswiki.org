@@ -1,4 +1,3 @@
-
 == Cua-mode on a Linux console or terminal ==
 
 Once you get used to this setup, using Emacs on the GNU/Linux console or in a terminal can be a shock, since Shift-movement doesn't work.  The console doesn't send different escape sequences for Shift-movement and plain movement.    The terminal does send different escape sequences, but Emacs doesn't interpret them.  To fix this, first make the console send the same sequences for Shift-movement as a terminal.  Put this in ~/.keymap:
@@ -75,7 +74,7 @@ Finally, to make Emacs interpret the keys, add the following to your .emacs:
 Now you can select text the same way in X11, the console, or a terminal (assuming your terminal doesn't intercept Shift-movement for something else, like Konsole does).
 
 '''Note''': I am using the complete version without problems outside X. But I couldn't make it work on xterm with 'emacs -nw'. But (again), if you are using X, why use '-nw'? :) -- DeDaLu
-
+'''Note2''': If you just struggle arround with the <up>-key you may find this helpfull:  http://forums.vandyke.com/showthread.php?t=5645&page=2
 ----
 CategoryKeys
 CategoryRegion

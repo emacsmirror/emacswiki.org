@@ -79,6 +79,14 @@ Not terribly difficult but it took me a bit to puzzle out what needed to be done
 
 ----
 [new]
+
+I'd like 'return' to trigger the completion.
+I've been trying this:
+(ac-set-trigger-key "RET") 
+
+However, this stops 'return' from creating newlines.
+
+[new]
 Non lisp-hacker here. 
 How can I add my own completions, and make auto-complete-mode start automatically for any opened file?
 Thanks.

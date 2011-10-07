@@ -1,6 +1,9 @@
 bison and flex files are apparently supported by CcMode.
 - does anybody have more detail on this? I don't see anything in the cc mode docs about this.
 
+Nice up-to-date (Emacs 22/23 compatible) bison-mode and flex-mode: 
+  http://bzr.vmlinux.org/loggerhead/emacs/files
+
 (DEAD LINK as of Sept 2004) There is a bison-mode.el to be found here: 
   http://www.eecs.tulane.edu/www/Beuscher/emacs/elisp.html#bison-mode.el
 
