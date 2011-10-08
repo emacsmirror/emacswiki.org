@@ -1,6 +1,12 @@
 [[fr:SalleEmacs]]
 : ''we help you to help yourself...'' -- channel topic by [[kensanata]]
 
+== Web Access ==
+
+Some browsers have an integrated [[IRC]] client (or have one available as an add-on):
+
+: irc://irc.freenode.net/%23emacs
+
 == About #emacs and related channels ==
 
 The Freenode InternetRelayChat channel '''#emacs''' is a place for a

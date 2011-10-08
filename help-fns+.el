@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Aug 22 09:51:16 2011 (-0700)
+;; Last-Updated: Fri Oct  7 17:19:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1035
+;;     Update #: 1046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -103,8 +103,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/10/07 dadams
+;;     Added soft require of naked.el.
+;;     help-substitute-command-keys, describe-function-1:
+;;       Use naked-key-description if available.
 ;; 2011/08/22 dadams
 ;;     describe-variable (Emacs 23+): Added terpri after Value: (for multiline value).
 ;; 2011/07/25 dadams
@@ -250,6 +254,8 @@
                            ;; redefined color widget (for help-var-is-of-type-p)
 (require 'wid-edit) ;; widget-convert
 
+(require 'naked nil t) ;; (no error if not found): naked-key-description
+
 (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 1)))
   (require 'info)) ;; Info-virtual-files
 
@@ -388,7 +394,11 @@ descriptions, which link to the key's command help."
                                 (symbolp (aref key 1)) follow-remap)
                       (setq mc            (aref key 1)
                             follow-remap  nil)))
-                  (setq key  (if key (key-description key) (concat "M-x " (symbol-name mc))))
+                  (setq key  (if key
+                                 (if (fboundp 'naked-key-description)
+                                     (naked-key-description key)
+                                   (key-description key))
+                               (concat "M-x " (symbol-name mc))))
                   (when add-help-buttons (setq key  (help-key-button-string key mc))))))
             (unless (or mk mc)          ; BINDINGS
               (save-match-data
@@ -848,10 +858,16 @@ Return the description that was displayed, as a string."
                 (princ (if remapped ", which is bound to "  "It is bound to "))
                 ;; If lots of ordinary text characters run this command, don't mention them one by one.
                 (if (< (length non-modified-keys) 10)
-                    (princ (mapconcat 'key-description keys ", "))
+                    (princ (mapconcat (if (fboundp 'naked-key-description)
+                                          #'naked-key-description
+                                        #'key-description)
+                                      keys ", "))
                   (dolist (key  non-modified-keys) (setq keys  (delq key keys)))
                   (if keys
-                      (progn (princ (mapconcat 'key-description keys ", "))
+                      (progn (princ (mapconcat (if (fboundp 'naked-key-description)
+                                                   #'naked-key-description
+                                                 #'key-description)
+                                               keys ", "))
                              (princ ", and many ordinary text characters"))
                     (princ "many ordinary text characters"))))
               (when (or remapped keys non-modified-keys) (princ ".") (terpri))))
@@ -979,10 +995,16 @@ Return the description that was displayed, as a string."
                     (princ (if remapped ", which is bound to "  "It is bound to "))
                     ;; If lots of ordinary text chars run this command, don't mention them one by one.
                     (if (< (length non-modified-keys) 10)
-                        (princ (mapconcat 'key-description keys ", "))
+                        (princ (mapconcat (if (fboundp 'naked-key-description)
+                                              #'naked-key-description
+                                            #'key-description)
+                                          keys ", "))
                       (dolist (key  non-modified-keys)  (setq keys  (delq key keys)))
                       (if keys
-                          (progn (princ (mapconcat 'key-description keys ", "))
+                          (progn (princ (mapconcat (if (fboundp 'naked-key-description)
+                                                       #'naked-key-description
+                                                     #'key-description)
+                                                   keys ", "))
                                  (princ ", and many ordinary text characters"))
                         (princ "many ordinary text characters"))))
                   (when (or remapped keys non-modified-keys)  (princ ".") (terpri)))))

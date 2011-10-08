@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 09:58:02 2011 (-0800)
+;; Last-Updated: Fri Oct  7 16:55:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2077
+;;     Update #: 2082
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -67,8 +67,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/10/07 dadams
+;;     Added soft require of naked.el.
+;;     where-is, help-on-click/key-lookup: Use naked-key-description if available.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive function and define-key.
 ;; 2008-01-03 dadams
@@ -106,6 +109,7 @@
 (require 'thingatpt nil t)  ;; (no error if not found): symbol-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
 (require 'frame-fns nil t)  ;; (no error if not found): 1-window-frames-on
+(require 'naked nil t) ;; (no error if not found): naked-key-description
 
 ;; Get macro `make-help-screen' when this is compiled,
 ;; or run interpreted, but not when the compiled code is loaded.
@@ -388,7 +392,10 @@ in the current buffer."
     (dolist (symbol (cons definition defs))
       (let* ((remapped (command-remapping symbol))
              (keys (where-is-internal symbol overriding-local-map nil nil remapped))
-             (keys (mapconcat 'key-description keys ", "))
+             (keys (mapconcat (if (fboundp 'naked-key-description)
+                                  #'naked-key-description
+                                #'key-description)
+                              keys ", "))
              string)
         (setq string
               (if insert
@@ -421,8 +428,10 @@ Optional args PP-KEY and WHERE are strings naming KEY and its type.
 Their defaults are KEY's `key-description' and \"Key sequence\".
 Function `Info-goto-emacs-key-command-node' is used to look up KEY."
   (sit-for 0 200) ;; HACK to fix bug if click on scroll bar in `help-on-click/key'.
-  (setq where (or where "Key sequence "))
-  (setq pp-key (or pp-key (key-description key)))
+  (setq where   (or where "Key sequence ")
+        pp-key  (or pp-key  (if (fboundp 'naked-key-description)
+                                (naked-key-description key)
+                              (key-description key))))
   (let* ((described-p (describe-key key))
          ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
          ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.

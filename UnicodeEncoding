@@ -3,9 +3,14 @@
 Starting with GNU Emacs 23, there is quite complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
 
 * You can use one of the Emacs InputMethods.
-* You can use [[command]] `ucs-insert' (`C-x 8 RET'), which lets you either enter a [[code point]] or complete against the character name.  It can be slow, because there are '''''many''''' candidate characters to choose from.
-* You can define a command that inserts a single Unicode character, and perhaps bind it to a [[key]], effectively adding that character to your keyboard.  (Library <tt>[[ucs-cmds.el]]</tt> provides a macro for defining such commands.)
-
+* You can use [[command]] `ucs-insert' (`C-x 8 RET'), which lets you either enter a Unicode [[code point]] or complete against the Unicode character name.  It can be slow, because there are '''''many''''' candidate characters to choose from.
+* You can define a command that inserts a ''single'' Unicode character, and perhaps bind it to a [[key]], effectively adding that character to your keyboard.  Library '''<tt>[[ucs-cmds.el]]</tt>''' provides a macro, '''`ucs-make-commands'''' for defining such commands.  You pass it a [[regexp]], which is
+matched against all Unicode character names (in `ucs-names').
+An insertion command is created for each of the characters whose name matches.  The
+commands created have the same names as the characters they
+insert, except that `SPC' characters in the character names are
+replaced by hyphens (`##-##'), and the command names are lowercase,
+not uppercase like the character names.
 
 ----
 

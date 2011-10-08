@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Fri Feb 25 17:09:00 2011 (-0800)
+;; Last-Updated: Fri Oct  7 17:37:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1367
+;;     Update #: 1375
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -308,6 +308,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/10/07 dadams
+;;     Added soft require of naked.el.
+;;     mouse3-region-popup-(remove/replace-items|rectangle-submenu): Use naked-key-description if available.
 ;; 2011/02/25 dadams
 ;;     mouse3-region-popup-x-popup-panes, mouse3-picture-mode-x-popup-panes:
 ;;       Distinguish separator choice by making command choice be non-nil.
@@ -367,6 +370,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
+
+(require 'naked nil t) ;; (no error if not found): naked-key-description
 
 ;; Quiet the byte-compiler.
 (defvar picture-killed-rectangle)
@@ -716,7 +721,9 @@ not use this option.  Instead, set option
                                                   (current-kill 1))
                                                 (delete-region start end)
                                                 (yank))
-       :keys ,(key-description (car (where-is-internal 'yank))) ; "C-y"
+       :keys ,(if (fboundp 'naked-key-description)
+                  (naked-key-description (car (where-is-internal 'yank)))
+                  (key-description (car (where-is-internal 'yank)))) ; "C-y"
        :help "Replace selected text by last text killed."
        :visible (not buffer-read-only)
        :enable (and kill-ring (mouse3-nonempty-region-p))))
@@ -816,7 +823,9 @@ restore it by yanking."
           (yank-rectangle))
         :enable (and (boundp 'killed-rectangle) killed-rectangle)
         :visible (not buffer-read-only)
-        :keys ,(key-description (car (where-is-internal 'yank-rectangle))) ; "<M-S-insert>"
+        :keys ,(if (fboundp 'naked-key-description)
+                   (naked-key-description (car (where-is-internal 'yank-rectangle)))
+                   (key-description (car (where-is-internal 'yank-rectangle)))) ; "<M-S-insert>"
         :help "Replace the selected rectangle by the last rectangle killed.")
        (clear-rectangle              menu-item "Clear (Replace)"  clear-rectangle
         :visible (not buffer-read-only))

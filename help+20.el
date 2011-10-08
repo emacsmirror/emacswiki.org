@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Mon Apr 25 17:41:07 2011 (-0700)
+;; Last-Updated: Fri Oct  7 17:13:23 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2111
+;;     Update #: 2166
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -88,8 +88,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/10/07 dadams
+;;     Added soft require of naked.el.
+;;     describe-key, where-is, help-on-click/key-lookup: Use naked-key-description if available.
 ;; 2011/04/25 dadams
 ;;     describe-file: Incorporate autofile bookmark description.  Added optional arg.
 ;; 2011/03/31 dadams
@@ -240,6 +243,7 @@
 (require 'frame-fns nil t) ;; (no error if not found): 1-window-frames-on
 (require 'wid-edit+ nil t) ;; (no error if not found):
                            ;; redefined color widget (for help-var-is-of-type-p)
+(require 'naked nil t) ;; (no error if not found): naked-key-description
 
 ;; Get macro `make-help-screen' when this is compiled,
 ;; or run interpreted, but not when the compiled code is loaded.
@@ -292,19 +296,19 @@ Commands:
   (interactive)
   (kill-all-local-variables)
   (use-local-map help-mode-map)
-  (setq mode-name "Help")
-  (setq major-mode 'help-mode)
+  (setq mode-name   "Help"
+        major-mode  'help-mode)
   (make-local-variable 'font-lock-defaults)
-  (setq font-lock-defaults nil)         ; font-lock would defeat xref
+  (setq font-lock-defaults  nil)        ; font-lock would defeat xref
   (view-mode)
   (make-local-variable 'view-no-disable-on-exit)
-  (setq view-no-disable-on-exit t)
-  (setq view-exit-action (lambda (buffer)
-                           (or (window-minibuffer-p (selected-window))
-                               (when (eq (window-buffer) (get-buffer "*Help*"))
-                                 (if (one-window-p t)
-                                     (delete-frame)
-                                   (delete-window))))))
+  (setq view-no-disable-on-exit  t
+        view-exit-action         (lambda (buffer)
+                                   (or (window-minibuffer-p (selected-window))
+                                       (when (eq (window-buffer) (get-buffer "*Help*"))
+                                         (if (one-window-p t)
+                                             (delete-frame)
+                                           (delete-window))))))
   ;; `help-make-xrefs' would be run here if not invoked from
   ;; `help-mode-maybe'.
   (run-hooks 'help-mode-hook))
@@ -323,29 +327,29 @@ If there's no tutorial in that language, `TUTORIAL' is selected.
 With prefix ARG, you are asked to choose which language."
   (interactive "P")
   (message "Looking for Emacs Tutorial file...")
-  (let ((lang (if arg
-                  (read-language-name 'tutorial "Language: " "English")
-                (if (get-language-info current-language-environment 'tutorial)
-                    current-language-environment
-                  "English")))
+  (let ((lang  (if arg
+                   (read-language-name 'tutorial "Language: " "English")
+                 (if (get-language-info current-language-environment 'tutorial)
+                     current-language-environment
+                   "English")))
         file filename)
-    (setq filename (get-language-info lang 'tutorial))
-    (setq file (expand-file-name (concat "~/" filename)))
+    (setq filename  (get-language-info lang 'tutorial)
+          file      (expand-file-name (concat "~/" filename)))
     (delete-other-windows)
     (if (get-file-buffer file)
         (switch-to-buffer-other-window (get-file-buffer file))
       (switch-to-buffer-other-window (create-file-buffer file))
-      (setq buffer-file-name file)
-      (setq default-directory (expand-file-name "~/"))
-      (setq buffer-auto-save-file-name nil)
+      (setq buffer-file-name            file
+            default-directory           (expand-file-name "~/")
+            buffer-auto-save-file-name  nil)
       (insert-file-contents (expand-file-name filename data-directory))
       (goto-char (point-min))
       (search-forward "\n<<")
       (beginning-of-line)
       (delete-region (point) (progn (end-of-line) (point)))
-      (let ((n (- (window-height (selected-window))
-                  (count-lines (point-min) (point))
-                  6)))
+      (let ((n  (- (window-height (selected-window))
+                   (count-lines (point-min) (point))
+                   6)))
         (if (< n 12)
             (newline n)
           ;; Some people get confused by the large gap.
@@ -369,26 +373,30 @@ Argument KEY is a string.
 Return nil if KEY is undefined; else return t."
   (interactive "kDescribe command bound to keyboard/menu/mouse sequence: ")
   (save-excursion
-    (let ((modifiers (event-modifiers (aref key 0)))
+    (let ((modifiers  (event-modifiers (aref key 0)))
           window position)
       ;; For a mouse button event, go to the button it applies to
       ;; to get the right key bindings.  And go to the right place
       ;; in case the keymap depends on where you clicked.
       (if (or (memq 'click modifiers) (memq 'down modifiers)
               (memq 'drag modifiers))
-          (setq window (posn-window (event-start (aref key 0)))
-                position (posn-point (event-start (aref key 0)))))
+          (setq window    (posn-window (event-start (aref key 0)))
+                position  (posn-point (event-start (aref key 0)))))
       (if (windowp window)
           (progn
             (set-buffer (window-buffer window))
             (goto-char position)))
-      (let ((defn (key-binding key)))
+      (let ((defn  (key-binding key)))
         (cond ((or (null defn) (integerp defn))
-               (message "`%s' is undefined." (key-description key))
+               (message "`%s' is undefined." (if (fboundp 'naked-key-description)
+                                                 (naked-key-description key)
+                                               (key-description key)))
                nil)                     ; Return nil: undefined.
               (t
                (with-output-to-temp-buffer "*Help*"
-                 (princ (key-description key))
+                 (princ (if (fboundp 'naked-key-description)
+                            (naked-key-description key)
+                          (key-description key)))
                  (if (windowp window)
                      (princ " at that spot"))
                  (princ " runs the command ")
@@ -426,11 +434,11 @@ Return nil if KEY is undefined; else return t."
 With numeric prefix ARG, display correspondingly older changes."
   (interactive "P")
   (message "Looking for Emacs Changes file...")
-  (let* ((arg (if arg (prefix-numeric-value arg) 0)))
+  (let ((arg  (if arg (prefix-numeric-value arg) 0)))
     (find-file-read-only-other-window
      (expand-file-name (concat (make-string arg ?O) "NEWS")
                        data-directory)))
-    (auto-save-mode nil)                  ; Turn it off.
+  (auto-save-mode nil)                  ; Turn it off.
   (remove-help-window)
   (message "Looking for Emacs Changes file...done"))
 
@@ -535,7 +543,7 @@ Note: For a minor mode to be described correctly here, the mode's
 indicator variable (listed in `minor-mode-alist') must also be a
 function whose documentation describes the minor mode."
   (interactive)
-  (let ((font-lock-verbose nil))        ; This should inhibit msgs, but doesn't!
+  (let ((font-lock-verbose  nil))       ; This should inhibit msgs, but doesn't!
     (old-describe-mode)
     (message (substitute-command-keys
               "You can use `\\[forward-page]' and `\\[backward-page]' \
@@ -556,9 +564,10 @@ the innermost function call surrounding point
 \(`function-called-at-point').
 Return the description that was displayed, as a string."
   (interactive
-   (let ((fn (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                 (function-called-at-point)))
-         (enable-recursive-minibuffers t))
+   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)
+                                                 (symbol-nearest-point))
+                                            (function-called-at-point)))
+         (enable-recursive-minibuffers  t))
      (list (intern (completing-read
                     (if current-prefix-arg "Describe command: " "Describe function: ")
                     obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
@@ -585,9 +594,10 @@ Return the description that was displayed, as a string."
   "Describe an Emacs command (interactive function).
 Same as using a prefix arg with `describe-function'."
   (interactive
-   (let ((fn (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                 (function-called-at-point)))
-         (enable-recursive-minibuffers t))
+   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)
+                                                 (symbol-nearest-point))
+                                            (function-called-at-point)))
+         (enable-recursive-minibuffers  t))
      (list (intern (completing-read "Describe command: " obarray 'commandp
                                     t nil nil (and fn (symbol-name fn)) t)))))
   (describe-function function t))
@@ -606,9 +616,11 @@ With a prefix argument, candidates are user variables (options) only.
 Default candidate is the `symbol-nearest-point'.
 Return the documentation, as a string."
   (interactive
-   (let ((symb (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                   (and (symbolp (variable-at-point)) (variable-at-point))))
-         (enable-recursive-minibuffers t))
+   (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
+                                                 (symbol-nearest-point))
+                                            (and (symbolp (variable-at-point))
+                                                 (variable-at-point))))
+         (enable-recursive-minibuffers  t))
      (list (intern (completing-read "Describe variable: " obarray
                                     (if current-prefix-arg 'user-variable-p 'boundp)
                                     t nil nil (and symb (symbol-name symb)) t))
@@ -620,7 +632,7 @@ Return the documentation, as a string."
     (with-output-to-temp-buffer "*Help*"
       (prin1 variable)
       (if (not (boundp variable))       ; This will never happen.
-          (progn (princ " is void") (terpri) (setq valvoid t))
+          (progn (princ " is void") (terpri) (setq valvoid  t))
         (princ "'s value is ")
         (terpri)
         (pp (symbol-value variable))
@@ -649,7 +661,7 @@ Return the documentation, as a string."
                   (insert "\n\nValue:"))))))
       (princ "Documentation:")
       (terpri)
-      (let ((doc (documentation-property variable 'variable-documentation)))
+      (let ((doc  (documentation-property variable 'variable-documentation)))
         (if (and doc (not (string= "" doc)))
             (princ (substitute-command-keys doc))
           (princ "Not documented as a variable.")))
@@ -661,7 +673,7 @@ Return the documentation, as a string."
       (if (or (get variable 'custom-type) ; after defcustom
               (get variable 'custom-loads) ; from loaddefs.el
               (get variable 'standard-value)) ; from cus-start.el
-          (let ((customize-label "customize"))
+          (let ((customize-label  "customize"))
             (terpri)
             (terpri)
             (princ (concat "You can " customize-label " this variable."))
@@ -675,7 +687,7 @@ Return the documentation, as a string."
       ;; change the format of the buffer's initial line in case
       ;; anything expects the current format.)
       (when (string< "20.5" emacs-version)
-        (let ((file-name (symbol-file variable)))
+        (let ((file-name  (symbol-file variable)))
           (when file-name
             (princ "\n\nDefined in `")
             (princ file-name)
@@ -684,8 +696,7 @@ Return the documentation, as a string."
               (save-excursion
                 (re-search-backward "`\\([^`']+\\)'" nil t)
                 (help-xref-button 1 (lambda (arg)
-                                      (let ((location
-                                             (find-variable-noselect arg)))
+                                      (let ((location  (find-variable-noselect arg)))
                                         (pop-to-buffer (car location))
                                         (goto-char (cdr location))))
                                   variable))))))
@@ -699,9 +710,11 @@ Return the documentation, as a string."
   "Describe an Emacs user variable (option).
 Same as using a prefix arg with `describe-variable'."
   (interactive
-   (let ((symb (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                   (and (symbolp (variable-at-point)) (variable-at-point))))
-         (enable-recursive-minibuffers t))
+   (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
+                                                 (symbol-nearest-point))
+                                            (and (symbolp (variable-at-point))
+                                                 (variable-at-point))))
+         (enable-recursive-minibuffers  t))
      (list (intern (completing-read "Describe user option: " obarray
                                     ;; Emacs 20 `user-variable-p' does not include defcustoms.
                                     (lambda (c) (or (custom-variable-p c) (user-variable-p c)))
@@ -724,23 +737,24 @@ potential candidates.  That is different from using `describe-option',
 because `describe-option' includes user-variable candidates not
 defined with `defcustom' (with `*'-prefixed doc strings)."
   (interactive
-   (let* ((symb (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                    (and (symbolp (variable-at-point)) (variable-at-point))))
-          (typ
-           (car (condition-case err
-                    (read-from-string
-                     (let ((types ()))
-                       (mapatoms
-                        (lambda (cand)
-                          (when (if (fboundp 'custom-variable-p) ; Not in vanilla Emacs 20.
-                                    (custom-variable-p cand)
-                                  (user-variable-p cand))
-                            (push (list (format "%s" (format "%S" (get cand 'custom-type))))
-                                  types))))
-                       (completing-read "Describe option of type: "
-                                        (help-remove-duplicates types) nil nil nil nil "nil")))
-                  (end-of-file (error "No such custom type")))))
-          (pref-arg current-prefix-arg))
+   (let* ((symb      (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
+                         (and (symbolp (variable-at-point)) (variable-at-point))))
+          (typ       (car (condition-case err
+                              (read-from-string
+                               (let ((types  ()))
+                                 (mapatoms
+                                  (lambda (cand)
+                                    (when (if (fboundp 'custom-variable-p) ; Not in Emacs 20.
+                                              (custom-variable-p cand)
+                                            (user-variable-p cand))
+                                      (push (list
+                                             (format "%s" (format "%S" (get cand 'custom-type))))
+                                            types))))
+                                 (completing-read "Describe option of type: "
+                                                  (help-remove-duplicates types)
+                                                  nil nil nil nil "nil")))
+                            (end-of-file (error "No such custom type")))))
+          (pref-arg  current-prefix-arg))
      (list typ (intern (completing-read
                         "Option: " obarray
                         (lambda (v)
@@ -810,8 +824,8 @@ impossible to know which concrete types a value must match."
 (defun help-var-matches-type-p (variable types)
   "VARIABLE's type matches a member of TYPES."
   (catch 'help-type-matches
-    (let ((var-type (get variable 'custom-type)))
-      (dolist (type types)
+    (let ((var-type  (get variable 'custom-type)))
+      (dolist (type  types)
         (when (if (stringp type)
                   (save-match-data (string-match type (format "%s" (format "%S" var-type))))
                 (equal var-type type))
@@ -821,37 +835,37 @@ impossible to know which concrete types a value must match."
 (defun help-var-inherits-type-p (variable types)
   "VARIABLE's type matches or is a subtype of a member of list TYPES."
   (catch 'help-type-inherits
-    (let ((var-type (get variable 'custom-type)))
-      (dolist (type types)
+    (let ((var-type  (get variable 'custom-type)))
+      (dolist (type  types)
         (while var-type
           (when (or (and (stringp type)
                          (save-match-data
                            (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'help-type-inherits t))
-          (when (consp var-type) (setq var-type (car var-type)))
+          (when (consp var-type) (setq var-type  (car var-type)))
           (when (or (and (stringp type)
                          (save-match-data
                            (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'help-type-inherits t))
-          (setq var-type (car (get var-type 'widget-type))))
-        (setq var-type (get variable 'custom-type))))
+          (setq var-type  (car (get var-type 'widget-type))))
+        (setq var-type  (get variable 'custom-type))))
     nil))
 
 (defun help-var-val-satisfies-type-p (variable types)
   "VARIABLE is bound, and its value satisfies a type in the list TYPES."
   (and (boundp variable)
-       (let ((val (symbol-value variable)))
+       (let ((val  (symbol-value variable)))
          (and (widget-convert (get variable 'custom-type))
               (help-value-satisfies-type-p val types)))))
 
 (defun help-value-satisfies-type-p (value types)
   "Return non-nil if VALUE satisfies a type in the list TYPES."
   (catch 'help-type-value-satisfies
-    (dolist (type types)
+    (dolist (type  types)
       (unless (stringp type)            ; Skip, for regexp type.
-        (setq type (widget-convert type))
+        (setq type  (widget-convert type))
         ;; Satisfies if either :match or :validate.
         (when (condition-case nil
                   (progn (when (and (widget-get type :match)
@@ -879,7 +893,7 @@ before you call this function."
 ;; Borrowed from `ps-print.el'
 (defun help-remove-duplicates (list)
   "Copy of LIST with duplicate elements removed.  Tested with `equal'."
-  (let ((tail list)
+  (let ((tail  list)
         new)
     (while tail
       (unless (member (car tail) new) (push (car tail) new))
@@ -894,24 +908,24 @@ If FILENAME is the name of an autofile bookmark and you use library
 `Bookmark+', then show also the bookmark information (tags etc.).  In
 this case, a prefix arg shows the internal form of the bookmark."
   (interactive "FDescribe file: \nP")
-  (unless filename (setq filename default-directory))
+  (unless filename (setq filename  default-directory))
   (help-setup-xref `(describe-file ,filename ,internal-form-p) (interactive-p))
   (let ((attrs  (file-attributes filename))
         ;; Functions `bmkp-*' are defined in `bookmark+.el'.
         (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
     (unless attrs (error(format "Cannot open file `%s'" filename)))
-    (let* ((type            (nth 0 attrs))
-           (numlinks        (nth 1 attrs))
-           (uid             (nth 2 attrs))
-           (gid             (nth 3 attrs))
-           (last-access     (nth 4 attrs))
-           (last-mod        (nth 5 attrs))
-           (last-status-chg (nth 6 attrs))
-           (size            (nth 7 attrs))
-           (permissions     (nth 8 attrs))
+    (let* ((type             (nth 0 attrs))
+           (numlinks         (nth 1 attrs))
+           (uid              (nth 2 attrs))
+           (gid              (nth 3 attrs))
+           (last-access      (nth 4 attrs))
+           (last-mod         (nth 5 attrs))
+           (last-status-chg  (nth 6 attrs))
+           (size             (nth 7 attrs))
+           (permissions      (nth 8 attrs))
            ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
-           (inode           (nth 10 attrs))
-           (device          (nth 11 attrs))
+           (inode            (nth 10 attrs))
+           (device           (nth 11 attrs))
            (help-text
             (concat
              (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
@@ -982,15 +996,19 @@ function definition.  Default candidate is: preferably the
 surrounding point (`function-called-at-point').
 Non-nil prefix arg INSERT means insert the message in the buffer."
   (interactive
-   (let ((fn (or (and (fboundp 'symbol-nearest-point)(symbol-nearest-point))
-                 (function-called-at-point)))
-         (enable-recursive-minibuffers t))
+   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)
+                                                 (symbol-nearest-point))
+                                            (function-called-at-point)))
+         (enable-recursive-minibuffers  t))
      (list (intern (completing-read "Where is command: " obarray 'commandp t
                                     nil nil (and fn (symbol-name fn)) t)))))
   (remove-help-window)
-  (let* ((keys (where-is-internal definition overriding-local-map nil nil))
-         (keys1 (mapconcat 'key-description keys ", "))
-         (standard-output (if insert (current-buffer) t)))
+  (let* ((keys             (where-is-internal definition overriding-local-map nil nil))
+         (keys1            (mapconcat (if (fboundp 'naked-key-description)
+                                          #'naked-key-description
+                                        #'key-description)
+                                      keys ", "))
+         (standard-output  (if insert (current-buffer) t)))
     (if insert
         (if (> (length keys1) 0)
             (princ (format "%s (%s)" keys1 definition))
@@ -1031,12 +1049,10 @@ and the file name is displayed in the echo area."
       (mapcar
        (lambda (dir)
          (mapcar (lambda (suf)
-                   (let ((try (expand-file-name
-                               (concat library suf)
-                               dir)))
+                   (let ((try  (expand-file-name (concat library suf) dir)))
                      (when (and (file-readable-p try)
                                 (null (file-directory-p try)))
-                       (setq result try)
+                       (setq result  try)
                        (message "Library is file `%s'." try)
                        (throw 'answer try))))
 
@@ -1044,7 +1060,7 @@ and the file name is displayed in the echo area."
                      '("")
                    '(".elc" ".el" "")
 ;;; load doesn't handle this yet.
-;;;         (let ((basic '(".elc" ".el" ""))
+;;;         (let ((basic  '(".elc" ".el" ""))
 ;;;               (compressed '(".Z" ".gz" "")))
 ;;;           ;; If autocompression mode is on,
 ;;;           ;; consider all combinations of library suffixes
@@ -1080,8 +1096,8 @@ and the file name is displayed in the echo area."
 (defun save-*Help*-buffer ()
   "Rename *Help* buffer as new buffer *Help*<N>, N=2,3...."
   (interactive)
-  (let ((notifying-user-of-mode nil)    ; No msg on mode (in `misc-fns.el').
-        (saved-help (buffer-name (generate-new-buffer "*Help*"))))
+  (let ((notifying-user-of-mode  nil)    ; No msg on mode (in `misc-fns.el').
+        (saved-help              (buffer-name (generate-new-buffer "*Help*"))))
     (save-excursion
       (set-buffer "*Help*")
       (copy-to-buffer saved-help (point-min) (point-max))
@@ -1094,10 +1110,14 @@ and the file name is displayed in the echo area."
 Optional args PP-KEY and WHERE are strings naming KEY and its type.
 Their defaults are KEY's `key-description' and \"Key sequence\".
 Function `Info-goto-emacs-key-command-node' is used to look up KEY."
-  (sit-for 0 200) ;; HACK to fix bug if click on scroll bar in `help-on-click/key'.
-  (setq where (or where "Key sequence "))
-  (setq pp-key (or pp-key (key-description key)))
-  (let* ((described-p (describe-key key))
+  (sit-for 0 200);; HACK to fix bug if click on scroll bar in `help-on-click/key'.
+  (setq where   (or where "Key sequence ")
+        pp-key  (or pp-key (if (fboundp 'naked-key-description)
+                               (naked-key-description key)
+                             (key-description key))))
+  (let* ((described-p  (if (fboundp 'naked-key-description)
+                           (naked-key-description key)
+                         (key-description key)))
          ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
          ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
          (documented-p (Info-goto-emacs-key-command-node key))) ; nil if have only std version
@@ -1144,14 +1164,14 @@ are not used when you do something besides click on a name.
 If you click elsewhere in a buffer other than the minibuffer, then
 `describe-mode' is used to describe the buffer's current mode(s)."
   (interactive "kClick mouse on something or type a key sequence.")
-  (let ((temp-buffer-show-function 'switch-to-buffer-other-window)
-        (font-lock-verbose nil)
-        (global-font-lock-mode nil))
+  (let ((temp-buffer-show-function  'switch-to-buffer-other-window)
+        (font-lock-verbose          nil)
+        (global-font-lock-mode      nil))
     ;; DEBUG (message "KEY: `%s'" key)(sit-for 4) ; DEBUG
     (cond ((stringp key)
            (help-on-click/key-lookup key))
           (t                            ; Vector.
-           (let ((type (aref key 0)))
+           (let ((type  (aref key 0)))
              (cond ((or (symbolp type)(integerp type))
                     (cond ((eq 'mode-line type) ; Click on the mode line.
                            (Info-goto-node "(emacs)Mode Line")
@@ -1164,42 +1184,40 @@ If you click elsewhere in a buffer other than the minibuffer, then
                    ((not (eq 'down (car (event-modifiers (car type))))) ; e.g. mouse menus
                     (help-on-click/key-lookup key))
                    (t                   ; Mouse click.
-                    (setq key type)
+                    (setq key  type)
                     (cond ((window-minibuffer-p ; Click in minibuffer.
                             (posn-window (event-start key)))
                            (Info-goto-node "(emacs)Minibuffer")
                            (message "Minibuffer: decribed in *info* buffer."))
                           (t
-                           (let ((symb (save-excursion (mouse-set-point key)
-                                                       (symbol-at-point)))
-                                 (apropos-do-all t)
-                                 (found-doc nil)
-                                 (found nil)
-                                 (symb-regexp nil))
+                           (let ((symb            (save-excursion (mouse-set-point key)
+                                                                  (symbol-at-point)))
+                                 (apropos-do-all  t)
+                                 (found-doc       nil)
+                                 (found           nil)
+                                 (symb-regexp     nil))
                              (cond (symb
                                     (message "Looking for info apropos `%s'..." symb)
                                     (when (get-buffer "*Apropos Doc*")
                                       (kill-buffer (get-buffer "*Apropos Doc*")))
-                                    (setq found-doc
-                                          (apropos-documentation
-                                           (setq symb-regexp
-                                                 (regexp-quote
-                                                  (setq symb (format "%s" symb))))))
+                                    (setq found-doc  (apropos-documentation
+                                                      (setq symb-regexp
+                                                            (regexp-quote
+                                                             (setq symb  (format "%s" symb))))))
                                     (when found-doc
                                       (save-excursion
                                         (set-buffer (get-buffer "*Apropos*"))
                                         (rename-buffer "*Apropos Doc*"))
                                       (when (fboundp '1-window-frames-on) ; In `frame-fns.el'.
-                                        (let ((frames (1-window-frames-on "*Apropos Doc*")))
+                                        (let ((frames  (1-window-frames-on "*Apropos Doc*")))
                                           (while frames
                                             (save-window-excursion
                                               (select-frame (car frames))
                                               (rename-frame nil "*Apropos Doc*")
                                               (pop frames))))))
-                                    (setq found (apropos symb-regexp))
+                                    (setq found  (apropos symb-regexp))
                                     ;; Remove empty stuff.
-                                    (setq found
-                                          (and (consp found) (or (cdr found) (cadr found))))
+                                    (setq found  (and (consp found) (or (cdr found) (cadr found))))
                                     ;; Remove *Apropos* window that was displayed needlessly.
                                     (unless found (delete-windows-on "*Apropos*"))
                                     (cond
@@ -1219,10 +1237,9 @@ If you click elsewhere in a buffer other than the minibuffer, then
                                         "No information found regarding `%s'."
                                         symb))))
                                    (t   ; User clicked in buffer, but not on a symbol.
-                                    (let ((bufname (buffer-name (current-buffer))))
+                                    (let ((bufname  (buffer-name (current-buffer))))
                                       (describe-mode)
-                                      (when
-                                          (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
+                                      (when (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
                                       (message
                                        "Mode(s) of buffer `%s' are described in *Help* buffer."
                                        bufname))))))))))))))
@@ -1243,10 +1260,10 @@ If you click elsewhere in a buffer other than the minibuffer, then
 (defun pop-to-help-toggle ()
   "Pop to buffer *Help* or back to the buffer that sent you to *Help*."
   (interactive)
-  (let ((orig-buf (and (buffer-live-p help-origin-buffer)
-                       (get-buffer help-origin-buffer)))
-        (w32-grab-focus-on-raise   t)
-        (win32-grab-focus-on-raise t))   ; Older name.
+  (let ((orig-buf                   (and (buffer-live-p help-origin-buffer)
+                                         (get-buffer help-origin-buffer)))
+        (w32-grab-focus-on-raise    t)
+        (win32-grab-focus-on-raise  t)) ; Older name.
     (if (string-match "*Help*" (buffer-name))
         (cond ((not orig-buf)
                (error "No buffer to return to"))
@@ -1255,7 +1272,7 @@ If you click elsewhere in a buffer other than the minibuffer, then
                 (window-frame (select-window (minibuffer-window)))))
               (t
                (pop-to-buffer orig-buf)))
-      (setq help-origin-buffer (current-buffer))
+      (setq help-origin-buffer  (current-buffer))
       (pop-to-buffer "*Help*"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;

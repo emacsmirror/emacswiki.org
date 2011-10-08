@@ -82,10 +82,10 @@ This works, since ":" is the same as : to the shell and is
 self-evaluating in all versions of Emacs.
 
 
-== Linux/Unix and Windows/Dos scripting ==
+== Bash/Sh/Dash/Ksh and CMD/COMMAND scripting ... or Mac and Linux/Unix and Windows/Dos scripting ==
 
 
-The following script runs on both Linux and Windows.
+The following script runs on Linux and Windows. It should also run on Mac X.
 
 
     :;exec emacs -batch -l    $0  -f : $* --no-site-file -q  # -*- Emacs-Lisp -*-
@@ -111,22 +111,33 @@ The following script runs on both Linux and Windows.
       (save-buffer) )
     ;:EOF
 
+1) What this means is that the first two lines, especially noting the sesquicolon trick, let's this get handled
+properly by both CMD and COMMAND, so it should be fine in the Microsoft world,  and that it also runs in bash, and sh.
+The 'bash' part not only lets it run on Linux, Unix, and Cygwin, but it should also run in the bash on Mac OS X (although I have not
+been able to verify that.  (And as for Ksh, if $_ is substituted for the $0, it should run there as well.)
 
+2) When it runs in cmd.exe and command.com, the line terminations like LF or CRLF don't seem to matter.  And emacs doesn't seem to care, either.
 
-1) This runs in bash.  It also runs in cmd.exe and command.com .  Line terminations like LF or CRLF don't seem
-to matter, as long as the first line's CR (if there is one) is kept away from  the tokens there;  that is why
-it is a good idea to leave the number sign there, otherwise bash would make the CR part of one of the arguments
+3) When this runs in bash/sh, though, at least in the 'nix world, the first line's CR (if there is one) needs to be kept away from  the tokens there;  that is why it is a good idea to leave the number sign there, otherwise bash would make the CR part of one of the arguments
 and give a "I don't know what -q(CR) means" kind of error.
 
-2) For Windows or DOS this can be named with either a .cmd or .bat file extension - but .cmd is newer and seems better behaved.  The last line is only needed for older systems, since nowadays cmd.exe and command.com assume the :EOF line label at end-of-file.  Really older systems will need to replace the %* in line 2 with
+4) For Windows or DOS this can be named with either a .cmd or .bat file extension - but .cmd is newer and seems better behaved.  The last line is only needed for older systems, since nowadays cmd.exe and command.com assume the :EOF line label at end-of-file.  Really older systems will need to replace the %* in line 2 with
 
      %1 %2 %3 %4 %5 %6 %7 %8 %9 
 
-(And it also runs in Cygwin's bash, but for unhealthy reasons - - the "exec" in line 1 does run, but doesn't do anything, so it then runs line 2 just like Dos.  Of course the emacs can handle filenames like a:/autoexec.bat , but don't use something like /cygdrive/c/windows/system32 if your emacs doesn't know about cygdrives; the NTEmacsWithCygwin page has some help on that.)
+(This also runs in Cygwin's bash, but for unhealthy reasons - - the "exec" in line 1 does run, but doesn't do anything, so it then runs line 2 just like Dos.  Of course the emacs can handle filenames like a:/autoexec.bat , but don't use something like /cygdrive/c/windows/system32 if your emacs doesn't know about cygdrives; the NTEmacsWithCygwin page has some help on that.)
 
-3) This represents how an emacs script really should be written:  Figure out that the task to be done is well suited to emacs.  Then go into emacs, work it out in lisp or in a macro.  Then just put it into a script like the one above.  (The one above took about five minutes.)  
+5) This is not intended for Windows Powershell.  The syntax there clashes with the :; tokens.
+
+6) This represents how an emacs script really should be written:  Figure out that the task to be done is well suited to emacs.  Then go into emacs, work it out in lisp or in a macro.  Then just put it into a script like the one above.  (The one above took about five minutes.)  
 
 (Note that a macro can be encapsulated in the "execute-kbd-macro" function above; it can be written with the "insert-kbd-macro" command.) (This one fails, however, when it reaches the end of the buffer; that is why the lisp error catcher "condition-case" is there.)
+
+In batch mode, (princ) writes to stdout.  (message) writes to stderr.
+
+I also give credit to Dorai Sitaram and his book about Scheme, for pointing out that prefixing
+DOS statements, even label statements, with a semicolon still allows it to run, but makes it
+invisible to Scheme (and eLisp).  Hence scripts that run in emacs + windows + unix + Mac OS X.
 
 Here is another one - - if you ever need a random number on the fly, emacs can provide it.
 
@@ -144,12 +155,11 @@ Here is another one - - if you ever need a random number on the fly, emacs can p
     ;
     ;:EOF
 
-
-In batch mode, (princ) writes to stdout.  (message) writes to stderr.
-
-I also give credit to Dorai Sitaram and his book about Scheme, for pointing out that prefixing
-DOS statements, even label statements, with a semicolon still allows it to run, but makes it
-invisible to Scheme (and eLisp).  Hence scripts that run in emacs + windows + unix.
+(Caveats - A great thing about using emacs is that the random numbers output - if you don't give a limit - are huge, something like
+ thirty digits on big machines.  But, then, that encourages the user to use similarly big numbers as a limit argument.
+( .... unfortunately, there are upper limits on how big the "positive integer n" limit can be, and it seems to be platform dependent.  So
+ if n is bigger than the plus or minus two gigabyte number, wierd results, like getting negative numbers, should start happening soon.
+ The culprit seems to be the (string-to-number) call.)
 
 ----
 CategoryCode

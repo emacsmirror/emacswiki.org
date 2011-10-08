@@ -161,24 +161,54 @@ Twittering-modeでは**timeline spec**という文字列でtimelineを指定し�
 ; <b>##:home##</b>: いわゆるホームtimeline
 ; <b>##:mentions##</b>: 自分へのmentionを含むtweetから成るtimeline
 ; <b>##:public##</b>: public timeline
-; <b>/USER/</b>: /USER/が投稿したtweetから成るtimeline
-; <b>/USER/##/##/LISTNAME/</b>: /USER/が作成した、/LISTNAME/という名前のlistのtimeline
+; <b>/USER/</b>: /USER/ が投稿したtweetから成るtimeline
+; <b>/USER/##/##/LISTNAME/</b>: /USER/ が作成した、 /LISTNAME/ という名前のlistのtimeline
 === Direct message ===
 ; <b>##:direct_messages##</b>: 受信したdirect messageのtimeline
 ; <b>##:direct_messages_sent##</b>: 送信したdirect messageのtimeline
 === Favorite ===
 ; <b>##:favorites##</b>: 「お気に入り」のtimeline
-; <b>##:favorites/##/USER/</b>: /USER/の「お気に入り」のtimeline
+; <b>##:favorites/##/USER/</b>: /USER/ の「お気に入り」のtimeline
 === Hashtag ===
-; <b>#/HASHTAG/</b>: ハッシュタグ#/HASHTAG/のtimeline
+; <b>#/HASHTAG/</b>: ハッシュタグ#//HASHTAG//のtimeline
 === Retweet ===
 ; <b>##:retweeted_by_me##</b>: 自分が投稿したretweet
-; <b>##:retweeted_by_user/##/USER/</b>: (only on development version) /USER/が投稿したretweet
+; <b>##:retweeted_by_user/##/USER/</b>: (only on development version) /USER/ が投稿したretweet
 ; <b>##:retweeted_to_me##</b>: 自分のhome timelineで受信したretweet
-; <b>##:retweeted_to_user/##/USER/</b>: (only on development version) /USER/のhome timelineで受信したretweet
+; <b>##:retweeted_to_user/##/USER/</b>: (only on development version) /USER/ のhome timelineで受信したretweet
 ; <b>##:retweets_of_me##</b>: 自分の投稿したtweetのうち、他のユーザによってretweetされたもの
 === Search ===
-; <b>##:search/##/QUERY-STRING/##/##</b>: 検索文字列/QUERY-STRING/にマッチするtweet。 /QUERY-STRING/の中では**/** (slash)や**\** (backslash)は**\/**あるいは**\\**のようにエスケープする必要があります。
+; <b>##:search/##/QUERY-STRING/##/##</b>: 検索文字列 /QUERY-STRING/ にマッチするtweet。 /QUERY-STRING/ の中では**/** (slash)や**\** (backslash)は**\/**あるいは**\\**のようにエスケープする必要があります。
+=== Alias ===
+alias は timeline spec の別名を定義する機能です。
+長い timeline spec に短い alias を割り当てれば timeline spec を指定するのが楽に なります。
+alias には固定のものと関数によるものとの2種類あります。
+alias は変数 `twittering-timeline-spec-alias' に連想リスト(association list)の形式で定義できます。
+
+; <b>##$##/ALIAS-NAME/</b>: 変数 `twittering-timeline-spec-alias' の連想リストで /ALIAS-NAME/ に対応している文字列で指定される timeline
+; <b>##$##/ALIAS-NAME/##(##ARGUMENT##)##</b>: /ALIAS-NAME/ に対応する関数を /ARGUMENT/ という文字列引数付きで呼び出したときの返り値で指定される timeline 。
+関数はシンボルかλ式で設定できます。
+関数は文字列引数をひとつとる関数である必要があります。
+
+例として、変数 `twittering-timeline-spec-alias' を以下のように設定した場合について紹介します。
+{{{
+(setq twittering-timeline-spec-alias
+      '(("FRIENDS" . "my-account/friends-list")
+        ("related-to" .
+         (lambda (username)
+           (if username
+               (format ":search/to:%s OR from:%s OR @%s/"
+                       username username username)
+             ":home")))
+        ("related-to-twitter" . "$related-to(twitter)")))
+}}}
+上記の設定下では、以下のような alias が使えます。
+||*alias*||*等価なtimeline spec*||
+||$FRIENDS||my-account/friends-list||
+||$related-to||:home||
+||$related-to(twitterapi)||:search/to:twitterapi OR from:twitterapi OR @twitterapi/||
+||$related-to-twitter||:search/to:twitter OR from:twitter OR @twitter/||
+alias 定義中で alias を参照することもできますが循環参照を含む定義は不可です。
 == 起動時に自動で開くtimelineの設定 ==
 変数`twittering-initial-timeline-spec-string'を変更すれば、最初に自動的に開くtimelineを変更できます。開くtimelineは[[#timeline-spec]]を使って下記のように指定してください。
 {{{

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version: 
-;; Last-Updated: Thu Mar 31 11:00:17 2011 (-0700)
+;; Last-Updated: Fri Oct  7 16:47:45 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 151
+;;     Update #: 159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/apropos-fn+var.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,8 +51,11 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/10/07 dadams
+;;     Added soft require of naked.el.
+;;     apropos-print: Use naked-key-description if available.
 ;; 2011/03/31 dadams
 ;;     apropos-print: Added Emacs 24+ version.
 ;; 2006/03/03 dadams
@@ -89,6 +92,8 @@
 ;;; Code:
 
 (require 'apropos)
+
+(require 'naked nil t) ;; (no error if not found): naked-key-description
 
 ;; Quiet byte compiler
 (unless (boundp 'apropos-pattern) (defvar apropos-pattern))
@@ -221,8 +226,10 @@ alphabetically by symbol name; but this function also sets
                           (insert
                            (mapconcat
                             (lambda (key)
-                              (setq key (condition-case () 
-                                            (key-description key)
+                              (setq key (condition-case ()
+                                            (if (fboundp 'naked-key-description)
+                                                (naked-key-description key)
+                                              (key-description key))
                                           (error)))
                               (if apropos-keybinding-face
                                   (put-text-property 0 (length key)
@@ -359,7 +366,9 @@ If non-nil TEXT is a string that will be printed as a heading."
                            (mapconcat
                             (lambda (key)
                               (setq key (condition-case ()
-                                            (key-description key)
+                                            (if (fboundp 'naked-key-description)
+                                                (naked-key-description key)
+                                              (key-description key))
                                           (error)))
                               (if apropos-keybinding-face
                                   (put-text-property 0 (length key)
@@ -483,7 +492,9 @@ If non-nil TEXT is a string that will be printed as a heading."
                              (mapconcat
                               (lambda (key)
                                 (setq key (condition-case ()
-                                              (key-description key)
+                                              (if (fboundp 'naked-key-description)
+                                                  (naked-key-description key)
+                                                (key-description key))
                                             (error)))
                                 (if apropos-keybinding-face
                                     (put-text-property 0 (length key)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Tue Oct  4 12:56:57 2011 (-0700)
+;; Last-Updated: Fri Oct  7 23:00:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 77
+;;     Update #: 84
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ucs-cmds.el
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
 ;; Compatibility: GNU Emacs 23.x
@@ -40,12 +40,12 @@
 ;;  given character.
 ;;
 ;;  Macro `ucs-make-commands' takes a regexp as argument, which is
-;;  matched against all Unicode character names in `ucs-names'.
-;;  Commands are created for those characters that match.  The
-;;  commands created have the same names as the characters they
-;;  insert, except that `SPC' characters in the character names are
-;;  replaced by hyphens (`-'), and the command names are lowercase,
-;;  not uppercase like the character names.
+;;  matched against all Unicode character names (in `ucs-names').  An
+;;  insertion command is created for each of the characters whose name
+;;  matches.  The commands created have the same names as the
+;;  characters they insert, except that `SPC' characters in the
+;;  character names are replaced by hyphens (`-'), and the command
+;;  names are lowercase, not uppercase like the character names.
 ;;
 ;;
 ;;  Icicles Can Help
