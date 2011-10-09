@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 27 16:18:02 2011 (-0700)
+;; Last-Updated: Sat Oct  8 19:14:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28282
+;;     Update #: 28348
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3153,14 +3153,13 @@
 ;;(@* "M-RET")
 ;;  ** M-RET **
 ;;
-;;  `M-RET' (`icicle-candidate-read-fn-invoke') during completion
-;;  provides a typeless object-action interaction, which is always
-;;  available.  (You can also use `ESC RET' or `ESC C-m'.)
+;;  `M-RET' (`M-return'), `icicle-candidate-read-fn-invoke', during
+;;  completion provides a typeless object-action interaction, which is
+;;  always available.  (You can also use `ESC RET' or `ESC C-m'.)
 ;;
-;;  This is similar to the action choice provided for some
-;;  commands by `C-S-RET', except that there is no notion of the
-;;  current object type - you can choose from among all Emacs-Lisp
-;;  functions.
+;;  This is similar to the action choice provided for some commands by
+;;  `C-S-RET', except that there is no notion of the current object
+;;  type - you can choose from among all Emacs-Lisp functions.
 ;;
 ;;  Whenever you cycle through completion candidates, `M-RET' enters a
 ;;  recursive edit that prompts you for a function to apply to the
@@ -4704,6 +4703,15 @@
 ;;    functions while you are in Icicle mode, then toggle Icicle mode
 ;;    twice, so that this option can have the proper effect.
 ;;
+;;  * User option `icicle-candidate-help-keys' specifies the keys that
+;;    display help about the current completion candidate.  The
+;;    default values are `C-M-RET' (`C-M-return'), `C-M-help',
+;;    `C-M-f1', `C-help', and `C-f1'.
+;;
+;;  * User option `icicle-candidate-action-keys' specifies the keys
+;;    that act on the current completion candidate.  The default value
+;;    is `C-RET' (`C-return').
+;;
 ;;  * The following user options specify the keys to use for
 ;;    mode-specific completion-candidate cycling.  The default
 ;;    bindings are in parentheses.
@@ -5666,10 +5674,10 @@
 ;;    keys, such as function keys (`<f9>' vs `f9') and pseudo keys
 ;;    (`<mode-line>' vs `mode-line').  Non-`nil' means to use angle
 ;;    brackets.  This option does not affect Emacs key descriptions
-;;    outside of Icicles (e.g. `C-h k' or `C-h w'), and it has no
-;;    effect for versions of Emacs prior to 21, because they never use
-;;    angle brackets.  The default value is `nil', because I think
-;;    angle brackets reduce readability.
+;;    outside of Icicles, and it has no effect for versions of Emacs
+;;    prior to 21, because they never use angle brackets.  The default
+;;    value is `nil', because I think angle brackets reduce
+;;    readability.
 ;;
 ;;  * User option `icicle-keymaps-for-key-completion' is a list of
 ;;    variables that are bound to keymaps in which you want to bind
@@ -6683,13 +6691,16 @@
 ;;    `C-M-RET'   - `icicle-help-on-candidate': current candidate
 ;;    `C-M-mouse-2' - `icicle-mouse-help-on-candidate': clicked
 ;;    `C-M-down', `C-M-wheel-down'
-;;                - `icicle-next-candidate-per-mode-help' (modal)
+;;                 - `icicle-next-candidate-per-mode-help' (modal)
 ;;    `C-M-up', `C-M-wheel-up'
-;;                - `icicle-previous-candidate-per-mode-help' (modal)
-;;    `C-M-next'  - `icicle-help-on-next-apropos-candidate'
-;;    `C-M-prior' - `icicle-help-on-previous-apropos-candidate'
-;;    `C-M-end'   - `icicle-help-on-next-prefix-candidate'
-;;    `C-M-home'  - `icicle-help-on-previous-prefix-candidate'
+;;                 - `icicle-previous-candidate-per-mode-help' (modal)
+;;    `C-M-next'   - `icicle-help-on-next-apropos-candidate'
+;;    `C-M-prior'  - `icicle-help-on-previous-apropos-candidate'
+;;    `C-M-end'    - `icicle-help-on-next-prefix-candidate'
+;;    `C-M-home'   - `icicle-help-on-previous-prefix-candidate'
+;;
+;;  (These are only default key bindings.
+;;  See (@> "Customizing Key Bindings").)
 ;;
 ;;  The following minibuffer bindings provide an alternative action
 ;;  for individual candidates.  The alternative action is specific to
@@ -6890,6 +6901,8 @@
 ;;    Cycle to the next prefix-completion candidate.
 ;;  * `icicle-prefix-cycle-previous-keys'                     (`home')
 ;;    Cycle to the previous prefix-completion candidate.
+;;  * `icicle-candidate-action-keys'                         (`C-RET')
+;;    Act on the current completion candidate.
 ;;  * `icicle-modal-cycle-down-action-keys'  (`C-down', `C-wheel-down)
 ;;    Cycle to next candidate and act on it (modal).
 ;;  * `icicle-modal-cycle-up-action-keys'        (`C-up', `C-wheel-up)
@@ -6918,6 +6931,8 @@
 ;;  * `icicle-prefix-cycle-previous-alt-action-keys'      (`C-S-home')
 ;;    Cycle to previous prefix-completion candidate and
 ;;    alternative-act on it.
+;;  * `icicle-candidate-help-keys'                    (`C-M-RET' etc.)
+;;    Display help for the current completion candidate.
 ;;  * `icicle-modal-cycle-down-help-keys'                 (`C-M-down')
 ;;    Cycle to next candidate and show help for it (modal).
 ;;  * `icicle-modal-cycle-up-help-keys'                     (`C-M-up')
@@ -7016,8 +7031,10 @@
 ;;                 'minibuffer-local-filename-completion-map)
 ;;                (list minibuffer-local-filename-completion-map))))
 ;;      (when icicle-mode
-;;        (define-key map [f11] 'previous-history-element)
-;;        (define-key map [f12] 'next-history-element))))
+;;        (define-key map (icicle-kbd "f11")
+;;                    'previous-history-element)
+;;        (define-key map (icicle-kbd "f12")
+;;                    'next-history-element))))
 ;;
 ;;  See Also:
 ;;
@@ -7804,8 +7821,8 @@
 ;;  cycling, these keys with prefix `C-' are active:
 ;;
 ;;  `C-mouse-2', `C-RET' - Act on current completion candidate only
-;;  `C-down', `C-wheel-down' - Move to next completion candidate and act
-;;  `C-up', `C-wheel-up' - Move to previous completion candidate and act
+;;  `C-down', `C-wheel-down'-Move to next completion candidate and act
+;;  `C-up', `C-wheel-up'-Move to previous completion candidate and act
 ;;  `C-next'  - Move to next apropos-completion candidate and act
 ;;  `C-prior' - Move to previous apropos-completion candidate and act
 ;;  `C-end'   - Move to next prefix-completion candidate and act

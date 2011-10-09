@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 383 $
+;; RCS Version: $Rev: 384 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -651,7 +651,6 @@ automatically:
   :group 'sunrise
   (set-keymap-parent sr-virtual-mode-map sr-mode-map)
   (sr-highlight)
-  (dired-omit-mode dired-omit-mode)
   (enriched-mode -1)
 
   (make-local-variable 'truncate-partial-width-windows)

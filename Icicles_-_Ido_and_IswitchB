@@ -128,7 +128,7 @@ You can also increment and decrement this truncation value on
 In Ido, if there is only one match for your input then `TAB',
    which normally completes, also chooses that candidate -- you do
    not need to hit `RET'.  By default, '''Icicles''' always requires you
-   to explicitly choose with `RET' (or `<tt>[[Icicles - Multi-Commands#HowDoesAMulti-CommandWork|C-RET]]</tt>').  If you set option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' to non-`nil', then
+   to explicitly choose, with `RET' (or `<tt>[[Icicles - Multi-Commands#HowDoesAMulti-CommandWork|C-RET]]</tt>').  If you set option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' to non-`nil', then
    '''Icicles''' provides similar behavior to Ido.  See also option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>''''.
 
 

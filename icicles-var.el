@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  4 18:09:49 2011 (-0700)
+;; Last-Updated: Sat Oct  8 10:14:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1559
+;;     Update #: 1581
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,9 +19,9 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `icicles-mac', `icicles-opt',
-;;   `kmacro', `levenshtein', `regexp-opt', `thingatpt',
-;;   `thingatpt+', `wid-edit', `widget'.
+;;   `hexrgb', `icicles-face', `icicles-opt', `kmacro',
+;;   `levenshtein', `naked', `regexp-opt', `thingatpt', `thingatpt+',
+;;   `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -186,6 +186,13 @@
 
 (require 'apropos-fn+var nil t) ;; (no error if not found): apropos-command,
                                 ;; apropos-function, apropos-option, apropos-variable
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
+  ;;  icicle-kbd
+
 (require 'icicles-opt) ;; icicle-sort-comparer
 
 ;;; Defvars to quiet byte-compiler:
@@ -1164,13 +1171,12 @@ The candidates are highlighted in buffer `*Completions*' using face
 Several Emacs-Lisp mode key bindings are used.")
 (unless icicle-read-expression-map
   (let ((map  (make-sparse-keymap)))
-    (define-key map "\M-\t" 'lisp-complete-symbol)
-    (define-key map "\t" 'lisp-indent-line)
-    (define-key map "\e\C-q" 'indent-sexp)
-    (define-key map "\e\t" 'lisp-complete-symbol)
-    (define-key map "\e\C-x" 'eval-defun)
-    (define-key map "\e\C-q" 'indent-pp-sexp)
-    ;;(define-key map "\177" 'backward-delete-char-untabify)
+    (define-key map (icicle-kbd "C-M-i")   'lisp-complete-symbol) ; `ESC TAB', `C-M-i'
+    (define-key map (icicle-kbd "C-i")     'lisp-indent-line) ; `C-i', `TAB'
+    (define-key map (icicle-kbd "ESC tab") 'lisp-complete-symbol) ; `ESC tab'
+    (define-key map (icicle-kbd "C-M-x")   'eval-defun) ; `ESC C-x', `C-M-x'
+    (define-key map (icicle-kbd "C-M-q")   'indent-pp-sexp) ; `ESC C-q', `C-M-q'
+    ;;(define-key map (icicle-kbd "DEL") 'backward-delete-char-untabify)
     (set-keymap-parent map minibuffer-local-map)
     (setq icicle-read-expression-map  map)))
 
@@ -1291,28 +1297,28 @@ current search context.")
 
 (defvar icicle-search-map
   (let ((map  (make-sparse-keymap)))
-    (define-key map "b" 'icicle-search-buffer) ; `b'uffer
-    (define-key map "c" 'icicle-search-char-property) ; `c'har property
-    (define-key map "d" 'icicle-search-defs) ; `d'efinitions
-    (define-key map "D" 'icicle-search-defs-full) ; `D'efinitions
-    (define-key map "," 'icicle-tags-search) ; Like `M-,' for `tags-loop-continue'
-    (define-key map "f" 'icicle-search-file) ; `f'ile
-    (define-key map "i" 'icicle-imenu)  ; `i'menu
-    (define-key map "I" 'icicle-imenu-full) ; `I'menu
-    (define-key map "j" 'icicle-search-bookmark) ; `j'ump to the bookmark first
-    (define-key map "J" 'icicle-search-bookmarks-together); `J'ump to the bookmark first
-    (define-key map "k" 'icicle-search-keywords) ; `k'eywords
-    (define-key map "l" 'icicle-search-lines) ; `l'ines
-    (define-key map "\C-l" 'icicle-search-pages) ; `C-l' is the page separator
+    (define-key map (icicle-kbd "b") 'icicle-search-buffer) ; `b'uffer
+    (define-key map (icicle-kbd "c") 'icicle-search-char-property) ; `c'har property
+    (define-key map (icicle-kbd "d") 'icicle-search-defs) ; `d'efinitions
+    (define-key map (icicle-kbd "D") 'icicle-search-defs-full) ; `D'efinitions
+    (define-key map (icicle-kbd ",") 'icicle-tags-search) ; Like `M-,' for `tags-loop-continue'
+    (define-key map (icicle-kbd "f") 'icicle-search-file) ; `f'ile
+    (define-key map (icicle-kbd "i") 'icicle-imenu)  ; `i'menu
+    (define-key map (icicle-kbd "I") 'icicle-imenu-full) ; `I'menu
+    (define-key map (icicle-kbd "j") 'icicle-search-bookmark) ; `j'ump to bookmark first
+    (define-key map (icicle-kbd "J") 'icicle-search-bookmarks-together); `J'ump to bookmark 1st
+    (define-key map (icicle-kbd "k") 'icicle-search-keywords) ; `k'eywords
+    (define-key map (icicle-kbd "l") 'icicle-search-lines) ; `l'ines
+    (define-key map (icicle-kbd "C-l") 'icicle-search-pages) ; `C-l' is the page separator
     ;; Save `m' for `marked'/`mode-specific'.
-    (define-key map "o" 'icicle-occur)  ; `o'ccur
-    (define-key map "p" 'icicle-search-paragraphs) ; `p'aragraphs
-    (define-key map "O" 'icicle-search-overlay-property) ; `O'verlay
-    (define-key map "s" 'icicle-search-sentences) ; `s'entence
-    (define-key map "\M-s" 'icicle-search-generic)
-    (define-key map "t" 'icicle-search-thing) ; `t'hing
-    (define-key map "T" 'icicle-search-text-property) ; `T'ext
-    (define-key map "w" 'icicle-search-word) ; `w'ord
+    (define-key map (icicle-kbd "o") 'icicle-occur)  ; `o'ccur
+    (define-key map (icicle-kbd "p") 'icicle-search-paragraphs) ; `p'aragraphs
+    (define-key map (icicle-kbd "O") 'icicle-search-overlay-property) ; `O'verlay
+    (define-key map (icicle-kbd "s") 'icicle-search-sentences) ; `s'entence
+    (define-key map (icicle-kbd "M-s") 'icicle-search-generic)
+    (define-key map (icicle-kbd "t") 'icicle-search-thing) ; `t'hing
+    (define-key map (icicle-kbd "T") 'icicle-search-text-property) ; `T'ext
+    (define-key map (icicle-kbd "w") 'icicle-search-word) ; `w'ord
     map)
   "Keymap for Icicles search commands.
 It is bound to the key prefix `icicle-search-key-prefix'.")
@@ -1444,32 +1450,32 @@ multi-completion.")
 
 (defvar icicle-universal-argument-map
   (let ((map  (make-sparse-keymap)))
-    (define-key map [t] 'icicle-universal-argument-other-key)
+    (define-key map [t]                         'icicle-universal-argument-other-key)
     (define-key map (vector meta-prefix-char t) 'icicle-universal-argument-other-key)
-    (define-key map [switch-frame] nil)
-    (define-key map [?\C-u] 'icicle-universal-argument-more)
-    (define-key map [?-] 'icicle-universal-argument-minus)
-    (define-key map [?0] 'icicle-digit-argument)
-    (define-key map [?1] 'icicle-digit-argument)
-    (define-key map [?2] 'icicle-digit-argument)
-    (define-key map [?3] 'icicle-digit-argument)
-    (define-key map [?4] 'icicle-digit-argument)
-    (define-key map [?5] 'icicle-digit-argument)
-    (define-key map [?6] 'icicle-digit-argument)
-    (define-key map [?7] 'icicle-digit-argument)
-    (define-key map [?8] 'icicle-digit-argument)
-    (define-key map [?9] 'icicle-digit-argument)
-    (define-key map [kp-0] 'icicle-digit-argument)
-    (define-key map [kp-1] 'icicle-digit-argument)
-    (define-key map [kp-2] 'icicle-digit-argument)
-    (define-key map [kp-3] 'icicle-digit-argument)
-    (define-key map [kp-4] 'icicle-digit-argument)
-    (define-key map [kp-5] 'icicle-digit-argument)
-    (define-key map [kp-6] 'icicle-digit-argument)
-    (define-key map [kp-7] 'icicle-digit-argument)
-    (define-key map [kp-8] 'icicle-digit-argument)
-    (define-key map [kp-9] 'icicle-digit-argument)
-    (define-key map [kp-subtract] 'icicle-universal-argument-minus)
+    (define-key map [switch-frame]              nil)
+    (define-key map (icicle-kbd "C-u")          'icicle-universal-argument-more)
+    (define-key map (icicle-kbd "-")            'icicle-universal-argument-minus)
+    (define-key map (icicle-kbd "0")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "1")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "2")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "3")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "4")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "5")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "6")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "7")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "8")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "9")            'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-0")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-1")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-2")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-3")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-4")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-5")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-6")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-7")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-8")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-9")         'icicle-digit-argument)
+    (define-key map (icicle-kbd "kp-subtract")  'icicle-universal-argument-minus)
     map)
   "Keymap used while processing `C-u' during Icicles completion.")
 

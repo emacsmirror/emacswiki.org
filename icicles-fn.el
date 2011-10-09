@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  5 08:50:01 2011 (-0700)
+;; Last-Updated: Sat Oct  8 13:34:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12630
+;;     Update #: 12670
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,9 +19,9 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `icicles-mac', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `hexrgb', `icicles-face', `icicles-opt', `icicles-var',
+;;   `kmacro', `levenshtein', `naked', `regexp-opt', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -65,8 +65,8 @@
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion-try-completion', `icicle-current-TAB-method',
 ;;    `icicle-custom-type', `icicle-define-crm-completion-map',
-;;    `icicle-delete-count', `icicle-delete-dups',
-;;    `icicle-delete-whitespace-from-string',
+;;    `icicle-delete-alist-dups', `icicle-delete-count',
+;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dired-smart-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
@@ -693,7 +693,7 @@ lax: a match is not required."
   (setq hist  (or hist 'minibuffer-history))
   (let ((hist-val  (icicle-remove-duplicates (symbol-value hist))))
     (when (and (consp hist-val) (not (stringp (car hist-val)))) ; Convert, e.g. `comand-history'.
-      (setq hist-val  (mapcar (lambda (v) (format "%s" v)) hist-val)))
+      (setq hist-val  (mapcar #'prin1-to-string hist-val)))
     (completing-read prompt (mapcar #'list hist-val) pred nil init-input hist def inherit-i-m)))
 
 ;; Based on the Emacs 22 C code that defined `completing-read'.
@@ -1672,9 +1672,10 @@ number for the Unicode code point: a hexidecimal number or a number in
 hash notation: #o21430 for octal, #x2318 for hex, or #10r8984 for
 decimal."
     (dolist (name.char  (ucs-names))
-      (when (and (not (string= "" (car name.char)))
-                 ;; $$$$$$ Maybe make this optional?
-                 (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
+      ;; $$$$$$  (when (and (not (string= "" (car name.char)))
+      ;;                    ;; $$$$$$ Maybe make this optional?
+      ;;                    (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
+      (unless (string= "" (car name.char))
         ;; Display char itself after the name, in `*Completions*'.
         (let* ((disp-string  (concat (car name.char) "\t"
                                      (propertize (char-to-string (cdr name.char))
@@ -2477,6 +2478,7 @@ specifies the value of ERROR-BUFFER."
 
 ;; REPLACE ORIGINAL `dired-read-shell-command' defined in `dired-aux.el'
 ;; and redefined in `dired-x.el', saving it for restoration when you toggle `icicle-mode'.
+;;
 ;; Uses Icicles completion.
 ;; Uses `icicle-minibuffer-default-add-dired-shell-commands', not
 ;; `minibuffer-default-add-dired-shell-commands'.
@@ -2643,7 +2645,8 @@ and file c:/Program Files/My Dir/mycmd.exe exists, then this returns
 
 ;; REPLACE ORIGINAL `recentf-make-menu-items' defined in `recentf.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
-;; Adds Icicles submenu to Open Recent menu.
+;;
+;; Adds Icicles submenu to `Open Recent' menu.
 ;;
 (defun icicle-recentf-make-menu-items (&optional menu)
   "Make menu items from the recent list.
@@ -5210,6 +5213,18 @@ defined)."
 This must be called from the minibuffer."
   (if (fboundp 'delete-minibuffer-contents)  (delete-minibuffer-contents)  (erase-buffer)))
 
+(defun icicle-delete-alist-dups (alist)
+  "Destructively remove conses from ALIST with `equal' `car's.
+Store the result in ALIST and return it.  ALIST must be a proper list.
+Of several element with `equal' `car's in ALIST, the first one is
+kept."
+  (let ((tail  alist))
+    (while tail
+      (when (consp (car tail))
+        (setcdr tail (icicle-assoc-delete-all (caar tail) (cdr tail))))
+      (setq tail  (cdr tail))))
+  alist)
+
 ;; Same as `delete-dups' from Emacs 22+.
 (if (fboundp 'delete-dups)
     (defalias 'icicle-delete-dups (symbol-function 'delete-dups))
@@ -5376,10 +5391,13 @@ Similar to `expand-file-name', except:
     (forward-line (if icicle-show-Completions-help-flag 2 1))
     (point)))
 
-(defun icicle-key-description (keys &optional no-angles)
-  "`key-description', but non-nil NO-ANGLES means use no angle brackets."
-  (let ((result  (key-description keys)))
-    (when no-angles                     ; Assume space separates angled keys.
+(defun icicle-key-description (keys &optional prefix angles)
+  "Like `key-description', but does not use angle brackets, by default.
+Non-nil optional arg ANGLES means use angle brackets."
+  (let ((result  (if (< emacs-major-version 22)
+                     (key-description keys)
+                   (key-description keys prefix))))
+    (unless angles                      ; Assume that spaces separate function keys.
       (setq result  (replace-regexp-in-string "<\\([^>]+\\)>" "\\1" result 'fixed-case)))
     result))
 

@@ -43,7 +43,7 @@ Whenever completion is ''strict'', requiring a match against one of the
 completion candidates (typically, an existing file or buffer
 name), you can complete and exit the minibuffer all at once, with
 only partial input in the minibuffer, by using `RET'.  But what
-about ''apropos'' completion?  Simply use '''`S-RET'''' (`icicle-apropos-complete-and-exit') instead of `RET': `RET' is
+about ''apropos'' completion?  Simply use '''`S-RET'''' (`S-return'), `icicle-apropos-complete-and-exit', instead of `RET': `RET' is
 standard in Emacs and uses [[prefix completion]]; `S-RET' is specific
 to '''Icicles''' and uses [[apropos completion]].  For example, you can type
 `idea' followed by `S-RET' to switch to buffer `##new-ideas.txt##'.

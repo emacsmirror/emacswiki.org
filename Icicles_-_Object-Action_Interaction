@@ -87,7 +87,7 @@ See Also: [[Icicles - More About Multi-Commands#AlternativeActions|Icicles - Alt
 [:M-RET]
 === M-RET ===
 
-'''`M-RET'''' (`icicle-candidate-read-fn-invoke') during completion provides a typeless object-action interaction, which is always
+'''`M-RET'''' (`M-return'),`icicle-candidate-read-fn-invoke', during completion provides a typeless object-action interaction, which is always
 available.  (You can also use `##ESC RET##' or `##ESC C-m##'.)
 
 This is similar to the action choice provided for some

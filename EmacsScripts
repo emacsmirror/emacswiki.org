@@ -156,10 +156,9 @@ Here is another one - - if you ever need a random number on the fly, emacs can p
     ;:EOF
 
 (Caveats - A great thing about using emacs is that the random numbers output - if you don't give a limit - are huge, something like
- thirty digits on big machines.  But, then, that encourages the user to use similarly big numbers as a limit argument.
-( .... unfortunately, there are upper limits on how big the "positive integer n" limit can be, and it seems to be platform dependent.  So
- if n is bigger than the plus or minus two gigabyte number, wierd results, like getting negative numbers, should start happening soon.
- The culprit seems to be the (string-to-number) call.)
+ eighteen digits on big machines.  But, then, that encourages the user to use similarly big numbers as a limit argument. .... unfortunately, there are upper limits on how big the "positive integer n" limit can be.  So
+ if n is outside the plus or minus two gigabyte number, wierd results, like getting negative numbers, might start happening soon.
+ The culprit seems to be the (string-to-number) call, and on my big machine, the positive integer must be in [ -2147483648 , 2147483647 ] or string-to-number returns -2147483648.  Too bad, because with 18 digit numbers being spewed, one would like to control numbers with more than ten digits.  And concern over the random number generator's lower bits makes programmers want to use the upper bits. .)
 
 ----
 CategoryCode

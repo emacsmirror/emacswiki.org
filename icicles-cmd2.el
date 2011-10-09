@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  4 16:11:07 2011 (-0700)
+;; Last-Updated: Sat Oct  8 18:08:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4404
+;;     Update #: 4536
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,9 +21,9 @@
 ;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
-;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `pp', `pp+',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
 ;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -102,9 +102,8 @@
 ;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
 ;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
 ;;    (+)`icicle-plist', `icicle-previous-visible-thing',
-;;    `icicle-read-color', `icicle-read-kbd-macro',
-;;    `icicle-save-string-to-variable', (+)`icicle-search',
-;;    (+)`icicle-search-all-tags-bookmark',
+;;    `icicle-read-color', `icicle-save-string-to-variable',
+;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-bookmark',
@@ -172,8 +171,7 @@
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
 ;;    `icicle-defined-thing-p', `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-doc-action',
-;;    `icicle-edmacro-parse-keys', `icicle-fn-doc-minus-sig',
-;;    `icicle-font-w-orig-size',
+;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
@@ -234,12 +232,11 @@
 ;;    `icicle-active-map', `icicle-info-buff', `icicle-info-window',
 ;;    `icicle-key-prefix', `icicle-key-prefix-2',
 ;;    `icicle-last-thing-type', `icicle-named-colors',
-;;    `icicle-orig-buff-key-complete', `icicle-orig-extra-cands',
-;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-orig-extra-cands', `icicle-orig-font',
+;;    `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
 ;;    `icicle-orig-show-initially-flag',
-;;    `icicle-orig-sort-orders-alist', `icicle-orig-win-key-complete',
-;;    `icicle-this-cmd-keys'.
+;;    `icicle-orig-sort-orders-alist', `icicle-this-cmd-keys'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `cus-edit.el' have
@@ -1053,10 +1050,10 @@ name to use."
         (icicle-candidate-action-fn  'icicle-Info-index-action)
         (C-x-m                       (lookup-key minibuffer-local-completion-map "\C-xm")))
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") 'icicle-bookmark-info-other-window))
     (unwind-protect
          (call-interactively (if (> emacs-major-version 21) 'old-Info-index 'icicle-Info-index-20))
-      (define-key minibuffer-local-completion-map "\C-xm" C-x-m))))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
 
 ;; Thx to Tamas Patrovics for this Emacs 20 version.
 ;;;###autoload
@@ -1189,14 +1186,14 @@ You can use `C-x m' during completion to access Info bookmarks, if you
  use library `Bookmark+'."
   (let ((C-x-m  (lookup-key minibuffer-local-completion-map "\C-xm")))
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") 'icicle-bookmark-info-other-window))
     (unwind-protect
          (let* ((completion-ignore-case           t)
                 (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
                 (nodename                         (completing-read prompt 'Info-read-node-name-1
                                                                    nil nil)))
            (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename))
-      (define-key minibuffer-local-completion-map "\C-xm" C-x-m))))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
 
 (defun icicle-Info-build-node-completions (&optional include-file-p)
   "Build completions list for Info nodes.
@@ -1361,7 +1358,7 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
     #'(lambda (c)
         (with-current-buffer icicle-orig-buff
           (let* ((keys   (where-is-internal (intern-soft c) overriding-local-map))
-                 (keys1  (mapconcat 'key-description keys ", ")))
+                 (keys1  (mapconcat #'icicle-key-description keys ", ")))
             (message (if (string= "" keys1)
                          (format "`%s' is not on any key" c)
                        (format "`%s' is on `%s'" c keys1)))
@@ -3122,7 +3119,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                             (overlay-put ov 'priority 220)
                             (overlay-put ov 'face 'icicle-search-current-input)))))))))))))))
 
-(defun icicle-search-replace-search-hit (candidate) ; Bound to `C-S-RET' (`icicle-search').
+(defun icicle-search-replace-search-hit (candidate) ; Bound to `C-S-return' (`icicle-search').
   "Replace search hit CANDIDATE with `icicle-search-replacement'."
   ;; NOTE: We allow side effects during replacement.
   ;; In particular, `icicle-completion-candidates', `icicle-candidate-nb', and `icicle-last-input'
@@ -3162,7 +3159,7 @@ the initial regexp (context regexp)."
   (select-window (minibuffer-window))
   (select-frame-set-input-focus (selected-frame)))
 
-(defun icicle-search-action (string &optional replace-string) ; Bound to `C-RET' (`icicle-search').
+(defun icicle-search-action (string &optional replace-string) ; Bound to `C-return' (`icicle-search').
   "Default completion action function for `icicle-search'.
 STRING is a search-hit string.  It is matched by the initial regexp
 \(context regexp).
@@ -3703,22 +3700,22 @@ future search commands, not the current one.)" ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow)
-        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow)
-        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow)
-        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow)
-        (define-key (symbol-value map) "\C-\M-i" 'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow)
-        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow)
-        (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow)
-        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow)
-        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
-        (define-key (symbol-value map) [(control meta ?B)]
-          'icicle-bookmark-bookmark-list-narrow) ; `C-M-B'
-        (define-key (symbol-value map) [(control meta ?F)]
-          'icicle-bookmark-local-file-narrow) ; `C-M-F'
-        (define-key (symbol-value map) [(control meta ?K)]
-          'icicle-bookmark-desktop-narrow)))) ; `C-M-K'
+        (define-key (symbol-value map) (icicle-kbd "C-M-b") 'icicle-bookmark-non-file-narrow) ; `C-M-b'
+        (define-key (symbol-value map) (icicle-kbd "C-M-d") 'icicle-bookmark-dired-narrow) ; `C-M-d'
+        (define-key (symbol-value map) (icicle-kbd "C-M-f") 'icicle-bookmark-file-narrow) ; `C-M-f'
+        (define-key (symbol-value map) (icicle-kbd "C-M-g") 'icicle-bookmark-gnus-narrow) ; `C-M-g'
+        (define-key (symbol-value map) (icicle-kbd "C-M-i") 'icicle-bookmark-info-narrow) ; `C-M-i'
+        (define-key (symbol-value map) (icicle-kbd "C-M-m") 'icicle-bookmark-man-narrow) ; `C-M-m'
+        (define-key (symbol-value map) (icicle-kbd "C-M-r") 'icicle-bookmark-region-narrow) ; `C-M-r'
+        (define-key (symbol-value map) (icicle-kbd "C-M-u") 'icicle-bookmark-url-narrow) ; `C-M-u'
+        (define-key (symbol-value map) (icicle-kbd "C-M-w") 'icicle-bookmark-w3m-narrow) ; `C-M-w'
+        (define-key (symbol-value map) (icicle-kbd "C-M-@") 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
+        (define-key (symbol-value map) (icicle-kbd "C-M-B") ; `C-M-B'
+          'icicle-bookmark-bookmark-list-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-F") ; `C-M-F'
+          'icicle-bookmark-local-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-K") ; `C-M-K'
+          'icicle-bookmark-desktop-narrow))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
 
@@ -6426,8 +6423,8 @@ filtering:
 (defvar icicle-active-map nil
   "An active keymap.")
 
-(defvar icicle-orig-buff-key-complete nil
-  "Current buffer when you invoked `icicle-complete-keys'.")
+;;; $$$$$$(defvar icicle-orig-buff-key-complete nil
+;;;         "Current buffer when you invoked `icicle-complete-keys'.")
 
 (defvar icicle-orig-extra-cands ()
   "Value of `icicle-extra-candidates', before command.")
@@ -6438,8 +6435,8 @@ filtering:
 (defvar icicle-orig-sort-orders-alist ()
   "Value of `icicle-sort-orders-alist', before command.")
 
-(defvar icicle-orig-win-key-complete nil
-  "Selected window when you invoked `icicle-complete-keys'.")
+;;; $$$$$$(defvar icicle-orig-win-key-complete nil
+;;;         "Selected window when you invoked `icicle-complete-keys'.")
 
 (defvar icicle-this-cmd-keys ()
   "Value of `this-command-keys-vector' at some point in key completion.")
@@ -6533,8 +6530,10 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
-           (icicle-orig-buff-key-complete           (current-buffer))
-           (icicle-orig-win-key-complete            (selected-window))
+           ;; $$$$$$ (icicle-orig-buff-key-complete           (current-buffer))
+           ;; $$$$$$ (icicle-orig-win-key-complete            (selected-window))
+           (icicle-orig-buff                        (current-buffer))
+           (icicle-orig-window                      (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
            (icicle-sort-comparer                    'icicle-local-keys-first-p)
            (icicle-alternative-sort-comparer        'icicle-prefix-keys-first-p)
@@ -6563,7 +6562,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
              (let* ((icicle-this-cmd-keys ; For error report - e.g. mouse command.
                      (this-command-keys-vector)) ; Free var in `icicle-complete-keys-action'.
                     (icicle-key-prefix-description
-                     (icicle-key-description prefix (not icicle-key-descriptions-use-<>-flag)))
+                     (icicle-key-description prefix nil icicle-key-descriptions-use-<>-flag))
                     (prompt  (concat "Complete keys"
                                      (and (not (string= "" icicle-key-prefix-description))
                                           (concat " " icicle-key-prefix-description))
@@ -6577,7 +6576,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
           (put (car cand) 'icicle-special-candidate nil))))) ; Reset the property.
 
   ;; Free vars here:
-  ;; `icicle-orig-buff-key-complete', `icicle-orig-win-key-complete', bound in `icicle-complete-keys'.
+  ;; `icicle-orig-buff', `icicle-orig-window', bound in `icicle-complete-keys'.
   ;; `icicle-orig-extra-cands', `icicle-this-cmd-keys', `icicle-key-prefix',
   ;; bound in `icicle-complete-keys-1'.
   (defun icicle-complete-keys-action (candidate)
@@ -6589,8 +6588,10 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (action-window  (selected-window)))
       (unwind-protect
            (progn
-             (set-buffer icicle-orig-buff-key-complete)
-             (select-window icicle-orig-win-key-complete)
+             ;; $$$$$$ (set-buffer icicle-orig-buff-key-complete)
+             ;; $$$$$$ (select-window icicle-orig-win-key-complete)
+             (set-buffer icicle-orig-buff)
+             (select-window icicle-orig-window)
              (if (string= ".." candidate)
                  (setq cmd-name  "..")
                (unless (and (string-match "\\(.+\\)  =  \\(.+\\)" candidate) (match-beginning 2))
@@ -6639,7 +6640,10 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
       (unless (equal [] prefix)
         (push (list (intern (propertize ".." 'face 'icicle-multi-command-completion)))
               icicle-complete-keys-alist))
-      icicle-complete-keys-alist))
+      ;; Delete duplicates.  Shadowing of bindings can produce dups.  E.g., `ESC' can be in submaps of
+      ;; different active keymaps, giving more than one `ESC ...' entries.  Also, one binding for a
+      ;; command can shadow another to the same command.
+      (icicle-delete-alist-dups icicle-complete-keys-alist)))
 
   ;; Free vars here: `icicle-key-prefix-2' and `icicle-active-map' are bound in
   ;; `icicle-keys+cmds-w-prefix'.
@@ -6675,10 +6679,6 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
        ;; Skip (KEYBD-SHORTCUTS): cached key-equivalence data for menu items.
        (when (and (consp binding) (consp (car binding))) (setq binding  (cdr binding)))))
 
-    ;; Follow indirections to ultimate symbol naming a command.
-    (while (and (symbolp binding) (fboundp binding) (keymapp (symbol-function binding)))
-      (setq binding  (symbol-function binding)))
-
     ;; `icicle-key-prefix-2' and `icicle-active-map' are free here, bound in
     ;; `icicle-keys+cmds-w-prefix'.
     (cond ((and (eq binding 'self-insert-command) ; Insert `self-insert-command' char ranges.
@@ -6695,11 +6695,12 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                                              'face 'icicle-candidate-part))
                                 (name.char  (rassq char (ucs-names)))
                                 (candidate  (and (or (not name.char)
-                                                     (and (not (string= "" (car name.char)))
-                                                          ;; $$$$$$ Maybe make this optional?
-                                                          (not (string-match
-                                                                "\\`VARIATION SELECTOR"
-                                                                (car name.char)))))
+                                                     (not (string= "" (car name.char))))
+                                                 ;; $$$$$$  (and (not (string= "" (car name.char)))
+                                                 ;;              ;; $$$$$$ Maybe make this optional?
+                                                 ;;              (not (string-match
+                                                 ;;                    "\\`VARIATION SELECTOR"
+                                                 ;;                    (car name.char)))))
                                                  (intern (concat key-desc
                                                                  (if name.char
                                                                      (concat "  =  " (car name.char))
@@ -6709,13 +6710,29 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                                    icicle-complete-keys-alist)
                              (when (eq icicle-active-map (current-local-map))
                                (put candidate 'icicle-special-candidate t))))))))
-          ((and (or (keymapp binding)
-                    (and (commandp binding)
-                         (equal binding (key-binding (vconcat icicle-key-prefix-2 (vector event))))
-                         (not (eq binding 'icicle-complete-keys))))
-                (or (not (eq binding 'self-insert-command)) ; Command, keymap.
-                    (and icicle-complete-keys-self-insert-ranges ; Insert char (Emacs 22).
-                         (char-valid-p event))))
+          ((and
+            ;; Include BINDING if key (EVENT) is on `icicle-key-prefix-2'.
+            ;; Do not include a shadowed binding to a command.  Always include binding if it's a keymap,
+            ;; because the same prefix key can be bound to different keymaps without any of those keymaps
+            ;; shadowing all of the bindings in another of them.
+            (or (keymapp binding)
+                (and (commandp binding)
+                     (equal binding
+                            (key-binding (vconcat icicle-key-prefix-2 (vector event)) nil 'NO-REMAP))
+                     (not (eq binding 'icicle-complete-keys))))
+            ;; Include BINDING if it is not `self-insert-command' or user has OK'd use of such.
+            (or (not (eq binding 'self-insert-command)) ; Command, keymap.
+                (and icicle-complete-keys-self-insert-ranges ; Insert char (Emacs 22).
+                     (char-valid-p event))))
+           (when (and (if (fboundp 'characterp) (characterp event) (char-valid-p event)) ; `ESC' -> `M-'.
+                      (eq event meta-prefix-char)
+                      (keymapp binding))
+             (map-keymap (lambda (key bndg)
+                           (when (if (fboundp 'characterp) (characterp key) (char-valid-p key))
+                             (icicle-add-key+cmd (event-apply-modifier key 'meta 27 "M-") bndg)))
+                         binding))
+           (when (and (functionp binding) (commandp binding)) ; Follow remapped command to target command.
+             (setq binding  (key-binding (vconcat icicle-key-prefix-2 (vector event)))))
            (let* ((key-desc   (propertize (single-key-description
                                            event
                                            (not icicle-key-descriptions-use-<>-flag))
@@ -6733,14 +6750,14 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (ignore))))                  ; Placeholder for future use.
 
   ;; $$ No longer used.  Was used in `icicle-complete-keys-1'.
-  (defun icicle-read-single-key-description (string need-vector &optional no-angles)
+  (defun icicle-read-single-key-description (string need-vector &optional angles)
     "If STRING contains a space, then the vector containing the symbol named STRING.
 Otherwise, call `icicle-read-kbd-macro'.
 Other args are as for `icicle-read-kbd-macro'."
-    (cond ((and no-angles (string-match " " string)) (vector (intern string)))
+    (cond ((and (not angles) (string-match " " string))  (vector (intern string)))
           ((string-match "^<\\([^>]* [^>]*\\)>" string)
            (vector (intern (substring string (match-beginning 1) (match-end 1)))))
-          (t (icicle-read-kbd-macro string need-vector no-angles))))
+          (t (icicle-read-kbd-macro string need-vector angles))))
 
   ;; $$ No longer used.  Was used as `icicle-candidate-action-fn' in `icicle-complete-keys'.
   (defun icicle-complete-keys-help (candidate)
@@ -6762,126 +6779,7 @@ Other args are as for `icicle-read-kbd-macro'."
         (when help-frame (redirect-frame-focus help-frame frame-with-focus))))
     (message nil))                      ; Let minibuffer contents show immediately.
 
-  (defun icicle-read-kbd-macro (start &optional end no-angles)
-    "Read the region as a keyboard macro definition.
-The region is interpreted as spelled-out keystrokes, e.g., \"M-x abc RET\".
-See documentation for `edmacro-mode' for details.
-Leading/trailing \"C-x (\" and \"C-x )\" in the text are allowed and ignored.
-The resulting macro is installed as the \"current\" keyboard macro.
-
-In Lisp, may also be called with a single STRING argument in which case
-the result is returned rather than being installed as the current macro.
-The result will be a string if possible, otherwise an event vector.
-Second argument NEED-VECTOR means to return an event vector always.
-
-Optional argument NO-ANGLES non-nil means to expect key
-descriptions not to use angle brackets (<...>).  For example:
-
- (icicle-read-kbd-macro \"<mode-line>\" t)   returns [mode-line]
- (icicle-read-kbd-macro  \"mode-line\"  t t) returns [mode-line]"
-    (interactive "r")
-    (if (stringp start)
-        (icicle-edmacro-parse-keys start end no-angles)
-      (setq last-kbd-macro
-            (icicle-edmacro-parse-keys (buffer-substring start end) nil no-angles))))
-
-  (defun icicle-edmacro-parse-keys (string &optional need-vector no-angles)
-    "Same as `edmacro-parse-keys', but with added NO-ANGLES argument.
-NO-ANGLES is the same as for `icicle-read-kbd-macro'."
-    (let ((case-fold-search  nil)
-          (pos               0)
-          (res               []))
-      (while (and (< pos (length string))
-                  (string-match "[^ \t\n\f]+" string pos))
-        (let ((word   (substring string (match-beginning 0) (match-end 0)))
-              (key    nil)
-              (times  1))
-          (setq pos  (match-end 0))
-          (when (string-match "\\([0-9]+\\)\\*." word)
-            (setq times  (string-to-number (substring word 0 (match-end 1)))
-                  word   (substring word (1+ (match-end 1)))))
-          (cond ((string-match "^<<.+>>$" word)
-                 (setq key  (vconcat (if (eq (key-binding [?\M-x])
-                                             'execute-extended-command)
-                                         [?\M-x]
-                                       (or (car (where-is-internal
-                                                 'execute-extended-command))
-                                           [?\M-x]))
-                                     (substring word 2 -2) "\r")))
-                ((or (equal word "REM") (string-match "^;;" word))
-                 (setq pos  (string-match "$" string pos)))
-                ((and (string-match (if no-angles
-                                        "^\\(\\([ACHMsS]-\\)*\\)\\(..+\\)$"
-                                      "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$")
-                                    word)
-                      (or (not no-angles)
-                          (save-match-data (not (string-match "^\\([ACHMsS]-.\\)+$" word))))
-                      (progn
-                        (setq word  (concat (substring word (match-beginning 1)
-                                                       (match-end 1))
-                                            (substring word (match-beginning 3)
-                                                       (match-end 3))))
-                        (not (string-match
-                              "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$"
-                              word))))
-                 (setq key  (list (intern word))))
-                (t
-                 (let ((orig-word  word)
-                       (prefix     0)
-                       (bits       0))
-                   (while (string-match "^[ACHMsS]-." word)
-                     (incf bits (cdr (assq (aref word 0)
-                                           '((?A . ?\A-\^@) (?C . ?\C-\^@)
-                                             (?H . ?\H-\^@) (?M . ?\M-\^@)
-                                             (?s . ?\s-\^@) (?S . ?\S-\^@)))))
-                     (incf prefix 2)
-                     (callf substring word 2))
-                   (when (string-match "^\\^.$" word)
-                     (incf bits ?\C-\^@)
-                     (incf prefix)
-                     (callf substring word 1))
-                   (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r")
-                                               ("LFD" . "\n") ("TAB" . "\t")
-                                               ("ESC" . "\e") ("SPC" . " ")
-                                               ("DEL" . "\177")))))
-                     (when found (setq word  (cdr found))))
-                   (when (string-match "^\\\\[0-7]+$" word)
-                     (loop for ch across word
-                           for n = 0 then (+ (* n 8) ch -48)
-                           finally do (setq word  (vector n))))
-                   (cond ((= bits 0)
-                          (setq key  word))
-                         ((and (= bits ?\M-\^@) (stringp word)
-                               (string-match "^-?[0-9]+$" word))
-                          (setq key  (loop for x across word collect (+ x bits))))
-                         ((/= (length word) 1)
-                          (error "%s must prefix a single character, not %s"
-                                 (substring orig-word 0 prefix) word))
-                         ((and (/= (logand bits ?\C-\^@) 0) (stringp word)
-                               ;; We used to accept . and ? here,
-                               ;; but . is simply wrong,
-                               ;; and C-? is not used (we use DEL instead).
-                               (string-match "[@-_a-z]" word))
-                          (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
-                         (t
-                          (setq key  (list (+ bits (aref word 0)))))))))
-          (when key
-            (loop repeat times do (callf vconcat res key)))))
-      (when (and (>= (length res) 4)
-                 (eq (aref res 0) ?\C-x)
-                 (eq (aref res 1) ?\()
-                 (eq (aref res (- (length res) 2)) ?\C-x)
-                 (eq (aref res (- (length res) 1)) ?\)))
-        (setq res  (edmacro-subseq res 2 -2)))
-      (if (and (not need-vector)
-               (loop for ch across res
-                     always (and (char-valid-p ch)
-                                 (let ((ch2  (logand ch (lognot ?\M-\^@))))
-                                   (and (>= ch2 0) (<= ch2 127))))))
-          (concat (loop for ch across res
-                        collect (if (= (logand ch ?\M-\^@) 0)
-                                    ch (+ ch 128))))
-        res))))
+  )
 
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (eval '(define-minor-mode icicle-ido-like-mode
@@ -7254,7 +7152,7 @@ The new current color is returned."     ; Doc string
     (icicle-maybe-byte-compile-after-load icicle-pick-color-by-name-action)
 
 
-    (define-key palette-mode-map "c"  'icicle-pick-color-by-name)
+    (define-key palette-mode-map (icicle-kbd "c")  'icicle-pick-color-by-name)
     (define-key palette-popup-map [pick-color-by-name] ; Use same name as in `palette.el'.
       `(menu-item "Choose Color By Name" icicle-pick-color-by-name
         :help "Set the current color to a color you name"))
@@ -7393,7 +7291,7 @@ build a cache file of synonyms that are used for completion.  See
   '(progn
 
     (icicle-define-file-command icicle-bookmark-a-file ; `C-x p c a'
-      "Bookmark a file (create an autofile bookmar).
+      "Bookmark a file (create an autofile bookmark).
 \(You need library `Bookmark+' for this command.)
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file.

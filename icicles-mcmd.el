@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 21 18:37:24 2011 (-0700)
+;; Last-Updated: Sat Oct  8 18:13:01 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17250
+;;     Update #: 17291
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,8 +20,8 @@
 ;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
 ;;   `doremi', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
 ;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-mac', `icicles-opt', `icicles-var', `image-dired',
-;;   `kmacro', `levenshtein', `mouse3', `mwheel', `pp', `pp+',
+;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
+;;   `levenshtein', `mouse3', `mwheel', `naked', `pp', `pp+',
 ;;   `regexp-opt', `ring', `ring+', `thingatpt', `thingatpt+',
 ;;   `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -557,7 +557,7 @@ Otherwise try to complete it."
   (if completion-ignore-case (icicle-upcase string) string))
 
 ;;;###autoload
-(defun icicle-apropos-complete-and-exit () ; Bound to `S-RET' in `minibuffer-local-must-match-map'.
+(defun icicle-apropos-complete-and-exit () ; Bound to `S-return' in `minibuffer-local-must-match-map'.
   "If the minibuffer contents is a valid apropos completion, then exit.
 Otherwise try to complete it.  If completion leads to a valid
 completion, then exit.
@@ -1523,19 +1523,19 @@ restored as soon as you return to the top level."
       (setq now                        (memq icicle-current-TAB-method icicle-TAB-completion-methods)
             icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))))
   (cond ((and (eq icicle-current-TAB-method 'swank) (fboundp 'doremi))
-         (define-key minibuffer-local-completion-map "\C-x1"
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-x 1")
            'icicle-doremi-increment-swank-timeout+)
-         (define-key minibuffer-local-must-match-map "\C-x1"
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x 1")
            'icicle-doremi-increment-swank-timeout+)
-         (define-key minibuffer-local-completion-map "\C-x2"
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-x 2")
            'icicle-doremi-increment-swank-prefix-length+)
-         (define-key minibuffer-local-must-match-map "\C-x2"
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x 2")
            'icicle-doremi-increment-swank-prefix-length+))
         ((fboundp 'doremi)
-         (define-key minibuffer-local-completion-map "\C-x1" nil)
-         (define-key minibuffer-local-must-match-map "\C-x1" nil)
-         (define-key minibuffer-local-completion-map "\C-x2" nil)
-         (define-key minibuffer-local-must-match-map "\C-x2" nil)))
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-x 1") nil)
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x 1") nil)
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-x 2") nil)
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x 2") nil)))
   ;; $$$$$$ Inhibiting sorting is not correct for file-name completion, and sorting would not be
   ;;        restored when change back to non-fuzzy.
   ;; (when (eq 'fuzzy icicle-current-TAB-method) (setq icicle-inhibit-sort-p  t))
@@ -1951,7 +1951,7 @@ These are the main Icicles actions and their minibuffer key bindings:
    `C-|' and `M-|' are alternative action versions of `C-!' and `M-!'.
      Current candidate                       C-RET, C-mouse-2
      Next, previous candidate                C-down, C-up,
-                                              C- plus mouse wheel
+                                             C- with mouse wheel
                     prefix-match candidate   C-end, C-home
                     apropos-match candidate  C-next, C-prior
      Act on each matching candidate, in turn C-!
@@ -2702,20 +2702,21 @@ Bound to `M-q' in the minibuffer when searching."
   "Read key and insert its description.
 For example, if the key read is ^F, then \"C-f\" is inserted.
 
-`icicle-key-descriptions-use-<>-flag' determines whether angle
-brackets (`<', `>') are used for named keys, such as function
-keys, but a prefix argument reverses the meaning of
+For Emacs 21+, `icicle-key-descriptions-use-<>-flag' determines
+whether angle brackets (`<', `>') are used for named keys, such as
+function keys, but a prefix argument reverses the meaning of
 `icicle-key-descriptions-use-<>-flag'.
 
-Bound to `M-q' in the minibuffer during key completion."
+Bound to `M-q' in the minibuffer during key completion (Emacs 22+)."
   (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (let* ((enable-recursive-minibuffers  t)
-         (key
-          (progn (minibuffer-message " [Quoting key]") (read-event))))
-    (insert (single-key-description key (if toggle-angle-brackets-p
-                                            icicle-key-descriptions-use-<>-flag
-                                          (not icicle-key-descriptions-use-<>-flag))))))
+         (key                           (progn (minibuffer-message " [Quoting key]") (read-event))))
+    (insert (if (< emacs-major-version 21)
+                (single-key-description key)
+              (single-key-description key (if toggle-angle-brackets-p
+                                              icicle-key-descriptions-use-<>-flag
+                                            (not icicle-key-descriptions-use-<>-flag)))))))
 
 ;;;###autoload
 (defun icicle-pp-eval-expression-in-minibuffer (insert-value) ; Bound to `M-:' in minibuffer.
@@ -4289,7 +4290,7 @@ ALTP is passed to `icicle-candidate-action-1'."
 
 (put 'icicle-candidate-action 'icicle-action-command t)
 ;;;###autoload
-(defun icicle-candidate-action ()       ; Bound to `C-RET' in minibuffer.
+(defun icicle-candidate-action ()       ; Bound to `C-return' in minibuffer.
   "Take action on the current minibuffer-completion candidate.
 If `icicle-candidate-action-fn' is non-nil, it is a function to apply
 to the current candidate, to perform the action.
@@ -4306,7 +4307,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 
 (put 'icicle-candidate-alt-action 'icicle-action-command t)
 ;;;###autoload
-(defun icicle-candidate-alt-action ()   ; Bound to `C-S-RET' in minibuffer.
+(defun icicle-candidate-alt-action ()   ; Bound to `C-S-return' in minibuffer.
   "Take alternative action on the current completion candidate.
 If `icicle-candidate-alt-action-fn' is non-nil, it is a
 function to apply to the current candidate, to perform the action.
@@ -4463,7 +4464,8 @@ performed: display help on the candidate - see
     (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos posn-pt)
           icicle-last-completion-candidate  choice)
     (if (not fn-var)
-        (icicle-help-on-candidate)      ; Doesn't `icicle-raise-Completions-frame'.
+        (with-current-buffer (or icicle-orig-buff posn-buf)
+          (icicle-help-on-candidate))   ; Doesn't `icicle-raise-Completions-frame'.
 
       ;; NOTE: We no longer save and restore these things here.
       ;; We purposely allow an action function to modify these for subsequent actions.
@@ -4800,8 +4802,8 @@ The candidate is updated as follows:
 ;;                 `icicle-complete-keys-alist' is bound in `icicles-var.el'.
 (put 'icicle-help-on-candidate 'icicle-action-command t)
 ;;;###autoload
-(defun icicle-help-on-candidate (&optional cand) ; Bound to `C-M-RET', `C-help', `C-f1' in minibuffer,
-                                        ; and to `C-M-RET' in *Completions.
+(defun icicle-help-on-candidate (&optional cand) ; Bound to `C-M-return', `C-help', `C-M-help',
+                                        ; `C-f1', and `C-M-f1' in minibuffer and in *Completions.
   "Display help on the current minibuffer-completion candidate.
 The help displayed depends on the type of candidate, as follows:
 
@@ -4866,7 +4868,7 @@ You can use this command only from the minibuffer or `*Completions*'
              (setq cand-symb  (intern-soft (substring icicle-last-completion-candidate
                                                       (match-beginning 2) (match-end 2))))
              (cond ((eq '\.\.\. cand-symb) ; Prefix key - describe its binding.
-                    (with-current-buffer icicle-orig-buff
+                    (with-current-buffer (or icicle-orig-buff (current-buffer))
                       (describe-key (car-safe
                                      (cdr-safe
                                       (assq (intern-soft
@@ -5040,7 +5042,7 @@ this case, a prefix arg shows the internal form of the bookmark."
     (buffer-substring (point-min) (point-max))))
 
 ;;;###autoload
-(defun icicle-candidate-read-fn-invoke () ; Bound to `M-RET' in minibuffer.
+(defun icicle-candidate-read-fn-invoke () ; Bound to `M-return' in minibuffer.
   "Read function name.  Invoke function on current completion candidate.
 Set `icicle-candidate-action-fn' to the interned name.
 
@@ -5576,14 +5578,14 @@ Return the string that was inserted."
         (minibuffer-local-completion-map
          (let ((map  (make-sparse-keymap)))
            (set-keymap-parent map minibuffer-local-completion-map)
-           (define-key map [(control backspace)] 'icicle-up-directory)
-           (define-key map "\C-c+"               'icicle-make-directory)
+           (define-key map (icicle-kbd "C-backspace") 'icicle-up-directory) ; `C-backspace'
+           (define-key map (icicle-kbd "C-c +")       'icicle-make-directory) ; `C-c +'
            map))
         (minibuffer-local-must-match-map
          (let ((map  (make-sparse-keymap)))
            (set-keymap-parent map minibuffer-local-must-match-map)
-           (define-key map [(control backspace)] 'icicle-up-directory)
-           (define-key map "\C-c+"               'icicle-make-directory)
+           (define-key map (icicle-kbd "C-backspace") 'icicle-up-directory)
+           (define-key map (icicle-kbd "C-c +")       'icicle-make-directory)
            map))
         (icicle-must-pass-after-match-predicate  nil)
         result)
@@ -5605,109 +5607,109 @@ Return the string that was inserted."
 (defun icicle-bind-file-candidate-keys ()
   "Bind specific keys for acting on the current file candidate."
   (cond ((boundp 'minibuffer-local-filename-completion-map)
-         (define-key minibuffer-local-filename-completion-map [(control backspace)]
+         (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-backspace") ; `C-backspace'
            'icicle-up-directory)
-         (define-key minibuffer-local-filename-completion-map "\C-c+"
+         (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-c +") ; `C-c +'
            'icicle-make-directory))
         (t
-         (define-key minibuffer-local-completion-map [(control backspace)]
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-backspace") ; `C-backspace'
            'icicle-up-directory)
-         (define-key minibuffer-local-completion-map "\C-c+"
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-c +") ; `C-c +'
            'icicle-make-directory)))
   (cond ((boundp 'minibuffer-local-filename-must-match-map)
-         (define-key minibuffer-local-filename-must-match-map [(control backspace)]
+         (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-backspace") ; `C-backspace'
            'icicle-up-directory)
-         (define-key minibuffer-local-filename-must-match-map "\C-c+"
+         (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-c +") ; `C-c +'
            'icicle-make-directory))
         ((boundp 'minibuffer-local-must-match-filename-map)
-         (define-key minibuffer-local-must-match-filename-map [(control backspace)]
+         (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-backspace") ; `C-backspace'
            'icicle-up-directory)
-         (define-key minibuffer-local-must-match-filename-map "\C-c+"
+         (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-c +") ; `C-c +'
            'icicle-make-directory))
         (t
-         (define-key minibuffer-local-must-match-map [(control backspace)]
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-backspace") ; `C-backspace'
            'icicle-up-directory)
-         (define-key minibuffer-local-must-match-map "\C-c+"
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-c +") ; `C-c +'
            'icicle-make-directory)))
   (when (require 'bookmark+ nil t)
     (cond ((boundp 'minibuffer-local-filename-completion-map)
-           (define-key minibuffer-local-filename-completion-map "\C-xm"
+           (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x m") ; `C-x m'
              'icicle-bookmark-file-other-window)
-           (define-key minibuffer-local-filename-completion-map "\C-xa+"
+           (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x a +") ; `C-x a +'
              (icicle-add/remove-tags-and-refresh 'add))
-           (define-key minibuffer-local-filename-completion-map "\C-xa-"
+           (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove)))
           (t
-           (define-key minibuffer-local-completion-map "\C-xm"
+           (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
              'icicle-bookmark-file-other-window)
-           (define-key minibuffer-local-completion-map "\C-xa+"
+           (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +") ; `C-x a +'
              (icicle-add/remove-tags-and-refresh 'add))
-           (define-key minibuffer-local-completion-map "\C-xa-"
+           (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove))))
     (cond ((boundp 'minibuffer-local-filename-must-match-map)
-           (define-key minibuffer-local-filename-must-match-map "\C-xm"
+           (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x m") ; `C-x m'
              'icicle-bookmark-file-other-window)
-           (define-key minibuffer-local-filename-must-match-map "\C-xa+"
+           (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x a +") ; `C-x a +'
              (icicle-add/remove-tags-and-refresh 'add))
-           (define-key minibuffer-local-filename-must-match-map "\C-xa-"
+           (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove)))
           ((boundp 'minibuffer-local-must-match-filename-map)
-           (define-key minibuffer-local-must-match-filename-map "\C-xm"
+           (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x m") ; `C-x m'
              'icicle-bookmark-file-other-window)
-           (define-key minibuffer-local-must-match-filename-map "\C-xa+"
+           (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x a +") ; `C-x a +'
              (icicle-add/remove-tags-and-refresh 'add))
-           (define-key minibuffer-local-must-match-filename-map "\C-xa-"
+           (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove)))
           (t
-           (define-key minibuffer-local-completion-map "\C-xm"
+           (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
              'icicle-bookmark-file-other-window)
-           (define-key minibuffer-local-completion-map "\C-xa+"
+           (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +") ; `C-x a +'
              (icicle-add/remove-tags-and-refresh 'add))
-           (define-key minibuffer-local-completion-map "\C-xa-"
+           (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove)))))
   ;; When using `completing-read', not `read-file-name', regardless of the Emacs version.
   (when (not (icicle-file-name-input-p))
-    (define-key minibuffer-local-completion-map [(control backspace)]
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-backspace") ; `C-backspace'
       'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c+"
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-c +") ; `C-c +'
       'icicle-make-directory)
-    (define-key minibuffer-local-completion-map "\C-xm"
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
       'icicle-bookmark-file-other-window)
-    (define-key minibuffer-local-completion-map "\C-xa+"
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +") ; `C-x a +'
       (icicle-add/remove-tags-and-refresh 'add))
-    (define-key minibuffer-local-completion-map "\C-xa-"
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -") ; `C-x a -'
       (icicle-add/remove-tags-and-refresh 'remove))))
 
 ;;;###autoload
 (defun icicle-unbind-file-candidate-keys ()
   "Unbind specific keys for acting on the current file candidate."
   (when (boundp 'minibuffer-local-filename-completion-map)
-    (define-key minibuffer-local-filename-completion-map [(control backspace)] nil)
-    (define-key minibuffer-local-filename-completion-map "\C-c+"               nil)
-    (define-key minibuffer-local-filename-completion-map "\C-xm"               nil)
-    (define-key minibuffer-local-filename-completion-map "\C-xa+"              nil)
-    (define-key minibuffer-local-filename-completion-map "\C-xa-"              nil)
-    (define-key minibuffer-local-filename-completion-map "\C-xa"               nil))
+    (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-backspace") nil)
+    (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-c +")       nil)
+    (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x m")       nil)
+    (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x a +")     nil)
+    (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x a -")     nil)
+    (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-x a")       nil))
   (when (boundp 'minibuffer-local-filename-must-match-map)
-    (define-key minibuffer-local-filename-must-match-map [(control backspace)] nil)
-    (define-key minibuffer-local-filename-must-match-map "\C-c+"               nil)
-    (define-key minibuffer-local-filename-must-match-map "\C-xm"               nil)
-    (define-key minibuffer-local-filename-must-match-map "\C-xa+"              nil)
-    (define-key minibuffer-local-filename-must-match-map "\C-xa-"              nil)
-    (define-key minibuffer-local-filename-must-match-map "\C-xa"               nil))
+    (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-backspace") nil)
+    (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-c +")       nil)
+    (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x m")       nil)
+    (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x a +")     nil)
+    (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x a -")     nil)
+    (define-key minibuffer-local-filename-must-match-map (icicle-kbd "C-x a")       nil))
   (when (boundp 'minibuffer-local-must-match-filename-map)
-    (define-key minibuffer-local-must-match-filename-map [(control backspace)] nil)
-    (define-key minibuffer-local-must-match-filename-map "\C-c+"               nil)
-    (define-key minibuffer-local-must-match-filename-map "\C-xm"               nil)
-    (define-key minibuffer-local-must-match-filename-map "\C-xa+"              nil)
-    (define-key minibuffer-local-must-match-filename-map "\C-xa-"              nil)
-    (define-key minibuffer-local-must-match-filename-map "\C-xa"               nil))
-  (define-key minibuffer-local-completion-map [(control backspace)]            nil)
-  (define-key minibuffer-local-completion-map "\C-c+"                          nil)
-  (define-key minibuffer-local-completion-map "\C-xm"                          nil)
-  (define-key minibuffer-local-completion-map "\C-xa+"                         nil)
-  (define-key minibuffer-local-completion-map "\C-xa-"                         nil)
-  (define-key minibuffer-local-completion-map "\C-xa"                          nil))
+    (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-backspace") nil)
+    (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-c +")       nil)
+    (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x m")       nil)
+    (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x a +")     nil)
+    (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x a -")     nil)
+    (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x a")       nil))
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-backspace")            nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-c +")                  nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")                  nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +")                nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -")                nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x a")                  nil))
 
 
 ;;;###autoload
@@ -6928,9 +6930,12 @@ When sorting is active, comparison is done by `icicle-sort-comparer'."
   (interactive)
   (setq icicle-key-descriptions-use-<>-flag  (not icicle-key-descriptions-use-<>-flag))
   (icicle-complete-again-update)
-  (icicle-msg-maybe-in-minibuffer (if icicle-key-descriptions-use-<>-flag
-                                      "Displaying <...> in key descriptions is now ON"
-                                    "Displaying <...> in key descriptions is now OFF")))
+  (icicle-msg-maybe-in-minibuffer
+   (if (< emacs-major-version 21)
+       "This command has no effect prior to Emacs 21"
+     (if icicle-key-descriptions-use-<>-flag
+         "Displaying <...> in key descriptions is now ON"
+       "Displaying <...> in key descriptions is now OFF"))))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload

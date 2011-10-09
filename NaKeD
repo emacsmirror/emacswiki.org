@@ -5,7 +5,7 @@ Prior to Emacs 21, vanilla GnuEmacs did not bother with angle brackets either, b
 
 If you think that's silly, well, now there are two of us...
 
-All I can think of is that some misguided sole forgot that we already use spaces to separate keys in a key-sequence description (we use `SPC' to indicate the ##SPACE## key).  So we don't need no stinkin' brackets to separate keys.  Perhaps someone thought we could not distinguish `C-d elete' from `C-delete' (the former being the two-key sequence  `C-d' followed by the yet-to-be-defined function key `elete').
+All I can think of is that some misguided soul forgot that we already use spaces to separate keys in a key-sequence description (we use `SPC' to indicate the ##SPACE## key).  So we don't need no stinkin' brackets to separate keys.  Perhaps someone thought we could not distinguish `C-d elete' from `C-delete' (the former being the two-key sequence  `C-d' followed by the yet-to-be-defined function key `elete').
 
 Well, we can distinguish them, and no, we do not need angle brackets, because we already have spaces to separate keys in a sequence.
 

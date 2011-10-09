@@ -39,8 +39,8 @@ Here are some tips to improve performance with a large set of candidates:
    [[Icicles - Persistent Completions]].
 
 * Compute a large candidate set (and perhaps cache it or filter it)
-   ''without displaying'' it in `*Completions*', by using '''`C-M-TAB'''' or
-   '''`C-M-S-TAB'''' instead of `TAB' or `S-TAB', respectively.  These
+   ''without displaying'' it in `*Completions*', by using '''`C-M-TAB'''' (`C-M-tab') or
+   '''`C-M-S-TAB'''' (`C-M-S-tab') instead of `TAB' or `S-TAB', respectively.  These
    are bound to commands '''`icicle-prefix-complete-no-display'''' and
    '''`icicle-apropos-complete-no-display''''.  For example, when
    initially computing the set of all files on your file system

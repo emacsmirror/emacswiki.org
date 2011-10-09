@@ -52,13 +52,26 @@ Just remember that '''`##+##''''
 means that you can choose any number of inputs. For a list of predefined '''Icicles''' multi-commands, use `##C-?##' (`icicle-minibuffer-help') in the [[minibuffer]] -- search for `##+##' at the beginning of a line. 
 
 
+
+
+
+
+
+
+
 [:HowDoesAMulti-CommandWork]
 === How Does a Multi-Command Work? ===
 
 When an '''Icicles''' multi-command prompts you for input, you can make
 a single choice and press `RET' to confirm it, as usual, or you
-can choose any number of completion candidates, using `C-RET' (or
-`C-mouse-2') for each.  You can thus act on multiple candidates,
+can choose any number of completion candidates, using `C-RET' (`C-return') or `C-mouse-2' for each.  
+
+(The documentation refers to the key that acts on a completion
+candidate as `C-RET'.  Actually, it is this only by default.  You
+can customize it, using [[option]] 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-action-keys|icicle-candidate-action-keys]]</tt>''''.)
+
+You can thus act on multiple candidates,
 or even ''multiple times on the same'' candidate, during the same
 execution of the command. 
 

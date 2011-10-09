@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  3 14:19:50 2011 (-0700)
+;; Last-Updated: Sat Oct  8 08:07:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22430
+;;     Update #: 22528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,11 +21,11 @@
 ;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
-;;   `misc-fns', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -381,7 +381,8 @@
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-buffer-bindings,
   ;; icicle-condition-case-no-debug, icicle-define-command, icicle-define-file-command,
-  ;; icicle-define-add-to-alist-command, icicle-file-bindings, icicle-unbind-file-candidate-keys
+  ;; icicle-define-add-to-alist-command, icicle-file-bindings, icicle-kbd,
+  ;; icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
   ;; icicle-yank
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
@@ -1130,8 +1131,7 @@ if there is a suitable one already."
 ;;             (not (string-equal init ""))
 ;;             (not (string-equal (downcase init) (downcase abbrev))))
 ;;        (message "Use `%s' again to complete further"
-;;                 (icicle-key-description (this-command-keys)
-;;                                         (not icicle-key-descriptions-use-<>-flag)))
+;;                 (icicle-key-description (this-command-keys) nil icicle-key-descriptions-use-<>-flag))
 ;;        (if (< emacs-major-version 21)
 ;;            (dabbrev--substitute-expansion nil abbrev init)
 ;;          (dabbrev--substitute-expansion nil abbrev init nil))
@@ -2302,7 +2302,8 @@ You can use `C-x m' during completion to access Dired bookmarks, if
 you use library `Bookmark+'."
   (interactive "P")
   (when (require 'bookmark+ nil t)
-    (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
+      'icicle-bookmark-dired-other-window))
   (unwind-protect
        ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
        (let ((set-name  (completing-read "Project (saved file names): "
@@ -2326,7 +2327,7 @@ you use library `Bookmark+'."
                                                   (expand-file-name file)
                                                 file))
                                           file-names))))))
-    (define-key minibuffer-local-completion-map "\C-xm" nil)))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil)))
 
 ;;;###autoload
 (defun icicle-dired-project-other-window (prompt-for-dir-p) ; Bound to `C-{' in Dired.
@@ -2343,7 +2344,8 @@ You can use `C-x m' during completion to access Dired bookmarks, if
 you use library `Bookmark+'."
   (interactive "P")
   (when (require 'bookmark+ nil t)
-    (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-dired-other-window))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
+      'icicle-bookmark-dired-other-window))
   (unwind-protect
        ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
        (let ((set-name  (completing-read "Project (saved file names): "
@@ -2367,7 +2369,7 @@ you use library `Bookmark+'."
                                                                (expand-file-name file)
                                                              file))
                                                        file-names))))))
-    (define-key minibuffer-local-completion-map "\C-xm" nil)))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil)))
 
 ;;;###autoload
 (defun icicle-grep-saved-file-candidates (command-args)
@@ -3227,28 +3229,37 @@ Without library `Bookmark+', this is the same as vanilla Emacs
            (when (featurep 'bookmark+)
              ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
              (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-               (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow) ; `C-M-b'
-               (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow) ; `C-M-d'
-               (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow) ; `C-M-f'
-               (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
-               (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
-               (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
-               (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow) ; `C-M-u'
-               (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
-               (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; C-M-@
-               (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
+               (define-key (symbol-value map) (icicle-kbd "C-M-b") ; `C-M-b'
+                 'icicle-bookmark-non-file-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-d") ; `C-M-d'
+                 'icicle-bookmark-dired-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-f") ; `C-M-f'
+                 'icicle-bookmark-file-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-g") ; `C-M-g'
+                 'icicle-bookmark-gnus-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-m") ; `C-M-m'
+                 'icicle-bookmark-man-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-r") ; `C-M-r'
+                 'icicle-bookmark-region-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-u") ; `C-M-u'
+                 'icicle-bookmark-url-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-w") ; `C-M-w'
+                 'icicle-bookmark-w3m-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-@")
+                 'icicle-bookmark-remote-file-narrow)
+               (define-key (symbol-value map) (icicle-kbd "C-M-= b") ; `C-M-= b'
                  'icicle-bookmark-specific-buffers-narrow)
-               (define-key (symbol-value map) [(control meta ?=) ?f] ; `C-M-= f'
+               (define-key (symbol-value map) (icicle-kbd "C-M-= f") ; `C-M-= f'
                  'icicle-bookmark-specific-files-narrow)
-               (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-= .'
+               (define-key (symbol-value map) (icicle-kbd "C-M-= .") ; `C-M-= .'
                  'icicle-bookmark-this-buffer-narrow)
-               (define-key (symbol-value map) [(control meta ?B)] ; `C-M-B'
+               (define-key (symbol-value map) (icicle-kbd "C-M-B") ; `C-M-B'
                  'icicle-bookmark-bookmark-list-narrow)
-               (define-key (symbol-value map) [(control meta ?F)] ; `C-M-F'
+               (define-key (symbol-value map) (icicle-kbd "C-M-F") ; `C-M-F'
                  'icicle-bookmark-local-file-narrow)
-               (define-key (symbol-value map) [(control meta ?I)] ; `C-M-I'
+               (define-key (symbol-value map) (icicle-kbd "C-M-I") ; `C-M-I'
                  'icicle-bookmark-info-narrow)
-               (define-key (symbol-value map) [(control meta ?K)] ; `C-M-K'
+               (define-key (symbol-value map) (icicle-kbd "C-M-K") ; `C-M-K'
                  'icicle-bookmark-desktop-narrow)))
            (setq bookmark-current-point   (point)
                  bookmark-current-buffer  (current-buffer))
@@ -3484,28 +3495,37 @@ position is highlighted."               ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow) ; `C-M-b'
-        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow) ; `C-M-d'
-        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow) ; `C-M-f'
-        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
-        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
-        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
-        (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow) ; `C-M-u'
-        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
-        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
-        (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
+        (define-key (symbol-value map) (icicle-kbd "C-M-b") ; `C-M-b'
+          'icicle-bookmark-non-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-d") ; `C-M-d'
+          'icicle-bookmark-dired-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-f") ; `C-M-f'
+          'icicle-bookmark-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-g") ; `C-M-g'
+          'icicle-bookmark-gnus-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-m") ; `C-M-m'
+          'icicle-bookmark-man-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-r") ; `C-M-r'
+          'icicle-bookmark-region-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-u") ; `C-M-u'
+          'icicle-bookmark-url-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-w") ; `C-M-w'
+          'icicle-bookmark-w3m-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-@") ; `C-M-@'
+          'icicle-bookmark-remote-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-= b") ; `C-M-= b'
           'icicle-bookmark-specific-buffers-narrow)
-        (define-key (symbol-value map) [(control meta ?=) ?f] ; `C-M-= f'
+        (define-key (symbol-value map) (icicle-kbd "C-M-= f") ; `C-M-= f'
           'icicle-bookmark-specific-files-narrow)
-        (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-= .'
+        (define-key (symbol-value map) (icicle-kbd "C-M-= .") ; `C-M-= .'
           'icicle-bookmark-this-buffer-narrow)
-        (define-key (symbol-value map) [(control meta ?B)] ; `C-M-B'
+        (define-key (symbol-value map) (icicle-kbd "C-M-B") ; `C-M-B'
           'icicle-bookmark-bookmark-list-narrow)
-        (define-key (symbol-value map) [(control meta ?F)] ; `C-M-F'
+        (define-key (symbol-value map) (icicle-kbd "C-M-F") ; `C-M-F'
           'icicle-bookmark-local-file-narrow)
-        (define-key (symbol-value map) [(control meta ?I)] ; `C-M-I'
+        (define-key (symbol-value map) (icicle-kbd "C-M-I") ; `C-M-I'
           'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) [(control meta ?K)] ; `C-M-K'
+        (define-key (symbol-value map) (icicle-kbd "C-M-K") ; `C-M-K'
           'icicle-bookmark-desktop-narrow))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
@@ -3614,28 +3634,37 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow) ; `C-M-b'
-        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow) ; `C-M-d'
-        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow) ; `C-M-f'
-        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
-        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
-        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
-        (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow) ; `C-M-u'
-        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
-        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
-        (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
+        (define-key (symbol-value map) (icicle-kbd "C-M-b") ; `C-M-b'
+          'icicle-bookmark-non-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-d") ; `C-M-d'
+          'icicle-bookmark-dired-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-f") ; `C-M-f'
+          'icicle-bookmark-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-g") ; `C-M-g'
+          'icicle-bookmark-gnus-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-m") ; `C-M-m'
+          'icicle-bookmark-man-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-r") ; `C-M-r'
+          'icicle-bookmark-region-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-u") ; `C-M-u'
+          'icicle-bookmark-url-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-w") ; `C-M-w'
+          'icicle-bookmark-w3m-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-@") ; `C-M-@'
+          'icicle-bookmark-remote-file-narrow)
+        (define-key (symbol-value map) (icicle-kbd "C-M-= b") ; `C-M-= b'
           'icicle-bookmark-specific-buffers-narrow)
-        (define-key (symbol-value map) [(control meta ?=) ?f] ; `C-M-= f'
+        (define-key (symbol-value map) (icicle-kbd "C-M-= f") ; `C-M-= f'
           'icicle-bookmark-specific-files-narrow)
-        (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-= .'
+        (define-key (symbol-value map) (icicle-kbd "C-M-= .") ; `C-M-= .'
           'icicle-bookmark-this-buffer-narrow)
-        (define-key (symbol-value map) [(control meta ?B)] ; `C-M-B'
+        (define-key (symbol-value map) (icicle-kbd "C-M-B") ; `C-M-B'
           'icicle-bookmark-bookmark-list-narrow)
-        (define-key (symbol-value map) [(control meta ?F)] ; `C-M-F'
+        (define-key (symbol-value map) (icicle-kbd "C-M-F") ; `C-M-F'
           'icicle-bookmark-local-file-narrow)
-        (define-key (symbol-value map) [(control meta ?I)] ; `C-M-I'
+        (define-key (symbol-value map) (icicle-kbd "C-M-I") ; `C-M-I'
           'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) [(control meta ?K)] ; `C-M-K'
+        (define-key (symbol-value map) (icicle-kbd "C-M-K") ; `C-M-K'
           'icicle-bookmark-desktop-narrow))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
@@ -3777,24 +3806,24 @@ Remove crosshairs highlighting and unbind filtering keys."
   (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))
   (when (featurep 'bookmark+)
     (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-      (define-key (symbol-value map) "\C-\M-b" nil) ; `C-M-b'
-      (define-key (symbol-value map) [(control meta ?B)] nil) ; `C-M-B'
-      (define-key (symbol-value map) "\C-\M-d" nil) ; `C-M-d'
-      (define-key (symbol-value map) "\C-\M-f" nil) ; `C-M-f'
-      (define-key (symbol-value map) [(control meta ?F)] nil) ; `C-M-F'
+      (define-key (symbol-value map) (icicle-kbd "C-M-b") nil) ; `C-M-b'
+      (define-key (symbol-value map) (icicle-kbd "C-M-B") nil) ; `C-M-B'
+      (define-key (symbol-value map) (icicle-kbd "C-M-d") nil) ; `C-M-d'
+      (define-key (symbol-value map) (icicle-kbd "C-M-f") nil) ; `C-M-f'
+      (define-key (symbol-value map) (icicle-kbd "C-M-F") nil) ; `C-M-F'
       (dolist (key  icicle-read+insert-file-name-keys) ; `C-M-F' - overrides previous.
         (define-key (symbol-value map) key 'icicle-read+insert-file-name))
-      (define-key (symbol-value map) "\C-\M-g" nil) ; `C-M-g'
-      (define-key (symbol-value map) [(control meta ?I)] nil) ; `C-M-I' (`C-M-i' is `ESC TAB')
-      (define-key (symbol-value map) [(control meta ?K)] nil) ; `C-M-K'
-      (define-key (symbol-value map) "\C-\M-m" nil) ; `C-M-m'
-      (define-key (symbol-value map) "\C-\M-r" nil) ; `C-M-r'
-      (define-key (symbol-value map) "\C-\M-w" nil) ; `C-M-w'
-      (define-key (symbol-value map) "\C-\M-@" nil) ; `C-M-@'
-      (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-.'
+      (define-key (symbol-value map) (icicle-kbd "C-M-g") nil) ; `C-M-g'
+      (define-key (symbol-value map) (icicle-kbd "C-M-I") nil) ; `C-M-I' (`C-M-i' is `ESC TAB')
+      (define-key (symbol-value map) (icicle-kbd "C-M-K") nil) ; `C-M-K'
+      (define-key (symbol-value map) (icicle-kbd "C-M-m") nil) ; `C-M-m'
+      (define-key (symbol-value map) (icicle-kbd "C-M-r") nil) ; `C-M-r'
+      (define-key (symbol-value map) (icicle-kbd "C-M-w") nil) ; `C-M-w'
+      (define-key (symbol-value map) (icicle-kbd "C-M-@") nil) ; `C-M-@'
+      (define-key (symbol-value map) (icicle-kbd "C-M-.") ; `C-M-.'
         'icicle-toggle-dot)             ; `icicles-mode.el'.
-      (define-key (symbol-value map) [(control meta ?=) ?b] nil) ; `C-M-= b'
-      (define-key (symbol-value map) [(control meta ?=) ?f] nil)))) ; `C-M-= f'
+      (define-key (symbol-value map) (icicle-kbd "C-M-= b") nil) ; `C-M-= b'
+      (define-key (symbol-value map) (icicle-kbd "C-M-= f") nil)))) ; `C-M-= f'
 
 (defun icicle-bookmark-cleanup-on-quit ()
   "Do `icicle-bookmark-cleanup', then return to original window."
@@ -4797,11 +4826,13 @@ the behavior."                          ; Doc string
   nil 'buffer-name-history (buffer-name (current-buffer)) nil
   (icicle-buffer-bindings)              ; Bindings
   (progn                                ; First code
-    (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xM" nil)))
+  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil) ; Last code
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
 
 (defun icicle-kill-a-buffer-and-update-completions (buf)
   "Kill buffer BUF and update the set of completions."
@@ -4873,15 +4904,19 @@ the behavior."                          ; Doc string
   (icicle-buffer-bindings)              ; Bindings
   (progn                                ; First code
     (when (require 'bookmark+ nil t)
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-non-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-non-file-other-window))
-    (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
+        'icicle-bookmark-non-file-other-window)
+      (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
+        'icicle-bookmark-non-file-other-window))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)
-         (define-key minibuffer-local-completion-map "\C-xM" nil)
-         (define-key minibuffer-local-must-match-map "\C-xM" nil)))
+  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil) ; Last code
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") nil)
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil)
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
 
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
 (defun icicle-default-buffer-names ()
@@ -4926,15 +4961,19 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (icicle-buffer-bindings)              ; Bindings
   (progn                                ; First code
     (when (require 'bookmark+ nil t)
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-non-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-non-file-other-window))
-    (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
+        'icicle-bookmark-non-file-other-window)
+      (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
+        'icicle-bookmark-non-file-other-window))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xm" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xm" nil)
-         (define-key minibuffer-local-completion-map "\C-xM" nil)
-         (define-key minibuffer-local-must-match-map "\C-xM" nil)))
+  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil) ; Last code
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") nil)
+         (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil)
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
 
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles-cmd1.el")
 (icicle-define-command icicle-insert-buffer
@@ -4977,11 +5016,13 @@ the behavior."                          ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings)              ; Bindings
   (progn                                ; First code
-    (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xM" nil)))
+  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil) ; Last code
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
 
 ;;;###autoload (autoload 'icicle-add-buffer-candidate "icicles-cmd1.el")
 (icicle-define-command icicle-add-buffer-candidate ; Command name
@@ -5012,11 +5053,13 @@ the behavior."                          ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings ((icicle-use-candidates-only-once-flag  t))) ; Bindings
   (progn                                ; First code
-    (define-key minibuffer-local-completion-map "\C-xM" 'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map "\C-xM" 'icicle-filter-buffer-cands-for-mode))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
+      'icicle-filter-buffer-cands-for-mode))
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map "\C-xM" nil) ; Last code
-         (define-key minibuffer-local-must-match-map "\C-xM" nil)))
+  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil) ; Last code
+         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
 
 ;;;###autoload (autoload 'icicle-remove-buffer-candidate "icicles-cmd1.el")
 (icicle-define-command icicle-remove-buffer-candidate ; Command name

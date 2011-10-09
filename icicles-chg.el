@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  5 08:53:11 2011 (-0700)
+;; Last-Updated: Sat Oct  8 18:39:11 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7261
+;;     Update #: 7385
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/10/08 dadams
+;;     icicle-dired-project*, icicle-bookmark*, icicle*-buffer*: Use icicle-kbd.
 ;; 2011/10/03 dadams
 ;;     icicle-customize-face: Updated for Emacs 24: Added optional arg OTHER-WINDOW.
 ;; 2011/09/21 dadams
@@ -459,6 +461,20 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/10/08 dadams
+;;     Moved to icicles-mac.el: icicle-read-kbd-macro, icicle-edmacro-parse-keys.
+;;     Removed: icicle-orig-(buff|win)-key-complete - use regular icicle-orig*.
+;;     icicle-complete-keys: Bind regular icicle-orig*, not icicle-orig-(buff|win)-key-complete.
+;;     icicle-complete-keys-1: New icicle-key-description, with PREFIX arg and ANGLES, not NO-ANGLES.
+;;     icicle-complete-keys-action: Set buffer & window to icicle-orig*.
+;;     icicle-keys+cmds-w-prefix: Use icicle-delete-alist-dups.  Thx to Michael Heerdegen.
+;;     icicle-add-key+cmd:
+;;       Do not follow indirection to ultimate symbol.  Include NO-REMAP arg to key-binding.
+;;       Replace ESC by M-..  Follow remapped command to its target.  Thx to Michael Heerdegen.
+;;       Do not remove  VARIATION* names (Unicode).
+;;     icicle-read-single-key-description: Change NO-ANGLES arg to ANGLES.
+;;     icicle-where-is: Use icicle-key-description, not key-description.
+;;     icicle-Info-(index|read-node-name), icicle-search-bookmark, palette-mode-map: Use icicle-kbd.
 ;; 2011/10/02 dadams
 ;;     icicle-add-key+cmd:
 ;;       Use Unicode char name in place of self-insert-command.  Remove empty and VARIATION* names.
@@ -912,6 +928,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2011/10/08 dadams
+;;     eval-when-compile icicles-mac.el.
 ;; 2011/08/16 dadams
 ;;     Require icicles-mac.el.
 ;;     icicle-maybe-byte-compile-after-load the eval-after-load definitions.
@@ -1006,6 +1024,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/10/08 dadams
+;;     Added: icicle-delete-alist-dups.
+;;     icicle-completing-read-history:
+;;       Use prin1, not princ, to convert to strings.  Thx to Michael Heerdegen.
+;;     icicle-key-description: Added PREFIX arg.  Use Emacs 22+ form of key-description if available.
+;;                             Changed arg NO-ANGLES to ANGLES.
+;;     icicle-read-char-by-name: Do not remove  VARIATION* names (Unicode).
 ;; 2011/10/05 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Use same font family, not same font, as orig buff.  Only for Emacs 23+, and only when
@@ -2554,6 +2579,13 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/10/08 dadams
+;;     Added: icicle-kbd
+;;     Moved here from icicles-cmd2.el: icicle-read-kbd-macro, icicle-edmacro-parse-keys.
+;;     icicle-read-kbd-macro: Changed NO-ANGLES to ANGLES, and made it the prefix arg.
+;;     icicle-edmacro-parse-keys: Changed NO-ANGLES to ANGLES.  Updated to match Emacs 24.
+;;                                Changed regexp for non-angles match to use non-whitespace.
+;;                                Use characterp or char-valid-p, depending on Emacs version.
 ;; 2011/09/08 dadams
 ;;     font-lock-add-keywords - Use font-lock-keyword-face for icicle-condition-case-no-debug.
 ;; 2011/08/27 dadams
@@ -2697,6 +2729,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/10/08 dadams
+;;     icicle-next-TAB-completion-method, icicle-read+insert-file-name,
+;;       icicle-(un)bind-file-candidate-keys:
+;;         Use icicle-kbd.
+;;     icicle-insert-key-description: Made it OK for Emacs 20 too.
+;;     icicle-toggle-angle-brackets: Added no-op message for Emacs 20.
+;;     icicle-mouse-candidate-action-1: Wrap icicle-help-on-candidate with with-current-buffer.
+;;                                      For key-completion cand, use current buffer if no i*-orig-buff.
 ;; 2011/09/21 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Use file-name-as-directory instead of concat with /.
 ;; 2011/09/09 dadams
@@ -3958,6 +3998,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/10/08 dadams
+;;     eval-when-compile icicles-mac.el.
+;;     icicle-define-minibuffer-maps: Use new option icicle-candidate-help-keys.
+;;     icicle-(bind|restore)-completion-keys: Use new options icicle-candidate-(action|help)-keys.
+;;     icicle-bind-other-keymap-keys, icicle-(un)bind-isearch-keys, icicle-restore-other-keymap-keys,
+;;       icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
+;;         Use icicle-kbd (and do not use kbd).
+;;     icicle-define-icicle-maps: Do not include icicle-toggle-angle-brackets for Emacs 20.
 ;; 2011/10/04 dadams
 ;;     icicle-define-icicle-maps: Put all search commands on icicle-search-key-prefix.
 ;;     icicle-(bind|restore)-other-keymap-keys: Mode-specific search cmds are on M-s M-s m, not M-s i.
@@ -4985,6 +5033,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/10/08 dadams
+;;     Added: icicle-candidate-(action|help)-keys.
+;;     eval-when-compile icicles-mac.el.
+;;     icicle-(apropos|prefix)-complete(-no-display)-keys, icicle-key-complete-keys,
+;;       icicle-apropos-cycle-(next|previous)((-alt)-action|help)-keys, icicle-isearch-complete-keys,
+;;       icicle-modal-cycle-(down|up)((-alt)-action|help)-keys, icicle-completing-read+insert-keys
+;;       icicle-previous-candidate-keys, icicle-read+insert-file-name-keys,
+;;       icicle-search-from-isearch-keys, icicle-top-level-key-bindings, icicle-word-completion-keys:
+;;         Use icicle-kbd (and do not use kbd).
 ;; 2011/10/04 dadams
 ;;     Added: icicle-search-key-prefix.
 ;; 2011/10/02 dadams
@@ -5604,6 +5661,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/10/08 dadams
+;;     eval-when-compile icicles-mac.el.
+;;     icicle-read-expression-map, icicle-search-map, icicle-universal-argument-map: Use icicle-kbd.
 ;; 2011/10/04 dadams
 ;;     Added: icicle-search-map.
 ;; 2011/09/27 dadams

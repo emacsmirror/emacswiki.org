@@ -1,8 +1,62 @@
 Running Emacs since 1985, because it really did make life easier. When confronted with a TECO installation, I used to put Fred Fish’s EMACS.TEC onto it, if there wasn’t time for the full fledged FSF Emacs.
 
 
+Trivia question?  Million dollar prize.
+(That is, if you know the answer, then
+you will be able to get my permission
+to ask the next one million people you meet
+for a dollar each.)
 
 
+I've used both TECO and EMACS.TEC and 
+
+saw how they handled line endings.  Of course, 
+
+CRLF was the line ending (this was DEC).  Of 
+
+course, just before the CRLF, the cursor would
+
+oe at the end of its line.  Of course, just after 
+
+the CRLF, the cursor would be at the beginning 
+
+of the next line.
+
+
+TRIVIA QUESTION: 
+
+Where would the cursor be, or what would it do, 
+
+if you moved the cursor to between the CR 
+and 
+
+the LF?
+
+
+Answer: At the bottom of the page.
+
+
+(Hint: You have already received a hint.)
+
+
+TECO, Emacs, and Unix and the language C all contributed to a life changing new perspective for me: moving from line-oriented (that is, record-oriented) programs to byte-oriented programs.  Much more powerful, for most things.  (And we face a similar transition now, as the shift in text complies with the need to shift from bytes to "whole, wide, Unicode characters" -- it's been going on for some time, but programmers in USA have not felt the pinch that Ascii causes.)
+
+
+TWO THINGS NEAR THE TOP OF MY .emacs file:
+
+0) Well, actually, this is the -third- . . . I have nearly nothing in .emacs.  Instead, it immediately jumps to my Emacs configuratino code, which I keep down in my confinguration code tree with the rest of my configuration codes.
+
+1) I have this, of course:    (setq inhibit-startup-message t )
+   It is less distracting without it, and back in the day of slow connections, it saved bandwidth.
+
+2) And then there is this, something I -love- about Emacs:  (setq  require-final-newline  1)
+   This means that, if I remember to put a last newline in, fine, it does nothing.  Or if I forgot to put a last newline in, it taps me on the shoulder, and asks permission, and I tell it to add one.
+
+BUT, in those very real and not rare cases in which a final newline is a bad idea, when I intend for there to be no newline, I get to confirm that I really do not want one, and Emacs leaves things the way they should be.   
+
+
+(Trivia answer:  --  
+The cursor would be at the beginning, not of the -next- line, but of the -same- line.  The underlying TECO would emulate the movements that had been defined for printers and teletypes.  That is, CR would make the cursor jump back to the left margin (also change onscreen into a circle, like the letter "o" up above that looks like a typo).  Please, please note: When the cursor jumped to the beginning of a line and changed to a circle, -it- -would- -cover- -up- -one- -of- -your- -characters- (again, like the letter "o" above covering up the letter "b", obscuring half of the word "be"). One byte index movement later, the LF would make the cursor move down one line (and on the display the cursor would return to being a box).
 
 
 ----

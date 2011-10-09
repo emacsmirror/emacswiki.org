@@ -44,7 +44,7 @@ cycle through all buffers (such as `*scratch*') that have "<code>at</code>" in
 their name -- only [[buffer]] names appear as candidates.
 
 As an alternative to using `next' to cycle forward, you can hit
-`S-TAB' repeatedly.  Similarly, for prefix completion you can
+'''`S-TAB'''' (`S-tab') repeatedly.  Similarly, for prefix completion you can
 repeat `TAB' to cycle forward.  See [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix And Apropos Completion]].
 
 Apropos completion uses a '''''regular expression''''' ([[regexp]]) as its input string.

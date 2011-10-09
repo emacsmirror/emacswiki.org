@@ -689,7 +689,7 @@ See [[Icicles - Help on Candidates]].
 : ##down## (that is, the down arrow) ... until you get to candidate ##icicles-cmd1.el##
 : ##RET## -- Open file ##icicles-cmd1.el##.
 
-Nothing new here. Now try the same thing, but use '''`C-RET'''' instead of `RET'. The command is not ended, and you can continue to choose files to open:
+Nothing new here. Now try the same thing, but use '''`C-RET'''' (`C-return') instead of `RET' (`return).  The command is not ended, and you can continue to choose files to open:
 
 : ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Find a file whose name starts with ##ici##.
 
@@ -754,7 +754,7 @@ candidates.
 
 : ##TAB## ... until you get to ##icicles-doc1.el##, then ##RET## to visit.
 
-What's going on?  '''`C-S-RET'''' invokes an ''alternative action'' on the
+What's going on?  '''`C-S-RET'''' (`C-S-return') invokes an ''alternative action'' on the
 current completion candidate.  Here, you do this, in turn, for the
 file-name candidates ##icicles-cmd1.el## and ##icicles-fn.el##.  '''`##C-|##''''
 invokes an alternative action on '''''all''''' of the current completion

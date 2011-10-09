@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  2 18:09:29 2011 (-0700)
+;; Last-Updated: Sat Oct  8 18:23:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26219
+;;     Update #: 26290
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1032,9 +1032,9 @@
 ;;
 ;;    RET - Open file `icicles-cmd1.el'.
 ;;
-;;  Nothing new here.  Now try the same thing, but use `C-RET' instead
-;;  of `RET'.  The command is not ended, and you can continue to
-;;  choose files to open:
+;;  Nothing new here.  Now try the same thing, but use `C-RET'
+;;  (`C-return') instead of `RET' (`return).  The command is not
+;;  ended, and you can continue to choose files to open:
 ;;
 ;;    C-x C-f  i c i  TAB - Find a file whose name starts with `ici'.
 ;;
@@ -1097,13 +1097,13 @@
 ;;
 ;;    TAB ... until you get to `icicles-doc1.el', then RET to visit.
 ;;
-;;  What's going on?  `C-S-RET' invokes an alternative action on the
-;;  current completion candidate.  Here, you do this, in turn, for the
-;;  file-name candidates `icicles-cmd1.el' and `icicles-fn.el'.  `C-|'
-;;  invokes an alternative action on *all* of the current completion
-;;  candidates.  Here, you do this for all file names that begin with
-;;  `ici'.  Finally, you cycle to `icicles-doc1.el' and hit RET to
-;;  visit that file.
+;;  What's going on?  `C-S-RET' (`C-S-return') invokes an alternative
+;;  action on the current completion candidate.  Here, you do this, in
+;;  turn, for the file-name candidates `icicles-cmd1.el' and
+;;  `icicles-fn.el'.  `C-|' invokes an alternative action on *all* of
+;;  the current completion candidates.  Here, you do this for all file
+;;  names that begin with `ici'.  Finally, you cycle to
+;;  `icicles-doc1.el' and hit RET to visit that file.
 ;;
 ;;  The alternative action for `C-x C-f' (command `icicle-file')
 ;;  prompts you for a function to apply to the current completion
@@ -1965,8 +1965,8 @@
 ;;  their name - only buffer names appear as candidates.
 ;;
 ;;  As an alternative to using `next' to cycle forward, you can hit
-;;  `S-TAB' repeatedly.  Similarly, for prefix completion you can
-;;  repeat `TAB' to cycle forward.  See
+;;  `S-TAB' (`S-tab') repeatedly.  Similarly, for prefix completion
+;;  you can repeat `TAB' to cycle forward.  See
 ;;  (@> "Prefix Completion and Apropos Completion").
 ;;
 ;;  Apropos completion uses a regular expression (regexp) as its input
@@ -2795,8 +2795,8 @@
 ;;  the completion candidates (typically, an existing file or buffer
 ;;  name), you can complete and exit the minibuffer all at once, with
 ;;  only partial input in the minibuffer, by using `RET'.  But what
-;;  about apropos completion?  Simply use `S-RET'
-;;  (`icicle-apropos-complete-and-exit') instead of `RET': `RET' is
+;;  about apropos completion?  Simply use `S-RET' (`S-return'),
+;;  `icicle-apropos-complete-and-exit', instead of `RET': `RET' is
 ;;  standard in Emacs and uses prefix completion; `S-RET' is specific
 ;;  to Icicles and uses apropos completion.  For example, you can type
 ;;  `idea' followed by `S-RET' to switch to buffer `new-ideas.txt'.
@@ -2934,7 +2934,7 @@
 ;;  6. Auto-choice of sole candidate.  In Ido, if there is only one
 ;;     match for your input then `TAB', which normally completes, also
 ;;     chooses that candidate - you do not need to hit `RET'.  By
-;;     default, Icicles always requires you to explicitly choose with
+;;     default, Icicles always requires you to explicitly choose, with
 ;;     `RET' (or `C-RET').  If you set option
 ;;     `icicle-top-level-when-sole-completion-flag' to non-`nil', then
 ;;     Icicles provides similar behavior to Ido.  See also option
@@ -3902,8 +3902,9 @@
 ;;  prefix completion, or the `prior' and `next' keys (often labeled
 ;;  Page Up and Page Down), for apropos completion.  To show help on
 ;;  any individual candidate, navigate to it (by cycling or using
-;;  completion), and hit `C-M-RET' - or press Control and Meta and
-;;  click it with `mouse-2' (`C-M-mouse-2') in buffer `*Completions*'.
+;;  completion), and hit `C-M-RET' (`C-M-return') - or press Control
+;;  and Meta and click it with `mouse-2' (`C-M-mouse-2') in buffer
+;;  `*Completions*'.
 ;;
 ;;  For example, if you use standard command `switch-to-buffer' and
 ;;  you cycle among candidate buffer names using `C-M-end' (prefix
@@ -4037,15 +4038,21 @@
 ;;
 ;;  For more information about the types of candidates and their
 ;;  associated documentation, see the documentation for command
-;;  `icicle-help-on-candidate'.  This command is bound to `C-M-RET',
-;;  `C-M-mouse-2', `C-help', `C-M-help', `C-f1', and `C-M-f1'.  When
-;;  no specific action is defined for candidates, it is also bound to
-;;  `C-RET' and `C-mouse-2'.  You can use this to get help on any
-;;  completion candidate during completion.  See also the related
-;;  help-cycling commands, `icicle-next-candidate-per-mode-help',
+;;  `icicle-help-on-candidate'.  This command is bound to `C-M-RET'
+;;  (`C-M-return'), `C-M-mouse-2', `C-help', `C-M-help', `C-f1', and
+;;  `C-M-f1'.  When no specific action is defined for candidates, it
+;;  is also bound to `C-RET' (`C-return') and `C-mouse-2'.  You can
+;;  use this to get help on any completion candidate during
+;;  completion.  See also the related help-cycling commands,
+;;  `icicle-next-candidate-per-mode-help',
 ;;  `icicle-help-on-next-apropos-candidate', and so on, bound to
 ;;  `C-M-down', `C-M-up', `C-M-next', `C-M-prior', `C-M-end', and
 ;;  `C-M-home'.
+;;
+;;  (The documentation refers to the keys that provide candidate help
+;;  as `C-M-RET' etc.  Actually, these are only the keys by default.
+;;  You can customize them, using option
+;;  `icicle-candidate-help-keys'.)
 ;;
 ;;  If you use one-buffer-per-frame (`pop-up-frames' non-`nil'), then
 ;;  displaying `*Help*' in one frame might interfere with viewing
@@ -4172,10 +4179,15 @@
 ;;
 ;;  When an Icicles multi-command prompts you for input, you can make
 ;;  a single choice and press `RET' to confirm it, as usual, or you
-;;  can choose any number of completion candidates, using `C-RET' (or
-;;  `C-mouse-2') for each.  You can thus act on multiple candidates,
-;;  or even multiple times on the same candidate, during the same
-;;  execution of the command.
+;;  can choose any number of completion candidates, using `C-RET'
+;;  (`C-return') or `C-mouse-2' for each.
+;;
+;;  (The documentation refers to the key that acts on a completion
+;;  candidate as `C-RET'.  Actually, it is this only by default.  You
+;;  can customize it, using option `icicle-candidate-action-keys'.)
+;;
+;;  You can thus act on multiple candidates, or even multiple times on
+;;  the same candidate, during the same execution of the command.
 ;;
 ;;  But you do not have to - you can use any multi-command just as if
 ;;  it were a normal, single-choice command.
@@ -4305,9 +4317,9 @@
 ;;  (`icicle-candidate-action').  There are three other kinds of
 ;;  actions on individual candidates:
 ;;
-;;  * alternative actions, invoked by `C-S-RET'
+;;  * alternative actions, invoked by `C-S-RET' (`C-S-return')
 ;;  * deletion actions, invoked by `S-delete'
-;;  * help actions, invoked by `C-M-RET'
+;;  * help actions, invoked by `C-M-RET' (`C-M-return')
 ;;
 ;;  A given command can define any combination of these four kinds of
 ;;  actions: none of them, any one of them, any two of them, any three
@@ -4837,14 +4849,14 @@
 ;;  ** `S-TAB' Is Everywhere - Start With It **
 ;;
 ;;  In Icicle mode, whenever you are not in the minibuffer or buffer
-;;  `*Completions*', key `S-TAB' initiates key completion.  That is,
-;;  you do not need to first type part of a key sequence to use it -
-;;  you can start with it.  Hit `S-TAB' at any time, and you're
-;;  completing a key sequence, even if you have not yet hit any keys.
-;;  This lets you see all key sequences that are available in a given
-;;  context.  For example, in Dired, keys special to that mode are
-;;  included (and are highlighted as local bindings -
-;;  see (@> "Local Bindings Are Highlighted")).
+;;  `*Completions*', key `S-TAB' (`S-tab') initiates key completion.
+;;  That is, you do not need to first type part of a key sequence to
+;;  use it - you can start with it.  Hit `S-TAB' at any time, and
+;;  you're completing a key sequence, even if you have not yet hit any
+;;  keys.  This lets you see all key sequences that are available in a
+;;  given context.  For example, in Dired, keys special to that mode
+;;  are included (and are highlighted as local bindings - see (@>
+;;  "Local Bindings Are Highlighted")).
 ;;
 ;;  When completing a key sequence, you can type part of a command
 ;;  name, then hit `S-TAB' to apropos-complete against the command
@@ -6400,8 +6412,8 @@
 ;;  If you have used the Emacs file-name cache (see the Emacs manual,
 ;;  node "File Name Cache"), then you have already used a cache file
 ;;  of (file-name) completion candidates.  In vanilla Emacs, you use
-;;  `C-TAB' during file-name input to complete to a cached file name.
-;;  In Icicles, you use `C-{'.
+;;  `C-TAB' (`C-tab') during file-name input to complete to a cached
+;;  file name.  In Icicles, you use `C-{'.
 ;;
 ;;  In Icicles, the cached candidates are not limited to file names,
 ;;  and you can have any number of cache files, to save different sets
@@ -6715,8 +6727,9 @@
 ;;
 ;;  * Compute a large candidate set (and perhaps cache it or filter
 ;;    it) without displaying it in `*Completions*', by using `C-M-TAB'
-;;    or `C-M-S-TAB' instead of `TAB' or `S-TAB', respectively.  These
-;;    are bound to commands `icicle-prefix-complete-no-display' and
+;;    (`C-M-tab') or `C-M-S-TAB' (`C-M-S-tab') instead of `TAB' or
+;;    `S-TAB', respectively.  These are bound to commands
+;;    `icicle-prefix-complete-no-display' and
 ;;    `icicle-apropos-complete-no-display'.  For example, when
 ;;    initially computing the set of all files on your file system for
 ;;    `C-u M-x icicle-locate-file', use `C-M-S-TAB' to compute the
@@ -7162,19 +7175,20 @@
 ;;  ** Isearch Completion Against the Search History **
 ;;
 ;;  When you search incrementally (`C-s'), Emacs lets you use `M-TAB'
-;;  (aka `C-M-i', aka `ESC-TAB') to complete your input to a string
-;;  that you have sought previously, that is, a string in the current
-;;  search history (`search-ring' or `regexp-search-ring').  In Icicle
-;;  mode, this feature is enhanced so that you can use all of the
-;;  completion enhancements provided by Icicles: `M-TAB' is bound to
-;;  `icicle-isearch-complete' during Isearch.
+;;  (`M-tab' or `C-M-i', aka `ESC-TAB') to complete your input to a
+;;  string that you have sought previously, that is, a string in the
+;;  current search history (`search-ring' or `regexp-search-ring').
+;;  In Icicle mode, this feature is enhanced so that you can use all
+;;  of the completion enhancements provided by Icicles: `M-TAB' is
+;;  bound to `icicle-isearch-complete' during Isearch.
 ;;
 ;;  Some operating systems grab `M-TAB' for their own use, making it
 ;;  unavailable for Emacs.  They normally do not grab `ESC TAB', which
 ;;  in Emacs is typically the same ase `M-TAB'.  For this reason,
 ;;  Icicles also binds `icicle-isearch-complete' to both `ESC TAB' and
 ;;  `C-M-TAB'.  (Note: For MS Windows, you can use
-;;  (w32-register-hot-key [M-tab]) to allow Emacs to use `M-TAB'.)
+;;  (w32-register-hot-key (icicle-kbd "M-tab")) to allow Emacs to use
+;;  `M-TAB'.)
 ;;
 ;;  Icicles users are in the habit of using `M-o' to complete the
 ;;  current minibuffer input against previously entered inputs.

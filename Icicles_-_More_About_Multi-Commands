@@ -14,9 +14,9 @@ The ''default'' action is invoked on the current candidate by `C-RET'
 (`icicle-candidate-action').  There are three other kinds of
 actions on individual candidates:
 
-* ''alternative'' actions, invoked by `C-S-RET'
+* ''alternative'' actions, invoked by `C-S-RET' (`C-S-return')
 * ''deletion'' actions, invoked by `S-delete'
-* ''help'' actions, invoked by `C-M-RET'
+* ''help'' actions, invoked by `C-M-RET'  (`C-M-return')
 
 A given command can define ''any combination'' of these four kinds of
 actions: none of them, any one of them, any two of them, any three

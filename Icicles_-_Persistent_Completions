@@ -128,7 +128,7 @@ set using a ''[[variable]]'' that you name, not a cache file.  See [[Icicles - C
 If you have used the Emacs file-name cache (see FileNameCache and the EmacsManual,
 node '''File Name Cache''': [[Manual:File Name Cache]]), then you have already used a cache file
 of (file-name) completion candidates.  In vanilla Emacs, you use
-`C-TAB' during file-name input to complete to a cached file name.
+'''`C-TAB'''' (`C-tab') during file-name input to complete to a cached file name.
 In '''Icicles''', you use `##C-{##'.
 
 In '''Icicles''', the cached candidates are not limited to file names, and you can have any number of cache files, to persistently save

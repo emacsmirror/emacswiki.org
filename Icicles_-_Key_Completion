@@ -45,7 +45,7 @@ You can customize it, using [[option]] '''`<tt>[[Icicles - Customization and Gen
 [:StartWithS-TAB]
 === `S-TAB' Is Everywhere - Start With It ===
 
-In ''Icicle'' mode, whenever you are not in the minibuffer or [[buffer]] `*Completions*', key `S-TAB' initiates key completion. That is, you do not need to first type part of a key sequence to use it -- you can ''start with it''. Hit `S-TAB' at any time, and you're completing a key sequence, even if you have not yet hit any keys. This lets you see all key sequences that are available in a given context. For example, in [[DiredMode|Dired]], keys special to that mode are included (and are highlighted as local bindings -- see [[#HighlightLocalBindings]], below).
+In ''Icicle'' mode, whenever you are not in the minibuffer or [[buffer]] `*Completions*', key `S-TAB' (`S-tab') initiates key completion. That is, you do not need to first type part of a key sequence to use it -- you can ''start with it''. Hit `S-TAB' at any time, and you're completing a key sequence, even if you have not yet hit any keys. This lets you see all key sequences that are available in a given context. For example, in [[DiredMode|Dired]], keys special to that mode are included (and are highlighted as local bindings -- see [[#HighlightLocalBindings]], below).
 
 When completing a key sequence, you can type part of a command name, then hit `S-TAB' again to [[apropos completion|apropos-complete]] against the command name. In this respect, `S-TAB' acts like `M-x', but the key binding is also part of the completion candidate, so you can also match key names.
 

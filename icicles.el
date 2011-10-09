@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  4 16:21:16 2011 (-0700)
+;; Last-Updated: Sat Oct  8 16:54:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22996
+;;     Update #: 23005
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -31,10 +31,10 @@
 ;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
 ;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `naked', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -104,7 +104,7 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-maybe-byte-compile-after-load'
+;;    `icicle-kbd', `icicle-maybe-byte-compile-after-load'
 ;;    `icicle-maybe-cached-action', `icicle-search-modes',
 ;;    `icicle-with-comments-hidden', `icicle-with-selected-window'.
 ;;
@@ -647,6 +647,7 @@
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
 ;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
 ;;    `icicle-byte-compile-eval-after-load-flag',
+;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
 ;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
@@ -854,7 +855,7 @@
 ;;    `icicle-define-crm-completion-map', ,
 ;;    `icicle-define-cycling-keys', `icicle-defined-thing-p',
 ;;    `icicle-define-icicle-maps', `icicle-define-minibuffer-maps',
-;;    `icicle-delete-backward-char-dots',
+;;    `icicle-delete-alist-dups', `icicle-delete-backward-char-dots',
 ;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
 ;;    `icicle-delete-count', `icicle-delete-current-candidate-object',
 ;;    `icicle-delete-dups', `icicle-delete-file-or-directory',
@@ -1189,15 +1190,13 @@
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
 ;;    `icicle-old-read-file-name-fn', `icicle-options-menu-map',
-;;    `icicle-orig-buff', `icicle-orig-buff-key-complete',
-;;    `icicle-orig-extra-cands', `icicle-orig-font',
-;;    `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-orig-buff', `icicle-orig-extra-cands',
+;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-must-pass-after-match-pred',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
 ;;    `icicle-orig-pt-explore', `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',
-;;    `icicle-orig-win-key-complete', `icicle-other-window',
-;;    `icicle-plist-last-initial-cand-set',
+;;    `icicle-other-window', `icicle-plist-last-initial-cand-set',
 ;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
 ;;    `icicle-pre-command-hook', `icicle-predicate-types-alist',
 ;;    `icicle-previous-raw-file-name-inputs',

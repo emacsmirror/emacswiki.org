@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 16 16:21:58 2011 (-0700)
+;; Last-Updated: Thu Oct  6 12:51:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 574
+;;     Update #: 575
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,7 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `icicles-mac'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -105,7 +105,12 @@
 (eval-when-compile (require 'hexrgb nil t)) ;; (no error if not found):
   ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
 
-(require 'icicles-mac) ;; icicle-maybe-byte-compile-after-load
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
+ ;; icicle-maybe-byte-compile-after-load
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  

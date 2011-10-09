@@ -850,7 +850,8 @@ completions.  For explanation, see [[Icicles - Help on Candidates]] and [[Icicle
 * '''`C-M-home'''' -- `icicle-help-on-previous-prefix-candidate'
 
 
-
+(These are only default key bindings.
+See [[Icicles - Customizing Key Bindings]].)
 
 
 

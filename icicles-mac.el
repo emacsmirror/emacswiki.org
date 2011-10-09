@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  8 13:35:20 2011 (-0700)
+;; Last-Updated: Sat Oct  8 17:06:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 813
+;;     Update #: 897
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -36,12 +36,18 @@
 ;;    `icicle-buffer-bindings', `icicle-condition-case-no-debug',
 ;;    `icicle-define-add-to-alist-command', `icicle-define-command',
 ;;    `icicle-define-file-command', `icicle-define-sort-command',
-;;    `icicle-file-bindings', `icicle-maybe-byte-compile-after-load',
+;;    `icicle-file-bindings', `icicle-kbd',
+;;    `icicle-maybe-byte-compile-after-load',
 ;;    `icicle-with-selected-window'.
 ;;
-;;  Functions defined here:
+;;  Commands defined here:
 ;;
-;;    `icicle-assoc-delete-all', `icicle-try-switch-buffer'.
+;;    `icicle-read-kbd-macro'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `icicle-assoc-delete-all', `icicle-edmacro-parse-keys',
+;;    `icicle-try-switch-buffer'.
 ;;
 ;;  Standard Emacs function defined here for older Emacs versions:
 ;;
@@ -164,6 +170,132 @@ effect, but it means that the functions run faster."
 ;;         (condition-case ,var
 ;;             (funcall ,bodysym)
 ;;           ,@handlers)))))
+
+
+;; Same as `naked-edmacro-parse-keys' in `naked.el'.
+(defun icicle-edmacro-parse-keys (string &optional need-vector angles)
+  "Like `edmacro-parse-keys', but does not use angle brackets, by default.
+Non-nil optional arg ANGLES means to use angle brackets, exactly like
+`edmacro-parse-keys'.  See `icicle-read-kbd-macro' for more about
+ANGLES."
+  (let ((case-fold-search  nil)
+	(len               (length string)) ; We won't alter string in the loop below.
+        (pos               0)
+        (res               []))
+    (while (and (< pos len)  (string-match "[^ \t\n\f]+" string pos))
+      (let* ((word-beg  (match-beginning 0))
+	     (word-end  (match-end 0))
+	     (word      (substring string word-beg len))
+	     (times     1)
+             (key       nil))
+        (if (and angles  (string-match "\\`<[^ <>\t\n\f][^>\t\n\f]*>" word))
+            (setq word  (match-string 0 word)
+                  pos   (+ word-beg (match-end 0)))
+          (setq word  (substring string word-beg word-end)
+                pos   word-end))
+        (when (string-match "\\([0-9]+\\)\\*." word)
+          (setq times  (string-to-number (substring word 0 (match-end 1)))
+                word   (substring word (1+ (match-end 1)))))
+        (cond ((string-match "^<<.+>>$" word)
+               (setq key  (vconcat (if (eq (key-binding [?\M-x])
+                                           'execute-extended-command)
+                                       [?\M-x]
+                                     (or (car (where-is-internal
+                                               'execute-extended-command))
+                                         [?\M-x]))
+                                   (substring word 2 -2) "\r")))
+              ((or (equal word "REM") (string-match "^;;" word))
+               (setq pos  (string-match "$" string pos)))
+              ((and (string-match (if angles
+                                      "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$"
+                                    "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$")
+                                  word)
+                    (or angles
+                        ;; Do not count `C-' etc. when at end of string.
+                        (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word))))
+                    (progn
+                      (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                          (substring word (match-beginning 3) (match-end 3))))
+                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
+               (setq key  (list (intern word))))
+              (t
+               (let ((orig-word  word)
+                     (prefix     0)
+                     (bits       0))
+                 (while (string-match "^[ACHMsS]-." word)
+                   (incf bits (cdr (assq (aref word 0) '((?A . ?\A-\^@) (?C . ?\C-\^@)
+                                                         (?H . ?\H-\^@) (?M . ?\M-\^@)
+                                                         (?s . ?\s-\^@) (?S . ?\S-\^@)))))
+                   (incf prefix 2)
+                   (callf substring word 2))
+                 (when (string-match "^\\^.$" word)
+                   (incf bits ?\C-\^@)
+                   (incf prefix)
+                   (callf substring word 1))
+                 (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r")
+                                             ("LFD" . "\n") ("TAB" . "\t")
+                                             ("ESC" . "\e") ("SPC" . " ")
+                                             ("DEL" . "\177")))))
+                   (when found (setq word  (cdr found))))
+                 (when (string-match "^\\\\[0-7]+$" word)
+                   (loop for ch across word
+                         for n = 0 then (+ (* n 8) ch -48)
+                         finally do (setq word  (vector n))))
+                 (cond ((= bits 0) (setq key  word))
+                       ((and (= bits ?\M-\^@) (stringp word)  (string-match "^-?[0-9]+$" word))
+                        (setq key  (loop for x across word collect (+ x bits))))
+                       ((/= (length word) 1)
+                        (error "%s must prefix a single character, not %s"
+                               (substring orig-word 0 prefix) word))
+                       ((and (/= (logand bits ?\C-\^@) 0) (stringp word)
+                             ;; Used to accept `.' and `?' here, but `.' is simply wrong,
+                             ;; and `C-?' is not used (so use `DEL' instead).
+                             (string-match "[@-_a-z]" word))
+                        (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
+                       (t (setq key  (list (+ bits (aref word 0)))))))))
+        (when key (loop repeat times do (callf vconcat res key)))))
+    (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\()
+               (eq (aref res (- (length res) 2)) ?\C-x)  (eq (aref res (- (length res) 1)) ?\)))
+      (setq res  (edmacro-subseq res 2 -2)))
+    (if (and (not need-vector)
+	     (loop for ch across res
+		   always (and (if (fboundp 'characterp)  (characterp ch)  (char-valid-p ch))
+			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
+				 (and (>= ch2 0)  (<= ch2 127))))))
+	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
+      res)))
+
+;; Same as `naked-read-kbd-macro' in `naked.el'.
+;;;###autoload
+(defun icicle-read-kbd-macro (start &optional end angles)
+  "Read the region as a keyboard macro definition.
+Like `read-kbd-macro', but does not use angle brackets, by default.
+
+With a prefix arg use angle brackets, exactly like `read-kbd-macro'.
+That is, with non-nil arg ANGLES, expect key descriptions to use angle
+brackets (<...>).  Otherwise, expect key descriptions not to use angle
+brackets.  For example:
+
+ (icicle-read-kbd-macro  \"mode-line\"  t) returns [mode-line]
+ (icicle-read-kbd-macro \"<mode-line>\" t t)   returns [mode-line]"
+  (interactive "r\P")
+  (if (stringp start)
+      (icicle-edmacro-parse-keys start end angles)
+    (setq last-kbd-macro  (icicle-edmacro-parse-keys (buffer-substring start end) nil angles))))
+
+;; Same as `naked' in `naked.el'.
+(defmacro icicle-kbd (keys &optional angles)
+  "Like `kbd', but does not use angle brackets, by default.
+With non-nil optional arg ANGLES, expect key descriptions to use angle
+brackets (<...>), exactly like `kbd'.  Otherwise, expect key
+descriptions not to use angle brackets.  For example:
+
+ (icicle-kbd \"mode-line\")     returns [mode-line]
+ (icicle-kbd \"<mode-line>\" t) returns [mode-line]
+
+The default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"
+instead of \"C-x <delete>\" and \"C-<delete>\"."
+  (icicle-read-kbd-macro keys nil angles))
 
 (defmacro icicle-condition-case-no-debug (var bodyform &rest handlers)
   "Like `condition-case', but do not catch per `debug-on-(error|quit)'.
@@ -327,13 +459,13 @@ created after the others."
        ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle-sort-orders-alist
         (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
-                 (setq icicle-sort-comparer           icicle-buffer-sort
+                 (setq icicle-sort-comparer             icicle-buffer-sort
                        icicle-buffer-sort-first-time-p  nil))
                (if icicle-buffer-sort
                    (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
                      (if already-there
-                         (cons already-there (setq icicle--temp-orders
-                                                   (delete already-there icicle--temp-orders)))
+                         (cons already-there (setq icicle--temp-orders  (delete already-there
+                                                                                icicle--temp-orders)))
                        (cons `("by `icicle-buffer-sort'" . ,icicle-buffer-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
        (icicle-candidate-alt-action-fn
@@ -392,8 +524,8 @@ created after the others."
                (if icicle-file-sort
                    (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
                      (if already-there
-                         (cons already-there (setq icicle--temp-orders
-                                                   (delete already-there icicle--temp-orders)))
+                         (cons already-there (setq icicle--temp-orders  (delete already-there
+                                                                                icicle--temp-orders)))
                        (cons `("by `icicle-file-sort'" ,@icicle-file-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
        (icicle-candidate-help-fn                    #'(lambda (cand)
@@ -411,13 +543,13 @@ created after the others."
      predicate require-match initial-input hist def inherit-input-method
      bindings first-sexp undo-sexp last-sexp not-interactive-p)
   ;; Hard-code these in doc string, because \\[...] prefers ASCII
-  ;; `C-RET'   instead of `\\[icicle-candidate-action]'
-  ;; `C-down'  instead of `\\[icicle-next-candidate-per-mode-action]'
+  ;; `C-return' instead of `\\[icicle-candidate-action]'
+  ;; `C-down'   instead of `\\[icicle-next-candidate-per-mode-action]'
   ;; `C-up', `C-wheel-up' instead of `\\[icicle-previous-candidate-per-mode-action]'
-  ;; `C-next'  instead of `\\[icicle-next-apropos-candidate-action]'
-  ;; `C-prior' instead of `\\[icicle-previous-apropos-candidate-action]'
-  ;; `C-end'   instead of `\\[icicle-next-prefix-candidate-action]'
-  ;; `C-home'  instead of `\\[icicle-previous-prefix-candidate-action]'
+  ;; `C-next'   instead of `\\[icicle-next-apropos-candidate-action]'
+  ;; `C-prior'  instead of `\\[icicle-previous-apropos-candidate-action]'
+  ;; `C-end'    instead of `\\[icicle-next-prefix-candidate-action]'
+  ;; `C-home'   instead of `\\[icicle-previous-prefix-candidate-action]'
   "Define COMMAND with DOC-STRING based on FUNCTION.
 COMMAND is a symbol.  DOC-STRING is a string.
 FUNCTION is a function that takes one argument, read as input.
@@ -471,7 +603,7 @@ Input-candidate completion and cycling are available.  While cycling,
 these keys with prefix `C-' are active:
 
 \\<minibuffer-local-completion-map>\
-`C-mouse-2', `C-RET' - Act on current completion candidate only
+`C-mouse-2', `C-return' - Act on current completion candidate only
 `C-down', `C-wheel-down' - Move to next completion candidate and act
 `C-up', `C-wheel-up' - Move to previous completion candidate and act
 `C-next'  - Move to next apropos-completion candidate and act
@@ -554,13 +686,13 @@ This is an Icicles command - see command `icicle-mode'.")
      dir default-filename require-match initial-input predicate
      bindings first-sexp undo-sexp last-sexp not-interactive-p)
   ;; Hard-code these in doc string, because \\[...] prefers ASCII
-  ;; `C-RET'   instead of `\\[icicle-candidate-action]'
-  ;; `C-down'  instead of `\\[icicle-next-candidate-per-mode-action]'
+  ;; `C-return' instead of `\\[icicle-candidate-action]'
+  ;; `C-down'   instead of `\\[icicle-next-candidate-per-mode-action]'
   ;; `C-up', `C-wheel-up' instead of `\\[icicle-previous-candidate-per-mode-action]'
-  ;; `C-next'  instead of `\\[icicle-next-apropos-candidate-action]'
-  ;; `C-prior' instead of `\\[icicle-previous-apropos-candidate-action]'
-  ;; `C-end'   instead of `\\[icicle-next-prefix-candidate-action]'
-  ;; `C-home'  instead of `\\[icicle-previous-prefix-candidate-action]'
+  ;; `C-next'   instead of `\\[icicle-next-apropos-candidate-action]'
+  ;; `C-prior'  instead of `\\[icicle-previous-apropos-candidate-action]'
+  ;; `C-end'    instead of `\\[icicle-next-prefix-candidate-action]'
+  ;; `C-home'   instead of `\\[icicle-previous-prefix-candidate-action]'
   "Define COMMAND with DOC-STRING based on FUNCTION.
 COMMAND is a symbol.  DOC-STRING is a string.
 FUNCTION is a function that takes one file-name or directory-name
@@ -613,7 +745,7 @@ Input-candidate completion and cycling are available.  While cycling,
 these keys with prefix `C-' are active:
 
 \\<minibuffer-local-completion-map>\
-`C-mouse-2', `C-RET' - Act on current completion candidate only
+`C-mouse-2', `C-return' - Act on current completion candidate only
 `C-down', `C-wheel-down' - Move to next completion candidate and act
 `C-up', `C-wheel-up' - Move to previous completion candidate and act
 `C-next'  - Move to next apropos-completion candidate and act
@@ -656,8 +788,8 @@ This is an Icicles command - see command `icicle-mode'.")
                                                            minibuffer-prompt-properties))
                     (minibuffer-setup-hook            minibuffer-setup-hook)
                     (minibuffer-text-before-history   minibuffer-text-before-history))
-                (setq candidate  (expand-file-name
-                                  candidate (icicle-file-name-directory icicle-last-input)))
+                (setq candidate  (expand-file-name candidate (icicle-file-name-directory
+                                                              icicle-last-input)))
                 (icicle-condition-case-no-debug in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have deleted the file or the window.
@@ -710,12 +842,9 @@ COMPARISON-FN is a function that compares two strings, returning
 
 DOC-STRING is the doc string of the new command."
   (unless (stringp sort-order) (setq sort-order  (symbol-name sort-order)))
-  (let ((command  (intern (concat "icicle-sort-"
-                                  (replace-regexp-in-string "\\s-+" "-" sort-order)))))
+  (let ((command  (intern (concat "icicle-sort-" (replace-regexp-in-string "\\s-+" "-" sort-order)))))
     `(progn
-      (setq icicle-sort-orders-alist  (icicle-assoc-delete-all
-                                       ,sort-order
-                                       icicle-sort-orders-alist))
+      (setq icicle-sort-orders-alist  (icicle-assoc-delete-all ,sort-order icicle-sort-orders-alist))
       (push (cons ,sort-order ',comparison-fn) icicle-sort-orders-alist)
       (defun ,command ()
         ,doc-string
@@ -734,7 +863,8 @@ Return the modified alist.
 Elements of ALIST that are not conses are ignored."
   (while (and (consp (car alist)) (equal (car (car alist)) key))
     (setq alist  (cdr alist)))
-  (let ((tail  alist)  tail-cdr)
+  (let ((tail  alist)
+        tail-cdr)
     (while (setq tail-cdr  (cdr tail))
       (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
           (setcdr tail (cdr tail-cdr))

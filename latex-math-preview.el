@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.5.4
-;; Created: Mon Feb  7 11:08:36 2011
+;; Version: 0.5.5
+;; Created: Sun Oct  9 10:55:48 2011
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -57,6 +57,14 @@
 ;; the values of \usepackage for previewing.
 ;; If you want to reload this variable, you use
 ;; M-x `latex-math-preview-reload-usepackage'.
+;; Also, to use usepackages in other latex file,
+;; you may execute C-u M-x `latex-math-preview-reload-usepackage'.
+;; We can also filter usepackage lines.
+;; If we add (REGEXP . nil) or (REGEXP . (lambda (line) SOME PROCESSES))
+;; to `latex-math-preview-usepackage-filter-alist', then matched usepackage lines are ignored for nil
+;; or are filterd for function.
+;; If automatic search of usepackages does not work,
+;; you may execute M-x `latex-math-preview-edit-usepackage' to edit usepackages for previewing.
 ;; 
 ;; M-x `latex-math-preview-beamer-frame' makes an image of one frame of beamer,
 ;; which is LaTeX style for presentation.
@@ -295,6 +303,8 @@
 ;;       "cache directory in your system")
 
 ;; ChangeLog:
+;; 2011/10/09 version 0.5.5 yamaguchi
+;;     Support editing and filtering usepackage lines for previewing.
 ;; 2011/02/07 version 0.5.4 yamaguchi
 ;;     Support gswin32c.exe for meadow.
 ;; 2010/09/19 version 0.5.3 yamaguchi
@@ -389,12 +399,6 @@
 (defvar latex-math-preview-insert-symbol-buffer-name
   "*latex-math-preview-candidates*"
   "Name of buffer which displays candidates of LaTeX mathematical symbols.")
-
-(defvar latex-math-preview-latex-command
-  "latex" "Path to latex.")
-
-(defvar latex-math-preview-command-dvips
-  "dvips" "Path to dvips.")
 
 (defvar latex-math-preview-temporary-file-prefix
   "temp_latex_math"
@@ -1061,13 +1065,74 @@ a list created by splitting COMMAND by \"-\" as a command name."
 		 (and filename (string-match "\\.tex" (buffer-file-name (current-buffer))))))
 	  (setq cache (latex-math-preview-search-header-usepackage-other-file
 		       (read-file-name "Main TeX file: " nil default-directory))))
-      (setq latex-math-preview-usepackage-cache (or cache t))))
+      (if (listp latex-math-preview-usepackage-cache)
+	  (progn
+	    (setq latex-math-preview-usepackage-cache nil)
+	    (dolist (line cache)
+	      (let ((filtered-line
+		     (catch :match
+		       (dolist (filter latex-math-preview-usepackage-filter-alist)
+			 (when (string-match-p (car filter) line)
+			   (let ((func (cdr filter)))
+			     (throw :match (if func (funcall func line) nil)))))
+		       line)))
+		(when filtered-line
+		  (setq latex-math-preview-usepackage-cache
+			(append latex-math-preview-usepackage-cache (list filtered-line)))))))
+	(setq latex-math-preview-usepackage-cachet t))))
   (if (listp latex-math-preview-usepackage-cache) latex-math-preview-usepackage-cache nil))
+
+(defvar latex-math-preview-edit-usepackage-buffer "*latex-math-preview: usepackage cache*")
+(defvar latex-math-preview-edit-usepackage-parent-buffer nil)
+(defvar latex-math-preview-edit-usepackage-map nil
+  "Keymap for editing usepackage of latex-math-preview-insert-symbol.")
+(defvar latex-math-preview-usepackage-filter-alist nil
+  "List of filter for lines of usepackage.
+The value is a list of (REGEXP . nil) or (REGEXP . (lambda (line) ... )).
+If you want to ignore some usepackages, then you add filters to this variable.
+For example, to ignore \\usepackage{txfonts}, we add '(\"txfonts\") to this list.")
+
+(or latex-math-preview-edit-usepackage-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "\C-c\C-c" 'latex-math-preview-edit-usepackage-finish)
+      (setq latex-math-preview-edit-usepackage-map map)))
+
+(defun latex-math-preview-edit-usepackage ()
+  "Edit header of usepackages, which are used in LaTeX files to create previews.
+Press C-c C-c to finish editing."
+  (interactive)
+  (if latex-math-preview-usepackage-cache
+      (let ((parent-buffer (buffer-name (current-buffer)))
+	    (tmp-buffer (get-buffer-create latex-math-preview-edit-usepackage-buffer))
+	    (usepackages latex-math-preview-usepackage-cache))
+	(with-current-buffer tmp-buffer
+	  (insert "% C-c C-c : Finish editing\n\n")
+	  (dolist (line usepackages)
+	    (insert line "\n")))
+	(pop-to-buffer tmp-buffer)
+	(goto-char (point-min))
+	(forward-line 2)
+	(make-variable-buffer-local 'latex-math-preview-edit-usepackage-parent-buffer)
+	(setq latex-math-preview-edit-usepackage-parent-buffer parent-buffer)
+	(use-local-map latex-math-preview-edit-usepackage-map))
+    (message "No usepackage cache.")))
+
+(defun latex-math-preview-edit-usepackage-finish ()
+  "Finish editing usepackages."
+  (interactive)
+  (when latex-math-preview-edit-usepackage-parent-buffer
+    (let ((buffer-to-kill (current-buffer))
+	  (packages (latex-math-preview-search-header-usepackage)))
+      (with-current-buffer latex-math-preview-edit-usepackage-parent-buffer
+	(setq latex-math-preview-usepackage-cache packages))
+      (pop-to-buffer latex-math-preview-edit-usepackage-parent-buffer)
+      (kill-buffer buffer-to-kill))))
 
 (defun latex-math-preview-reload-usepackage (&optional other-file)
   "Reload usepackage cache from current buffer. If you want to get the cache
 from other file, you use C-u M-x `latex-math-preview-reload-usepackage'."
   (interactive "P")
+  (setq latex-math-preview-usepackage-cache nil)
   (setq latex-math-preview-usepackage-cache
 	(if other-file
 	    (or (latex-math-preview-search-header-usepackage-other-file

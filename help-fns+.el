@@ -7,16 +7,16 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Oct  7 17:19:14 2011 (-0700)
+;; Last-Updated: Sat Oct  8 09:27:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1046
+;;     Update #: 1051
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `view', `wid-edit',
+;;   `button', `help-fns', `help-mode', `naked', `view', `wid-edit',
 ;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,6 +105,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/10/08 dadams
+;;     Info-make-manuals-xref: Do nothing if OBJECT is not a string or a symbol (e.g. is a keymap).
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
 ;;     help-substitute-command-keys, describe-function-1:
@@ -496,8 +498,8 @@ so that matches are exact (ignoring case).")
                                      ;; (slow . t) ; $$$$$$ Useless here?
                                      ))
 
-  (defun Info-make-manuals-xref (symbol &optional no-newlines-after-p manuals)
-    "Create a cross-ref link for index entries for SYMBOL in manuals.
+  (defun Info-make-manuals-xref (object &optional no-newlines-after-p manuals)
+    "Create a cross-ref link for index entries for OBJECT in manuals.
 Non-`nil' optional arg NO-NEWLINES-AFTER-P means do not add two
 newlines after the cross reference.
 
@@ -509,19 +511,20 @@ Do nothing if the car of MANUALS is nil (no manuals to search).  If
 its cdr is `nil' then create the link without first searching any
 manuals.  Otherwise, create the link only if there are search hits in
 the manuals."
-    (unless manuals (setq manuals  help-cross-reference-manuals))
-    (when (car manuals)      ; Create no link if no manuals to search.
-      (let ((books         (car manuals))
-            (search-now-p  (cdr manuals))
-            (symb-name     (if (stringp symbol) symbol (symbol-name symbol))))
-        (when (or (not search-now-p)
-                  (save-current-buffer (Info-any-index-occurrences-p symb-name books)))
-          (let ((buffer-read-only  nil))
-            (insert (format "\n\nFor more information %s the "
-                            (if (cdr manuals) "see" "check")))
-            (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name books)
-            (insert ".")
-            (unless no-newlines-after-p (insert "\n\n")))))))
+    (when (or (stringp object) (symbolp object)) ; Exclude, e.g., a keymap as OBJECT.
+      (unless manuals (setq manuals  help-cross-reference-manuals))
+      (when (car manuals)    ; Create no link if no manuals to search.
+        (let ((books         (car manuals))
+              (search-now-p  (cdr manuals))
+              (symb-name     (if (stringp object) object (symbol-name object))))
+          (when (or (not search-now-p)
+                    (save-current-buffer (Info-any-index-occurrences-p symb-name books)))
+            (let ((buffer-read-only  nil))
+              (insert (format "\n\nFor more information %s the "
+                              (if (cdr manuals) "see" "check")))
+              (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name books)
+              (insert ".")
+              (unless no-newlines-after-p (insert "\n\n"))))))))
 
 
   (when (and (> emacs-major-version 21)

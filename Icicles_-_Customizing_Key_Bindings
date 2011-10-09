@@ -41,6 +41,8 @@ bindings.
  Cycle to the next prefix-completion candidate.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''' ('''`home'''').
  Cycle to the previous [[prefix completion]] candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-action-keys|icicle-candidate-action-keys]]</tt>'''' ('''`C-RET'''').
+ Act on the current completion candidate.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>'''' ('''`C-down'''', '''`C-wheel-down'''').
  Cycle to the next candidate and act on it (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>'''' ('''`C-up'''', `C-wheel-up''').
@@ -66,6 +68,8 @@ bindings.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|icicle-prefix-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-home'''').
  Cycle to the previous prefix completion candidate and alternative-act on it.
 
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-help-keys|icicle-candidate-help-keys]]</tt>'''' ('''`C-M-RET'''' etc.).
+ Display help for the current completion candidate.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-help-keys|icicle-modal-cycle-down-help-keys]]</tt>'''' ('''`C-M-down'''', '''`C-M-wheel-down'''').
  Cycle to the next candidate and show help for it (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>'''' ('''`C-S-up'''', '''`C-S-wheel-down'''').
@@ -169,8 +173,8 @@ library '''<tt>[[icicles.el]]</tt>''':
                            (and (fboundp 'minibuffer-local-filename-completion-map)
                                 (list minibuffer-local-filename-completion-map))))
         (when icicle-mode
-          (define-key map [f11] 'previous-history-element)
-          (define-key map [f12] 'next-history-element))))
+          (define-key map (icicle-kbd "f11") 'previous-history-element)
+          (define-key map (icicle-kbd "f12") 'next-history-element))))
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Oct  7 16:55:32 2011 (-0700)
+;; Last-Updated: Sat Oct  8 09:00:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2082
+;;     Update #: 2128
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -17,7 +17,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `fit-frame', `frame-fns', `info', `info+', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+'.
+;;   `naked', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -151,62 +151,60 @@ If KEY is a menu item or a tool-bar button that is disabled, this command
 temporarily enables it to allow getting help on disabled items and buttons.
 Return nil if KEY is undefined; else return t."
   (interactive
-   (let ((enable-disabled-menus-and-buttons t)
-         (cursor-in-echo-area t)
+   (let ((enable-disabled-menus-and-buttons  t)
+         (cursor-in-echo-area                t)
          saved-yank-menu)
      (unwind-protect
           (let (key)
             ;; If yank-menu is empty, populate it temporarily, so that
             ;; "Select and Paste" menu can generate a complete event.
             (when (null (cdr yank-menu))
-              (setq saved-yank-menu (copy-sequence yank-menu))
+              (setq saved-yank-menu  (copy-sequence yank-menu))
               (menu-bar-update-yank-menu "(any string)" nil))
-            (setq key (read-key-sequence "Describe key (or click or menu item): "))
-            (list
-             key
-             (prefix-numeric-value current-prefix-arg)
-             ;; If KEY is a down-event, read and include the
-             ;; corresponding up-event.  Note that there are also
-             ;; down-events on scroll bars and mode lines: the actual
-             ;; event then is in the second element of the vector.
-             (and (vectorp key)
-                  (let ((last-idx (1- (length key))))
-                    (and (eventp (aref key last-idx))
-                         (memq 'down (event-modifiers (aref key last-idx)))))
-                  (or (and (eventp (aref key 0))
-                           (memq 'down (event-modifiers (aref key 0)))
-                           ;; However, for the C-down-mouse-2 popup
-                           ;; menu, there is no subsequent up-event.  In
-                           ;; this case, the up-event is the next
-                           ;; element in the supplied vector.
-                           (= (length key) 1))
-                      (and (> (length key) 1)
-                           (eventp (aref key 1))
-                           (memq 'down (event-modifiers (aref key 1)))))
-                  (read-event))))
+            (setq key  (read-key-sequence "Describe key (or click or menu item): "))
+            (list key
+                  (prefix-numeric-value current-prefix-arg)
+                  ;; If KEY is a down-event, read and include the
+                  ;; corresponding up-event.  Note that there are also
+                  ;; down-events on scroll bars and mode lines: the actual
+                  ;; event then is in the second element of the vector.
+                  (and (vectorp key)
+                       (let ((last-idx  (1- (length key))))
+                         (and (eventp (aref key last-idx))
+                              (memq 'down (event-modifiers (aref key last-idx)))))
+                       (or (and (eventp (aref key 0))
+                                (memq 'down (event-modifiers (aref key 0)))
+                                ;; However, for the C-down-mouse-2 popup
+                                ;; menu, there is no subsequent up-event.  In
+                                ;; this case, the up-event is the next
+                                ;; element in the supplied vector.
+                                (= (length key) 1))
+                           (and (> (length key) 1)
+                                (eventp (aref key 1))
+                                (memq 'down (event-modifiers (aref key 1)))))
+                       (read-event))))
        ;; Put yank-menu back as it was, if we changed it.
        (when saved-yank-menu
-         (setq yank-menu (copy-sequence saved-yank-menu))
+         (setq yank-menu  (copy-sequence saved-yank-menu))
          (fset 'yank-menu (cons 'keymap yank-menu))))))
   (if (numberp untranslated)
-      (setq untranslated (this-single-command-raw-keys)))
-  (let* ((event (aref key (if (and (symbolp (aref key 0))
-                                   (> (length key) 1)
-                                   (consp (aref key 1)))
-                              1
-                            0)))
-         (modifiers (event-modifiers event))
-         (mouse-msg (if (or (memq 'click modifiers) (memq 'down modifiers)
-                            (memq 'drag modifiers)) " at that spot" ""))
-         (defn (key-binding key t))
-         defn-up defn-up-tricky ev-type
-         mouse-1-remapped mouse-1-tricky)
+      (setq untranslated  (this-single-command-raw-keys)))
+  (let* ((event      (aref key (if (and (symbolp (aref key 0))
+                                        (> (length key) 1)
+                                        (consp (aref key 1)))
+                                   1
+                                 0)))
+         (modifiers  (event-modifiers event))
+         (mouse-msg  (if (or (memq 'click modifiers) (memq 'down modifiers)
+                             (memq 'drag modifiers)) " at that spot" ""))
+         (defn       (key-binding key t))
+         defn-up defn-up-tricky ev-type mouse-1-remapped mouse-1-tricky)
 
     ;; Handle the case where we faked an entry in "Select and Paste" menu.
     (when (and (eq defn nil)
                (stringp (aref key (1- (length key))))
                (eq (key-binding (substring key 0 -1)) 'yank-menu))
-      (setq defn 'menu-bar-select-yank))
+      (setq defn  'menu-bar-select-yank))
     (cond ((or (null defn) (integerp defn) (equal defn 'undefined))
            (message "%s%s is undefined"
                     (help-key-description key untranslated) mouse-msg)
@@ -223,25 +221,23 @@ Return nil if KEY is undefined; else return t."
            ;; Need to do this before erasing *Help* buffer in case event
            ;; is a mouse click in an existing *Help* buffer.
            (when up-event
-             (setq ev-type (event-basic-type up-event))
-             (let ((sequence (vector up-event)))
+             (setq ev-type  (event-basic-type up-event))
+             (let ((sequence  (vector up-event)))
                (when (and (eq ev-type 'mouse-1)
                           mouse-1-click-follows-link
                           (not (eq mouse-1-click-follows-link 'double))
-                          (setq mouse-1-remapped
-                                (mouse-on-link-p (event-start up-event))))
-                 (setq mouse-1-tricky (and (integerp mouse-1-click-follows-link)
-                                           (> mouse-1-click-follows-link 0)))
-                 (cond ((stringp mouse-1-remapped)
-                        (setq sequence mouse-1-remapped))
-                       ((vectorp mouse-1-remapped)
-                        (setcar up-event (elt mouse-1-remapped 0)))
+                          (setq mouse-1-remapped  (mouse-on-link-p (event-start up-event))))
+                 (setq mouse-1-tricky  (and (integerp mouse-1-click-follows-link)
+                                            (> mouse-1-click-follows-link 0)))
+                 (cond ((stringp mouse-1-remapped) (setq sequence  mouse-1-remapped))
+                       ((vectorp mouse-1-remapped) (setcar up-event (elt mouse-1-remapped 0)))
                        (t (setcar up-event 'mouse-2))))
-               (setq defn-up (key-binding sequence nil nil (event-start up-event)))
+               (setq defn-up  (key-binding sequence nil nil (event-start up-event)))
                (when mouse-1-tricky
-                 (setq sequence (vector up-event))
+                 (setq sequence  (vector up-event))
                  (aset sequence 0 'mouse-1)
-                 (setq defn-up-tricky (key-binding sequence nil nil (event-start up-event))))))
+                 (setq defn-up-tricky  (key-binding sequence nil nil
+                                                    (event-start up-event))))))
            (with-output-to-temp-buffer (help-buffer)
              (princ (help-key-description key untranslated))
              (princ (format "\
@@ -360,28 +356,29 @@ candidates.
 With a plain (non-numeric) prefix argument, `C-u', insert the message
 in the current buffer."
   (interactive
-   (let ((fn (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                 (function-called-at-point)))
-         (enable-recursive-minibuffers t)
-         (orig-buf (current-buffer))
+   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)
+                                                 (symbol-nearest-point))
+                                            (function-called-at-point)))
+         (enable-recursive-minibuffers  t)
+         (orig-buf                      (current-buffer))
          val)
-     (setq val (completing-read
-                (if fn
-                    (format "Where is command (default %s): " fn)
-                  "Where is command: ")
-                obarray
-                (if current-prefix-arg
-                    'commandp
-                  (lambda (c)
-                    (with-current-buffer orig-buf
-                      (and (commandp c)
-                           (where-is-internal c overriding-local-map 'non-ascii)))))
-                t))
+     (setq val  (completing-read (if fn
+                                     (format "Where is command (default %s): " fn)
+                                   "Where is command: ")
+                                 obarray
+                                 (if current-prefix-arg
+                                     'commandp
+                                   (lambda (c)
+                                     (with-current-buffer orig-buf
+                                       (and (commandp c)
+                                            (where-is-internal c overriding-local-map
+                                                               'non-ascii)))))
+                                 t))
      (list (if (equal val "") fn (intern val)) (consp current-prefix-arg))))
   (unless definition (error "No command"))
-  (let ((func (indirect-function definition))
-        (defs nil)
-        (standard-output (if insert (current-buffer) t)))
+  (let ((func             (indirect-function definition))
+        (defs             ())
+        (standard-output  (if insert (current-buffer) t)))
     ;; In DEFS, find all symbols that are aliases for DEFINITION.
     (mapatoms (lambda (symbol)
                 (and (fboundp symbol)
@@ -389,36 +386,32 @@ in the current buffer."
                      (eq func (condition-case () (indirect-function symbol) (error symbol)))
                      (push symbol defs))))
     ;; Look at all the symbols--first DEFINITION, then its aliases.
-    (dolist (symbol (cons definition defs))
-      (let* ((remapped (command-remapping symbol))
-             (keys (where-is-internal symbol overriding-local-map nil nil remapped))
-             (keys (mapconcat (if (fboundp 'naked-key-description)
-                                  #'naked-key-description
-                                #'key-description)
-                              keys ", "))
+    (dolist (symbol  (cons definition defs))
+      (let* ((remapped  (command-remapping symbol))
+             (keys      (where-is-internal symbol overriding-local-map nil nil remapped))
+             (keys      (mapconcat (if (fboundp 'naked-key-description)
+                                       #'naked-key-description
+                                     #'key-description)
+                                   keys ", "))
              string)
-        (setq string
-              (if insert
-                  (if (> (length keys) 0)
-                      (if remapped
-                          (format "%s (%s) (remapped from %s)"
-                                  keys remapped symbol)
-                        (format "%s (%s)" keys symbol))
-                    (format "M-x %s RET" symbol))
-                (if (> (length keys) 0)
-                    (if remapped
-                        (format "%s is remapped to %s which is on %s"
-                                symbol remapped keys)
-                      (format "%s is on %s" symbol keys))
-                  ;; If this is the command the user asked about,
-                  ;; and it is not on any key, say so.
-                  ;; For other symbols, its aliases, say nothing
-                  ;; about them unless they are on keys.
-                  (if (eq symbol definition)
-                      (format "%s is not on any key" symbol)))))
+        (setq string  (if insert
+                          (if (> (length keys) 0)
+                              (if remapped
+                                  (format "%s (%s) (remapped from %s)" keys remapped symbol)
+                                (format "%s (%s)" keys symbol))
+                            (format "M-x %s RET" symbol))
+                        (if (> (length keys) 0)
+                            (if remapped
+                                (format "%s is remapped to %s which is on `%s'"
+                                        symbol remapped keys)
+                              (format "%s is on `%s'" symbol keys))
+                          ;; If this is the command the user asked about, and it is not on any
+                          ;; key, say so.  For other symbols, its aliases, say nothing about
+                          ;; them unless they are on keys.
+                          (and (eq symbol definition)
+                               (format "%s is not on any key" symbol)))))
         (when string
-          (unless (eq symbol definition)
-            (princ ";\n its alias "))
+          (unless (eq symbol definition) (princ ";\n its alias "))
           (princ string)))))
   nil)
 
@@ -432,20 +425,20 @@ Function `Info-goto-emacs-key-command-node' is used to look up KEY."
         pp-key  (or pp-key  (if (fboundp 'naked-key-description)
                                 (naked-key-description key)
                               (key-description key))))
-  (let* ((described-p (describe-key key))
+  (let* ((described-p   (describe-key key))
          ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
          ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
-         (documented-p (Info-goto-emacs-key-command-node key))) ; nil if have only std version
+         (documented-p  (Info-goto-emacs-key-command-node key))) ; nil if have only std version
     (when (and (not documented-p)(get-buffer-window "*info*" 'visible)) (Info-exit))
     (cond ((and described-p documented-p)
            (when (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
-           (message "%s`%s': summary in *Help* buffer; doc in *info* buffer."
+           (message "%s`%s': summary in *Help* buffer; doc in buffer `*info*'."
                     where pp-key))
           (described-p
            (when (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
-           (message "%s`%s': summary in *Help* buffer." where pp-key))
+           (message "%s`%s': summary in buffer `*Help*'." where pp-key))
           (documented-p
-           (message "%s`%s': doc in *info* buffer." where pp-key))
+           (message "%s`%s': doc in buffer `*info*'." where pp-key))
           (t
            (message "%s`%s' is undefined." where pp-key)))))
 
@@ -479,14 +472,14 @@ are not used when you do something besides click on a name.
 If you click elsewhere in a buffer other than the minibuffer, then
 `describe-mode' is used to describe the buffer's current mode(s)."
   (interactive "kClick mouse on something or type a key sequence.")
-  (let ((temp-buffer-show-function 'switch-to-buffer-other-window)
-        (font-lock-verbose nil)
-        (global-font-lock-mode nil))
+  (let ((temp-buffer-show-function  'switch-to-buffer-other-window)
+        (font-lock-verbose          nil)
+        (global-font-lock-mode      nil))
     ;; DEBUG (message "KEY: `%s'" key)(sit-for 4) ; DEBUG
     (cond ((stringp key)
            (help-on-click/key-lookup key))
           (t                            ; Vector.
-           (let ((type (aref key 0)))
+           (let ((type  (aref key 0)))
              (cond ((or (symbolp type)(integerp type))
                     (cond ((eq 'mode-line type) ; Click on the mode line.
                            (Info-goto-node "(emacs)Mode Line")
@@ -499,18 +492,18 @@ If you click elsewhere in a buffer other than the minibuffer, then
                    ((not (eq 'down (car (event-modifiers (car type))))) ; e.g. mouse menus
                     (help-on-click/key-lookup key))
                    (t                   ; Mouse click.
-                    (setq key type)
+                    (setq key  type)
                     (cond ((window-minibuffer-p ; Click in minibuffer.
                             (posn-window (event-start key)))
                            (Info-goto-node "(emacs)Minibuffer")
-                           (message "Minibuffer: decribed in *info* buffer."))
+                           (message "Minibuffer: decribed in buffer `*info*'."))
                           (t
-                           (let ((symb (save-excursion (mouse-set-point key)
+                           (let ((symb            (save-excursion (mouse-set-point key)
                                                        (symbol-at-point)))
-                                 (apropos-do-all t)
-                                 (found-doc nil)
-                                 (found nil)
-                                 (symb-regexp nil))
+                                 (apropos-do-all  t)
+                                 (found-doc       nil)
+                                 (found           nil)
+                                 (symb-regexp     nil))
                              (cond (symb
                                     (message "Looking for info apropos `%s'..." symb)
                                     (when (get-buffer "*Apropos Doc*")
@@ -519,47 +512,48 @@ If you click elsewhere in a buffer other than the minibuffer, then
                                           (apropos-documentation
                                            (setq symb-regexp
                                                  (regexp-quote
-                                                  (setq symb (format "%s" symb))))))
+                                                  (setq symb  (format "%s" symb))))))
                                     (when found-doc
                                       (save-excursion
                                         (set-buffer (get-buffer "*Apropos*"))
                                         (rename-buffer "*Apropos Doc*"))
                                       (when (fboundp '1-window-frames-on) ; In `frame-fns.el'.
-                                        (let ((frames (1-window-frames-on "*Apropos Doc*")))
+                                        (let ((frames  (1-window-frames-on "*Apropos Doc*")))
                                           (while frames
                                             (save-window-excursion
                                               (select-frame (car frames))
                                               (rename-frame nil "*Apropos Doc*")
                                               (pop frames))))))
-                                    (setq found (apropos symb-regexp))
+                                    (setq found  (apropos symb-regexp))
                                     ;; Remove empty stuff.
-                                    (setq found
-                                          (and (consp found) (or (cdr found) (cadr found))))
+                                    (setq found  (and (consp found)
+                                                      (or (cdr found) (cadr found))))
                                     ;; Remove *Apropos* window that was displayed needlessly.
                                     (unless found (delete-windows-on "*Apropos*"))
                                     (cond
                                       ((and found-doc found)
                                        (message
-                                        "See *Apropos* and *Apropos Doc* buffers."))
+                                        "See buffers `*Apropos*' and `*Apropos Doc*'."))
                                       (found
                                        (message
-                                        "See information on `%s' in the *Apropos* buffer."
+                                        "See information on `%s' in buffer `*Apropos*'."
                                         symb))
                                       (found-doc
                                        (message
-                                        "See information on `%s' in the *Apropos Doc* buffer."
+                                        "See information on `%s' in buffer `*Apropos Doc*'."
                                         symb))
                                       (t
                                        (message
                                         "No information found regarding `%s'."
                                         symb))))
                                    (t ; User clicked in buffer, but not on a symbol.
-                                    (let ((bufname (buffer-name (current-buffer))))
+                                    (let ((bufname  (buffer-name (current-buffer))))
                                       (describe-mode)
                                       (when
                                           (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
                                       (message
-                                       "Mode(s) of buffer `%s' are described in *Help* buffer."
+                                       "Mode(s) of buffer `%s' are described in buffer \
+`*Help*'."
                                        bufname))))))))))))))
 
 ;;;###autoload
@@ -578,19 +572,17 @@ If you click elsewhere in a buffer other than the minibuffer, then
 (defun pop-to-help-toggle ()
   "Pop to buffer *Help* or back to the buffer that sent you to *Help*."
   (interactive)
-  (let ((orig-buf (and (buffer-live-p help-origin-buffer)
-                       (get-buffer help-origin-buffer)))
-        (w32-grab-focus-on-raise   t)
-        (win32-grab-focus-on-raise t))  ; Older name.
+  (let ((orig-buf                   (and (buffer-live-p help-origin-buffer)
+                                         (get-buffer help-origin-buffer)))
+        (w32-grab-focus-on-raise    t)
+        (win32-grab-focus-on-raise  t)) ; Older name.
     (if (string-match "*Help*" (buffer-name))
-        (cond ((not orig-buf)
-               (error "No buffer to return to"))
+        (cond ((not orig-buf) (error "No buffer to return to"))
               ((string-match "Minibuf" (buffer-name orig-buf)) ; No `minibufferp' in Emacs 20.
                (select-frame-set-input-focus
                 (window-frame (select-window (minibuffer-window)))))
-              (t
-               (pop-to-buffer orig-buf)))
-      (setq help-origin-buffer (current-buffer))
+              (t (pop-to-buffer orig-buf)))
+      (setq help-origin-buffer  (current-buffer))
       (pop-to-buffer "*Help*"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;

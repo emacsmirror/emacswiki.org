@@ -372,6 +372,26 @@ twice, so that this option can have the proper effect.
 
 
 ----
+[:icicle-candidate-help-keys]
+==== Option icicle-candidate-help-keys ====
+
+User option '''`icicle-candidate-help-keys'''' specifies the keys that
+display help about the current completion candidate.  The
+default values are '''`C-M-RET'''' (`C-M-return'), '''`C-M-help'''',
+'''`C-M-f1'''', '''`C-help'''', and '''`C-f1''''.
+
+
+----
+[:icicle-candidate-action-keys]
+==== Option icicle-candidate-action-keys ====
+
+User option '''`icicle-candidate-action-keys'''' specifies the keys
+that act on the current completion candidate.  The default value
+is '''`C-RET'''' (`C-return').
+
+
+
+----
 [:icicle-apropos-cycle-next-keys]
 [:icicle-apropos-cycle-previous-keys]
 [:icicle-prefix-cycle-next-keys]
@@ -1716,7 +1736,7 @@ Available only for Emacs 22 and later, and you must load library
 [:icicle-key-descriptions-use-angle-brackets-flag]
 ==== Option icicle-key-descriptions-use-angle-brackets-flag ====
 
-User option '''`##icicle-key-descriptions-use-<>-flag##'''' (aka `icicle-key-descriptions-use-angle-brackets-flag') determines whether angle brackets (`##<##', `##>##') are used by '''Icicles''' for named [[key]]s, such as function keys (`##<f9>##' vs `f9') and pseudo keys (`##<mode-line>##' vs `mode-line').  Non-`nil' means to use angle brackets.  This option does not affect Emacs key descriptions outside of '''Icicles''' (e.g. `C-h k' or `C-h w'), and it has no effect for versions of Emacs prior to 21, because they never use angle brackets.  The default value is `nil', because I think angle brackets reduce readability.
+User option '''`##icicle-key-descriptions-use-<>-flag##'''' (aka `icicle-key-descriptions-use-angle-brackets-flag') determines whether angle brackets (`##<##', `##>##') are used by '''Icicles''' for named [[key]]s, such as function keys (`##<f9>##' vs `f9') and pseudo keys (`##<mode-line>##' vs `mode-line').  Non-`nil' means to use angle brackets.  This option does not affect Emacs key descriptions outside of '''Icicles''', and it has no effect for versions of Emacs prior to 21, because they never use angle brackets.  The default value is `nil', because I think angle brackets reduce readability.
 
 ----
 [:icicle-keymaps-for-key-completion]
