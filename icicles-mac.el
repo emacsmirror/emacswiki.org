@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 17:06:05 2011 (-0700)
+;; Last-Updated: Sun Oct  9 09:53:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 897
+;;     Update #: 902
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -284,6 +284,7 @@ brackets.  For example:
     (setq last-kbd-macro  (icicle-edmacro-parse-keys (buffer-substring start end) nil angles))))
 
 ;; Same as `naked' in `naked.el'.
+;;;###autoload
 (defmacro icicle-kbd (keys &optional angles)
   "Like `kbd', but does not use angle brackets, by default.
 With non-nil optional arg ANGLES, expect key descriptions to use angle

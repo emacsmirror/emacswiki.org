@@ -1,0 +1,79 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Standard Functions Redefined]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming with Fancy Candidates]] ||
+
+----
+
+
+== Debugging and Reporting Icicles Bugs ==
+
+You can report a problem you experience with '''Icicles''' at '''IciclesIssuesOpen''' -- please follow the formatting suggestion provided there.
+
+
+But the best way to report an '''Icicles''' issue or pass along a
+suggestion is by email.  Do one of the following:
+
+* Choose item `##Send Bug Report##' from menu-bar menu '''Icicles'''.
+
+* Use `M-x icicle-send-bug-report'.
+
+* Use `##C-?##' from the minibuffer.  Then click button `##Icicles
+Options and Faces##' in buffer `*Help*'.  Then click the link
+  `##Send Bug Report##' in buffer `##*Customize Group: icicles*##'.
+
+When you report a problem, please always mention your Emacs
+version and platform (e.g. Windows, GNU/Linux).  If you are not
+using the latest Icicles files, mention which ones you are using.
+Icicles files each have an `##Update ###' field in the header, which
+identifies the file exactly.
+
+If you can include a debugger backtrace in your email, that helps
+-- see the next section.
+
+=== Debugging Tips ===
+
+1. If you use the debugger to report a backtrace, first delete (or
+   move out of your `load-path') all '''Icicles''' byte-compiled files,
+   so that you use only the source files (`##icicles*.el##') for
+   debugging.
+
+2. Set `debug-on-error' to `t', so that if an error is raised you
+   get a debugger backtrace.
+
+3. If you want to enter the debugger at a particular point and
+   step through the execution, you can either use `M-x debug-on-entry' (to enter the debugger whenever you enter a
+   given function) or temporarily place breakpoint calls to the
+   debugger -- ##(debug)## -- in the source code and reevaluate the
+   enclosing function definition.
+
+4. When in the debugger, use `d' to step through the execution or
+   `c' to skip over a particular step (execute it to completion,
+   skipping over the details).  Use `q' to exit the debugger.  An
+   alternative to using the regular debugger is to use `edebug' -
+   some people prefer that.
+
+Remember to load only the source files -- a backtrace from
+byte-compiled code is not very useful.  Include the backtrace in your
+bug report.
+
+
+
+
+----
+
+
+
+|| *Previous:*  [[Icicles - Standard Functions Redefined]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming with Fancy Candidates]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

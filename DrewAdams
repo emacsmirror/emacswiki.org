@@ -394,6 +394,12 @@ What you really want, I think, is what '''Icicles''' does: you request completio
 
 Then replace `icicle-insert-string-at-point' by that command in a copy of `icicles-mode.el', load that, and toggle <tt>[[icicle-mode.el]]</tt> twice.  Try it and you'll see that it is not what you want.  If it is, then now you know what to do to get it. ;-) -- DrewAdams
 
+[new:Anonymous:2011-10-10 04:20 UTC]
+Hi Drew,
+S-TAB does the trick.
+Thanks
+Mike
+
 
 [new:DaveAbrahams:2011-08-30 20:52 UTC]
 Hi Drew,
@@ -402,6 +408,18 @@ One downside I notice with many of the enhancements such as compile- and grep+ i
 
 [new:DrewAdams:2011-08-30 21:02 UTC]
 Should be OK now. Let me know if you find other such problems. Thx -- DrewAdams
+
+[new:Anonymous:2011-10-10 04:29 UTC]
+Hi Drew,
+I would like to have Icicle Imenu (or variant) insert the Imenu match at point.  The use would be
+to insert text (Imenu match) anywhere in the file WITHOUT having point jump to another location copy, jump back then paste.
+A more interesting version would cycle sub-matches and allow the user to continue selecting\inserting until the user
+ended the command.
+Is this possible?
+Thanks
+
+Mike
+
 
 ----
 

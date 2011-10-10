@@ -24,5 +24,8 @@ With an incremental search, it actually seems fairly natural to end up with poin
         (backward-char (length term))))
 
 But a hook approach would be better. -- SeanPalmer
+
+[new] Surely (backward-char (length term)) is going to fail for most regex searches. You could, however, use (search-backward term) to move from the end of the match to the beginning. Doing this with 'after' advice and only in the interactive case *might* be safe, but you certainly wouldn't want to be messing with this function this way in non-interactive circumstances -- too many things depend upon its standard behaviour.
+
 ----
 CategorySearchAndReplace

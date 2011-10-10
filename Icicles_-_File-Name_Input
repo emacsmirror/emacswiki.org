@@ -186,7 +186,7 @@ directory'' it is in.  The former requires
 GNU/Linux or UNIX command `locate', to work.  The latter does not
 require any external program.
 
-Because it takes advantage of `locate' having indexed files on you
+Because it takes advantage of `locate' having indexed files on your
 file system, `icicle-locate' can be much faster than
 `icicle-locate-file'.  Otherwise, these two '''Icicles''' commands work
 similarly.

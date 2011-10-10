@@ -725,7 +725,9 @@ consecutive such lines are elided as '''`##...##''''.  You can toggle this
 option anytime during completion using '''`##C-u C-x .##'''', which is
 bound to command '''`icicle-toggle-hiding-non-matching-lines''''.
 
-
+Hiding non-matching lines can be especially useful when
+candidates are large (many lines), such as full function
+definitions (e.g., from `icicle-imenu-full').
 
 ----
 [:icicle-show-Completions-initially-flag]

@@ -21,6 +21,14 @@ default '''Icicles''' bindings for a while, before deciding that you want to
 change them.  Habit is a powerful persuader, but its advice is not
 always the best ;-).
 
+These are the main kinds of '''Icicles''' key bindings.  They are described in the sections below.
+
+* Global bindings
+** Additions to [[menu bar]] menus
+** Key completion keys (`S-TAB' by default)
+* ''Icicle'' mode bindings
+* Minibuffer bindings
+
 The main user option for customizing key bindings is
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.  You use it to change or remove
 any of the top-level bindings in ''Icicle'' mode.
@@ -86,8 +94,6 @@ bindings.
 
 
 
-
-
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>'''' ('''`TAB'''')
  Prefix-complete your input.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' ('''`S-TAB'''')
@@ -110,13 +116,26 @@ Apropos-complete your input.
  Complete Isearch string using [[search ring]].
 
 
-These are the main kinds of '''Icicles''' key bindings:
 
-* Global bindings
-** Additions to [[menu bar]] menus
-** Key completion keys (`S-TAB' by default)
-* ''Icicle'' mode bindings
-* Minibuffer bindings
+
+
+Whenever you customize an '''Icicles''' key binding, whether via a user
+option value or using `define-key' or `global-set-key', you can
+use macro '''`icicle-kbd'''' to express the key sequence in a
+user-friendly way.  It is the same as the vanilla Emacs macro `kbd', except that (by
+default) it does not require you to use angle brackets ('''`##<##'''', '''`##>##'''')
+around function keys (and it does not expect you to).
+
+So you can write, e.g., '''##(icicle-kbd "C-delete")##''' instead of one of
+these: ##(kbd "C-<delete>")##, ##[C-delete]##, or ##[(control delete)]##.
+There are plenty of examples of the use of `icicle-kbd' in the
+'''Icicles''' source files.
+
+
+
+
+
+
 
 
 

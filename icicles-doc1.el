@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 18:23:47 2011 (-0700)
+;; Last-Updated: Sun Oct  9 07:43:12 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26290
+;;     Update #: 26292
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -407,6 +407,8 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Customizing Minibuffer Bindings")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Redefines Some Standard Functions")
+;;  (@file :file-name "icicles-doc2.el" :to "Debugging and Reporting Icicles Bugs")
+;;    (@file :file-name "icicles-doc2.el" :to "Debugging Tips")
 ;;  (@file :file-name "icicles-doc2.el" :to "Programming with Fancy Candidates")
 ;;  (@file :file-name "icicles-doc2.el" :to "Programming Multi-Completions")
 ;;    (@file :file-name "icicles-doc2.el" :to "Variable icicle-list-use-nth-parts")

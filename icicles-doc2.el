@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 19:14:06 2011 (-0700)
+;; Last-Updated: Sun Oct  9 10:40:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28348
+;;     Update #: 28371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -292,6 +292,8 @@
 ;;    (@> "Customizing Minibuffer Bindings")
 ;;
 ;;  (@> "Icicles Redefines Some Standard Functions")
+;;  (@> "Debugging and Reporting Icicles Bugs")
+;;    (@> "Debugging Tips")
 ;;  (@> "Programming with Fancy Candidates")
 ;;  (@> "Programming Multi-Completions")
 ;;    (@> "Variable icicle-list-use-nth-parts")
@@ -4921,6 +4923,10 @@
 ;;    option anytime during completion using `C-u C-x .', which is
 ;;    bound to command `icicle-toggle-hiding-non-matching-lines'.
 ;;
+;;    Hiding non-matching lines can be especially useful when
+;;    candidates are large (many lines), such as full function
+;;    definitions (e.g., from `icicle-imenu-full').
+;;
 ;;  * User option `icicle-show-Completions-initially-flag' controls
 ;;    whether or not buffer `*Completions*' is shown initially,
 ;;    without your needing to hit `TAB' or `S-TAB' to show it.
@@ -6882,6 +6888,15 @@
 ;;  change them.  Habit is a powerful persuader, but its advice is not
 ;;  always the best ;-).
 ;;
+;;  These are the main kinds of Icicles key bindings.  They are
+;;  described in the sections below.
+;;
+;;  * Global bindings
+;;    . Additions to menu-bar menus
+;;    . Key completion keys (`S-TAB' by default)
+;;  * Icicle mode bindings
+;;  * Minibuffer bindings
+;;
 ;;  The main user option for customizing key bindings is
 ;;  `icicle-top-level-key-bindings'.  You use it to change or remove
 ;;  any of the top-level bindings in Icicle mode.
@@ -6968,13 +6983,19 @@
 ;;  * `icicle-isearch-complete-keys'       (`M-TAB', `C-M-TAB', `M-o')
 ;;    Complete incremental search string using search ring.
 ;;
-;;  These are the main kinds of Icicles key bindings:
+;;  Whenever you customize an Icicles key binding, whether via a user
+;;  option value or using `define-key' or `global-set-key', you can
+;;  use macro `icicle-kbd' to express the key sequence in a
+;;  user-friendly way.
 ;;
-;;  * Global bindings
-;;    . Additions to menu-bar menus
-;;    . Key completion keys (`S-TAB' by default)
-;;  * Icicle mode bindings
-;;  * Minibuffer bindings
+;;  It is the same as the vanilla Emacs macro `kbd', except that (by
+;;  default) it does not require you to use angle brackets (`<', `>')
+;;  around function keys (and it does not expect you to).
+;;
+;;  So you can write, e.g., (icicle-kbd "C-delete") instead of one of
+;;  these: (kbd "C-<delete>"), [C-delete], or [(control delete)].
+;;  There are plenty of examples of the use of `icicle-kbd' in the
+;;  Icicles source files.
 ;;
 ;;(@* "Customizing Global Bindings")
 ;;  ** Customizing Global Bindings **
@@ -7082,6 +7103,62 @@
 ;;    `switch-to-completions'.
 ;;
 ;;  When you exit Icicle mode, the standard definitions are restored.
+ 
+;;(@* "Debugging and Reporting Icicles Bugs")
+;;
+;;  Debugging and Reporting Icicles Bugs
+;;  ------------------------------------
+;;
+;;  You can report a problem you experience with Icicles on the Emacs
+;;  Wiki, here: http://www.emacswiki.org/emacs/IciclesIssuesOpen.
+;;
+;;  But the best way to report an Icicles issue or pass along a
+;;  suggestion is by email.  Do one of the following:
+;;
+;;  * Choose item `Send Bug Report' from menu-bar menu `Icicles'.
+;;
+;;  * Use `M-x icicle-send-bug-report'.
+;;
+;;  * Use `C-?' from the minibuffer.  Then click button `Icicles
+;;    Options and Faces' in buffer `*Help*'.  Then click the link
+;;    `Send Bug Report' in buffer `*Customize Group: icicles*'.
+;;
+;;  When you report a problem, please always mention your Emacs
+;;  version and platform (e.g. Windows, GNU/Linux).  If you are not
+;;  using the latest Icicles files, mention which ones you are using.
+;;  Icicles files each have an `Update #' field in the header, which
+;;  identifies the file exactly.
+;;
+;;  If you can include a debugger backtrace in your email, that helps
+;;  - see the next section.
+;;
+;;(@* "Debugging Tips")
+;;  ** Debugging Tips **
+;;
+;;  1. If you use the debugger to report a backtrace, first delete (or
+;;     move out of your `load-path') all Icicles byte-compiled files,
+;;     so that you use only the source files (`icicles*.el') for
+;;     debugging.
+;;
+;;  2. Set `debug-on-error' to `t', so that if an error is raised you
+;;     get a debugger backtrace.
+;;
+;;  3. If you want to enter the debugger at a particular point and
+;;     step through the execution, you can either use `M-x
+;;     debug-on-entry' (to enter the debugger whenever you enter a
+;;     given function) or temporarily place breakpoint calls to the
+;;     debugger - `(debug)' - in the source code and reevaluate the
+;;     enclosing function definition.
+;;
+;;  4. When in the debugger, use `d' to step through the execution or
+;;     `c' to skip over a particular step (execute it to completion,
+;;     skipping over the details).  Use `q' to exit the debugger.  An
+;;     alternative to using the regular debugger is to use `edebug' -
+;;     some people prefer that.
+;;
+;;  Remember to load only the source files - a backtrace from
+;;  byte-compiled code is not very useful.  Include the backtrace in
+;;  your bug report.
  
 ;;(@* "Programming with Fancy Candidates")
 ;;
