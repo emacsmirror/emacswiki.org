@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 16:54:17 2011 (-0700)
+;; Last-Updated: Mon Oct 10 15:25:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 23005
+;;     Update #: 23020
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -813,7 +813,11 @@
 ;;    `icicle-choose-candidate-of-type',
 ;;    `icicle-choose-completion-string', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry', `icicle-clear-lighter',
-;;    `icicle-clear-minibuffer', `icicle-color-blue-lessp',
+;;    `icicle-clear-minibuffer', `icicle-cmd2-after-load-bookmark+',
+;;    `icicle-cmd2-after-load-hexrgb',
+;;    `icicle-cmd2-after-load-highlight',
+;;    `icicle-cmd2-after-load-palette',
+;;    `icicle-cmd2-after-load-synonyms', `icicle-color-blue-lessp',
 ;;    `icicle-color-completion-setup',
 ;;    `icicle-color-distance-hsv-lessp',
 ;;    `icicle-color-distance-rgb-lessp', `icicle-color-green-lessp',
@@ -877,6 +881,7 @@
 ;;    `icicle-expand-file-or-dir-name',
 ;;    `icicle-explicit-saved-completion-candidates', `icicle-explore',
 ;;    `icicle-extra-candidates-first-p',
+;;    `icicle-face-after-load-hexrgb',
 ;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
@@ -995,8 +1000,7 @@
 ;;    `icicle-read-char-exclusive', `icicle-read-char-by-name',
 ;;    `icicle-read-face-name', `icicle-read-file-name',
 ;;    `icicle-read-from-minibuffer',
-;;    `icicle-read-from-minibuf-nil-default',
-;;    `icicle-read-single-key-description', `icicle-read-number',
+;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
 ;;    `icicle-read-string-completing',
@@ -1341,7 +1345,20 @@
 
 ;;; Load other Icicles files (except documentation) ------------------
 
-(require 'icicles-mac)
+;; Put this first
+;;;###autoload
+(defcustom icicle-byte-compile-eval-after-load-flag t
+  "*Non-nil means byte-compile definitions made within `eval-after-load'.
+Some Icicles functions (commands, in particular) work only if a given
+library is loaded.  Some such functions are defined inside an
+`eval-after-load' form, which means they are defined only, and as soon
+as, the required library is loaded.
+
+If this option is non-nil then those function definitions are
+byte-compiled.  This compilation adds a bit to the load time, in
+effect, but it means that the functions run faster."
+  :type 'boolean :group 'Icicles-Miscellaneous)
+
 (require 'icicles-face) ;; Requires mac
 (require 'icicles-opt)  ;; Requires face
 (require 'icicles-var)  ;; Requires opt

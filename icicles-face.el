@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  6 12:51:46 2011 (-0700)
+;; Last-Updated: Mon Oct 10 15:26:23 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 575
+;;     Update #: 604
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,7 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `icicles-mac'.
+;;   `backquote', `bytecomp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -35,6 +35,10 @@
 ;;    `Icicles-Minibuffer-Display', `Icicles-Miscellaneous',
 ;;    `Icicles-Searching'.
 ;;
+;;  Macros defined here:
+;;
+;;    `icicle-maybe-byte-compile-after-load'.
+;;
 ;;  Faces defined here:
 ;;
 ;;    `icicle-candidate-part',
@@ -43,7 +47,13 @@
 ;;    `icicle-Completions-instruction-1',
 ;;    `icicle-Completions-instruction-2',
 ;;    `icicle-current-candidate-highlight', `icicle-extra-candidate',
-;;    `icicle-historical-candidate', `icicle-input-completion-fail',
+;;    `icicle-face-after-load-hexrgb',
+;;    `icicle-face-after-load-hexrgb',
+;;    `icicle-face-after-load-hexrgb',
+;;    `icicle-face-after-load-hexrgb',
+;;    `icicle-face-after-load-hexrgb',
+;;    `icicle-face-after-load-hexrgb', `icicle-historical-candidate',
+;;    `icicle-input-completion-fail',
 ;;    `icicle-input-completion-fail-lax',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
@@ -78,8 +88,9 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
-;;  (@> "Groups, organized alphabetically")
-;;  (@> "Faces, organized alphabetically")
+;;  (@> "Icicles Commands for Other Packages")
+;;  (@> "Groups, Organized Alphabetically")
+;;  (@> "Faces, Organized Alphabetically")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -105,18 +116,106 @@
 (eval-when-compile (require 'hexrgb nil t)) ;; (no error if not found):
   ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
 
-(eval-when-compile
- (or (condition-case nil
-         (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
-       (error nil))
-     (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
- ;; icicle-maybe-byte-compile-after-load
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
-;;(@* "Groups, organized alphabetically")
+;;(@* "Icicles Commands for Other Packages")
 
-;;; Groups, organized alphabetically ---------------------------------
+;;; Icicles Commands for Other Packages ------------------------------
+
+;; Same as the definition in `icicles-cmd2.el'.
+(defmacro icicle-maybe-byte-compile-after-load (function)
+  "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
+Do nothing if FUNCTION has not been defined (`fboundp')."
+  `(when (and icicle-byte-compile-eval-after-load-flag (fboundp ',function))
+    (require 'bytecomp)
+    (let ((byte-compile-warnings  ())
+          (byte-compile-verbose   nil))
+      (byte-compile ',function))))
+
+(defun icicle-face-after-load-hexrgb ()
+  "Things to do for `icicles-face.el' after loading `hexrgb.el'."
+
+  ;; Essentially a version of `doremi-increment-color-component' for hue only.
+  ;; Must be before `icicle-search-context-level-1'.
+  (defun icicle-increment-color-hue (color increment)
+    "Increase hue component of COLOR by INCREMENT."
+    (unless (string-match "#" color)    ; Convert color name to #hhh...
+      (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    ;; Convert RGB to HSV
+    (let* ((rgb         (x-color-values color))
+           (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+           (green       (/ (float (nth 1 rgb)) 65535.0))
+           (blue        (/ (float (nth 2 rgb)) 65535.0))
+           (hsv         (hexrgb-rgb-to-hsv red green blue))
+           (hue         (nth 0 hsv))
+           (saturation  (nth 1 hsv))
+           (value       (nth 2 hsv)))
+      (setq hue  (+ hue (/ increment 100.0)))
+      (when (> hue 1.0) (setq hue  (1- hue)))
+      (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                          (hexrgb-hsv-to-rgb hue saturation value)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-increment-color-hue)
+
+
+  ;; Essentially a version of `doremi-increment-color-component' for saturation only.
+  ;; Must be before `icicle-search-context-level-1'.
+  (defun icicle-increment-color-saturation (color increment)
+    "Increase saturation component of COLOR by INCREMENT."
+    (unless (string-match "#" color)    ; Convert color name to #hhh...
+      (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    ;; Convert RGB to HSV
+    (let* ((rgb         (x-color-values color))
+           (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+           (green       (/ (float (nth 1 rgb)) 65535.0))
+           (blue        (/ (float (nth 2 rgb)) 65535.0))
+           (hsv         (hexrgb-rgb-to-hsv red green blue))
+           (hue         (nth 0 hsv))
+           (saturation  (nth 1 hsv))
+           (value       (nth 2 hsv)))
+      (setq saturation  (+ saturation (/ increment 100.0)))
+      (when (> saturation 1.0) (setq saturation  (1- saturation)))
+      (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                          (hexrgb-hsv-to-rgb hue saturation value)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-increment-color-saturation)
+
+
+  ;; Essentially a version of `doremi-increment-color-component' for value only.
+  ;; Must be before definition of option `icicle-region-background' (in `icicles-opt.el').
+  (defun icicle-increment-color-value (color increment)
+    "Increase value component (brightness) of COLOR by INCREMENT."
+    (unless (string-match "#" color)    ; Convert color name to #hhh...
+      (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    ;; Convert RGB to HSV
+    (let* ((rgb         (x-color-values color))
+           (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+           (green       (/ (float (nth 1 rgb)) 65535.0))
+           (blue        (/ (float (nth 2 rgb)) 65535.0))
+           (hsv         (hexrgb-rgb-to-hsv red green blue))
+           (hue         (nth 0 hsv))
+           (saturation  (nth 1 hsv))
+           (value       (nth 2 hsv)))
+      (setq value  (+ value (/ increment 100.0)))
+      (when (> value 1.0) (setq value  (1- value)))
+      (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                          (hexrgb-hsv-to-rgb hue saturation value)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-increment-color-value)
+
+  )
+
+
+;;; Library `hexrgb.el'.
+;;;
+;;;###autoload (autoload 'icicle-increment-color-hue        "icicles-face.el")
+;;;###autoload (autoload 'icicle-increment-color-saturation "icicles-face.el")
+;;;###autoload (autoload 'icicle-increment-color-value      "icicles-face.el")
+(eval-after-load "hexrgb" '(icicle-face-after-load-hexrgb))
+ 
+;;(@* "Groups, Organized Alphabetically")
+
+;;; Groups, Organized Alphabetically ---------------------------------
 
 ;;;###autoload
 (defgroup Icicles nil
@@ -310,9 +409,9 @@ Don't forget to mention your Emacs and Icicles library versions."))
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
  
-;;(@* "Faces, organized alphabetically")
+;;(@* "Faces, Organized Alphabetically")
 
-;;; Faces, organized alphabetically ----------------------------------
+;;; Faces, Organized Alphabetically ----------------------------------
 
 ;;;###autoload
 (defface icicle-candidate-part
@@ -458,79 +557,6 @@ Not used for versions of Emacs before version 21."
   "*Face used to highlight current match of your search context regexp.
 This highlighting is done during Icicles searching."
   :group 'Icicles-Searching :group 'faces)
-
-(eval-after-load "hexrgb"
-  '(progn
-
-    ;; Essentially a version of `doremi-increment-color-component' for hue only.
-    ;; Must be before `icicle-search-context-level-1'.
-    (defun icicle-increment-color-hue (color increment)
-      "Increase hue component of COLOR by INCREMENT."
-      (unless (string-match "#" color)  ; Convert color name to #hhh...
-        (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
-      ;; Convert RGB to HSV
-      (let* ((rgb         (x-color-values color))
-             (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
-             (green       (/ (float (nth 1 rgb)) 65535.0))
-             (blue        (/ (float (nth 2 rgb)) 65535.0))
-             (hsv         (hexrgb-rgb-to-hsv red green blue))
-             (hue         (nth 0 hsv))
-             (saturation  (nth 1 hsv))
-             (value       (nth 2 hsv)))
-        (setq hue  (+ hue (/ increment 100.0)))
-        (when (> hue 1.0) (setq hue  (1- hue)))
-        (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                            (hexrgb-hsv-to-rgb hue saturation value)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-increment-color-hue)
-
-
-    ;; Essentially a version of `doremi-increment-color-component' for saturation only.
-    ;; Must be before `icicle-search-context-level-1'.
-    (defun icicle-increment-color-saturation (color increment)
-      "Increase saturation component of COLOR by INCREMENT."
-      (unless (string-match "#" color)  ; Convert color name to #hhh...
-        (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
-      ;; Convert RGB to HSV
-      (let* ((rgb         (x-color-values color))
-             (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
-             (green       (/ (float (nth 1 rgb)) 65535.0))
-             (blue        (/ (float (nth 2 rgb)) 65535.0))
-             (hsv         (hexrgb-rgb-to-hsv red green blue))
-             (hue         (nth 0 hsv))
-             (saturation  (nth 1 hsv))
-             (value       (nth 2 hsv)))
-        (setq saturation  (+ saturation (/ increment 100.0)))
-        (when (> saturation 1.0) (setq saturation  (1- saturation)))
-        (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                            (hexrgb-hsv-to-rgb hue saturation value)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-increment-color-saturation)
-
-
-    ;; Essentially a version of `doremi-increment-color-component' for value only.
-    ;; Must be before `icicle-region-background'.
-    (defun icicle-increment-color-value (color increment)
-      "Increase value component (brightness) of COLOR by INCREMENT."
-      (unless (string-match "#" color)  ; Convert color name to #hhh...
-        (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
-      ;; Convert RGB to HSV
-      (let* ((rgb         (x-color-values color))
-             (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
-             (green       (/ (float (nth 1 rgb)) 65535.0))
-             (blue        (/ (float (nth 2 rgb)) 65535.0))
-             (hsv         (hexrgb-rgb-to-hsv red green blue))
-             (hue         (nth 0 hsv))
-             (saturation  (nth 1 hsv))
-             (value       (nth 2 hsv)))
-        (setq value  (+ value (/ increment 100.0)))
-        (when (> value 1.0) (setq value  (1- value)))
-        (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                            (hexrgb-hsv-to-rgb hue saturation value)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-increment-color-value)
-
-    ))
 
 ;;;###autoload
 (defface icicle-search-context-level-1

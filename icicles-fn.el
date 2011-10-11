@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 13:34:04 2011 (-0700)
+;; Last-Updated: Sun Oct  9 16:56:23 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12670
+;;     Update #: 12681
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -43,7 +43,7 @@
 ;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
-;;    `icicle-apropos-candidates',
+;;    `icicle-apropos-candidates', `icicle-assoc-delete-all',
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer',
@@ -167,7 +167,7 @@
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
 ;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
 ;;    `icicle-transform-candidates',
-;;    `icicle-transform-multi-completion',
+;;    `icicle-transform-multi-completion', `icicle-try-switch-buffer',
 ;;    `icicle-unhighlight-lighter', `icicle-unpropertize',
 ;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
@@ -184,7 +184,7 @@
 ;;    `old-read-char-by-name', `old-read-face-name',
 ;;    `old-read-from-minibuffer', `old-read-number',
 ;;    `old-read-string', `old-shell-command',
-;;    `old-shell-command-on-region'.
+;;    `old-shell-command-on-region', `select-frame-set-input-focus'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -3762,6 +3762,19 @@ If LEN is nil, treat it as the length of STRING."
 
 ;;; Icicles functions - common helper functions ----------------------
 
+(defun icicle-try-switch-buffer (buffer)
+  "Try to switch to BUFFER, first in same window, then in other window."
+  (when (and (buffer-live-p buffer) (not icicle-inhibit-try-switch-buffer))
+    (condition-case err-switch-to
+        (switch-to-buffer buffer)
+      (error (and (string= "Cannot switch buffers in minibuffer window"
+                           (error-message-string err-switch-to))
+                  ;; Try another window.  Don't bother if the buffer to switch to is a minibuffer.
+                  (condition-case err-switch-other
+                      (unless (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name buffer))
+                        (switch-to-buffer-other-window buffer))
+                    (error (error-message-string err-switch-other)))))))) ; Return error message string.
+
 ;; Main cycling function - used by `icicle-next-prefix-candidate', `icicle-next-apropos-candidate'.
 (defun icicle-next-candidate (nth candidates-fn &optional regexp-p)
   "Replace input by NTH next or previous completion for an input.
@@ -5213,6 +5226,20 @@ defined)."
 This must be called from the minibuffer."
   (if (fboundp 'delete-minibuffer-contents)  (delete-minibuffer-contents)  (erase-buffer)))
 
+(defun icicle-assoc-delete-all (key alist)
+  "Delete from ALIST all elements whose car is `equal' to KEY.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist)) (equal (car (car alist)) key))
+    (setq alist  (cdr alist)))
+  (let ((tail  alist)
+        tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
+          (setcdr tail (cdr tail-cdr))
+        (setq tail  tail-cdr))))
+  alist)
+
 (defun icicle-delete-alist-dups (alist)
   "Destructively remove conses from ALIST with `equal' `car's.
 Store the result in ALIST and return it.  ALIST must be a proper list.
@@ -5416,6 +5443,17 @@ Non-nil optional arg ANGLES means use angle brackets."
 ;;             (setcdr tail (cdr tail-cdr))
 ;;           (setq tail  tail-cdr))))
 ;;     alist)
+
+;; Standard Emacs 22+ function, defined here for Emacs 20, 21.
+(unless (fboundp 'select-frame-set-input-focus) ; Defined in Emacs 22.
+  (defun select-frame-set-input-focus (frame)
+    "Select FRAME, raise it, and set input focus, if possible."
+    (select-frame frame)
+    (raise-frame frame)
+    ;; Ensure, if possible, that frame gets input focus.
+    (cond ((eq window-system 'x) (x-focus-frame frame))
+          ((eq window-system 'w32) (w32-focus-frame frame)))
+    (cond (focus-follows-mouse (set-mouse-position (selected-frame) (1- (frame-width)) 0)))))
 
 ;; Standard Emacs 21+ function, defined here for Emacs 20.
 (unless (fboundp 'assq-delete-all)
@@ -5875,7 +5913,6 @@ abstracting from whitespace and letter case."
                        (pop tail)))
     (nreverse new)))
 
-;;;###autoload
 (defmacro icicle-maybe-cached-action (action)
   "Evaluate and return ACTION or `icicle-all-candidates-action'.
 If `icicle-all-candidates-action' is nil, use ACTION.

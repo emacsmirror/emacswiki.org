@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 18:08:30 2011 (-0700)
+;; Last-Updated: Mon Oct 10 14:33:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4536
+;;     Update #: 4624
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,10 +21,10 @@
 ;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
+;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `naked', `pp',
+;;   `pp+', `regexp-opt', `ring', `ring+', `strings', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -50,7 +50,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `icicle-define-search-bookmark-command', `icicle-search-modes',
+;;    `icicle-maybe-byte-compile-after-load', `icicle-search-modes',
 ;;    `icicle-with-comments-hidden'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
@@ -156,7 +156,12 @@
 ;;    `icicle-char-properties-in-buffer',
 ;;    `icicle-char-properties-in-buffers',
 ;;    `icicle-choose-anything-candidate',
-;;    `icicle-choose-candidate-of-type', `icicle-color-blue-lessp',
+;;    `icicle-choose-candidate-of-type',
+;;    `icicle-cmd2-after-load-bookmark+',
+;;    `icicle-cmd2-after-load-hexrgb',
+;;    `icicle-cmd2-after-load-highlight',
+;;    `icicle-cmd2-after-load-palette',
+;;    `icicle-cmd2-after-load-synonyms', `icicle-color-blue-lessp',
 ;;    `icicle-color-completion-setup',
 ;;    `icicle-color-distance-hsv-lessp',
 ;;    `icicle-color-distance-rgb-lessp', `icicle-color-green-lessp',
@@ -198,7 +203,6 @@
 ;;    `icicle-pick-color-by-name-action',
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
-;;    `icicle-read-single-key-description',
 ;;    `icicle-read-var-value-satisfying',
 ;;    `icicle-region-or-buffer-limits', `icicle-search-action',
 ;;    `icicle-search-action-1', `icicle-search-bookmark-action',
@@ -259,8 +263,8 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
+;;  (@> "Icicles Commands for Other Packages")
 ;;  (@> "Icicles Top-Level Commands, Part 2")
-;;    (@> "Icicles Commands for Other Packages")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -325,7 +329,7 @@
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-bind-file-candidate-keys, icicle-define-command, icicle-define-file-command,
-  ;; icicle-file-bindings, icicle-maybe-byte-compile-after-load, icicle-unbind-file-candidate-keys
+  ;; icicle-file-bindings, icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
   ;; icicle-search-define-replacement
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
@@ -384,6 +388,7 @@
 (defvar cookie-cache)
 (defvar Info-menu-entry-name-re)        ; In `info.el'
 (defvar Info-read-node-completion-table) ; In `info.el'
+(defvar list-colors-sort)               ; In `facemenu.el' (Emacs 23+)
 (defvar palette-current-color)          ; In `palette.el'
 (defvar palette-last-color)             ; In `palette.el'
 (defvar palette-mode-map)               ; In `palette.el'
@@ -404,8 +409,1411 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
+;;(@* "Icicles Commands for Other Packages")
+
+;;; Icicles Commands for Other Packages ------------------------------
+
+
+;; Same as the definition in `icicles-face.el'.
+(defmacro icicle-maybe-byte-compile-after-load (function)
+  "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
+Do nothing if FUNCTION has not been defined (`fboundp')."
+  `(when (and icicle-byte-compile-eval-after-load-flag (fboundp ',function))
+    (require 'bytecomp)
+    (let ((byte-compile-warnings  ())
+          (byte-compile-verbose   nil))
+      (byte-compile ',function))))
+
+
+(defun icicle-cmd2-after-load-bookmark+ ()
+  "Things to do for `icicles-cmd2.el' after loading `bookmark+.el'."
+
+  (icicle-define-file-command icicle-bookmark-a-file ; `C-x p c a'
+    "Bookmark a file (create an autofile bookmark).
+\(You need library `Bookmark+' for this command.)
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file.
+The autofile bookmark created has the same name as the file.
+
+During file-name completion:
+ You can use `C-x a +' or `C-x a -' to add or remove tags from the
+  current-candidate file.  You are prompted for the tags.
+  (This action requires library `Bookmark+'.)
+ You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+ You can use `C-c +' to create a new directory.
+ You can use `M-|' to open Dired on currently matching file names.
+ You can use `S-delete' to delete a candidate file or (empty) dir."
+    (lambda (file) (bmkp-bookmark-a-file file nil nil 'MSG))
+    "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
+    (icicle-file-bindings               ; Bindings
+     ((icicle-use-candidates-only-once-flag  t)
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+    (icicle-bind-file-candidate-keys)   ; First code
+    nil                                 ; Undo code
+    (icicle-unbind-file-candidate-keys)) ; Last code
+
+  (icicle-maybe-byte-compile-after-load icicle-bookmark-a-file)
+
+
+  (icicle-define-file-command icicle-tag-a-file ; `C-x p t + a'
+    "Tag a file (an autofile bookmark) with one or more tags.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file.
+
+The tags are added to an autofile bookmark for the same file name and
+directory.  If the bookmark does not yet exist it is created.
+Candidate help shows information about the file's autofile bookmark if
+it already exists, or the file itself if not."
+    (lambda (file) (bmkp-autofile-add-tags file tags nil nil 'MSG))
+    "File to tag: " nil nil nil nil nil ; `read-file-name' args
+    (icicle-file-bindings               ; Bindings
+     ((tags                                  (bmkp-read-tags-completing))
+      (icicle-use-candidates-only-once-flag  t))))
+
+  (icicle-maybe-byte-compile-after-load icicle-tag-a-file)
+
+
+  (icicle-define-file-command icicle-untag-a-file ; `C-x p t - a'
+    "Remove one or more tags from a file (an autofile bookmark).
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file.
+
+The tags are removed from an autofile bookmark for the same file name
+and directory.  During file-name completion, only files tagged with
+all of the given input tags are completion candidates."
+    (lambda (file)
+      (bmkp-autofile-remove-tags file tags nil nil 'MSG))
+    "File to untag: " nil nil t nil nil ; `read-file-name' args
+    (icicle-file-bindings               ; Bindings
+     ((tags                                  (bmkp-read-tags-completing)) ; Pre bindings
+      (icicle-use-candidates-only-once-flag  t))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       #'(lambda (ff)
+           ;; Expand relative file name, using directory from minibuffer.
+           (setq ff  (expand-file-name ff (icicle-file-name-directory-w-default
+                                           (icicle-input-from-minibuffer))))
+           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                  (btgs  (and bmk (bmkp-get-tags bmk))))
+             (and btgs  (catch 'icicle-untag-a-file
+                          (dolist (tag  tags) (when (not (member tag btgs))
+                                                (throw 'icicle-untag-a-file nil)))
+                          t))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-untag-a-file)
+
+
+  ;;$$$  Do not bother with autofiles that have a PREFIX.
+  (icicle-define-command icicle-find-file-tagged ; Command name
+    "Find one or more files with tags that match your input.
+By default, only tagged files are candidates.  With a prefix argument,
+all autofiles are candidates.  (Autofiles are autofile bookmarks - you
+need library `Bookmark+' for this command.)
+
+Each completion candidate is a multi-completion composed of these
+fields: an absolute file name plus the file's tags, all separated by
+`icicle-list-join-string' (\"^G^J\", by default).  As always, you can
+type `C-M-j' to insert this separator into the minibuffer.
+
+For this command, by default `.' in your input matches any character,
+including a newline.  As always, you can use `C-M-.' to toggle
+this (so `.' does not match newline).
+
+You can match your input against the file name or tags or both.
+
+E.g., type:
+
+ `red S-TAB'                    to match all files with the tag `red'
+ `red M-SPC green M-SPC blue'   to match all files with tags `red',
+                                `green', and `blue' (in any order)
+
+That assumes that these tags do not also match any file names.
+
+If you need to match against a particular field (e.g. the file name or
+a specific tag position), then use the field separator.  Otherwise,
+just use progressive completion, as shown above.
+
+E.g., to match only tags and not the filename, start with `C-M-j' to
+get past the file-name field.  To match both file name and tags, type
+something to match the file name before the `C-M-j'.  E.g., type:
+
+ `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
+                                `blue' that have `2011' in their names
+
+During completion (`*': requires library `Bookmark+'):
+
+ *You can use `C-x a +' or `C-x a -' to add or remove tags from the
+   current-candidate file.  You are prompted for the tags.
+ *You can use `C-x m' to access file bookmarks (not just autofiles).
+  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
+  You can use `C-c +' to create a new directory.
+  You can use `M-|' to open Dired on currently matching file names.
+  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
+    (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
+    prompt icicle-abs-file-candidates   ; `completing-read' args
+    nil nil nil 'icicle-filetags-history nil nil
+    (icicle-file-bindings               ; Bindings
+     ((prompt                             "FILE `C-M-j' TAGS: ")
+      (icicle-full-cand-fn                (lambda (file)
+                                            (list (cons file
+                                                        (bmkp-get-tags
+                                                         (bmkp-get-autofile-bookmark file))))))
+      (icicle-abs-file-candidates       ; An alist whose items are ((FILE TAG...)).
+       (let ((result  ()))
+         (dolist (autofile  (bmkp-autofile-alist-only))
+           (let ((tags  (bmkp-get-tags autofile)))
+             (when (or tags current-prefix-arg)
+               (push (list (cons (bookmark-get-filename autofile) tags)) result))))
+         result))
+      (icicle-dot-string                      (icicle-anychar-regexp))
+      (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+      (icicle-list-use-nth-parts              '(1))
+      (icicle-whole-candidate-as-text-prop-p  t)))
+    (progn                              ; First code
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (icicle-highlight-lighter)
+      (message "Gathering tagged files...")
+      (icicle-bind-file-candidate-keys))
+    nil                                 ; Undo code
+    (icicle-unbind-file-candidate-keys)) ; Last code
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-tagged)
+
+
+  (icicle-define-command icicle-find-file-tagged-other-window ; Command name
+    "Same as `icicle-find-file-tagged', except uses another window." ; Doc string
+    (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
+    prompt icicle-abs-file-candidates   ; `completing-read' args
+    nil nil nil 'icicle-filetags-history nil nil
+    (icicle-file-bindings               ; Bindings
+     ((prompt                                 "FILE `C-M-j' TAGS: ")
+      (icicle-full-cand-fn                    (lambda (file)
+                                                (list (cons file
+                                                            (bmkp-get-tags
+                                                             (bmkp-get-autofile-bookmark file))))))
+      (icicle-abs-file-candidates       ; An alist whose items are ((FILE TAG...)).
+       (let ((result  ()))
+         (dolist (autofile  (bmkp-autofile-alist-only))
+           (let ((tags  (bmkp-get-tags autofile)))                  
+             (when (or tags current-prefix-arg)
+               (push (list (cons (bookmark-get-filename autofile) tags)) result))))
+         result))
+      (icicle-dot-string                      (icicle-anychar-regexp))
+      (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+      (icicle-list-use-nth-parts              '(1))
+      (icicle-whole-candidate-as-text-prop-p  t)))
+    (progn                              ; First code
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (icicle-highlight-lighter)
+      (message "Gathering tagged files...")
+      (icicle-bind-file-candidate-keys))
+    nil                                 ; Undo code
+    (icicle-unbind-file-candidate-keys)) ; Last code
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-tagged-other-window)
+
+
+;;; These are like multi-command versions of `bmkp-find-file-all-tags' etc.,
+;;; except that the predicate is applied after matching the user's input
+;;; (`icicle-must-pass-after-match-predicate').
+
+  (icicle-define-file-command icicle-find-file-all-tags ; `C-x j t a *'
+    "Visit a file or directory that has all of the tags you enter.
+This is otherwise like `icicle-find-file'.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only 'find-file)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (tags           (bmkp-read-tags-completing))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                           (btgs  (and bmk (bmkp-get-tags bmk))))
+                      (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags)
+
+
+  (icicle-define-file-command icicle-find-file-all-tags-other-window ; `C-x 4 j t a *'
+    "Same as `icicle-find-file-all-tags', except uses another window."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (tags           (bmkp-read-tags-completing))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                           (btgs  (and bmk (bmkp-get-tags bmk))))
+                      (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-other-window)
+
+
+  (icicle-define-file-command icicle-find-file-all-tags-regexp ; `C-x j t a % *'
+    "Visit a file or directory that has each tag matching a regexp you enter.
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only 'find-file)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (regexp         (read-string "Regexp for tags: "))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff)
+         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                (btgs  (and bmk (bmkp-get-tags bmk))))
+           (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                  btgs))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp)
+
+
+  (icicle-define-file-command icicle-find-file-all-tags-regexp-other-window ; `C-x 4 j t a % *'
+    "Same as `icicle-find-file-all-tags-regexp', except uses another window."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (regexp         (read-string "Regexp for tags: "))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff)
+         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                (btgs  (and bmk (bmkp-get-tags bmk))))
+           (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                  btgs))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp-other-window)
+
+
+  (icicle-define-file-command icicle-find-file-some-tags ; `C-x j t a +'
+    "Visit a file or directory that has at least one of the tags you enter.
+This is otherwise like `icicle-find-file'.
+You are prompted for the tags, then the file name.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.  Completion is lax: you are
+not limited to existing tags.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only 'find-file)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (tags           (bmkp-read-tags-completing))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                           (btgs  (and bmk (bmkp-get-tags bmk))))
+                      (and btgs  (bmkp-some  #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags)
+
+
+  (icicle-define-file-command icicle-find-file-some-tags-other-window ; `C-x 4 j t a +'
+    "Same as `icicle-find-file-some-tags', except uses another window."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (tags           (bmkp-read-tags-completing))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                           (btgs  (and bmk (bmkp-get-tags bmk))))
+                      (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-other-window)
+
+
+  (icicle-define-file-command icicle-find-file-some-tags-regexp ; `C-x j t a % +'
+    "Visit a file or directory that has a tag matching a regexp you enter.
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only 'find-file)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (regexp         (read-string "Regexp for tags: "))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff)
+         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                (btgs  (and bmk (bmkp-get-tags bmk))))
+           (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                 btgs))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp)
+
+
+  (icicle-define-file-command icicle-find-file-some-tags-regexp-other-window ; `C-x 4 j t a % +'
+    "Same as `icicle-find-file-some-tags-regexp', except uses another window."
+    (lambda (file)                      ; Function to perform the action
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+        (funcall fn file 'WILDCARDS)))
+    "Find file: " nil nil t nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (regexp         (read-string "Regexp for tags: "))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+     ((icicle-must-pass-after-match-predicate ; Post bindings
+       (lambda (ff)
+         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                (btgs  (and bmk (bmkp-get-tags bmk))))
+           (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+                                 btgs))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp-other-window)
+
+  )
+
+
+(defun icicle-cmd2-after-load-hexrgb ()
+  "Things to do for `icicles-cmd2.el' after loading `hexrgb.el'."
+  (when (and (fboundp 'read-color) (not (fboundp 'old-read-color))) ; Exists with Emacs 23+.
+    (defalias 'old-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
+
+  ;; See also `hexrgb-read-color' in `hexrgb.el'.
+  (defun icicle-read-color (&optional arg prompt)
+    "Read a color name or hex RGB color value #RRRRGGGGBBBB.
+A string value is returned.
+Interactively, optional argument ARG is the prefix arg.
+Optional argument PROMPT is the prompt to use (default \"Color: \").
+
+In addition to standard color names and RGB (red, green, blue) hex
+values, the following are also available as proxy color candidates,
+provided `icicle-add-proxy-candidates-flag' is non-nil and library
+`palette.el' or `eyedropper.el' is used.  In each case, the
+corresponding color is used.
+
+* `*copied foreground*'  - last copied foreground, if available
+* `*copied background*'  - last copied background, if available
+* `*mouse-2 foreground*' - foreground where you click `mouse-2'
+* `*mouse-2 background*' - background where you click `mouse-2'
+* `*point foreground*'   - foreground under the text cursor
+* `*point background*'   - background under the text cursor
+
+\(You can copy a color using eyedropper commands such as
+`eyedrop-pick-foreground-at-mouse'.)
+
+In addition, the names of user options (variables) whose custom type
+is `color' are also proxy candidates, but with `'' as a prefix and
+suffix.  So, for example, option `icicle-region-background' appears as
+proxy color candidate `'icicle-region-background''.
+
+As always, you can toggle the use of proxy candidates using `\\<minibuffer-local-completion-map>\
+\\[icicle-toggle-proxy-candidates]' in
+the minibuffer.
+
+With plain `C-u', use `hexrgb-read-color', which lets you complete a
+color name or input any valid RGB hex value (without completion).
+
+With no prefix arg, return a string with both the color name and the
+RGB value, separated by `icicle-list-nth-parts-join-string'.
+
+With a numeric prefix arg of 0 or 1, return the color name.  With any
+other numeric prefix arg, return the RGB value.
+
+In the plain `C-u' case, your input is checked to ensure that it
+represents a valid color.
+
+In all other cases:
+
+- You can complete your input against the color name, the RGB value,
+  or both.
+
+- If you enter input without completing or cycling, the input is not
+  checked: whatever is entered is returned as the string value.
+
+From Emacs Lisp, ARG controls what is returned.  If ARG is nil,
+`icicle-list-use-nth-parts' can also be used to control the behavior.
+
+Note: Duplicate color names are removed by downcasing and removing
+whitespace.  For example, \"AliceBlue\" and \"alice blue\" are both
+treated as \"aliceblue\".  Otherwise, candidates with different names
+but the same RGB values are not considered duplicates, so, for
+example, input can match either \"darkred\" or \"red4\", which both
+have RGB #8b8b00000000.  You can toggle duplicate removal at any time
+using `C-$'.
+
+During completion, candidate help (e.g. `C-M-RET') shows you the RGB
+and HSV (hue, saturation, value) color components.
+
+This command is intended only for use in Icicle mode (but it can be
+used with `C-u', with Icicle mode turned off)."
+    (interactive "P")
+    (unless (featurep 'hexrgb) (error "`icicle-read-color' requires library `hexrgb.el'"))
+    (let (color)
+      (if (consp arg)                   ; Plain `C-u': complete against color name only,
+          (setq color  (hexrgb-read-color t)) ; and be able to input any valid RGB string.
+
+        ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
+        (let ((icicle-list-use-nth-parts
+               (or (and arg (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
+                   icicle-list-use-nth-parts ; Bound externally by program.
+                   '(1 2)))             ; Both parts, by default.
+              (mouse-pseudo-color-p  nil)
+
+              icicle-candidate-help-fn           completion-ignore-case
+              icicle-transform-function          icicle-sort-orders-alist
+              icicle-list-nth-parts-join-string  icicle-list-join-string
+              ;; $$$$$$ icicle-list-end-string
+              icicle-proxy-candidate-regexp      icicle-named-colors
+              icicle-proxy-candidates)
+          ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
+          ;; Use `icicle-prompt' from now on, since that's what `icicle-color-completion-setup'
+          ;; sets up.
+          (setq icicle-prompt  (copy-sequence (or prompt "Color: ")))
+          (icicle-color-completion-setup)
+          (setq icicle-proxy-candidates
+                (append icicle-proxy-candidates
+                        (mapcar         ; Convert multi-completions to strings.
+                         ;; $$$$$$ #'(lambda (entry)
+                         ;;           (concat (mapconcat #'identity (car entry)
+                         ;;                              icicle-list-join-string)
+                         ;;                   icicle-list-end-string)) ; $$$$$$
+                         #'(lambda (entry) (mapconcat #'identity (car entry)
+                                                      icicle-list-join-string))
+                         '((("*mouse-2 foreground*")) (("*mouse-2 background*")))))
+                color  (icicle-transform-multi-completion
+                        (let ((icicle-orig-window  (selected-window))
+                              (icicle-candidate-alt-action-fn
+                               (or icicle-candidate-alt-action-fn
+                                   (icicle-alt-act-fn-for-type "color")))
+                              (icicle-all-candidates-list-alt-action-fn
+                               (or icicle-all-candidates-list-alt-action-fn
+                                   (icicle-alt-act-fn-for-type "color"))))
+                          (completing-read icicle-prompt icicle-named-colors))))
+          (when (fboundp 'eyedrop-foreground-at-point)
+            (cond ((string-match "^\*mouse-2 foreground\*" color)
+                   (setq color  (prog1 (eyedrop-foreground-at-mouse
+                                        (read-event
+                                         "Click `mouse-2' anywhere to choose foreground color"))
+                                  (read-event)) ; Discard mouse up event.
+                         mouse-pseudo-color-p  t))
+                  ((string-match "^\*mouse-2 background\*" color)
+                   (setq color  (prog1 (eyedrop-background-at-mouse
+                                        (read-event
+                                         "Click `mouse-2' anywhere to choose background color"))
+                                  (read-event)) ; Discard mouse up event.
+                         mouse-pseudo-color-p  t))))
+          (when mouse-pseudo-color-p
+            (let ((icicle-list-nth-parts-join-string  ": ")
+                  (icicle-list-join-string            ": ")
+                  ;; $$$$$$ (icicle-list-end-string             "")
+                  (icicle-list-use-nth-parts
+                   (or (and arg
+                            (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
+                       icicle-list-use-nth-parts ; Bound externally by program.
+                       '(1 2))))        ; Both parts, by default.
+              (setq color  (icicle-transform-multi-completion
+                            (concat color ": " (hexrgb-color-name-to-hex color))))))))
+      (when (interactive-p) (message "Color: `%s'" color))
+      color))
+
+  (icicle-maybe-byte-compile-after-load icicle-read-color)
+
+
+  (icicle-define-command icicle-frame-bg ; Command name
+    "Change background of current frame.
+Read color name or hex RGB color value #RRRRGGGGBBBB with completion.
+In addition to standard color names and RGB (red, green, blue) hex
+values, the following are also available as proxy color candidates,
+provided `icicle-add-proxy-candidates-flag' is non-nil and library
+`palette.el' or `eyedropper.el' is used.  In each case, the
+corresponding color is used.
+
+* `*copied foreground*'  - last copied foreground, if available
+* `*copied background*'  - last copied background, if available
+* `*point foreground*'   - foreground under the text cursor
+* `*point background*'   - background under the text cursor
+
+\(You can copy a color using eyedropper commands such as
+`eyedrop-pick-foreground-at-mouse'.)
+
+In addition, the names of user options (variables) whose custom type
+is `color' are also proxy candidates, but with `'' as a prefix and
+suffix.  So, for example, option `icicle-region-background' appears as
+proxy color candidate `'icicle-region-background''.
+
+As always, you can toggle the use of proxy candidates using `\\<minibuffer-local-completion-map>\
+\\[icicle-toggle-proxy-candidates]' in
+the minibuffer.
+
+You can complete your input against the color name, the RGB value, or
+both.
+
+Note: Duplicate color names are removed by downcasing and removing
+whitespace.  For example, \"AliceBlue\" and \"alice blue\" are both
+treated as \"aliceblue\".  Otherwise, candidates with different names
+but the same RGB values are not considered duplicates, so, for
+example, input can match either \"darkred\" or \"red4\", which both
+have RGB #8b8b00000000.  You can toggle duplicate removal at any time
+using `C-$'.
+
+During completion, candidate help (e.g. `C-M-RET') shows you the RGB
+and HSV (hue, saturation, value) color components.
+
+This command is intended only for use in Icicle mode." ; Doc string
+    (lambda (color)                     ; Action function
+      (modify-frame-parameters
+       icicle-orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
+    icicle-prompt icicle-named-colors nil t nil ; `completing-read' args
+    (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
+    ((icicle-orig-frame                  (selected-frame)) ; Bindings
+     (orig-bg                            (frame-parameter nil 'background-color))
+     (icicle-prompt                      "Background color: ")
+     (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
+     (icicle-candidate-alt-action-fn
+      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
+     (icicle-all-candidates-list-alt-action-fn
+      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "color")))
+
+     icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
+     icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
+     ;; $$$$$$ icicle-list-end-string
+     icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
+    (icicle-color-completion-setup)     ; First code - needs `hexrgb.el'
+    (modify-frame-parameters icicle-orig-frame (list (cons 'background-color orig-bg))) ; Undo code
+    nil)                                ; Last code
+
+  (icicle-maybe-byte-compile-after-load icicle-frame-bg)
+
+
+  (icicle-define-command icicle-frame-fg ; Command name
+    "Change foreground of current frame.
+See `icicle-frame-bg' - but this is for foreground, not background." ; Doc string
+    (lambda (color)                     ; Action function
+      (modify-frame-parameters
+       icicle-orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
+    icicle-prompt icicle-named-colors nil t nil ; `completing-read' args
+    (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
+    ((icicle-orig-frame                  (selected-frame)) ; Bindings
+     (orig-bg                            (frame-parameter nil 'foreground-color))
+     (icicle-prompt                      "Foreground color: ")
+     (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
+     (icicle-candidate-alt-action-fn
+      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
+     (icicle-all-candidates-list-alt-action-fn
+      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "color")))
+
+     icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
+     icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
+     ;; $$$$$$ icicle-list-end-string
+     icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
+    (icicle-color-completion-setup)     ; First code - needs `hexrgb.el'
+    (modify-frame-parameters icicle-orig-frame (list (cons 'foreground-color orig-bg))) ; Undo code
+    nil)                                ; Last code
+
+  (icicle-maybe-byte-compile-after-load icicle-frame-fg)
+
+
+  ;; Free vars here:
+  ;; `icicle-prompt', `icicle-candidate-help-fn', `completion-ignore-case',
+  ;; `icicle-transform-function', `icicle-sort-orders-alist', `icicle-list-nth-parts-join-string',
+  ;; `icicle-list-join-string', `icicle-proxy-candidate-regexp', `icicle-named-colors',
+  ;; `icicle-proxy-candidates'.
+  (defun icicle-color-completion-setup ()
+    "Set up for color-name/RGB-value completion (helper function).
+Sets these variables, which are assumed to be already `let'-bound:
+  `icicle-prompt'
+  `icicle-candidate-help-fn'
+  `completion-ignore-case'
+  `icicle-transform-function'
+  `icicle-sort-orders-alist'
+  `icicle-list-nth-parts-join-string'
+  `icicle-list-join-string'
+  `icicle-proxy-candidate-regexp'
+  `icicle-named-colors'
+  `icicle-proxy-candidates'
+Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
+    (if (< emacs-major-version 22)
+        (require 'eyedropper nil t)
+      (or (require 'palette nil t) (require 'eyedropper nil t)))
+    (when (stringp icicle-prompt)       ; Sanity check - should be true.
+      (put-text-property 0 1 'icicle-fancy-candidates t icicle-prompt))
+    (icicle-highlight-lighter)
+    (setq icicle-candidate-help-fn           'icicle-color-help
+          completion-ignore-case             t
+          icicle-sort-orders-alist
+          '(("by color name" . icicle-part-1-lessp)
+            ("by color hue"  . (lambda (s1 s2) (not (icicle-color-hue-lessp s1 s2))))
+            ("by color purity (saturation)"
+             . (lambda (s1 s2) (not (icicle-color-saturation-lessp s1 s2))))
+            ("by color brightness (value)"
+             . (lambda (s1 s2) (not (icicle-color-value-lessp s1 s2))))
+            ("by color hsv"       . (lambda (s1 s2) (not (icicle-color-hsv-lessp s1 s2))))
+            ("by hsv distance"    . (lambda (s1 s2) (icicle-color-distance-hsv-lessp s1 s2)))
+            ("by amount of red"   . (lambda (s1 s2) (not (icicle-color-red-lessp s1 s2))))
+            ("by amount of green" . (lambda (s1 s2) (not (icicle-color-green-lessp s1 s2))))
+            ("by amount of blue"  . (lambda (s1 s2) (not (icicle-color-blue-lessp s1 s2))))
+            ("by color rgb"       . (lambda (s1 s2) (not (icicle-color-rgb-lessp s1 s2))))
+            ("by rgb distance"    . (lambda (s1 s2) (icicle-color-distance-rgb-lessp s1 s2)))
+            ("turned OFF"))
+          ;; Make the two `*-join-string' variables the same, so past inputs are recognized.
+          ;; Do not use " " as the value, because color names such as "white smoke" would be
+          ;; split, and "smoke" would not be recognized as a color name when trying to list
+          ;; candidates in `*Completions*'.
+          icicle-list-nth-parts-join-string  ": "
+          icicle-list-join-string            ": "
+          ;; $$$$$$ icicle-list-end-string             ""
+          icicle-proxy-candidate-regexp      "^[*'].+[*']"
+
+          icicle-named-colors                (mapcar #'icicle-make-color-candidate
+                                                     (hexrgb-defined-colors))
+          icicle-proxy-candidates
+          (mapcar                       ; Convert multi-completions to strings.
+           (lambda (entry)
+             ;; $$$$$$ (concat (mapconcat #'identity (car entry) icicle-list-join-string)
+             ;;                icicle-list-end-string) ; $$$$$$
+             (mapconcat #'identity (car entry) icicle-list-join-string))
+           (append
+            (and (fboundp 'eyedrop-foreground-at-point)
+                 (append
+                  (and eyedrop-picked-foreground ; Multi-completions.
+                       `(,(icicle-make-color-candidate
+                           "*copied foreground*" (downcase (hexrgb-color-name-to-hex
+                                                            eyedrop-picked-foreground)))))
+                  (and eyedrop-picked-background
+                       `(,(icicle-make-color-candidate
+                           "*copied background*" (downcase (hexrgb-color-name-to-hex
+                                                            eyedrop-picked-background)))))
+                  `(,(icicle-make-color-candidate
+                      "*point foreground*" (downcase (hexrgb-color-name-to-hex
+                                                      (eyedrop-foreground-at-point))))
+                    ,(icicle-make-color-candidate
+                      "*point background*" (downcase (hexrgb-color-name-to-hex
+                                                      (eyedrop-background-at-point)))))))
+            (let ((ipc  ()))
+              (mapatoms
+               (lambda (cand)
+                 (when (and (user-variable-p cand)
+                            (condition-case nil (icicle-var-is-of-type-p cand '(color)) (error nil))
+                            ;; This should not be necessary, but type `color' isn't
+                            ;; enforced - it just means `string' (so far).
+                            (x-color-defined-p (symbol-value cand)))
+                   (push `,(icicle-make-color-candidate
+                            (concat "'" (symbol-name cand) "'")
+                            (downcase (hexrgb-color-name-to-hex (symbol-value cand))))
+                         ipc))))
+              ipc)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-completion-setup)
+
+
+  (defun icicle-color-help (color)
+    "Display help on COLOR."
+    (let ((icicle-list-use-nth-parts  '(1 2)))
+      (with-output-to-temp-buffer "*Help*"
+        (setq icicle-list-use-nth-parts  '(2)
+              color                      (icicle-transform-multi-completion color))
+        (princ (format "Color: %s" color)) (terpri) (terpri)
+        (let* ((rgb  (hexrgb-hex-to-rgb color))
+               (hsv  (apply #'hexrgb-rgb-to-hsv rgb)))
+          (princ "RGB:") (mapcar (lambda (component) (princ (format "  %.18f" component))) rgb)
+          (terpri) (terpri)
+          (princ "HSV:") (mapcar (lambda (component) (princ (format "  %.18f" component))) hsv)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-help)
+
+
+  (defun icicle-make-color-candidate (color-name &optional hex-rgb)
+    "Return multi-completion candidate of COLOR-NAME and its hex RGB string.
+If `icicle-WYSIWYG-Completions-flag' is non-nil, then the hex RGB
+string has the color as its background text property.
+Optional arg HEX-RGB is the hex RGB string.
+If nil, then COLOR-NAME is used to determine the hex RGB string."
+    (let* ((rgb-string  (or hex-rgb (hexrgb-color-name-to-hex color-name)))
+           (value       (hexrgb-value rgb-string)))
+      (when icicle-WYSIWYG-Completions-flag
+        (put-text-property 0 (length rgb-string) 'face
+                           (list (cons 'foreground-color (if (< value 0.6) "White" "Black"))
+                                 (cons 'background-color rgb-string))
+                           rgb-string))
+      (when (or (> icicle-help-in-mode-line-delay 0) ; Construct help only if user will see it.
+                (and (boundp 'tooltip-mode) tooltip-mode))
+        (let* ((rgb   (hexrgb-hex-to-rgb rgb-string))
+               (hsv   (apply #'hexrgb-rgb-to-hsv rgb))
+               (help  (format "RGB: %.6f, %.6f, %.6f;  HSV: %.6f, %.6f, %.6f"
+                              (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)
+                              (nth 0 hsv) (nth 1 hsv) (nth 2 hsv))))
+          (icicle-candidate-short-help help color-name)
+          (icicle-candidate-short-help help rgb-string)))
+      (list (list color-name rgb-string))))
+
+  (icicle-maybe-byte-compile-after-load icicle-make-color-candidate)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-red-lessp (s1 s2)
+    "Non-nil means the RGB in S1 has less red than in S2.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The RGB values are assumed to
+be the second parts of the strings, and they are assumed to start with
+`#'."
+    (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+          (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
+      (and rgb1 rgb2                    ; Just in case strings were not multipart.
+           (< (hexrgb-red rgb1) (hexrgb-red rgb2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-red-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-green-lessp (s1 s2)
+    "Non-nil means the RGB in S1 has less green than in S2.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The RGB values are assumed to
+be the second parts of the strings, and they are assumed to start with
+`#'."
+    (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+          (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
+      (and rgb1 rgb2                    ; Just in case strings were not multipart.
+           (< (hexrgb-green rgb1) (hexrgb-green rgb2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-green-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-blue-lessp (s1 s2)
+    "Non-nil means the RGB in S1 has less blue than in S2.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The RGB values are assumed to
+be the second parts of the strings, and they are assumed to start with
+`#'."
+    (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+          (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
+      (and rgb1 rgb2                    ; Just in case strings were not multipart.
+           (< (hexrgb-blue rgb1) (hexrgb-blue rgb2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-blue-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-distance-rgb-lessp (s1 s2)
+    "Return non-nil if color S1 is RGB-closer than S2 to the base color.
+S1 and S2 are color names (strings).
+
+The base color name is the cdr of option `list-colors-sort', whose car
+must be `rgb-dist'.  If the option value is not already a cons with
+car `rgb-dist' then it is made so: you are prompted for the base color
+name to use."
+    (let* ((base-color  (if (and (boundp 'list-colors-sort) ; Emacs 23+
+                                 (consp list-colors-sort) (eq 'rgb-dist (car list-colors-sort)))
+                            (cdr list-colors-sort) ; `list-colors-sort' is free here.
+                          (cdr (setq list-colors-sort
+                                     (cons 'rgb-dist
+                                           (let ((enable-recursive-minibuffers  t)
+                                                 (icicle-sort-comparer          nil))
+                                             (icicle-read-color 0 "With RGB close to color: ")))))))
+           (base-rgb    (hexrgb-hex-to-rgb (hexrgb-color-name-to-hex base-color)))
+           (base-red    (nth 0 base-rgb))
+           (base-green  (nth 1 base-rgb))
+           (base-blue   (nth 2 base-rgb))
+           (s1-rgb      (hexrgb-hex-to-rgb (elt (split-string s1 icicle-list-join-string) 1)))
+           (s2-rgb      (hexrgb-hex-to-rgb (elt (split-string s2 icicle-list-join-string) 1))))
+      (< (+ (expt (- (nth 0 s1-rgb) base-red) 2)
+            (expt (- (nth 1 s1-rgb) base-green) 2)
+            (expt (- (nth 2 s1-rgb) base-blue) 2))
+         (+ (expt (- (nth 0 s2-rgb) base-red) 2)
+            (expt (- (nth 1 s2-rgb) base-green) 2)
+            (expt (- (nth 2 s2-rgb) base-blue) 2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-distance-rgb-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-hue-lessp (s1 s2)
+    "Non-nil means the RGB hue in S1 is less than that in S2.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The RGB values are assumed to
+be the second parts of the strings, and they are assumed to start with
+`#'."
+    (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+          (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
+      (and rgb1 rgb2                    ; Just in case strings were not multipart.
+           (< (hexrgb-hue rgb1) (hexrgb-hue rgb2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-hue-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-saturation-lessp (s1 s2)
+    "Non-nil means the RGB in S1 is less saturated than in S2.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The RGB values are assumed to
+be the second parts of the strings, and they are assumed to start with
+`#'."
+    (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+          (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
+      (and rgb1 rgb2                    ; Just in case strings were not multipart.
+           (< (hexrgb-saturation rgb1) (hexrgb-saturation rgb2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-saturation-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-value-lessp (s1 s2)
+    "Non-nil means the RGB value in S1 is darker than that in S2.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The RGB values are assumed to
+be the second parts of the strings, and they are assumed to start with
+`#'."
+    (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+          (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
+      (and rgb1 rgb2                    ; Just in case strings were not multipart.
+           (< (hexrgb-value rgb1) (hexrgb-value rgb2)))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-value-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-hsv-lessp (s1 s2)
+    "Non-nil means the HSV components of S1 are less than those of S2.
+Specifically, the hues are compared first, then if hues are equal then
+saturations are compared, then if those are also equal values are
+compared.
+The strings are assumed to have at least two parts, with the parts
+separated by `icicle-list-join-string' The second parts of the strings
+are RGB triplets that start with `#'."
+    (let* ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
+           (hsv1  (and rgb1 (hexrgb-hex-to-hsv rgb1)))
+           (rgb2  (elt (split-string s2 icicle-list-join-string) 1))
+           (hsv2  (and rgb2 (hexrgb-hex-to-hsv rgb2))))
+      (and hsv1 hsv2                    ; Just in case strings were not multipart.
+           (or (< (nth 0 hsv1) (nth 0 hsv2))
+               (and (= (nth 0 hsv1) (nth 0 hsv2))
+                    (< (nth 1 hsv1) (nth 1 hsv2)))
+               (and (= (nth 0 hsv1) (nth 0 hsv2))
+                    (= (nth 1 hsv1) (nth 1 hsv2))
+                    (< (nth 2 hsv1) (nth 2 hsv2)))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-color-hsv-lessp)
+
+
+  ;; This predicate is used for color completion.
+  (defun icicle-color-distance-hsv-lessp (s1 s2)
+    "Return non-nil if color S1 is HSV-closer than S2 to the base color.
+S1 and S2 are color names (strings).
+
+The base color name is the cdr of option `list-colors-sort', whose car
+must be `hsv-dist'.  If the option value is not already a cons with
+car `hsv-dist' then it is made so: you are prompted for the base color
+name to use."
+    (let* ((base-color  (if (and (boundp 'list-colors-sort) ; Emacs 23+
+                                 (consp list-colors-sort) (eq 'hsv-dist (car list-colors-sort)))
+                            (cdr list-colors-sort) ; `list-colors-sort' is free here.
+                          (cdr (setq list-colors-sort
+                                     (cons 'hsv-dist
+                                           (let ((enable-recursive-minibuffers  t)
+                                                 (icicle-sort-comparer          nil))
+                                             (icicle-read-color 0 "With HSV close to color: ")))))))
+           (base-hsv    (hexrgb-hex-to-hsv (hexrgb-color-name-to-hex base-color)))
+           (base-hue    (nth 0 base-hsv))
+           (base-sat    (nth 1 base-hsv))
+           (base-val    (nth 2 base-hsv))
+           (s1-hsv      (apply #'hexrgb-rgb-to-hsv
+                               (hexrgb-hex-to-rgb
+                                (elt (split-string s1 icicle-list-join-string) 1))))
+           (s2-hsv      (apply #'hexrgb-rgb-to-hsv
+                               (hexrgb-hex-to-rgb
+                                (elt (split-string s2 icicle-list-join-string) 1)))))
+      (< (+ (expt (- (nth 0 s1-hsv) base-hue) 2)
+            (expt (- (nth 1 s1-hsv) base-sat) 2)
+            (expt (- (nth 2 s1-hsv) base-val) 2))
+         (+ (expt (- (nth 0 s2-hsv) base-hue) 2)
+            (expt (- (nth 1 s2-hsv) base-sat) 2)
+            (expt (- (nth 2 s2-hsv) base-val) 2)))))
+  )
+
+
+(defun icicle-cmd2-after-load-highlight ()
+  "Things to do for `icicles-cmd2.el' after loading `highlight.el'."
+  (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
+
+    (icicle-define-command icicle-choose-faces
+      "Choose a list of face names (strings).
+Option `hlt-act-on-any-face-flag' determines whether only highlighting
+faces in the buffer are candidates.  The list of names (strings) is
+returned."
+      (lambda (name) (push name face-names)) ; Action function
+      prompt                            ; `completing-read' args
+      (mapcar #'icicle-make-face-candidate
+              (if hlt-act-on-any-face-flag
+                  (face-list)
+                (hlt-highlight-faces-in-buffer (point-min) (point-max))))
+      nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
+      (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
+      ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
+       (icicle-list-join-string            ": ")
+       ;; $$$$$$ (icicle-list-end-string             "")
+       (icicle-list-use-nth-parts          '(1))
+       (prompt                             (copy-sequence "Choose face (`RET' when done): "))
+       (face-names                         ()))
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+      nil                               ; Undo code.
+      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+        (when (interactive-p) (message "Faces: %S" face-names))))
+
+    (icicle-maybe-byte-compile-after-load icicle-choose-faces)
+
+
+    (icicle-define-command icicle-choose-invisible-faces
+      "Choose a list of face names (strings) from currently invisible faces.
+Option `hlt-act-on-any-face-flag' determines whether only highlighting
+faces in the buffer are candidates.  The list of names (strings) is
+returned."
+      (lambda (name) (push name face-names)) ; Action function
+      prompt                            ; `completing-read' args
+      (mapcar #'icicle-make-face-candidate
+              (icicle-remove-if-not #'icicle-invisible-face-p
+                                    (if hlt-act-on-any-face-flag
+                                        (face-list)
+                                      (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
+      nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
+      (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
+      ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
+       (icicle-list-join-string            ": ")
+       ;; $$$$$$ (icicle-list-end-string             "")
+       (icicle-list-use-nth-parts          '(1))
+       (prompt                             (copy-sequence "Choose face (`RET' when done): "))
+       (face-names                         ()))
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+      nil                               ; Undo code.
+      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+        (when (interactive-p) (message "Faces: %S" face-names))))
+
+    (icicle-maybe-byte-compile-after-load icicle-choose-invisible-faces)
+
+
+    (icicle-define-command icicle-choose-visible-faces
+      "Choose a list of face names (strings) from currently visible faces.
+Option `hlt-act-on-any-face-flag' determines whether only highlighting
+faces in the buffer are candidates.  The list of names (strings) is
+returned."
+      (lambda (name) (push name face-names)) ; Action function
+      prompt                            ; `completing-read' args
+      (mapcar #'icicle-make-face-candidate
+              (icicle-remove-if #'icicle-invisible-face-p
+                                (if hlt-act-on-any-face-flag
+                                    (face-list)
+                                  (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
+      nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
+      (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
+      ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
+       (icicle-list-join-string            ": ")
+       ;; $$$$$$ (icicle-list-end-string             "")
+       (icicle-list-use-nth-parts          '(1))
+       (prompt                             (copy-sequence "Choose face (`RET' when done): "))
+       (face-names                         ()))
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+      nil                               ; Undo code.
+      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+        (when (interactive-p) (message "Faces: %S" face-names))))
+  
+    (icicle-maybe-byte-compile-after-load icicle-choose-visible-faces)
+
+
+    (defun icicle-show-only-faces (&optional start end faces)
+      "Show only the faces you choose, hiding all others.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+faces.  Nil means choose only from among faces used to highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+      (interactive `(,@(hlt-region-or-buffer-limits)
+                     ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
+      (dolist (face (if hlt-act-on-any-face-flag
+                        (face-list)
+                      (hlt-highlight-faces-in-buffer start end)))
+        (if (memq face faces)
+            (hlt-show-default-face face)
+          (hlt-hide-default-face start end face))))
+  
+    (icicle-maybe-byte-compile-after-load icicle-show-only-faces)
+
+
+    (defun icicle-hide-only-faces (&optional start end faces)
+      "Hide only the faces you choose, showing all others.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+faces.  Nil means choose only from among faces used to highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+      (interactive `(,@(hlt-region-or-buffer-limits)
+                     ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
+      (dolist (face (if hlt-act-on-any-face-flag
+                        (face-list)
+                      (hlt-highlight-faces-in-buffer start end)))
+        (if (memq face faces)
+            (hlt-hide-default-face start end face)
+          (hlt-show-default-face face))))
+
+    (icicle-maybe-byte-compile-after-load icicle-hide-only-faces)
+
+
+    (defun icicle-show-faces (faces)
+      "Show invisible faces that you choose.  Do nothing to other faces.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+invisible faces.  Nil means choose only from among invisible faces
+used to highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+      (interactive
+       (list (let ((fs  (icicle-remove-if-not #'icicle-invisible-face-p
+                                              (if hlt-act-on-any-face-flag
+                                                  (face-list)
+                                                (hlt-highlight-faces-in-buffer
+                                                 (point-min) (point-max))))))
+               (if fs
+                   (mapcar #'intern (icicle-choose-invisible-faces)) ; An Icicles multi-command
+                 (error "No%s faces are invisible"
+                        (if hlt-act-on-any-face-flag "" " highlight"))))))
+      (dolist (face faces) (hlt-show-default-face face)))
+  
+    (icicle-maybe-byte-compile-after-load icicle-show-faces)
+
+
+    (defun icicle-hide-faces (&optional start end faces)
+      "Hide visible faces that you choose.  Do nothing to other faces.
+Non-nil `hlt-act-on-any-face-flag' means choose from among all
+visible faces.  Nil means choose only from among visible faces used to
+highlight.
+
+When choosing faces, completion and cycling are available. During
+cycling, these keys with prefix `C-' act on the current face name:
+
+`C-mouse-2', `C-RET' - Choose current face candidate only
+`C-down'  - Choose, then move to next prefix-completion candidate
+`C-up'    - Choose, then move to previous prefix-completion candidate
+`C-next'  - Choose, then move to next apropos-completion candidate
+`C-prior' - Choose, then move to previous apropos-completion candidate
+`C-!'     - Choose *all* matching face names"
+      (interactive `(,@(hlt-region-or-buffer-limits)
+                     ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
+      (dolist (face faces) (hlt-hide-default-face start end face)))
+
+    (icicle-maybe-byte-compile-after-load icicle-hide-faces)
+
+    ))
+
+
+(defun icicle-cmd2-after-load-palette ()
+  "Things to do for `icicles-cmd2.el' after loading `palette.el'."
+
+  (icicle-define-command icicle-pick-color-by-name ; Bound to `c' in color palette.
+    "Set the current color to a color you name.
+Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
+where each X is a hex digit.  The number of Xs must be a multiple of
+3, with the same number of Xs for each of red, green, and blue.
+If you enter an empty color name, then a color is picked randomly.
+The new current color is returned."     ; Doc string
+    icicle-pick-color-by-name-action    ; Action function
+    "Color (name or #R+G+B+): "         ; `completing-read' arguments
+    (hexrgb-defined-colors-alist) nil nil nil nil nil nil
+    ((completion-ignore-case  t)))      ; Bindings
+
+  (icicle-maybe-byte-compile-after-load icicle-pick-color-by-name)
+
+
+  (defun icicle-pick-color-by-name-action (color)
+    "Action function for `icicle-pick-color-by-name'."
+    (if (string= "" color)
+        (let* ((colors  (hexrgb-defined-colors))
+               (rand    (random (length colors)))) ; Random color.
+          (setq color  (elt colors rand)))
+      (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
+        (when (and hex-string (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
+        (if (not (or hex-string (if (fboundp 'test-completion) ; Not defined in Emacs 20.
+                                    (test-completion color (hexrgb-defined-colors-alist))
+                                  (try-completion color (hexrgb-defined-colors-alist)))))
+            (error "No such color: %S" color)
+          (setq color  (hexrgb-color-name-to-hex color))))
+      (setq palette-last-color  palette-current-color)
+      (save-selected-window
+        (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
+        (palette-set-current-color color)
+        (palette-where-is-color color)
+        (palette-brightness-scale)
+        (palette-swatch))
+      palette-current-color))
+
+  (icicle-maybe-byte-compile-after-load icicle-pick-color-by-name-action)
+
+
+  (define-key palette-mode-map (icicle-kbd "c")  'icicle-pick-color-by-name)
+  (define-key palette-popup-map [pick-color-by-name] ; Use same name as in `palette.el'.
+    `(menu-item "Choose Color By Name" icicle-pick-color-by-name
+      :help "Set the current color to a color you name"))
+  )
+
+
+(defun icicle-cmd2-after-load-synonyms ()
+  "Things to do for `icicles-cmd2.el' after loading `synonyms.el'."
+  (defalias 'synonyms 'icicle-synonyms)
+  (icicle-define-command icicle-synonyms ; Command
+    "Show synonyms that match a regular expression (e.g. a word or phrase).
+You are prompted for the regexp.  By default, it is the text
+of the region, if it is active and `transient-mark-mode' is enabled,
+or the nearest word to the cursor, if not.
+
+Option `synonyms-match-more-flag' non-nil means additional thesaurus
+  entries can be matched.  This can be more time-consuming.  It means
+  two things:
+
+  1) Input can match parts of synonyms, in addition to whole synonyms.
+  2) All synonyms are shown, even if input matches a thesaurus entry.
+
+Option `synonyms-append-result-flag' non-nil means to append search
+  result to previous results.
+
+A prefix argument toggles the meaning of each of those options for the
+duration of the command:
+
+  If `C-u' or `C-u C-u', then toggle `synonyms-match-more-flag'.
+  If negative or `C-u C-u', then toggle `synonyms-append-result-flag'.
+
+\(`C-u C-u' thus means toggle both options.)
+
+When called from Lisp, optional second argument REGEXP is the regexp
+to match (no prompting)."               ; Doc string
+    synonyms-action                     ; Action function,  defined in `synonyms.el'.
+    "Show synonyms for word or phrase (regexp): " ; `completing-read' arguments
+    synonyms-obarray nil nil nil 'synonyms-history (synonyms-default-regexp) nil
+    ((num-arg (prefix-numeric-value current-prefix-arg)) ; Bindings
+     (morep (eq synonyms-match-more-flag (atom current-prefix-arg)))
+     (appendp (eq synonyms-append-result-flag (and (wholenump num-arg) (/= 16 num-arg))))
+     (icicle-sort-function 'icicle-case-insensitive-string-less-p))
+    (synonyms-ensure-synonyms-read-from-cache)) ; Fill `synonyms-obarray' initially, for completion.
+
+  (icicle-maybe-byte-compile-after-load icicle-synonyms)
+
+
+  (icicle-define-command icicle-insert-thesaurus-entry ; Command name
+    "Insert an entry from a thesaurus.
+Library `synonyms.el' is needed for this.  If you have never used
+command `synonyms' before, then the first use of
+`icicle-insert-thesaurus-entry' will take a while, because it will
+build a cache file of synonyms that are used for completion.  See
+`synonyms.el'.
+
+Remember that you can use `\\<minibuffer-local-completion-map>\
+\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
+    icicle-insert-thesaurus-entry-cand-fn ; Action function
+    "Thesaurus entry to match: " synonyms-obarray ; `completing-read' args
+    nil t nil 'icicle-dictionary-history nil nil
+    ((icicle-track-pt  (point)))        ; Bindings
+    (progn                              ; First code
+      (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
+        (error "You must first load library `synonyms.el'"))
+      (synonyms-ensure-synonyms-read-from-cache))
+    nil                                 ; Undo code
+    (when (window-live-p icicle-orig-window) ; Last code
+      (select-window icicle-orig-window)
+      (select-frame-set-input-focus (selected-frame))
+      (goto-char icicle-track-pt)))
+
+  (icicle-maybe-byte-compile-after-load icicle-insert-thesaurus-entry)
+
+
+  ;; Free vars here: `icicle-orig-buff' is bound in `icicle-insert-thesaurus-entry'.
+  (defun icicle-insert-thesaurus-entry-cand-fn (string)
+    "Action function for `icicle-insert-thesaurus-entry'.
+Insert STRING, followed by a space, at position TRACK-PT of buffer
+ORIG-BUFF."
+    (set-buffer icicle-orig-buff)
+    (goto-char icicle-track-pt)
+    (insert string " ")
+    (setq icicle-track-pt  (point))
+    (unless (pos-visible-in-window-p) (recenter icicle-recenter))
+    (with-current-buffer (window-buffer (minibuffer-window)) (icicle-clear-minibuffer))
+    (save-selected-window (icicle-remove-Completions-window)))
+
+  (icicle-maybe-byte-compile-after-load icicle-insert-thesaurus-entry-cand-fn)
+
+
+  (defun icicle-complete-thesaurus-entry (word) ; Bound to `C-c /' in Icicle mode.
+    "Complete WORD to an entry from a thesaurus.
+The default value of WORD is the word at the cursor.
+Library `synonyms.el' is needed for this.  If you have never used
+command `synonyms' before, then the first use of
+`icicle-insert-thesaurus-entry' will take a while, because it will
+build a cache file of synonyms that are used for completion.  See
+`synonyms.el'."
+    (interactive (list (word-at-point)))
+    (unless word (error "No word at point to complete"))
+    (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
+      (error "You must first load library `synonyms.el'"))
+    (synonyms-ensure-synonyms-read-from-cache)
+    (when (and (looking-at "\\b") (not (looking-at "\\s-"))) (forward-word 1))
+    (delete-region (progn (forward-word -1) (point)) (progn (forward-word 1) (point)))
+    (insert (completing-read "Thesaurus entry to match: " synonyms-obarray
+                             nil nil word 'icicle-dictionary-history word))
+    (unless (looking-at "\\s-") (insert " ")))
+
+  (icicle-maybe-byte-compile-after-load icicle-complete-thesaurus-entry)
+
+  )
+
+
+
+;;; Library `Bookmark+' - Icicles multi-commands.
+;;;
+;;;###autoload (autoload 'icicle-tag-a-file                              "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-untag-a-file                            "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-all-tags-other-window         "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-all-tags-regexp               "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows  "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-some-tags                     "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-some-tags-other-window        "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-some-tags-regexp              "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd2.el")
+(eval-after-load "bookmark+" '(icicle-cmd2-after-load-bookmark+))
+
+
+;;; Library `hexrgb.el' - Icicles multi-commands.
+;;;
+;;;###autoload (autoload 'icicle-frame-bg "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-frame-fg "icicles-cmd2.el")
+(eval-after-load "hexrgb" '(icicle-cmd2-after-load-hexrgb))
+
+
+;;; Library `highlight.el' - Icicles multi-commands.  Emacs 21+.
+;;;
+;;;###autoload (autoload 'icicle-choose-faces           "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-choose-invisible-faces "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-choose-visible-faces   "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-hide-faces             "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-hide-only-faces        "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-show-faces             "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-show-only-faces        "icicles-cmd2.el")
+(eval-after-load "highlight" '(icicle-cmd2-after-load-highlight))
+
+
+;;; Library `palette.el' - Icicles multi-commands.
+;;;
+;;;###autoload (autoload 'icicle-pick-color-by-name "icicles-cmd2.el")
+(eval-after-load "palette" '(icicle-cmd2-after-load-palette))
+
+
+;;; Library `synonyms.el' - Icicles multi-commands.
+;;;
+;;;###autoload (autoload 'synonyms                        "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-synonyms                 "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles-cmd2.el")
+(eval-after-load "synonyms" '(icicle-cmd2-after-load-synonyms))
+ 
 ;;(@* "Icicles Top-Level Commands, Part 2")
-;;; Icicles Top-Level Commands, Part 2 .   .   .   .   .   .   .   .   .
+
+;;; Icicles Top-Level Commands, Part 2 -------------------------------
 
 
 (defvar icicle-orig-font nil
@@ -472,566 +1880,6 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
 (defvar icicle-named-colors ()
   "Named colors.")
 
-;;;###autoload (autoload 'icicle-frame-bg "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-frame-fg "icicles-cmd2.el")
-(eval-after-load "hexrgb"
-  '(progn
-
-    (when (and (fboundp 'read-color) (not (fboundp 'old-read-color))) ; Exists starting with Emacs 23.
-      (defalias 'old-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
-
-    ;; See also `hexrgb-read-color' in `hexrgb.el'.
-    (defun icicle-read-color (&optional arg prompt)
-      "Read a color name or hex RGB color value #RRRRGGGGBBBB.
-A string value is returned.
-Interactively, optional argument ARG is the prefix arg.
-Optional argument PROMPT is the prompt to use (default \"Color: \").
-
-In addition to standard color names and RGB (red, green, blue) hex
-values, the following are also available as proxy color candidates,
-provided `icicle-add-proxy-candidates-flag' is non-nil and library
-`palette.el' or `eyedropper.el' is used.  In each case, the
-corresponding color is used.
-
-* `*copied foreground*'  - last copied foreground, if available
-* `*copied background*'  - last copied background, if available
-* `*mouse-2 foreground*' - foreground where you click `mouse-2'
-* `*mouse-2 background*' - background where you click `mouse-2'
-* `*point foreground*'   - foreground under the text cursor
-* `*point background*'   - background under the text cursor
-
-\(You can copy a color using eyedropper commands such as
-`eyedrop-pick-foreground-at-mouse'.)
-
-In addition, the names of user options (variables) whose custom type
-is `color' are also proxy candidates, but with `'' as a prefix and
-suffix.  So, for example, option `icicle-region-background' appears as
-proxy color candidate `'icicle-region-background''.
-
-As always, you can toggle the use of proxy candidates using `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-proxy-candidates]' in
-the minibuffer.
-
-With plain `C-u', use `hexrgb-read-color', which lets you complete a
-color name or input any valid RGB hex value (without completion).
-
-With no prefix arg, return a string with both the color name and the
-RGB value, separated by `icicle-list-nth-parts-join-string'.
-
-With a numeric prefix arg of 0 or 1, return the color name.  With any
-other numeric prefix arg, return the RGB value.
-
-In the plain `C-u' case, your input is checked to ensure that it
-represents a valid color.
-
-In all other cases:
-
-- You can complete your input against the color name, the RGB value,
-  or both.
-
-- If you enter input without completing or cycling, the input is not
-  checked: whatever is entered is returned as the string value.
-
-From Emacs Lisp, ARG controls what is returned.  If ARG is nil,
-`icicle-list-use-nth-parts' can also be used to control the behavior.
-
-Note: Duplicate color names are removed by downcasing and removing
-whitespace.  For example, \"AliceBlue\" and \"alice blue\" are both
-treated as \"aliceblue\".  Otherwise, candidates with different names
-but the same RGB values are not considered duplicates, so, for
-example, input can match either \"darkred\" or \"red4\", which both
-have RGB #8b8b00000000.  You can toggle duplicate removal at any time
-using `C-$'.
-
-During completion, candidate help (e.g. `C-M-RET') shows you the RGB
-and HSV (hue, saturation, value) color components.
-
-This command is intended only for use in Icicle mode (but it can be
-used with `C-u', with Icicle mode turned off)."
-      (interactive "P")
-      (unless (featurep 'hexrgb) (error "`icicle-read-color' requires library `hexrgb.el'"))
-      (let (color)
-        (if (consp arg)                 ; Plain `C-u': complete against color name only,
-            (setq color  (hexrgb-read-color t)) ; and be able to input any valid RGB string.
-
-          ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
-          (let ((icicle-list-use-nth-parts
-                 (or (and arg (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
-                     icicle-list-use-nth-parts ; Bound externally by program.
-                     '(1 2)))           ; Both parts, by default.
-                (mouse-pseudo-color-p  nil)
-
-                icicle-candidate-help-fn           completion-ignore-case
-                icicle-transform-function          icicle-sort-orders-alist
-                icicle-list-nth-parts-join-string  icicle-list-join-string
-                ;; $$$$$$ icicle-list-end-string
-                icicle-proxy-candidate-regexp      icicle-named-colors
-                icicle-proxy-candidates)
-            ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
-            ;; Use `icicle-prompt' from now on, since that's what `icicle-color-completion-setup'
-            ;; sets up.
-            (setq icicle-prompt  (copy-sequence (or prompt "Color: ")))
-            (icicle-color-completion-setup)
-            (setq icicle-proxy-candidates
-                  (append icicle-proxy-candidates
-                          (mapcar       ; Convert multi-completions to strings.
-                           ;; $$$$$$ #'(lambda (entry)
-                           ;;           (concat (mapconcat #'identity (car entry)
-                           ;;                              icicle-list-join-string)
-                           ;;                   icicle-list-end-string)) ; $$$$$$
-                           #'(lambda (entry) (mapconcat #'identity (car entry)
-                                                        icicle-list-join-string))
-                           '((("*mouse-2 foreground*")) (("*mouse-2 background*")))))
-                  color  (icicle-transform-multi-completion
-                          (let ((icicle-orig-window  (selected-window))
-                                (icicle-candidate-alt-action-fn
-                                 (or icicle-candidate-alt-action-fn
-                                     (icicle-alt-act-fn-for-type "color")))
-                                (icicle-all-candidates-list-alt-action-fn
-                                 (or icicle-all-candidates-list-alt-action-fn
-                                     (icicle-alt-act-fn-for-type "color"))))
-                            (completing-read icicle-prompt icicle-named-colors))))
-            (when (fboundp 'eyedrop-foreground-at-point)
-              (cond ((string-match "^\*mouse-2 foreground\*" color)
-                     (setq color  (prog1 (eyedrop-foreground-at-mouse
-                                          (read-event
-                                           "Click `mouse-2' anywhere to choose foreground color"))
-                                    (read-event)) ; Discard mouse up event.
-                           mouse-pseudo-color-p  t))
-                    ((string-match "^\*mouse-2 background\*" color)
-                     (setq color  (prog1 (eyedrop-background-at-mouse
-                                          (read-event
-                                           "Click `mouse-2' anywhere to choose background color"))
-                                    (read-event)) ; Discard mouse up event.
-                           mouse-pseudo-color-p  t))))
-            (when mouse-pseudo-color-p
-              (let ((icicle-list-nth-parts-join-string  ": ")
-                    (icicle-list-join-string            ": ")
-                    ;; $$$$$$ (icicle-list-end-string             "")
-                    (icicle-list-use-nth-parts
-                     (or (and arg
-                              (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
-                         icicle-list-use-nth-parts ; Bound externally by program.
-                         '(1 2))))      ; Both parts, by default.
-                (setq color  (icicle-transform-multi-completion
-                              (concat color ": " (hexrgb-color-name-to-hex color))))))))
-        (when (interactive-p) (message "Color: `%s'" color))
-        color))
-
-    (icicle-maybe-byte-compile-after-load icicle-read-color)
-
-
-    (icicle-define-command icicle-frame-bg ; Command name
-      "Change background of current frame.
-Read color name or hex RGB color value #RRRRGGGGBBBB with completion.
-In addition to standard color names and RGB (red, green, blue) hex
-values, the following are also available as proxy color candidates,
-provided `icicle-add-proxy-candidates-flag' is non-nil and library
-`palette.el' or `eyedropper.el' is used.  In each case, the
-corresponding color is used.
-
-* `*copied foreground*'  - last copied foreground, if available
-* `*copied background*'  - last copied background, if available
-* `*point foreground*'   - foreground under the text cursor
-* `*point background*'   - background under the text cursor
-
-\(You can copy a color using eyedropper commands such as
-`eyedrop-pick-foreground-at-mouse'.)
-
-In addition, the names of user options (variables) whose custom type
-is `color' are also proxy candidates, but with `'' as a prefix and
-suffix.  So, for example, option `icicle-region-background' appears as
-proxy color candidate `'icicle-region-background''.
-
-As always, you can toggle the use of proxy candidates using `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-proxy-candidates]' in
-the minibuffer.
-
-You can complete your input against the color name, the RGB value, or
-both.
-
-Note: Duplicate color names are removed by downcasing and removing
-whitespace.  For example, \"AliceBlue\" and \"alice blue\" are both
-treated as \"aliceblue\".  Otherwise, candidates with different names
-but the same RGB values are not considered duplicates, so, for
-example, input can match either \"darkred\" or \"red4\", which both
-have RGB #8b8b00000000.  You can toggle duplicate removal at any time
-using `C-$'.
-
-During completion, candidate help (e.g. `C-M-RET') shows you the RGB
-and HSV (hue, saturation, value) color components.
-
-This command is intended only for use in Icicle mode." ; Doc string
-      (lambda (color)                   ; Action function
-        (modify-frame-parameters
-         icicle-orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
-      icicle-prompt icicle-named-colors nil t nil ; `completing-read' args
-      (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
-      ((icicle-orig-frame                  (selected-frame)) ; Bindings
-       (orig-bg                            (frame-parameter nil 'background-color))
-       (icicle-prompt                      "Background color: ")
-       (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
-       (icicle-candidate-alt-action-fn
-        (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
-       (icicle-all-candidates-list-alt-action-fn
-        (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "color")))
-
-       icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
-       icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-       ;; $$$$$$ icicle-list-end-string
-       icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
-      (icicle-color-completion-setup)   ; First code - needs `hexrgb.el'
-      (modify-frame-parameters icicle-orig-frame (list (cons 'background-color orig-bg))) ; Undo code
-      nil)                              ; Last code
-
-    (icicle-maybe-byte-compile-after-load icicle-frame-bg)
-
-
-    (icicle-define-command icicle-frame-fg ; Command name
-      "Change foreground of current frame.
-See `icicle-frame-bg' - but this is for foreground, not background." ; Doc string
-      (lambda (color)                   ; Action function
-        (modify-frame-parameters
-         icicle-orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
-      icicle-prompt icicle-named-colors nil t nil ; `completing-read' args
-      (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
-      ((icicle-orig-frame                  (selected-frame)) ; Bindings
-       (orig-bg                            (frame-parameter nil 'foreground-color))
-       (icicle-prompt                      "Foreground color: ")
-       (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
-       (icicle-candidate-alt-action-fn
-        (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
-       (icicle-all-candidates-list-alt-action-fn
-        (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "color")))
-
-       icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
-       icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-       ;; $$$$$$ icicle-list-end-string
-       icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
-      (icicle-color-completion-setup)   ; First code - needs `hexrgb.el'
-      (modify-frame-parameters icicle-orig-frame (list (cons 'foreground-color orig-bg))) ; Undo code
-      nil)                              ; Last code
-
-    (icicle-maybe-byte-compile-after-load icicle-frame-fg)
-
-
-    ;; Free vars here:
-    ;; `icicle-prompt', `icicle-candidate-help-fn', `completion-ignore-case',
-    ;; `icicle-transform-function', `icicle-sort-orders-alist', `icicle-list-nth-parts-join-string',
-    ;; `icicle-list-join-string', `icicle-proxy-candidate-regexp', `icicle-named-colors',
-    ;; `icicle-proxy-candidates'.
-    (defun icicle-color-completion-setup ()
-      "Set up for color-name/RGB-value completion (helper function).
-Sets these variables, which are assumed to be already `let'-bound:
-  `icicle-prompt'
-  `icicle-candidate-help-fn'
-  `completion-ignore-case'
-  `icicle-transform-function'
-  `icicle-sort-orders-alist'
-  `icicle-list-nth-parts-join-string'
-  `icicle-list-join-string'
-  `icicle-proxy-candidate-regexp'
-  `icicle-named-colors'
-  `icicle-proxy-candidates'
-Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
-      (if (< emacs-major-version 22)
-          (require 'eyedropper nil t)
-        (or (require 'palette nil t) (require 'eyedropper nil t)))
-      (when (stringp icicle-prompt)     ; Sanity check - should be true.
-        (put-text-property 0 1 'icicle-fancy-candidates t icicle-prompt))
-      (icicle-highlight-lighter)
-      (setq icicle-candidate-help-fn           'icicle-color-help
-            completion-ignore-case             t
-            icicle-sort-orders-alist
-            '(("by color name" . icicle-part-1-lessp)
-              ("by color hue"  . (lambda (s1 s2) (not (icicle-color-hue-lessp s1 s2))))
-              ("by color purity (saturation)"
-               . (lambda (s1 s2) (not (icicle-color-saturation-lessp s1 s2))))
-              ("by color brightness (value)"
-               . (lambda (s1 s2) (not (icicle-color-value-lessp s1 s2))))
-              ("by color hsv"       . (lambda (s1 s2) (not (icicle-color-hsv-lessp s1 s2))))
-              ("by hsv distance"    . (lambda (s1 s2) (icicle-color-distance-hsv-lessp s1 s2)))
-              ("by amount of red"   . (lambda (s1 s2) (not (icicle-color-red-lessp s1 s2))))
-              ("by amount of green" . (lambda (s1 s2) (not (icicle-color-green-lessp s1 s2))))
-              ("by amount of blue"  . (lambda (s1 s2) (not (icicle-color-blue-lessp s1 s2))))
-              ("by color rgb"       . (lambda (s1 s2) (not (icicle-color-rgb-lessp s1 s2))))
-              ("by rgb distance"    . (lambda (s1 s2) (icicle-color-distance-rgb-lessp s1 s2)))
-              ("turned OFF"))
-            ;; Make the two `*-join-string' variables the same, so past inputs are recognized.
-            ;; Do not use " " as the value, because color names such as "white smoke" would be
-            ;; split, and "smoke" would not be recognized as a color name when trying to list
-            ;; candidates in `*Completions*'.
-            icicle-list-nth-parts-join-string  ": "
-            icicle-list-join-string            ": "
-            ;; $$$$$$ icicle-list-end-string             ""
-            icicle-proxy-candidate-regexp      "^[*'].+[*']"
-
-            icicle-named-colors                (mapcar #'icicle-make-color-candidate
-                                                       (hexrgb-defined-colors))
-            icicle-proxy-candidates
-            (mapcar                     ; Convert multi-completions to strings.
-             (lambda (entry)
-               ;; $$$$$$ (concat (mapconcat #'identity (car entry) icicle-list-join-string)
-               ;;                icicle-list-end-string) ; $$$$$$
-               (mapconcat #'identity (car entry) icicle-list-join-string))
-             (append
-              (and (fboundp 'eyedrop-foreground-at-point)
-                   (append
-                    (and eyedrop-picked-foreground ; Multi-completions.
-                         `(,(icicle-make-color-candidate
-                             "*copied foreground*" (downcase (hexrgb-color-name-to-hex
-                                                              eyedrop-picked-foreground)))))
-                    (and eyedrop-picked-background
-                         `(,(icicle-make-color-candidate
-                             "*copied background*" (downcase (hexrgb-color-name-to-hex
-                                                              eyedrop-picked-background)))))
-                    `(,(icicle-make-color-candidate
-                        "*point foreground*" (downcase (hexrgb-color-name-to-hex
-                                                        (eyedrop-foreground-at-point))))
-                      ,(icicle-make-color-candidate
-                        "*point background*" (downcase (hexrgb-color-name-to-hex
-                                                        (eyedrop-background-at-point)))))))
-              (let ((ipc  ()))
-                (mapatoms
-                 (lambda (cand)
-                   (when (and (user-variable-p cand)
-                              (condition-case nil (icicle-var-is-of-type-p cand '(color)) (error nil))
-                              ;; This should not be necessary, but type `color' isn't
-                              ;; enforced - it just means `string' (so far).
-                              (x-color-defined-p (symbol-value cand)))
-                     (push `,(icicle-make-color-candidate
-                              (concat "'" (symbol-name cand) "'")
-                              (downcase (hexrgb-color-name-to-hex (symbol-value cand))))
-                           ipc))))
-                ipc)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-completion-setup)
-
-
-    (defun icicle-color-help (color)
-      "Display help on COLOR."
-      (let ((icicle-list-use-nth-parts  '(1 2)))
-        (with-output-to-temp-buffer "*Help*"
-          (setq icicle-list-use-nth-parts  '(2)
-                color                      (icicle-transform-multi-completion color))
-          (princ (format "Color: %s" color)) (terpri) (terpri)
-          (let* ((rgb  (hexrgb-hex-to-rgb color))
-                 (hsv  (apply #'hexrgb-rgb-to-hsv rgb)))
-            (princ "RGB:") (mapcar (lambda (component) (princ (format "  %.18f" component))) rgb)
-            (terpri) (terpri)
-            (princ "HSV:") (mapcar (lambda (component) (princ (format "  %.18f" component))) hsv)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-help)
-
-
-    (defun icicle-make-color-candidate (color-name &optional hex-rgb)
-      "Return multi-completion candidate of COLOR-NAME and its hex RGB string.
-If `icicle-WYSIWYG-Completions-flag' is non-nil, then the hex RGB
-string has the color as its background text property.
-Optional arg HEX-RGB is the hex RGB string.
-If nil, then COLOR-NAME is used to determine the hex RGB string."
-      (let* ((rgb-string  (or hex-rgb (hexrgb-color-name-to-hex color-name)))
-             (value       (hexrgb-value rgb-string)))
-        (when icicle-WYSIWYG-Completions-flag
-          (put-text-property 0 (length rgb-string) 'face
-                             (list (cons 'foreground-color (if (< value 0.6) "White" "Black"))
-                                   (cons 'background-color rgb-string))
-                             rgb-string))
-        (when (or (> icicle-help-in-mode-line-delay 0) ; Construct help only if user will see it.
-                  (and (boundp 'tooltip-mode) tooltip-mode))
-          (let* ((rgb   (hexrgb-hex-to-rgb rgb-string))
-                 (hsv   (apply #'hexrgb-rgb-to-hsv rgb))
-                 (help  (format "RGB: %.6f, %.6f, %.6f;  HSV: %.6f, %.6f, %.6f"
-                                (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)
-                                (nth 0 hsv) (nth 1 hsv) (nth 2 hsv))))
-            (icicle-candidate-short-help help color-name)
-            (icicle-candidate-short-help help rgb-string)))
-        (list (list color-name rgb-string))))
-
-    (icicle-maybe-byte-compile-after-load icicle-make-color-candidate)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-red-lessp (s1 s2)
-      "Non-nil means the RGB in S1 has less red than in S2.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The RGB values are assumed to
-be the second parts of the strings, and they are assumed to start with
-`#'."
-      (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-            (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
-        (and rgb1 rgb2                  ; Just in case strings were not multipart.
-             (< (hexrgb-red rgb1) (hexrgb-red rgb2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-red-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-green-lessp (s1 s2)
-      "Non-nil means the RGB in S1 has less green than in S2.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The RGB values are assumed to
-be the second parts of the strings, and they are assumed to start with
-`#'."
-      (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-            (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
-        (and rgb1 rgb2                  ; Just in case strings were not multipart.
-             (< (hexrgb-green rgb1) (hexrgb-green rgb2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-green-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-blue-lessp (s1 s2)
-      "Non-nil means the RGB in S1 has less blue than in S2.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The RGB values are assumed to
-be the second parts of the strings, and they are assumed to start with
-`#'."
-      (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-            (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
-        (and rgb1 rgb2                  ; Just in case strings were not multipart.
-             (< (hexrgb-blue rgb1) (hexrgb-blue rgb2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-blue-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-distance-rgb-lessp (s1 s2)
-      "Return non-nil if color S1 is RGB-closer than S2 to the base color.
-S1 and S2 are color names (strings).
-
-The base color name is the cdr of option `list-colors-sort', whose car
-must be `rgb-dist'.  If the option value is not already a cons with
-car `rgb-dist' then it is made so: you are prompted for the base color
-name to use."
-      (let* ((base-color  (if (and (boundp 'list-colors-sort) ; Emacs 23+
-                                   (consp list-colors-sort) (eq 'rgb-dist (car list-colors-sort)))
-                              (cdr list-colors-sort) ; `list-colors-sort' is free here.
-                            (cdr (setq list-colors-sort
-                                       (cons 'rgb-dist
-                                             (let ((enable-recursive-minibuffers  t)
-                                                   (icicle-sort-comparer          nil))
-                                               (icicle-read-color 0 "With RGB close to color: ")))))))
-             (base-rgb    (hexrgb-hex-to-rgb (hexrgb-color-name-to-hex base-color)))
-             (base-red    (nth 0 base-rgb))
-             (base-green  (nth 1 base-rgb))
-             (base-blue   (nth 2 base-rgb))
-             (s1-rgb      (hexrgb-hex-to-rgb (elt (split-string s1 icicle-list-join-string) 1)))
-             (s2-rgb      (hexrgb-hex-to-rgb (elt (split-string s2 icicle-list-join-string) 1))))
-        (< (+ (expt (- (nth 0 s1-rgb) base-red) 2)
-              (expt (- (nth 1 s1-rgb) base-green) 2)
-              (expt (- (nth 2 s1-rgb) base-blue) 2))
-           (+ (expt (- (nth 0 s2-rgb) base-red) 2)
-              (expt (- (nth 1 s2-rgb) base-green) 2)
-              (expt (- (nth 2 s2-rgb) base-blue) 2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-distance-rgb-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-hue-lessp (s1 s2)
-      "Non-nil means the RGB hue in S1 is less than that in S2.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The RGB values are assumed to
-be the second parts of the strings, and they are assumed to start with
-`#'."
-      (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-            (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
-        (and rgb1 rgb2                  ; Just in case strings were not multipart.
-             (< (hexrgb-hue rgb1) (hexrgb-hue rgb2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-hue-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-saturation-lessp (s1 s2)
-      "Non-nil means the RGB in S1 is less saturated than in S2.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The RGB values are assumed to
-be the second parts of the strings, and they are assumed to start with
-`#'."
-      (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-            (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
-        (and rgb1 rgb2                  ; Just in case strings were not multipart.
-             (< (hexrgb-saturation rgb1) (hexrgb-saturation rgb2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-saturation-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-value-lessp (s1 s2)
-      "Non-nil means the RGB value in S1 is darker than that in S2.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The RGB values are assumed to
-be the second parts of the strings, and they are assumed to start with
-`#'."
-      (let ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-            (rgb2  (elt (split-string s2 icicle-list-join-string) 1)))
-        (and rgb1 rgb2                  ; Just in case strings were not multipart.
-             (< (hexrgb-value rgb1) (hexrgb-value rgb2)))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-value-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-hsv-lessp (s1 s2)
-      "Non-nil means the HSV components of S1 are less than those of S2.
-Specifically, the hues are compared first, then if hues are equal then
-saturations are compared, then if those are also equal values are
-compared.
-The strings are assumed to have at least two parts, with the parts
-separated by `icicle-list-join-string' The second parts of the strings
-are RGB triplets that start with `#'."
-      (let* ((rgb1  (elt (split-string s1 icicle-list-join-string) 1))
-             (hsv1  (and rgb1 (hexrgb-hex-to-hsv rgb1)))
-             (rgb2  (elt (split-string s2 icicle-list-join-string) 1))
-             (hsv2  (and rgb2 (hexrgb-hex-to-hsv rgb2))))
-        (and hsv1 hsv2                  ; Just in case strings were not multipart.
-             (or (< (nth 0 hsv1) (nth 0 hsv2))
-                 (and (= (nth 0 hsv1) (nth 0 hsv2))
-                      (< (nth 1 hsv1) (nth 1 hsv2)))
-                 (and (= (nth 0 hsv1) (nth 0 hsv2))
-                      (= (nth 1 hsv1) (nth 1 hsv2))
-                      (< (nth 2 hsv1) (nth 2 hsv2)))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-color-hsv-lessp)
-
-
-    ;; This predicate is used for color completion.
-    (defun icicle-color-distance-hsv-lessp (s1 s2)
-      "Return non-nil if color S1 is HSV-closer than S2 to the base color.
-S1 and S2 are color names (strings).
-
-The base color name is the cdr of option `list-colors-sort', whose car
-must be `hsv-dist'.  If the option value is not already a cons with
-car `hsv-dist' then it is made so: you are prompted for the base color
-name to use."
-      (let* ((base-color  (if (and (boundp 'list-colors-sort) ; Emacs 23+
-                                   (consp list-colors-sort) (eq 'hsv-dist (car list-colors-sort)))
-                              (cdr list-colors-sort) ; `list-colors-sort' is free here.
-                            (cdr (setq list-colors-sort
-                                       (cons 'hsv-dist
-                                             (let ((enable-recursive-minibuffers  t)
-                                                   (icicle-sort-comparer          nil))
-                                               (icicle-read-color 0 "With HSV close to color: ")))))))
-             (base-hsv    (hexrgb-hex-to-hsv (hexrgb-color-name-to-hex base-color)))
-             (base-hue    (nth 0 base-hsv))
-             (base-sat    (nth 1 base-hsv))
-             (base-val    (nth 2 base-hsv))
-             (s1-hsv      (apply #'hexrgb-rgb-to-hsv
-                                 (hexrgb-hex-to-rgb
-                                  (elt (split-string s1 icicle-list-join-string) 1))))
-             (s2-hsv      (apply #'hexrgb-rgb-to-hsv
-                                 (hexrgb-hex-to-rgb
-                                  (elt (split-string s2 icicle-list-join-string) 1)))))
-        (< (+ (expt (- (nth 0 s1-hsv) base-hue) 2)
-              (expt (- (nth 1 s1-hsv) base-sat) 2)
-              (expt (- (nth 2 s1-hsv) base-val) 2))
-           (+ (expt (- (nth 0 s2-hsv) base-hue) 2)
-              (expt (- (nth 1 s2-hsv) base-sat) 2)
-              (expt (- (nth 2 s2-hsv) base-val) 2)))))
-    ))
 
 (defvar icicle-info-buff nil
   "Info buffer before command was invoked.")
@@ -1050,7 +1898,8 @@ name to use."
         (icicle-candidate-action-fn  'icicle-Info-index-action)
         (C-x-m                       (lookup-key minibuffer-local-completion-map "\C-xm")))
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
-      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") 'icicle-bookmark-info-other-window))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
+        'icicle-bookmark-info-other-window))
     (unwind-protect
          (call-interactively (if (> emacs-major-version 21) 'old-Info-index 'icicle-Info-index-20))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
@@ -1186,7 +2035,8 @@ You can use `C-x m' during completion to access Info bookmarks, if you
  use library `Bookmark+'."
   (let ((C-x-m  (lookup-key minibuffer-local-completion-map "\C-xm")))
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
-      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") 'icicle-bookmark-info-other-window))
+      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
+        'icicle-bookmark-info-other-window))
     (unwind-protect
          (let* ((completion-ignore-case           t)
                 (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
@@ -3739,124 +4589,6 @@ future search commands, not the current one.)" ; Doc string
     (icicle-search beg end regexp t))
   (with-current-buffer (window-buffer (minibuffer-window)) (icicle-erase-minibuffer)))
 
-;; Similar to `icicle-define-bookmark-command-1' in `icicles-cmd1.el'.  Could combine them.
-(defmacro icicle-define-search-bookmark-command (type &optional prompt &rest args)
-  "Define Icicles multi-command for searching bookmarks of type TYPE.
-TYPE is a string to be used for the doc string, default prompt, and in
- function names.  It should be lowercase and contain no spaces.
-Optional arg PROMPT is the completion prompt.
-ARGS is a list of any additional arguments to be passed to the
- appropriate `bmkp-TYPE-alist-only' function.
-
-The command defined raises an error unless library `Bookmark+' can be
-loaded."
-  `(icicle-define-command
-    ,(intern (format "icicle-search-%s-bookmark" type)) ; Command name
-    ,(format "Search %s bookmark text.
-Like `icicle-search-bookmark', but with %s bookmarks only.
-You need library `Bookmark+' for this command." type type) ; Doc string
-    icicle-search-bookmark-action       ; Action function
-    prompt1 icicle-candidates-alist nil ; `completing-read' args
-    (not icicle-show-multi-completion-flag)
-    nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
-    nil nil
-    ((IGNORED1                                 (unless (require 'bookmark+ nil t) ; Bindings
-                                                 (error "You need library `Bookmark+' for this \
-command")))
-     (IGNORED2                                 (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
-     (enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on...
-     (completion-ignore-case                   bookmark-completion-ignore-case)
-     (prompt1                                  ,(or prompt (format "Search %s bookmark: " type)))
-     (icicle-list-use-nth-parts                '(1))
-     (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
-                                                   nil
-                                                 (if (facep 'file-name-shadow)
-                                                     '((2 (face file-name-shadow))
-                                                       (3 (face bookmark-menu-heading)))
-                                                   '((3 (face bookmark-menu-heading))))))
-     (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
-     (icicle-whole-candidate-as-text-prop-p    t)
-     (icicle-transform-before-sort-p           t)
-     (icicle-delete-candidate-object           'icicle-bookmark-delete-action)
-     (regexp                                   (icicle-search-read-context-regexp))
-     (bookmark-automatically-show-annotations  nil) ; Do not show annotations
-     (icicle-sort-orders-alist
-      (append
-       '(("in *Bookmark List* order")   ; Renamed from "turned OFF'.
-         ("by bookmark name" . icicle-alpha-p)
-         ("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
-         ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p))
-       (and (member ,type '("info" "region"))
-        '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
-       (and (member ,type '("gnus" "region"))
-        '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
-       (and (member ,type '("url" "region"))
-        '(("by URL" (bmkp-url-cp) icicle-alpha-p)))
-       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "url")))
-        '(("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
-                               bmkp-local-file-type-cp bmkp-handler-cp)
-           icicle-alpha-p)))
-       (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
-        '(("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)))
-       (and (member ,type '("local-file" "file" "dired" "region"))
-        '(("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
-          ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
-          ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
-           icicle-alpha-p)
-          ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
-           icicle-alpha-p)))
-       (and (not (string= ,type "desktop"))
-        '(("by last buffer or file access" (bmkp-buffer-last-access-cp
-                                            bmkp-local-file-accessed-more-recently-cp)
-           icicle-alpha-p)))
-       (and (get-buffer "*Bookmark List*")
-        '(("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
-           icicle-alpha-p)))
-       '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
-         ("case insensitive" . icicle-case-insensitive-string-less-p))))
-     (icicle-candidate-help-fn
-      #'(lambda (cand)
-          (when icicle-show-multi-completion-flag
-            (setq cand  (funcall icicle-get-alist-candidate-function cand))
-            (setq cand  (cons (caar cand) (cdr cand))))
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))))
-     (icicle-candidates-alist
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                            (cons (append (list (icicle-candidate-short-help
-                                                 (icicle-bookmark-help-string bname)
-                                                 (icicle-bookmark-propertize-candidate bname))
-                                                file/buf)
-                                          (and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
-    nil                                 ; First code
-    (icicle-bookmark-cleanup-on-quit)   ; Undo code
-    (icicle-bookmark-cleanup)))         ; Last code
 
 ;; The following sexps macro-expand to define these commands:
 ;;  `icicle-search-all-tags-bookmark'
@@ -6749,15 +7481,15 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                 (eq 'self-insert-command binding))
            (ignore))))                  ; Placeholder for future use.
 
-  ;; $$ No longer used.  Was used in `icicle-complete-keys-1'.
-  (defun icicle-read-single-key-description (string need-vector &optional angles)
-    "If STRING contains a space, then the vector containing the symbol named STRING.
-Otherwise, call `icicle-read-kbd-macro'.
-Other args are as for `icicle-read-kbd-macro'."
-    (cond ((and (not angles) (string-match " " string))  (vector (intern string)))
-          ((string-match "^<\\([^>]* [^>]*\\)>" string)
-           (vector (intern (substring string (match-beginning 1) (match-end 1)))))
-          (t (icicle-read-kbd-macro string need-vector angles))))
+;;;   ;; $$$$$$ No longer used.  Was used in `icicle-complete-keys-1'.
+;;;   (defun icicle-read-single-key-description (string need-vector &optional angles)
+;;;     "If STRING contains a space, then the vector containing the symbol named STRING.
+;;; Otherwise, call `icicle-read-kbd-macro'.
+;;; Other args are as for `icicle-read-kbd-macro'."
+;;;     (cond ((and (not angles) (string-match " " string))  (vector (intern string)))
+;;;           ((string-match "^<\\([^>]* [^>]*\\)>" string)
+;;;            (vector (intern (substring string (match-beginning 1) (match-end 1)))))
+;;;           (t (icicle-read-kbd-macro string need-vector angles))))
 
   ;; $$ No longer used.  Was used as `icicle-candidate-action-fn' in `icicle-complete-keys'.
   (defun icicle-complete-keys-help (candidate)
@@ -6901,816 +7633,6 @@ Null ARG means advise and enable."
            (ad-activate command)
            (when msgp (message "`%s' %s: %s" command type
                                (if (consp (car methods)) (mapcar #'car methods) methods)))))))
- 
-;;(@* "Icicles Commands for Other Packages")
-;;; ** Icicles Commands for Other Packages **
-
-;;; Library `highlight.el' - Icicles multi-commands.  Emacs 21+.
-;;;
-;;;###autoload (autoload 'icicle-choose-faces           "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-choose-invisible-faces "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-choose-visible-faces   "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-hide-faces             "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-hide-only-faces        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-show-faces             "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-show-only-faces        "icicles-cmd2.el")
-(eval-after-load "highlight"
-  '(when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
-
-    (icicle-define-command icicle-choose-faces
-      "Choose a list of face names (strings).
-Option `hlt-act-on-any-face-flag' determines whether only highlighting
-faces in the buffer are candidates.  The list of names (strings) is
-returned."
-      (lambda (name) (push name face-names)) ; Action function
-      prompt                            ; `completing-read' args
-      (mapcar #'icicle-make-face-candidate
-              (if hlt-act-on-any-face-flag
-                  (face-list)
-                (hlt-highlight-faces-in-buffer (point-min) (point-max))))
-      nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
-      (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
-      ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
-       (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string             "")
-       (icicle-list-use-nth-parts          '(1))
-       (prompt                             (copy-sequence "Choose face (`RET' when done): "))
-       (face-names                         ()))
-      (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
-      nil                               ; Undo code.
-      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
-        (when (interactive-p) (message "Faces: %S" face-names))))
-
-    (icicle-maybe-byte-compile-after-load icicle-choose-faces)
-
-
-    (icicle-define-command icicle-choose-invisible-faces
-      "Choose a list of face names (strings) from currently invisible faces.
-Option `hlt-act-on-any-face-flag' determines whether only highlighting
-faces in the buffer are candidates.  The list of names (strings) is
-returned."
-      (lambda (name) (push name face-names)) ; Action function
-      prompt                            ; `completing-read' args
-      (mapcar #'icicle-make-face-candidate
-              (icicle-remove-if-not #'icicle-invisible-face-p
-                                    (if hlt-act-on-any-face-flag
-                                        (face-list)
-                                      (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
-      nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
-      (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
-      ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
-       (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string             "")
-       (icicle-list-use-nth-parts          '(1))
-       (prompt                             (copy-sequence "Choose face (`RET' when done): "))
-       (face-names                         ()))
-      (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
-      nil                               ; Undo code.
-      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
-        (when (interactive-p) (message "Faces: %S" face-names))))
-
-    (icicle-maybe-byte-compile-after-load icicle-choose-invisible-faces)
-
-
-    (icicle-define-command icicle-choose-visible-faces
-      "Choose a list of face names (strings) from currently visible faces.
-Option `hlt-act-on-any-face-flag' determines whether only highlighting
-faces in the buffer are candidates.  The list of names (strings) is
-returned."
-      (lambda (name) (push name face-names)) ; Action function
-      prompt                            ; `completing-read' args
-      (mapcar #'icicle-make-face-candidate
-              (icicle-remove-if #'icicle-invisible-face-p
-                                (if hlt-act-on-any-face-flag
-                                    (face-list)
-                                  (hlt-highlight-faces-in-buffer (point-min) (point-max)))))
-      nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
-      (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
-      ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
-       (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string             "")
-       (icicle-list-use-nth-parts          '(1))
-       (prompt                             (copy-sequence "Choose face (`RET' when done): "))
-       (face-names                         ()))
-      (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
-      nil                               ; Undo code.
-      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
-        (when (interactive-p) (message "Faces: %S" face-names))))
-  
-    (icicle-maybe-byte-compile-after-load icicle-choose-visible-faces)
-
-
-    (defun icicle-show-only-faces (&optional start end faces)
-      "Show only the faces you choose, hiding all others.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-faces.  Nil means choose only from among faces used to highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-      (interactive `(,@(hlt-region-or-buffer-limits)
-                     ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
-      (dolist (face (if hlt-act-on-any-face-flag
-                        (face-list)
-                      (hlt-highlight-faces-in-buffer start end)))
-        (if (memq face faces)
-            (hlt-show-default-face face)
-          (hlt-hide-default-face start end face))))
-  
-    (icicle-maybe-byte-compile-after-load icicle-show-only-faces)
-
-
-    (defun icicle-hide-only-faces (&optional start end faces)
-      "Hide only the faces you choose, showing all others.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-faces.  Nil means choose only from among faces used to highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-      (interactive `(,@(hlt-region-or-buffer-limits)
-                     ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
-      (dolist (face (if hlt-act-on-any-face-flag
-                        (face-list)
-                      (hlt-highlight-faces-in-buffer start end)))
-        (if (memq face faces)
-            (hlt-hide-default-face start end face)
-          (hlt-show-default-face face))))
-
-    (icicle-maybe-byte-compile-after-load icicle-hide-only-faces)
-
-
-    (defun icicle-show-faces (faces)
-      "Show invisible faces that you choose.  Do nothing to other faces.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-invisible faces.  Nil means choose only from among invisible faces
-used to highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-      (interactive
-       (list (let ((fs  (icicle-remove-if-not #'icicle-invisible-face-p
-                                              (if hlt-act-on-any-face-flag
-                                                  (face-list)
-                                                (hlt-highlight-faces-in-buffer
-                                                 (point-min) (point-max))))))
-               (if fs
-                   (mapcar #'intern (icicle-choose-invisible-faces)) ; An Icicles multi-command
-                 (error "No%s faces are invisible"
-                        (if hlt-act-on-any-face-flag "" " highlight"))))))
-      (dolist (face faces) (hlt-show-default-face face)))
-  
-    (icicle-maybe-byte-compile-after-load icicle-show-faces)
-
-
-    (defun icicle-hide-faces (&optional start end faces)
-      "Hide visible faces that you choose.  Do nothing to other faces.
-Non-nil `hlt-act-on-any-face-flag' means choose from among all
-visible faces.  Nil means choose only from among visible faces used to
-highlight.
-
-When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
-
-`C-mouse-2', `C-RET' - Choose current face candidate only
-`C-down'  - Choose, then move to next prefix-completion candidate
-`C-up'    - Choose, then move to previous prefix-completion candidate
-`C-next'  - Choose, then move to next apropos-completion candidate
-`C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
-      (interactive `(,@(hlt-region-or-buffer-limits)
-                     ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
-      (dolist (face faces) (hlt-hide-default-face start end face)))
-
-    (icicle-maybe-byte-compile-after-load icicle-hide-faces)
-
-    ))
-
-
-;;; Library `palette.el' - Icicles multi-commands.
-;;;
-;;;###autoload (autoload 'icicle-pick-color-by-name "icicles-cmd2.el")
-(eval-after-load "palette"
-  '(progn
-
-    (icicle-define-command icicle-pick-color-by-name ; Bound to `c' in color palette.
-      "Set the current color to a color you name.
-Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
-where each X is a hex digit.  The number of Xs must be a multiple of
-3, with the same number of Xs for each of red, green, and blue.
-If you enter an empty color name, then a color is picked randomly.
-The new current color is returned."     ; Doc string
-      icicle-pick-color-by-name-action  ; Action function
-      "Color (name or #R+G+B+): "       ; `completing-read' arguments
-      (hexrgb-defined-colors-alist) nil nil nil nil nil nil
-      ((completion-ignore-case  t)))    ; Bindings
-
-    (icicle-maybe-byte-compile-after-load icicle-pick-color-by-name)
-
-
-    (defun icicle-pick-color-by-name-action (color)
-      "Action function for `icicle-pick-color-by-name'."
-      (if (string= "" color)
-          (let* ((colors  (hexrgb-defined-colors))
-                 (rand    (random (length colors)))) ; Random color.
-            (setq color  (elt colors rand)))
-        (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
-          (when (and hex-string (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
-          (if (not (or hex-string (if (fboundp 'test-completion) ; Not defined in Emacs 20.
-                                      (test-completion color (hexrgb-defined-colors-alist))
-                                    (try-completion color (hexrgb-defined-colors-alist)))))
-              (error "No such color: %S" color)
-            (setq color  (hexrgb-color-name-to-hex color))))
-        (setq palette-last-color  palette-current-color)
-        (save-selected-window
-          (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
-          (palette-set-current-color color)
-          (palette-where-is-color color)
-          (palette-brightness-scale)
-          (palette-swatch))
-        palette-current-color))
-
-    (icicle-maybe-byte-compile-after-load icicle-pick-color-by-name-action)
-
-
-    (define-key palette-mode-map (icicle-kbd "c")  'icicle-pick-color-by-name)
-    (define-key palette-popup-map [pick-color-by-name] ; Use same name as in `palette.el'.
-      `(menu-item "Choose Color By Name" icicle-pick-color-by-name
-        :help "Set the current color to a color you name"))
-    ))
-
-
-;;; Library `synonyms.el' - Icicles multi-commands.
-;;;
-;;;###autoload (autoload 'synonyms                        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-synonyms                 "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles-cmd2.el")
-(eval-after-load "synonyms"
-  '(progn
-
-    (defalias 'synonyms 'icicle-synonyms)
-    (icicle-define-command icicle-synonyms ; Command
-      "Show synonyms that match a regular expression (e.g. a word or phrase).
-You are prompted for the regexp.  By default, it is the text
-of the region, if it is active and `transient-mark-mode' is enabled,
-or the nearest word to the cursor, if not.
-
-Option `synonyms-match-more-flag' non-nil means additional thesaurus
-  entries can be matched.  This can be more time-consuming.  It means
-  two things:
-
-  1) Input can match parts of synonyms, in addition to whole synonyms.
-  2) All synonyms are shown, even if input matches a thesaurus entry.
-
-Option `synonyms-append-result-flag' non-nil means to append search
-  result to previous results.
-
-A prefix argument toggles the meaning of each of those options for the
-duration of the command:
-
-  If `C-u' or `C-u C-u', then toggle `synonyms-match-more-flag'.
-  If negative or `C-u C-u', then toggle `synonyms-append-result-flag'.
-
-\(`C-u C-u' thus means toggle both options.)
-
-When called from Lisp, optional second argument REGEXP is the regexp
-to match (no prompting)."               ; Doc string
-      synonyms-action                   ; Action function,  defined in `synonyms.el'.
-      "Show synonyms for word or phrase (regexp): " ; `completing-read' arguments
-      synonyms-obarray nil nil nil 'synonyms-history (synonyms-default-regexp) nil
-      ((num-arg (prefix-numeric-value current-prefix-arg)) ; Bindings
-       (morep (eq synonyms-match-more-flag (atom current-prefix-arg)))
-       (appendp (eq synonyms-append-result-flag (and (wholenump num-arg) (/= 16 num-arg))))
-       (icicle-sort-function 'icicle-case-insensitive-string-less-p))
-      (synonyms-ensure-synonyms-read-from-cache)) ; Fill `synonyms-obarray' initially, for completion.
-
-    (icicle-maybe-byte-compile-after-load icicle-synonyms)
-
-
-    (icicle-define-command icicle-insert-thesaurus-entry ; Command name
-      "Insert an entry from a thesaurus.
-Library `synonyms.el' is needed for this.  If you have never used
-command `synonyms' before, then the first use of
-`icicle-insert-thesaurus-entry' will take a while, because it will
-build a cache file of synonyms that are used for completion.  See
-`synonyms.el'.
-
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
-      icicle-insert-thesaurus-entry-cand-fn ; Action function
-      "Thesaurus entry to match: " synonyms-obarray ; `completing-read' args
-      nil t nil 'icicle-dictionary-history nil nil
-      ((icicle-track-pt  (point)))      ; Bindings
-      (progn                            ; First code
-        (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
-          (error "You must first load library `synonyms.el'"))
-        (synonyms-ensure-synonyms-read-from-cache))
-      nil                               ; Undo code
-      (when (window-live-p icicle-orig-window) ; Last code
-        (select-window icicle-orig-window)
-        (select-frame-set-input-focus (selected-frame))
-        (goto-char icicle-track-pt)))
-
-    (icicle-maybe-byte-compile-after-load icicle-insert-thesaurus-entry)
-
-
-    ;; Free vars here: `icicle-orig-buff' is bound in `icicle-insert-thesaurus-entry'.
-    (defun icicle-insert-thesaurus-entry-cand-fn (string)
-      "Action function for `icicle-insert-thesaurus-entry'.
-Insert STRING, followed by a space, at position TRACK-PT of buffer
-ORIG-BUFF."
-      (set-buffer icicle-orig-buff)
-      (goto-char icicle-track-pt)
-      (insert string " ")
-      (setq icicle-track-pt  (point))
-      (unless (pos-visible-in-window-p) (recenter icicle-recenter))
-      (with-current-buffer (window-buffer (minibuffer-window)) (icicle-clear-minibuffer))
-      (save-selected-window (icicle-remove-Completions-window)))
-
-    (icicle-maybe-byte-compile-after-load icicle-insert-thesaurus-entry-cand-fn)
-
-
-    (defun icicle-complete-thesaurus-entry (word) ; Bound to `C-c /' in Icicle mode.
-      "Complete WORD to an entry from a thesaurus.
-The default value of WORD is the word at the cursor.
-Library `synonyms.el' is needed for this.  If you have never used
-command `synonyms' before, then the first use of
-`icicle-insert-thesaurus-entry' will take a while, because it will
-build a cache file of synonyms that are used for completion.  See
-`synonyms.el'."
-      (interactive (list (word-at-point)))
-      (unless word (error "No word at point to complete"))
-      (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
-        (error "You must first load library `synonyms.el'"))
-      (synonyms-ensure-synonyms-read-from-cache)
-      (when (and (looking-at "\\b") (not (looking-at "\\s-"))) (forward-word 1))
-      (delete-region (progn (forward-word -1) (point)) (progn (forward-word 1) (point)))
-      (insert (completing-read "Thesaurus entry to match: " synonyms-obarray
-                               nil nil word 'icicle-dictionary-history word))
-      (unless (looking-at "\\s-") (insert " ")))
-
-    (icicle-maybe-byte-compile-after-load icicle-complete-thesaurus-entry)
-
-    ))
-
-;;; Library `Bookmark+' - Icicles multi-commands.
-;;;
-;;;###autoload (autoload 'icicle-tag-a-file                              "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-untag-a-file                            "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tags-other-window         "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tags-regexp               "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows  "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags                     "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags-other-window        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags-regexp              "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd2.el")
-(eval-after-load "bookmark+"
-  '(progn
-
-    (icicle-define-file-command icicle-bookmark-a-file ; `C-x p c a'
-      "Bookmark a file (create an autofile bookmark).
-\(You need library `Bookmark+' for this command.)
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file.
-The autofile bookmark created has the same name as the file.
-
-During file-name completion:
- You can use `C-x a +' or `C-x a -' to add or remove tags from the
-  current-candidate file.  You are prompted for the tags.
-  (This action requires library `Bookmark+'.)
- You can use `C-c C-d' (a la `cd') to change the `default-directory'.
- You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty) dir."
-      (lambda (file) (bmkp-bookmark-a-file file nil nil 'MSG))
-      "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
-      (icicle-file-bindings             ; Bindings
-       ((icicle-use-candidates-only-once-flag  t)
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
-      (icicle-bind-file-candidate-keys) ; First code
-      nil                               ; Undo code
-      (icicle-unbind-file-candidate-keys)) ; Last code
-
-    (icicle-maybe-byte-compile-after-load icicle-bookmark-a-file)
-
-
-    (icicle-define-file-command icicle-tag-a-file ; `C-x p t + a'
-      "Tag a file (an autofile bookmark) with one or more tags.
-You are prompted for the tags, then the file name.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag.  Completion is lax: you are
-not limited to existing tags.
-
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file.
-
-The tags are added to an autofile bookmark for the same file name and
-directory.  If the bookmark does not yet exist it is created.
-Candidate help shows information about the file's autofile bookmark if
-it already exists, or the file itself if not."
-      (lambda (file) (bmkp-autofile-add-tags file tags nil nil 'MSG))
-      "File to tag: " nil nil nil nil nil ; `read-file-name' args
-      (icicle-file-bindings             ; Bindings
-       ((tags                                  (bmkp-read-tags-completing))
-        (icicle-use-candidates-only-once-flag  t))))
-
-    (icicle-maybe-byte-compile-after-load icicle-tag-a-file)
-
-
-    (icicle-define-file-command icicle-untag-a-file ; `C-x p t - a'
-      "Remove one or more tags from a file (an autofile bookmark).
-You are prompted for the tags, then the file name.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag.  Completion is lax: you are
-not limited to existing tags.
-
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file.
-
-The tags are removed from an autofile bookmark for the same file name
-and directory.  During file-name completion, only files tagged with
-all of the given input tags are completion candidates."
-      (lambda (file)
-        (bmkp-autofile-remove-tags file tags nil nil 'MSG))
-      "File to untag: " nil nil t nil nil ; `read-file-name' args
-      (icicle-file-bindings             ; Bindings
-       ((tags                                  (bmkp-read-tags-completing)) ; Pre bindings
-        (icicle-use-candidates-only-once-flag  t))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         #'(lambda (ff)
-             ;; Expand relative file name, using directory from minibuffer.
-             (setq ff  (expand-file-name ff (icicle-file-name-directory-w-default
-                                             (icicle-input-from-minibuffer))))
-             (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                    (btgs  (and bmk (bmkp-get-tags bmk))))
-               (and btgs  (catch 'icicle-untag-a-file
-                            (dolist (tag  tags) (when (not (member tag btgs))
-                                                  (throw 'icicle-untag-a-file nil)))
-                            t))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-untag-a-file)
-
-
-    ;;$$$  Do not bother with autofiles that have a PREFIX.
-    (icicle-define-command icicle-find-file-tagged ; Command name
-      "Find one or more files with tags that match your input.
-By default, only tagged files are candidates.  With a prefix argument,
-all autofiles are candidates.  (Autofiles are autofile bookmarks - you
-need library `Bookmark+' for this command.)
-
-Each completion candidate is a multi-completion composed of these
-fields: an absolute file name plus the file's tags, all separated by
-`icicle-list-join-string' (\"^G^J\", by default).  As always, you can
-type `C-M-j' to insert this separator into the minibuffer.
-
-For this command, by default `.' in your input matches any character,
-including a newline.  As always, you can use `C-M-.' to toggle
-this (so `.' does not match newline).
-
-You can match your input against the file name or tags or both.
-
-E.g., type:
-
- `red S-TAB'                    to match all files with the tag `red'
- `red M-SPC green M-SPC blue'   to match all files with tags `red',
-                                `green', and `blue' (in any order)
-
-That assumes that these tags do not also match any file names.
-
-If you need to match against a particular field (e.g. the file name or
-a specific tag position), then use the field separator.  Otherwise,
-just use progressive completion, as shown above.
-
-E.g., to match only tags and not the filename, start with `C-M-j' to
-get past the file-name field.  To match both file name and tags, type
-something to match the file name before the `C-M-j'.  E.g., type:
-
- `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
-                                `blue' that have `2011' in their names
-
-During completion (`*': requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
-  You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
-      (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
-      prompt icicle-abs-file-candidates ; `completing-read' args
-      nil nil nil 'icicle-filetags-history nil nil
-      (icicle-file-bindings             ; Bindings
-       ((prompt                             "FILE `C-M-j' TAGS: ")
-        (icicle-full-cand-fn                (lambda (file)
-                                              (list (cons file
-                                                          (bmkp-get-tags
-                                                           (bmkp-get-autofile-bookmark file))))))
-        (icicle-abs-file-candidates     ; An alist whose items are ((FILE TAG...)).
-         (let ((result  ()))
-           (dolist (autofile  (bmkp-autofile-alist-only))
-             (let ((tags  (bmkp-get-tags autofile)))
-               (when (or tags current-prefix-arg)
-                 (push (list (cons (bookmark-get-filename autofile) tags)) result))))
-           result))
-        (icicle-dot-string                      (icicle-anychar-regexp))
-        (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
-        (icicle-list-use-nth-parts              '(1))
-        (icicle-whole-candidate-as-text-prop-p  t)))
-      (progn                            ; First code
-        (put-text-property 0 1 'icicle-fancy-candidates t prompt)
-        (icicle-highlight-lighter)
-        (message "Gathering tagged files...")
-        (icicle-bind-file-candidate-keys))
-      nil                               ; Undo code
-      (icicle-unbind-file-candidate-keys)) ; Last code
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-tagged)
-
-
-    (icicle-define-command icicle-find-file-tagged-other-window ; Command name
-      "Same as `icicle-find-file-tagged', except uses another window." ; Doc string
-      (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
-      prompt icicle-abs-file-candidates ; `completing-read' args
-      nil nil nil 'icicle-filetags-history nil nil
-      (icicle-file-bindings             ; Bindings
-       ((prompt                                 "FILE `C-M-j' TAGS: ")
-        (icicle-full-cand-fn                    (lambda (file)
-                                                  (list (cons file
-                                                              (bmkp-get-tags
-                                                               (bmkp-get-autofile-bookmark file))))))
-        (icicle-abs-file-candidates     ; An alist whose items are ((FILE TAG...)).
-         (let ((result  ()))
-           (dolist (autofile  (bmkp-autofile-alist-only))
-             (let ((tags  (bmkp-get-tags autofile)))                  
-               (when (or tags current-prefix-arg)
-                 (push (list (cons (bookmark-get-filename autofile) tags)) result))))
-           result))
-        (icicle-dot-string                      (icicle-anychar-regexp))
-        (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
-        (icicle-list-use-nth-parts              '(1))
-        (icicle-whole-candidate-as-text-prop-p  t)))
-      (progn                            ; First code
-        (put-text-property 0 1 'icicle-fancy-candidates t prompt)
-        (icicle-highlight-lighter)
-        (message "Gathering tagged files...")
-        (icicle-bind-file-candidate-keys))
-      nil                               ; Undo code
-      (icicle-unbind-file-candidate-keys)) ; Last code
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-tagged-other-window)
-
-
-;;; These are like multi-command versions of `bmkp-find-file-all-tags' etc.,
-;;; except that the predicate is applied after matching the user's input
-;;; (`icicle-must-pass-after-match-predicate').
-
-    (icicle-define-file-command icicle-find-file-all-tags ; `C-x j t a *'
-      "Visit a file or directory that has all of the tags you enter.
-This is otherwise like `icicle-find-file'.
-You are prompted for the tags, then the file name.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag.  Completion is lax: you are
-not limited to existing tags.
-
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only 'find-file)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (tags           (bmkp-read-tags-completing))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                             (btgs  (and bmk (bmkp-get-tags bmk))))
-                        (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags)
-
-
-    (icicle-define-file-command icicle-find-file-all-tags-other-window ; `C-x 4 j t a *'
-      "Same as `icicle-find-file-all-tags', except uses another window."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (tags           (bmkp-read-tags-completing))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                             (btgs  (and bmk (bmkp-get-tags bmk))))
-                        (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-other-window)
-
-
-    (icicle-define-file-command icicle-find-file-all-tags-regexp ; `C-x j t a % *'
-      "Visit a file or directory that has each tag matching a regexp you enter.
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only 'find-file)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (regexp         (read-string "Regexp for tags: "))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff)
-           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                  (btgs  (and bmk (bmkp-get-tags bmk))))
-             (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                    btgs))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp)
-
-
-    (icicle-define-file-command icicle-find-file-all-tags-regexp-other-window ; `C-x 4 j t a % *'
-      "Same as `icicle-find-file-all-tags-regexp', except uses another window."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (regexp         (read-string "Regexp for tags: "))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff)
-           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                  (btgs  (and bmk (bmkp-get-tags bmk))))
-             (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                    btgs))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp-other-window)
-
-
-    (icicle-define-file-command icicle-find-file-some-tags ; `C-x j t a +'
-      "Visit a file or directory that has at least one of the tags you enter.
-This is otherwise like `icicle-find-file'.
-You are prompted for the tags, then the file name.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag.  Completion is lax: you are
-not limited to existing tags.
-
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only 'find-file)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (tags           (bmkp-read-tags-completing))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                             (btgs  (and bmk (bmkp-get-tags bmk))))
-                        (and btgs  (bmkp-some  #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags)
-
-
-    (icicle-define-file-command icicle-find-file-some-tags-other-window ; `C-x 4 j t a +'
-      "Same as `icicle-find-file-some-tags', except uses another window."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (tags           (bmkp-read-tags-completing))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                             (btgs  (and bmk (bmkp-get-tags bmk))))
-                        (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-other-window)
-
-
-    (icicle-define-file-command icicle-find-file-some-tags-regexp ; `C-x j t a % +'
-      "Visit a file or directory that has a tag matching a regexp you enter.
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only 'find-file)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (regexp         (read-string "Regexp for tags: "))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff)
-           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                  (btgs  (and bmk (bmkp-get-tags bmk))))
-             (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   btgs))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp)
-
-
-    (icicle-define-file-command icicle-find-file-some-tags-regexp-other-window ; `C-x 4 j t a % +'
-      "Same as `icicle-find-file-some-tags-regexp', except uses another window."
-      (lambda (file)                    ; Function to perform the action
-        (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                         (or (and init-pref-arg        (not current-prefix-arg))
-                             (and (not init-pref-arg)  current-prefix-arg))
-                       init-pref-arg))
-               (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-          (funcall fn file 'WILDCARDS)))
-      "Find file: " nil nil t nil nil
-      (icicle-file-bindings             ; Bindings
-       ((init-pref-arg  current-prefix-arg) ; Pre bindings
-        (regexp         (read-string "Regexp for tags: "))
-        (icicle-all-candidates-list-alt-action-fn ; `M-|'
-         (lambda (files) (let ((enable-recursive-minibuffers  t))
-                           (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-       ((icicle-must-pass-after-match-predicate ; Post bindings
-         (lambda (ff)
-           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                  (btgs  (and bmk (bmkp-get-tags bmk))))
-             (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   btgs))))))))
-
-    (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp-other-window)
-
-    ))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'icicles-cmd2)

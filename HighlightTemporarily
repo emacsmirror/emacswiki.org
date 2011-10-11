@@ -1,9 +1,11 @@
 You can use these libraries to highlight text in a buffer:
 
-* HiLock -- highlight phrases or regular expressions
 * HighLight -- highlight and unhighlight the region or regular expressions 
-* MarkerPens -- highlight and unhighlight the region
+* HiLock -- highlight phrases or regular expressions
 * [[Icicles]] -- highlight regexps: `##C-.##' during [[Icicles - Search Commands, Overview|Icicles search]] toggles leaving [[Icicles - Customization and General Tips#icicle-search-cleanup-flag|search highlighting]] on. Highlight multiple-regexp matches in multiple buffers, files,...
+* MarkerPens -- highlight and unhighlight the region
+
+
 
 == Comparison ==
 
@@ -26,11 +28,12 @@ You can use these libraries to highlight text in a buffer:
 
 
 '''See Also:'''
-* HighlightCurrentLine
-* HighlightCurrentColumn
 * CrosshairHighlighting -- highlight current line and column
-* HighlightSymbol -- highlight the current symbol throughout the buffer
+* FaceMenuPlus
+* HighlightCurrentColumn
+* HighlightCurrentLine
 * HighlightParentheses -- highlight the parentheses surrounding point
+* HighlightSymbol -- highlight the current symbol throughout the buffer
 * PulseRegion -- Gently blink the background color around a region of text
 * TextMarker -- uses XRefMode
 

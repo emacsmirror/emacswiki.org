@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 08:07:38 2011 (-0700)
+;; Last-Updated: Mon Oct 10 14:18:17 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22528
+;;     Update #: 22565
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,11 +21,11 @@
 ;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,12 +47,6 @@
 ;;  `icicles-cmd1.elc', in Emacs 23, then it must be byte-compiled
 ;;  using Emacs 23.  Otherwise, Icicles key completion (and perhaps
 ;;  other things?) will not work correctly.
-;;
-;;  Macros defined here:
-;;
-;;    `icicle-define-bookmark-command',
-;;    `icicle-define-bookmark-command-1',
-;;    `icicle-define-bookmark-other-window-command'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
@@ -380,7 +374,8 @@
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-buffer-bindings,
-  ;; icicle-condition-case-no-debug, icicle-define-command, icicle-define-file-command,
+  ;; icicle-condition-case-no-debug, icicle-define-bookmark-command, icicle-define-bookmark-command-1.
+  ;; icicle-define-bookmark-command-other-window, icicle-define-command, icicle-define-file-command,
   ;; icicle-define-add-to-alist-command, icicle-file-bindings, icicle-kbd,
   ;; icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
@@ -3962,140 +3957,6 @@ You are prompted for the FILES."
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x) (bmkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
-;;;###autoload
-(defmacro icicle-define-bookmark-command-1 (otherp type prompt args)
-  "Helper macro for `icicle-define*-bookmark-command' macros.
-The command defined raises an error unless library `Bookmark+' can be
-loaded."
-  `(icicle-define-command
-    ,(intern (format "icicle-bookmark-%s%s" type (if otherp "-other-window" ""))) ; Command name
-    ,(format "Jump to a %s bookmark%s.
-Like `icicle-bookmark%s',
- but with %s bookmarks only.
-This is a multi-command version of
- `bmkp-%s-jump%s'.
-You need library `Bookmark+' for this command."
-             type (if otherp " in other window" "")
-             (if otherp "-other-window" "") type
-             type (if otherp "-other-window" "")) ; Doc string
-    (lambda (cand) (,(if otherp 'icicle-bookmark-jump-other-window 'icicle-bookmark-jump) ; Action fn.
-                     (icicle-transform-multi-completion cand)))
-    prompt1 icicle-candidates-alist nil ; `completing-read' args
-    (not icicle-show-multi-completion-flag)
-    nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
-    nil nil
-    ((IGNORED1                               (unless (require 'bookmark+ nil t) ; Additional bindings
-                                               (error "You need library `Bookmark+' for this command")))
-     (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
-     (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
-     (completion-ignore-case                 bookmark-completion-ignore-case)
-     (prompt1                                ,(or prompt
-                                                  (format "%s%s bookmark: "
-                                                          (capitalize (substring type 0 1))
-                                                          (substring type 1 (length type)))))
-     (icicle-list-use-nth-parts              '(1))
-     (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
-                                                 nil
-                                               (if (facep 'file-name-shadow)
-                                                   '((2 (face file-name-shadow))
-                                                     (3 (face bookmark-menu-heading)))
-                                                 '((3 (face bookmark-menu-heading))))))
-     (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
-     (icicle-whole-candidate-as-text-prop-p  t)
-     (icicle-transform-before-sort-p         t)
-     (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
-     (icicle-sort-orders-alist
-      (append
-       '(("in *Bookmark List* order")   ; Renamed from "turned OFF'.
-         ("by bookmark name" . icicle-alpha-p)
-         ("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
-         ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p))
-       (and (member ,type '("info" "region"))
-        '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
-       (and (member ,type '("gnus" "region"))
-        '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
-       (and (member ,type '("url" "region"))
-        '(("by URL" (bmkp-url-cp) icicle-alpha-p)))
-       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "url")))
-        '(("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
-                               bmkp-local-file-type-cp bmkp-handler-cp)
-           icicle-alpha-p)))
-       (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
-        '(("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)))
-       (and (member ,type '("local-file" "file" "dired" "region"))
-        '(("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
-          ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
-          ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
-           icicle-alpha-p)
-          ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
-           icicle-alpha-p)))
-       (and (not (string= ,type "desktop"))
-        '(("by last buffer or file access" (bmkp-buffer-last-access-cp
-                                            bmkp-local-file-accessed-more-recently-cp)
-           icicle-alpha-p)))
-       (and (get-buffer "*Bookmark List*")
-        '(("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
-           icicle-alpha-p)))
-       '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
-         ("case insensitive" . icicle-case-insensitive-string-less-p))))
-     (icicle-candidate-help-fn
-      #'(lambda (cand)
-          (when icicle-show-multi-completion-flag
-            (setq cand  (funcall icicle-get-alist-candidate-function cand))
-            (setq cand  (cons (caar cand) (cdr cand))))
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))))
-     (icicle-candidates-alist
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                            (cons (append (list (icicle-candidate-short-help
-                                                 (icicle-bookmark-help-string bname)
-                                                 (icicle-bookmark-propertize-candidate bname))
-                                                file/buf)
-                                          (and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
-    nil                                 ; First code
-    (icicle-bookmark-cleanup-on-quit)   ; Undo code
-    (icicle-bookmark-cleanup)))         ; Last code
-
-;;;###autoload
-(defmacro icicle-define-bookmark-command (type &optional prompt &rest args)
-  "Define an Icicles multi-command for jumping to bookmarks of type TYPE.
-TYPE is a string to be used for the doc string, default prompt, and in
- function names.  It should be lowercase and contain no spaces.
-Optional arg PROMPT is the completion prompt.
-ARGS is a list of any additional arguments to be passed to the
-appropriate `bmkp-TYPE-alist-only' function."
-  `(icicle-define-bookmark-command-1 nil ,type ,prompt ,args))
-
-;;;###autoload
-(defmacro icicle-define-bookmark-other-window-command (type &optional prompt &rest args)
-  "Same as `icicle-define-bookmark-command', but command uses other window."
-  `(icicle-define-bookmark-command-1 t ,type ,prompt ,args))
 
 ;; The following sexps macro-expand to define these commands:
 ;;  `icicle-bookmark-bookmark-list',

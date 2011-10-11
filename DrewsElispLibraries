@@ -828,6 +828,76 @@ Thanks, Drew. I'll let you know how it goes.  -Tennis
 ----
 
 
+[new]
+Hi Drew,
+
+I just ran into an interesting bug/issue.  I am using your libraries (downloaded from the wiki on 9/27/11 or 9/28/11) and emacs 24.0.50.1.  The issue arose with my .emacs file but I tracked down the source of the problem.  Here is how you can reproduce it using your .emacs (the one one may download from the wiki):
+- comment out the require for start-opt.el;
+- add the following two lines to the end (before the provide statement) of your .emacs file:
+(setq debug-on-error t)
+(desktop-save-mode 1)
+
+You will notice that the separate minibuffer (minibuffer in its own frame) will not be used.  Instead, the minibuffer of a working frame (a regular frame) will be used as the minibuffer. Both the desktop and debug lines above are required for this to happen.  Note, this did not happen with your libraries of a couple of years ago.
+
+Thanks,
+
+Fidel
+
+[new:DrewAdams:2011-10-10 21:12 UTC]
+Sorry about that, Fidel.  Can you please try to narrow things down?  You say that you are using my libraries, but that's far too much to try to track this down with.  
+
+Please do this: comment out half of your [[init file]] (e.g., using `C-3 M-x comment-region' -- use `C-u M-x comment-region to uncomment') and see if you have the problem.  Then comment out only a quarter of it, then 1/8th, etc., until you locate what the problem is.  Then we can try to figure out the details.  It is important to eliminate as much noise as possible from the outset.
+
+Thx -- DrewAdams
+
+
+Hi Drew,
+
+I am sorry I was not clear enough the first time.  I can reproduce the problem with your emacs-init.el file by doing two things:
+<pre>
+1) commenting out the (require 'start-opt) line; and
+2) adding the following two lines:
+(setq debug-on-error t)
+(desktop-save-mode 1)
+</pre>
+
+I narrowed down the problem first using my init file by commenting out everything out except what I use from your init file and the two lines (the debugpon-error and desktop=save-mode lines) required for the problem to arise.  I then took your full init file and added the two lines and got the same behavior (I do not think the start-opt has anything to do with anything but I commented out of your init file because I did not have a copy of it on my machine).
+
+The version of your emacs-init.el is 20.0:
+<pre>
+...
+;; Version: 20.0
+;; Last-Updated: Tue Jan  4 08:50:07 2011 (-0800)
+;;           By: dradams
+;;     Update #: 2145
+...
+</pre>
+
+Hope that's clearer.
+
+Thanks,
+
+Fidel
+
+[new:DrewAdams:2011-10-11 05:59 UTC]
+It's clear enough, but I would still ask you to narrow it down by commenting out half, a quarter, etc. (of ##emacs-init.el##), as I suggested.
+
+There is just far too much stuff in <tt>[[emacs-init.el]]</tt>, and even much more stuff that is loaded by it.  If you don't do that then I would have to do the same thing, and I don't have the time now.
+
+It's likely that there is some small part of that file or some file that it loads that is causing the problem you see.  A binary search is the way to locate it.
+
+You will need to do the same thing in the problematic file, once you find it.  For example, ##emacs-init.el## loads <tt>[[start.el]]</tt>, which loads tons of files.  You will need to debug this a bit, to narrow it down to locate the problem.  Then I will try to fix it.
+
+Also, let me know what Emacs version you are using and the recipe you follow to start Emacs.
+
+[One thing I can think of offhand is that if you are using <tt>[[oneonone.el]]</tt> then you need to invoke function `1on1-emacs' during startup, using a command-line option or by putting ##(1on1-emacs)## in your init file (it is invoked in <tt>[[setup.el]]</tt>, if you use that).  If you instead invoke `1on1-emacs' interactively it will be too late: a frame with a non-standalone minibuffer will already have been created.]
+
+Let me know too what you have changed since things were working OK, if you remember.  For example, were you using desktop already, with no problem?  And what version of ##desktop.el# do you have?  I'm hoping that when you locate the problem it is independent of using desktop, as that is not one of my libraries.
+
+Another thing to try would be to move your desktop save file somewhere where it will not be read (temporarily hide it from desktop).  Sometimes such files get corrupted and cause problems.
+
+Thx -- DrewAdams
+
 
 ----
 

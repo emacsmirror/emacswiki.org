@@ -8,13 +8,15 @@ to ask the next one million people you meet
 for a dollar each.)
 
 
-I've used both TECO and EMACS.TEC and 
+I've used the full-screen mode of both TECO 
 
-saw how they handled line endings.  Of course, 
+and EMACS.TEC (the Fred Fish version) and 
 
-CRLF was the line ending (this was DEC).  Of 
+saw how they handled line endings. Of course, 
 
-course, just before the CRLF, the cursor would
+CRLF was the line ending (this was DEC). Of 
+
+course, just before the CRLF, the cursor would 
 
 oe at the end of its line.  Of course, just after 
 
@@ -25,10 +27,11 @@ of the next line.
 
 TRIVIA QUESTION: 
 
-Where would the cursor be, or what would it do, 
+Using the full-screen mode of EMACS.TEC or TECO,
 
-if you moved the cursor to between the CR 
-and 
+where would the cursor be, or what would it do, 
+
+if you moved the cursor to between the CR and 
 
 the LF?
 
@@ -44,7 +47,7 @@ TECO, Emacs, and Unix and the language C all contributed to a life changing new 
 
 TWO THINGS NEAR THE TOP OF MY .emacs file:
 
-0) Well, actually, this is the -third- . . . I have nearly nothing in .emacs.  Instead, it immediately jumps to my Emacs configuratino code, which I keep down in my confinguration code tree with the rest of my configuration codes.
+0) Well, actually, this is the -third- . . . I have nearly nothing in .emacs.  Instead, it immediately jumps to my Emacs configuratino code, which I keep down in my confinguration code tree with the rest of my configuration codes.  Not only is that where I want them, but the 'configure' command wants to add code to my .emacs file and I felt safer this way.
 
 1) I have this, of course:    (setq inhibit-startup-message t )
    It is less distracting without it, and back in the day of slow connections, it saved bandwidth.

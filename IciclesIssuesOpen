@@ -92,6 +92,52 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+[new]
+Hi Drew,
+You made a small mistake and uploaded icicles-chg.el as icicles-mac.el, so icicles stopped working for me :) 
+
+Another, completely different issue:
+
+I use: GNU Emacs 23.2.1 (i486-pc-linux-gnu, GTK+ Version 2.20.0) of 2010-12-11 on raven, modified by Debian and icicles latest version.
+
+The historical candidates feature stopped working for files. Actually M-h works fine, but M-Pause stopped working, only for files.
+I use savehist to save icicle-previous-raw-file-name-inputs and icicle-previous-raw-non-file-name-inputs variables, if it matters something.
+Please notice me here if you need more precise describe of the problem.
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new:Anonymous:2011-10-10 04:29 UTC]
+Hi Drew,
+I would like to have Icicle Imenu (or variant) insert the Imenu match at point.  The use would be
+to insert text (Imenu match) anywhere in the file WITHOUT having point jump to another location copy, jump back then paste.
+A more interesting version would cycle sub-matches and allow the user to continue selecting\inserting until the user
+ended the command. Is this possible? Thanks Mike
+
+[new:DrewAdams:2011-10-10 13:15 UTC]
+
+IIUC, you want to be able to choose a definition start string (e.g. for a function, variable, etc.) in the buffer, and have that string be inserted at point.  And preferably the command to do this would be a multi-command, so you could use `C-RET' to insert multiple such choices.  Is that right?
+
+If so, there is no command to do that, but you could define one.  What is the use case?  Why would you want to, e.g., insert a string such as ##(defun icicle-color-help## in the buffer?  Or did you mean `icicle-imenu-full' instead of `icicle-imenu', so you would insert the full definition (all of its code)?  I still don't understand why that would be helpful -- why not just move to the definition, select it using `C-M-h', jump back, and insert the region?
+
+Please describe what you want a bit more.  To define such a command, you would keep the "choosing" part of the regular '''Icicles''' Imenu command, then just insert that choice at [[point]] using `insert'.  To make it into a multi-command, you would just use `icicle-define-command' instead of `defun'.  I can be more specific about these things, but I would like to better understand why this would be useful: your use case.  Thx -- DrewAdams
+
+
+
+
 
 
 <pre>

@@ -176,7 +176,21 @@ works with recent versions of Emacs. Take your pick.
 (add-hook 'erc-text-matched-hook 'erc-global-notify)
 </pre>
 
-As of Emacs24 it looks like we have built in support for notification -> DBUS.  I use this on Ubuntu, so if you're on a different distro you may want to adjust the image location
+As of Emacs24 it looks like we have built in support for notification -> DBUS.  I use this on Ubuntu, so if you're on a different distro you may want to adjust the image location.
+
+[new]
+This looks like the way to do it going forward, and it works well. Anyone know if there's a way for emacs to know if it's the foregrounded application, so we could suppress notifications in that case?
+
+Answering my own question, something like this works:
+
+<pre>
+(defun my-emacs-is-idle (&optional secs)
+  "Return a boolean whether emacs has been idle for more than
+  'secs', defaults to 20."
+  (< (or secs 20)
+     (float-time (or (current-idle-time)
+		     '(0 0 0)))))
+</pre>
 
 == Notes ==
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 18:39:11 2011 (-0700)
+;; Last-Updated: Mon Oct 10 15:24:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7385
+;;     Update #: 7449
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/10/10 dadams
+;;     icicle-define-bookmark-command*: Moved to icicles-mac.el.
 ;; 2011/10/08 dadams
 ;;     icicle-dired-project*, icicle-bookmark*, icicle*-buffer*: Use icicle-kbd.
 ;; 2011/10/03 dadams
@@ -461,6 +463,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/10/10 dadams
+;;     icicle-define-search-bookmark-command: Moved to icicles-mac.el.
+;;     Moved here (and to icicles-face.el) from icicles-mac.el: icicle-maybe-byte-compile-after-load.
+;;     Replaced bodies of eval-after-load sexps with call to icicle-cmd2-after-load-*.
+;;     Added: icicle-cmd2-after-load-(bookmark+'|hexrgb|highlight|palette|synonyms).
+;;     Removed: icicle-read-single-key-description (unused).
 ;; 2011/10/08 dadams
 ;;     Moved to icicles-mac.el: icicle-read-kbd-macro, icicle-edmacro-parse-keys.
 ;;     Removed: icicle-orig-(buff|win)-key-complete - use regular icicle-orig*.
@@ -928,6 +936,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2011/10/10 dadams
+;;     Added: icicle-face-after-load-hexrgb. 
+;;     Replaced bodies of eval-after-load sexps with call to icicle-face-after-load-hexrgb.
+;;     Added autoload cookies for icicle-increment-color-*.
+;;     Removed eval-when-compile to load icicles-mac.
+;;     Moved here (and to icicles-cmd2.el) from icicles-mac.el: icicle-maybe-byte-compile-after-load.
 ;; 2011/10/08 dadams
 ;;     eval-when-compile icicles-mac.el.
 ;; 2011/08/16 dadams
@@ -1024,6 +1038,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/10/09 dadams
+;;     Moved here from icicles-mac.el: icicle-try-switch-buffer, select-frame-set-input-focus.
+;;     Copied here from icicles-mac.el: icicle-assoc-delete-all.
+;;     Removed autoload cookie for icicle-maybe-cached-action.
 ;; 2011/10/08 dadams
 ;;     Added: icicle-delete-alist-dups.
 ;;     icicle-completing-read-history:
@@ -1034,7 +1052,7 @@
 ;; 2011/10/05 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Use same font family, not same font, as orig buff.  Only for Emacs 23+, and only when
-;;       icicle-pre-minibuffer-buffer is defined.  Removed dedicated-p condition.  Removed zoom-out.
+;;         icicle-pre-minibuffer-buffer is defined.  Removed dedicated-p condition.  Removed zoom-out.
 ;; 2011/10/02 dadams
 ;;     Added: icicle-read-char-by-name.
 ;;     icicle-display-candidates-in-Completions: Give *Completions* the same font as starting buffer.
@@ -2579,6 +2597,13 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/10/10 dadams
+;;     Removed all autoload cookies.
+;;     Moved icicle(-search)-define-bookmark*-command* here from icicles-cmd2.el.
+;;     icicle-byte-compile-eval-after-load-flag: Moved to icicles.el.
+;;     icicle-maybe-byte-compile-after-load: Moved to icicles-face.el and icicles-cmd2.el.
+;;     icicle-try-switch-buffer, select-frame-set-input-focus: Moved to icicles-fn.el.
+;;     icicle-assoc-delete-all, icicle-remove-if: Copied to icicles-fn.el.
 ;; 2011/10/08 dadams
 ;;     Added: icicle-kbd
 ;;     Moved here from icicles-cmd2.el: icicle-read-kbd-macro, icicle-edmacro-parse-keys.
@@ -5033,6 +5058,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/10/10 dadams
+;;     Removed use of icicle-kbd in option values, because byte-compile of defcustom does not eval.
+;;     Removed eval-when-compile to load icicles-mac.
 ;; 2011/10/08 dadams
 ;;     Added: icicle-candidate-(action|help)-keys.
 ;;     eval-when-compile icicles-mac.el.
@@ -6016,6 +6044,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2011/10/10 dadams
+;;     Moved here from icicles-mac.el: icicle-byte-compile-eval-after-load-flag.
+;;     Removed require of icicles-mac.el.
 ;; 2011/06-24 dadams
 ;;     Updated load order: mac, face, opt, var, fn, mcmd, cmd1, cmd2, mode.
 ;; 2010/12/26 dadams

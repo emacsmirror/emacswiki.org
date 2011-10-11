@@ -89,6 +89,7 @@ Unique line 4
 Note that non-consecutive duplication of the first line are not removed.
 
 The Unix utility ##sort## can get the same result of unique lines as `M-x uniquify-all-lines-buffer' using the ##-u## argument.  However, the lines are sorted rather than kept in the order of first appearance.
+
 The output of ##sort -u## on the example above is:
 
 {{{
@@ -102,9 +103,8 @@ Unique line 4
 }}}
 
 
-The command `M-x uniquify-buffer' will remove identical adjacent lines
-in current buffer, giving a result similar to what would be obtained with
-the Unix uniq command.
+The command `M-x uniquify-buffer-lines' will remove identical adjacent lines
+in the current buffer, similar to what is obtained with the Unix uniq command.
 
   (defun uniquify-region-lines (beg end)
     "Remove duplicate adjacent lines in region."
