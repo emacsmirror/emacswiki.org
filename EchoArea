@@ -6,9 +6,28 @@ When you type input into the minibuffer, and you pause for a short time, a remin
 
 The echo area is also used for other informative messages -- those displayed by function `message', for instance. Output to the echo area (except for echoed keystrokes, in GnuEmacs), is also logged to the MessagesBuffer, `*Messages*'.
 
+
+
+
+
+
+
+
+
 == Discussion ==
 
 Is there a way to clear the echo area of echoed keystrokes when a command is finished? -- VegardOye
+
+----
+
+Does anyone know how to change the appearance of the echo area; most importantly the background color in my case? -- JonasBernoulli
+
+[new:DrewAdams:2011-10-11 22:10 UTC]
+If you use a standalone minibuffer frame, it is probably easy.  For an example, see <tt>[[oneonone.el]]</tt>. It changes the frame background for various states: isearching and active minibuffer.  You could presumably do similarly when echoing (dunno, you might need a hook that doesn't exist).
+
+If you do not use a standalone minibuffer frame then I doubt you can do it.  Well, you could define a special face to use there, and impose its background, but that would not affect the window background as a whole. 
+
+But maybe someone has a good idea how to do it. -- DrewAdams
 
 == Filtering messages ==
 The echo area can be useful, but sometimes messages are displayed there with overwhelming frequency. This is particularly frustrating when it happens often enough to interrupt typing into the minibuffer.

@@ -1,12 +1,12 @@
 ;;; sqlparser-sqlserver-complete.el --- complete tablename and columnname when editing sql -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 孤峰独秀
+;; Copyright (C) 2011 Joseph
 
-;; Author: 孤峰独秀  jixiuf@gmail.com
-;; Keywords: sql complete sqlserver
 ;; Created: 2011年08月19日 星期五 00时38分17秒
-;; Updated: 2011-09-08 00:08
-;; Version: 0.1.1
+;; Last Updated: Joseph 2011-11-12 09:37:06 星期六
+;; Version: 0.1.2
+;; Author: Joseph  jixiuf@gmail.com
+;; Keywords: sql complete sqlserver
 ;; URL:http://www.emacswiki.org/emacs/download/sqlparser-sqlserver-complete.el
 ;;     https://github.com/jixiuf/sqlparser
 ;; screencast: http://screencast-repos.googlecode.com/files/emacs-sqlparse-mysql-complete.mkv.bz2
@@ -559,7 +559,7 @@ it will return 'table' ,or 'column' ,or nil.
     (save-excursion
       (skip-chars-forward " \t\n\r")
       (re-search-backward ";[ \t\n\r]*\\|\\`\\|\n[\r\t ]*\n[^ \t]" nil t)
-      (setq begin (point)))
+      (setq begin (match-end 0)))
     (save-excursion
       (skip-chars-forward " \t\n\r")
       (re-search-forward "\n[\r\t ]*\n[^ \t]\\|\\'\\|[ \t\n\r]*;" nil t)

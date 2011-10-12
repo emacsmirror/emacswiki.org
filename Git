@@ -68,9 +68,8 @@ It was forked from Magit and uses many of its core ideas. Both modes have evolve
 * Homepage: http://floatsolutions.com/blog/2010/05/tortoisegit-interface-for-emacs/
 * Repository: http://github.com/openist/tortoise-git-emacs
 
-*GitDwim* defines context-aware commands.
+GitDwim defines context-aware commands.
 
-[MdReadme]
 
 More information:
 

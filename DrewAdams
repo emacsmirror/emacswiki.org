@@ -382,6 +382,12 @@ One downside I notice with many of the enhancements such as compile- and grep+ i
 [new:DrewAdams:2011-08-30 21:02 UTC]
 Should be OK now. Let me know if you find other such problems. Thx -- DrewAdams
 
+----
+[new]
+Hi Drew
+
+I would like to suggest the following improvements to icomplete+: (1) Optionally don't show matched menu entries (as opposed to key bindings), (2) Don't show the string "Matched;", the meaning of the keys that follow is kind of obvious once one has used the library for longer than a few minutes, (3) Like not all suffixes are shown when that would make the minibuffer higher than one line do the same for key bindings. Thanks. -- JonasBernoulli
+
 
 ----
 

@@ -109,7 +109,97 @@ I use: GNU Emacs 23.2.1 (i486-pc-linux-gnu, GTK+ Version 2.20.0) of 2010-12-11 o
 
 The historical candidates feature stopped working for files. Actually M-h works fine, but M-Pause stopped working, only for files.
 I use savehist to save icicle-previous-raw-file-name-inputs and icicle-previous-raw-non-file-name-inputs variables, if it matters something.
-Please notice me here if you need more precise describe of the problem.
+Please notice me here if you need more precise describe of the problem. -- PasJa
+
+[new:DrewAdams:2011-10-11 13:46 UTC]
+Sorry about that -- <tt>[[icicles-mac.el]]</tt> should be OK now.
+
+'''''Make sure''''' that you (a) load ##icicles-mac.el##, (b) byte-compile ##icicles-mac.el## (if you byte-compile files -- recommended), then (c) byte-compile all of the other '''Icicles''' files.  It is important to re-byte-compile all files after loading ##icicles-mac.el##, whenever ##icicles-mac.el## has changed.
+
+Dunno about your problem with using `M-pause' with file-name reading.  It works fine for me, with all Emacs versions through a Sept 19 build of Emacs 24 (the latest build I have).  Be sure that you have used `TAB' or `S-TAB' before you hit `M-pause' (or a message will tell you to).
+
+You can try `M-x debug-on-entry icicle-keep-only-past-inputs', perhaps (after loading <tt>[[icicles-mcmd.el]]</tt> -- not the ##.elc##).  The main thing to check when doint that is the value of the value of `minibuffer-history-variable' (which should itself be `file-name-history').  Let me know what you find out.  (Of course, without the correct latest ##icicles-mac.el##, nothing should work well at all.) Thx -- Drew
+
+
+[new]
+
+Hi Drew, 
+
+I set up a testing enviroment and i've got some more strange errors:
+
+a.) test init.el
+
+    (setq debug-on-error 1)
+    (add-to-list 'load-path "/tmp/.emacs.d/") ; start emacs with HOME=/tmp, do not clobber my prod setup
+
+b. content of "/tmp/.emacs.d/"
+
+    -rw-rw-r-- 1 pasja pasja 491688 Oct 12 10:04 icicles-chg.el
+    -rw-rw-r-- 1 pasja pasja 359710 Oct 12 10:04 icicles-cmd1.el
+    -rw-rw-r-- 1 pasja pasja 408344 Oct 12 10:04 icicles-cmd2.el
+    -rw-rw-r-- 1 pasja pasja 359098 Oct 12 10:04 icicles-doc1.el
+    -rw-rw-r-- 1 pasja pasja 459966 Oct 12 10:04 icicles-doc2.el
+    -rw-rw-r-- 1 pasja pasja  68077 Oct 12 10:04 icicles.el
+    -rw-rw-r-- 1 pasja pasja  34134 Oct 12 10:04 icicles-face.el
+    -rw-rw-r-- 1 pasja pasja 366856 Oct 12 10:04 icicles-fn.el
+    -rw-rw-r-- 1 pasja pasja  62105 Oct 12 10:04 icicles-mac.el
+    -rw-rw-r-- 1 pasja pasja 408090 Oct 12 10:04 icicles-mcmd.el
+    -rw-rw-r-- 1 pasja pasja 271907 Oct 12 10:04 icicles-mode.el
+    -rw-rw-r-- 1 pasja pasja 191423 Oct 12 10:04 icicles-opt.el
+    -rw-rw-r-- 1 pasja pasja  76484 Oct 12 10:04 icicles-var.el
+    -rw-rw-r-- 1 pasja pasja     63 Oct 12 10:12 init.el
+
+from icicles-chg.el: ;; Last-Updated: Mon Oct 10 15:24:20 2011 (-0700) 
+
+I've downloaded a fresh copy today.
+
+c. load icicles 
+
+    M-x load library RET icicles RET
+
+Then:
+
+   require(icicles-var)
+   eval-buffer(#<buffer  *load*> nil "/tmp/.emacs.d/icicles.el" nil t)  ; Reading at buffer position 67637
+   load-with-code-conversion("/tmp/.emacs.d/icicles.el" "/tmp/.emacs.d/icicles.el" nil nil)
+   load("icicles")
+   load-library("icicles")
+   call-interactively(load-library t nil)
+   execute-extended-command(nil)
+   call-interactively(execute-extended-command nil nil)
+
+After i eval icicles.el step-by-step and here:
+
+    (require 'icicles-var)  ;; Requires opt
+
+More errrors: 
+
+    Debugger entered--Lisp error: (void-function incf)
+     (incf bits (cdr (assq ... ...)))
+     (while (string-match "^[ACHMsS]-." word) (incf bits (cdr ...)) (incf prefix 2) (callf substring word 2))
+     (let ((orig-word word) (prefix 0) (bits 0)) (while (string-match "^[ACHMsS]-." word) (incf bits ...) (incf prefix 2) (callf substring word 2)) (when (string-match "^\\^.$" word) (incf bits 67108864) (incf prefix) (callf substring word 1)) (let (...) (when found ...)) (when (string-match "^\\\\[0-7]+$" word) (loop for ch across word for n = 0 then ... finally do ...)) (cond (... ...) (... ...) (... ...) (... ...) (t ...)))
+     (cond ((string-match "^<<.+>>$" word) (setq key ...)) ((or ... ...) (setq pos ...)) ((and ... ... ...) (setq key ...)) (t (let ... ... ... ... ... ...)))
+     (let* ((word-beg ...) (word-end ...) (word ...) (times 1) (key nil)) (if (and angles ...) (setq word ... pos ...) (setq word ... pos word-end)) (when (string-match "\\([0-9]+\\)\\*." word) (setq times ... word ...)) (cond (... ...) (... ...) (... ...) (t ...)) (when key (loop repeat times do ...)))
+     (while (and (< pos len) (string-match "[^ 	\n\f]+" string pos)) (let* (... ... ... ... ...) (if ... ... ...) (when ... ...) (cond ... ... ... ...) (when key ...)))
+     (let ((case-fold-search nil) (len ...) (pos 0) (res [])) (while (and ... ...) (let* ... ... ... ... ...)) (when (and ... ... ... ... ...) (setq res ...)) (if (and ... ...) (concat ...) res))
+     icicle-edmacro-parse-keys("C-M-i" nil nil)
+     (if (stringp start) (icicle-edmacro-parse-keys start end angles) (setq last-kbd-macro (icicle-edmacro-parse-keys ... nil angles)))
+     icicle-read-kbd-macro("C-M-i" nil nil)
+     (lambda (keys &optional angles) "Like `kbd', but does not use angle brackets, by default.\nWith non-nil optional arg ANGLES, expect key descriptions to use angle\nbrackets (<...>), exactly like `kbd'.  Otherwise, expect key\ndescriptions not to use angle brackets.  For example:\n\n (icicle-kbd \"mode-line\")     returns [mode-line]\n (icicle-kbd \"<mode-line>\" t) returns [mode-line]\n\nThe default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"\ninstead of \"C-x <delete>\" and \"C-<delete>\"." (icicle-read-kbd-macro keys nil angles))("C-M-i")
+     (icicle-kbd "C-M-i")
+     (define-key map (icicle-kbd "C-M-i") (quote lisp-complete-symbol))
+     (let ((map ...)) (define-key map (icicle-kbd "C-M-i") (quote lisp-complete-symbol)) (define-key map (icicle-kbd "C-i") (quote lisp-indent-line)) (define-key map (icicle-kbd "ESC tab") (quote lisp-complete-symbol)) (define-key map (icicle-kbd "C-M-x") (quote eval-defun)) (define-key map (icicle-kbd "C-M-q") (quote indent-pp-sexp)) (set-keymap-parent map minibuffer-local-map) (setq icicle-read-expression-map map))
+     (if icicle-read-expression-map nil (let (...) (define-key map ... ...) (define-key map ... ...) (define-key map ... ...) (define-key map ... ...) (define-key map ... ...) (set-keymap-parent map minibuffer-local-map) (setq icicle-read-expression-map map)))
+     (unless icicle-read-expression-map (let (...) (define-key map ... ...) (define-key map ... ...) (define-key map ... ...) (define-key map ... ...) (define-key map ... ...) (set-keymap-parent map minibuffer-local-map) (setq icicle-read-expression-map map)))
+     eval-buffer(#<buffer  *load*> nil "/tmp/.emacs.d/icicles-var.el" nil t)  ; Reading at buffer position 58907
+     load-with-code-conversion("/tmp/.emacs.d/icicles-var.el" "/tmp/.emacs.d/icicles-var.el" nil t)
+     require(icicles-var)
+     eval((require (quote icicles-var)))
+     eval-last-sexp-1(nil)
+     eval-last-sexp(nil)
+     call-interactively(eval-last-sexp nil nil)
+
+I've stopped here. If we could solve this problem, i will continue to investigate the previous problem. --PasJa
 
 <pre>
 

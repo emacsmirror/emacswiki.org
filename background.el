@@ -1,4 +1,4 @@
-;; Background jobs in GNU Emacs
+;;; Background jobs in GNU Emacs
 ;; Copyright (C) 1998 Joe Keane <jgk@jgk.org>
 ;;               2010 rubikitch <rubikitch@ruby-lang.org>
 ;; This file is public domain.

@@ -1,6 +1,6 @@
 I’m [::nicferrier], a hacker trying to do interesting things. I use Emacs every day all the time.
 
-I am currently the CTO at [http://woome.com woome.com]. 
+I used to be the CTO at [http://woome.com woome.com] but that's all gone down in flames, so I'm looking for a job right now. 
 
 I've used Emacs for about 20 years, every day, all the time for the last 15 years. The last couple of years I've started to look at ELisp as a practical language (since it had closures basically) in which I might one day do all my work.
 
@@ -16,6 +16,8 @@ I've used Emacs for about 20 years, every day, all the time for the last 15 year
 
 == Asynchronous HTTP servers for Emacs (EmacsLISP node.js)  == 
 [[Elnode]] is an asynchronous TCP server handling HTTP.
+
+Elnode is in the [http://marmalade-repo.org/packages/elnode marmalade repository]
 
 As of now elnode is just about functional. I am starting to write things with it including a port of my wiki based blog.
 

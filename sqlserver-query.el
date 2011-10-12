@@ -1,14 +1,14 @@
 ;;; sqlserver-query.el --- execute sql select using sqlcmd.exe or osql.exe on SQL SERVER. -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 孤峰独秀
+;; Copyright (C) 2011 Joseph
 
-;; Author: 孤峰独秀  jixiuf@gmail.com
+;; Created: 2011年08月17日 星期三 22时11分54秒
+;; Last Updated: Joseph 2011-11-12 09:28:57 星期六
+;; Version: 0.1.3
+;; Author: Joseph  jixiuf@gmail.com
 ;; Keywords: sqlserver emacs sql sqlcmd.exe osql.exe
 ;; Filename: sqlserver-query.el
 ;; Description:  execute sql select using sqlcmd.exe or osql.exe on SQL SERVER
-;; Created: 2011年08月17日 星期三 22时11分54秒
-;; Updated 2011-09-27 11:37
-;; Version: 0.1.2
 ;; URL:http://www.emacswiki.org/emacs/down/sqlserver-query.el
 ;;     https://github.com/jixiuf/sqlparser
 
@@ -30,8 +30,28 @@
 ;;  execute sql using sqlcmd.exe or osql.exe and return as list .
 ;;  (sqlcmd.exe is recommended. ) (osql.exe is slow)
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `sqlserver-query-create-connection'
+;;    open connection with sqlcmd.exe or osql.exe.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `sqlserver-connection-info'
+;;    sqlserver connection info .
+;;    default = (quote ((username . "sa") (password . "sa") (server-instance . "localhost\\SQLEXPRESS") (dbname . "master")))
+;;  `sqlserver-cmd'
+;;    sqlserver-cmd  now  support sqlcmd.exe and osql.exe
+;;    default = (quote sqlcmd)
+
 ;; (sqlserver-query "select empno,ename from emp where empno<=7499")
 ;; got : (("7369" "SMITH") ("7499" "ALLEN"))
+;; (sqlserver-query-with-heading "select empno,ename from emp where empno<=7499")
+;; got : (("empno","ename")("7369" "SMITH") ("7499" "ALLEN"))
 ;; using default connection ,not recommended.
 
 ;;
@@ -56,6 +76,7 @@
 
 ;; (defvar c (sqlserver-query-create-connection sqlserver-connection-info))
 ;; (sqlserver-query "select empno from emp" c)
+;; (sqlserver-query-with-heading "select empno from emp" c)
 ;; recommended
 ;;
 ;; the normal way to use sqlserver-query.el is :
@@ -65,27 +86,11 @@
 ;;    (setq c (call-interactively 'sqlserver-query-create-connection)))
 ;; 2:
 ;;   (sqlserver-query "select empno from emp" c)
+;;   or
+;;   (sqlserver-query-with-heading "select empno from emp" c)
 ;; 3:
 ;;   (sqlserver-query-close-connection c)
 
-
-;;; Commands:
-;;
-;; Below are complete command list:
-;;
-;;  `sqlserver-query-create-connection'
-;;    open connection with sqlcmd.exe or osql.exe.
-;;
-;;; Customizable Options:
-;;
-;; Below are customizable option list:
-;;
-;;  `sqlserver-connection-info'
-;;    sqlserver connection info .
-;;    default = (quote ((username . "sa") (password . "sa") (server-instance . "localhost\\SQLEXPRESS") (dbname . "master")))
-;;  `sqlserver-cmd'
-;;    sqlserver-cmd  now  support sqlcmd.exe and osql.exe
-;;    default = (quote sqlcmd)
 
 ;;; Code:
 
@@ -118,9 +123,13 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
     (with-temp-buffer
       (insert raw-result)
       (goto-char  (point-min))
-      (when (re-search-forward "(.*\\(行受影响\\|rows affected\\))" nil t)
-        (replace-match "" nil nil))
-      (goto-char  (point-min))
+      (when (string-match  "(.*\\(行受影响\\|rows affected\\))"
+                           (buffer-substring-no-properties
+                            (line-beginning-position)(line-end-position)))
+        (delete-region (line-beginning-position) (line-beginning-position 2)))
+      (when (re-search-forward "(.*\\(行受影响\\|rows affected\\))")
+        (delete-region (match-beginning 0)(point-max))
+        )
       (while (re-search-forward "[ \t\n]* [ \t\n]*" nil t)
         (replace-match " " nil nil))
       (goto-char  (point-min))
@@ -129,13 +138,15 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
       (setq line-count (count-lines (point-min) (point-max)))
       (goto-char  (point-min))
       (while (< (line-number-at-pos)  line-count )
-	(setq line  (buffer-substring-no-properties
-		     (point-at-bol) (point-at-eol)))
-	(unless (string-match "^[ \t]*$" line)
-	  (setq row (split-string line " " t))
-	  (when row (setq result (append result (list row)))))
-	(forward-line))
-      )result ))
+        (setq line  (buffer-substring-no-properties
+                     (point-at-bol) (point-at-eol)))
+        (unless (string-match "^[ \t]*$" line)
+          (setq row (split-string line " " t))
+          (when row (setq result (append result (list row)))))
+        (forward-line)))
+    (when (and result (> (length result) 1))
+      (setcdr result (cddr result))  )
+    result ))
 
 (defun sqlserver-parse-result-as-list-4-sqlcmd (raw-result)
   (let  (result row line-count)
@@ -147,8 +158,10 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
         (setq row (split-string (buffer-substring-no-properties
                                  (point-at-bol) (point-at-eol)) " " t))
         (setq result (append result (list row)))
-        (forward-line))
-      )result ))
+        (forward-line)))
+    (when (and result (> (length result) 1))
+      (setcdr result (cddr result))  )
+    result))
 
 (defun sqlserver-parse-result-as-list (raw-result)
   (if (equal sqlserver-cmd 'sqlcmd)
@@ -159,13 +172,13 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
 (defun sqlserver-format-connect-string(connection-info)
   "default:sqlcmd -S localhost\\SQLEXPRESS -U sa -P sa -d master -h-1 -w 65535   -s \"\^E\" -W"
   (if (equal sqlserver-cmd 'sqlcmd)
-      (format "%s -S %s -U %s -P %s -d \"%s\" -h-1  -w 65535  -s \"\^E\" -W"
+      (format "%s -S %s -U %s -P %s -d \"%s\" -w 65535  -s \"\^E\" -W"
               (symbol-name sqlserver-cmd)
               (cdr (assoc 'server-instance connection-info))
               (cdr (assoc 'username connection-info))
               (cdr (assoc 'password connection-info))
               (cdr (assoc 'dbname connection-info)))
-    (format "%s -S %s -U %s -P %s -d \"%s\" -h-1  -n -w 65535 -s \" \" -r 1 "
+    (format "%s -S %s -U %s -P %s -d \"%s\" -n -w 65535 -s \" \" -r 1 "
             ;;            "%s -S %s -U %s -P %s -d %s -h-1  -n -w 65535  -s \"\^E\""
             (symbol-name sqlserver-cmd)
             (cdr (assoc 'server-instance connection-info))
@@ -177,6 +190,7 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
 (defun sqlserver-query-read-connect-string()
   "set server dbname username password interactive"
   (let ((connection-info (copy-alist sqlserver-connection-info)))
+
     (setcdr  (assoc 'username connection-info)
              (read-string (format  "username(default:%s):"  (cdr (assoc 'username connection-info)))
                           "" nil   (cdr (assoc 'username connection-info))))
@@ -188,6 +202,7 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
     (setcdr  (assoc 'dbname connection-info)
              (read-string (format  "dbname(default:%s):"  (cdr (assoc 'dbname connection-info)))
                           "" nil (cdr (assoc 'dbname connection-info))))
+    (setq-default sqlserver-connection-info connection-info) ;;update default info
     connection-info))
 
 ;; (sqlserver-query-create-connection sqlserver-connection-info)
@@ -220,8 +235,9 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
 
 ;;(sqlserver-query "select empno from emp")
 ;;;###autoload
-(defun sqlserver-query (sql &optional sqlserver-query-connection)
-  "execute sql using `sqlcmd' or `osql' ,and return the result of it."
+(defun sqlserver-query-with-heading (sql &optional sqlserver-query-connection)
+  "execute sql using `sqlcmd' or `osql' ,and return the result of it.
+the `car' of result is heading"
   (let( (connection sqlserver-query-connection) process)
     (unless connection
       (unless (and sqlserver-query-default-connection
@@ -229,12 +245,9 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
                    (equal (process-status (nth 0  sqlserver-query-default-connection)) 'run)
                    )
         (setq sqlserver-query-default-connection (call-interactively 'sqlserver-query-create-connection)))
-      (setq connection sqlserver-query-default-connection)
-      )
+      (setq connection sqlserver-query-default-connection))
     (setq process (car connection))
-
     (when (string-match "\\(.*\\);[ \t]*" sql) (setq sql (match-string 1 sql)))
-
     (with-current-buffer (process-buffer process)
       (delete-region (point-min) (point-max))
       (let ((start (point-min))
@@ -254,6 +267,11 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
         (setq end (max start  (1- (match-beginning 0))))
         (sqlserver-parse-result-as-list  (buffer-substring-no-properties start end))
         ))))
+
+;;;###autoload
+(defun sqlserver-query(sql &optional sqlserver-query-connection)
+  "execute sql using `sqlcmd' or `osql' ,and return the result of it."
+  (cdr (sqlserver-query-with-heading sql sqlserver-query-connection)))
 
 (provide 'sqlserver-query)
 ;;; sqlserver-query.el ends here

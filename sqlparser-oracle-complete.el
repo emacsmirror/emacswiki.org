@@ -1,14 +1,14 @@
 ;;; sqlparser-oracle-complete.el --- completing tablename,column name for oracle. -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 孤峰独秀
+;; Copyright (C) 2011 Joseph
 
-;; Author: 孤峰独秀  jixiuf@gmail.com
+;; Created: 2011年07月31日 星期日 20时37分31秒
+;; Last Updated: Joseph 2011-11-12 09:38:09 星期六
+;; Version: 0.1.4
+;; Author: Joseph  jixiuf@gmail.com
 ;; Keywords: sql parse oracle complete
 ;; Filename: sqlparser-oracle-complete.el
 ;; Description:  completing tablename column for oracle when editing
-;; Created: 2011年07月31日 星期日 20时37分31秒
-;; Updated: 2011-09-19 19:09
-;; Version: 0.1.4
 ;; URL:http://www.emacswiki.org/emacs/download/sqlparser-oracle-complete.el
 ;;     https://github.com/jixiuf/sqlparser
 ;; screencast:http://screencast-repos.googlecode.com/files/sqlparser0oracle0complete.mkv
@@ -356,7 +356,7 @@ then the `u' is `alias' and `user' is the true table name."
     (save-excursion
       (skip-chars-forward " \t\n\r")
       (re-search-backward ";[ \t\n\r]*\\|\\`\\|\n[\r\t ]*\n[^ \t]" nil t)
-      (setq begin (point)))
+      (setq begin (match-end 0)))
     (save-excursion
       (skip-chars-forward " \t\n\r")
       (re-search-forward "\n[\r\t ]*\n[^ \t]\\|\\'\\|[ \t\n\r]*;" nil t)
