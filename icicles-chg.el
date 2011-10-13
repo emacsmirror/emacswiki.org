@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 10 15:24:20 2011 (-0700)
+;; Last-Updated: Wed Oct 12 06:10:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7449
+;;     Update #: 7450
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2597,6 +2597,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/10/12 dadams
+;;     eval-when-compile require cl.el, even for later Emacs versions (incf).
 ;; 2011/10/10 dadams
 ;;     Removed all autoload cookies.
 ;;     Moved icicle(-search)-define-bookmark*-command* here from icicles-cmd2.el.

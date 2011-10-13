@@ -389,6 +389,10 @@ Hi Drew
 I would like to suggest the following improvements to icomplete+: (1) Optionally don't show matched menu entries (as opposed to key bindings), (2) Don't show the string "Matched;", the meaning of the keys that follow is kind of obvious once one has used the library for longer than a few minutes, (3) Like not all suffixes are shown when that would make the minibuffer higher than one line do the same for key bindings. Thanks. -- JonasBernoulli
 
 
+[new:DrewAdams:2011-10-12 15:57 UTC]
+Good ideas.  Please try the latest <tt>[[icomplete+.el]]</tt>.  See option `icompletep-include-menu-items-flag'.  Let me know.  Thx -- DrewAdams
+
+
 ----
 
 Libraries referenced here: 

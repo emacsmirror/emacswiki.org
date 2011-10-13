@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 10 15:25:28 2011 (-0700)
+;; Last-Updated: Wed Oct 12 09:04:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 23020
+;;     Update #: 23023
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -27,10 +27,10 @@
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `mouse3', `mwheel', `naked', `pp', `pp+',
 ;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
 ;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
@@ -86,6 +86,7 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "Things Defined in Icicles")
+;;  (@> "Miscellaneous")
  
 ;;(@* "Things Defined in Icicles")
 ;;
@@ -1367,6 +1368,48 @@ effect, but it means that the functions run faster."
 (require 'icicles-cmd1) ;; Requires mac, opt, var, fn, mcmd
 (require 'icicles-cmd2) ;; Requires mac, opt, var, fn, mcmd, cmd1
 (require 'icicles-mode) ;; Requires face, opt, cmd
+
+ 
+;;(@* "Miscellaneous")
+
+;;; Miscellaneous  -----------------------------------------
+
+;; Make Emacs-Lisp mode fontify definitions of Icicles commands.
+(font-lock-add-keywords
+ 'emacs-lisp-mode
+ `((,(concat "(" (regexp-opt
+                  '("icicle-define-add-to-alist-command" "icicle-define-command"
+                    "icicle-define-file-command" "icicle-define-sort-command")
+                             t)
+             ;; $$ "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+             "\\>[ \t'\(]*\\(\\sw+\\)?")
+    (1 font-lock-keyword-face)
+    ;; Index (2 or 3) depends on whether or not shy groups are supported.
+    ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))
+   ("(\\(icicle-condition-case-no-debug\\)\\>" 1 font-lock-keyword-face)))
+
+;; Make Icicles macros indent better.
+(put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
+(put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
+(put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
+(put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
+
+;; You might also want to use the following or something similar.
+;; (defun lisp-indentation-hack ()
+;;   "Better Lisp indenting.  Use in Lisp mode hooks
+;; such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
+;; `lisp-interaction-mode-hook'."
+;;   (load "cl-indent" nil t)
+;;   (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
+;;   (setq lisp-indent-maximum-backtracking  10)
+;;   (put 'define-derived-mode 'common-lisp-indent-function '(4 4 4 2 &body))
+;;   (put 'if                  'common-lisp-indent-function '(nil nil &body)))
+;;
+;; (add-hook 'emacs-lisp-mode-hook       'lisp-indentation-hack)
+;; (add-hook 'lisp-mode-hook             'lisp-indentation-hack)
+;; (add-hook 'lisp-interaction-mode-hook 'lisp-indentation-hack)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

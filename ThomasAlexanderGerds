@@ -1,3 +1,36 @@
+==Homegrown lisp==
+
+===FileList===
+
+My personal file-manager.
+
+[[file-list-1.1.2.tar.gz]]
+
+
+===LatexFrameMode===
+
+A minor mode for latex beamer documents which works best with folding-mode and implements some convenience functions:
+
+Lisp:latex-frame-mode.el
+
+
+===EssEdit===
+
+Convenience functions for editing in ess (emacs speaks statistics) mode:
+
+Lisp:ess-edit.el
+
+===MuseEss==
+
+Mixing emacs muse markup with R code and R output
+
+Lisp:muse-ess.el
+
+
+----
+
+==A major step: moving from XEmacs to emacs==
+
 Hi, I have been using XEmacs ever since -- for about 15 years -- to do everything (fist under unix now ubuntu). Since March 2011 I use emacs
 23. The move to emacs imposed a significant psychological burden, and I was
 most afraid of the following:
@@ -8,7 +41,7 @@ most afraid of the following:
 
 But this turned out to be no problem at all. 
 
-==Has XEmacs-Emacs feature translation==
+===Has XEmacs-Emacs feature translation===
 
 As expected, moving from a fully customized system to a slightly
 different system, requires adjustments, here are some:
@@ -35,18 +68,16 @@ understand the differences or advantages, but to get my XEmacs lisp
 code to work under emacs I changed 'buffer-substring' to
 'buffer-substring-no-properties'.
 
-==Needs XEmacs-Emacs feature translation ==
+===Needs XEmacs-Emacs feature translation ===
 
 * What is the emacs equivalent of 'pop-window-configuration'?
+
+* Answer: Lisp:winner.el 
 
 ----
 
 [new:DrewAdams:2011-04-10 14:13 UTC]
 Welcome to the wiki. -- DrewAdams
-
-
-
-
 
 
 ----
