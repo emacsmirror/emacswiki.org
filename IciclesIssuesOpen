@@ -149,10 +149,64 @@ I've stopped here. If we could solve this problem, i will continue to investigat
 My bad.  I made some substantial changes recently that moved things around a bit.  I moved some things to <tt>[[icicles-mac.el]]</tt> and that meant that that file needed to require ##cl.el[c]## when byte-compiling.  This should be OK now.  Please load the latest version of that file, byte-compile all of the '''Icicles''' files (if you use them byte-compiled, which I recommend), then restart Emacs.  Sorry for the trouble.  Thx -- DrewAdams
 
 
+[new]
 
+So, icicles loading correctly. I use the 'canonical' method to load icicles. My init.el:
 
+    (add-to-list 'load-path "/tmp/.emacs.d/")
+    (require 'icicles)
+    (icy-mode 1)
 
+Icicles has been downloaded today.
 
+Content of //tmp//.emacs.d/
+
+    -rw-rw-r-- 1 pasja pasja 491787 Oct 12 15:16 icicles-chg.el
+    -rw-rw-r-- 1 pasja pasja 359710 Oct 10 23:19 icicles-cmd1.el
+    -rw-rw-r-- 1 pasja pasja 408344 Oct 10 23:38 icicles-cmd2.el
+    -rw-rw-r-- 1 pasja pasja 359098 Oct  9 17:15 icicles-doc1.el
+    -rw-rw-r-- 1 pasja pasja 459966 Oct  9 19:46 icicles-doc2.el
+    -rw-rw-r-- 1 pasja pasja  70167 Oct 12 18:09 icicles.el
+    -rw-rw-r-- 1 pasja pasja  34134 Oct 11 00:27 icicles-face.el
+    -rw-rw-r-- 1 pasja pasja 366856 Oct 10 23:00 icicles-fn.el
+    -rw-rw-r-- 1 pasja pasja  59985 Oct 12 18:08 icicles-mac.el
+    -rw-rw-r-- 1 pasja pasja 408090 Oct  9 03:41 icicles-mcmd.el
+    -rw-rw-r-- 1 pasja pasja 271907 Oct  9 03:39 icicles-mode.el
+    -rw-rw-r-- 1 pasja pasja 191423 Oct 10 22:48 icicles-opt.el
+    -rw-rw-r-- 1 pasja pasja  76484 Oct  8 19:15 icicles-var.el
+    -rw-rw-r-- 1 pasja pasja     97 Oct 13 12:32 init.el
+
+Turned on  `debug-on-entry icicle-keep-only-past-inputs'
+The debug output is a little overwhelming :) 
+I checked the values with `C-h v' 
+
+minibuffer-history-variable value is file-name-history
+
+file-name-history value is ("~/.emacs.d/icicles-face.el" "~/.emacs.d/icicles-doc1.el" "~/.emacs.d/icicles-chg.el")
+
+I noticed that when i hit S-Tab or Tab the face (blue by default) is not set correctly, so maybe the problem lies somwhere else. In the variables it displays correctly in blue and M-Pause works correctly. 
+
+Another question: 
+
+Why bind this function to M-Pause. They have been placed far from each other on the keyboard. Yeah, i could rebind it, but i try to understand the motivation. 
+
+--PasJa
+
+[new:DrewAdams:2011-10-13 14:35 UTC]
+
+I don't know what you mean by "In the variables it displays correctly in blue and M-Pause works correctly.", but maybe it's not important.
+
+Check the variable values in the debugger, using `e', not just outside using `C-h v'.  If you want, you can step through the debugger (`d' to step, `c' to skip over a step (evaluate it completely)), to see what happens.
+
+For '''Icicles''', I believe there should be nothing special about file-name completion that would make `M-pause' work in general but not for file names.
+
+Dunno what to suggest.  (I assume that you used `TAB' or `S-TAB' prior to hitting `M-pause'.  I assume that you have used `C-pause' once or twice to be sure that past-entry highlighting is turned on.)
+
+Try removing those variables from savehist, to take savehist out of the equation.  Perhaps try clearing the history (e.g. `M-i') and starting over, entering some file names (using `RET') etc. 
+
+The choice of `M-pause' was nothing special, IIRC.  Lots of the '''Icicles''' default choices for keys were based on things like (a) associations, including with historical Emacs defaults, (b) key placement, (c) whether the key needs to be repeatable by holding it down, (d) mnemonic aid, (e) relations to other keys (e.g. `RET', `C-RET', `C-M-RET', `S-RET'...).  But I don't recall any special logic behind the choice of `M-pause'.
+
+You can email me, if you like.  It would probably be easier to dialog that way about your problem.  Sorry for your trouble.  -- DrewAdams
 
 
 

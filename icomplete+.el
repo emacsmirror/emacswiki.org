@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Oct 12 08:13:28 2011 (-0700)
+;; Last-Updated: Thu Oct 13 14:54:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1177
+;;     Update #: 1200
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,6 +72,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/10/13 dadams
+;;     icomplete-get-keys: Added optional arg EXACTP.  Better spacing counts.
+;;     icomplete-completions: Use MOST-TRY to determine exact match, pass to icomplete-get-keys.
 ;; 2011/10/12 dadams
 ;;     Added: icompletep-include-menu-items-flag, icomplete-get-keys, icompletep-remove-if.
 ;;     icomplete-completions: Truncate key-binding text if too long.
@@ -338,10 +341,13 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 ;;    or if even `[ ... ]' would be too long then return `TOO-LONG' so the
 ;;    brackets can be removed altogether.
 ;;
-(defun icomplete-get-keys (func-name)
+(defun icomplete-get-keys (func-name &optional exactp)
   "Return strings naming keys bound to FUNC-NAME, or nil if none.
 Examines the prior, not current, buffer, presuming that current buffer
 is minibuffer.
+
+Non-nil optional arg EXACTP means FUNC-NAME is an exact match, as
+determined by `try-completion' or `completion-try-completion.
 
 If option `icompletep-include-menu-items-flag' is non-nil then include
 menu-bar bindings in the l of keys (Emacs 23+ only)."
@@ -350,8 +356,12 @@ menu-bar bindings in the l of keys (Emacs 23+ only)."
       (let* ((sym      (intern func-name))
              (buf      (other-buffer nil t))
              (keys     (with-current-buffer buf (where-is-internal sym)))
-             (max-len  (max 0 (-  (window-width) (point-max) (length func-name)
-                                  9 ; 6 spaces + 2 for parens around FUNC-NAME + 1 space after )
+             (max-len  (max 0 (-  (window-width)
+				  (if (fboundp 'minibuffer-prompt-end)
+                                      (minibuffer-prompt-end)
+                                    (point-max))
+				  (if (fboundp 'minibuffer-prompt-end) (length func-name) 0)
+                                  (if exactp 7 9) ; 6 SPC, () around FUNC-NAME, 1 SPC after )
                                   5)))) ; 1 space + 2 each for `[ ' and ` ]'
 	(when keys
           (unless (and (boundp 'icompletep-include-menu-items-flag)
@@ -509,7 +519,8 @@ following the rest of the icomplete info:
                             (and comps "...")
                             close-bracket-prospects)
                   (setq keys  (and icomplete-show-key-bindings
-                                   (commandp (intern-soft most)) (icomplete-get-keys most)))
+                                   (commandp (intern-soft most))
+                                   (icomplete-get-keys most (eq t most-try))))
                   (if (eq keys 'TOO-LONG)       ; No room even for ` [ ... ]'.
                       ""
                     (concat " [ " (and (not keys) "Matched") keys " ]"))))
@@ -677,7 +688,8 @@ following the rest of the icomplete info:
                             (mapconcat 'identity (sort prospects (function string-lessp)) "  ")
                             (and limit "...") " }")
                   (setq keys  (and icomplete-show-key-bindings
-                                   (commandp (intern-soft most)) (icomplete-get-keys most)))
+                                   (commandp (intern-soft most))
+                                   (icomplete-get-keys most (eq t most-try))))
                   (if (eq keys 'TOO-LONG) ; No room even for `[ ... ]'.
                       ""
                     (concat " [ " (and (not keys) "Matched") keys " ]"))))

@@ -29,6 +29,9 @@ If you do not use a standalone minibuffer frame then I doubt you can do it.  Wel
 
 But maybe someone has a good idea how to do it. -- DrewAdams
 
+[new]
+Well I have an idea myself - but a bad one. Change the default face to what I want in the minibuffer and then make it local everywhere else and set it locally to the real value. But I would have to ensure that I really do it everywhere and face inheritance would probably break. This shouldn't be so hard. -- JonasBernoulli 
+
 == Filtering messages ==
 The echo area can be useful, but sometimes messages are displayed there with overwhelming frequency. This is particularly frustrating when it happens often enough to interrupt typing into the minibuffer.
 

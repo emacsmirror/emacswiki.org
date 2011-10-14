@@ -381,5 +381,10 @@ The following is based on [http://pedrokroger.net/2010/07/configuring-emacs-as-a
 
 3.1 ##C-c !## to start an ipython buffer.
 
+== Emacs Mode for files not ending with '.py' ==
+You can set the mode for python files with file names not ending with '.py' by adding line 
+<pre># -*- python -*-
+</pre>as second line in your file (the first usually being #/usr/bin/env python).
+
 ----
 Categories: CategoryProgramming, ProgrammingModes

@@ -392,12 +392,31 @@ I would like to suggest the following improvements to icomplete+: (1) Optionally
 [new:DrewAdams:2011-10-12 15:57 UTC]
 Good ideas.  Please try the latest <tt>[[icomplete+.el]]</tt>.  See option `icompletep-include-menu-items-flag'.  Let me know.  Thx -- DrewAdams
 
+[new]
+Thanks a lot.
+
+1. Unfortunately key abbreviation is too aggressive. It kicks in even when there is more than enough room. Also the calculation does not seem to be based on the available space and nothing else; other conditions have an effect too. For example when the user provided text in the minibuffer is "describe-key-" then the bindings are not abbreviated but when completed to "describe-key-briefly" then it is (at 92char line-length) - even though there is more space available now (because no possible match is shown which takes more space).
+
+2. Speaking of "describe-key", another suggestion: when completed this far and enough space is available show the key binding even though it is not a unique match. 
+
+3. Oh and one more ;) Sort the bindings so that the shortest (non-prefix) is first. Thanks again! -- JonasBernoulli
+
+
+[new:DrewAdams:2011-10-13 21:59 UTC]
+You're welcome.  
+
+#1: I think I've fixed the problem you mentioned.
+
+#2: No can do.
+
+#3 was already the case: keys are sorted by length (but disregarding any prefix/non-prefix, which I think makes sense).  HTH -- DrewAdams
+
 
 ----
 
 Libraries referenced here: 
 
-Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:cus-edit+.el, Lisp:dired+.el, Lisp:emacs-init.el, Lisp:grep+.el, Lisp:highlight.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:menu-bar+.el, Lisp:mkhtml.el, Lisp:replace+.el, ring+.el
+Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:cus-edit+.el, Lisp:dired+.el, Lisp:emacs-init.el, Lisp:grep+.el, Lisp:highlight.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:menu-bar+.el, Lisp:mkhtml.el, Lisp:replace+.el, Lisp:ring+.el
 
 
 ------

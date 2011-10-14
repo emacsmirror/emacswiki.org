@@ -11,7 +11,7 @@ There is Lisp:himarks-mode.el available, which is known to work on XEmacs --Zajc
 : On the other hand, Lisp:himarks-mode.el doesn't work with GNUEmacs. -- DrewAdams
 
 [new]
-Devide into emacs lisp file [[visible-mark.el]]. And added some function. -- [[Matsuyama]]
+Divide into emacs lisp file [[visible-mark.el]]. And added some function. -- [[Matsuyama]]
 
 [new]
 It would be nice if a C-G (keyboard-quit) made the existing visible marks

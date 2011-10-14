@@ -428,6 +428,12 @@ achieve this.  Here is the code for your .emacs. -- JohnWiegley
   (eval-after-load "ido"
     '(define-key ido-common-completion-map "\C-m" 'ido-smart-select-text))
 
+=== ido-hacks.el ===
+Misc collection of ido changes, including making it behave better with dired's copying and renaming commands (such as putting directory as first option).
+
+Emacs 23 and lower: http://www0.fh-trier.de/~politza/emacs/ido-hacks.el.gz
+An Emacs 24 compatible version is available at https://github.com/scottjad/ido-hacks
+
 == Icicles and Ido ==
 
 [[Icicles]] is similar to Ido in some ways, and the two are sometimes confused. In Icicles, you use the same [[minibuffer]] interface for files, [[buffer]]s, [[command]]s -- everything (even [[key]]s).  
