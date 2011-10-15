@@ -96,5 +96,22 @@ so any suggestions and improvements are welcome.
 
 am-here-p is kept track of so as to not spam the channel/server with status updates.
 
+== ErcManualAway ==
+If you want a quick toggle between some default away message and "back", you can use a function like this:
+
+  (defun erc-global-away ()
+  (interactive)
+  (let ((msg "coffee"))
+    (if (member nil (erc-with-all-buffers-of-server nil
+		      #'erc-open-server-buffer-p
+		      (erc-away-time)))
+	;; then: at least one is not away, set new away:
+	(and (erc-cmd-GAWAY msg) (message "Set as away: %s" msg))
+      ;; else: all servers are away, set back:
+      (and (erc-cmd-GAWAY "") (message "Set as back" msg)))))
+  (global-set-key (kbd "<pause>") #'erc-global-away)
+
+
+
 ----
 [[ERC]]

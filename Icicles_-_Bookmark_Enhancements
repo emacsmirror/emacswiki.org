@@ -40,8 +40,114 @@ These are the main '''Icicles''' bookmarking features:
 * Searching the text of a bookmark's buffer or region
 
 Each is described in a little more detail below.  More generally,
-however, the '''Bookmark+''' doc is your friend.  See these sections of
-the '''Bookmark+''' doc:
+however, the '''Bookmark+''' doc is your friend.
+
+
+
+
+
+[:TaggingFiles]
+== Tagging Files and Jumping to Them ==
+
+'''Bookmark+''' lets you easily tag files with [[http://delicious.com|delicious]]-style tags of
+your choice.  You need not visit the files to do this.  '''Icicles'''
+makes this tagging even easier.  Tagging a file creates an
+[[BookmarkPlus#AutofileBookmarks|autofile]]
+ bookmark that records the tags (metadata).  Tags are
+generally strings, but you can also associate arbitrary EmacsLisp data
+with them.  Besides tagging ''files'', you can add tags to any kind of
+bookmark.
+
+In ''Icicle'' mode, the '''Bookmark+''' keys for tagging and untagging files
+are bound to [[multi-command]]s '''`icicle-tag-a-file'''' and '''`icicle-untag-a-file''''.  In
+addition, all '''Icicles''' [[Icicles - File-Name Input|file commands]] let you tag or untag files on
+the fly, during file-name completion, using the keys `##C-x a +##' and
+`C-x a -' respectively (`a' for autofile).
+
+There are several '''Icicles''' [[multi-command]]s for jumping to tagged
+files.  They are all on the '''Bookmark+''' keymaps `bmkp-jump-map' and
+`bmkp-jump-other-window-map': prefixes '''`C-x j a'''' and '''`C-x 4 j a''''(`a' for autofile).  The
+latter is for the `-other-window' version of each command.
+
+
+
+
+
+
+
+
+[:icicle-find-file-tagged]
+[:icicle-find-file-tagged-other-window]
+=== `icicle-find-file-tagged' ===
+
+Command '''`icicle-find-file-tagged'''' ('''`C-x j t a a'''') matches tags as
+part of a [[multi-completion]] completion candidate.  Each candidate
+is composed of these fields: an absolute file name plus the file's
+tags, all separated by '''`<tt>[[Icicles - Customization and General Tips#icicle-list-join-string|icicle-list-join-string]]</tt>'''' (##"^G^J"##, by
+default).  As always, you can type `C-M-j' to insert this
+separator into the minibuffer.
+
+For this command, by default '''`##.##'''' in your input matches any
+character, including a newline.  As always, you can use `##C-M-.##'
+to toggle this (so `##.##' does ''not'' match newline).
+
+You can match your input against the file name or tags or both.
+E.g., type:
+
+* `##red S-TAB##'                    to match files with the tag `red'
+* `##red M-SPC green M-SPC blue##'   to match files with tags `red',
+                                `green', and `blue' (in any order)
+
+That assumes that these tags do not also match any file names.
+
+If you need to match against a particular field (e.g. the file
+name or a specific tag position), then use the field separator.
+Otherwise, just use [[Icicles - Progressive Completion|progressive completion]], as shown above.  
+
+E.g., to match only tags and not the filename, start with `C-M-j'
+to get past the file-name field.  To match both file name and
+tags, type something to match the file name before the `C-M-j'.
+E.g., type:
+
+: `##2011 C-M-j red M-SPC blue##'    to match files tagged `red' and
+`blue' that have `2011' in their names
+
+
+
+
+
+
+[:icicle-find-file-all-tags]
+[:icicle-find-file-all-tags-other-window]
+[:icicle-find-file-all-tags-regexp]
+[:icicle-find-file-all-tags-regexp-other-window]
+[:icicle-find-file-some-tags]
+[:icicle-find-file-some-tags-other-window]
+[:icicle-find-file-some-tags-regexp]
+[:icicle-find-file-some-tags-regexp-other-window]
+=== Jumping to Tagged Files (Other) ===
+
+The other '''Icicles''' commands for jumping to tagged files let you
+input a set of tags to match, or [[regexp]]s, one by one.  The
+commands differ only in how this set of patterns is used.  There
+are commands that use the ''intersection'' of the matches and commands
+that use the ''union''.
+
+All of them work the same way: you enter a pattern to match
+followed by `RET', ending with `##RET RET##'.  Intersection is
+indicated by '''`##*##'''' in the key binding.  Union is indicated by '''`##+##''''.
+The regexp-matching commands have '''`##%##'''' in the key binding.  And
+again, there is an `-other-window' version of each, on prefix key
+'''`C-x 4 j t a'''' instead of '''`C-x j t a''''.
+
+* '''`icicle-find-file-all-tags'''' ('''`##*##'''') -- Match each tag exactly
+* '''`icicle-find-file-all-tags-regexp'''' ('''`##% *##'''') -- Regexp-match each tag
+* '''`icicle-find-file-some-tags'''' ('''`##+##'''') -- Match some tag (>= 1) exactly
+* '''`icicle-find-file-some-tags-regexp'''' ('''`##% *##'''') -- Regexp-match some tag(s)
+
+
+See these sections of
+the '''Bookmark+''' doc for more information about bookmark tags:
 
 * [[BookmarkPlus#BookmarkTags|Bookmark Tags]]
 * [[BookmarkPlus#AutofileBookmarks|Autofile Bookmarks]]
@@ -86,7 +192,7 @@ the region is activated (provided option
 :: So if (a) you are visiting buffer `foo', (b) the region text
   starts with "<tt>Arise, you wretched of the earth! For justice
   thunders condemnation: A better world's in birth!</tt>", and (c) the
-  value of option `icicle-bookmark-name-length-max' is 15, then
+  value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|icicle-bookmark-name-length-max]]</tt>'''' is 15, then
   `C-9 C-x C-x' sets the region bookmark named "'''<tt>foo: Arise, you</tt>''''".
 
 

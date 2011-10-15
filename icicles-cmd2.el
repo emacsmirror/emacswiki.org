@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 10 14:33:37 2011 (-0700)
+;; Last-Updated: Fri Oct 14 15:06:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4624
+;;     Update #: 4665
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,10 +21,10 @@
 ;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
-;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `naked', `pp',
-;;   `pp+', `regexp-opt', `ring', `ring+', `strings', `thingatpt',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -515,7 +515,7 @@ all of the given input tags are completion candidates."
 
 
   ;;$$$  Do not bother with autofiles that have a PREFIX.
-  (icicle-define-command icicle-find-file-tagged ; Command name
+  (icicle-define-command icicle-find-file-tagged ; `C-x j t a a'.
     "Find one or more files with tags that match your input.
 By default, only tagged files are candidates.  With a prefix argument,
 all autofiles are candidates.  (Autofiles are autofile bookmarks - you
@@ -591,7 +591,7 @@ During completion (`*': requires library `Bookmark+'):
   (icicle-maybe-byte-compile-after-load icicle-find-file-tagged)
 
 
-  (icicle-define-command icicle-find-file-tagged-other-window ; Command name
+  (icicle-define-command icicle-find-file-tagged-other-window ; `C-x 4 j t a a'
     "Same as `icicle-find-file-tagged', except uses another window." ; Doc string
     (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
     prompt icicle-abs-file-candidates   ; `completing-read' args
@@ -3261,7 +3261,7 @@ In Comint, Shell, GUD, and Inferior Lisp modes, this is
   (call-interactively icicle-search-command))
 
 ;;;###autoload
-(defun icicle-search (beg end scan-fn-or-regexp require-match ; Bound to `C-c `'.
+(defun icicle-search (beg end scan-fn-or-regexp require-match ; Bound to `M-s M-s M-s', `C-c `'.
                       &optional where &rest args)
   "Search for matches, with completion, cycling, and hit replacement.
 Search a set of contexts, which are defined interactively by
@@ -3301,8 +3301,8 @@ Search respects `icicle-regexp-quote-flag' and
 by using `C-`' and `M-q', respectively.  If `icicle-regexp-quote-flag'
 is non-nil, then regexp special characters are quoted, so that they
 become non-special.  If `icicle-search-whole-word-flag' is non-nil,
-then whole-word searching is done.  (You can also use
-`\\[icicle-search-word]' to perform word search.)
+then whole-word searching is done.  (You can also use `M-s M-s w' to
+perform word search.)
 
 For each of the predefined Icicles search commands, including for
 `icicle-search' itself, you can alternatively choose to search, not
@@ -3546,7 +3546,8 @@ ends of sentences by using `C-u \\[icicle-insert-string-from-variable]' and choo
 `\\[icicle-save-string-to-variable]' to save a string to a variable
 for later use by `\\[icicle-insert-string-from-variable]'.
 
-When employed with useful regexps, `C-=' can turn `icicle-search' into
+When employed with useful regexps, `\\<minibuffer-local-completion-map>\
+\\[icicle-insert-string-from-variable]' can turn `icicle-search' into
 a general navigator or browser of code, mail messages, and many other
 types of buffer.  Imenu regexps work fine, for example - command
 `icicle-imenu' simply uses `icicle-search' this way.  See
@@ -4374,7 +4375,7 @@ Use this only with a `minibuffer-completion-table' derived from an alist."
              (format "', Position: %d" (marker-position marker))))))
 
 ;;;###autoload
-(defun icicle-search-keywords (beg end keywords require-match ; Bound to `C-c ^'.
+(defun icicle-search-keywords (beg end keywords require-match ; Bound to `M-s M-s k', `C-c ^'.
                                &optional where &rest args)
   "Search with one or more keywords, which can each be a regexp.
 Text that matches *any* of the keywords is found.
@@ -4411,7 +4412,7 @@ documentation."
   (concat "\\(" regexp "\\)"))
 
 ;;;###autoload (autoload 'icicle-search-bookmark "icicles-cmd2.el")
-(icicle-define-command icicle-search-bookmark ; Command name
+(icicle-define-command icicle-search-bookmark ; Bound to `M-s M-s j'.
   "Search bookmarked text.
 See also `icicle-search-bookmarks-together', which searches bookmarks
 together instead of one at a time.
@@ -4640,7 +4641,8 @@ future search commands, not the current one.)" ; Doc string
   "Type of thing last used by `icicle-next-visible-thing' (or previous).")
 
 ;;;###autoload
-(defun icicle-search-thing (thing &optional beg end require-match where predicate transform-fn)
+(defun icicle-search-thing (thing &optional beg end require-match where ; Bound to `M-s M-s t'.
+                            predicate transform-fn)
   "`icicle-search' with THINGs as search contexts.
 Enter the type of THING to search: `sexp', `sentence', `list',
 `string', `comment', etc.
@@ -5163,7 +5165,7 @@ Emacs, starting with Emacs 23."
                 child)))))))
 
 ;;;###autoload
-(defun icicle-search-char-property (beg end require-match
+(defun icicle-search-char-property (beg end require-match ; Bound to `M-s M-s c'.
                                     &optional where prop values predicate match-fn)
   "Search for text that has a character property with a certain value.
 By \"character property\" is meant either an overlay property or a
@@ -5207,7 +5209,8 @@ search multiple regions, buffers, or files, see the doc for command
                  predicate match-fn))
 
 ;;;###autoload
-(defun icicle-search-overlay-property (beg end require-match where prop values predicate match-fn)
+(defun icicle-search-overlay-property (beg end require-match where ; Bound to `M-s M-s O'
+                                       prop values predicate match-fn)
   "Same as `icicle-search-char-property', except only overlay property.
 That is, do not also search a text property."
   (interactive (icicle-search-property-args))
@@ -5215,7 +5218,7 @@ That is, do not also search a text property."
                  predicate match-fn))
 
 ;;;###autoload
-(defun icicle-search-text-property (beg end require-match ; Bound to `C-c "'.
+(defun icicle-search-text-property (beg end require-match ; Bound to `M-s M-s T', `C-c "'.
                                     where prop values predicate match-fn)
   "Same as `icicle-search-char-property', except only text property.
 That is, do not also search an overlay property."
@@ -5511,7 +5514,7 @@ valid buffer position."
     (message "Removing search highlighting...done")))
 
 ;;;###autoload
-(defun icicle-search-word (beg end word-regexp require-match ; Bound to `C-c $'.
+(defun icicle-search-word (beg end word-regexp require-match ; Bound to `M-s M-s w', `C-c $'.
                            &optional where &rest args)
   "Search for a whole word.
 The search string is regarded as a whole word, but a \"word\" here can
@@ -5545,7 +5548,8 @@ search multiple regions, buffers, or files, see the doc for command
   (icicle-search beg end word-regexp (not icicle-show-multi-completion-flag) where))
 
 ;;;###autoload
-(defun icicle-search-bookmarks-together (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-bookmarks-together (scan-fn-or-regexp require-match ; Bound to `M-s M-s J'.
+                                         &rest args)
   "Search bookmarked regions (together).
 The arguments are the same as for `icicle-search', but without
 arguments BEG, END, and WHERE.
@@ -5575,7 +5579,7 @@ searches the bookmarked regions/buffers you choose one at a time."
          args))
 
 ;;;###autoload
-(defun icicle-search-buffer (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-buffer (scan-fn-or-regexp require-match &rest args) ; Bound to `M-s M-s b'.
   "Search multiple buffers completely.
 Same as using a non-negative numeric prefix arg, such as `C-9', with
 `icicle-search'.  You are prompted for the buffers to search.  All of
@@ -5602,7 +5606,7 @@ affects only future search commands, not the current one.)"
          args))
 
 ;;;###autoload
-(defun icicle-search-file (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-file (scan-fn-or-regexp require-match &rest args) ; Bound to `M-s M-s f'.
   "Search multiple files completely.
 Same as using a negative numeric prefix arg, such as `C--', with
 `icicle-search'.  You are prompted for the files to search.  All of
@@ -5626,8 +5630,10 @@ future search commands, not the current one.)"
          args))
 
 ;;;###autoload
-(defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m'.
+                                           &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`'.
   "Search the files of the marked bookmarks in `*Bookmark List*'.
+Same as using `C-0' with `icicle-search' in `*Bookmark List*'. 
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
@@ -5640,8 +5646,10 @@ BEG, END, and WHERE."
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args))
 
 ;;;###autoload
-(defun icicle-search-dired-marked (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-dired-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Dired.
+                                   &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Dired.
   "Search the marked files in Dired.
+Same as using `C-0' with `icicle-search' in Dired. 
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
@@ -5653,8 +5661,10 @@ BEG, END, and WHERE."
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (dired-get-marked-files) args))
 
 ;;;###autoload
-(defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Ibuffer.
+                                     &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Ibuffer.
   "Search the marked buffers in Ibuffer, in order.
+Same as using `C-0' with `icicle-search' in Ibuffer. 
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
@@ -5668,8 +5678,10 @@ BEG, END, and WHERE."
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
 
 ;;;###autoload
-(defun icicle-search-buff-menu-marked (scan-fn-or-regexp require-match &rest args)
+(defun icicle-search-buff-menu-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in buff menu
+                                       &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' there.
   "Search the marked buffers in Buffer Menu, in order.
+Same as using `C-0' with `icicle-search' in `*Buffer List*'. 
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
@@ -5687,9 +5699,9 @@ BEG, END, and WHERE."
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
 
 ;;;###autoload
-(defalias 'icicle-search-lines 'icicle-occur)
+(defalias 'icicle-search-lines 'icicle-occur) ; Bound to `M-s M-s l'.
 ;;;###autoload
-(defun icicle-occur (beg end &optional where) ; Bound to `C-c ''.
+(defun icicle-occur (beg end &optional where) ; Bound to `M-s M-s o', `C-c ''.
   "`icicle-search' with a regexp of \".*\".  An `occur' with icompletion.
 Type a regexp to match within each line of one or more buffers, files,
 or bookmarks.
@@ -5718,7 +5730,7 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-search-sentences (beg end &optional where)
+(defun icicle-search-sentences (beg end &optional where) ; Bound to `M-s M-s s'.
   "`icicle-search' with sentences as contexts.
 Type a regexp to match within each sentence of one or more buffers,
 files, or bookmarks.
@@ -5758,7 +5770,7 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-search-paragraphs (beg end &optional where)
+(defun icicle-search-paragraphs (beg end &optional where) ; Bound to `M-s M-s p'.
   "`icicle-search' with paragraphs as contexts.
 Type a regexp to match within each paragraph of one or more buffers,
 files, or bookmarks.
@@ -5792,7 +5804,7 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-search-pages (beg end &optional where)
+(defun icicle-search-pages (beg end &optional where) ; Bound to `M-s M-s C-l'.
   "`icicle-search' with pages as contexts.
 Type a regexp to match within each page of one or more buffers, files,
 or bookmarks.
@@ -5825,7 +5837,7 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
 ;;;###autoload
-(defun icicle-comint-search (beg end)   ; Bound to `C-c `' in `comint-mode'.
+(defun icicle-comint-search (beg end)   ; Bound to `M-s M-s M-s', `C-c `' in `comint-mode'.
   "Use `icicle-search' to pick up a previous input for reuse.
 Use this in a `comint-mode' buffer, such as *shell* or
 *inferior-lisp*.  This searches your interactive history in the buffer
@@ -5930,7 +5942,7 @@ See also \\<comint-mode-map>\\[icicle-comint-search] for another way to reuse co
   (set (make-local-variable 'icicle-search-command) 'icicle-comint-search))
 
 ;;;###autoload
-(defun icicle-compilation-search (beg end) ; Bound to `C-c `' in `compilation(-minor)-mode'.
+(defun icicle-compilation-search (beg end) ; Bound to `M-s M-s M-s, `C-c `' in `compilation(-minor)-mode'.
   "Like `icicle-search', but show the matching compilation-buffer hit.
 Use this in a compilation buffer, such as `*grep*', searching for a
 regexp as with `icicle-search'.  Use `C-RET' or `C-mouse-2' to show
@@ -6023,9 +6035,9 @@ then a prefix argument changes the behavior, as follows:
       (icicle-search (point-min) (point-max) regexp t))))
 
 ;;;###autoload
-(defalias 'icicle-search-defs 'icicle-imenu)
+(defalias 'icicle-search-defs 'icicle-imenu) ; Bound to `M-s M-s d'.
 ;;;###autoload
-(defun icicle-imenu (beg end require-match &optional where) ; Bound to `C-c ='.
+(defun icicle-imenu (beg end require-match &optional where) ; Bound to `M-s M-s i', `C-c ='.
   "Search/go to an Imenu entry using `icicle-search'.
 Recommended: Use library `imenu+.el' also.
 In Emacs-Lisp mode, `imenu+.el' classifies definitions using these
@@ -6086,9 +6098,9 @@ procedure name."
   (icicle-imenu-1 nil beg end require-match where))
 
 ;;;###autoload
-(defalias 'icicle-search-defs-full 'icicle-imenu-full)
+(defalias 'icicle-search-defs-full 'icicle-imenu-full) ; Bound to `M-s M-s D'.
 ;;;###autoload
-(defun icicle-imenu-full (beg end require-match &optional where)
+(defun icicle-imenu-full (beg end require-match &optional where) ; Bound to `M-s M-s I'.
   "Search/go to an Imenu entry using `icicle-search'.
 Same as `icicle-imenu', except candidates are full definitions.
 This really means that a candidate is the text between the beginning
@@ -6511,7 +6523,7 @@ The other args are as for `icicle-search'."
   (save-excursion (goto-char (point-min)) (re-search-forward (cadr menu) nil t)))
 
 ;;;###autoload
-(defun icicle-tags-search (regexp &optional arg)
+(defun icicle-tags-search (regexp &optional arg) ; Bound to `M-s M-s ,'
   "Search all source files listed in tags tables for matches for REGEXP.
 You are prompted for the REGEXP to match.  Enter REGEXP with `RET'.
 You do not need `M-,' - you see all matches as search hits to visit.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 10:14:47 2011 (-0700)
+;; Last-Updated: Fri Oct 14 15:38:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1581
+;;     Update #: 1584
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1319,6 +1319,8 @@ current search context.")
     (define-key map (icicle-kbd "t") 'icicle-search-thing) ; `t'hing
     (define-key map (icicle-kbd "T") 'icicle-search-text-property) ; `T'ext
     (define-key map (icicle-kbd "w") 'icicle-search-word) ; `w'ord
+    (define-key map (icicle-kbd "x") 'icicle-search-xml-element) ; `x'ml
+    (define-key map (icicle-kbd "X") 'icicle-search-xml-element-text-node) ; `X'ml
     map)
   "Keymap for Icicles search commands.
 It is bound to the key prefix `icicle-search-key-prefix'.")

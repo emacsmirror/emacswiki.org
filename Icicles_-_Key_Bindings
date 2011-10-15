@@ -75,6 +75,9 @@ With the default value of `icicle-top-level-key-bindings',
 [:icicle-occur]
 [:icicle-imenu]
 [:icicle-search]
+[:icicle-search-keywords]
+[:icicle-search-text-property]
+[:icicle-search-word]
 [:icicle-compilation-search]
 [:icicle-comint-search]
 [:icicle-comint-command]
@@ -88,8 +91,11 @@ With the default value of `icicle-top-level-key-bindings',
 [:icicle-execute-named-keyboard-macro]
 [:icicle-kmacro]
 [:icicle-switch-to-from-minibuffer]
-* '''`##C-c '##'''' -- [[Icicles - Search Commands, Overview|`icicle-occur']]
+* '''`##C-c '##'''' -- [[Icicles - Search Commands, Overview#icicle-occur|`icicle-occur']]
 * '''`##C-c =##'''' -- [[Icicles - Other Search Commands#IciclesImenu|`icicle-imenu']]
+* '''`##C-c ^##''''  -- [[Icicles - Search Commands, Overview#icicle-search-keywords|`icicle-search-keywords']]
+* '''`##C-c "##''''  -- [[Icicles - Search Commands, Overview#icicle-search-text-property|`icicle-search-text-property]]
+* '''`##C-c $##''''  -- [[Icicles - Search Commands, Overview#icicle-search-word|`icicle-search-word]]
 * '''`##C-c `##'''' -- [[Icicles - Search Commands, Overview|`icicle-search']]
 * '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesCompileOrGrep|`icicle-compilation-search']] (in `*grep*' etc.)
 * '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesShell|`icicle-comint-search']] (in `*shell*' etc.)
@@ -158,39 +164,39 @@ by '''Icicles''' commands:
 
  Standard Command                   Icicles Command
 
- `abort-recursive-edit'.............`icicle-abort-recursive-edit'
- `bookmark-jump'....................`icicle-bookmark'
- `bookmark-jump-other-window'.......`icicle-bookmark-other-window'
- `bookmark-set'.....................`icicle-bookmark-cmd'
- `dabbrev-completion'...............`icicle-dabbrev-completion'
- `delete-window'....................`icicle-delete-window'
- `dired'............................`icicle-dired'
- `dired-other-window'...............`icicle-dired-other-window'
- `eval-expression'..................`icicle-pp-eval-expression'
- `exchange-point-and-mark'..........`icicle-exchange-point-and-mark'
- `execute-extended-command'.........`icicle-execute-extended-command'
- `find-file'........................`icicle-file'
- `find-file-other-window'...........`icicle-file-other-window'
- `find-file-read-only'..............`icicle-find-file-read-only'
- `find-file-read-only-other-window'.`icicle-find-file-read-only-other-window'
- `find-tag'.........................`icicle-find-tag'
- `find-tag-other-window'............`icicle-find-first-tag-other-window'
- `Info-goto-node'...................`icicle-Info-goto-node'
- `Info-index'.......................`icicle-Info-index'
- `Info-menu'........................`icicle-Info-menu'
- `insert-buffer'....................`icicle-insert-buffer'
- `kill-buffer'......................`icicle-kill-buffer'
- `lisp-complete-symbol'.............`icicle-lisp-complete-symbol'
- `other-frame'......................`icicle-select-frame'
- `other-window'.....................`icicle-select-window-or-frame'
- `pop-global-mark'..................`icicle-goto-global-marker-or-pop-global-mark'
- `pop-tag-mark'.....................`icicle-pop-tag-mark'
- `pp-eval-expression'...............`icicle-pp-eval-expression'
- `set-mark-command'.................`icicle-goto-marker-or-set-mark-command'
- `switch-to-buffer'.................`icicle-buffer'
- `switch-to-buffer-other-window'....`icicle-buffer-other-window'
- `where-is'.........................`icicle-where-is'
- `yank'.............................`icicle-yank-maybe-completing'
+ `abort-recursive-edit'.............`icicle-abort-recursive-edit' (`C-]')
+ `bookmark-jump'....................`icicle-bookmark' (`C-x r b')
+ `bookmark-jump-other-window'.......`icicle-bookmark-other-window' (`C-x j j')
+ `bookmark-set'.....................`icicle-bookmark-cmd' (`C-x r m'')
+ `dabbrev-completion'...............`icicle-dabbrev-completion' (`C-M-/')
+ `delete-window'....................`icicle-delete-window' (`C-x 0')
+ `dired'............................`icicle-dired' (`C-x d')
+ `dired-other-window'...............`icicle-dired-other-window' (`C-x 4 d')
+ `eval-expression'..................`icicle-pp-eval-expression' (`M-:')
+ `exchange-point-and-mark'..........`icicle-exchange-point-and-mark' (`C-x C-x')
+ `execute-extended-command'.........`icicle-execute-extended-command' (`M-x')
+ `find-file'........................`icicle-file' (`C-x C-f')
+ `find-file-other-window'...........`icicle-file-other-window' (`C-x 4 f')
+ `find-file-read-only'..............`icicle-find-file-read-only' (`C-x C-r')
+ `find-file-read-only-other-window'.`icicle-find-file-read-only-other-window' (`C-x 4 r')
+ `find-tag'.........................`icicle-find-tag' (`M-.')
+ `find-tag-other-window'............`icicle-find-first-tag-other-window' (`C-x 4 .')
+ `Info-goto-node'...................`icicle-Info-goto-node' (`g')
+ `Info-index'.......................`icicle-Info-index' (`i')
+ `Info-menu'........................`icicle-Info-menu' (`m')
+ `insert-buffer'....................`icicle-insert-buffer' (`C-S-insert')
+ `kill-buffer'......................`icicle-kill-buffer' (`C-x k')
+ `lisp-complete-symbol'.............`icicle-lisp-complete-symbol' (`M-TAB')
+ `other-frame'......................`icicle-select-frame' (`C-x 5 o')
+ `other-window'.....................`icicle-select-window-or-frame' (`C-x o')
+ `pop-global-mark'..................`icicle-goto-global-marker-or-pop-global-mark' (`C-x C-SPC')
+ `pop-tag-mark'.....................`icicle-pop-tag-mark' (`M-*')
+ `pp-eval-expression'...............`icicle-pp-eval-expression' (`M-:')
+ `set-mark-command'.................`icicle-goto-marker-or-set-mark-command' (`C-SPC')
+ `switch-to-buffer'.................`icicle-buffer' (`C-x b')
+ `switch-to-buffer-other-window'....`icicle-buffer-other-window' (`C-x 4 b')
+ `where-is'.........................`icicle-where-is' (`C-h w')
+ `yank'.............................`icicle-yank-maybe-completing' (`C-y')
 
 Actually, by default, '''Icicles''' binds `icicle-yank-maybe-completing'
 to whatever the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]</tt>'''' is.  By
@@ -316,8 +322,10 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-xml-element-text-node]
 [:icicle-select-window]
 [:icicle-set-option-to-t]
+[:icicle-sexp-list]
 [:icicle-show-faces]
 [:icicle-show-only-faces]
+[:icicle-string-list]
 [:icicle-toggle-option]
 [:icicle-vardoc]
 [:toggle]
@@ -431,8 +439,10 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-w3m-bookmark' -- Search [[w3m|W3M]] bookmarks
 * `icicle-select-window' -- Select a [[window]] by its buffer name
 * `icicle-set-option-to-t' -- Set value of binary option to `t'
+* `icicle-sexp-list'   -- Choose a list of past or new [[sexp]]s
 * `icicle-show-faces' -- Show a set of invisible faces you choose
 * `icicle-show-only-faces' -- Show a set of invisible faces you choose; hide all others
+* `icicle-string-list' - Choose a list of past or new strings
 * `icicle-toggle-option' -- Toggle the value of a binary [[option]]
 * `icicle-vardoc'       -- Display the doc of a [[variable]]
 * `toggle' (alias)      -- Toggle the value of a binary option
@@ -954,6 +964,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 [:icicle-toggle-dot]
 [:icicle-toggle-expand-to-common-match]
 [:icicle-toggle-hiding-common-match]
+[:icicle-toggle-hiding-non-matching-lines]
 [:icicle-toggle-highlight-all-current]
 [:icicle-toggle-highlight-historical-candidates]
 [:icicle-toggle-incremental-completion]
@@ -975,6 +986,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-M-.##'''' -- `icicle-toggle-dot'
 (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-dot-string|icicle-dot-string]]</tt>')
 * '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]]</tt>')
+* '''`##C-u C-x .##'''' -- `icicle-toggle-hiding-non-matching-lines' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-non-matching-lines-flag|icicle-hide-non-matching-lines-flag]]</tt>')
 * '''`##C-;##'''' -- `icicle-toggle-expand-to-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>')
 * '''`##M-;##'''' -- `icicle-toggle-search-replace-common-match'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>')
 * '''`##C-M-;##''' -- `icicle-toggle-icicle-toggle-ignoring-comments'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>')

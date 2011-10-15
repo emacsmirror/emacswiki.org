@@ -1738,7 +1738,8 @@ Available only for Emacs 22 and later, and you must load library
 [:icicle-key-descriptions-use-angle-brackets-flag]
 ==== Option icicle-key-descriptions-use-angle-brackets-flag ====
 
-User option '''`##icicle-key-descriptions-use-<>-flag##'''' (aka `icicle-key-descriptions-use-angle-brackets-flag') determines whether angle brackets (`##<##', `##>##') are used by '''Icicles''' for named [[key]]s, such as function keys (`##<f9>##' vs `f9') and pseudo keys (`##<mode-line>##' vs `mode-line').  Non-`nil' means to use angle brackets.  This option does not affect Emacs key descriptions outside of '''Icicles''', and it has no effect for versions of Emacs prior to 21, because they never use angle brackets.  The default value is `nil', because I think angle brackets reduce readability.
+User option '''`##icicle-key-descriptions-use-<>-flag##'''' (aka `icicle-key-descriptions-use-angle-brackets-flag') determines whether angle brackets (`##<##', `##>##') are used by '''Icicles''' for named [[key]]s, such as function keys (`##<f9>##' vs `f9') and pseudo keys (`##<mode-line>##' vs `mode-line').  Non-`nil' means to use angle brackets.  This option does not affect Emacs key descriptions outside of '''Icicles''', and it has no effect for versions of Emacs prior to 21, because they never use angle brackets.  The default value is `nil', because I think angle brackets reduce readability.   See also my library '''<tt>[[naked.el]]</tt>''', which lets you use
+the no-angle-brackets style also outside of '''Icicles'''.
 
 ----
 [:icicle-keymaps-for-key-completion]
@@ -1781,7 +1782,9 @@ This option has no effect before Emacs 22.  See [[Icicles - Key Completion#SelfI
 User option '''`icicle-yank-function'''' is a function to use to yank
 text.  By default, it is `yank'.  Command `icicle-yank-maybe-completing'
 calls this function, except when it is called from the
-minibuffer or called with a negative prefix argument.
+minibuffer or called with a negative prefix argument.  ('''`C-- C-y'''' lets you choose yanks (kills) to
+insert using completion.  It is a [[multi-command]].  You can of
+course [[Icicles - Sorting Candidates|sort]] the candidates in various ways.)
 
 ----
 [:icicle-use-candidates-only-once-flag]

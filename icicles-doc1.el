@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  9 07:43:12 2011 (-0700)
+;; Last-Updated: Fri Oct 14 16:21:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 26292
+;;     Update #: 26310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -246,7 +246,6 @@
 ;;    (@> "`S-TAB' Is Everywhere - Start With It")
 ;;    (@> "Completing Keys By Name")
 ;;    (@> "Completing Prefix Keys")
-;;    (@> "Meta Key Bindings")
 ;;    (@> "Navigate the Key-Binding Hierarchy")
 ;;    (@> "Local Bindings Are Highlighted")
 ;;    (@> "Completing Keys By Just Hitting Them")
@@ -310,6 +309,7 @@
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Search Commands, Overview")
 ;;    (@file :file-name "icicles-doc2.el" :to "Introduction: On Beyond Occur...")
+;;    (@file :file-name "icicles-doc2.el" :to "Icicles Search Key Bindings")
 ;;    (@file :file-name "icicles-doc2.el" :to "How Icicles Search Works")
 ;;    (@file :file-name "icicles-doc2.el" :to "Why Use 2 Search Patterns?")
 ;;    (@file :file-name "icicles-doc2.el" :to "Search Outside the Defined Search Contexts?")
@@ -329,6 +329,9 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Define Your Own Icicles Search Commands")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Bookmark Enhancements")
+;;    (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them")
+;;      (@file :file-name "icicles-doc2.el" :to "`icicle-find-file-tagged'")
+;;      (@file :file-name "icicles-doc2.el" :to "Jumping to Tagged Files (Other)")
 ;;    (@file :file-name "icicles-doc2.el" :to "Saving Regions and Selecting Them")
 ;;    (@file :file-name "icicles-doc2.el" :to "Setting a Bookmark and Jumping to a Bookmark")
 ;;    (@file :file-name "icicles-doc2.el" :to "Jumping to a Bookmark")
@@ -1396,13 +1399,6 @@
 ;;    then `x = icicle-execute-extended-command'.
 ;;
 ;;  * `M-:' - Evaluate any Emacs-Lisp expression.
-;;    If command remapping is available (Emacs 22 or later), and if
-;;    option `icicle-top-level-key-bindings' remaps `eval-expression'
-;;    to `icicle-pp-eval-expression' (which it does, by default), then
-;;    complete first `remapped  =  ...', then `eval-expression  =
-;;    icicle-pp-eval-expression'.  Otherwise, complete first `ESC  =
-;;    ...', then `:  =  eval-expression'.
-;;
 ;;    In Icicles, `M-:' gives you a quick pop-up mode for evaluating a
 ;;    Lisp sexp.  Most of the normal Emacs-Lisp mode bindings are in
 ;;    effect, except that `RET' evaluates the minibuffer contents and
@@ -4914,31 +4910,6 @@
 ;;  can use `C-,' at any time to change the sort order among these two
 ;;  orders and sorting by command name.
 ;;
-;;  Gotcha: Commands that are remapped do not show up with the
-;;  bindings you think they have.  For example, `C-x C-f' is bound to
-;;  `icicle-file' in Icicle mode, by default, but `C-x S-TAB' does not
-;;  include the completion candidate `C-f = icicle-file'.  Instead,
-;;  `S-TAB' at the top level (without first doing `C-x') shows a
-;;  (pseudo) prefix key `remap = ..', and if you follow that then
-;;  you'll see the candidate `find-file = icicle-file'.  The binding
-;;  of `C-x C-f' does not appear as such, because `find-file' is
-;;  remapped to command `icicle-file': whatever `find-file' was bound
-;;  to is indirectly bound to `icicle-file'. This indirection shows up
-;;  in Icicles key completion as (pseudo) prefix key `remap = ..'.
-;;
-;;(@* "Meta Key Bindings")
-;;  ** Meta Key Bindings **
-;;
-;;  If you use `S-TAB' at the top level, and you look for the key
-;;  sequence `M-x' or `M-d', you will not find it.  Meta key bindings
-;;  are there, but many of them are disguised as keys in the `ESC'
-;;  prefix keymap - e.g. `ESC x' for `M-x'.  That is, you must first
-;;  choose the `ESC` prefix key: `ESC = ...', and then choose the `x'
-;;  key or whatever.  That's just the way Emacs works.  So, yes, you
-;;  can use Icicles key completion to execute any Emacs command, even
-;;  one that is not bound to a key sequence, and you can use it to
-;;  evaluate any EmacsLisp expression.  See (@> "Three-Key Emacs").
-;;
 ;;(@* "Navigate the Key-Binding Hierarchy")
 ;;  ** Navigate the Key-Binding Hierarchy **
 ;;
@@ -5025,13 +4996,16 @@
 ;;    C-M-right  =  enlarge-frame-horizontally
 ;;
 ;;  Note: Whether or not angle brackets are used is governed by user
-;;  option `icicle-key-descriptions-use-<>-flag'.  By default, this is
-;;  `nil', so angle brackets are not used, which I think improves
-;;  readability.  If you set this to non-`nil', then you will see
-;;  "<C-M-right>" instead of "C-M-right", both as a completion
+;;  option `icicle-key-descriptions-use-<>-flag' (aka
+;;  `icicle-key-descriptions-use-angle-brackets-flag').  By default,
+;;  this is `nil', so angle brackets are not used, which I think
+;;  improves readability.  If you set this to non-`nil', then you will
+;;  see "<C-M-right>" instead of "C-M-right", both as a completion
 ;;  candidate and as what is inserted when you use `M-q'.  You can
 ;;  also provide a prefix argument to `M-q' to flip the behavior of
 ;;  `icicle-key-descriptions-use-<>-flag' for that occurrence only.
+;;  See also my library `naked.el', which lets you use the
+;;  no-angle-brackets style also outside of Icicles.
 ;;
 ;;(@* "Key and Command Help")
 ;;  ** Key and Command Help **
@@ -5157,11 +5131,10 @@
 ;;  * `RET'   - Chooses the current candidate.
 ;;  * And of course `C-g', to cancel the current operation.
 ;;
-;;  `S-TAB' includes key `M-x (represented as prefix key `ESC'
-;;  followed by `x'), which offers all commands (even those not bound)
-;;  as possible choices.  It also includes key `M-:' (`ESC' followed
-;;  by `:'), which lets you execute any Emacs-Lisp expression.  That's
-;;  almost all of Emacs!
+;;  `S-TAB' includes key `M-x', which offers all commands (even those
+;;  not bound) as possible choices.  It also includes key `M-:', which
+;;  lets you execute any Emacs-Lisp expression.  That's almost all of
+;;  Emacs!
 ;;
 ;;  You could even perhaps get away with only three mouse buttons, and
 ;;  no keyboard:
@@ -5225,7 +5198,8 @@
 ;;  by showing the character to be inserted after its name in
 ;;  `*Completions*' (but you complete against only the name).  I
 ;;  recommend that you use `ucs-insert', not key completion, to insert
-;;  Unicode characters.
+;;  Unicode characters.  You might also find my library `ucs-cmds.el'
+;;  useful in this regard.
 ;;
 ;;  There are thousands of Unicode characters.  So if you do use a
 ;;  non-`nil' value for `icicle-complete-keys-self-insert-ranges' then
@@ -6092,12 +6066,6 @@
 ;;  * `C-c +' (`icicle-make-directory') to create a directory on the
 ;;    fly.
 ;;
-;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
-;;    bookmarked file or directory.  This is available only if you use
-;;    library `bookmark+.el'.  It is a multi-command, so you can
-;;    actually visit any number of file bookmarks.  When finished, you
-;;    can continue with non-bookmark file-name completion.
-;;
 ;;  * `S-delete' to delete the file named by the current completion
 ;;    candidate.
 ;;
@@ -6105,6 +6073,17 @@
 ;;    the currently matching file names.  That is, it opens a special
 ;;    Dired buffer that contains only the matching files.  You are
 ;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
+;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
+;;    bookmarked file or directory.  This is available only if you use
+;;    library Bookmark+ (`bookmark+.el').  It is a multi-command, so
+;;    you can actually visit any number of file bookmarks.  When
+;;    finished, you can continue with non-bookmark file-name
+;;    completion.
+;;
+;;  * `C-x a +' or `C-x a -' to add or remove tags for a file.  These
+;;    are delicious-style tags - any labels you like.  You need
+;;    library Bookmark+ for this feature.  See also
+;;    (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them").
 ;;
 ;;  In many cases for Icicles multi-commands that read a file name,
 ;;  you can use `M-n' to pick up the file name at point, or if none
@@ -6232,8 +6211,8 @@
 ;;  GNU/Linux or UNIX command `locate', to work.  The latter does not
 ;;  require any external program.
 ;;
-;;  Because it takes advantage of `locate' having indexed files on you
-;;  file system, `icicle-locate' can be much faster than
+;;  Because it takes advantage of `locate' having indexed files on
+;;  your file system, `icicle-locate' can be much faster than
 ;;  `icicle-locate-file'.  Otherwise, these two Icicles commands work
 ;;  similarly.
 ;;

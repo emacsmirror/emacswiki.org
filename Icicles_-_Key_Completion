@@ -97,24 +97,7 @@ Here are some screenshots, from `S-TAB' in the Buffer Menu (`C-x C-b'), to illus
 [[image:IciclesKeyCompletionsSortByCmdName]]
 
 
-[:RemapGotcha]
-: '''Gotcha:''' Commands that are ''remapped'' do not show up with the bindings you think they have. For example, `C-x C-f' is bound to `icicle-file' in ''Icicle'' mode, by default, but `C-x S-TAB' does not include the completion candidate `##C-f  =  icicle-file##'.  Instead, `S-TAB' at the top level (without first doing `C-x') shows a (pseudo) prefix key `##remap  =  ..##', and if you follow that then you'll see the candidate `##find-file  =  icicle-file##'.  The binding of `C-x C-f' does not appear as such, because `find-file' is remapped to command `icicle-file': whatever `find-file' was bound to is indirectly bound to `icicle-file'.  This indirection shows up in '''Icicles''' key completion as (pseudo) prefix key `##remap  =  ..##'.
 
-
-
-
-
-
-
-[:MetaKeyBindings]
-=== Meta Key Bindings ===
-
-If you use `S-TAB' at the top level, and you look for the
-key sequence `M-x' or `M-d', you will not find it.  [[Meta]] key bindings are there, but many of them are disguised
-as keys in the `ESC' [[prefix keymap]] -- e.g. `##ESC x##' for `M-x'.  That is, you must first choose the `ESC' [[prefix key]]:
-`##ESC  =  ...##', and then choose the `x' key or whatever.  That's just the way Emacs works.  So, yes, you can use
-'''Icicles''' key completion to execute any Emacs command, even one that
-is not bound to a key sequence, and you can use it to evaluate any EmacsLisp expression.  See [[#ThreeKeyEmacs]], below.
 
 
 
@@ -178,8 +161,10 @@ Nevertheless, '''Icicles''' also provides a way for you to type key sequences di
 
   C-M-right  =  enlarge-frame-horizontally
 
-: '''Note:''' Whether or not angle brackets are used is governed by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-descriptions-use-angle-brackets-flag|icicle-key-descriptions-use-<>-flag]]</tt>''''.  By default, this is `nil', so angle brackets are not used, which I think improves readability.  If you set this to non-`nil', then you will see "##<C-M-right>##" instead of "##C-M-right##", both as a completion candidate and as what is inserted when you use `M-q'.  You can also provide a [[prefix argument]] to `M-q' to flip the behavior of `##icicle-key-descriptions-use-<>-flag##' for that occurrence only.
-
+: '''Note:''' Whether or not angle brackets are used is governed by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-descriptions-use-angle-brackets-flag|icicle-key-descriptions-use-<>-flag]]</tt>'''' (aka
+`icicle-key-descriptions-use-angle-brackets-flag').  By default, this is `nil', so angle brackets are not used, which I think improves readability.  If you set this to non-`nil', then you will see "##<C-M-right>##" instead of "##C-M-right##", both as a completion candidate and as what is inserted when you use `M-q'.  You can also provide a [[prefix argument]] to `M-q' to flip the behavior of `##icicle-key-descriptions-use-<>-flag##' for that occurrence only.
+See also my library '''<tt>[[naked.el]]</tt>''', which lets you use the
+no-angle-brackets style also outside of '''Icicles'''.
 
 
 
@@ -291,7 +276,7 @@ Emacs with three or four keys, buttons, or whatever:
 
 * And of course `C-g', to cancel the current operation.
 
-`S-TAB' includes key `M-x' (represented as prefix key `ESC' followed by `x'), which offers all commands (even those not bound) as possible choices. It also includes key `M-:' (`ESC' followed by `##:##'), which lets you execute any EmacsLisp expression. That's almost all of Emacs! (See also [[MousePlus#M-xViaMouse2|M-x via `mouse-2']].)
+`S-TAB' includes key `M-x', which offers all commands (even those not bound) as possible choices. It also includes key `M-:', which lets you execute any EmacsLisp expression. That's almost all of Emacs! (See also [[MousePlus#M-xViaMouse2|M-x via `mouse-2']].)
 
 You could even perhaps get away with only three mouse buttons, and no keyboard:
 
@@ -349,7 +334,8 @@ command '''`ucs-insert'''' (`C-x 8 RET'), which lets you complete against the Un
 character name.  '''Icicles''' enhances `ucs-insert' by showing the
 character to be inserted after its name in `*Completions*' (but
 you complete against only the name).  I recommend that you use
-`ucs-insert', not key completion, to insert Unicode characters.
+`ucs-insert', not key completion, to insert Unicode characters.  You might also find my library '''<tt>[[ucs-cmds.el]]</tt>'''
+useful in this regard.
 
 There are thousands of Unicode characters.  So if you do use a non-`nil' value for
 `icicle-complete-keys-self-insert-ranges' then use only small

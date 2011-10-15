@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  9 10:40:55 2011 (-0700)
+;; Last-Updated: Fri Oct 14 17:05:30 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28371
+;;     Update #: 28523
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -126,7 +126,6 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "`S-TAB' Is Everywhere - Start With It")
 ;;    (@file :file-name "icicles-doc1.el" :to "Completing Keys By Name")
 ;;    (@file :file-name "icicles-doc1.el" :to "Completing Prefix Keys")
-;;    (@file :file-name "icicles-doc1.el" :to "Meta Key Bindings")
 ;;    (@file :file-name "icicles-doc1.el" :to "Navigate the Key-Binding Hierarchy")
 ;;    (@file :file-name "icicles-doc1.el" :to "Local Bindings Are Highlighted")
 ;;    (@file :file-name "icicles-doc1.el" :to "Completing Keys By Just Hitting Them")
@@ -192,6 +191,7 @@
 ;;
 ;;  (@> "Icicles Search Commands, Overview")
 ;;    (@> "Introduction: On Beyond Occur...")
+;;    (@> "Icicles Search Key Bindings")
 ;;    (@> "How Icicles Search Works")
 ;;    (@> "Why Use 2 Search Patterns?")
 ;;    (@> "Search Outside the Defined Search Contexts")
@@ -212,6 +212,9 @@
 ;;    (@> "Define Your Own Icicles Search Commands")
 ;;
 ;;  (@> "Icicles Bookmark Enhancements")
+;;    (@> "Tagging Files and Jumping to Them")
+;;      (@> "`icicle-find-file-tagged'")
+;;      (@> "Jumping to Tagged Files (Other)")
 ;;    (@> "Saving Regions and Selecting Them")
 ;;    (@> "Setting a Bookmark and Jumping to a Bookmark")
 ;;    (@> "Jumping to a Bookmark")
@@ -415,54 +418,119 @@
 ;;  search context is the current line.  For `icicle-search', it is
 ;;  whatever your search-context regexp matches.
 ;;
-;;(@* "How Icicles Search Works")
-;;  ** How Icicles Search Works **
+;;(@* "Icicles Search Key Bindings")
+;;  ** Icicles Search Key Bindings **
 ;;
-;;  There are several Icicles search commands, some of which are bound
-;;  to keys in Icicle mode:
+;;  There are many Icicles search commands, most of which are bound to
+;;  keys when you are in Icicle minor mode.  They are all placed on
+;;  the same prefix key, `M-s M-s'.  Starting with Emacs 23, a single
+;;  `M-s' is the standard Emacs prefix key for search.  Just hit the
+;;  key twice for Icicles search.
 ;;
-;;  `C-c '',  `icicle-occur' (aka `icicle-search-lines') -
-;;               An `occur' with incremental completion
-;;  `C-c `'   `icicle-search'   - Seach buffer areas that match regexp
-;;            `icicle-search-buffer' (`C-1') - Search selected buffers
-;;            `icicle-search-buff-menu-marked' - BufferMenu marked
-;;            `icicle-search-ibuffer-marked'   - Search Ibuffer marked
-;;            `icicle-search-dired-marked' - Search Dired marked files
-;;            `icicle-search-file' (`C--')     - Search selected files
-;;            `icicle-search-bookmarks-together' (`C-u'),
-;;              `icicle-search-bookmark'            - Search bookmarks
-;;            `icicle-search-*-bookmark'   - Bookmarks of a given type
-;;  `C-c $'   `icicle-search-word'           - Whole words as contexts
-;;  `C-c ^'   `icicle-search-keywords'   - Search with regexp keywords
-;;  `C-c `'   `icicle-compilation-search'    - Search compilation hits
-;;                                             (e.g `grep' hits)
-;;  `C-c "'   ["] `icicle-search-text-property' -
-;;                            Search text having a given text property
-;;            `icicle-search-overlay-property' -
-;;                         Search text having a given overlay property
-;;            `icicle-search-char-property' -
-;;                    Search text having a given text/overlay property
-;;            `icicle-search-pages'               - Search Emacs pages
-;;            `icicle-search-paragraphs'     - Search Emacs paragraphs
-;;            `icicle-search-sentences' - Search sentences as contexts
-;;            `icicle-search-thing'     - Search thing-at-point things
-;;                                        optionally ignoring comments
-;;            `icicle-search-xml-element' - Search XML elements
-;;            `icicle-search-xml-element-text-node'- Search text nodes
+;;  The most general Icicles search command is `icicle-search', which
+;;  is bound to `M-s M-s M-s'.  It is also bound to `C-c `'.  (In some
+;;  modes these keys are bound to a mode-specific form of Icicles
+;;  search.)
 ;;
-;;  `C-c ='   `icicle-imenu' (aka `icicle-search-defs') -
-;;               Navigate among Imenu entries.
-;;            `icicle-imenu-command' -
-;;               Navigate among Emacs command definitions.
+;;  The Icicles search keys are generally mnemonic.  Some of the
+;;  commands also have an alternative key binding (in parentheses in
+;;  the list below).
+;;
+;;  Remember too that you can also invoke some of these same commands
+;;  using a prefix arg with the generic `icicle-search' keys.  For
+;;  example, you can invoke the commands bound to `M-s M-s m' using a
+;;  zero prefix arg with `icicle-search' - e.g., `C-0 M-s M-s M-s'.
+;;
+;;  Here are the suffix keys on the `M-s M-s' prefix key:
+;;
+;;  `M-s'     `icicle-search'   - Seach buffer areas that match regexp
+;;            (`C-c `')
+;;  `M-s'     `icicle-comint-search' - Retrieve a previous shell input
+;;            (`C-c `')
+;;  `M-s'     `icicle-compilation-search'    - Search compilation hits
+;;            - e.g `grep' hits (`C-c `')
+;;
+;;  `,'       `icicle-tags-search' - Search files listed in TAGS table
+;;  `b'       `icicle-search-buffer' (`C-1') - Search selected buffers
+;;  `c'       `icicle-search-char-property' - Search text having a
+;;            given text or overlay property
+;;  `d'       `icicle-search-defs' (aka `icicle-imenu') (`C-c =')
+;;  `D'       `icicle-search-defs-full' (aka `icicle-imenu-full')
+;;            full definitions as completion candidates
+;;  `f'       `icicle-search-file' (`C--')     - Search selected files
+;;  `i'       `icicle-imenu' (aka `icicle-search-defs') - Navigate
+;;            among Imenu entries (`C-c =')
+;;  `I'       `icicle-imenu-full' (aka `icicle-search-defs-full')
+;;            full definitions as completion candidates
+;;            `icicle-imenu-command' - command definitions
+;;            `icicle-imenu-face' - face definitions
+;;            `icicle-imenu-macro' - macro definitions
 ;;            `icicle-imenu-non-interactive-function' -
-;;               Navigate among Emacs non-interactive function
-;;               definitions.
-;;  `C-c TAB' `icicle-comint-command' - Retrieve a past shell command.
+;;            non-interactive function definitions
+;;            `icicle-imenu-user-option' - user option definitions
+;;            `icicle-imenu-key-explicit-map' - key definitions
+;;            `icicle-imenu-key-implicit-map' - key definitions
+;;  `j'       `icicle-search-bookmark'              - Search bookmarks
+;;            `icicle-search-*-bookmark'   - Bookmarks of a given type
+;;  `J'       `icicle-search-bookmarks-together' (`C-u'),
+;;  `k'       `icicle-search-keywords' - Search with regexp keywords
+;;            (`C-c ^')
+;;  `l'       `icicle-search-lines' (aka `icicle-occur') (`C-c '')
+;;  `C-l'     `icicle-search-pages'               - Search Emacs pages
+;;  `m'       `icicle-search-bookmark-list-marked' - Marked bookmarks
+;;  `m'       `icicle-search-buff-menu-marked' - Search marked buffers
+;;  `m'       `icicle-search-ibuffer-marked'   - Search marked buffers
+;;  `m'       `icicle-search-dired-marked' - Search Dired marked files
+;;  `o'       `icicle-occur' (aka `icicle-search-lines') - An `occur'
+;;            with incremental completion (`C-c '')
+;;  `O'       `icicle-search-overlay-property' - Search text having a
+;;            given overlay property
+;;  `p'       `icicle-search-paragraphs'     - Search Emacs paragraphs
+;;  `s'       `icicle-search-sentences' - Search sentences as contexts
+;;  `t'       `icicle-search-thing'    - Search thing-at-point things,
+;;            optionally ignoring comments
+;;  `T'       `icicle-search-text-property' - Search text having a
+;;            given text property (`C-c "')                        ["]
+;;  `w'       `icicle-search-word' - Whole words as contexts (`C-c $')
+;;  `x'       `icicle-search-xml-element' - Search XML elements
+;;  `X'       `icicle-search-xml-element-text-node'- Search text nodes
 ;;
 ;;  There are many `icicle-search-*-bookmark' commands, for searching
-;;  within bookmarks of various types.  And for each of the
+;;  within bookmarks of various types.
+;;
+;;  And there are several `icicle-imenu-*' commands for navigating
+;;  among definitions of different kinds.  For each of the
 ;;  `icicle-menu*' commands there is a `-full' version that searches
-;;  the full text of a command etc. definition.
+;;  the full text of a definition.
+;;
+;;  When you use one of these full-definition search commands, the
+;;  completion candidates can be quite large, spanning several lines
+;;  each.  In this context it can be handy to hide, in buffer
+;;  `*Completions*', the lines that do not match your current
+;;  minibuffer input.  You can do this at any time by using command
+;;  `icicle-toggle-hiding-non-matching-lines', bound to `C-u C-x .',
+;;  to toggle user option `icicle-hide-non-matching-lines-flag'.
+;;
+;;  The commands that search zones of text that have a given character
+;;  (text or overlay) property value work with any kind of property.
+;;  They work specially for properties `face' (or `font-lock-face')
+;;  and `mumamo-major-mode'.  If you use library MuMaMo, which lets
+;;  you, in effect, use multiple major modes at the same time in the
+;;  same buffer, then you can use `M-s M-s c' and `M-s M-s O' to
+;;  search the zones corresponding to a given major mode.  See the doc
+;;  string for command `icicle-search-char-property' for more
+;;  information.
+;;
+;;  Command `icicle-search-thing' (`M-s M-s t') searches the text of
+;;  thing-at-point things.  It prompts you for the thing type: `sexp',
+;;  `sentence', `list', `string', `comment', etc.  It ignores comments
+;;  according to option `icicle-ignore-comments-flag'.  You can toggle
+;;  this ignoring using `C-M-;' at any time.  When comments are
+;;  ignored, the candidate things (e.g. sexps) to be searched are only
+;;  those outside of comments.
+;;
+;;(@* "How Icicles Search Works")
+;;  ** How Icicles Search Works **
 ;;
 ;;  All Icicles search commands operate in the same general way:
 ;;
@@ -1643,8 +1711,91 @@
 ;;  * Searching the text of a bookmark's buffer or region
 ;;
 ;;  Each is described in a little more detail below.  More generally,
-;;  however, the Bookmark+ doc is your friend.  See these sections of
-;;  the Bookmark+ doc:
+;;  however, the Bookmark+ doc is your friend.
+;;
+;;(@* "Tagging Files and Jumping to Them")
+;;  ** Tagging Files and Jumping to Them **
+;;
+;;  Bookmark+ lets you easily tag files with delicious-style tags of
+;;  your choice.  You need not visit the files to do this.  Icicles
+;;  makes this tagging even easier.  Tagging a file creates an
+;;  autofile bookmark that records the tags (metadata).  Tags are
+;;  generally strings, but you can also associate arbitrary Lisp data
+;;  with them.  Besides tagging files, you can add tags to any kind of
+;;  bookmark.
+;;
+;;  In Icicle mode, the Bookmark+ keys for tagging and untagging files
+;;  are bound to multi-commands `icicle-tag-a-file' and
+;;  `icicle-untag-a-file'.  In addition, all Icicles file commands let
+;;  you tag or untag files on the fly, during file-name completion,
+;;  using the keys `C-x a +' and `C-x a -' respectively (`a' for
+;;  autofile).
+;;
+;;  There are several Icicles multi-commands for jumping to tagged
+;;  files.  They are all on the Bookmark+ keymaps `bmkp-jump-map' and
+;;  `bmkp-jump-other-window-map': prefixes `C-x j a' and `C-x 4 j a'
+;;  (`a' for autofile).  The latter is for the `-other-window' version
+;;  of each command.
+;;
+;;(@* "`icicle-find-file-tagged'")
+;;  *** `icicle-find-file-tagged' ***
+;;
+;;  Command `icicle-find-file-tagged' (`C-x j t a a') matches tags as
+;;  part of a multi-completion candidate.  Each candidate is composed
+;;  of these fields: an absolute file name plus the file's tags, all
+;;  separated by `icicle-list-join-string' ("^G^J", by default).  As
+;;  always, you can type `C-M-j' to insert this separator into the
+;;  minibuffer.
+;;
+;;  For this command, by default `.' in your input matches any
+;;  character, including a newline.  As always, you can use `C-M-.'
+;;  to toggle this (so `.' does not match newline).
+;;
+;;  You can match your input against the file name or tags or both.
+;;  E.g., type:
+;;
+;;   `red S-TAB'                    to match files with the tag `red'
+;;   `red M-SPC green M-SPC blue'   to match files with tags `red',
+;;                                  `green', and `blue' (in any order)
+;;
+;;  That assumes that these tags do not also match any file names.
+;;
+;;  If you need to match against a particular field (e.g. the file
+;;  name or a specific tag position), then use the field separator.
+;;;;  Otherwise, just use progressive completion, as shown above.  
+;;
+;;  E.g., to match only tags and not the filename, start with `C-M-j'
+;;  to get past the file-name field.  To match both file name and
+;;  tags, type something to match the file name before the `C-M-j'.
+;;  E.g., type:
+;;
+;;   `2011 C-M-j red M-SPC blue'    to match files tagged `red' and
+;;                                  `blue' that have `2011' in their
+;;                                  names
+;;
+;;(@* "Jumping to Tagged Files (Other)")
+;;  *** Jumping to Tagged Files (Other) ***
+;;
+;;  The other Icicles commands for jumping to tagged files let you
+;;  input a set of tags to match, or regexps, one by one.  The
+;;  commands differ only in how this set of patterns is used.  There
+;;  are commands that use the intersection of the matches and commands
+;;  that use the union.
+;;
+;;  All of them work the same way: you enter a pattern to match
+;;  followed by `RET', ending with `RET RET'.  Intersection is
+;;  indicated by `*' in the key binding.  Union is indicated by `+'.
+;;  The regexp-matching commands have `%' in the key binding.  And
+;;  again, there is an `-other-window' version of each, on prefix key
+;;  `C-x 4 j t a' instead of `C-x j t a'.
+;;
+;;  `icicle-find-file-all-tags' (`*') - Match each tag exactly
+;;  `icicle-find-file-all-tags-regexp' (`% *') - Regexp-match each tag
+;;  `icicle-find-file-some-tags' (`+') - Match some tag (>= 1) exactly
+;;  `icicle-find-file-some-tags-regexp' (`% *') - Regexp-match some
+;;
+;;  See these sections of the Bookmark+ doc for more information about
+;;  bookmark tags:
 ;;
 ;;  * (@file :file-name "bookmark+-doc.el" :to "Bookmark Tags")
 ;;  * (@file :file-name "bookmark+-doc.el" :to "Autofile Bookmarks")
@@ -5675,7 +5826,8 @@
 ;;    library `filesets.el' (and enable filesets using
 ;;    `(filesets-init)').
 ;;
-;;  * User option `icicle-key-descriptions-use-<>-flag' determines
+;;  * User option `icicle-key-descriptions-use-<>-flag' (aka
+;;    `icicle-key-descriptions-use-angle-brackets-flag') determines
 ;;    whether angle brackets (`<', `>') are used by Icicles for named
 ;;    keys, such as function keys (`<f9>' vs `f9') and pseudo keys
 ;;    (`<mode-line>' vs `mode-line').  Non-`nil' means to use angle
@@ -5683,7 +5835,8 @@
 ;;    outside of Icicles, and it has no effect for versions of Emacs
 ;;    prior to 21, because they never use angle brackets.  The default
 ;;    value is `nil', because I think angle brackets reduce
-;;    readability.
+;;    readability.  See also my library `naked.el', which lets you use
+;;    the no-angle-brackets style also outside of Icicles.
 ;;
 ;;  * User option `icicle-keymaps-for-key-completion' is a list of
 ;;    variables that are bound to keymaps in which you want to bind
@@ -5711,7 +5864,9 @@
 ;;    text.  By default, it is `yank'.  Command
 ;;    `icicle-yank-maybe-completing' calls this function, except when
 ;;    it is called from the minibuffer or called with a negative
-;;    prefix argument.
+;;    prefix argument.  (`C-- C-y' lets you choose yanks (kills) to
+;;    insert using completion.  It is a multi-command.  You can of
+;;    course sort the candidates in various ways.)
 ;;
 ;;  * Non-`nil' user option `icicle-use-candidates-only-once-flag'
 ;;    means that acting on a candidate removes it from the set of
@@ -6125,6 +6280,9 @@
 ;;
 ;;  * `C-c ''          - `icicle-occur'
 ;;  * `C-c ='          - `icicle-imenu'
+;;  * `C-c ^'          - `icicle-search-keywords'
+;;  * `C-c "'          - `icicle-search-text-property'
+;;  * `C-c $'          - `icicle-search-word'
 ;;  * `C-c `'          - `icicle-search'
 ;;  * `C-c `'          - `icicle-compilation-search' (in *grep* etc.)
 ;;  * `C-c `'          - `icicle-comint-search' (in *shell* etc.)
@@ -6160,38 +6318,59 @@
 ;;  Standard Command                   Icicles Command
 ;;
 ;;  `abort-recursive-edit'.............`icicle-abort-recursive-edit'
-;;  `bookmark-jump'....................`icicle-bookmark'
+;;                                     (`C-]')
+;;  `bookmark-jump'....................`icicle-bookmark' (`C-x r b')
 ;;  `bookmark-jump-other-window'.......`icicle-bookmark-other-window'
+;;                                     (`C-x j j')
 ;;  `bookmark-set'.....................`icicle-bookmark-cmd'
+;;                                     (`C-x r m'')
 ;;  `dabbrev-completion'...............`icicle-dabbrev-completion'
-;;  `delete-window'....................`icicle-delete-window'
-;;  `dired'............................`icicle-dired'
+;;                                     (`C-M-/')
+;;  `delete-window'....................`icicle-delete-window'(`C-x 0')
+;;  `dired'............................`icicle-dired' (`C-x d')
 ;;  `dired-other-window'...............`icicle-dired-other-window'
+;;                                     (`C-x 4 d')
 ;;  `eval-expression'..................`icicle-pp-eval-expression'
+;;                                     (`M-:')
 ;;  `exchange-point-and-mark'.........`icicle-exchange-point-and-mark'
+;;                                     (`C-x C-x')
 ;;  `execute-extended-command'.......`icicle-execute-extended-command'
-;;  `find-file'........................`icicle-file'
+;;                                     (`M-x')
+;;  `find-file'........................`icicle-file' (`C-x C-f')
 ;;  `find-file-other-window'...........`icicle-file-other-window'
+;;                                     (`C-x 4 f')
 ;;  `find-file-read-only'..............`icicle-find-file-read-only'
+;;                                     (`C-x C-r')
 ;;  `find-file-read-only-other-window'.`...read-only-other-window'
-;;  `find-tag'.........................`icicle-find-tag'
+;;                                     (`C-x 4 r')
+;;  `find-tag'.........................`icicle-find-tag' (`M-.')
 ;;  `find-tag-other-window'.......`icicle-find-first-tag-other-window'
-;;  `Info-goto-node'...................`icicle-Info-goto-node'
-;;  `Info-index'.......................`icicle-Info-index'
-;;  `Info-menu'........................`icicle-Info-menu'
+;;                                     (`C-x 4 .')
+;;  `Info-goto-node'...................`icicle-Info-goto-node' (`g')
+;;  `Info-index'.......................`icicle-Info-index' (`i')
+;;  `Info-menu'........................`icicle-Info-menu' (`m')
 ;;  `insert-buffer'....................`icicle-insert-buffer'
-;;  `kill-buffer'......................`icicle-kill-buffer'
+;;                                     (`C-S-insert')
+;;  `kill-buffer'......................`icicle-kill-buffer' (`C-x k')
 ;;  `lisp-complete-symbol'.............`icicle-lisp-complete-symbol'
-;;  `other-window'.....................`icicle-other-window-or-frame'
+;;                                     (`M-TAB')
 ;;  `other-frame'......................`icicle-select-frame'
+;;                                     (`C-x 5 o')
+;;  `other-window'.....................`icicle-other-window-or-frame'
+;;                                     (`C-x o')
 ;;  `pop-global-mark'...`icicle-goto-global-marker-or-pop-global-mark'
-;;  `pop-tag-mark'.....................`icicle-pop-tag-mark'
+;;                                     (`C-x C-SPC')
+;;  `pop-tag-mark'.....................`icicle-pop-tag-mark' (`M-*')
 ;;  `pp-eval-expression'...............`icicle-pp-eval-expression'
+;;                                     (`M-:')
 ;;  `set-mark-command'........`icicle-goto-marker-or-set-mark-command'
-;;  `switch-to-buffer'.................`icicle-buffer'
+;;                                     (`C-SPC')
+;;  `switch-to-buffer'.................`icicle-buffer' (`C-x b')
 ;;  `switch-to-buffer-other-window'....`icicle-buffer-other-window'
-;;  `where-is'.........................`icicle-where-is'
+;;                                     (`C-x 4 b')
+;;  `where-is'.........................`icicle-where-is' (`C-h w')
 ;;  `yank'.............................`icicle-yank-maybe-completing'
+;;                                     (`C-y')
 ;;
 ;;  Actually, by default, Icicles binds `icicle-yank-maybe-completing'
 ;;  to whatever the value of option `icicle-yank-function' is.  By
@@ -6331,8 +6510,10 @@
 ;;  `icicle-search-xml-element-text-node' - Search XML text nodes
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to `t'
+;;  `icicle-sexp-list'    - Choose a list of past or new sexps
 ;;  `icicle-show-faces'   - Show invisible faces you choose
 ;;  `icicle-show-only-faces' - Show some invisible faces; hide others
+;;  `icicle-string-list' - Choose a list of past or new strings
 ;;  `icicle-toggle-option' - Toggle the value of a binary option
 ;;  `icicle-vardoc'       - Display the doc of a variable
 ;;  `toggle' (alias)      - Toggle the value of a binary option
@@ -6763,6 +6944,7 @@
 ;;    `C-.'     - `icicle-toggle-search-cleanup' (search)
 ;;    `C-M-.'   - `icicle-toggle-dot'
 ;;    `C-x .'   - `icicle-toggle-hiding-common-match'
+;;    `C-u C-x .' - `icicle-toggle-hiding-non-matching-lines'
 ;;    `C-;'     - `icicle-toggle-expand-to-common-match'
 ;;    `M-;'     - `icicle-toggle-search-replace-common-match'
 ;;    `C-M-;'   - `icicle-toggle-icicle-toggle-ignoring-comments'

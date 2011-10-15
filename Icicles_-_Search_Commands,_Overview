@@ -30,7 +30,7 @@ This section provides an overview of '''Icicles''' search.
 
 
 [:Introduction]
-=== Introduction: On Beyond Occur... ===
+== Introduction: On Beyond Occur... ==
 
 You've no doubt used standard Emacs command `occur' (OccurMode).  It finds all
 lines in a buffer that match a [[regexp]] that you enter.  It displays
@@ -117,90 +117,188 @@ Here is a screenshot that shows some of the highlighting features of `icicle-sea
 
 
 
-
-[:HowIciclesSearchWorks]
-=== How Icicles Search Works ===
-
-There are several '''Icicles''' search commands, some of which are bound to keys in ''Icicle'' mode:
-
+[:icicle-comint-search]
+[:icicle-compilation-search]
+[:icicle-imenu]
+[:icicle-imenu-full]
+[:icicle-imenu-command]
+[:icicle-imenu-command-full]
+[:icicle-imenu-face]
+[:icicle-imenu-face-full]
+[:icicle-imenu-key-explicit-map]
+[:icicle-imenu-key-explicit-map-full]
+[:icicle-imenu-key-implicit-map]
+[:icicle-imenu-key-implicit-map-full]
+[:icicle-imenu-macro]
+[:icicle-imenu-macro-full]
+[:icicle-imenu-non-interactive-function]
+[:icicle-imenu-non-interactive-function-full]
+[:icicle-imenu-user-option]
+[:icicle-imenu-user-option-full]
 [:icicle-occur]
 [:icicle-search]
 [:icicle-search-buffer]
 [:icicle-search-buff-menu-marked]
-[:icicle-search-ibuffer-marked]
-[:icicle-search-defs]
-[:icicle-search-dired-marked]
 [:icicle-search-file]
+[:icicle-search-bookmark]
 [:icicle-search-bookmarks-together]
 [:icicle-search-all-tags-bookmark]
 [:icicle-search-all-tags-regexp-bookmark]
 [:icicle-search-autofile-bookmark]
 [:icicle-search-bookmark-list-bookmark]
+[:icicle-search-bookmark-list-marked]
+[:icicle-search-buff-menu-marked]
+[:icicle-search-char-property]
+[:icicle-search-compilation-search]
+[:icicle-search-defs]
+[:icicle-search-defs-full]
 [:icicle-search-desktop-bookmark]
 [:icicle-search-dired-bookmark]
+[:icicle-search-dired-marked]
 [:icicle-search-file-bookmark]
 [:icicle-search-gnus-bookmark]
+[:icicle-search-ibuffer-marked]
 [:icicle-search-info-bookmark]
+[:icicle-search-keywords]
 [:icicle-search-lines]
 [:icicle-search-local-file-bookmark]
 [:icicle-search-man-bookmark]
 [:icicle-search-non-file-bookmark]
+[:icicle-search-overlay-property]
+[:icicle-search-pages]
+[:icicle-search-paragraphs]
 [:icicle-search-region-bookmark]
 [:icicle-search-remote-file-bookmark]
+[:icicle-search-sentences]
 [:icicle-search-some-tags-bookmark]
 [:icicle-search-some-tags-regexp-bookmark]
 [:icicle-search-specific-buffers-bookmark]
 [:icicle-search-specific-files-bookmark]
+[:icicle-search-text-property]
+[:icicle-search-thing]
 [:icicle-search-this-buffer-bookmark]
 [:icicle-search-url-bookmark]
 [:icicle-search-w3m-bookmark]
 [:icicle-search-word]
-[:icicle-search-keywords]
-[:icicle-search-compilation-search]
-[:icicle-search-text-property]
-[:icicle-search-overlay-property]
-[:icicle-search-char-property]
-[:icicle-search-pages]
-[:icicle-search-paragraphs]
-[:icicle-search-sentences]
-[:icicle-search-thing]
 [:icicle-search-xml-element]
 [:icicle-search-xml-element-text-node]
-[:icicle-imenu]
-[:icicle-imenu-command]
-[:icicle-imenu-non-interactive-function]
-[:icicle-comint-command]
+[:icicle-tags-search]
 
-* '''`##C-c '##'''' -- '''`icicle-occur'''' (aka '''`icicle-search-lines'''') -- An `occur' with [[Icicles - Icompletion|incremental completion]].
-* '''`##C-c `##'''' -- '''`icicle-search'''' -- Seach buffer areas that match a regexp.
-* '''`icicle-search-buffer''''  ('''`C-1'''') -- Search selected buffers.
-* '''`icicle-search-buff-menu-marked'''' -- Search BufferMenu marked buffers.
-* '''`icicle-search-ibuffer-marked''''   -- Search [[Ibuffer]] marked buffers.
-* '''`icicle-search-dired-marked'''' -- Search [[Dired]] marked files.
-* '''`icicle-search-file'''' ('''`C--'''') -- Search selected files.
-* '''`icicle-search-bookmarks-together'''' ('''`C-u''''), '''`icicle-search-bookmark'''' -- Search bookmarks.
-* `icicle-search-*-bookmark' -- Search bookmarks of a given type (several commands).
-* '''`##C-c $##'''' -- '''`icicle-search-word'''' -- Whole words as search contexts.
-* '''`##C-c ^##'''' -- '''`icicle-search-keywords'''' -- Search with regexp keywords.
-* '''`##C-c `##'''' -- '''`icicle-compilation-search'''' -- Search compilation hits (e.g. `grep' hits).
-* '''`##C-c "##'''' -- '''`icicle-search-text-property'''' -- Search text having a given text property value.
-* '''`icicle-search-overlay-property'''' -- Search text having a given overlay property value.
-* '''`icicle-search-char-property'''' -- Search text having a given text or overlay property value.
-* '''`icicle-search-pages'''' -- Search Emacs pages (##^L##/form-feed delimited) as contexts.
-* '''`icicle-search-paragraphs'''' -- Search Emacs paragraphs as contexts.
-* '''`icicle-search-sentences'''' -- Search sentences as contexts.
-* '''`icicle-search-thing'''' -- Search ThingAtPoint things as contexts, optionally ignoring comments.
-* '''`icicle-search-xml-element'''' -- Search the contents of XML elements as contexts.
-* '''`icicle-search-xml-element-text-node'''' -- Search the text() nodes of XML elements as contexts.
-* '''`##C-c =##'''' -- '''`icicle-imenu'''' (aka '''`icicle-search-defs'''') -- Navigate among [[ImenuMode|Imenu]] entries.
-* '''`icicle-imenu-command'''' -- Navigate among Emacs command definitions.
-* '''`icicle-imenu-non-interactive-function'''' -- Navigate among Emacs ''non''-interactive function definitions.
-* '''`C-c TAB'''' -- '''`icicle-comint-command'''' -- Retrieve a previously used shell command.
+[:IciclesSearchKeyBindings]
+== Icicles Search Key Bindings ==
+
+There are many '''Icicles''' search commands, most of which are bound to
+keys when you are in ''Icicle'' minor mode.  They are all placed on
+the same prefix key, '''`M-s M-s''''.  Starting with Emacs 23, a single
+`M-s' is the standard Emacs prefix key for search.  Just hit the
+key twice for '''Icicles''' search.
+
+The most general '''Icicles''' search command is '''`icicle-search'''', which
+is bound to '''`M-s M-s M-s''''.  It is also bound to '''`C-c `''''.  (In some
+modes these keys are bound to a mode-specific form of '''Icicles'''
+search.)
+
+The '''Icicles''' search keys are generally mnemonic.  Some of the
+commands also have an alternative key binding (in parentheses in
+the list below).
+
+Remember too that you can also invoke some of these same commands
+using a prefix arg with the generic `icicle-search' keys.  For
+example, you can invoke the commands bound to `M-s M-s m' using a
+zero prefix arg with `icicle-search' -- e.g., `C-0 M-s M-s M-s'.
+
+Here are the suffix keys on the `M-s M-s' prefix key:
+
+* '''`M-s'''' -- `icicle-search'   -- Seach buffer areas that match regexp ('''`##C-c `##'''')
+* '''`M-s'''' -- `icicle-comint-search' -- Retrieve a previous shell input ('''`##C-c `##'''')
+* '''`M-s'''' -- `icicle-compilation-search' -- Search compilation hits -- e.g `grep' hits ('''`##C-c `##'''')
+* '''`##,##'''' -- `icicle-tags-search' -- Search files listed in TAGS table
+* '''`b'''' -- `icicle-search-buffer' ('''`##C-1##'''') -- Search selected buffers
+* '''`c'''' -- `icicle-search-char-property' -- Search text having a given text or overlay property
+* '''`d'''' -- `icicle-search-defs' (aka `icicle-imenu') ('''`##C-c =##'''')
+* '''`D'''' -- `icicle-search-defs-full' (aka `icicle-imenu-full') full definitions as completion candidates
+* '''`f'''' -- `icicle-search-file' ('''`C--'''') -- Search selected files
+* '''`i'''' -- `icicle-imenu' (aka `icicle-search-defs') - Navigate among [[ImenuMode|Imenu]] entries ('''`##C-c =##'''')
+* '''`I'''' -- `icicle-imenu-full' (aka `icicle-search-defs-full') full definitions as completion candidates
+**           `icicle-imenu-command' -- [[command]] definitions
+**           `icicle-imenu-face' -- [[face]] definitions
+**           `icicle-imenu-macro' -- [[macro]] definitions
+**           `icicle-imenu-non-interactive-function' -- non-interactive function definitions
+**           `icicle-imenu-user-option' -- user [[option]] definitions
+**          `icicle-imenu-key-explicit-map' -- [[key]] definitions
+**           `icicle-imenu-key-implicit-map' -- key definitions
+* '''`j'''' -- `icicle-search-bookmark'  -- Search bookmarks
+**           `icicle-search-*-bookmark'   -- Bookmarks of a given type
+* '''`J'''' -- `icicle-search-bookmarks-together' ('''`C-u''''),
+* '''`k'''' -- `icicle-search-keywords' -- Search with [[regexp]] keywords ('''`##C-c ^##'''')
+* '''`l'''' -- `icicle-search-lines' (aka `icicle-occur') ('''`##C-c '##'''')
+* '''`C-l'''' -- `icicle-search-pages' -- Search Emacs pages  (##^L##/form-feed delimited) as contexts
+* '''`m'''' -- `icicle-search-bookmark-list-marked' -- Marked bookmarks
+* '''`m'''' -- `icicle-search-buff-menu-marked' -- Search BufferMenu marked buffers
+* '''`m'''' -- `icicle-search-ibuffer-marked' -- Search [[Ibuffer]] marked buffers
+* '''`m'''' -- `icicle-search-dired-marked' -- Search [[Dired]] marked files
+* '''`o'''' -- `icicle-occur' (aka `icicle-search-lines') -- An `occur' with [[Icicles - Icompletion|incremental completion]] ('''`##C-c '##'''')
+* '''`O'''' -- `icicle-search-overlay-property' -- Search text having a given [[overlay]] property
+* '''`p'''' -- `icicle-search-paragraphs' -- Search Emacs paragraphs as contexts
+* '''`s'''' -- `icicle-search-sentences' -- Search sentences as contexts
+* '''`t'''' -- `icicle-search-thing' -- Search ThingAtPoint things as contexts, optionally ignoring comments
+* '''`T'''' -- `icicle-search-text-property' -- Search text zones having a given text property ('''`##C-c "##'''')
+* '''`w'''' -- `icicle-search-word' -- Whole words as search contexts ('''`##C-c $##'''')
+* '''`x'''' -- `icicle-search-xml-element' -- Search the contents of XML elements as contexts
+* '''`X'''' -- `icicle-search-xml-element-text-node' -- Search the text() nodes of XML elements as contexts
+
 
 There are many `icicle-search-*-bookmark' commands, for searching
-within bookmarks of various types.  And for each of the
+within bookmarks of various types.
+
+And there are several `icicle-imenu-*' commands for navigating
+among definitions of different kinds.  For each of the
 `icicle-menu*' commands there is a '''`-full'''' version that searches
-the full text of a command etc. definition.
+the full text of a definition.
+
+When you use one of these full-definition search commands, the
+completion candidates can be quite large, spanning several lines
+each.  In this context it can be handy to hide, in buffer
+`*Completions*', the lines that do not match your current
+minibuffer input.  You can do this at any time by using command
+'''`icicle-toggle-hiding-non-matching-lines'''', bound to '''`##C-u C-x .##'''',
+to toggle [[user option]] 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-hide-non-matching-lines-flag|icicle-hide-non-matching-lines-flag]]</tt>''''.
+
+The commands that search zones of text that have a given character
+(text or [[overlay]]) property value work with any kind of property.
+They work specially for properties `face' (or `font-lock-face')
+and `mumamo-major-mode'.  If you use library MuMaMo, which lets
+you, in effect, use multiple major modes at the same time in the
+same buffer, then you can use `M-s M-s c' and `M-s M-s O' to
+search the zones corresponding to a given major mode.  See the doc
+string for command '''`icicle-search-char-property'''' for more
+information.
+
+Command '''`icicle-search-thing'''' (`M-s M-s t') searches the text of
+ThingAtPoint things.  It prompts you for the thing type: [[sexp|`sexp']],
+`sentence', [[list|`list']], `string', `comment', etc.  It ignores comments
+according to option '''`<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>''''.  You can toggle
+this ignoring using '''`C-M-;'''' at any time.  When comments are
+ignored, the candidate things (e.g. sexps) to be searched are only
+those outside of comments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[:HowIciclesSearchWorks]
+== How Icicles Search Works ==
+
 
 All '''Icicles''' search commands operate in the same general way:
 
@@ -341,6 +439,8 @@ reading this doc in file <tt>[[icicles-doc2.el]]</tt>, then just use
 That narrows things down to four lines that you can then navigate
 among.  Progressive completion gives '''Icicles''' search a power boost.
 
+[:icicle-search-keywords]
+[:icicle-search-word]
 Like `icicle-occur' (`##C-c '##'), commands '''`icicle-search-word'''' ('''`##C-c $##'''') and
 '''`icicle-search-keywords'''' ('''`##C-c ^##'''') are variants of `icicle-search'
 that differ only in the regexp used.  Each accepts your input and
@@ -376,7 +476,7 @@ using, say, `##C-s C-w C-w...##'.  See [[Icicles - Isearch Enhancements#IciclesS
 
 
 [:SearchOutsideContexts]
-=== Search Outside the Defined Search Contexts ===
+== Search Outside the Defined Search Contexts ==
 
 For each of the predefined '''Icicles''' search commands, including for
 `icicle-search' itself, you can alternatively choose to search,
@@ -408,7 +508,7 @@ the current one.
 
 
 [:SearchMultipleBuffersFilesAndBookmarks]
-=== Search Multiple Buffers, Files, and Bookmarks ===
+== Search Multiple Buffers, Files, and Bookmarks ==
 
 If you provide a [[prefix argument]] to most '''Icicles''' search functions,
 then you can search multiple buffers, files, or bookmarks.
@@ -453,8 +553,12 @@ of these commands.  These commands are also available in the
 
 
 
+
+
+
+
 [:UserOptions]
-=== User Options for Icicles Searching ===
+== User Options for Icicles Searching ==
 
 You can [[Customize]] the following [[user option]]s, to control search
 and replacement behavior.
@@ -597,7 +701,7 @@ regexp matches.
 
 
 [:UsingRegexps]
-=== Using Regexps With Icicles Search ===
+== Using Regexps With Icicles Search ==
 
 You can use '''Icicles''' search to find text entities of a certain
 kind -- sentences, paragraphs, file names, URLs, and so on.  A

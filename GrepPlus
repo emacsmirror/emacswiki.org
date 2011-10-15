@@ -1,4 +1,4 @@
-This page is about the libraries DrewAdams has written to enhance the standard Emacs <code>grep</code> command (GrepMode).
+This page is about '''[::Grep+]''', which enhances the standard Emacs <code>grep</code> command (GrepMode).
 
 Since Emacs <code>grep</code> is implemented very differently in Emacs 22 from prior versions, there are two corresponding sets of enhancement libraries:
 

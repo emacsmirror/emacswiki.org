@@ -1036,12 +1036,6 @@ The available keys at any level include the following important keys, which mean
 `M-x' is treated as `ESC-x', so complete first `##ESC  =  ...##', then `##x  =  icicle-execute-extended-command##'.
 
 * `##M-:##' -- Evaluate any EmacsLisp expression.
-If command remapping is available (Emacs 22 or later), and if
-option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' remaps
-`eval-expression' to `icicle-pp-eval-expression' (which it does,
-by default), then complete first `##remapped  =  ...##', then
-`##eval-expression  =  icicle-pp-eval-expression##'.  Otherwise,
-complete first `##ESC  =  ...##', then `##:  =  eval-expression##'.
 In '''Icicles''', `M-:' gives you a quick pop-up mode for evaluating a Lisp sexp.  Most of the normal EmacsLisp mode bindings are in
 effect, except that `RET' evaluates the minibuffer contents and
 pretty-prints the result.  You can also use it with a [[prefix argument]]

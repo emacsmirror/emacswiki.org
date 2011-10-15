@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sat Oct  8 09:27:35 2011 (-0700)
+;; Last-Updated: Fri Oct 14 14:44:58 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1051
+;;     Update #: 1055
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -105,6 +105,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/10/14 dadams
+;;     describe-mode: Call help-documentation while in mode's buffer, in case no \\<...>.
 ;; 2011/10/08 dadams
 ;;     Info-make-manuals-xref: Do nothing if OBJECT is not a string or a symbol (e.g. is a keymap).
 ;; 2011/10/07 dadams
@@ -726,9 +728,10 @@ whose documentation describes the minor mode."
                 (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
                                 (help-xref-button 1 'help-function-def mode file-name)))))
           (princ ":\n")
-          (let ((maj  major-mode))
+          (let* ((maj      major-mode)
+                 (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS)))
             (with-current-buffer standard-output
-              (insert (help-documentation maj nil 'ADD-HELP-BUTTONS))
+              (insert maj-doc)
               (Info-make-manuals-xref maj t)))))) ; Link to manuals.
     ;; For the sake of IELM and maybe others
     nil))

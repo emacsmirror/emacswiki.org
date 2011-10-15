@@ -503,11 +503,11 @@ The current property valuecan be accessed with the form:\n
            ,(concat
              "Common Lisp Quick Reference provides short descriptions of the ANSI standard.\n"
              "   Includes a comprehensive index of CL symbols. Licensed under GFDL v 1.2.\n"
-             "   :COURTESY Bert Burgemeister\n" ;; trebb@users.berlios.de. 
-             "   :SEE-ALSO (URL `http://clqr.berlios.de')             <- Project Homepage\n"
+             "   :COURTESY Bert Burgemeister\n" ;; trebbu@googlemail.com. 
+             "   :SEE-ALSO (URL `http://clqr.boundp.org')             <- Project Homepage\n"
              "   :SEE-ALSO (URL `http://repo.or.cz/r/clqr.git')       <- GIT repo\n"
-             "   :SEE-ALSO (URL `http://clqr.berlios.de/clqr.tar.gz') <- LaTeX Sources\n")
-           "http://clqr.berlios.de/clqr-letter-consec.pdf")
+             "   :SEE-ALSO (URL `http://clqr.boundp.org/clqr.tar.gz') <- LaTeX Sources\n")
+           "http://clqr.boundp.org/clqr-letter-consec.pdf")
           (l1sp.org
            ,(concat
              "L1sp.org is a redirect service for Common Lisp documentation.\n"

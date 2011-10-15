@@ -300,6 +300,65 @@ I have too many buffers to reasonably put them all into tabbar at the same time,
 
 Certain buffers get put into the #misc group; everything under <code>~/.emacs.d/</code> gets put into one group, and everything else gets put into a group with its directory, so that all files in that directory (and associated buffers like compilation) get put together. For multi-directory projects I plan to add special cases like the one for <code>.emacs.d</code> to group buffers under the parent directory. --AmitPatel
 
+==Integrating tabbar with eproject.el==
+
+After some tests, here is my take for integrating tabbar groups with eproject.el:
+
+  (defun my-tabbar-buffer-groups ()
+    "Return the list of group names BUFFER belongs to.
+    Return only one group for each buffer."
+    (let ((projname (my-buffer-eproject-name)))
+      (cond
+       ((or (get-buffer-process (current-buffer)) (memq major-mode '(comint-mode compilation-mode))) '("Term"))
+       ((string-equal "*" (substring (buffer-name) 0 1)) '("Misc"))
+       (projname (list projname))
+       ((memq major-mode '(emacs-lisp-mode python-mode emacs-lisp-mode c-mode c++-mode makefile-mode lua-mode vala-mode)) '("Coding"))
+       ((memq major-mode '(javascript-mode js-mode nxhtml-mode html-mode css-mode)) '("HTML"))
+       ((memq major-mode '(org-mode calendar-mode diary-mode)) '("Org"))
+       ((memq major-mode '(dired-mode)) '("Dir"))
+       (t '("Main")))))
+
+  (defun my-buffer-eproject-name ()
+    (when eproject-root
+      (let ((lst (eproject-projects))
+            (projectname))
+        (while lst
+          (let ((proj (pop lst)))
+            (when (string= eproject-root (cdr proj))
+              (setq projectname (car proj))
+              (setq lst nil))))
+      projectname)))
+
+or even better:
+
+  (defun my-buffer-eproject-name ()
+    (when eproject-root
+      (catch 'loop
+        (let ((lst (eproject-projects)))
+          (while lst
+            (let ((proj (pop lst)))
+              (if (string= eproject-root (cdr proj))
+                (throw 'loop (car proj)))))))))
+
+
+An extra very useful feature is to show tabgroup in modeline:
+
+  (setq-default mode-line-format
+    (list
+     "  "
+     '(:eval (when (tabbar-mode-on-p)
+               (concat (propertize (car (funcall tabbar-buffer-groups-function)) 'face 'font-lock-string-face)
+                        " > ")))
+     '(:eval (propertize "%b" 'face 'font-lock-function-name-face
+     [...]
+  ))
+
+This will show something like:
+
+  Projectname > file.ext  (37, 1) [mode]...
+
+-- InigoSerna
+
 ==Questions and Answers==
 
 Where is it on the GNU emacs CVS site? I was unable to find it (but have to confess to not being interested in spending all afternoon looking for it...).
@@ -366,5 +425,9 @@ Aquamacs tabbar work with standard emacs.Just check it out.
 
 Has anyone else managed to get the aquamacs tabbar mode working with gnu emacs, and could provide further instructions? Thanks - Josh
 
+Aquamacs tabbar and even the fork doesn't work with the recent bzr emacs. Need help!
+- Emmett
+
+----
 CategoryModes
 

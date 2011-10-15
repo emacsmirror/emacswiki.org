@@ -19,12 +19,6 @@ they do so in very different ways.
 
 * '''`C-backspace'''' (`icicle-up-directory') to navigate up the directory hierarchy.  It removes the last directory component (and any partial file name) from your minibuffer input.  (For Emacs versions before Emacs 22, this feature is available only for completion of absolute file names.)
 
-* '''`C-x m'''' (`icicle-bookmark-file-other-window') to visit a
-bookmarked file or directory.  This is available only if you use
-library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-command]], so you can
-actually visit any number of file bookmarks.  When finished, you
-can continue with non-bookmark file-name completion.
-
 * '''`##C-c +##'''' (`icicle-make-directory') to create a directory on the
 fly.
 
@@ -34,6 +28,17 @@ fly.
 the currently matching file names.  That is, it opens a special
 Dired buffer that contains ''only'' the matching files.  You are
 prompted for the Dired buffer name.  See [[Icicles - More About Multi-Commands#AlternativeActions|Alternative Actions]].
+
+* '''`C-x m'''' (`icicle-bookmark-file-other-window') to visit a
+bookmarked file or directory.  This is available only if you use
+library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-command]], so you can
+actually visit any number of file bookmarks.  When finished, you
+can continue with non-bookmark file-name completion.
+
+* '''`##C-x a +##'''' or '''`C-x a -'''' to add or remove tags for a file.  These
+are [[http://delicious.com|delicious]]-style tags -- any labels you like.  You need
+library '''[[Bookmark+]]''' for this feature.  See also
+[[Icicles - Bookmark Enhancements#TaggingFiles|tagging files]].
 
 
 In many cases for '''Icicles''' multi-commands that read a file name,

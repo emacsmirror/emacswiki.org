@@ -1,4 +1,4 @@
-<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode for coloring parentheses, brackets, and braces according to their nesting depth. It gives a visual reference for which delimiters match, and what statements are at the same depth - if several statements are at the same level, they will be the same color.
+<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode for highlighting parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This gives a visual reference for which delimiters match in your code, and for what statements are at each level.
 
 Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
 
@@ -65,11 +65,11 @@ You can *disable highlighting* of specific delimiter characters through the cust
 
 
 == Other Information ==
-Rainbow-delimiters comes with two *default color schemes*, for light and dark backgrounds. Emacs chooses which to used based on the value of variable 'frame-background-mode' (see step 4 above).
+Rainbow-delimiters comes with two *default color schemes*, for light and dark backgrounds. Emacs chooses which to used based on the value of variable 'frame-background-mode'.
 
 The light/dark color schemes differ only in their brightness level.
 
-[http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot using a custom color theme. If you haven't looked at emacs-fu, it's an exceptional place for all sorts of useful tips on improving your emacs experience.
+[http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot using a custom color theme.
 
 == Contributing ==
 If you want to add a feature to rainbow-delimiters.el, the current development version will always be at github under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Having the development progress on github should make it easy to integrate patches. Please email me (see the top of the file) before starting work on anything big to make sure we don't duplicate effort.
@@ -79,31 +79,5 @@ If you want to add a feature to rainbow-delimiters.el, the current development v
 
 
 </pre>
-----
-[new]
-I think you should change one of the default colors - the dark green. I'm using(maintaining) zenburn(for which you mentioned the default colors are optimized) and I noticed that the dark green
-braces don't stand out at all against that particular background making them very hard to discern.
-
-Is there any way to restore the behaviour mentioned in the changelog of having independent depths for each paren type?  In C, most code is within a {} function block which means everything starts at depth 2.  Conditional expressions wrapped in () are also coloured differently depending on whether they're inside a for loop or other code block, but it would be nice if the colour scheme was more consistent (i.e. outer bracket is always the same colour.)  This would work if the depth was tracked independently for each character type.
-
-Is there also a way to add or remove tracking of particular paren types?  I'm not so interested in having {} coloured but very keen on having () highlighted.
-[new]
-Nice to hear from the maintainer of such a popular color scheme :) I used zenburn's colors for the parens in an earlier version but have since hand-picked delimiter colors to contrast with one another. I'll see what I can do about making the green contrast well with the zenburn bg, but don't know if it can be done since rainbow-delimiters is using green as a paren color and is also trying to make the color scheme subtle+pleasant for dark gray/black and light (white) bgcolors. You are more than welcome to suggest a shade of green to use. You can also customize the color yourself of course, but ideally the default colors would work well for people using zenburn - it's widely used and well-liked.
-
-I designed and tested the mode with Clojure in mind, so seeing it get use with C means I need to tweak some things to fit. I like the idea of having a toggle in the customize interface for independent depth tracking. I also like being able to pick which delimiters are colorized and which aren't.
-
-When working in Clojure, the truth is coloring each type of delimiter independently turned out to just be very confusing. It sounded good before I actually saw it in practice. However in C it would probably work. There will have to be a fairly significant change to allow both options - when I stopped tracking each depth independently and changed to a single 'depth' variable, a series of assumptions in the code changed along with that. Making this change isn't too big a deal but I won't get to it right away. 
-
-Thanks for the heads up; the changes to support C-like languages should be there in the next release. --JeremyRayman
-
-[new]
-I am seeing the following behaviour:
-Rainbow-delimiters works fine, as long as I call it specifically using M-x rainbow-delimiters-mode. If its called by hook when entering clojure mode it highlights [] correctly but ignores () until after I type a delimiter of some kind. It then correctly highlights everything after the point where I inserted the new delimiter. Any () before that point stay black. 
-
-Also any nesting deeper than 12 levels doesn't get coloured. Is this expected behaviour? Could it be made to cycle indefinitely through the colours?
-[new]
-There are only 12 delim faces; I just picked an arbitrary depth to go to. Cycling through the colors is probably a good idea. I'll go ahead and do that.
-
-I assume you have the latest version of the mode (and have re-byte-compiled it). Since I can't reproduce it and haven't heard anyone else mention it, I'd need to know your emacs version and a file that shows this problem if it's not happening to all files where rainbow-delimiters is started by a hook. --JeremyRayman
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

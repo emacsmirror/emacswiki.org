@@ -48,6 +48,8 @@ The most notable emulation of vi is '''ViperMode'''. It does an excellent job of
 
 [[Vimpulse]] extends !ViperMode with Vim features like text objects and visual selection.
 
+'''[[Evil]]''' is the latest and greatest successor of [[Vimpulse]].
+
 ''If you want basic vi emulation'', you might find that '''vip''' provides a nice togglable vi emulation without the complexity of Viper. Try ##(load "vip")## in your InitFile and toggle it with `C-z'. (Last time I checked, vip was not bundled with XEmacs.)
 
 [new]

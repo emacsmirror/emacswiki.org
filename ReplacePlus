@@ -1,4 +1,8 @@
-This page is about library <tt>[[replace+.el]]</tt>, written by DrewAdams. It extends functionalities in the standard Emacs library ##replace.el##, including commands `occur' and `query-replace'.
+This page is about library '''[::Replace+]''', <tt>[[replace+.el]]</tt>. It extends functionalities in the standard Emacs library ##replace.el##, including commands `occur' and `query-replace'.
+
+
+
+
 
 [:QueryReplaceExtensions]
 == Query-Replace Extensions ==

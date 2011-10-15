@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 12 06:10:58 2011 (-0700)
+;; Last-Updated: Fri Oct 14 15:42:32 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7450
+;;     Update #: 7454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2598,6 +2598,7 @@
 ;; ****************************************************************************************************
 ;;
 ;; 2011/10/12 dadams
+;;     Moved the Miscellaneous stuff to icicles.el: indent & font-lock for macros etc.
 ;;     eval-when-compile require cl.el, even for later Emacs versions (incf).
 ;; 2011/10/10 dadams
 ;;     Removed all autoload cookies.
@@ -5691,6 +5692,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/10/14 dadams
+;;     icicle-search-map: Bound x and X to the XML-element search commands.
 ;; 2011/10/08 dadams
 ;;     eval-when-compile icicles-mac.el.
 ;;     icicle-read-expression-map, icicle-search-map, icicle-universal-argument-map: Use icicle-kbd.
@@ -6046,6 +6049,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2011/10/12 dadams
+;;     Moved the Miscellaneous stuff here from icicles-mac.el: indent & font-lock for macros etc.
 ;; 2011/10/10 dadams
 ;;     Moved here from icicles-mac.el: icicle-byte-compile-eval-after-load-flag.
 ;;     Removed require of icicles-mac.el.

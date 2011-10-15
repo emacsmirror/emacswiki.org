@@ -1,13 +1,13 @@
 ;;; anything-etags+.el ---Another Etags anything.el interface
-;; Time-stamp: <Joseph 2011-09-29 03:01:39 星期四>
 
-;; Filename: anything-etags+.el
 ;; Description: Another Etags anything.el interface
+;; Filename: anything-etags+.el
+;; Created: 2011-02-23
+;; Last Updated: Joseph 2011-10-15 00:07:13 星期六
+;; Version: 0.1.4
 ;; Author: Joseph <jixiuf@gmail.com>
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
-;; Created: 2011-02-23
-;; Version: 0.1.3
 ;; URL:http://www.emacswiki.org/emacs/anything-etags+.el
 ;; screencast:http://screencast-repos.googlecode.com/files/emacs-anything-etags-puls.mp4.bz2
 ;; Keywords: anything, etags
@@ -45,6 +45,8 @@
 ;; This package use `anything' as a interface to find tag with Etags.
 ;;
 ;;  it support multiple tag files.
+;;  and it can recursively searches each parent directory for a file named
+;;  'TAGS'. so you needn't add this special to `tags-table-list'
 ;;
 ;;  if you use GNU/Emacs ,you can set `tags-table-list' like this.
 ;;  (setq tags-table-list '("/java/tags/TAGS"
@@ -153,7 +155,7 @@
 ;;    default = t
 ;;  `anything-etags+-highlight-delay'
 ;;    *How long to highlight the tag.
-;;    default = 1.0
+;;    default = 0.2
 
 ;;; Code:
 
@@ -186,7 +188,7 @@
   :group 'anything-etags+-
   :type 'boolean)
 
-(defcustom anything-etags+-highlight-delay 1.0
+(defcustom anything-etags+-highlight-delay 0.2
   "*How long to highlight the tag.
   (borrowed from etags-select.el)"
   :group 'anything-etags+-
@@ -257,8 +259,10 @@ then the cached candidates can be reused ,needn't find from the tag file.")
 (defvar anything-etags+-untransformed-anything-pattern
   "this variable is seted in func of transformed-pattern .and is used when
 getting candidates.")
+
 ;;; Functions
 (defun anything-etags+-match-string (num &optional string))
+(defun anything-etags+-file-truename (filename))
 
 (if (string-match "XEmacs" emacs-version)
       (fset 'anything-etags+-match-string 'match-string)
@@ -267,6 +271,10 @@ getting candidates.")
       (unless (fboundp 'symlink-expand-file-name)
         (fset 'symlink-expand-file-name 'file-truename))))
 
+(if (fboundp 'symlink-expand-file-name)
+    (fset 'anything-etags+-file-truename 'symlink-expand-file-name)
+  (fset 'anything-etags+-file-truename 'file-truename)
+  )
 
 (defun anything-etags+-case-fold-search ()
   "Get case-fold search."
@@ -384,20 +392,36 @@ hits the start of file."
   (save-excursion
     (re-search-backward "\f\n\\([^\n]+\\),[0-9]*\n")
     (let ((str (buffer-substring (match-beginning 1) (match-end 1))))
-      (if (string-match "XEmacs" emacs-version)
-          (expand-file-name str
-                            (symlink-expand-file-name default-directory))
-        (expand-file-name str
-                          (file-truename default-directory))))))
+      (expand-file-name str
+                        (anything-etags+-file-truename default-directory))
+      )))
 
+(defun anything-etags+-find-tags-file ()
+  "recursively searches each parent directory for a file named 'TAGS' and returns the
+path to that file or nil if a tags file is not found. Returns nil if the buffer is
+not visiting a file"
+  (progn
+    (defun find-tags-file-r (path)
+      "find the tags file from the parent directories"
+      (let* ((parent (file-name-directory path))
+             (possible-tags-file (concat parent "TAGS")))
+        (cond
+         ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
+         ((string= "/TAGS" possible-tags-file) (message "no tags file found in parent directory"))
+         (t (find-tags-file-r (directory-file-name parent))))))
+
+    (if (buffer-file-name)
+        (catch 'found-it
+          (find-tags-file-r (buffer-file-name)))
+      (message "buffer is not visiting a file") nil)))
 
 (defun anything-etags+-get-tag-files()
   "Get tag files."
   (if anything-etags+-use-xemacs-etags-p
       (let ((tags-build-completion-table nil))
         (buffer-tag-table-list))
-    (mapcar 'tags-expand-table-name tags-table-list))
-  )
+    (mapcar 'tags-expand-table-name
+            (add-to-list 'tags-table-list (anything-etags+-find-tags-file)))))
 
 
 (defun anything-etags+-rename-tag-file-buffer-maybe(buf)
@@ -412,11 +436,12 @@ hits the start of file."
   (when (file-exists-p tag-file)
     (let ((tag-table-buffer) (current-buf (current-buffer))
           (tags-revert-without-query t)
-          (large-file-warning-threshold nil))
+          (large-file-warning-threshold nil)
+          (tags-add-tables t))
       (if anything-etags+-use-xemacs-etags-p
           (setq tag-table-buffer (get-tag-table-buffer tag-file))
         (visit-tags-table-buffer tag-file)
-        (setq tag-table-buffer (get-file-buffer tag-file)))
+        (setq tag-table-buffer (find-buffer-visiting tag-file)))
       (set-buffer current-buf)
       (anything-etags+-rename-tag-file-buffer-maybe tag-table-buffer))))
 
@@ -491,8 +516,8 @@ needn't search tag file again."
             ;;(setq src-file-name (etags-file-of-tag))
             (setq src-file-name (anything-etags+-file-of-tag))
             (let ((display)(real (list  src-file-name tag-info full-tagname)))
-              (let ((tag-table-parent (file-name-directory (buffer-file-name tag-table-buffer))))
-                (when (string-match  tag-table-parent src-file-name)
+              (let ((tag-table-parent (anything-etags+-file-truename (file-name-directory (buffer-file-name tag-table-buffer)))))
+                (when (string-match  tag-table-parent (anything-etags+-file-truename src-file-name))
                   (setq src-file-name (substring src-file-name (length  tag-table-parent)))))
               (if anything-etags+-use-short-file-name
                   (setq src-file-name (file-name-nondirectory src-file-name)))
