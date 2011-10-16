@@ -1,71 +1,38 @@
-== Status Update ==
+== What is that? ==
 
-The project is still "alive" but is in the midst of a massive revision. It probably won't work for you right now due to changes in the del.icio.us API. The new version will be announced here, and the instructions will be revised accordingly. Try it though -- basic things like posting are probably working, and other functionality is gradually being restored. Please report bugs below on this page or to JohnSullivan.
+This is a rather complete set of functions for interacting with
+http://www.delicious.com, a "social bookmarking" project developed by Joshua
+Shachter.
 
-== What is that ? ==
+Other than low-level API functions implementing the various Delicious
+requests, DeliciousEl provides commands to conveniently post new bookmarks, as
+well as search, display and update existing posts from within Emacs. Some
+integration with other Emacs modes such as [[emacs-w3m]] is also available.
 
-This is a complete set of functions for interacting with <http://del.icio.us>,
-a "social bookmarking" project written and maintained by Joshua Shachter.
+The project also includes documentation in Texinfo format.
 
-(quote taken from original README file)
+== Authors ==
 
-== Author(s) ==
+DeliciousEl was originally developed by JohnSullivan, and then continued,
+partly rewritten and now maintained by Štěpán Němec.
 
-DeliciousEl is by JohnSullivan
+== Current status ==
+
+A new version will be released soon. The development version available in the
+priv branch of the repository (see below) should be perfectly
+"production-ready", but as I currently only use a quite limited subset of the
+functionality, I might very well be missing something. Bug reports and other
+constructive feedback much appreciated. -- Štěpán
 
 == Get it ==
 
-You can download the code via git (The repository is browsable at http://wjsullivan.net/git/?p=delicious-el.git;a=summary).
+A Git repository can be found at http://gitorious.org/delicious-el.
 
- git clone http://git.wjsullivan.net/delicious-el.git
+For those who prefer tarballs, a
+[http://gitorious.org/delicious-el/delicious-el/archive-tarball/priv snapshot]
+can be had.
 
-The canonical home page for the project is http://wjsullivan.net/delicious-el.html.
-
-From that page: "As of October 2010, it is maintained by Štěpán Němec."
-
-A git repository maintained by Štěpán Němec can be found at http://gitorious.org/delicious-el.
-
-== Setup ==
-
-* Install files into your LoadPath
-* Add these lines into your .emacs file
-
-  (require 'delicious)
-
-That's all!
-
-== Use it ==
-
-DeliciousEl provides several functions to play with but the main entry point is to post links.
-
-So, using it is as simple as doing 
-
- M-x delicious-post
-
-Just follow instructions.
-
-Instead of doing this call you would rather use keybindings. Here is one from the README file :
-
- (global-set-key "\C-cp" 'delicious-post)
-
-== Bugzilla & known issues ==
-
-* HTTP errors
-
-Previously, it was not uncommon for the del.icio.us server to be
-temporarily unavailable. delicious-el should report any specific
-errors it receives. If you want more information, check the contents
-of the ##*delicious output*## buffer. Errors with the server are very
-often temporary. You can resubmit your post by doing C-x ESC ESC (the
-default binding for repeat-complex-command) and using the up arrow to
-move back to the delicious-post command in your history, and hitting
-enter. If you are still getting a server error, then you can use
-delicious-post-offline to save the post to your cache. Later on, use
-delicious-post-cache to send the post to the server.
+John's original home page is still at http://wjsullivan.net/delicious-el.html.
 
 ----
 CategoryInterface
-
-
-
-

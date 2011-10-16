@@ -94,7 +94,7 @@ to support virtual environments, but this is largely untested.
 
 * The code [http://python.pastebin.com/f627691e0 here], [http://pastebin.ca/1797770 here] or [http://paste.uni.cc/20534 here] runs pylint + pychecker + pep8
 
-* [http://bitbucket.org/tavisrudd/pylint_etc_wrapper.py/src/tip/pylint_etc_wrapper.py Here] is an extended, cleaned up and bug-fixed version of the script above by Tavis Rudd (not the original author)
+* [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py Here] is an extended, cleaned up and bug-fixed version of the script above by Tavis Rudd (not the original author)
 
 * [http://bitbucket.org/jek/sandbox/src/tip/pycheckers pycheckers] runs pyflakes, pep8, pydo (configurable)
 
@@ -293,7 +293,7 @@ Screenshot of anything-ipython in action:
 http://farm4.static.flickr.com/3459/3760695525_887356961c.jpg
 
 == auto-complete.el support in ipython shell buffers == 
-http://bitbucket.org/tavisrudd/emacs.d/src/tip/dss-completion.el
+https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el
 
 == Ipython debugging/pdbtrack ==
 
