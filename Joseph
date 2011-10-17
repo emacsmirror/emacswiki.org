@@ -17,6 +17,7 @@ I wrote:
 * AutoJavaComplete -- It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
 * DiredFileTypeFaces --- Set Different Faces for Different File Types in Dired Buffer.
 * [[anything-etags+.el]] -- Another Etags anything.el interface
+* Lisp:ctags-update.el -- auto update TAGS in parent directory using exuberant-ctags [2011-10-16 17:13]
 * [[anything-dired-history.el]] -- Show dired directories you have visited with anything.el support.[2011-03-26]
 * [[quick-jump.el]] -- Remember current position,and jump back 
 * [[term-toggle.el]] -- toggle "*terminal*" window ,like shell-toggle.el

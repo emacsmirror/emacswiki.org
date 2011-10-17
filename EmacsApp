@@ -25,6 +25,11 @@ For those that like their PATHs from .bashrc and would like the environment.plis
 
 CREDIT GOES TO: http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html
 
+You may also have to add /usr/bin to emac's exec-path so it can find various unix utils like diff. This is particularly true for ediff:
+    
+    (add-to-list 'exec-path "/usr/bin")
+
+
 == Alternative Path Solution ==
 
 I found the above to be not quite right on my Mac OS 10.6 laptop.  The ##defaults## command generated gibberish in my ##environment.plist## file so I took the approach of creating a startup script (##~/bin/macosx-startup##) and added it to my User account login items list.  ##macosx-startup## is a bash one-liner:

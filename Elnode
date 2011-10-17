@@ -1,8 +1,5 @@
 elnode is an asynchronous HttpServer framework. You can use it to write HTTP services in ELisp.
 
-* [http://github.com/nicferrier/elnode Download elnode from github]
-* [[elnode.el|Download from EmacsWIKI]]
-
 Elnode is basically an ELisp version of [http://nodejs.org/ node.js],
 the asynchronous HTTP framework for Google's Javascript engine.
 
@@ -17,7 +14,7 @@ not a browser thing. It is a server side thing. You write event driven
 servers in it. That means you write all your code in a single process
 and rely on the natural blocking of clients to give you
 concurrency. Of course, a standard technique is to to spawn processes
-to handle work again communicating asynchronously.
+to handle work - again, communicating asynchronously.
 
 
 == What is Elnode? ==
@@ -26,9 +23,24 @@ Emacs includes a low level event IO framework: processes, filters and
 sentinels. Elnode builds mechanisms for making HTTP servers on top of
 these in similar ways to node.js.
 
+== Getting Elnode ==
+
+* marmalade - M-x install-package [ENTER] elnode
+* [http://github.com/nicferrier/elnode Download elnode from github]
+* [[elnode.el|Download from EmacsWIKI]]
+
+
+
+
 == Talking about Elnode ==
 
 I'd like a permanent place (as opposed to irc) to discuss Elnode. [[https://convore.com/elnode/|So far I've setup this Convore group for discussing Elnode]], but Convore seems dead and very very slow. Anyone got any better ideas?
+
+== A tutorial for Elnode ==
+
+People asked for a tutorial, so NicFerrier has started to make one. Progress is [[https://github.com/nicferrier/elnode/blob/master/elnode_tutorial.creole|here]].
+
+You need the latest version of Elnode (0.6) to make this tutorial work.
 
 == What can you do with Elnode? ==
 
