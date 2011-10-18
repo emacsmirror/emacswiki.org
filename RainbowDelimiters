@@ -1,6 +1,6 @@
-<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode for highlighting parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This gives a visual reference for which delimiters match in your code, and for what statements are at each level.
+<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights each new level of parentheses, brackets, and braces in a different color according to their nesting. Displaying each level in a different color makes it easy to spot matching delimiters, orient yourself in the code, and tell what statements are at a given level.
 
-Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
+Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on, even in delimiter-rich languages like Clojure/Lisp or Perl.
 
 You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; they are unobtrusive enough to make the mode worth looking at even if you usually don't like rainbow parentheses modes. 
 
@@ -72,7 +72,7 @@ The light/dark color schemes differ only in their brightness level.
 [http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot using a custom color theme.
 
 == Contributing ==
-If you want to add a feature to rainbow-delimiters.el, the current development version will always be at github under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Having the development progress on github should make it easy to integrate patches. Please email me (see the top of the file) before starting work on anything big to make sure we don't duplicate effort.
+If you want to add a feature to rainbow-delimiters.el, the current development version will always be at github under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Please communicate before starting work on anything large to make sure there isn't duplicate effort.
 <pre>
 
 

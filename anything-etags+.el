@@ -3,7 +3,7 @@
 ;; Description: Another Etags anything.el interface
 ;; Filename: anything-etags+.el
 ;; Created: 2011-02-23
-;; Last Updated: Joseph 2011-10-15 00:07:13 星期六
+;; Last Updated: Joseph 2011-10-17 21:28:29 星期一
 ;; Version: 0.1.4
 ;; Author: Joseph <jixiuf@gmail.com>
 ;; Maintainer: Joseph <jixiuf@gmail.com>
@@ -265,7 +265,7 @@ getting candidates.")
 (defun anything-etags+-file-truename (filename))
 
 (if (string-match "XEmacs" emacs-version)
-      (fset 'anything-etags+-match-string 'match-string)
+    (fset 'anything-etags+-match-string 'match-string)
   (fset 'anything-etags+-match-string 'match-string-no-properties)
   (if anything-etags+-use-xemacs-etags-p
       (unless (fboundp 'symlink-expand-file-name)
@@ -287,36 +287,36 @@ getting candidates.")
   "borrowed from GNU/Emacs etags.el"
   (let (tag-text line startpos explicit-start)
     (if (save-excursion
-	  (forward-line -1)
-	  (looking-at "\f\n"))
-	;; The match was for a source file name, not any tag within a file.
-	;; Give text of t, meaning to go exactly to the location we specify,
-	;; the beginning of the file.
-	(setq tag-text t
-	      line nil
-	      startpos (point-min))
+          (forward-line -1)
+          (looking-at "\f\n"))
+        ;; The match was for a source file name, not any tag within a file.
+        ;; Give text of t, meaning to go exactly to the location we specify,
+        ;; the beginning of the file.
+        (setq tag-text t
+              line nil
+              startpos (point-min))
 
       ;; Find the end of the tag and record the whole tag text.
       (search-forward "\177")
       (setq tag-text (buffer-substring (1- (point))
-				       (save-excursion (beginning-of-line)
-						       (point))))
+                                       (save-excursion (beginning-of-line)
+                                                       (point))))
       ;; If use-explicit is non nil and explicit tag is present, use it as part of
       ;; return value. Else just skip it.
       (setq explicit-start (point))
       (when (and (search-forward "\001" (save-excursion (forward-line 1) (point)) t)
-		 use-explicit)
-	(setq tag-text (buffer-substring explicit-start (1- (point)))))
+                 use-explicit)
+        (setq tag-text (buffer-substring explicit-start (1- (point)))))
 
 
       (if (looking-at "[0-9]")
-	  (setq line (string-to-number (buffer-substring
+          (setq line (string-to-number (buffer-substring
                                         (point)
                                         (progn (skip-chars-forward "0-9")
                                                (point))))))
       (search-forward ",")
       (if (looking-at "[0-9]")
-	  (setq startpos (string-to-number (buffer-substring
+          (setq startpos (string-to-number (buffer-substring
                                             (point)
                                             (progn (skip-chars-forward "0-9")
                                                    (point)))))))
@@ -339,53 +339,53 @@ If the tag isn't exactly at the given position, then look near that
 position using a search window that expands progressively until it
 hits the start of file."
   (let ((startpos (cdr (cdr tag-info)))
-	(line (car (cdr tag-info)))
-	offset found pat)
+        (line (car (cdr tag-info)))
+        offset found pat)
     (if (eq (car tag-info) t)
-	;; Direct file tag.
-	(cond (line (progn (goto-char (point-min))
-			   (forward-line (1- line))))
-	      (startpos (goto-char startpos))
-	      (t (error "etags.el BUG: bogus direct file tag")))
+        ;; Direct file tag.
+        (cond (line (progn (goto-char (point-min))
+                           (forward-line (1- line))))
+              (startpos (goto-char startpos))
+              (t (error "etags.el BUG: bogus direct file tag")))
       ;; This constant is 1/2 the initial search window.
       ;; There is no sense in making it too small,
       ;; since just going around the loop once probably
       ;; costs about as much as searching 2000 chars.
       (setq offset 1000
-	    found nil
-	    pat (concat (if (eq selective-display t)
-			    "\\(^\\|\^m\\)" "^")
-			(regexp-quote (car tag-info))))
+            found nil
+            pat (concat (if (eq selective-display t)
+                            "\\(^\\|\^m\\)" "^")
+                        (regexp-quote (car tag-info))))
       ;; The character position in the tags table is 0-origin.
       ;; Convert it to a 1-origin Emacs character position.
       (if startpos (setq startpos (1+ startpos)))
       ;; If no char pos was given, try the given line number.
       (or startpos
-	  (if line
-	      (setq startpos (progn (goto-char (point-min))
-				    (forward-line (1- line))
-				    (point)))))
+          (if line
+              (setq startpos (progn (goto-char (point-min))
+                                    (forward-line (1- line))
+                                    (point)))))
       (or startpos
-	  (setq startpos (point-min)))
+          (setq startpos (point-min)))
       ;; First see if the tag is right at the specified location.
       (goto-char startpos)
       (setq found (looking-at pat))
       (while (and (not found)
-		  (progn
-		    (goto-char (- startpos offset))
-		    (not (bobp))))
-	(setq found
-	      (re-search-forward pat (+ startpos offset) t)
-	      offset (* 3 offset)))	; expand search window
+                  (progn
+                    (goto-char (- startpos offset))
+                    (not (bobp))))
+        (setq found
+              (re-search-forward pat (+ startpos offset) t)
+              offset (* 3 offset)))	; expand search window
       (or found
-	  (re-search-forward pat nil t)
-	  (error "Rerun etags: `%s' not found in %s"
-		 pat buffer-file-name)))
+          (re-search-forward pat nil t)
+          (error "Rerun etags: `%s' not found in %s"
+                 pat buffer-file-name)))
     ;; Position point at the right place
     ;; if the search string matched an extra Ctrl-m at the beginning.
     (and (eq selective-display t)
-	 (looking-at "\^m")
-	 (forward-char 1))
+         (looking-at "\^m")
+         (forward-char 1))
     (beginning-of-line)))
 
 (defun anything-etags+-file-of-tag(&optional relative)
@@ -407,9 +407,8 @@ not visiting a file"
              (possible-tags-file (concat parent "TAGS")))
         (cond
          ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
-         ((string= "/TAGS" possible-tags-file) (message "no tags file found in parent directory"))
+         ((string-match "^/TAGS\\|^[a-zA-Z]:/TAGS" possible-tags-file) nil)
          (t (find-tags-file-r (directory-file-name parent))))))
-
     (if (buffer-file-name)
         (catch 'found-it
           (find-tags-file-r (buffer-file-name)))
@@ -428,7 +427,7 @@ not visiting a file"
   (with-current-buffer buf
     (if (string-match "^ \\*Anything" (buffer-name))
         buf
-       (rename-buffer (concat" *Anything etags+:" (buffer-name) "*") t)
+      (rename-buffer (concat" *Anything etags+:" (buffer-name) "*") t)
       ))buf)
 
 (defun anything-etags+-get-tag-table-buffer (tag-file)
@@ -449,7 +448,7 @@ not visiting a file"
   "Get tag table buffer for a tag file."
   (setq anything-etags+-tag-table-buffers
         (delete nil (mapcar 'anything-etags+-get-tag-table-buffer
-                      (anything-etags+-get-tag-files)))))
+                            (anything-etags+-get-tag-files)))))
 
 (defun anything-etags+-get-candidates-with-cache-support()
   "for example when the `anything-pattern' is 'toString System pub'
@@ -466,20 +465,20 @@ needn't search tag file again."
       ;;for example  (amp-mp-make-regexps "boo far") -->("boo" "far")
       (setq pattern (car (amp-mp-make-regexps anything-etags+-untransformed-anything-pattern))))
     (unless (string-equal anything-etags+-previous-matched-pattern pattern)
-;;          (setq candidates anything-etags+-candidates-cache)
-        (setq anything-etags+-candidates-cache (anything-etags+-get-candidates-from-all-tag-file pattern))
-        (setq anything-etags+-previous-matched-pattern pattern))
+      ;;          (setq candidates anything-etags+-candidates-cache)
+      (setq anything-etags+-candidates-cache (anything-etags+-get-candidates-from-all-tag-file pattern))
+      (setq anything-etags+-previous-matched-pattern pattern))
     anything-etags+-candidates-cache))
 
 
 (defun anything-etags+-get-candidates-from-all-tag-file(first-part-of-anything-pattern)
   (let (candidates)
     (dolist (tag-table-buffer anything-etags+-tag-table-buffers)
-    (setq candidates
-          (append
-           candidates
-           (anything-etags+-get-candidates-from-tag-file
-            first-part-of-anything-pattern tag-table-buffer))))
+      (setq candidates
+            (append
+             candidates
+             (anything-etags+-get-candidates-from-tag-file
+              first-part-of-anything-pattern tag-table-buffer))))
     candidates))
 
 (defun anything-etags+-get-candidates-from-tag-file (tagname tag-table-buffer)
@@ -492,9 +491,9 @@ needn't search tag file again."
           (progn
             (setq tagname (replace-regexp-in-string "\\\\_<\\|\\\\_>" ""  tagname))
             (setq tag-regex (concat "^.*?\\(" "\^?\\(.+[:.']" tagname "\\)\^A"
-                               "\\|" "\^?" tagname "\^A"
-                               "\\|" "\\<" tagname "[ \f\t()=,;]*\^?[0-9,]"
-                               "\\)")))
+                                    "\\|" "\^?" tagname "\^A"
+                                    "\\|" "\\<" tagname "[ \f\t()=,;]*\^?[0-9,]"
+                                    "\\)")))
         (setq tag-regex (concat "^.*?\\(" "\^?\\(.+[:.'].*" tagname ".*\\)\^A"
                                 "\\|" "\^?.*" tagname ".*\^A"
                                 "\\|" ".*" tagname ".*[ \f\t()=,;]*\^?[0-9,]"
@@ -522,12 +521,12 @@ needn't search tag file again."
               (if anything-etags+-use-short-file-name
                   (setq src-file-name (file-name-nondirectory src-file-name)))
               (setq display (concat tag-line
-                                      (or (ignore-errors
-                                            (make-string (- (window-width) 6
-                                                            (string-width tag-line)
-                                                            (string-width src-file-name))
-                                                         ? )) "")
-                                      src-file-name))
+                                    (or (ignore-errors
+                                          (make-string (- (window-width) 6
+                                                          (string-width tag-line)
+                                                          (string-width src-file-name))
+                                                       ? )) "")
+                                    src-file-name))
               (add-to-list 'candidates (cons display real)))))
         (modify-syntax-entry ?_ "_"))
       candidates)))
@@ -570,16 +569,16 @@ needn't search tag file again."
 
 (defun anything-c-etags+-goto-location (candidate)
   (unless anything-in-persistent-action
-      (when (and
+    (when (and
            (not (ring-empty-p anything-etags+-tag-marker-ring))
            anything-etags+-current-marker-in-tag-marker-ring
            (not (equal anything-etags+-current-marker-in-tag-marker-ring (ring-ref anything-etags+-tag-marker-ring 0))))
-       (while (not (ring-empty-p anything-etags+-tag-marker-ring ))
+      (while (not (ring-empty-p anything-etags+-tag-marker-ring ))
         (ring-remove anything-etags+-tag-marker-ring)
         ))
-      ;;you can use `anything-etags+-history' go back
-      (ring-insert anything-etags+-tag-marker-ring (point-marker))
-      (setq anything-etags+-current-marker-in-tag-marker-ring (point-marker))
+    ;;you can use `anything-etags+-history' go back
+    (ring-insert anything-etags+-tag-marker-ring (point-marker))
+    (setq anything-etags+-current-marker-in-tag-marker-ring (point-marker))
     )
   (anything-etags+-find-tag candidate);;core func.
   )
@@ -587,8 +586,8 @@ needn't search tag file again."
 (defun anything-etags+-select-internal(init-pattern prompt)
   (run-hooks 'anything-etags+-select-hook)
   (anything '(anything-c-source-etags+-select)
-              ;; Initialize input with current symbol
-              init-pattern  prompt nil))
+            ;; Initialize input with current symbol
+            init-pattern  prompt nil))
 
 ;;;###autoload
 (defun anything-etags+-select()
@@ -619,20 +618,20 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
   (interactive "P")
   (if args
       (anything-etags+-select)
-      (anything-etags+-select-at-point)))
+    (anything-etags+-select-at-point)))
 
 ;;;###autoload
 (defvar anything-c-source-etags+-select
-      '((name . "Etags+")
-        (init . anything-etags+-get-available-tag-table-buffers)
-        (candidates . anything-etags+-get-candidates-with-cache-support)
-        (volatile);;candidates
-        (pattern-transformer (lambda (anything-pattern)
-                               (setq anything-etags+-untransformed-anything-pattern anything-pattern)
-                               (replace-regexp-in-string "\\\\_<\\|\\\\_>" ""  anything-pattern)))
-        (requires-pattern  . 3);;need at least 3 char
-        (delayed);; (setq anything-idle-delay-4-anthing-etags+ 1)
-        (action ("Goto the location" . anything-c-etags+-goto-location))))
+  '((name . "Etags+")
+    (init . anything-etags+-get-available-tag-table-buffers)
+    (candidates . anything-etags+-get-candidates-with-cache-support)
+    (volatile);;candidates
+    (pattern-transformer (lambda (anything-pattern)
+                           (setq anything-etags+-untransformed-anything-pattern anything-pattern)
+                           (replace-regexp-in-string "\\\\_<\\|\\\\_>" ""  anything-pattern)))
+    (requires-pattern  . 3);;need at least 3 char
+    (delayed);; (setq anything-idle-delay-4-anthing-etags+ 1)
+    (action ("Goto the location" . anything-c-etags+-goto-location))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -648,7 +647,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
            (markerp marker)
            (marker-buffer marker))
       marker
-      ))
+    ))
 ;;; func about history
 (defun anything-etags+-history-get-candidate-from-marker(marker)
   "genernate candidate from marker candidate= (display . marker)."
@@ -657,8 +656,8 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
         line-num line-text candidate display
         file-name empty-string)
     (when  buf
-;;      (save-excursion
-;;        (set-buffer buf)
+      ;;      (save-excursion
+      ;;        (set-buffer buf)
       (with-current-buffer buf
         (if anything-etags+-use-short-file-name
             (setq file-name (or (file-name-nondirectory (buffer-file-name)) (buffer-name)))
@@ -669,7 +668,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
         (setq line-text (replace-regexp-in-string "^[ \t]*\\|[ \t]*$" "" line-text))
         (setq line-text (replace-regexp-in-string  "/\\*.*\\*/" "" line-text))
         (setq line-text (replace-regexp-in-string  "\t" (make-string tab-width ? ) line-text)))
-;;          )
+      ;;          )
       (if (equal marker anything-etags+-current-marker-in-tag-marker-ring)
           ;;this one will be preselected
           (setq line-text (concat line-text "\t")))
@@ -699,51 +698,51 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
 (defun anything-etags+-history-init()
   "remove #<marker in no buffer> from `anything-etags+-tag-marker-ring'.
    and remove those markers older than #<marker in no buffer>."
-      (let ((tmp-marker-ring))
-        (while (not (ring-empty-p anything-etags+-tag-marker-ring))
-          (anything-aif (anything-etags+-is-marker-available (ring-remove anything-etags+-tag-marker-ring 0))
-              (setq tmp-marker-ring (append tmp-marker-ring (list it)));;new item first
-            (while (not (ring-empty-p anything-etags+-tag-marker-ring));;remove all old marker
-              (ring-remove anything-etags+-tag-marker-ring))))
-        ;;reinsert all available marker to `anything-etags+-tag-marker-ring'
-        (mapcar (lambda(marker) (ring-insert-at-beginning anything-etags+-tag-marker-ring marker)) tmp-marker-ring))
-    ;; (when (not (ring-empty-p anything-etags+-tag-marker-ring))
-    ;;   (let ((last-marker-in-anything-etags+-tag-marker-ring (ring-ref  anything-etags+-tag-marker-ring 0)))
-    ;;     (when (and (equal anything-etags+-current-marker-in-tag-marker-ring  last-marker-in-anything-etags+-tag-marker-ring)
-    ;;                (or (not (equal (marker-buffer last-marker-in-anything-etags+-tag-marker-ring) (current-buffer)))
-    ;;                    (> (abs (- (marker-position last-marker-in-anything-etags+-tag-marker-ring) (point))) 350)))
-    ;;       (setq anything-etags+-history-tmp-marker (point-marker)))))
-    )
+  (let ((tmp-marker-ring))
+    (while (not (ring-empty-p anything-etags+-tag-marker-ring))
+      (anything-aif (anything-etags+-is-marker-available (ring-remove anything-etags+-tag-marker-ring 0))
+          (setq tmp-marker-ring (append tmp-marker-ring (list it)));;new item first
+        (while (not (ring-empty-p anything-etags+-tag-marker-ring));;remove all old marker
+          (ring-remove anything-etags+-tag-marker-ring))))
+    ;;reinsert all available marker to `anything-etags+-tag-marker-ring'
+    (mapcar (lambda(marker) (ring-insert-at-beginning anything-etags+-tag-marker-ring marker)) tmp-marker-ring))
+  ;; (when (not (ring-empty-p anything-etags+-tag-marker-ring))
+  ;;   (let ((last-marker-in-anything-etags+-tag-marker-ring (ring-ref  anything-etags+-tag-marker-ring 0)))
+  ;;     (when (and (equal anything-etags+-current-marker-in-tag-marker-ring  last-marker-in-anything-etags+-tag-marker-ring)
+  ;;                (or (not (equal (marker-buffer last-marker-in-anything-etags+-tag-marker-ring) (current-buffer)))
+  ;;                    (> (abs (- (marker-position last-marker-in-anything-etags+-tag-marker-ring) (point))) 350)))
+  ;;       (setq anything-etags+-history-tmp-marker (point-marker)))))
+  )
 
 (defun anything-etags+-history-clear-all(&optional candidate)
   "param `candidate' is unused."
   (while (not (ring-empty-p anything-etags+-tag-marker-ring));;remove all marker
-          (ring-remove anything-etags+-tag-marker-ring)))
+    (ring-remove anything-etags+-tag-marker-ring)))
 
 
 ;;;###autoload
 (defun anything-etags+-history-go-back()
   "Go Back. "
   (interactive)
-    (anything-etags+-history-init)
-    (when (and
-           (anything-etags+-is-marker-available anything-etags+-current-marker-in-tag-marker-ring)
-           (ring-member anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring))
-      (let* ((next-marker (ring-next anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring)))
-        (anything-etags+-history-go-internel next-marker)
-        (setq anything-etags+-current-marker-in-tag-marker-ring next-marker))))
+  (anything-etags+-history-init)
+  (when (and
+         (anything-etags+-is-marker-available anything-etags+-current-marker-in-tag-marker-ring)
+         (ring-member anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring))
+    (let* ((next-marker (ring-next anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring)))
+      (anything-etags+-history-go-internel next-marker)
+      (setq anything-etags+-current-marker-in-tag-marker-ring next-marker))))
 
 ;;;###autoload
 (defun anything-etags+-history-go-forward()
   "Go Forward. "
   (interactive)
-    (anything-etags+-history-init)
-    (when (and
-           (anything-etags+-is-marker-available anything-etags+-current-marker-in-tag-marker-ring)
-           (ring-member anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring))
-      (let* ((previous-marker (ring-previous anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring)))
-        (anything-etags+-history-go-internel previous-marker)
-        (setq anything-etags+-current-marker-in-tag-marker-ring previous-marker))))
+  (anything-etags+-history-init)
+  (when (and
+         (anything-etags+-is-marker-available anything-etags+-current-marker-in-tag-marker-ring)
+         (ring-member anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring))
+    (let* ((previous-marker (ring-previous anything-etags+-tag-marker-ring anything-etags+-current-marker-in-tag-marker-ring)))
+      (anything-etags+-history-go-internel previous-marker)
+      (setq anything-etags+-current-marker-in-tag-marker-ring previous-marker))))
 
 (defun anything-etags+-history-go-internel (candidate-marker)
   "Go to the location depend on candidate."
@@ -770,13 +769,13 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
     (anything-match-line-color-current-line)))
 
 (defvar anything-c-source-etags+-history
-      '((name . "Etags+ History: ")
-        (header-name .( (lambda (name) (concat name "`RET': Go ,`C-z' Preview. `C-e': Clear all history."))))
-        (init .  anything-etags+-history-init)
-        (candidates . anything-etags+-history-candidates)
-;;        (volatile) ;;maybe needn't
-        (action . (("Go" . anything-etags+-history-action-go)
-                   ("Clear all history" . anything-etags+-history-clear-all)))))
+  '((name . "Etags+ History: ")
+    (header-name .( (lambda (name) (concat name "`RET': Go ,`C-z' Preview. `C-e': Clear all history."))))
+    (init .  anything-etags+-history-init)
+    (candidates . anything-etags+-history-candidates)
+    ;;        (volatile) ;;maybe needn't
+    (action . (("Go" . anything-etags+-history-action-go)
+               ("Clear all history" . anything-etags+-history-clear-all)))))
 
 ;;;###autoload
 (defun anything-etags+-history()

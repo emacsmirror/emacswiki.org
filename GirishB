@@ -1,24 +1,24 @@
-A Emacs convert from Vi.. Tried Viper on Emacs. I could not handle the fact that many of the packages seem to show a *little* behavioral quirks .. So, Gave up and learnt the emacs key strokes. I lve it.. 
+An Emacs convert from Vi.. Tried Viper on Emacs. I could not handle the fact that many of the packages seem to show a *little* behavioral quirks .. So, Gave up and learned the emacs key strokes. I love it.. 
 
 I used to use XEmacs before but for some reason I some how felt emacs-21.1 was better and now living with it..
 
-Now I am back on XEmacs. XEmacs seems to handle ClearType fonts correctly. GNUEmacs, well, doesnt.
+Now I am back on XEmacs. XEmacs seems to handle ClearType fonts correctly. GNUEmacs, well, doesn't.
 
 http://www.gbvsoft.com/resource.html has a couple of tools for emacs. Will add more to it as time goes on. 
 
-I have not been able to download any .el from this site.. Is there a place where I can see how to setup my browser (if its my browser problem) to download that thing?
+I have not been able to download any .el from this site.. Is there a place where I can see how to setup my browser (if it's my browser's problem) to download that thing?
 
 : Hello and welcome.  Downloading files is notoriously difficult depending on your browser.  On Netscape and IE your best bet is to either click it, and if it is shown as a text file to use "Save As..." from the File menu, or to right-click on the link and choose "Save Link As..." from the context menu.  HTH. -- AlexSchroeder
 
 
 Thanks Alex. I tried everything but it just would not work. Would it be very hard to write some sort of a 
 script within Wiki to show the el code within a Text box so that it can be copied over ..
-I had similar problems while putting up the .el files on my site. So, I had to rename them as .el.txt and that stopped the problem..
+I had similar problems while putting up the .el files on my site. So, I had to rename them as .el.txt and that solved the problem..
 Oh well,.. 
 
 : Hm... How about trying wget or something along these lines to retrieve the files?  Or (assuming you have the bandwidth) to check out the elisp archive as a .tar.gz file.  Try http://www.emacswiki.org/cgi-bin/list-archive.pl -- AlexSchroeder
 
-That is an excellent idea. I could get that together. At last, I can actually access this stuff. I will publish this thing on the main page as well. Because, there might be others who might be having issues downloading the data.
+That is an excellent idea. I could get that together. At last, I can actually access this stuff. I will publish this thing on the main page as well. Because, there might be others who might be having issues on downloading the data.
 -----
 I have started hanging out at #emacs at IRC (InternetRelayChat) as gbvb or gbvb[home].. :)
 

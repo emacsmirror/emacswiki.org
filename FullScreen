@@ -53,6 +53,8 @@ used.  The value
 (setq window-setup-hook 'jbr-init)
 }}}
 
+Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/wiki/Home emacs-fullscreen-win32] project. It allows you to switch to/from fullscreen mode.
+
 === X Windows ===
 ==== Send X Messages to the Window Manager ====
 

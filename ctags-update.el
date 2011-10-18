@@ -1,9 +1,9 @@
 ;;; ctags-update.el --- auto update TAGS in parent directory using exuberant-ctags -*- coding:utf-8 -*-
 
-;; Description: auto update TAGS using
+;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-10-16 17:09:22 星期日
-;; Version: 0.1.0
+;; Last Updated: Joseph 2011-10-17 21:19:08 星期一
+;; Version: 0.1.2
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
 ;; Keywords: exuberant-ctags etags
@@ -47,15 +47,20 @@
 ;;     (autoload 'ctags-update "ctags-update" "update TAGS using ctags" t)
 ;; and
 ;;     M-x : ctags-update
+;; with prefix `C-u' ,then you can generate a new TAGS file in your
+;; selected directory.
 
-;;
+;; on windows ,you can custom `ctags-update-command' like this:
+;; (when (equal system-type 'windows-nt)
+;;   (setq ctags-update-command (expand-file-name  "~/.emacs.d/bin/ctags.exe")))
+
 
 ;;; Commands:
 ;;
 ;; Below are complete command list:
 ;;
 ;;  `ctags-update'
-;;    update TAGS in parent directory using `exuberant-ctags'
+;;    update TAGS in parent directory using `exuberant-ctags' you
 ;;  `ctags-update-minor-mode'
 ;;    auto update TAGS using `exuberant-ctags' in parent directory.
 ;;
@@ -151,7 +156,7 @@ not visiting a file"
              (possible-tags-file (concat parent "TAGS")))
         (cond
          ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
-         ((string= "/TAGS" possible-tags-file) nil)
+         ((string-match "^/TAGS\\|^[a-zA-Z]:/TAGS" possible-tags-file) nil)
          (t (find-tags-file-r (directory-file-name parent))))))
     (if (buffer-file-name)
         (catch 'found-it
@@ -159,26 +164,28 @@ not visiting a file"
       (message "buffer is not visiting a file") nil)))
 
 ;;;###autoload
-(defun ctags-update()
-  "update TAGS in parent directory using `exuberant-ctags'
-you can call this function directly ,or add it to `after-save-hook'
-or enable `ctags-update-minor-mode'"
-  (interactive)
+(defun ctags-update(&optional args)
+  "update TAGS in parent directory using `exuberant-ctags' you
+can call this function directly , or enable
+`ctags-update-minor-mode' or with prefix `C-u' then you can
+generate a new TAGS file in directory"
+  (interactive "P")
   (let (tags-file-name process)
-    (when  (and (not (get-process "update TAGS"));;if "update TAGS" process is not already running
-                (setq tags-file-name (ctags-update-find-tags-file))
-                (not (string-equal (ctags-update-file-truename tags-file-name)
-                                   (ctags-update-file-truename (buffer-file-name)))))
+    (when (or (and args (setq tags-file-name
+                              (expand-file-name
+                               "TAGS" (read-directory-name "Generate new TAGS to:" ))))
+              (and (not (get-process "update TAGS"));;if "update TAGS" process is not already running
+                   (setq tags-file-name (ctags-update-find-tags-file))
+                   (not (string-equal (ctags-update-file-truename tags-file-name)
+                                      (ctags-update-file-truename (buffer-file-name))))))
       (cd (file-name-directory tags-file-name))
       (setq process  (start-process-shell-command
-                      "update TAGS"
-                      " *update TAGS*"
+                      "update TAGS" " *update TAGS*"
                       (ctags-update-command tags-file-name )))
       (set-process-sentinel process
                             (lambda (proc change)
                               (when (string-match "\\(finished\\|exited\\)" change)
                                 (kill-buffer " *update TAGS*")
-                                ;; (rename-file tmp-tags-file-name tags-file-name  t)
                                 (message "TAGS in parent directory is updated. "  )
                                 ))))))
 

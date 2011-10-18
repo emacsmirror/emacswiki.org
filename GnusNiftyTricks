@@ -269,5 +269,7 @@ To avoid the inactivity timeout, I added a timer that periodically issues a "NOO
       (run-at-time t imap-ping-interval 'imap-ping-handler))
 }}}
 
+Emacs 24 has keepalive support built in.
+
 ----
 CategoryGnus 
