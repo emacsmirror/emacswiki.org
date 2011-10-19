@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 18:13:01 2011 (-0700)
+;; Last-Updated: Tue Oct 18 21:42:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17291
+;;     Update #: 17326
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3336,41 +3336,18 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                      (swank        "  [No swank (fuzzy symbol) completions]")
                                      (t            "  [No prefix completions]")))))
             ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
-             ;; When `icicle-whole-candidate-as-text-prop-p' is t and
-             ;; `icicle-expand-input-to-common-match-flag' is nil, we need to expand the input anyway.
-             ;; That transfers any `icicle-whole-candidate' property from the candidate to
-             ;; `icicle-current-input', so things that use `icicle-candidates-alist' will work.
-             (when (and icicle-whole-candidate-as-text-prop-p
-                        (not icicle-expand-input-to-common-match-flag))
-               (setq icicle-common-match-string  (icicle-expanded-common-match
-                                                  icicle-current-input icicle-completion-candidates))
-               (when icicle-common-match-string
-                 (let ((common  (if (and (icicle-file-name-input-p) insert-default-directory)
-                                    (if (string= "" icicle-common-match-string)
-                                        (or (icicle-file-name-directory icicle-current-input) "")
-                                      (directory-file-name (icicle-abbreviate-or-expand-file-name
-                                                            icicle-common-match-string
-                                                            (icicle-file-name-directory
-                                                             icicle-current-input))))
-                                  icicle-common-match-string)))
-                   ;; Save as current input, unless input is a directory.
-                   (unless (and (icicle-file-name-input-p)  (file-directory-p icicle-current-input))
-                     (setq icicle-current-input  common)))))
-             ;; Expand file-name input to the common match for the current candidate.
-             (when (icicle-file-name-input-p)
-               (setq icicle-common-match-string  (icicle-expanded-common-match
-                                                  (car icicle-completion-candidates)
-                                                  icicle-completion-candidates))
-               (when icicle-common-match-string
-                 (let ((common  (if (and (icicle-file-name-input-p) insert-default-directory)
-                                    (if (string= "" icicle-common-match-string)
-                                        (or (icicle-file-name-directory icicle-current-input) "")
-                                      (directory-file-name (icicle-abbreviate-or-expand-file-name
-                                                            icicle-common-match-string
-                                                            (icicle-file-name-directory
-                                                             icicle-current-input))))
-                                  icicle-common-match-string)))
-                   (setq icicle-current-input  common))))
+             (setq icicle-current-input  (if (not (icicle-file-name-input-p))
+                                             ;; Transfer any `icicle-whole-candidate' property from
+                                             ;; candidate to `icicle-current-input', so things that use
+                                             ;; `icicle-candidates-alist' will work.
+                                             (car icicle-completion-candidates)
+                                           (if (string= "" icicle-current-input)
+                                               (or (icicle-file-name-directory  icicle-current-input)
+                                                   "")
+                                             (directory-file-name
+                                              (icicle-abbreviate-or-expand-file-name
+                                               (car icicle-completion-candidates)
+                                               (icicle-file-name-directory icicle-current-input))))))
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
@@ -3665,42 +3642,19 @@ message either.  NO-DISPLAY-P is passed to
              (minibuffer-message (let ((typ  (car (rassq icicle-apropos-complete-match-fn
                                                          icicle-S-TAB-completion-methods-alist))))
                                    (concat "  [No " typ (and typ " ") "completion]")))))
-          ((null (cdr icicle-completion-candidates)) ; Single candidate. Update minibuffer.
-           ;; When `icicle-whole-candidate-as-text-prop-p' is t
-           ;; and `icicle-expand-input-to-common-match-flag' is nil, we need to expand the input anyway.
-           ;; That transfers any `icicle-whole-candidate' property from the candidate to
-           ;; `icicle-current-input', so things that use `icicle-candidates-alist' will work.
-           (when (and icicle-whole-candidate-as-text-prop-p
-                      (not icicle-expand-input-to-common-match-flag))
-             (setq icicle-common-match-string  (icicle-expanded-common-match
-                                                icicle-current-input icicle-completion-candidates))
-             (when icicle-common-match-string
-               (let ((common  (if (and (icicle-file-name-input-p) insert-default-directory)
-                                  (if (string= "" icicle-common-match-string)
-                                      (or (icicle-file-name-directory icicle-current-input) "")
-                                    (directory-file-name (icicle-abbreviate-or-expand-file-name
-                                                          icicle-common-match-string
-                                                          (icicle-file-name-directory
-                                                           icicle-current-input))))
-                                icicle-common-match-string)))
-                 ;; Save as current input, unless input is a directory.
-                 (unless (and (icicle-file-name-input-p)  (file-directory-p icicle-current-input))
-                   (setq icicle-current-input  common)))))
-           ;; Expand file-name input to the common match for the current candidate.
-           (when (icicle-file-name-input-p)
-             (setq icicle-common-match-string  (icicle-expanded-common-match
-                                                (car icicle-completion-candidates)
-                                                icicle-completion-candidates))
-             (when icicle-common-match-string
-               (let ((common  (if (and (icicle-file-name-input-p) insert-default-directory)
-                                  (if (string= "" icicle-common-match-string)
-                                      (or (icicle-file-name-directory icicle-current-input) "")
-                                    (directory-file-name (icicle-abbreviate-or-expand-file-name
-                                                          icicle-common-match-string
-                                                          (icicle-file-name-directory
-                                                           icicle-current-input))))
-                                icicle-common-match-string)))
-                 (setq icicle-current-input  common))))
+          ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
+           (setq icicle-current-input  (if (not (icicle-file-name-input-p))
+                                           ;; Transfer any `icicle-whole-candidate' property from
+                                           ;; candidate to `icicle-current-input', so things that use
+                                           ;; `icicle-candidates-alist' will work.
+                                           (car icicle-completion-candidates)
+                                         (if (string= "" icicle-current-input)
+                                             (or (icicle-file-name-directory  icicle-current-input)
+                                                 "")
+                                           (directory-file-name
+                                            (icicle-abbreviate-or-expand-file-name
+                                             (car icicle-completion-candidates)
+                                             (icicle-file-name-directory icicle-current-input))))))
            (setq icicle-nb-of-other-cycle-candidates  0)
            (unless icicle-edit-update-p
              (icicle-clear-minibuffer)
@@ -3851,12 +3805,14 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                (let ((inp  (icicle-minibuf-input-sans-dir icicle-current-input)))
                  (when (and (get icicle-last-completion-command 'icicle-apropos-completing-command)
                             ;; $$ Previously allowed the -action's.
-                            (not (and (symbolp last-command) (get last-command 'icicle-cycling-command))))
+                            (not (and (symbolp last-command)
+                                      (get last-command 'icicle-cycling-command))))
                    (setq search-fn  're-search-forward)) ; Use regexp search: input is not yet complete.
                  (while (and (not (eobp))
                              (save-restriction
-                               (narrow-to-region (point) (next-single-property-change (point) 'mouse-face
-                                                                                      nil (point-max)))
+                               (narrow-to-region (point)
+                                                 (next-single-property-change (point) 'mouse-face
+                                                                              nil (point-max)))
                                (not (funcall search-fn inp nil 'leave-at-end))))))))
         (unless (eobp)
           (unless icicle-candidate-nb (goto-char (match-beginning 0)))
@@ -7092,7 +7048,7 @@ Bound to `C-x .' in the minibuffer."
 ;;;###autoload
 (defalias 'toggle-icicle-hiding-common-match 'icicle-toggle-hiding-common-match)
 ;;;###autoload
-(defun icicle-toggle-hiding-common-match () ; Bound to `C-x .' in minibuffer, via `icicle-dispatch-C-x.'.
+(defun icicle-toggle-hiding-common-match () ; Bound to `C-x .' in minibuf, via `icicle-dispatch-C-x.'.
   "Toggle `icicle-hide-common-match-in-Completions-flag'.
 Bound to `C-x .' (no prefix arg) in the minibuffer.
 See also option `icicle-hide-non-matching-lines-flag'."

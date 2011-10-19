@@ -53,7 +53,29 @@ used.  The value
 (setq window-setup-hook 'jbr-init)
 }}}
 
-Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/wiki/Home emacs-fullscreen-win32] project. It allows you to switch to/from fullscreen mode.
+Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/wiki/Home emacs-fullscreen-win32] project. It allows you to switch to/from full-screen mode.
+Here is an example of configuration:
+{{{
+(defun toggle-full-screen ()
+  "Toggles full-screen mode for Emacs window on Win32."
+  (interactive)
+  (shell-command "emacs_fullscreen.exe"))
+
+(defun toggle-bars ()
+  "Toggles bars visibility."
+  (interactive)
+  (menu-bar-mode)
+  (tool-bar-mode)
+  (scroll-bar-mode))
+
+(defun toggle-full-screen-and-bars ()
+  "Toggles full-screen mode and bars."
+  (interactive)
+  (toggle-bars)
+  (toggle-full-screen))
+
+(global-set-key [f11] 'toggle-full-screen-and-bars)
+}}}
 
 === X Windows ===
 ==== Send X Messages to the Window Manager ====

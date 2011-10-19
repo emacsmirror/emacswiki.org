@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 14 15:42:32 2011 (-0700)
+;; Last-Updated: Tue Oct 18 21:54:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7454
+;;     Update #: 7469
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2757,6 +2757,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/10/18 dadams
+;;     icicle-(apropos|prefix)-complete-1:
+;;       Simplify sole-candidate case and correct it for nil *-expand-input-to-common-*.
+;;       Thx to Michael Heerdegen.
 ;; 2011/10/08 dadams
 ;;     icicle-next-TAB-completion-method, icicle-read+insert-file-name,
 ;;       icicle-(un)bind-file-candidate-keys:

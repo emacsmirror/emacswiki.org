@@ -82,6 +82,11 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 ''Enter your report below.''
 
+
+
+
+
+
 <pre>
 
 </pre>
@@ -89,6 +94,53 @@ Better yet, use this to separate threads (puts space before and after the horizo
 <pre>
 
 </pre>
+
+
+[new]
+Hi Drew,
+a fresh checkout of Icicles stopped working on emacs 24.0.90. Here's the backtrace:
+
+<pre>
+Debugger entered--Lisp error:
+(invalid-function icicle-define-bookmark-command)
+  icicle-define-bookmark-command("non-file")
+  byte-code("\300\301!\210\302\301!\...
+  require(icicles-cmd1)
+  byte-code("\300\301!\210\300\302!\...
+  require(icicles)
+</pre>
+
+-- 46.165.196.182
+
+[new:DrewAdams:2011-10-18 17:00 UTC]
+1. A backtrace from byte-compiled code is useless, I'm afraid.  Always load only the ('''Icicles''') source files (##*.el##, not ##*.elc##) before creating a backtrace to report.
+
+2. Please be sure to download the latest '''Icicles''' files.  If you byte-compile the files (not for debugging, but for use), which I recommend, then please read and follow the note in the header of <tt>[[icicles-mac.el]]</tt> (it is repeated in <tt>[[icicles.el]]</tt> and <tt>[[icicles-chg.el]]</tt>).  Here it is again:
+
+<pre>
+;;  ******************
+;;  NOTE: Whenever you update Icicles (i.e., download new versions of
+;;  Icicles source files), I recommend that you do the following:
+;;
+;;      1. Delete all existing byte-compiled Icicles files
+;;         (icicles*.elc).
+;;      2. Load Icicles (`load-library' or `require').
+;;      3. Byte-compile the source files.
+;;
+;;  In particular, always load `icicles-mac.el' (not
+;;  `icicles-mac.elc') before you byte-compile new versions of the
+;;  files, in case there have been any changes to Lisp macros (in
+;;  `icicles-mac.el').
+;;  ******************
+</pre>
+
+(This is the case for ''all'' use of EmacsLisp macros, BTW.)
+
+3. I do not support Emacs 24 for '''Icicles'''.  Emacs 24 has not yet been released.  I use it myself, and you are welcome to use it with '''Icicles''', but all bets are off wrt support and debugging.  If you are using it, I suggest you download the pretest, which is now available. (I cannot test with it, however, since no Windows binary has yet been published, even though the pretest source code was published a month ago.)
+
+Thx -- DrewAdams
+
+
 
 
 

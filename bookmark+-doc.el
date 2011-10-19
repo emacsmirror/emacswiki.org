@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug  7 14:14:44 2011 (-0700)
+;; Last-Updated: Tue Oct 18 21:15:46 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13841
+;;     Update #: 13854
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2119,8 +2119,33 @@
 ;;  whose names you don't really care about.  That is the purpose of
 ;;  "autonamed" bookmarks.  An autonamed bookmark has a simple name
 ;;  provided automatically, and it does not record any region
-;;  information - it records only a position.  It is nevertheless an
-;;  ordinary, persistent bookmark.
+;;  information - it records only a position.  An autonamed bookmark
+;;  is nevertheless an ordinary, persistent bookmark.
+;;
+;;  What if you want only temporary bookmarks, which are not saved to
+;;  disk?  As always, you control saving of bookmarks using option
+;;  `bookmark-save-flag'.  Remember that you can toggle this option
+;;  using command `bmkp-toggle-saving-bookmark-file' (bound to `M-~'
+;;  in the bookmark-list buffer).  Remember too that you can at any
+;;  time change the set of available bookmarks, which means also
+;;  changing the set of bookmarks that are susceptible to being saved.
+;;
+;;  You can, for example:
+;;
+;;  1. Use `C-x p 0' (`bmkp-empty-file') to create a new, empty
+;;     bookmark file.
+;;
+;;  2. Use `C-x p L' (`bmkp-switch-bookmark-file') to switch to using
+;;     that new, empty bookmark file.
+;;
+;;  3. Use `M-x bmkp-toggle-saving-bookmark-file' to turn off
+;;     auto-saving bookmarks to disk.
+;;
+;;  From then on, bookmarks that you create will be stored on the new
+;;  list, which will not be automatically saved to disk.  If you do
+;;  not explicitly save it, the bookmarks will be lost when your Emacs
+;;  session ends - they are thus only temporary.
+;;  See (@> "Using Multiple Bookmark Files").
 ;;
 ;;  `C-x p RET' creates a bookmark at point without prompting you for
 ;;  the name.  It is named using the current buffer name preceded by

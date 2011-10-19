@@ -49,6 +49,20 @@ I personally found the approach of modifying the local map uncomfortable.  I'd r
 
 -- [[nschum]]
 
+[new]
+
+What does it mean "I wrote this additional code".  I looked in the linked source, and it defines a minor mode. The code looks exactly like what you provided here.  Has smart-operator.el been updated to reflect your solution? 
+
+-DinoChiesa - 2011 October 18
+
+[new]
+
+Oh, I see now.... The header comments in that code give a mention to [[nschum]] for the suggestion to make it into a minor mode.  So, anyone who is reading this -- if you get the smart-operator.el module referenced above, it includes the code from [[nschum]].  
+
+-DinoChiesa - 2011 Oct 18 (later)
+
+----
+
 fixed function name for 'smart-operator-insert'; BTW remember this all needs a preceeding:
 
   (require 'smart-operator)

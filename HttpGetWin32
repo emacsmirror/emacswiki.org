@@ -1,0 +1,17 @@
+The HttpGet that is builtin to Emacs didn't work for me, on Windows.
+
+So I produced an alternative.  It's one module, with one exported defun.  It is not nearly as full-featured as the url browsing stuff in emacs23.  But it works, simply. 
+
+Lisp:httpgetwin32.el
+
+This elisp depends on an external wget program.  If you don't have one, you can download the source and build it for yourself, from:  [[https://CheesoExamples.svn.codeplex.com/svn/wget/wget.cs  wget.cs]]
+
+To compile *that*:
+
+{{{
+    csc.exe /t:exe /out:wget.exe wget.cs
+}}}
+
+The elisp module should also work on non-Windows platforms. In all cases, you need to set the location of a wget program suitably. 
+
+--DinoChiesa, 2011 Oct 18

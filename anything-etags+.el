@@ -3,12 +3,13 @@
 ;; Description: Another Etags anything.el interface
 ;; Filename: anything-etags+.el
 ;; Created: 2011-02-23
-;; Last Updated: Joseph 2011-10-17 21:28:29 星期一
+;; Last Updated: Joseph 2011-11-19 10:09:35 星期六
 ;; Version: 0.1.4
 ;; Author: Joseph <jixiuf@gmail.com>
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; URL:http://www.emacswiki.org/emacs/anything-etags+.el
+;;     https://github.com/jixiuf/anything-etags-plus
 ;; screencast:http://screencast-repos.googlecode.com/files/emacs-anything-etags-puls.mp4.bz2
 ;; Keywords: anything, etags
 ;; Compatibility: (Test on GNU Emacs 23.2.1)

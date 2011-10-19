@@ -1,0 +1,27 @@
+I'm using both emacs and Intellij IDEA.  They work pretty well together - when I save changes and alt-tab back from emacs, IDEA automatically notices that the file has changed and refreshes, and if I forget to reload the file in emacs, emacs reminds me.
+
+However, the indentation produced by emacs auto-indent seems to show up weird in IDEA and I end up manually cleaning up the indentation. 
+
+After some reading, I concluded that this is the dread Tabs vs. Spaces schism rearing its ugly head.  IDEA has a "smart tabs" option that you can turn on:
+
+<I>If this check box is selected, !IntelliJ IDEA inserts tabs for indentation and reformatting, but fine alignment to a necessary column is done only via spaces. This is done in order to preserve visual representation of the source code, when the Tab Size is changed.</I>
+
+<I>If this check box is not selected, then spaces are used for alignment if necessary.</I>
+
+http://www.jetbrains.com/idea/webhelp/general-3.html
+
+Obviously IDEA defaults to spaces to represent indentation and isn't handling the default emacs indentation representation properly. I don't particularly care either way - I have this really powerful editor that takes care of that sort of thing for me - so I took JWZ's advice (http://www.jwz.org/doc/tabs-vs-spaces.html) and set emacs to always use spaces to represent indentation.
+
+<code>(setq indent-tabs-mode nil)</code>
+
+So far, this seems to work better.  I will update if I run into any further problems.
+
+Also, since I'm not using tab characters, I changed tab to invoke IDEA autoindent (normally ctrl-alt-i).
+
+* Open File/Settings/Keymap
+* edit the keymap for /All Actions/Editor Actions/Tab (which inserts a tab, oddly enough) 
+* select the Tab shortcut and click Remove
+* edit the keymap for /All Actions/Main Menu/Code/Auto-Indent Lines
+* Click Add Keyboard Shortcut, press the tab key
+
+The result feels a lot more emacs-like, though I haven't messed with the rest of the key mappings.  The key mapping dialog has an option (the dropdown at the top labeled Keymaps) to use emacs key mappings. I've used it in the past, it gives you basic line editing key bidings, but it also interferes with a bunch of other common IDEA tasks. I find I much prefer just alternating between emacs for serious editing and using IDEA for refactoring.

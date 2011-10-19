@@ -1240,11 +1240,11 @@ sequences for file and autofile bookmarks, respectively.)
 
 For example:
 
-`C-x j t f % +'   is `bmkp-file-some-tags-regexp-jump'
+`##C-x j t f % +##'   is `bmkp-file-some-tags-regexp-jump'
 
-`C-x j t C-f % +' is `bmkp-file-this-dir-some-tags-regexp-jump'
+`##C-x j t C-f % +##' is `bmkp-file-this-dir-some-tags-regexp-jump'
 
-`C-x j t a % +'   is `bmkp-find-file-some-tags-regexp'
+`##C-x j t a % +##'   is `bmkp-find-file-some-tags-regexp'
 
 * The first of these visits any file bookmark that has at least
 one tag among the tags you specify, and you choose among
@@ -2209,8 +2209,32 @@ Sometimes it is convenient to quickly create and delete bookmarks
 whose names you don't really care about.  That is the purpose of
 '''autonamed''' bookmarks.  An autonamed bookmark has a simple name
 provided automatically, and it does not record any region
-information -- it records only a position.  It is nevertheless an
+information -- it records only a position.  An autonamed bookmark is nevertheless an
 ordinary, persistent bookmark.
+
+What if you want only temporary bookmarks, which are not saved to
+disk?  As always, you control saving of bookmarks using option
+'''`bookmark-save-flag''''.  Remember that you can toggle this option
+using command `bmkp-toggle-saving-bookmark-file' (bound to '''`##M-~##''''
+in the bookmark-list buffer).  Remember too that you can at any
+changing the set of bookmarks that are susceptible to being saved.
+
+You can, for example:
+
+1. Use '''`C-x p 0'''' (`bmkp-empty-file') to create a new, empty
+bookmark file.
+
+2. Use '''`C-x p L'''' (`bmkp-switch-bookmark-file') to switch to using
+that new, empty bookmark file.
+
+3. Use '''`M-x bmkp-toggle-saving-bookmark-file'''' to turn off
+auto-saving bookmarks to disk.
+
+From then on, bookmarks that you create will be stored on the new
+list, which will not be automatically saved to disk.  If you do
+not explicitly save it, the bookmarks will be lost when your Emacs
+session ends -- they are thus only temporary.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
+
 
 '''`C-x p RET'''' creates a bookmark at [[point]] without prompting you for
 the name.  It is named using the current buffer name

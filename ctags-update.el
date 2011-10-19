@@ -2,12 +2,14 @@
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-10-17 21:19:08 星期一
+;; Last Updated: Joseph 2011-11-19 10:11:44 星期六
 ;; Version: 0.1.2
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
 ;; Keywords: exuberant-ctags etags
 ;; URL: http://www.emacswiki.org/emacs/ctags-update.el
+;;      https://github.com/jixiuf/anything-etags-plus
+;;      https://github.com/emacsmirror/ctags-update
 
 ;; Copyright (C) 2011, 纪秀峰, all rights reserved.
 
