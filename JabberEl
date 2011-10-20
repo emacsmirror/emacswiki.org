@@ -464,8 +464,5 @@ Are you connecting to Google Talk by any chance?  Those symptoms sounds very muc
 [new]
 Yes, it is Google Talk. And I have checked out the git version for namespace prefixes after I saw the information in the mail list. It works now. --Cesc
 
-[new]
-Is it possible to send a file for google talk? --Kiwon
-
 ----
 CategoryChatClient

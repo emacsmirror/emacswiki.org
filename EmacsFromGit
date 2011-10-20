@@ -10,6 +10,10 @@ Official [http://savannah.gnu.org/projects/emacs Savannah Emacs page] reffer to 
 <pre>
   $ git clone git://git.savannah.gnu.org/emacs.git
 </pre>
+or for those behind a proxy:
+<pre>
+  $ git clone http://git.savannah.gnu.org/r/emacs.git
+</pre>
 
 There are exist another [http://article.gmane.org/gmane.emacs.devel/119614 semi-official] mirrors:
 

@@ -35,6 +35,32 @@ main([File_Name]) ->
 </pre>
 
 
+I use rebar and have hrl files not in the ../include path. Here is a quick hack I did to get all the appropriate include paths assuming a rebar based project. It could be smarter about finding things, but I just wanted to fix the 80% case.
+
+<pre>
+#!/usr/bin/env escript
+-export([main/1]).
+
+main([File_Name]) ->
+    Includes = case filelib:is_dir("../deps") of
+                   false ->
+                       ["../include"];
+                   true ->
+                       {ok, Deps} = file:list_dir("../deps"),
+                       [{i, "../include"}| [{i,Di} || D <- Deps,
+                              begin
+                                  Di = "../deps/"++D++"/include",
+                                  filelib:is_dir(Di)
+                              end]]
+               end,
+
+    compile:file(File_Name, [warn_obsolete_guard, warn_unused_import,
+                             warn_shadow_vars, warn_export_vars,
+                             strong_validation, report | Includes]).
+</pre>
+
+
+
 [new:Habitue01:] Would it be possible to alter this script to get output from dialyzer as well?
 : bkil: I've successfully connected it with Dialyzer! Get it from here: http://code.google.com/p/bkil-open/source/browse/trunk/volatile#volatile%2Fpg%2Fflyerl
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct 18 21:54:55 2011 (-0700)
+;; Last-Updated: Wed Oct 19 21:53:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7469
+;;     Update #: 7471
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -463,6 +463,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/10/19 dadams
+;;     Added: icicle-describe-process, icicle-send-signal-to-process.  Thx to Michael Heerdegen.
 ;; 2011/10/10 dadams
 ;;     icicle-define-search-bookmark-command: Moved to icicles-mac.el.
 ;;     Moved here (and to icicles-face.el) from icicles-mac.el: icicle-maybe-byte-compile-after-load.

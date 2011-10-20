@@ -1,3 +1,5 @@
+== Using the Java-based W3C Validator ==
+
 Get http://www.w3.org/QA/Tools/css-validator/css-validator.jar create a directory named 'lib' in the same directory.
 Copy to the 'lib' dir the following jars:
 
@@ -69,6 +71,9 @@ Otherwise everything worked perfectly, thanks again.  &mdash;[[NoahSussman]]
 [new:NoahSussman:2009-09-11 04:07 UTC]
 
 ----
+
+== Using the Python module, cssutils ==
+
 cssutils
 
 If you don't want to use the W3C validator (maybe you just don't want to install Java on your 4GB netbook), you can use a Python module named cssutils.
@@ -91,4 +96,62 @@ Install cssutils with pip or easy_install and add this to your config:
               (lambda () (flymake-mode t)))
 
 ----
+
+== Using the Javascript program, CSSLint ==
+
+There's a [https://github.com/stubbornella/csslint CSSLint project on github] that seems to work nicely. It's a Javascript program, doesn't require installing Java and servlet jars and all the other stuff required by the W3C validator. It can be used on any platform. 
+
+I needed to modify it slightly to get it to work on Windows with WSH.  [http://jslint-for-wsh.googlecode.com/files/csslint-wsh.js csslint-wsh.js] With those mods, it works nicely for a flymake-for-css. 
+
+    (defun dino-flymake-css-init ()
+      "the initialization fn for flymake for CSS"
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                           'dino-flymake-create-temp-intemp))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list (concat (getenv "windir") "\\system32\\cscript.exe")
+              (list "c:\\users\\dino\\bin\\csslint-wsh.js" "--format=compiler" local-file))))
+
+
+    (defvar css-csslint-error-pattern
+      ;;"^[ \t]*\\([A-Za-z.0-9_: \\-]+\\)(\\([0-9]+\\)[,]\\( *[0-9]+\\)) CSSLINT: ?\\(error\\|warning\\) ?: +\\(.+\\)$"
+      "^[ \t]*\\([\._A-Za-z0-9][^(\n]+\\.css\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) CSSLINT: ?\\(\\(error\\|warning\\) ?: +\\(.+\\)\\)$"
+      "The regex pattern for CSSLint error or warning messages. Follows
+    the same form as an entry in `flymake-err-line-patterns'. The
+    value is a STRING, a regex.")
+
+    (defun dino-css-flymake-install ()
+      "install flymake stuff for CSS files."
+      (add-to-list
+       'flymake-err-line-patterns
+       (list css-csslint-error-pattern 1 2 3 4))
+
+      (let* ((key "\\.css\\'")
+             (cssentry (assoc key flymake-allowed-file-name-masks)))
+        (if cssentry
+            (setcdr cssentry '(dino-flymake-css-init))
+          (add-to-list
+           'flymake-allowed-file-name-masks
+           (list key 'dino-flymake-css-init)))))
+
+
+    (eval-after-load "compile"
+      '(progn
+         (if (boundp 'compilation-error-regexp-alist-alist)
+          (progn
+            (add-to-list
+             'compilation-error-regexp-alist-alist
+             (list 'csslint-wsh css-csslint-error-pattern 1 2 3))
+            (add-to-list
+             'compilation-error-regexp-alist
+             'csslint-wsh)))))
+
+    (eval-after-load "flymake"
+      '(progn
+         (dino-css-flymake-install)))
+
+
+----
+CategoryWThirtyTwo
 FlyMake

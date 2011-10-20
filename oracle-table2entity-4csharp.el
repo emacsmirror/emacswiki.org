@@ -1,7 +1,7 @@
 ;;; oracle-table2entity-4csharp.el --- oracle table2entity for csharp   -*- coding:utf-8 -*-
 
 ;; Description:oracle table2entity for csharp
-;; Time-stamp: <Joseph 2011-09-27 14:19:28 星期二>
+;; Last Updated: Joseph 2011-11-20 11:36:48 星期日
 ;; Created: 2011-09-18 21:44
 ;; Author: 孤峰独秀  jixiuf@gmail.com
 ;; Maintainer:  孤峰独秀  jixiuf@gmail.com
@@ -143,6 +143,7 @@ key 是db类型，value 是csharp 中对应类型.要求key大写"
   (with-current-buffer (find-file-noselect
                         (expand-file-name
                          (concat classname ".cs") savepath))
+    (when (boundp 'flymake-mode)(flymake-mode -1) )
     (erase-buffer)
     (insert "using System;\n")
     (insert "using System.Text;\n")
@@ -161,8 +162,7 @@ key 是db类型，value 是csharp 中对应类型.要求key大写"
       )
     (save-buffer)
     (kill-this-buffer)
-    )
-  )
+    ))
 
 ;;;###autoload
 (defun otec-generate-all-classes(namespace savepath)
@@ -182,8 +182,9 @@ key 是db类型，value 是csharp 中对应类型.要求key大写"
   (interactive)
   (let ((namespace (read-string  "csharp namespace name:" "" nil ""))
         (savepath (read-directory-name  "save generated class to directory:"  )))
+    (when (not (file-directory-p savepath)) (make-directory savepath))
     (otec-generate-all-classes namespace savepath)
-    )
-  )
+    (dired savepath)))
+
 (provide 'oracle-table2entity-4csharp)
 ;;; oracle-table2entity-4csharp ends here

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 14 17:05:30 2011 (-0700)
+;; Last-Updated: Wed Oct 19 22:04:48 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28523
+;;     Update #: 28526
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6432,6 +6432,7 @@
 ;;                          Customize Icicles options and faces
 ;;  `icicle-delete-file'  - Delete a file or directory
 ;;  `icicle-delete-windows' - Delete all windows for a buffer
+;;  `icicle-describe-process' - Describe a system process
 ;;  `icicle-doc'          - Display doc of function, variable, or face
 ;;  `icicle-doremi-increment-variable+' -
 ;;                          Increment a variable using Do Re Mi
@@ -6509,6 +6510,7 @@
 ;;  `icicle-search-xml-element' - Search the contents of XML elements
 ;;  `icicle-search-xml-element-text-node' - Search XML text nodes
 ;;  `icicle-select-window' - Select a window by its buffer name
+;;  `icicle-send-signal-to-process' - Send a signal to a process
 ;;  `icicle-set-option-to-t' - Set value of binary option to `t'
 ;;  `icicle-sexp-list'    - Choose a list of past or new sexps
 ;;  `icicle-show-faces'   - Show invisible faces you choose
@@ -8264,6 +8266,7 @@
 ;;  `icicle-search-w3m-bookmark' - Search a W3M bookmark
 ;;  `icicle-select-frame' - Select frame by name and raise it
 ;;  `icicle-select-window' - Select window by its buffer name
+;;  `icicle-send-signal-to-process' - Send a signal to a process
 ;;  `icicle-set-option-to-t' - Set the value of a binary option to `t'
 ;;  `icicle-synonyms' - Show synonyms that match a regexp
 ;;  `icicle-tag-a-file' - Add one or more tags to a file

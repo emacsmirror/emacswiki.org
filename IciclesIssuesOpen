@@ -260,8 +260,25 @@ The choice of `M-pause' was nothing special, IIRC.  Lots of the '''Icicles''' de
 
 You can email me, if you like.  It would probably be easier to dialog that way about your problem.  Sorry for your trouble.  -- DrewAdams
 
+[new]
 
+Hi Drew!
 
+If i understood correctly, `icicle-keep-only-past-inputs' is just some kind of filter function. And if the files don't have the marking ''opened before'', the filter function does not work. That was what i tried to describe.
+
+Used my test enviroment, what i've described before. 
+
+I've already taken out `savehist' and i've hit `C-Pause' many times.
+
+But, if i hit `M-i' i see the previous files!!
+
+Thanks for the explanation about your key choiches!
+
+I've uploaded some screenshots: MetaI MetaPause
+
+I will mess the debugger later...
+
+--PasJa
 
 
 

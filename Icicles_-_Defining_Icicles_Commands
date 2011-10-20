@@ -344,6 +344,7 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-search-w3m-bookmark'''' -- Search a [[w3m]] bookmark
 * '''`icicle-select-frame'''' -- Select frame by name and raise it
 * '''`icicle-select-window'''' -- Select window by its buffer name
+* '''`icicle-send-signal-to-process'''' -- Send a signal to a process
 * '''`icicle-set-option-to-t'''' -- Set the value of a binary option to `t'
 * '''`icicle-synonyms'''' -- Show synonyms that match a [[regexp]]
 * '''`icicle-tag-a-file'''' -- Add one or more tags to a file

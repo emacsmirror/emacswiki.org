@@ -1,11 +1,11 @@
 ;;; sqlserver-query.el --- execute sql select using sqlcmd.exe or osql.exe on SQL SERVER. -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 Joseph
+;; Copyright (C) 2011 Joseph 纪秀峰
 
 ;; Created: 2011年08月17日 星期三 22时11分54秒
-;; Last Updated: Joseph 2011-11-12 09:28:57 星期六
-;; Version: 0.1.3
-;; Author: Joseph  jixiuf@gmail.com
+;; Last Updated: Joseph 2011-11-20 11:37:29 星期日
+;; Version: 0.1.4
+;; Author: Joseph  纪秀峰 jixiuf@gmail.com
 ;; Keywords: sqlserver emacs sql sqlcmd.exe osql.exe
 ;; Filename: sqlserver-query.el
 ;; Description:  execute sql select using sqlcmd.exe or osql.exe on SQL SERVER
@@ -47,6 +47,9 @@
 ;;  `sqlserver-cmd'
 ;;    sqlserver-cmd  now  support sqlcmd.exe and osql.exe
 ;;    default = (quote sqlcmd)
+;;  `sqlserver-command-path'
+;;    path (without filename) of the sqlcmd.exe or osql.exe .
+;;    default = nil
 
 ;; (sqlserver-query "select empno,ename from emp where empno<=7499")
 ;; got : (("7369" "SMITH") ("7499" "ALLEN"))
@@ -57,6 +60,7 @@
 ;;
 ;; 1. you should custom these variable
 ;; `sqlserver-connection-info'
+;; `sqlserver-command-path' not needn't if `sqlserver-cmd' in under your PATH
 ;;  `sqlserver-cmd' ;sqlcmd or osql
 ;; for example
 ;; (setq sqlserver-connection-info
@@ -98,6 +102,7 @@
 (defgroup sqlserver-query nil
   "SQL SERVER QUERY"
   :group 'SQL)
+
 (defcustom sqlserver-connection-info
   '((username . "sa")
     (password . "sa")
@@ -112,6 +117,13 @@
   "sqlserver-cmd  now  support sqlcmd.exe and osql.exe
 sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
   :type '(choice (const sqlcmd) (const osql))
+  :group 'sqlserver-query)
+
+(defcustom  sqlserver-command-path nil
+  "path (without filename) of the sqlcmd.exe or osql.exe .
+eg \"c:\\Program Files\\Microsoft SQL Server\\100\\Tools\\Binn\"
+If you leave it nil, it will search the path for the executable."
+  :type 'string
   :group 'sqlserver-query)
 
 (defvar sqlserver-timeout-wait-for-result 300
@@ -144,7 +156,8 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
           (setq row (split-string line " " t))
           (when row (setq result (append result (list row)))))
         (forward-line)))
-    (when (and result (> (length result) 1))
+    (when (and result (> (length result) 1)
+               (not (string-match "^-+$" (caar result))))
       (setcdr result (cddr result))  )
     result ))
 
@@ -168,24 +181,27 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
       (sqlserver-parse-result-as-list-4-sqlcmd raw-result)
     (sqlserver-parse-result-as-list-4-osql raw-result)))
 
-;; (sqlserver-format-connect-string sqlserver-connection-info)
-(defun sqlserver-format-connect-string(connection-info)
-  "default:sqlcmd -S localhost\\SQLEXPRESS -U sa -P sa -d master -h-1 -w 65535   -s \"\^E\" -W"
-  (if (equal sqlserver-cmd 'sqlcmd)
-      (format "%s -S %s -U %s -P %s -d \"%s\" -w 65535  -s \"\^E\" -W"
-              (symbol-name sqlserver-cmd)
-              (cdr (assoc 'server-instance connection-info))
-              (cdr (assoc 'username connection-info))
-              (cdr (assoc 'password connection-info))
-              (cdr (assoc 'dbname connection-info)))
-    (format "%s -S %s -U %s -P %s -d \"%s\" -n -w 65535 -s \" \" -r 1 "
-            ;;            "%s -S %s -U %s -P %s -d %s -h-1  -n -w 65535  -s \"\^E\""
-            (symbol-name sqlserver-cmd)
-            (cdr (assoc 'server-instance connection-info))
-            (cdr (assoc 'username connection-info))
-            (cdr (assoc 'password connection-info))
-            (cdr (assoc 'dbname connection-info)))))
+(defun sqlserver-command-exepath ()
+  (if (null sqlserver-command-path)
+      (concat (symbol-name sqlserver-cmd) ".exe")
+    (expand-file-name
+     (concat (symbol-name sqlserver-cmd) ".exe")
+     sqlserver-command-path)
+    ))
 
+(defun sqlserver-format-command-args(connection-info)
+  "Returns a list of all the arguments for the sqlcmd.exe or osql.exe program.
+  default: -S localhost\\SQLEXPRESS -U sa -P sa -d master -h-1 -w 65535   -s \"\^E\" -W
+"
+  (apply 'list "-S" (cdr (assoc 'server-instance connection-info))
+         "-U" (cdr (assoc 'username connection-info))
+         "-P" (cdr (assoc 'password connection-info))
+         "-d" (cdr (assoc 'dbname connection-info))
+         (split-string
+          (if (equal sqlserver-cmd 'sqlcmd)
+              "-w 65535 -s \^E -W"   ;; should be actual ^E, not ^ followed by E
+            "-n -w 65535 -s \^E -r 1 ")
+          " " t)))
 
 (defun sqlserver-query-read-connect-string()
   "set server dbname username password interactive"
@@ -205,29 +221,30 @@ sqlserver 2005 add new cmd sqlcmd.exe. and osql.exe is not recommended."
     (setq-default sqlserver-connection-info connection-info) ;;update default info
     connection-info))
 
+;; thanks dino chiesa <dpchiesa@hotmail.com> for
+;; changed things - used start-process instead of start-process-shell-command
 ;; (sqlserver-query-create-connection sqlserver-connection-info)
 (defun sqlserver-query-create-connection(connection-info)
   "open connection with sqlcmd.exe or osql.exe."
   (interactive (list (sqlserver-query-read-connect-string)))
-  (let ((process (start-process-shell-command
-                  (symbol-name sqlserver-cmd)
-                  (concat " *sqlserver-query-" (number-to-string (random)) "*")
-                  (concat  (sqlserver-format-connect-string connection-info)))))
-
+  (let ((process (apply 'start-process ;; dino
+                        (symbol-name sqlserver-cmd)
+                        (concat " *sqlserver-query-" (number-to-string (random)) "*")
+                        (sqlserver-command-exepath)
+                        (sqlserver-format-command-args connection-info))))
     (set-process-query-on-exit-flag process nil)
     (set-process-sentinel
      process
      (lambda (proc change)
        (when (string-match "\\(finished\\|exited\\|exited abnormally with code\\)" change)
-         (message  (concat  (process-name proc) " exited"))
-         (kill-buffer  (process-buffer proc)))))
+         (message  (concat  (process-name proc) " exited")))))
     (list process
           (process-buffer process)
           connection-info)))
 
 ;;;###autoload
 (defun sqlserver-query-close-connection(connection)
-  "close connection.kill sqlplus process and buffer ."
+  "close connection.kill sqlserver process and buffer ."
   (kill-process (nth 0 connection))
   (kill-buffer (nth 1 connection))
   (setq connection nil))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 12 09:04:05 2011 (-0700)
+;; Last-Updated: Wed Oct 19 21:34:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 23023
+;;     Update #: 23026
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -201,8 +201,9 @@
 ;;    `icicle-dabbrev-completion', `icicle-delete-file',
 ;;    `icicle-delete-window', `icicle-delete-windows',
 ;;    `icicle-delete-windows-on', `icicle-describe-file',
-;;    `icicle-describe-option-of-type', `icicle-directory-list',
-;;    `icicle-dired', `icicle-dired-chosen-files',
+;;    `icicle-describe-option-of-type', `icicle-describe-process',
+;;    `icicle-directory-list', `icicle-dired',
+;;    `icicle-dired-chosen-files',
 ;;    `icicle-dired-chosen-files-other-window',
 ;;    `icicle-dired-other-window', `icicle-dired-project',
 ;;    `icicle-dired-project-other-window',
@@ -322,7 +323,7 @@
 ;;    `icicle-select-bookmarked-region', `icicle-select-frame',
 ;;    `icicle-select-frame-by-name', `icicle-select-window',
 ;;    `icicle-select-window-by-name', `icicle-send-bug-report',
-;;    `icicle-set-option-to-t',
+;;    `icicle-send-signal-to-process', `icicle-set-option-to-t',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', `icicle-sexp-list',
 ;;    `icicle-shell-dynamic-complete-command',

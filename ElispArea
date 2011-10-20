@@ -14,7 +14,7 @@ Other links to libraries do not show the header and footer. You can either copy 
 
 Besides downloading individual libraries, you can also use a *version control system* to download the files.  See WikiDownload.
 
-* [http://www.emacswiki.org/elisp/ Alphabetical list of all Elisp libraries on this Wiki]
+* [Self:action=elisp-area;context=0 Alphabetical list of all Elisp libraries on this Wiki]
 * [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological list of all Elisp libraries on this Wiki]
 ([http://www.emacswiki.org/elisp/changelog.html last seven days])
 * By Category -- Most of the links off of SiteMap are to '''categories''' pages, which link to relevant user-contributed libraries
@@ -23,7 +23,7 @@ Besides downloading individual libraries, you can also use a *version control sy
 
 === Files ===
 
-Small files up to maybe 200k can be pasted into ordinary pages. Basic instructions follow but please also read and wherever possible *follow the ElispAreaConventions*.
+Small files up to maybe 200k can be pasted into ordinary pages. Basic instructions follow but please also read and wherever possible '''follow the ElispAreaConventions'''.
 
 First, create a page on the wiki explaining what the file does.  See CreateNewPages for how to do this.  On that page, create a link to the file itself using the Lisp prefix:
 
@@ -118,7 +118,7 @@ Additional tips can be found on ElispAreaDiscussions
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 275%
+%Id: 277%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

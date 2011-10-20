@@ -27,34 +27,42 @@ These methods may be useful with older versions of Emacs, or ports where the 'fu
 
 === MS Windows ===
 
+==== darkroom-mode ====
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
 
+==== Binary patch ====
 Alternatively, a patch is available [https://github.com/erikcharlebois/patches/blob/master/emacs/w32_set_fullscreen.patch here] 
 that makes the fullscreen frame parameter really fullscreen on Windows.
 
-To get a maximized window you can use: (w32-send-sys-command #xf030)
-
-Attention!
-If you want that emacs starts maximized, you have to put this code into your .emacs file:
+==== emacs-fullscreen-win32 ====
+Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/wiki/Home emacs-fullscreen-win32] project. It allows you to switch to/from full-screen mode.
+===== Basic settings =====
+* Add the following lines to your .emacs file:
 {{{
-(defun jbr-init ()
-  "Called from term-setup-hook after the default
-terminal setup is
-done or directly from startup if term-setup-hook not
-used.  The value
-0xF030 is the command for maximizing a window."
-  (interactive)
-  (w32-send-sys-command #xf030)
-  (ecb-redraw-layout)
-  (calendar)
-)
-(setq term-setup-hook 'jbr-init)
-(setq window-setup-hook 'jbr-init)
+(defun toggle-full-screen () (interactive) (shell-command "emacs_fullscreen.exe"))
+(global-set-key [f11] 'toggle-full-screen)
+}}}
+* Compile main.c (or download compiled EXE [[https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/downloads/emacs_fullscreen.zip|here]]) and copy EXE file to the folder in your PATH (I use C:\Windows\system32).
+* Now run Emacs and press F11 to switch into full-screen mode. Press F11 again to switch to windowed mode.
+NOTE: This will not hide menu-bar, tool-bar, and scroll-bar.
+
+===== Hide Emacs bars forever =====
+If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
+{{{
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 }}}
 
-Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/wiki/Home emacs-fullscreen-win32] project. It allows you to switch to/from full-screen mode.
-Here is an example of configuration:
+===== Start in full-screen mode =====
+If you want to start Emacs in full-screen mode then put call to toggle-full-screen function into your .emacs file:
+{{{
+(toggle-full-screen)
+}}}
+
+===== Hide bars in full-screen mode and show them in windowed mode =====
+If you want to hide menu-bar, tool-bar, and scroll-bar in full-screen mode and restore them in windowed mode then use this code:
 {{{
 (defun toggle-full-screen ()
   "Toggles full-screen mode for Emacs window on Win32."
@@ -77,6 +85,59 @@ Here is an example of configuration:
 (global-set-key [f11] 'toggle-full-screen-and-bars)
 }}}
 
+===== Example of .emacs file =====
+Here is a part of my .emacs file. Emacs will start in full-screen mode. Menu-bar, tool-bar, and scroll-bar are visible in windowed mode (and are invisible in full-screen mode):
+{{{
+;; Hide splash-screen and startup-message
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+
+(defun toggle-full-screen ()
+  "Toggles full-screen mode for Emacs window on Win32."
+  (interactive)
+  (shell-command "emacs_fullscreen.exe"))
+
+(defun toggle-bars ()
+  "Toggles bars visibility."
+  (interactive)
+  (menu-bar-mode)
+  (tool-bar-mode)
+  (scroll-bar-mode))
+
+(defun toggle-full-screen-and-bars ()
+  "Toggles full-screen mode and bars."
+  (interactive)
+  (toggle-bars)
+  (toggle-full-screen))
+
+;; Use F11 to switch between windowed and full-screen modes
+(global-set-key [f11] 'toggle-full-screen-and-bars)
+
+;; Switch to full-screen mode during startup
+(toggle-full-screen-and-bars)
+}}}
+
+==== Maximizing window (not real full-screen) ====
+To get a maximized window you can use: (w32-send-sys-command #xf030)
+
+Attention!
+If you want that emacs starts maximized, you have to put this code into your .emacs file:
+{{{
+(defun jbr-init ()
+  "Called from term-setup-hook after the default
+terminal setup is
+done or directly from startup if term-setup-hook not
+used.  The value
+0xF030 is the command for maximizing a window."
+  (interactive)
+  (w32-send-sys-command #xf030)
+  (ecb-redraw-layout)
+  (calendar)
+)
+(setq term-setup-hook 'jbr-init)
+(setq window-setup-hook 'jbr-init)
+}}}
+
 === X Windows ===
 ==== Send X Messages to the Window Manager ====
 
@@ -96,11 +157,9 @@ Or to only maximize window:
 
 
 ==== External program: wmctrl ====
-
 If you want to bind F11 to toggle full-screen, here is what you need:
 
 * install wmctrl (sudo apt-get install wmctrl)
-
 * edit your .emacs and add:
 
     (defun switch-full-screen ()

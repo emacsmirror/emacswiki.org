@@ -253,6 +253,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-customize-icicles-group]
 [:icicle-delete-file]
 [:icicle-delete-windows]
+[:icicle-describe-process]
 [:icicle-doc]
 [:icicle-doremi-increment-variable+]
 [:icicle-font]
@@ -321,6 +322,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-xml-element]
 [:icicle-search-xml-element-text-node]
 [:icicle-select-window]
+[:icicle-send-signal-to-process]
 [:icicle-set-option-to-t]
 [:icicle-sexp-list]
 [:icicle-show-faces]
@@ -372,14 +374,15 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-customize-icicles-group' -- Customize '''Icicles''' options and [[face]]s
 * `icicle-delete-file'  -- Delete a file or directory
 * `icicle-delete-windows' -- Delete all [[window]]s for a given [[buffer]]
-* `icicle-doc'          -- Display doc of [[function]], [[variable]], or [[face]]
+* `icicle-describe-process' -- Describe a system process
+* `icicle-doc'          -- Display doc of function, [[variable]], or [[face]]
 * `##icicle-doremi-increment-variable+##' -- Increment a [[variable]] using '''[[DoReMi|Do Re Mi]]'''
 * `icicle-face-list'    -- Choose a list of [[face]] names
 * `icicle-file-list'    -- Choose a list of file names
 * `icicle-font'         -- Change the [[frame]] font
 * `icicle-frame-bg'     -- Change the frame background color
 * `icicle-frame-fg'     -- Change the frame foreground color
-* `icicle-fundoc'       -- Display the doc of a [[function]]
+* `icicle-fundoc'       -- Display the doc of a function
 * `icicle-hide-faces' -- Hide a set of faces you choose
 * `icicle-hide-only-faces' -- Hide a set of faces you choose; show all others
 * `icicle-increment-option' -- Increment numeric [[option]]s using '''[[DoReMi|Do Re Mi]]'''
@@ -438,6 +441,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-url-bookmark' -- Search URL bookmarks
 * `icicle-search-w3m-bookmark' -- Search [[w3m|W3M]] bookmarks
 * `icicle-select-window' -- Select a [[window]] by its buffer name
+* `icicle-send-signal-to-process' -- Send a signal to a system process
 * `icicle-set-option-to-t' -- Set value of binary option to `t'
 * `icicle-sexp-list'   -- Choose a list of past or new [[sexp]]s
 * `icicle-show-faces' -- Show a set of invisible faces you choose

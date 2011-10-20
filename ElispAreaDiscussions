@@ -236,6 +236,30 @@ The changelog.html link will redirect to the correct filtered recent changes.
 
 : Thanks -- seems to work well. And it shows the (diff) link and last modifier and date. Any chance of having that additional info also in the alphabetical index? IOW, it would be great if the alphabetical list had the same info as the chronological list, the only difference being the sort order (and the number of files listed). -- DrewAdams
 
+[new:AlexSchroeder:2011-10-19 11:55 UTC]
+What do you think of Self:action=elisp-area?
+
+[new:DrewAdams:2011-10-19 14:34 UTC]
+I like it, but I would also like to see something nearly as simple and compact as the current alphabetic sort: just one line per entry:
+
+: <tt>[[icicles-mcmd.el]]</tt>   05:00 UTC
+
+Or maybe also with a ##(diff)## link (dunno about that).  -- DrewAdams
+
+[new:AlexSchroeder:2011-10-19 18:13 UTC]
+No problem -- I added Self:action=elisp-area;context=0.
+
+[new:DrewAdams:2011-10-19 18:35 UTC]
+Great.  Can we have that in place of the current alphabetical listing (linked from the download page)?  And if possible, it would be more readable if there were a tab (i.e., some kind of aligned spacing) before the time -- just a "nice-to-have".  Thx! -- DrewAdams
+
+[new:Alex:2011-10-19 22:05 UTC]
+I used a table instead of single lines in a paragraph and I'll use the link to replace what we currently have.
+
+[new:DrewAdams:2011-10-19 22:17 UTC]
+Yowza! Looks good to me.  Thx -- DrewAdams
+
+
+
 == Suggestion: Adding provide form to libraries that miss it ==
 
 [new]

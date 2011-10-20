@@ -1,7 +1,7 @@
 ;;; oracle-table2entity-4java.el --- oracle table2entity for java   -*- coding:utf-8 -*-
 
 ;; Description:oracle table2entity for java
-;; Time-stamp: <Joseph 2011-09-27 14:21:09 星期二>
+;; Last Updated: Joseph 2011-11-20 11:36:03 星期日
 ;; Created: 2011-09-18 21:44
 ;; Author: 孤峰独秀  jixiuf@gmail.com
 ;; Maintainer:  孤峰独秀  jixiuf@gmail.com
@@ -203,6 +203,7 @@ key 是db类型，value 是java 中对应类型.要求key大写"
   (with-current-buffer (find-file-noselect
                         (expand-file-name
                          (concat classname ".java") savepath))
+    (when (boundp 'flymake-mode)(flymake-mode -1) )
     (erase-buffer)
     (insert (format "package %s;\n" packagename))
     (insert "\n")
@@ -211,12 +212,11 @@ key 是db类型，value 是java 中对应类型.要求key大写"
     (insert (format "public class %s{\n\n" classname))
     (insert setter-getters)
     (insert "}\n")
-      (java-mode)
-      (indent-region (point-min) (point-max))
+    (java-mode)
+    (indent-region (point-min) (point-max))
     (save-buffer)
     (kill-this-buffer)
-    )
-  )
+    ))
 
 ;;;###autoload
 (defun otej-generate-all-classes(package savepath)
@@ -236,8 +236,9 @@ key 是db类型，value 是java 中对应类型.要求key大写"
   (interactive)
   (let ((package (read-string  "java package name:" "" nil ""))
         (savepath (read-directory-name  "save generated class to directory:"  )))
+    (when (not (file-directory-p savepath)) (make-directory savepath))
     (otej-generate-all-classes package savepath)
-    )
-  )
+    (dired savepath)))
+
 (provide 'oracle-table2entity-4java)
 ;;; oracle-table2entity-4java ends here
