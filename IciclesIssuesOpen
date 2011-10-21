@@ -136,9 +136,9 @@ Debugger entered--Lisp error:
 
 (This is the case for ''all'' use of EmacsLisp macros, BTW.)
 
-3. I do not support Emacs 24 for '''Icicles'''.  Emacs 24 has not yet been released.  I use it myself, and you are welcome to use it with '''Icicles''', but all bets are off wrt support and debugging.  If you are using it, I suggest you download the pretest, which is now available. (I cannot test with it, however, since no Windows binary has yet been published, even though the pretest source code was published a month ago.)
+3. I do not support Emacs 24 for '''Icicles'''.  Emacs 24 has not yet been released.  I use it myself, and you are welcome to use it with '''Icicles''', but all bets are off wrt support and debugging.  If you are using it, I suggest you download the pretest, which is now available.  Thx -- DrewAdams
 
-Thx -- DrewAdams
+
 
 
 
@@ -276,14 +276,26 @@ Thanks for the explanation about your key choiches!
 
 I've uploaded some screenshots: MetaI MetaPause
 
-I will mess the debugger later...
+I will mess the debugger later... -- PasJa
+
+
+[new:DrewAdams:2011-10-20 13:21 UTC]
+I think you're saying that `file-name-history' is correct, but that `M-pause' does not restrict the current set of candidates to just names that are in `file-name-history'.  From your screenshots I see that, but I also see that there is ''no'' highlighting (blue) of any history candidates in your MetaPause screenshot, whereas ''all'' history candidates (hence all candidates showing after `M-pause') should be highlighted.
+
+(There is also no alignment of candidates, but I don't know if that indicates anything here. Maybe this is because of your settings of `icicle-candidate-width-factor' and
+`icicle-inter-candidates-min-spaces'.)
+
+I cannot reproduce the problem -- I see history highlighting, and `M-pause' immediately filters the current set of candidates to only those that are also history candidates (which all appear blue).
+
+You will need to provide a complete recipe, I guess, starting preferably from ##emacs -Q##.  (I assume that you first hit `TAB' or `S-TAB' before hitting `M-pause'.  If not, please see the doc.)  I will try to reproduce the problem if you can give me more info (a recipe) -- so far, I cannot repro it.  Sorry.  I've tested with the first Emacs 24 pretest, Emacs 23, 22, and 20 (on Windows). -- DrewAdams
+
+
+
+[new]
+
+OK, i will give you the complete recipe.
 
 --PasJa
-
-
-
-
-
 
 
 <pre>

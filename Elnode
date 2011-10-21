@@ -1,4 +1,4 @@
-Elnode is an asynchronous HttpServer framework. You can use it to write HTTP services in ELisp.
+Elnode is an asynchronous HttpServer framework. You can use it to write HTTP services in EmacsLisp.
 
 Elnode is basically an ELisp version of [http://nodejs.org/ node.js],
 the asynchronous HTTP framework for Google's Javascript engine.
@@ -25,7 +25,7 @@ these in similar ways to node.js.
 
 Elnode should be used for making small, personal web services or for developing a first draft of a web service you may later do in Clojure or Node.js or some other web framework.
 
-Emacs is a very good LISP programming environment as well as a great editor. Now that Emacs 24 has lexical scope EmacsLISP is a very powerful language. A webserver framework inside such a powerful LISP environment therefore makes sense.
+Emacs is a very good Lisp programming environment as well as a great editor. Now that Emacs 24 has lexical scope EmacsLisp is a very powerful language. A webserver framework inside such a powerful Lisp environment therefore makes sense.
 
 
 == Getting Elnode ==
@@ -45,7 +45,7 @@ I'd like a permanent place (as opposed to irc) to discuss Elnode. [[https://conv
 
 People asked for a tutorial, so NicFerrier has started to make one. Progress is [[https://github.com/nicferrier/elnode/blob/master/elnode_tutorial.creole|here]].
 
-You need the latest version of Elnode (0.6) to make this tutorial work.
+You need the latest version of Elnode (0.8) to make this tutorial work.
 
 == What can you do with Elnode? ==
 

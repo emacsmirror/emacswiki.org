@@ -194,7 +194,7 @@ A third way to use emacs is with SpeckMode which is an alternative to iSpell.
 
 === Wcheck Mode ===
 
-WcheckMode is a fast general-purpose on-the-fly (spell-)checker interface which can use external programs or Emacs Lisp functions as the text-checker engine. It works not only with Ispell, Enchant, Aspell, Hunspell etc. but also many other command-line text-filtering programs and shell scripts. Wcheck mode is highly configurable.
+WcheckMode is a fast general-purpose on-the-fly (spell-)checker interface which can use external programs or Emacs Lisp functions as the text-checker engine. It works not only with Ispell, Enchant, Hunspell etc. but also many other command-line text-filtering programs and shell scripts. Wcheck mode is highly configurable.
 
 === Enchant ===
 [http://www.abisource.com/projects/enchant/ Enchant] is a wrapper for ispell, aspell, hunspell, myspell, voikko, zemberek, etc. 

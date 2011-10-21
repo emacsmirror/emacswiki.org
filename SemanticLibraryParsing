@@ -89,16 +89,11 @@ For a detailed explanation see http://navaneethkn.wordpress.com/2009/10/11/getti
 
 == Qt ==
 
-Qt is using some preprocessor symbols in its class definitions. You need to set them manually via
+AlexOtt: This setup should work for Qt. Make sure you're using the CEDET version from bzr, though.
 
 <pre>
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("Q_GUI_EXPORT" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("Q_CORE_EXPORT" . ""))
-</pre>
-
-AlexOtt: This setup also should work for Qt:
-
-<pre>
+;; Qt base directory, meaning the directory where the 'Qt' directory can be found.
+;; Adapt accordingly.
 (setq qt4-base-dir "/usr/include/qt4")
 (setq qt4-gui-dir (concat qt4-base-dir "/QtGui"))
 (semantic-add-system-include qt4-base-dir 'c++-mode)
