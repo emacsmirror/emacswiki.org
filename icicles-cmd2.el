@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 19 21:53:58 2011 (-0700)
+;; Last-Updated: Fri Oct 21 19:26:28 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4781
+;;     Update #: 4793
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -992,7 +992,7 @@ used with `C-u', with Icicle mode turned off)."
                        '(1 2))))        ; Both parts, by default.
               (setq color  (icicle-transform-multi-completion
                             (concat color ": " (hexrgb-color-name-to-hex color))))))))
-      (when (interactive-p) (message "Color: `%s'" color))
+      (when (interactive-p) (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
       color))
 
   (icicle-maybe-byte-compile-after-load icicle-read-color)
@@ -2213,7 +2213,7 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
                  (keys1  (mapconcat #'icicle-key-description keys ", ")))
             (message (if (string= "" keys1)
                          (format "`%s' is not on any key" c)
-                       (format "`%s' is on `%s'" c keys1)))
+                       (format "`%s' is on `%s'" c (icicle-propertize keys1 'face 'icicle-msg-emphasis))))
             (sit-for 3)))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "command")))
@@ -3032,7 +3032,10 @@ to nil so that candidates with initial spaces can be matched."
      #'(lambda ()
          (let ((result  (funcall icicle-candidate-entry-fn icicle-explore-final-choice-full)))
            (unless nomsg
-             (message "Key: %s,  Result: %s" (car icicle-explore-final-choice-full) result))
+             (message "Key: %s,  Result: %s"
+                      (icicle-propertize (car icicle-explore-final-choice-full)
+                                         'face 'icicle-msg-emphasis)
+                      (icicle-propertize result 'face 'icicle-msg-emphasis)))
            result))                     ; Return result.
      nil nil nil "Choose an occurrence: " predicate t initial-input hist def inherit-input-method)))
 
@@ -3046,7 +3049,10 @@ to nil so that candidates with initial spaces can be matched."
 	    (let* ((key+value  (funcall icicle-get-alist-candidate-function string))
 		   (result     (funcall icicle-candidate-entry-fn key+value)))
 	      (unless icicle-apply-nomsg
-		(message "Key: %s,  Result: %s" (car key+value) result)))
+		(icicle-msg-maybe-in-minibuffer
+                 "Key: %s,  Result: %s"
+                 (icicle-propertize (car key+value) 'face 'icicle-msg-emphasis)
+                 (icicle-propertize result 'face 'icicle-msg-emphasis))))
 	    nil)			; Return nil for success.
 	(error "%s" (error-message-string icicle-apply-action))) ; Return error msg.
     (select-window (minibuffer-window))
@@ -3057,8 +3063,11 @@ to nil so that candidates with initial spaces can be matched."
   (unwind-protect
        (icicle-condition-case-no-debug icicle-apply-list-action
            (progn                       ; Apply function to candidate element and display it.
-             (message "Result: %s" (funcall icicle-candidate-entry-fn
-                                            (mapcar icicle-get-alist-candidate-function strings)))
+             (icicle-msg-maybe-in-minibuffer
+              "Result: %s"
+              (icicle-propertize
+               (funcall icicle-candidate-entry-fn (mapcar icicle-get-alist-candidate-function strings))
+               'face 'icicle-msg-emphasis))
              nil)                       ; Return nil for success.
          (error "%s" (error-message-string icicle-apply-list-action))) ; Return error msg.
     (select-window (minibuffer-window))
@@ -4721,7 +4730,9 @@ NOTE:
                      (format "%shing (type): " (if icicle-search-complement-domain-p "*NOT* t" "T"))
                      (icicle-things-alist) nil nil nil nil (symbol-name icicle-last-thing-type)))))
     (when (and (eq thing 'comment)  icicle-ignore-comments-flag)
-      (message "Use `C-M-;' if you do not want to ignore comments") (sit-for 2))
+      (message "Use `%s' if you do not want to ignore comments"
+               (icicle-propertize "C-M-;" 'face 'icicle-msg-emphasis))
+      (sit-for 2))
     `(,thing ,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where)))
 
 ;;; Same as `thgcmd-things-alist' in `thing-cmds.el'.
@@ -7611,7 +7622,8 @@ VAR is symbol `icicle-(S-)TAB-completion-methods(-alist)'."
                             (completing-read "Command: " obarray nil t))))
         (methods  ()))
     (unless (< (prefix-numeric-value current-prefix-arg) 0)
-      (let ((prompt  (if (eq var 'icicle-TAB-completion-methods) "TAB methods: " "S-TAB methods: "))
+      (let ((prompt  (format "%s methods (empty `RET' to end): "
+                             (if (eq var 'icicle-TAB-completion-methods) "TAB" "S-TAB")))
             (cmeths  (symbol-value var))
             meth)
         (setq cmeths  (if (consp (car cmeths))
@@ -7645,8 +7657,11 @@ Null ARG means advise and enable."
                                     (advice . (lambda () (let ((,var  ',methods)) ad-do-it))))
                           'around 'first)
            (ad-activate command)
-           (when msgp (message "`%s' %s: %s" command type
-                               (if (consp (car methods)) (mapcar #'car methods) methods)))))))
+           (when msgp
+             (message "`%s' %s: %s" command type
+                      (icicle-propertize
+                       (if (consp (car methods)) (mapcar #'car methods) methods)
+                       'face 'icicle-msg-emphasis)))))))
 
 (when (> emacs-major-version 22)        ; Library `proced.el' needed: Emacs 23+.
   (icicle-define-command icicle-send-signal-to-process

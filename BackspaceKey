@@ -12,6 +12,19 @@ If you do this, you probably also want to remap the the help function, too:
 
 ... for example.
 
+I like the following setting:
+
+(global-set-key (kbd "C-?") 'help-command)
+
+(global-set-key (kbd "M-?") 'mark-paragraph)
+
+(global-set-key (kbd "C-h") 'delete-backward-char)
+
+(global-set-key (kbd "M-h") 'backward-kill-word)
+
+
+that way C-h and M-h behave like the backwards version of C-d and M-d, and my right pinky does not suffer by trying to get to the backspace or del key (this and mapping ctrl to alt-keys and meta to super and right crtl solves the pinkys problem)
+
 ''Question: How do I make Backspace and Del work as usual in X with a PC keyboard? Backspace should delete to the left, Del to the right, and Ctrl-H should give help. Now Ctrl-H is help but both Backspace and Del deletes to the left. There is no mention of the problem in the FAQ or Info (Emacs 20). C-h f says both of them are called DEL. I've done it before but don't remember how.''
 
 : The problem probably isn't Emacs but something to do with xmodmap.  Try <code>xev</code> to see what each key returns, then <code>man xmodmap</code> will help you map them to something that will work better with Emacs and what you want. -- CharlesSebold

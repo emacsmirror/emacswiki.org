@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 12 09:04:20 2011 (-0700)
+;; Last-Updated: Fri Oct 21 13:20:31 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 932
+;;     Update #: 933
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -834,7 +834,9 @@ DOC-STRING is the doc string of the new command."
         ,doc-string
         (interactive)
         (setq icicle-sort-comparer  #',comparison-fn)
-        (message "Sorting is now %s%s" ,sort-order (if icicle-reverse-sort-p ", REVERSED" ""))
+        (message "Sorting is now %s%s" ,(icicle-propertize
+                                         (concat sort-order (and icicle-reverse-sort-p ", REVERSED"))
+                                                           'face 'icicle-msg-emphasis))
         (icicle-complete-again-update)))))
 
 (defmacro icicle-define-bookmark-command (type &optional prompt &rest args)

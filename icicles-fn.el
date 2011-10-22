@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  9 16:56:23 2011 (-0700)
+;; Last-Updated: Fri Oct 21 18:40:51 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 12681
+;;     Update #: 12702
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -133,8 +133,8 @@
 ;;    `icicle-position', `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-keys-first-p',
-;;    `icicle-proxy-candidate-first-p', `icicle-put-at-head',
-;;    `icicle-put-whole-cand-prop',
+;;    `icicle-propertize', `icicle-proxy-candidate-first-p',
+;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-readable-to-markers', `icicle-read-char-exclusive',
 ;;    `icicle-read-char-by-name', `icicle-read-face-name',
@@ -168,7 +168,7 @@
 ;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion', `icicle-try-switch-buffer',
-;;    `icicle-unhighlight-lighter', `icicle-unpropertize',
+;;    `icicle-unhighlight-lighter', `icicle-unpropertize-completion',
 ;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
 ;;    `icicle-unsorted-file-name-prefix-candidates',
@@ -964,7 +964,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
                              (icicle-lisp-vanilla-completing-read
                               prompt collection predicate require-match initial-input
                               hist-m@%=!$+&^*z def inherit-input-method)))
-             (icicle-unpropertize result))))
+             (icicle-unpropertize-completion result))))
     ;; HACK.  Without this, when REQUIRE-MATCH is non-nil, `*Completions*' window
     ;; does not disappear.
     (when require-match (icicle-remove-Completions-window))
@@ -1174,7 +1174,7 @@ and `read-file-name-function'."
                                            (abbreviate-file-name (dired-get-file-for-visit))
                                          (error "No such file"))
                                      (or (ffap-guesser) (error "No such file"))))))))))
-         (icicle-unpropertize result)
+         (icicle-unpropertize-completion result)
          (let* ((temp  (member (file-name-nondirectory result) icicle-proxy-candidates))
                 (symb  (and temp (intern (substring (car temp) 1 (1- (length (car temp))))))))
            (when (and symb (boundp symb)) (setq result  (symbol-value symb))))
@@ -2710,9 +2710,10 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
     ;; that it takes image sizes into account.  Might need to wait for a fix to Emacs bug #7822.
     ;; (autofit-frames-flag  (not icicle-image-files-in-Completions)))
     (cond ((eq no-display-p 'no-msg))   ; No-op.
-          (no-display-p (icicle-msg-maybe-in-minibuffer
-                         (format "Candidates updated (%s matching): %d"
-                                 icicle-current-completion-mode nb-cands)))
+          (no-display-p
+           (icicle-msg-maybe-in-minibuffer
+            "Candidates updated (%s matching): %s" icicle-current-completion-mode
+            (icicle-propertize (format "%d" nb-cands) 'face 'icicle-msg-emphasis)))
           ((null icicle-completion-candidates)
            (save-selected-window (icicle-remove-Completions-window))
            (icicle-msg-maybe-in-minibuffer
@@ -3052,7 +3053,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                       (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
-               (when (one-window-p t) ;; $$$$$ Also this? (window-dedicated-p (selected-window))
+               (when (one-window-p t);; $$$$$ Also this? (window-dedicated-p (selected-window))
                  (let* ((orig-win       (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
                         (orig-font-fam  (and (window-live-p orig-win)
                                              (save-window-excursion
@@ -5786,10 +5787,20 @@ Optional arg NOMSG non-nil means don't display an error message."
                     (kill-buffer-and-its-windows buf) ; Defined in `misc-cmds.el'.
                   (kill-buffer buf))))
           (error nil))
-      (unless nomsg (message "No such live buffer: `%s'" buf)))))
+      (unless nomsg
+        (message "No such live buffer: `%s'"
+                 (icicle-propertize (format "%s" buf) 'face 'icicle-msg-emphasis))))))
 
-(defun icicle-unpropertize (string)
+(defun icicle-propertize (object &rest properties)
+  "Like `propertize', but for all Emacs versions.
+If OBJECT is not a string, then use `prin1-to-string' to get a string."
+  (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
+    (add-text-properties 0 (length new) properties new)
+    new))
+
+(defun icicle-unpropertize-completion (string)
   "Remove text properties from STRING.
+STRING is typicaly a completion candidate or result.
 If STRING is not a string, just return it (raise no error).
 If `icicle-remove-icicles-props-p' is nil, just return STRING.  This
  is the case for some Icicles functions that need to further process
@@ -5809,9 +5820,9 @@ Otherwise remove only Icicles internal text properties:
       (if icicle-unpropertize-completion-result-flag
           (set-text-properties 0 len nil string)
         (remove-text-properties
-         0 len '(display nil  help-echo nil  icicle-fancy-candidates nil  icicle-keep-newline nil
-                 icicle-mode-line-help nil  icicle-special-candidate nil  icicle-user-plain-dot nil
-                 icicle-whole-candidate nil  invisible nil)
+         0 len '(display nil  help-echo nil  icicle-fancy-candidates  nil  icicle-keep-newline   nil
+                 icicle-mode-line-help  nil  icicle-special-candidate nil  icicle-user-plain-dot nil
+                 icicle-whole-candidate nil  invisible  nil)
          string)
         (dolist (entry  icicle-candidate-properties-alist)
           (put-text-property 0 len (car (cadr entry)) nil string)))))
@@ -5873,7 +5884,7 @@ Otherwise remove only Icicles internal text properties:
          (res    (if (fboundp 'completion--field-metadata) ; Emacs 24 added a 5th arg, METADATA.
                      (completion-try-completion string table pred point mdata)
                    (completion-try-completion string table pred point))))
-    (when (consp res) (setq res (car res)))
+    (when (consp res) (setq res (car  res)))
     res))
 
 (defun icicle-require-match-p ()

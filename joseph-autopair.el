@@ -1,14 +1,14 @@
 ;;; joseph-autopair.el  Another autopair or skeleton.
 
 ;; Filename: joseph-autopair.el
+;; Created: 2011-03-02
+;; Last Updated: Joseph 2011-10-22 16:20:25 星期六
+;; Version: 0.2.0
 ;; Description:   Another autopair or skeleton.
 ;; Author: Joseph <jixiuf@gmail.com>
-;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
-;; Created: 2011-03-02
-;; Updated: 2011-6-17 22:39:00
-;; Version: 0.1.3
 ;; URL: http://www.emacswiki.org/joseph-autopair.el
+;;      https://github.com/jixiuf/joseph-autopair
 ;; Keywords: autopair parentheses skeleton
 ;; Compatibility: (Test on GNU Emacs 23.2.1).
 ;; it only work on Gui ,bug when you paste something on Console
@@ -49,7 +49,7 @@
 ;;  `delete-backward-char'
 ;;  `backward-delete-char-untabify'
 ;;  so that when you press `Backspace' between "(" and ")"
-;;  both "(" and ")" is deleted.
+;;  both "(" and ")" are deleted.
 ;;
 ;;  This is only enabled when the "tail" is `string'
 ;;  what is that means?
@@ -58,8 +58,8 @@
 ;;  when it is a lisp sentence ,it will be eval.
 ;;  see the default value of `joseph-autopair-alist'.
 ;;
-;;      `joseph-autopair-origin-backward-delete-char-untabify'
-;;      `joseph-autopair-origin-delete-backward-char'
+;;      `origin-backward-delete-char-untabify-1'
+;;      `origin-delete-backward-char-1'
 ;;  are the original
 ;;  `backward-delete-char-untabify' `delete-backward-char'.
 ;;
@@ -97,8 +97,6 @@
 ;;
 ;; Below are complete command list:
 ;;
-;;  `joseph-autopair-toggle-autopair'
-;;    toggle joseph-autopair.
 ;;
 ;;; Customizable Options:
 ;;
@@ -107,6 +105,11 @@
 ;;  `joseph-autopair-alist'
 ;;    doc.
 ;;    default = (quote ((emacs-lisp-mode ... ... ... ...) (lisp-interaction-mode ... ... ... ...) (c-mode ... ... ... ... ...) (java-mode ... ... ... ... ...) (sh-mode ... ...)))
+;;  `joseph-autopair-command'
+;;    command would trigger joseph auto pair
+;;    default = (quote (self-insert-command c-electric-brace c-electric-paren))
+
+;;; Code
 
 (defgroup joseph-autopair nil
   " Autoinsert parentheses or other
@@ -115,43 +118,58 @@ things you defined in pairs."
   :prefix "joseph-autopair-"
   )
 
+
 (defcustom joseph-autopair-alist
-      '( (emacs-lisp-mode . (
-                             ("\"" "\"")
-                             ("`" "'")
-                             ("(" ")")
-                             ("[" "]")
-                             ))
-         (lisp-interaction-mode . (
-                                   ("\"" "\"")
-                                   ("`" "'")
-                                   ("(" ")")
-                                   ("[" "]")
-                                   ))
-         ( c-mode . (
-                     ("\"" "\"" )
-                     ("'" "'")
-                     ("(" ")" )
-                     ("[" "]" )
-                     ("{" (joseph-autopair-newline-indent-insert "}"))
-                     ))
-         (java-mode . (
-                       ("\"" "\"")
-                       ("'" "'")
-                       ("(" ")")
-                       ("[" "]")
-                       ("{" (joseph-autopair-newline-indent-insert "}"))
-                       ))
-         (sh-mode . ( ;;just a example
-                     ("if" (joseph-autopair-newline-indent-insert "fi"))
-                     ("begin" (progn
-                              (insert " end")
-                              (end-of-line)
-                              ))
-                     )))
-      "doc."
-      :group 'joseph-autopair
-      )
+  '( (emacs-lisp-mode . (
+                         ("\"" "\"")
+                         ("`" "'")
+                         ("(" ")")
+                         ("[" "]")
+                         ))
+     (lisp-interaction-mode . (
+                               ("\"" "\"")
+                               ("`" "'")
+                               ("(" ")")
+                               ("[" "]")
+                               ))
+     ( c-mode . (
+                 ("\"" "\"" )
+                 ("'" "'")
+                 ("(" ")" )
+                 ("[" "]" )
+                 ("{" (joseph-autopair-newline-indent-insert "}"))
+                 ))
+     (java-mode . (
+                   ("\"" "\"")
+                   ("'" "'")
+                   ("(" ")")
+                   ("[" "]")
+                   ("{" (joseph-autopair-newline-indent-insert "}"))
+                   ))
+     (sh-mode . ( ;;just a example
+                 ("if " (joseph-autopair-newline-indent-insert "fi"))
+                 ("begin " (progn
+                            (insert " end")
+                            (end-of-line)
+                            ))
+                 )))
+  "doc."
+  :group 'joseph-autopair
+  )
+
+(defcustom joseph-autopair-command
+  '(self-insert-command c-electric-brace c-electric-paren)
+  "command would trigger joseph auto pair"
+  :group 'joseph-autopair
+  )
+
+(unless (functionp 'origin-backward-delete-char-untabify-1)
+  (defalias 'origin-backward-delete-char-untabify-1 (symbol-function 'backward-delete-char-untabify)))
+(unless (functionp 'origin-delete-backward-char-1)
+  (defalias 'origin-delete-backward-char-1 (symbol-function 'backward-delete-char)))
+
+(defvar joseph-autopair-selection nil)
+(defvar joseph-autopair-selection-bounds nil)
 
 (defun joseph-autopair-newline-indent-insert(str)
   "insert new line and insert str ,put point on the
@@ -198,16 +216,16 @@ new line and indent the region."
             (delete-char (length  tail)
                          ))
           ))
-      (joseph-autopair-origin-delete-backward-char  N KILLP)
+      (origin-delete-backward-char-1  N KILLP)
       )
-    (joseph-autopair-origin-delete-backward-char  N KILLP)
+    (origin-delete-backward-char-1  N KILLP)
     )
   )
 
 (defun joseph-autopair-backward-delete-char-untabify
   (  ARG &optional KILLP)
   (interactive "*p\nP")
-  (when (and (boundp 'major-mode)
+  (if (and (boundp 'major-mode)
              (member major-mode (mapcar 'car joseph-autopair-alist)))
     (let* ((mode-pair (cdr (assoc major-mode joseph-autopair-alist)))
            (heads (mapcar 'car mode-pair))
@@ -219,17 +237,27 @@ new line and indent the region."
                      (looking-at tail))
             (delete-char (length  tail)
                          ))))
-      (joseph-autopair-origin-backward-delete-char-untabify ARG  KILLP)
-      )))
-
-(defalias 'joseph-autopair-origin-backward-delete-char-untabify (symbol-function 'backward-delete-char-untabify))
-(defalias 'joseph-autopair-origin-delete-backward-char (symbol-function 'backward-delete-char))
-
+      (origin-backward-delete-char-untabify-1 ARG  KILLP)
+      )
+    (origin-backward-delete-char-untabify-1 ARG  KILLP)
+    ))
+(defun joseph-autopair-before-change-function (beg last)
+  "hook for `before-change-function'"
+  (when (and mark-active
+             (boundp 'major-mode)
+             (member major-mode (mapcar 'car joseph-autopair-alist))
+             (member this-command  joseph-autopair-command)
+             (not (equal  (region-beginning)(region-end)))
+             )
+    (setq joseph-autopair-selection
+          (buffer-substring-no-properties (region-beginning)(region-end)))
+    (setq joseph-autopair-selection-bounds
+          (cons (region-beginning) (region-end)))))
 
 (defun joseph-autopair-after-change-function (first last len)
   (when (and (= len 0)
              (boundp 'major-mode)
-             (member this-command '(self-insert-command c-electric-brace c-electric-paren))
+             (member this-command  joseph-autopair-command)
              (member major-mode (mapcar 'car joseph-autopair-alist)))
     (let* ( (mode-pair (cdr (assoc major-mode joseph-autopair-alist)))
             (heads (mapcar 'car mode-pair))
@@ -239,7 +267,20 @@ new line and indent the region."
                (not (and (stringp (setq tail (nth 1 (assoc head mode-pair))))
                          (string-equal head tail)
                          (looking-at (regexp-quote head)))))
-          (joseph-autopair-insert-or-eval-tail (assoc head mode-pair));;insert tail
+          (progn
+            (when  joseph-autopair-selection
+              (insert  joseph-autopair-selection)
+              (unless delete-selection-mode
+                (delete-region
+                 (+ (length head ) (car joseph-autopair-selection-bounds))
+                 (+ (length head ) (cdr joseph-autopair-selection-bounds)))
+                (forward-char (length joseph-autopair-selection))
+                )
+              (setq joseph-autopair-selection nil)
+              )
+            (joseph-autopair-insert-or-eval-tail (assoc head mode-pair));;insert tail
+
+            )
         (joseph-autopair-skip-tail first last mode-pair heads);; skip tail
         ))))
 
@@ -248,7 +289,7 @@ new line and indent the region."
   (let ((new-inserted (buffer-substring first last))
         head
         tail)
-    (joseph-autopair-origin-backward-delete-char-untabify (length new-inserted))
+    (origin-backward-delete-char-untabify-1 (length new-inserted))
     (setq head   (joseph-autopair-editing-find-head heads))
     (if head
         (progn
@@ -272,27 +313,25 @@ if not ,eval it."
       (eval tail)
       )
     ))
-
-(defvar joseph-autopair-activated-p nil)
-
-(defun joseph-autopair-toggle-autopair()
-  "toggle joseph-autopair."
+(defvar  joseph-auto-pair-mode nil)
+(defun toggle-joseph-auto-pair-mode()
   (interactive)
-  (if joseph-autopair-activated-p
+  (if (not joseph-auto-pair-mode)
       (progn
-        (defalias 'backward-delete-char-untabify  (symbol-function 'joseph-autopair-origin-backward-delete-char-untabify))
-        (defalias 'backward-delete-char  (symbol-function 'joseph-autopair-origin-delete-backward-char))
-        (remove-hook 'after-change-functions 'joseph-autopair-after-change-function)
-        (setq joseph-autopair-activated-p nil)
-        (message "joseph-autopair is deactivated now!")
+        (defalias 'backward-delete-char-untabify  (symbol-function 'joseph-autopair-backward-delete-char-untabify))
+        (defalias 'backward-delete-char  (symbol-function 'joseph-autopair-delete-backward-char))
+        (add-hook 'after-change-functions 'joseph-autopair-after-change-function)
+        (add-hook 'before-change-functions 'joseph-autopair-before-change-function)
+        (setq joseph-auto-pair-mode t)
+        (message "joseph auto pair mode enabled")
         )
-    (defalias 'backward-delete-char-untabify  (symbol-function 'joseph-autopair-backward-delete-char-untabify))
-    (defalias 'backward-delete-char  (symbol-function 'joseph-autopair-delete-backward-char))
-    (add-hook 'after-change-functions 'joseph-autopair-after-change-function)
-    (setq joseph-autopair-activated-p t)
-    (message "joseph-autopair is activated now!")
-    )
-  )
+    (defalias 'backward-delete-char-untabify  (symbol-function 'origin-backward-delete-char-untabify-1))
+    (defalias 'backward-delete-char  (symbol-function 'origin-delete-backwardchar-1))
+    (remove-hook 'after-change-functions 'joseph-autopair-after-change-function)
+    (remove-hook 'before-change-functions 'joseph-autopair-before-change-function)
+    (setq joseph-auto-pair-mode nil)
+    (message " joseph auto pair mode disabled")
+    ))
 
 (provide 'joseph-autopair)
 ;;joseph-autopair.el ends here.

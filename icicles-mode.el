@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  8 17:38:33 2011 (-0700)
+;; Last-Updated: Fri Oct 21 14:05:38 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 8055
+;;     Update #: 8056
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3320,7 +3320,7 @@ complete)"))
 
   ;; Need `C-g', even if `minibuffer-local-completion-map' inherits from `minibuffer-local-map'.
   (define-key map (icicle-kbd "C-g")       'icicle-abort-recursive-edit) ; `C-g'
-  (define-key map (icicle-kbd "M-g")       'icicle-dispatch-M-q) ; `M-q'
+  (define-key map (icicle-kbd "M-q")       'icicle-dispatch-M-q) ; `M-q'
   (define-key map (icicle-kbd "C-l")       'icicle-retrieve-previous-input) ; `C-l'
   (define-key map (icicle-kbd "C-S-l")     'icicle-retrieve-next-input) ; `C-L' (`C-S-l')
   (define-key map (icicle-kbd "M-$")       'icicle-candidate-set-truncate) ; `M-$'
@@ -3570,7 +3570,7 @@ MAP is `minibuffer-local-completion-map',
       (define-key minibuffer-local-must-match-map key nil))
     )
 
-  (define-key map (icicle-kbd "M-g")       nil)
+  (define-key map (icicle-kbd "M-q")       nil)
   (define-key map (icicle-kbd "C-l")       nil)
   (define-key map (icicle-kbd "C-S-l")     nil)
   (define-key map (icicle-kbd "M-$")       nil)

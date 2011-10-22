@@ -1,0 +1,89 @@
+AutoHotkey is an open source scripting language for Windows that can automate and customize almost any action on your PC.
+* Use virtually any key, button, or combination as a hotkey for your keyboard, mouse, joystick, and handheld remote controls.
+* Expand abbreviations as you type them using hotstrings.
+* Easily create your own graphical user interfaces and custom menus.
+* Convert any script into an EXE file that will run on computers without AutoHotkey.
+* Manipulate files, text, and windows belonging to almost any program.
+* Call functions inside a DLL, such as standard Windows API functions.
+* All of this and more in a simplified syntax that makes learning easy for beginners while offering powerful features for advanced users.
+
+See also:
+
+* [http://www.autohotkey.com/wiki/index.php?title=Main_Page autohotkey.com wiki]
+* [http://www.autohotkey.com/forum autohotkey forum]
+* [http://www.autohotkey.com main autohotkey page]
+
+== Discussion ==
+
+[new]
+Now that I see the page you wrote, I'm not sure we need it on the wiki -- after all, if we have this page, why don't we have pages for GIMP, GNU/Linux, Slackware, Debian, GNU screen, mail, sendmail, Tex, and a myriad of other pages? Slowly, the Emacs Wiki will look like an incomplete and unmaintained software directory.
+
+I think such a page should relate to Emacs is some way. In this particular case, we already have the page [[AutoHotKey Mode]] that says everything there is to say (from the point of view of an Emacs user who doesn't know what AutoHotKey is or does).
+
+In short, I think we should replace all instances of ##AutoHotKey## with ##[http://www.autohotkey.com/wiki/ AutoHotKey]## and merge this page with [[AutoHotKey Mode]] (if necessary), and delete it. -- AlexSchroeder
+
+[new:JonasOster:2011-10-21 19:54 UTC]
+
+So, on-topic for this page would be, e.g. information about how to use Autohotkey in conjunction with Emacs. I use the US keyboard layout, since I am a programmer, but I frequently need to type European diacritical characters when I write German or Swedish, or type my name. I have an Autohotkey setup with things like
+<pre>
+:*?:ae/::ä
+</pre>
+for all the diacriticals I use regularly. This doesn't work in Emacs though. Autohotkey sends ä to the receiving application by sending simulated keystrokes for Alt-keypad-0 Alt-keypad-2 Alt-keypad-2 Alt-keypad-8, which in most Windows applications generates the character with decimal code 0228, ä. Emacs doesn't support this, so I hacked together the equivalent functionality in Elisp:
+<pre>
+;; Hack to support Windows Alt+keypad to enter characters by numerical
+;; code.  Needed to support insertion of European characters from
+;; Autohotkey scripts.
+(defvar jonas:alt-keypad-seq nil)
+ 
+(defun jonas:alt-keypad-value (key)
+  (case key
+    (M-kp-0 0)
+    (M-kp-1 1)
+    (M-kp-2 2)
+    (M-kp-3 3)
+    (M-kp-4 4)
+    (M-kp-5 5)
+    (M-kp-6 6)
+    (M-kp-7 7)
+    (M-kp-8 8)
+    (M-kp-9 9)))
+ 
+(defun jonas:alt-keypad-translate (seq)
+  (let ((acc 0))
+    (dolist (elem seq acc)
+      (setq acc (+ (jonas:alt-keypad-value elem)
+                   (* 10 acc))))))
+ 
+(defun jonas:alt-keypad ()
+  ""
+  (interactive)
+  (unless (eq last-command 'jonas:alt-keypad)
+    (setq jonas:alt-keypad-seq nil))
+  (push last-command-char jonas:alt-keypad-seq)
+  (if (= (length jonas:alt-keypad-seq) 4)
+      (progn
+        (ucs-insert (jonas:alt-keypad-translate (reverse jonas:alt-keypad-seq)))
+        (setq  jonas:alt-keypad-seq nil))))
+ 
+(global-set-key [M-kp-0] 'jonas:alt-keypad)
+(global-set-key [M-kp-1] 'jonas:alt-keypad)
+(global-set-key [M-kp-2] 'jonas:alt-keypad)
+(global-set-key [M-kp-3] 'jonas:alt-keypad)
+(global-set-key [M-kp-4] 'jonas:alt-keypad)
+(global-set-key [M-kp-5] 'jonas:alt-keypad)
+(global-set-key [M-kp-6] 'jonas:alt-keypad)
+(global-set-key [M-kp-7] 'jonas:alt-keypad)
+(global-set-key [M-kp-8] 'jonas:alt-keypad)
+(global-set-key [M-kp-9] 'jonas:alt-keypad)
+</pre>
+
+--JonasOster
+
+[new:JonasOster:2011-10-21 19:59 UTC]
+Another great thing about Autohotkey is that it allows you to remap the Caps Lock key, which is rather difficult in Windows. Just use
+<pre>
+CapsLock::AppsKey
+
+</pre>
+to make it a Super key---very useful in Emacs if you define your own keybindings.
+--JonasOster

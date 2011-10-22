@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 10 14:18:17 2011 (-0700)
+;; Last-Updated: Fri Oct 21 19:17:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22565
+;;     Update #: 22649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,11 +21,11 @@
 ;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -508,7 +508,7 @@ customize option `icicle-top-level-key-bindings'."
   (let ((print-length  icicle-pp-eval-expression-print-length)
         (print-level   icicle-pp-eval-expression-print-level))
     (cond (insert-value
-           (message "Evaluating...done. Value inserted.")
+           (message "Evaluating...done.  Value inserted.")
            (setq insert-value  (prefix-numeric-value insert-value))
            (if (or (not (stringp (car values))) (wholenump insert-value))
                (pp (car values) (current-buffer))
@@ -544,7 +544,7 @@ OUT-BUFFER-NAME."
                            (progn (select-window window)
                                   (run-hooks 'temp-buffer-show-hook))
                         (select-window old-selected)
-                        (message "Evaluating...done. See buffer `%s'."
+                        (message "Evaluating...done.  See buffer `%s'."
                                  out-buffer-name)))
                   (message "%s" (buffer-substring (point-min) (point))))))))
     (with-output-to-temp-buffer out-buffer-name
@@ -1930,7 +1930,10 @@ TYPE is the type of entry to add: `Fileset' or `Candidate'."
           (message "%s `%s' is already in saved set `%s', file `%s'" type entry set-name file-name)
         (with-temp-message (format "Writing entry to cache file `%s'..." file-name)
           (with-temp-file file-name (prin1 newcands (current-buffer))))
-        (message "%s `%s' added to saved set `%s', file `%s'" type entry set-name file-name)))))
+        (message "%s `%s' added to saved set `%s', file `%s'" type
+                 (icicle-propertize entry     'face 'icicle-msg-emphasis)
+                 (icicle-propertize set-name  'face 'icicle-msg-emphasis)
+                 (icicle-propertize file-name 'face 'icicle-msg-emphasis))))))
 
 ;;;###autoload
 (defun icicle-remove-entry-from-saved-completion-set (set-name)
@@ -1958,6 +1961,7 @@ use `(filesets-init)', and ensure that option
          (candidates                             (icicle-get-candidates-from-saved-set
                                                   set-name 'dont-expand))
          (icicle-whole-candidate-as-text-prop-p  t)
+         (icicle-remove-icicles-props-p          nil) ; Need prop `icicle-whole-candidate' for now.
          (entry
           (funcall icicle-get-alist-candidate-function
                    (completing-read
@@ -1973,7 +1977,7 @@ use `(filesets-init)', and ensure that option
       (setq entry  `(,(cadr entry) ,(car entry) ,@(cddr entry))))
     (when (and (consp entry) (null (cdr entry))) (setq entry  (car entry))) ; Use just the string.
     ;; Delete any such candidate, then remove text properties used for completion.
-    (setq candidates  (mapcar #'icicle-unpropertize (delete entry candidates)))
+    (setq candidates  (mapcar #'icicle-unpropertize-completion (delete entry candidates)))
     (cond (file-name
            (with-temp-message           ; Remove from cache file.
                (format "Writing remaining candidates to cache file `%s'..." file-name)
@@ -1989,14 +1993,22 @@ use `(filesets-init)', and ensure that option
                        (let ((new-fst  (list (cons ':files (delete entry fst-files)))))
                          (setcdr fst new-fst)
                          (filesets-set-config set-name 'filesets-data filesets-data))
-                     (message "Cannot remove `%s' from fileset `%s'" entry set-name))
-                 (message "`%s' not in fileset `%s'" entry set-name))))))
-    (icicle-msg-maybe-in-minibuffer
-     (concat (format "`%s' removed from %s `%s'"
-                     (if (icicle-saved-fileset-p entry) (cadr entry) entry)
-                     (if (icicle-saved-fileset-p entry) "fileset" "saved set")
-                     set-name)
-             (and file-name (format ", file `%s'" file-name))))))
+                     (message "Cannot remove `%s' from fileset `%s'"
+                              (icicle-propertize entry    'face 'icicle-msg-emphasis)
+                              (icicle-propertize set-name 'face 'icicle-msg-emphasis)))
+                 (message "`%s' not in fileset `%s'"
+                          (icicle-propertize entry    'face 'icicle-msg-emphasis)
+                          (icicle-propertize set-name 'face 'icicle-msg-emphasis)))))))
+    (when entry
+      (icicle-msg-maybe-in-minibuffer
+       "`%s' removed from %s `%s'%s"
+       (icicle-propertize (if (icicle-saved-fileset-p entry) (cadr entry) entry)
+                          'face 'icicle-msg-emphasis)
+       (if (icicle-saved-fileset-p entry) "fileset" "saved set")
+       (icicle-propertize set-name 'face 'icicle-msg-emphasis)
+       (if file-name
+           (format ", file `%s'" (icicle-propertize file-name'face 'icicle-msg-emphasis))
+         "")))))
 
 ;;;###autoload (autoload 'icicle-remove-saved-completion-set "icicles-cmd1.el")
 (icicle-define-command icicle-remove-saved-completion-set ; Command name
@@ -2022,11 +2034,13 @@ You can add entries to `icicle-saved-completion-sets' using command
       (while (setq set    (assoc set-name sets)
                    cache  (cdr set))
         (when (file-exists-p cache)
-          (if (y-or-n-p (format "Delete cache file `%s'? " cache))
+          (if (y-or-n-p (format "Delete cache file `%s'? "
+                                (icicle-propertize cache 'face 'icicle-msg-emphasis)))
               (when (condition-case err
                         (progn (delete-file cache) t)
                       (error (progn (message "%s" (error-message-string err)) nil)))
-                (message "DELETED `%s'" cache) (sit-for 1))
+                (message "%s `%s'" (icicle-propertize "DELETED" 'face 'icicle-msg-emphasis) cache)
+                (sit-for 1))
             (message "OK, file NOT deleted") (sit-for 1)))
         (setq sets  (delete set sets)))))
   (setq icicle-saved-completion-sets
@@ -2034,7 +2048,7 @@ You can add entries to `icicle-saved-completion-sets' using command
   (funcall icicle-customize-save-variable-function
            'icicle-saved-completion-sets
            icicle-saved-completion-sets)
-  (message "Candidate set `%s' removed" set-name))
+  (message "Candidate set `%s' removed" (icicle-propertize set-name 'face 'icicle-msg-emphasis)))
 
 ;;;###autoload
 (defun icicle-bookmark-save-marked-files (&optional arg) ; Bound to `C-M->' in *Bookmark List*.
@@ -2463,7 +2477,7 @@ commands, it need not be.  It can be useful anytime you need to use
            (quit (if quit-fn (funcall quit-fn) (keyboard-quit)))
            (error (when error-fn (funcall error-fn))
                   (error "%s" (error-message-string failure))))
-      (setq result  (icicle-unpropertize result)) ; Finally remove any Icicles text properties.
+      (setq result  (icicle-unpropertize-completion result)) ; Remove any Icicles text properties.
       (when cleanup-fn (funcall cleanup-fn)))
     result))
 
@@ -2535,15 +2549,15 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
     (when (and suggest-key-bindings (not executing-kbd-macro))
       (let* ((bindings   (where-is-internal cmd overriding-local-map t))
              (curr-msg   (current-message))
-             (wait-time  (if curr-msg
+             (wait-time  ;; $$$$$$ (if curr-msg
                              (or (and (numberp suggest-key-bindings) suggest-key-bindings) 2)
-                           0)))
+                         ;; $$$$$$  0)))
+               ))
         (when (and bindings (not (and (vectorp bindings) (eq (aref bindings 0) 'mouse-movement))))
           (when (and (sit-for wait-time) (atom unread-command-events))
             (let ((message-log-max  nil)) ; Don't log this message.
-              (message "You can run the command `%s' with `%s'"
-                       (symbol-name cmd)
-                       (key-description bindings)))
+              (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
+                       (icicle-propertize (key-description bindings) 'face 'icicle-msg-emphasis)))
             (when (and (sit-for wait-time) curr-msg) (message "%s" curr-msg))))))
     (cond ((arrayp fn)
            (let ((this-command  cmd)) (execute-kbd-macro fn count))
@@ -2778,7 +2792,8 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
            (macro  (cadr (assoc cand icicle-kmacro-alist))))
       (unless macro (error "No such macro: `%s'" cand))
       (execute-kbd-macro macro count #'kmacro-loop-setup-function)
-      (when (> count 1) (message "(%d times)" count)))))
+      (when (> count 1)
+        (message "(%s times)" (icicle-propertize count 'face 'icicle-msg-emphasis))))))
 
 ;;;###autoload (autoload 'icicle-set-option-to-t "icicles-cmd1.el")
 (icicle-define-command icicle-set-option-to-t ; Command name
@@ -2792,7 +2807,7 @@ candidates, as follows:
 
  - With a non-negative prefix arg, all user options are candidates.
  - With a negative prefix arg, all variables are candidates." ; Doc string
-  (lambda (opt) (set (intern opt) t) (message "`%s' is now t" opt)) ; Action function
+  (lambda (opt) (set (intern opt) t) (message "`%s' is now `t'" opt)) ; Action function
   "Set option to t: " obarray nil 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
   ((enable-recursive-minibuffers          t) ; Bindings
@@ -2913,7 +2928,7 @@ history entries, so `C-next' and so on act on the current candidate."
 By default, the set of completion candidates is limited to user
 options.  Note: it is *not* limited to binary and list options.
 With a prefix arg, all variables are candidates." ; Doc string
-  (lambda (opt) (set (intern opt) nil) (message "`%s' is now nil" opt)) ; Action function
+  (lambda (opt) (set (intern opt) nil) (message "`%s' is now `nil'" opt)) ; Action function
   "Clear option (set it to nil): " obarray nil t nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history)
   nil nil
@@ -2946,7 +2961,8 @@ candidates, as follows:
  - With a negative prefix arg, all variables are candidates." ; Doc string
   (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
-      (set sym (not (eval sym))) (message "`%s' is now %s" opt (eval sym))))
+      (set sym (not (eval sym)))
+      (message "`%s' is now `%s'" opt (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
   "Toggle value of option: " obarray nil 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
   ((enable-recursive-minibuffers  t)    ; Bindings
@@ -2976,7 +2992,7 @@ This command needs library `doremi.el'." ; Doc string
           ;; Restore this before we read number, since that might use completion.
           (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
       (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") t)
-      (message "`%s' is now %s" opt (eval sym))))
+      (message "`%s' is now `%s'" opt (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
   "Increment value of option: " obarray nil 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
   ((enable-recursive-minibuffers            t) ; Bindings
@@ -3002,7 +3018,7 @@ This command needs library `doremi.el'." ; Doc string
           ;; Restore this before we read number, since that might use completion.
           (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
       (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") prefix-arg)
-      (message "`%s' is now %s" var (eval sym))))
+      (message "`%s' is now `%s'" var (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
   "Increment value of variable: " obarray nil 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
   ((enable-recursive-minibuffers            t) ; Bindings
@@ -4182,12 +4198,12 @@ do not want this remapping, then customize option
   nil nil nil nil (funcall (or find-tag-default-function (get major-mode 'find-tag-default-function)
                                'find-tag-default))
   nil
-  ((completion-ignore-case  (progn (require 'etags) ; Bindings
-                                   (if (and (boundp 'tags-case-fold-search)
-                                            (memq tags-case-fold-search '(t nil)))
-                                       tags-case-fold-search
-                                     case-fold-search)))
-   (case-fold-search        completion-ignore-case))
+  ((completion-ignore-case    (progn (require 'etags) ; Bindings
+                                     (if (and (boundp 'tags-case-fold-search)
+                                              (memq tags-case-fold-search '(t nil)))
+                                         tags-case-fold-search
+                                       case-fold-search)))
+   (case-fold-search          completion-ignore-case))
   nil nil                               ; First code, undo code
   (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))) ; Last code
 
@@ -4403,15 +4419,17 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
   (select-frame-set-input-focus (selected-frame)))
 
 (defun icicle-find-tag-help (cand)
-  "Use as `icicle-candidate-help-fn' for `icicle-find-first-tag'."
+  "Use as `icicle-candidate-help-fn' for `icicle-find-tag'."
   (let* ((cand      (cdr (elt (icicle-filter-alist icicle-candidates-alist
                                                    icicle-completion-candidates)
                               icicle-candidate-nb)))
          (tag-info  (nth 0 cand)))
     (message (if (eq t (car tag-info))
                  "No tag - file name itself matches"
-               (format "Line: %d, Position: %d, File: %s"
-                       (cadr tag-info) (cddr tag-info) (nth 1 cand))))
+               (format "Line: %s, Position: %s, File: %s"
+                       (icicle-propertize (cadr tag-info) 'face 'icicle-msg-emphasis)
+                       (icicle-propertize (cddr tag-info) 'face 'icicle-msg-emphasis)
+                       (icicle-propertize (nth 1 cand)    'face 'icicle-msg-emphasis))))
     (sit-for 4)))
 
 (defun icicle-find-tag-final-act ()
@@ -4907,7 +4925,8 @@ the behavior."                          ; Doc string
   (lambda (buf)
     (add-to-list 'icicle-buffer-extras buf) ; Action function
     (funcall icicle-customize-save-variable-function 'icicle-buffer-extras icicle-buffer-extras)
-    (message "Buffer `%s' added to always-show buffers" buf))
+    (message "Buffer `%s' added to always-show buffers"
+             (icicle-propertize buf 'face 'icicle-msg-emphasis)))
   "Buffer candidate to show always: "   ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
@@ -4941,7 +4960,8 @@ Save the updated option."               ; Doc string
   "Action function for command `icicle-remove-buffer-candidate'."
   (setq icicle-buffer-extras  (delete buf icicle-buffer-extras))
   (funcall icicle-customize-save-variable-function 'icicle-buffer-extras icicle-buffer-extras)
-  (message "Buffer `%s' removed from always-show buffers" buf))
+  (message "Buffer `%s' removed from always-show buffers"
+           (icicle-propertize buf 'face 'icicle-msg-emphasis)))
 
 ;;;###autoload (autoload 'icicle-buffer-config "icicles-cmd1.el")
 (icicle-define-command icicle-buffer-config ; Command name
@@ -5007,7 +5027,8 @@ Save the updated option."               ; Doc string
   "Action function for command `icicle-remove-buffer-config'."
   (setq icicle-buffer-configs  (icicle-assoc-delete-all config-name icicle-buffer-configs))
   (funcall icicle-customize-save-variable-function 'icicle-buffer-configs icicle-buffer-configs)
-  (message "Buffer configuration `%s' removed" config-name))
+  (message "Buffer configuration `%s' removed"
+           (icicle-propertize config-name 'face 'icicle-msg-emphasis)))
 
 ;;;###autoload (autoload 'icicle-color-theme "icicles-cmd1.el")
 (icicle-define-command icicle-color-theme ; Command name
@@ -5651,7 +5672,7 @@ Ido-like behavior."                     ; Doc string
 (defun icicle-remove-from-recentf-candidate-action (file)
   "Action function for command `icicle-remove-file-from-recentf-list'."
   (setq recentf-list  (delete file recentf-list))
-  (message "`%s' removed from `recentf-list'" file))
+  (message "`%s' removed from `recentf-list'" (icicle-propertize file 'face 'icicle-msg-emphasis)))
 
 
 (defvar icicle-locate-file-action-fn nil
@@ -5865,8 +5886,9 @@ For example, to show only names of files larger than 5000 bytes, set
                                                default-directory)))
     (IGNORED--FOR-SIDE-EFFECT           (unless icicle-locate-file-use-locate-p
                                           (icicle-highlight-lighter)
-                                          (message "Gathering files within `%s' (this could take \
-a while)..." dir)))
+                                          (message
+                                           "Gathering files within `%s' (this could take a while)..."
+                                           (icicle-propertize dir 'face 'icicle-msg-emphasis))))
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
                                                           (file-name-as-directory file)
@@ -6077,7 +6099,9 @@ custom type is compatible with type `string'." ; Doc string
                 (setq temp  (symbol-value (intern (car temp))))
               (setq temp  string))
             strings)
-      (when (interactive-p) (message "Added string \"%s\"" temp) (sit-for 1))))
+      (when (interactive-p)
+        (message "Added string \"%s\"" (icicle-propertize temp 'face 'icicle-msg-emphasis))
+        (sit-for 1))))
   prompt (mapcar #'list (icicle-remove-duplicates comp-strings)) ; `completing-read' args
   nil nil nil 'regexp-history nil nil
   ((icicle-proxy-candidates             ; Bindings
@@ -6110,7 +6134,8 @@ Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc string
   (lambda (sexp)                        ; Action function
     (push sexp sexps)
-    (when (interactive-p) (message "Added sexp `%s'" sexp) (sit-for 1)))
+    (when (interactive-p)
+      (message "Added sexp `%s'" (icicle-propertize sexp 'face 'icicle-msg-emphasis)) (sit-for 1)))
   prompt                                ; `completing-read' args
   (mapcar #'list (icicle-remove-duplicates (symbol-value history)))
   nil nil nil history nil nil
@@ -6136,7 +6161,8 @@ Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc string
   (lambda (name)                        ; Action function
     (push name keywords)
-    (when (interactive-p) (message "Added keyword `%s'" name) (sit-for 1)))
+    (when (interactive-p)
+      (message "Added keyword `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis)) (sit-for 1)))
   prompt (mapcar #'list (icicle-remove-duplicates regexp-history)) ; `completing-read' args
   nil nil nil 'regexp-history nil nil
   ((keywords                              nil) ; Bindings
@@ -6155,7 +6181,8 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
   (lambda (name)                        ; Action function
     (let ((temp  (icicle-transform-multi-completion name)))
       (push temp face-names)
-      (when (interactive-p) (message "Added face `%s'" temp) (sit-for 1))))
+      (when (interactive-p)
+        (message "Added face `%s'" (icicle-propertize temp 'face 'icicle-msg-emphasis)) (sit-for 1))))
   prompt (mapcar #'icicle-make-face-candidate (face-list)) ; `completing-read' args
   nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
   (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history)
@@ -6204,7 +6231,9 @@ noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   (lambda (name)                        ; Action function
     (push name buf-names)
-    (when (interactive-p) (message "Added buffer name `%s'" name) (sit-for 1)))
+    (when (interactive-p)
+      (message "Added buffer name `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis))
+      (sit-for 1)))
   prompt (mapcar #'(lambda (buf) (list (buffer-name buf))) ; `completing-read' args
                  (if current-prefix-arg
                      (if (wholenump (prefix-numeric-value current-prefix-arg))
@@ -6260,7 +6289,9 @@ The list of bookmark names (strings) is returned." ; Doc string
   (lambda (name)                        ; Action function
     (let ((temp  (icicle-transform-multi-completion name)))
       (push (icicle-substring-no-properties temp) bmk-names)
-      (when (interactive-p) (message "Added bookmark name `%s'" temp) (sit-for 1))))
+      (when (interactive-p)
+        (message "Added bookmark name `%s'" (icicle-propertize temp 'face 'icicle-msg-emphasis))
+        (sit-for 1))))
   prompt icicle-candidates-alist nil (not icicle-show-multi-completion-flag) ; `completing-read' args
   nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
   (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark) nil
@@ -6448,7 +6479,8 @@ Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (name)                        ; Action function
     (push name file-names)
-    (when (interactive-p) (message "Added file name `%s'" name) (sit-for 1)))
+    (when (interactive-p)
+      (message "Added file name `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis)) (sit-for 1)))
   prompt nil nil t nil nil              ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
    ((prompt                             (or icicle-prompt ; Allow override.
@@ -6497,7 +6529,9 @@ Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (name)                        ; Action function
     (push name dir-names)
-    (when (interactive-p) (message "Added directory name `%s'" name) (sit-for 1)))
+    (when (interactive-p)
+      (message "Added directory name `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis))
+      (sit-for 1)))
   prompt nil nil t nil nil              ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
    ((prompt                             (or icicle-prompt ; Allow override.

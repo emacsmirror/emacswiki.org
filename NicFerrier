@@ -2,24 +2,32 @@ I’m [::nicferrier], a hacker trying to do interesting things. I use Emacs ever
 
 I used to be the CTO at [http://woome.com woome.com] but that's all gone down in flames, so I'm looking for a job right now. 
 
-I've used Emacs for about 20 years, every day, all the time for the last 15 years. The last couple of years I've started to look at ELisp as a practical language (since it had closures basically) in which I might one day do all my work.
+I've used Emacs for about 20 years, every day, all the time for the last 15 years. I've done extensive Java, C, Python, ActionScript and Shell development inside Emacs, as well as a bunch of other languages. 
+
+The last couple of years I've started to look at ELisp as a practical language (since it had closures basically) in which I might //one day// do all my work.
 
 
 == Recent Emacs related blog posts ==
 
 * [http://nic.ferrier.me.uk/blog//home/nferrier/blog/2011_10/emacs_lisp_is_good_further_reports_suggest about using lexical scope to code sentinels better, with an example macro]
 
-* [http://nic.ferrier.me.uk/blog/2011_09/elisp_testing ERT has been included in trunk so now EmacsLISP TDD is possible]
+* [http://nic.ferrier.me.uk/blog/2011_09/elisp_testing ERT has been included in trunk so now EmacsLisp TDD is possible]
 
-* [http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLISP asycnc HTTP server]
+* [http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLisp asycnc HTTP server]
 
 
-== Asynchronous HTTP servers for Emacs (EmacsLISP node.js)  == 
+== Asynchronous HTTP servers for Emacs (EmacsLisp node.js)  == 
 [[Elnode]] is an asynchronous TCP server handling HTTP.
 
 Elnode is in the [http://marmalade-repo.org/packages/elnode marmalade repository]
 
-As of now elnode is just about functional. I am starting to write things with it including a port of my wiki based blog.
+As of now Elnode is functional. I am starting to write things with it:
+
+* a collabarative editor
+* [[https://github.com/nicferrier/seville|a marmlade port]] (ELPA inside your Emacs)
+* dynamic org agenda export
+
+I am also improving and extending the [[https://github.com/nicferrier/elnode/blob/master/elnode_tutorial.creole|tutorial]] quite often.
 
 It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
 
@@ -149,7 +157,7 @@ it. This is great, it means Emacs starts up with all my goodies. But
 it also means when I go to another Emacs I'm lost. It's also
 non-trivial to move my stuff to another Emacs.
 
-It's also difficult to test code written in EmacsLISP, which I'm doing more and more of with Elnode.
+It's also difficult to test code written in EmacsLisp, which I'm doing more and more of with Elnode.
 
 I am trying to pair down my emacs use to the standard dist delivered
 behaviour and then add obvious extras on top. This is a process I

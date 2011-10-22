@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 14 15:38:27 2011 (-0700)
+;; Last-Updated: Fri Oct 21 09:42:05 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1584
+;;     Update #: 1585
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1185,10 +1185,11 @@ Several Emacs-Lisp mode key bindings are used.")
 Icicles binds this internal variable to nil in contexts where it needs
 the completion result string to retain its Icicles text properties.
 
-Otherwise, function `icicle-unpropertize' removes at least the Icicles
-internal text properties from the final completion result.  Depending
-on the value of option `icicle-unpropertize-completion-result-flag',
-it may also remove all text properties.")
+Otherwise, function `icicle-unpropertize-completion' removes at least
+the Icicles internal text properties from the final completion result.
+Depending on the value of option
+`icicle-unpropertize-completion-result-flag', it may also remove all
+text properties.")
 
 (defvar icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
   "Regexp that matches anything except `.' and `..'.")

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 19 22:04:48 2011 (-0700)
+;; Last-Updated: Fri Oct 21 09:41:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 28526
+;;     Update #: 28527
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5942,7 +5942,8 @@
 ;;    will strip all text properties from the result they return.
 ;;    Regardless of the option value, Icicles strips text properties
 ;;    that it adds for its internal use.  See the doc string of
-;;    function `icicle-unpropertize' for more information about this.
+;;    function `icicle-unpropertize-completion' for more information
+;;    about this.
 ;;
 ;;    The default value of the option is `nil'.  It is not likely that
 ;;    you will need to change this, but you might if you use some

@@ -1,4 +1,4 @@
-<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode for highlighting parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at each level.
+<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at each level.
 
 Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
 
@@ -8,10 +8,9 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 = Download: =
 * Lisp:rainbow-delimiters.el
 
-* Current release: <b>1.3.1</b> (2011-05-25)
-** Bugfix: Light color scheme appeared all gray on SRGB monitors. Revert to old colors.
-* Added in <b>1.3</b> (2011-05-24):
-** Add separate color schemes for light and dark backgrounds.
+* Current release: <b>1.3.2</b> (2011-10-21)
+** Correct highlighting for non-Lisp languages (/Perl, C, etc./). Respects syntax of the buffer major-mode.
+** Add global-rainbow-delimiters mode.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
 ** Improvements to customize interface.
 ** Infinite depth support by repeatedly cycling through defined faces.
@@ -19,7 +18,7 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 
 
 = Setup instructions: =
-1. Add Lisp:rainbow-delimiters.el to your load-path.
+1. Add Lisp:rainbow-delimiters.el to your emacs load-path.
 
 2. Byte-compile the file (necessary for speed):
 <pre>
@@ -29,21 +28,28 @@ M-x byte-compile-file <location of rainbow-delimiters.el>
 3. Add the following to your dot-emacs/init file:
 <pre>
 (require 'rainbow-delimiters)
-;; Add hooks for modes where you want it enabled, for example:
+</pre>
+
+4. Enable the mode in your dot-emacs/init file. You can either use it only in certain editing modes, or use it Emacs-wide:
+
+- To *use only with specific modes*, add lines like the following:
+<pre>
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 </pre>
 
-* You can also activate the mode temporarily in a buffer with:
+- To *use Emacs-wide*, add this line:
 <pre>
-        M-x rainbow-delimiters-mode
+(global-rainbow-delimiters-mode)
+
 </pre>
 
-4. *When using a dark background*, if delimiter colors seem washed out you may need to add the following to your dot-emacs/init file and restart Emacs:
-<pre>
-(setq-default frame-background-mode 'dark)
-</pre>
-More information about this is at the top of the Lisp:rainbow-delimiters.el file.
+To /toggle/ rainbow-delimiters mode while Emacs is running:
 
+<code>        - </code>In a single buffer:
+<code> M-x rainbow-delimiters-mode </code>
+
+<code>        - </code>Globally (all buffers):
+<code> M-x global-rainbow-delimiters-mode </code>
 
 == Customization: ==
 
@@ -53,7 +59,7 @@ M-x customize-group rainbow-delimiters
 </pre>
 
 === Color Scheme ===
-The customize group *Color Scheme* (aka <code>rainbow-delimiters-faces</code>) contains the faces for successive nested pairs of delimiters. You can change them to customize the color scheme for yourself.
+The customize group <code>rainbow-delimiters-faces</code> contains the faces for successive nested pairs of delimiters. You can change them to customize the color scheme for yourself.
 
 The face <code>rainbow-delimiters-unmatched-face</code> is used for unmatched closing delimiters.
 
@@ -61,7 +67,7 @@ The face <code>rainbow-delimiters-unmatched-face</code> is used for unmatched cl
 
 
 === Stop Highlighting Certain Delimiters: ===
-You can *disable highlighting* of specific delimiter characters through the customize interface, in the *Toggle Delimiters* section.
+You can *disable highlighting* of any of the supported delimiter types through the customize interface, in the *Toggle Delimiters* section.
 
 
 == Other Information ==
@@ -74,7 +80,6 @@ The light/dark color schemes differ only in their brightness level.
 == Development Version/Contributing ==
 The current development version will always be at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Please communicate before starting work on significant changes to be sure we avoid duplicate effort. 
 <pre>
-
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 19 21:34:27 2011 (-0700)
+;; Last-Updated: Fri Oct 21 09:42:33 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 23026
+;;     Update #: 23029
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -611,6 +611,7 @@
 ;;    `icicle-input-completion-fail-lax',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
+;;    `icicle-msg-emphasis', `icicle-multi-command-completion',
 ;;    `icicle-mustmatch-completion', `icicle-proxy-candidate',
 ;;    `icicle-saved-candidate', `icicle-search-context-level-1',
 ;;    `icicle-search-context-level-2',
@@ -994,8 +995,8 @@
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
 ;;    `icicle-prefix-keys-first-p',
 ;;    `icicle-previous-single-char-property-change',
-;;    `icicle-proxy-candidate-first-p', `icicle-put-at-head',
-;;    `icicle-put-whole-cand-prop',
+;;    `icicle-propertize', `icicle-proxy-candidate-first-p',
+;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
 ;;    `icicle-read-args-for-set-completion-methods',
@@ -1087,7 +1088,8 @@
 ;;    `icicle-unbind-key-completion-keys-in-keymaps-from',
 ;;    `icicle-undo-std-completion-faces',
 ;;    `icicle-unhighlight-lighter', `icicle-unmap',
-;;    `icicle-unpropertize', `icicle-unsorted-apropos-candidates',
+;;    `icicle-unpropertize-completion',
+;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
 ;;    `icicle-unsorted-file-name-prefix-candidates',
 ;;    `icicle-unsorted-prefix-candidates', `icicle-upcase',

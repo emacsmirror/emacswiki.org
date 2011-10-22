@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 10 15:26:23 2011 (-0700)
+;; Last-Updated: Fri Oct 21 08:44:42 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 604
+;;     Update #: 606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -47,17 +47,11 @@
 ;;    `icicle-Completions-instruction-1',
 ;;    `icicle-Completions-instruction-2',
 ;;    `icicle-current-candidate-highlight', `icicle-extra-candidate',
-;;    `icicle-face-after-load-hexrgb',
-;;    `icicle-face-after-load-hexrgb',
-;;    `icicle-face-after-load-hexrgb',
-;;    `icicle-face-after-load-hexrgb',
-;;    `icicle-face-after-load-hexrgb',
-;;    `icicle-face-after-load-hexrgb', `icicle-historical-candidate',
-;;    `icicle-input-completion-fail',
+;;    `icicle-historical-candidate', `icicle-input-completion-fail',
 ;;    `icicle-input-completion-fail-lax',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
-;;    `icicle-multi-command-completion',
+;;    `icicle-msg-emphasis', `icicle-multi-command-completion',
 ;;    `icicle-mustmatch-completion', `icicle-proxy-candidate',
 ;;    `icicle-saved-candidate', `icicle-search-context-level-1',
 ;;    `icicle-search-context-level-2',
@@ -73,7 +67,7 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `icicle-increment-color-hue',
+;;    `icicle-face-after-load-hexrgb', `icicle-increment-color-hue',
 ;;    `icicle-increment-color-saturation'
 ;;    `icicle-increment-color-value'.
 ;;
@@ -512,6 +506,13 @@ This means that they belong to list `icicle-extra-candidates'."
     (t (:foreground "Blue")))
   "*Face used to highlight help shown in the mode-line."
   :group 'Icicles-Completions-Display :group 'Icicles-Miscellaneous :group 'faces)
+
+;;;###autoload
+(defface icicle-msg-emphasis
+  '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
+    (t (:foreground "DarkGreen")))
+  "*Face used to emphasize (part of) a message."
+  :group 'Icicles-Minibuffer-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-multi-command-completion
