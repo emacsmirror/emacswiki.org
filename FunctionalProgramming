@@ -9,6 +9,8 @@ Instead, Emacs Lisp is considered [[WikiPedia:Functional_programming|an early fu
 
 On the other hand, Emacs Lisp does not treat functions as first-class language constructs -- higher-order support for functions (even true functions) is limited and erroneous ([[WikiPedia:Funarg_problem|funarg]] problems, [[WikiPedia:Scope|dynamic scoping]] problems). Emacs Lisp can be written in a  [[WikiPedia:Declarative_programming|declarative]] style, minimizing [[WikiPedia:Side effect (computer science)|side effects]], but in practice this never happens. Most Emacs Lisp code will be written in an [[WikiPedia:Imperative_programming|imperative]], [[WikiPedia:Procedural_programming|procedural]] style. As a result, programs in purely functional languages enjoy the desirable property of [[WikiPedia:Referential transparency (computer science)|referential transparency]] where as programs written in Emacs Lisp do not.
 
+In fact, Doug Hoyte says [http://letoverlambda.com/index.cl/guest/chap5.html#sec_1 Lisp is not functional]. 
+
 == Discussion ==
 
 Newbies might get the impression -- as I did -- that Emacs was all about functional programming because all I knew back then was C, SQL, and some weird proprietary stuff at work. We're not an encyclopedia and not the One Manual, thus we can have multiple points of view, no problem. The only difficulty is presenting them well without confusing newcomers. :) -- AlexSchroeder
@@ -131,5 +133,7 @@ Yes, that's true.  In order to get things done in Emacs Lisp, you need to make s
 
 Off topic but, I browsed the Introduction to Emacs Lisp manual and was surprised how little functional programming and "the nature of Lisp" was revealed.  It presents lists, variables, functions, commands but then launches into frobbing buffers.  Clearly, the emphasis was on "Emacs" and not the "Lisp".  This trade-off is unfortunate but likely more practical for teaching readers how to get things done in **Emacs** Lisp. -- AaronHawley
 
+[new]
+I just finished reading Doug Hoyte's [http://letoverlambda.com/index.cl/guest/chap5.html#sec_1 Lisp is not functional]. I am convinced. -- Alex
 ----
 CategoryCode

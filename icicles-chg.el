@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 19:31:09 2011 (-0700)
+;; Last-Updated: Sat Oct 22 13:48:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7565
+;;     Update #: 7567
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -473,6 +473,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/10/22 dadams
+;;     icicle-send-signal-to-process:
+;;       Bind icicle-last-transform-function to nil, so icicle-toggle-transforming still works well.
 ;; 2011/10/21 dadams
 ;;     icicle-read-color, icicle-where-is, icicle-apply((-list)-action), icicle-search-thing-args,
 ;;       icicle-set-completion-methods-for-command:

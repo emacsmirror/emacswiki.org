@@ -61,6 +61,14 @@ Try M-x mime-edit-insert-file RET and answer some questions (file name, content 
 
 If you find a simpler, sane version (e.g. choose just a file and then you're sure it will work) please describe it here.
 
+[new]
+No need to M-x: mime-edit-insert-file is bound to <code>C-c C-x TAB</code>. At least for me the three prompts for MIME media type, subtype and encoding normally are just fine (RET RET RET). If this is not the case try to customize `mime-file-types'.
+
+~~dmaus
+
+
+
+
 === How can I prevent WL from splitting large attachments into many messages? ==
 
 Add the following to your ##.wl## file:

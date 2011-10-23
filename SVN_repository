@@ -8,68 +8,6 @@ Sources for this stuff: [http://www.emacswiki.org/scripts/emacs-svn-update emacs
 
 (Back to WikiDownload.)
 
-== Git ==
-
-[new]
-After a security incident and hardware issues savannah is up again. Thanks to Alex for bringing this repository up again too.
-
-Because subversion depends on the central repository being up to commit there were no updates between November 27th and December 7th. This is a bit of a problem but the bigger problem is that the history has been reset to the state before the incident. This is a big problem for projects that made use of the old history and now have to be reset too.
-
-On the [[Emacsmirror]] I maintain separate git repositories for all packages hosted on the Emacswiki. All these repositories now have to be reset to an old state too. This possible causes problems for other people who have forked these repositories. At the very least it will be a lot of work for me.
-
-All of this could have been prevented if we had used a vcs that did not depend on a central repository. So I would like to suggest that we switch to a distributed vcs. In a similar situation in the future we would only lose access to the repository for a few days but (1) history would not be lost because like in this case the effectively only repository (in the case of svn) had to be reset to a known good state, and (2) we could continue to commit locally since the repository used to get changes essentially is just a mirror of the repository on the machine running the Emacswiki. (Furthermore we could be certain that the repository contents had not been tampered with, making such a reset unnecessary in the first place.)
-
-If you should decide to switch to git I could help with the process. Please contact my because it would be nice if you could use my existing git import. If you use another dvcs or do not use my import this will mean that I have to do a lot of work for nothing. Just like today. -- JonasBernoulli
-
-[new]
-As for your offer to move to git...
-
-    aschroeder@thinkmo:~$ git
-    -bash: git: command not found
-
-And that's just the beginning. I have never used git. I understand your argument why git would be the better version control software to use in the general case. In this particular case, however, we don't use the history. Nobody else can commit to the repository. As I weigh the costs and benefits, I don't feel too motivated to invest time in this.
--- AlexSchroeder
-
-[new]
-*You* don't use the history. *I* do - using [https://github.com/tarsius/elm/raw/master/bin/elm-wiki this] and producing [https://github.com/emacsmirror/emacswiki.org/branches that] as explained [http://www.emacswiki.org/emacs/Emacsmirror#toc1 here] and [http://www.emacswiki.org/emacs/Git_repository#toc1 here].
-
-So while nobody can commit I do use the commits to produce something else from it. And if the history get's corrupted that results in a lot of work for me.
-
-I have looked into [http://www.emacswiki.org/scripts/emacs-svn-update emacs-svn-update] and created emacs-git-update from it. I have two versions of that file (1) [https://github.com/tarsius/ewiki-update/raw/master/emacs-git-update emacs-git-update] which tries to stay as close as possible to the original so that diff actually tells you what has been changed and (2) [https://github.com/tarsius/ewiki-update/raw/master/emacs-git-update.clean emacs-git-update.clean] which has been cleaned up.
-
-This is the list of things that you would have to do to make this work:
-
-* Register at github.com.  Enter your public-key in the settings. Tell me your username.  Wait until I tell you things are setup.  Install git.
-
-* Get the existing repository:
-<pre>
-git clone https://github.com/emacsmirror/emacswiki.org ~/emacswikipages
-</pre>
-
-* Configure user/email for this repository only.
-
-(You could use your name/email here but I think it makes more sense to use "anybody" to indicate that the changes might originate from well anybody (and have not been verified by you or anything like that.)
-
-<pre>
-cd ~/emacswikipages
-git config user.name "anybody"
-git config user.email "anybody@emacswiki.org"
-</pre>
-
-* If you want to maintain the svn repository in parallel for a while:
-<pre>
-sed -i -e "s/emacswikipages/emacswikipages-git/" emacs-git-update
-</pre>
-
-* Make executable.  Add to cron.
-
-If something goes wrong at some point in the future I am here to help. I will update the wikipages. I will do whatever has to be done so that you don't feel like you are doing useless work.
-
-Please reconsider. While this does mean some work for you, I will try to do as much as possible. E.g. I can get the cvs repository and simulate the import on my machine for a few days (starting this weekend), so that the changes are smaller that something goes wrong when deploying emacs-git-update on your machine. -- JonasBernoulli
-
-[new]
-Due to your complete lack of interest I have remove the repository with the script adapted for git from github. It's fine - there were no further incidents. If you should ever change your mind I still have a local copy waiting for you. -- JonasBernoulli
-
 == Discussion ==
 
 [new]

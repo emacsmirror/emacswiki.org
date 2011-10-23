@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 19:26:28 2011 (-0700)
+;; Last-Updated: Sat Oct 22 13:42:27 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4793
+;;     Update #: 4794
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7698,6 +7698,7 @@ separator."
      (icicle-candidate-help-fn           #'(lambda (cand)
                                              (icicle-describe-process (funcall get-pid cand))))
      (icicle-transform-before-sort-p     t)
+     (icicle-last-transform-function     nil) ; Because we bind `icicle-transform-function'.
      (icicle-transform-function          #'(lambda (cands)
                                              (let ((user-name  (user-login-name)))
                                                (loop for cand in cands

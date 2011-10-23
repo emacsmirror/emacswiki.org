@@ -11,7 +11,7 @@ For a brief history of the development of ERC and access to older versions, code
 The latest version of ERC is **5.3**. 
 
 === Included with GNU Emacs ===
-ERC 5.3 is in the current release of GNU Emacs, v22.3.
+ERC is included in released versions of GNU Emacs since v22.3.
 
 See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
 

@@ -75,6 +75,13 @@ You can put this command in your <code>~/.xsession</code>, <code>~/.gnomerc</cod
     Option "XkbOptions" "ctrl:nocaps"
 </pre>
 
+
+In Fedora 15 you can also add a file <code>~/.Xkbmap</code> that contains command line arguments to <code>setxkbmap</code>. These will be used when you next log in.
+
+<pre>
+-option ctrl:swapcaps
+</pre> 
+
 The CapsKey page has an example of moving Ctrl to Caps.
 
 == Virtual terminals ==
