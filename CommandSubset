@@ -1,0 +1,52 @@
+About Lisp:jcl-command-subset.el.
+
+For user-defined commands the convention is to prefix them with a more
+or less unique string.  For example i choose to prefix my commands
+with ##jcl-##.  To call such a command with ##M-x## i always have to type ##M-x jcl-##
+first.  Instead i type ##M-z##.  That will behave just like ##M-x## but ##jcl-##
+is already typed.  The default binding for this keystroke ##zap-to-char##
+i find more annoying than useful.
+
+I find this helpful especially for commands that are not used very
+often.  If binding such a command to a keystroke it is hard to
+remember it.  A command name is often easier to remember. 
+
+
+It can be used like this:
+
+{{{
+;; Define a subset with all commands that starts with "jcl-".
+(jcl-define-command-subset jcl-command-subset "M-z " "^jcl-" "jcl-")  
+
+;; Define a subset with all commands which have the string "toggle"
+;; in their name.
+(jcl-define-command-subset jcl-toggle-command-subset "M-Z " "toggle")
+
+;; Define a subset with all monkey related commands.
+(jcl-define-command-subset jcl-monkey-command-subset
+                              "Select monkey business: "
+                              "monkey\\|ape\\|chimp\\|gorilla")
+
+
+(define-key global-map [(meta ?z)] 'jcl-command-subset)
+(define-key global-map [(meta ?Z)] 'jcl-toggle-command-subset)
+(defalias 'monkey 'jcl-monkey-command-subset)
+
+(jcl-command-subset-setup)
+}}}
+       
+Each subset have a list with all commands in it.  If a new command is
+defined this list is normally not updated automatically.  One way to
+update the list is to repeat the command.  In the example above this
+would be done by hitting ##M-z M-z##.  
+ 
+Another way is to call ##(jcl-command-subset-setup t)##.  That will advice
+##eval-region##, ##eval-buffer##, ##eval-defun##, ##load## and ##require## so that any
+defined command subset's lists are updated.  (The manual warns about
+advising primitives.  I have however never experienced any problems
+with that.)
+
+
+----
+
+CategoryCommands

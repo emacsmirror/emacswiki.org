@@ -1,6 +1,6 @@
 This page describes package Lisp:switch-file.el, by ViniciusJoseLatorre.
 
-: .:: ''v0.2'' ::.
+: .:: ''v0.3'' ::.
 
 
 == About switch-file ==
@@ -42,6 +42,9 @@ corresponding file (or vice-versa) type:
 As a suggestion for key bindings:
 
    (global-set-key [f3] 'switch-cc-to-h)
+
+You can also include interactively a new path into ##switch-path## option via
+##switch-path## command (which see).
 
 
 == Options ==

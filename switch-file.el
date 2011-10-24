@@ -1,12 +1,12 @@
 ;;; switch-file.el --- switch from one file to another.
 
-;; Copyright (C) 2008, 2009, 2010 Vinicius Jose Latorre
+;; Copyright (C) 2008, 2009, 2010, 2011 Vinicius Jose Latorre
 
 ;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Keywords:	convenience
-;; Time-stamp:	<2010/05/27 23:23:17 vinicius>
-;; Version:	0.2
+;; Time-stamp:	<2011/10/23 12:11:46 vinicius>
+;; Version:	0.3
 ;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
@@ -71,6 +71,9 @@
 ;; As a suggestion for key bindings:
 ;;
 ;;    (global-set-key [f3] 'switch-cc-to-h)
+;;
+;; You can also include interactively a new path into `switch-path' option via
+;;`switch-path' command (which see).
 ;;
 ;;
 ;; Options
@@ -137,7 +140,9 @@
 ;;;###autoload
 (defcustom switch-path
   '("./")
-  "*Specify a path list for locating files to switch."
+  "*Specify a path list for locating files to switch.
+
+Each path must end with '/'."
   :type '(repeat :tag "Path List"
 		 directory)
   :group 'convenience)
@@ -171,6 +176,25 @@ EXTENSION is a string used for changing the file name extension."
 			   (repeat :inline t
 				   (string :tag "File Extension"))))))
   :group 'convenience)
+
+
+(defvar switch-path-history nil)
+
+;;;###autoload
+(defun switch-path ()
+  "Read from minibuffer a new path to include into `switch-path'."
+  (interactive)
+  (let ((new-path (read-string "Path to switch a file: " nil
+			       'switch-path-history default-directory))
+	(paths    switch-path)
+	found)
+    (while (and (not found) paths)
+      (setq found (string-match
+		   (format "^%s" (regexp-quote (expand-file-name new-path)))
+		   (expand-file-name (car paths)))
+	    paths (cdr paths)))
+    (unless found
+      (setq switch-path (cons new-path switch-path)))))
 
 
 ;;;###autoload

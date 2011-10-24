@@ -12,7 +12,7 @@ http://pypi.python.org/pypi/chrome_remote_shell/
 
 Create a little python program called chrome-reload that looks like this:
 
-  #!/usr/bin/env python
+  #!/usr/bin/env python2
   import chrome_remote_shell
 
   shell = chrome_remote_shell.open(port=9222)
@@ -34,3 +34,5 @@ And then the following code in .emacs:
   (define-key global-map "\C-x\C-r" 'save-and-reload)
 
 The 'stumpish' command is to remote control the excellent stumpwm window manager that I am using. You may need to replace it with something else.
+
+Update: chrome_remote_shell seems to only work with python 2, not python 3. If someone knows an easier, better supported way to remotely trigger a reload, please fill in!

@@ -17,14 +17,6 @@ The EmacsWiki repository also contains a
 [http://github.com/emacsmirror/emacswiki.org/tree/categorization branch],
 which categorizes all pages on the EmacsWiki.
 
-== Discussion ==
-
-[new]
-I've written [http://www.oddmuse.org/cgi-bin/oddmuse/Git_Extension a little extension]
-to the wiki that will track additions, edits and deletions to a local git repository.
-I also created a user called "kensanata" on github and uploaded my SSH key.
-What next? The goal would be for me to push changes to your repository from the maintenance job, I guess.
--- Alex
-
 ----
 CategoryEmacsWikiSite
+

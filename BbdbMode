@@ -6,7 +6,7 @@ Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopf
 
 == Project information ==
 
-* Latest source code: git clone git://git.savannah.nongnu.org/bbdb.git
+* Latest source code: <code>git clone git://git.savannah.nongnu.org/bbdb.git</code> 
 * Homepage: http://bbdb.sourceforge.net
 * Savannah project page:  http://savannah.nongnu.org/projects/bbdb/
 * Old Sourceforge project page:  http://sourceforge.net/projects/bbdb/
