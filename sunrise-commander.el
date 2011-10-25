@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 384 $
+;; RCS Version: $Rev: 385 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1454,16 +1454,17 @@ The optional argument determines the height to lock the panes at.
 Valid values are `min' and `max'; given any other value, locks
 the panes at normal position."
   (interactive)
-  (setq sr-panes-height (sr-get-panes-size height))
-  (let ((locked sr-windows-locked))
-    (setq sr-windows-locked t)
-    (if height
-        (shrink-window 1)
-      (setq sr-selected-window-width t)
-      (balance-windows))
-    (unless locked
-      (sit-for 0.1)
-      (setq sr-windows-locked nil))))
+  (when sr-running
+    (setq sr-panes-height (sr-get-panes-size height))
+    (let ((locked sr-windows-locked))
+      (setq sr-windows-locked t)
+      (if height
+          (shrink-window 1)
+        (setq sr-selected-window-width t)
+        (balance-windows))
+      (unless locked
+        (sit-for 0.1)
+        (setq sr-windows-locked nil)))))
 
 (defun sr-max-lock-panes ()
   (interactive)
@@ -1668,7 +1669,8 @@ rotate among all of them by invoking `sr-project-path' repeatedly : they will be
 visited in order, from longest path to shortest."
 
   (interactive)
-  (let* ((path (sr-chop ?/ (expand-file-name (dired-current-directory))))
+  (let* ((sr-synchronized nil)
+         (path (sr-chop ?/ (expand-file-name (dired-current-directory))))
          (pos (if (< 0 (length path)) 1)) (candidate) (next-key))
     (while pos
       (setq candidate (concat sr-other-directory (substring path pos))
@@ -3370,17 +3372,19 @@ If more than one item is marked, print the total size in
 bytes (calculated recursively) of all marked items."
   (interactive "P")
   (message "Calculating total size of selection... (C-g to abort)")
-  (let* ((selection (dired-get-marked-files))
+  (let* ((selection (dired-get-marked-files t))
          (size (sr-size-format (sr-files-size selection)))
-         (items (length selection)) (label))
+         (items (length selection)) (label) (regex))
     (if (>= 1 items)
         (progn
           (setq selection (car selection)
-                label (concat (file-name-nondirectory selection) ":"))
+                label (file-name-nondirectory selection)
+                regex (concat "^.*" label "[:;]")
+                label (concat label ":"))
           (dired-show-file-type selection deref-symlinks)
           (message
            "%s (%s bytes)"
-           (replace-regexp-in-string "^.*[:;]" label (current-message)) size))
+           (replace-regexp-in-string regex label (current-message)) size))
       (message "%s bytes in %d selected items" size items))
     (sit-for 0.5)))
 

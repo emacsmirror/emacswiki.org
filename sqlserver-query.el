@@ -3,7 +3,7 @@
 ;; Copyright (C) 2011 Joseph 纪秀峰
 
 ;; Created: 2011年08月17日 星期三 22时11分54秒
-;; Last Updated: Joseph 2011-11-20 11:37:29 星期日
+;; Last Updated: Joseph 2011-10-25 13:37:49 星期二
 ;; Version: 0.1.4
 ;; Author: Joseph  纪秀峰 jixiuf@gmail.com
 ;; Keywords: sqlserver emacs sql sqlcmd.exe osql.exe
@@ -142,8 +142,8 @@ If you leave it nil, it will search the path for the executable."
       (when (re-search-forward "(.*\\(行受影响\\|rows affected\\))")
         (delete-region (match-beginning 0)(point-max))
         )
-      (while (re-search-forward "[ \t\n]* [ \t\n]*" nil t)
-        (replace-match " " nil nil))
+      (while (re-search-forward "[ \t\n]*\^E[ \t\n]*" nil t)
+        (replace-match "\^E" nil nil))
       (goto-char  (point-min))
       (while (re-search-forward "\\([ \t]+$\\|^[ \t]+\\)" nil t)
         (replace-match "" nil nil))
@@ -153,7 +153,7 @@ If you leave it nil, it will search the path for the executable."
         (setq line  (buffer-substring-no-properties
                      (point-at-bol) (point-at-eol)))
         (unless (string-match "^[ \t]*$" line)
-          (setq row (split-string line " " t))
+          (setq row (split-string line "\^E" t))
           (when row (setq result (append result (list row)))))
         (forward-line)))
     (when (and result (> (length result) 1)
@@ -169,7 +169,7 @@ If you leave it nil, it will search the path for the executable."
       (goto-char  (point-min))
       (while (<= (line-number-at-pos) line-count)
         (setq row (split-string (buffer-substring-no-properties
-                                 (point-at-bol) (point-at-eol)) " " t))
+                                 (point-at-bol) (point-at-eol)) "\^E" t))
         (setq result (append result (list row)))
         (forward-line)))
     (when (and result (> (length result) 1))
@@ -197,11 +197,13 @@ If you leave it nil, it will search the path for the executable."
          "-U" (cdr (assoc 'username connection-info))
          "-P" (cdr (assoc 'password connection-info))
          "-d" (cdr (assoc 'dbname connection-info))
-         (split-string
-          (if (equal sqlserver-cmd 'sqlcmd)
-              "-w 65535 -s \^E -W"   ;; should be actual ^E, not ^ followed by E
-            "-n -w 65535 -s \^E -r 1 ")
-          " " t)))
+         "-w" "65535"
+         "-s"  "\^E"    ;; should be actual ^E, not ^ followed by E
+         (if (equal sqlserver-cmd 'sqlcmd)
+             (list "-W")
+           (list "-n" "-r" "1")
+           )
+         ))
 
 (defun sqlserver-query-read-connect-string()
   "set server dbname username password interactive"

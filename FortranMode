@@ -1,0 +1,14 @@
+One of the ProgrammingModes that comes with Emacs supports Fortran.
+
+There's a section of the EmacsManual specifically documenting how to use it.
+
+A newer mode for editing free-format code is [[F90Mode]].  It also comes with Emacs.
+
+Use `f90-mode' by adding the following to your InitFile.
+
+    (add-to-list 'auto-mode-alist '("\\.f\\'" . f90-mode))
+
+Information on configuring these modes is also in the manual.  Also read the commentary at the top of the EmacsLisp source of these libraries to see more details, ##M-x find-library RET fortran RET## or ##M-x find-library RET f90 RET##.
+
+----
+CategoryProgramming

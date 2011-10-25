@@ -30,6 +30,9 @@ isbn.el,
 ltxaccnt.el</code> from the [http://www.math.utah.edu/pub/emacs/ same site]. One of the many possible uses of this package is to find and eliminate duplicate entries (this is often necessary after you have merged the results from several bibliographic searches of online databases). 
 
 bibtex.el doen't contain a good means to handle keywords. So, Bastien Guerry wrote this wonderful Lisp:bibtex-utils.el add-on when I was asking how people handle bibtex keywords on the help.gnu.emacs list. The function bibtex-make-field-keywords scans the extent keywords in a bib file and allows the user to enter keywords with auto-completion. bibtex-select-entries starts a RegExp search for all entries containing a certain keyword.
+
+Hannes Mehnert developed a [https://github.com/hannesm/bibtex-kindle bibtex-kindle] add-on, which adds a custom field with the path to a pdf - to which title and author metadata is added - and uses keywords and journal/booktitle to create collections
+
 ----
 One of the replacements for !BibTeX is Bibulus. It is written in Perl, and uses XML format for storing bibliographics database entries. -- http://www.nongnu.org/bibulus/
 

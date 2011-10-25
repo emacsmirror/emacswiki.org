@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.71
+;; Version: 1.72
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -536,7 +536,7 @@ file.  (See the latter for tips on troubleshooting.)"
          (right-margin (ceiling margin))
          (identifier "/* XPM */\nstatic char *rule[] = {\n")
          (dims (concat "\"" width-str " " height-str " 2 1\",\n"))
-         (color-spec (concat "\"1 c " fci-rule-color "\",\n \"0 c " "0"  "\",\n"))
+         (color-spec (concat "\"1 c " fci-rule-color "\",\n \"0 c None\",\n"))
          (row-pixels (concat "\""
                              (make-string left-margin ?0)
                              (make-string rule-width ?1)
