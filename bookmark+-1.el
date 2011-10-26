@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug  9 10:57:27 2011 (-0700)
+;; Last-Updated: Tue Oct 25 14:21:33 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2238
+;;     Update #: 2245
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2748,6 +2748,7 @@ command has no effect."
 (defun bmkp-make-function-bookmark (bookmark-name function) ; Not bound
   "Create a bookmark that invokes FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
+Interactively, you are prompted for the bookmark and the function.
 Returns the new bookmark (internal record)."
   (interactive
    (let ((icicle-unpropertize-completion-result-flag  t))
@@ -2767,6 +2768,7 @@ Returns the new bookmark (internal record)."
 ;;;###autoload
 (defun bmkp-switch-bookmark-file (file &optional no-msg) ; Bound to `L' in bookmark list
   "Switch to a different bookmark file, FILE.
+Interactively, you are prompted for FILE.
 Replace all currently existing bookmarks with the newly loaded
 bookmarks.  Change the value of `bmkp-current-bookmark-file' to FILE,
 so bookmarks will subsequently be saved to FILE.
@@ -2787,7 +2789,7 @@ still use `bookmark-default-file' for the initial set of bookmarks."
 
 ;;;###autoload
 (defun bmkp-switch-to-last-bookmark-file (&optional no-msg) ; Not bound
-  "Switch back to the last-used bookmarkfile.
+  "Switch back to the last-used bookmark file.
 Replace all currently existing bookmarks with those newly loaded from
 the last-used file.  Swap the values of `bmkp-last-bookmark-file' and
 `bmkp-current-bookmark-file'."
@@ -2828,7 +2830,7 @@ The other args are the same as for `read-file-name'."
                      require-match))))
 
 ;;;###autoload
-(defun bmkp-empty-file (file)           ; Bound to `C-x p 0'
+(defun bmkp-empty-file (file &optional confirmp)           ; Bound to `C-x p 0'
   "Empty the bookmark file FILE, or create FILE (empty) if it does not exist.
 In either case, FILE will become an empty bookmark file.  Return FILE.
 
@@ -2838,10 +2840,11 @@ NOTE: If FILE already exists and you confirm emptying it, no check is
 
 This does NOT also make FILE the current bookmark file.  To do that,
 use `\\[bmkp-switch-bookmark-file]' (`bmkp-switch-bookmark-file')."
-  (interactive (list (read-file-name "Create empty bookmark file: " "~/")))
+  (interactive (list (read-file-name "Create empty bookmark file: " "~/")
+                     t))
   (setq file  (expand-file-name file))
   (bookmark-maybe-load-default-file)
-  (when (and (file-exists-p file)
+  (when (and confirmp (file-exists-p file)
              (not (y-or-n-p (format "CONFIRM: Empty the existing file `%s'? " file))))
     (error "OK, cancelled"))
   (let ((bookmark-alist  ()))

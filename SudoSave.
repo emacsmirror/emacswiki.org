@@ -1,0 +1,70 @@
+Ejemplo de los métodos CreateQueryDef, OpenRecordset y la propiedad SQL (Cliente/Servidor)
+
+
+
+Este ejemplo utiliza los métodos CreateQueryDef y OpenRecordset y la propiedad SQL para consultar la tabla de títulos de la base de datos de muestra Ediciones de Microsoft SQL Server y devuelve el Título y el identificador del Título del libro más vendido. El ejemplo consulta después la tabla de autores y le pide al usuario que le envíe un cheque de bonificación a cada autor según el porcentaje de sus derechos (la bonificación total es de $1000 y cada autor debe recibir un porcentaje de esa cantidad).
+
+Sub ClienteServidorX2()
+
+	Dim dbsActual As Database
+	Dim qdfMásVendidos As QueryDef
+	Dim qdfIngresos As QueryDef
+	Dim rstMásVendido As Recordset
+	Dim rstDestinatarioIngreso As Recordset
+	Dim strListaAutores As String
+
+	' Abre una base de datos de la que se pueden crear los 
+	' objetos QueryDef.
+	Set dbsActual = OpenDatabase("DB1.mdb")
+
+	' Crea un objeto QueryDef temporal para recuperar datos de 
+	' una base de datos Microsoft SQL Server.
+	Set qdfMásVendidos = dbsActual.CreateQueryDef("")
+
+	With qdfMásVendidos
+		.Connect = "ODBC;DATABASE=eds;UID=sa;PWD=;" & _
+			 "DSN=Publicaciones"
+		.SQL = "SELECT Título, Título_id FROM títulos " & _
+			"ORDER BY ventas_año DESC"
+		Set rstMásVendido = .OpenRecordset()
+		rstMásVendido.MoveFirst
+	End With
+
+	' Crea un objeto QueryDef temporal para recuperar datos de 
+	' una base de datos Microsoft SQL Server basada en los resultados 
+	' de la primera consulta.
+	Set qdfIngresos = dbsActual.CreateQueryDef("")
+
+	With qdfIngresos
+		.Connect = "ODBC;DATABASE=eds;UID=sa;PWD=;" & _
+			"DSN=Publicaciones"
+		.SQL = "SELECT * FROM títuloautor " & _
+			"WHERE Título_id = '" & _
+			rstMásVendido!Título_id & "'"
+		Set rstDestinatarioIngreso = .OpenRecordset()
+	End With
+
+	' Genera la cadena de salida.
+	With rstDestinatarioIngreso
+		Do While Not .EOF
+			strListaAutores = strListaAutores & "    " & _
+				!au_id & ":  $" & (10 * !tipoimpuesto) & vbCr
+
+			.MoveNext
+		Loop
+	End With
+
+	' Muestra los resultados.
+	MsgBox "Enviar un cheque a los siguientes " & _
+		"autores del importe indicado:" & vbCr & _
+		strListaAutores & "por ventas pendientes de " & _
+		rstMásVendido!Rítulo & "."
+
+	rstMásVendido.Close
+	dbsActual.Close
+
+End Sub
+
+
+
+Copyright (c) 1996 Microsoft Corporation
