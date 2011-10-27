@@ -1,6 +1,6 @@
-JohnMcCarthy died on 2011-10-23.  He is most well-known for his ideas behind symbolic programming and [[Lisp]].  He created ProjectMac there, together with MarvinMinsky.  Lisp became a veritable force in artificial intelligence research.  MacLisp was later developed at MIT, and it directly influenced CommonLisp and EmacsLisp.
+JohnMcCarthy died on 2011-10-23.  He is most well-known for his ideas behind symbolic programming and [[Lisp]].   Spending only a few years at MIT, he would inspire the ideas behind ProjectMac started there by MarvinMinsky and others.  The Lisp language would become a veritable force in artificial intelligence research.  MacLisp was developed at MIT and would later directly influence CommonLisp, [[Scheme]] and EmacsLisp.
 
-!McCarthy began Stanford AI Lab ([[http://ai.stanford.edu/ SAIL]]), which developed a timesharing operating system on the PDP-1 and later its own editor for the system, called '''E'''.  In 1976, RichardStallman visited SAIL and was impressed by the editor's features.  He returned to MIT and implemented realtime editing in [[TECO]].  These features would also later be incorporated in Emacs.
+!McCarthy began the Stanford AI Lab ([[http://ai.stanford.edu/ SAIL]]) developing a timesharing operating system on the PDP-1.  Later, it would see its own editor for the system, called '''E'''.  In 1976, RichardStallman visited SAIL and was impressed by the editor's features.  He returned to MIT and implemented realtime editing in [[TECO]].  This and other features would also later be incorporated in [[Emacs]].
 
 JamieZawinski has passed along an [[XEmacs]]-related story about jmc.
 

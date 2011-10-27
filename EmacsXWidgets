@@ -19,6 +19,21 @@ I've now created an "xwidget" branch in the savannah emacs bzr repo, and the cod
 
 http://bzr.savannah.gnu.org/lh/emacs/xwidget/files
 
+== bug reporting and tracker ==
+
+ emacs xwidgets uses the same tracker as mainline emacs, but a
+ different package.
+ 
+ M-x report-emacs-bug
+ 
+ Change the address to:
+ submit@debbugs.gnu.org
+ 
+ Include this line early in the body:
+ Package: emacs-xwidgets
+
+To view current bugs, follow this link: http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs-xwidgets
+
 == The interface ==
 
 Heres stuff from my elisp test code:
@@ -39,7 +54,6 @@ The current implementation of Xwidgets targets GTK as the native peer widget set
 aims to be toolkit agnostic. I dont aim to make every GTK widget an Xwidget, just a small
 subset suitable to implement certain types of GUI:s currently difficult to do with Emacs,
 for instance slider widgets, embedded applications, etc.
-
 
 Currently the patch allows for:
 * inserting xwidgets: button, toggle button, slider, xembed socket, webkit view, and some rudimentary canvas experiments(clutter, goocanvas)

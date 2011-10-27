@@ -1,0 +1,53 @@
+I am also facing same issue. error seems to be appearead while loading apropos-fn+var.el .
+ Symbol's value as variable is void: <!DOCTYPE
+
+To ensure normal operation, you should investigate and remove the
+cause of the error in your initialization file.  Start Emacs with
+the `--debug-init' option to view a complete error backtrace. 
+
+
+here is the output of emacs with debug-init
+
+Debugger entered--Lisp error: (void-variable <!DOCTYPE)
+
+  eval-buffer(#<buffer  *load*<4>> nil "/home/pravi/software/icicles/apropos-fn+var.el" nil t)  ; Reading at buffer position 10
+
+  load-with-code-conversion("/home/pravi/software/icicles/apropos-fn+var.el" "/home/pravi/software/icicles/apropos-fn+var.el" t t)
+
+  require(apropos-fn+var nil t)
+
+  eval-buffer(#<buffer  *load*<3>> nil "/home/pravi/software/icicles/icicles-var.el" nil t)  ; Reading at buffer position 8940
+
+  load-with-code-conversion("/home/pravi/software/icicles/icicles-var.el" "/home/pravi/software/icicles/icicles-var.el" nil t)
+
+  require(icicles-var)
+
+  eval-buffer(#<buffer  *load*<2>> nil "/home/pravi/software/icicles/icicles.el" nil t)  ; Reading at buffer position 67815
+
+  load-with-code-conversion("/home/pravi/software/icicles/icicles.el" "/home/pravi/software/icicles/icicles.el" nil t)
+
+  require(icicles)
+
+  eval-buffer(#<buffer  *load*> nil "/home/pravi/.emacs" nil t)  ; Reading at buffer position 6896
+
+  load-with-code-conversion("/home/pravi/.emacs" "/home/pravi/.emacs" t t)
+
+  load("~/.emacs" t t)
+
+ #[nil "
+
+ command-line()
+
+  normal-top-level()
+
+
+
+
+[new:DrewAdams:2011-10-26 20:50 UTC]
+
+Dunno where you really intended the content of the page to be, but replying here anyway. 
+
+It's clear that you saved an HTML page as ##apropos-fn+var.el##, instead of the Lisp file.  Your file has ##<!DOCTYPE## in it, which suggests that it is HTML.
+
+When you go to the <tt>[[apropos-fn+var.el]]</tt> page, click the ##Download## link etc.; don't just save that page (it is HTML). -- DrewAdams
+

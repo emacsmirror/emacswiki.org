@@ -14,6 +14,14 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== NearMap ==
+
+If the NearMap must go it is probably because it included a moribund group of Wikis.  At one time Meatball and Community Wiki held promise.  What if it included WardsWiki (the WikiWiki) or the related Wikis on the InterMap or the WikiNode?
+
+* http://c2.com/wiki/links.txt
+
+This feature might still be useful. -- AaronHawley
+
 == Cross-referencing basic Lisp info ==
 
 Someone who had been using Emacs for some time came across an EmacsWiki page and complained on OpenQuestions that the Lisp code didn't have instructions how to use it.  It's a fair criticism.  We had a similar criticism awhile back that resulted in improving the InstallingPackages page.
