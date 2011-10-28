@@ -20,7 +20,7 @@ Library <tt>[[buff-menu+.el]]</tt> ('''[::BufferMenu+]''') provides the followin
 * That last `mouse-3' menu item is a new command, `Buffer-menu-delete-flagged' (bound to `C-M-x'), that deletes all buffers flagged `D', even if they are modified.
 * Command `buffer-menu' was redefined so that:
 ** A prefix argument zero or less means list buffers ''alphabetically''.
-** A prefix argument zero or more means list only ''file buffers''.
+** A prefix argument zero or more means list only ''Dired and file buffers''.
 * The buffer-menu buffer (<code>*Buffer List*</code>) is font-lock ''highlighted'':
 ** Each field of buffer (Buffer, Mode, File etc.) uses a different [[face]].
 ** Each mark uses a different face (Save, Delete, Read-Only, Mark, Current). All faces (there are eleven) are user-definable (variables).

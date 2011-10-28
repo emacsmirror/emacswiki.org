@@ -2,7 +2,7 @@
 
 ;; Filename: joseph-autopair.el
 ;; Created: 2011-03-02
-;; Last Updated: Joseph 2011-10-22 16:20:25 星期六
+;; Last Updated: Joseph 2011-10-27 20:41:37 星期四
 ;; Version: 0.2.0
 ;; Description:   Another autopair or skeleton.
 ;; Author: Joseph <jixiuf@gmail.com>
@@ -326,7 +326,7 @@ if not ,eval it."
         (message "joseph auto pair mode enabled")
         )
     (defalias 'backward-delete-char-untabify  (symbol-function 'origin-backward-delete-char-untabify-1))
-    (defalias 'backward-delete-char  (symbol-function 'origin-delete-backwardchar-1))
+    (defalias 'backward-delete-char  (symbol-function 'origin-delete-backward-char-1))
     (remove-hook 'after-change-functions 'joseph-autopair-after-change-function)
     (remove-hook 'before-change-functions 'joseph-autopair-before-change-function)
     (setq joseph-auto-pair-mode nil)

@@ -47,20 +47,26 @@ You can obtain `grep' and `find' from the [http://gnuwin32.sourceforge.net/ GnuW
 * [http://gnuwin32.sourceforge.net/packages/grep.htm Grep for Windows]
 * [http://gnuwin32.sourceforge.net/packages/findutils.htm FindUtils for Windows]
 
-They are installed in ##C:\Program Files\GnuWin32\bin## by default. Copy ##grep.exe## and ##find.exe## to Emacs' own ##bin## directory. Emacs will then use these files over any other executables with the same name, including Windows' own ##find## utility.
+If you installed `GnuWin32' under, say, "C:\GNU\gnuwin32", consider adding the following commands to Emacs initialization file:
 
-'''Note:''' if you don't use the installer, you need to download the [http://gnuwin32.sourceforge.net/packages/grep.htm dependencies zip file] as well and copy ##libiconv2.dll##, ##libintl3.dll##, ##pcre3.dll## and ##regex2.dll## to Emacs' ##bin## directory, otherwise you may get an "exited abnormally with code 53" error message.
+   (when (or (eq system-type 'windows-nt) (eq system-type 'msdos))
+      (setenv "PATH" (concat "C:\\GNU\\gnuwin32\\bin;" (getenv "PATH")))
+      (setq find-program "C:\\GNU\\gnuwin32\\bin\\find.exe"
+            grep-program "C:\\GNU\\gnuwin32\\bin\\grep.exe"))
 
-For some additional tweaking, do
+It looks like dots and tilda characters needs to be escaped for `rgrep', `dired-find', etc to work:
 
-    (eval-after-load 'grep
-      '(progn
-         (grep-apply-setting
-          'grep-template
-          "grep <C> -d skip -nH -e <R> <F>")
-         (add-to-list 'grep-files-history "*")))
+   (defadvice shell-quote-argument (after windows-nt-special-quote (argument) activate)
+     "Add special quotes to ARGUMENT in case the system type is 'windows-nt."
+     (when
+         (and (eq system-type 'windows-nt) (w32-shell-dos-semantics))
+       (if (string-match "[\\.~]" ad-return-value)
+           (setq ad-return-value 
+	        (replace-regexp-in-string
+	         "\\([\\.~]\\)" 
+	         "\\\\\\1"
+	         ad-return-value)))))
 
-This makes `M-x lgrep' skip directories without warnings. Also, the default is to search ''all'' files, that is, "##*##".
 
 [:MSYS]
 === MSYS ===

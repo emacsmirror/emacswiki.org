@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 25 14:22:01 2011 (-0700)
+;; Last-Updated: Thu Oct 27 18:50:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13734
+;;     Update #: 13765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/10/27 dadams
+;;     Added: bmkp-autotemp-bookmark-predicates, bmkp-temporary-bookmarking-mode(-hook),
+;;            bmkp-delete-all-temporary-bookmarks, bmkp-make-bookmark-(savable|temporary),
+;;            bmkp-toggle-temporary-bookmark, bmkp-temporary-alist-only, bmkp-temporary-bookmark-p.
+;;     bookmark-set: Make bookmark temporary, if bmkp-autotemp-bookmark-predicates says to.
+;;     bookmark-write-file: Do not save temporary bookmarks (bmkp-temporary-bookmark-p).
 ;; 2011/10/25 dadams
 ;;     bmkp-empty-file: Added optional arg CONFIRMP.  By default, no confirmation if not interactive.
 ;; 2011/08/09 dadams
@@ -356,6 +362,19 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/10/27 dadams
+;;     Added: bmkp-X-mark, bmkp-bmenu-toggle-marked-temporary/savable, bmkp-bmenu-toggle-temporary,
+;;            bmkp-bmenu-mark-autonamed-bookmarks, bmkp-bmenu-show-only-temporary,
+;;            bmkp-bmenu-mark-temporary-bookmarks.
+;;     bmkp-bmenu-list-1: Mark with X in place of a, if bookmark is temporary.
+;;     bookmark-bmenu-mode: Mode-line major-mode name indicates when in temporary bookmarking mode.
+;;                          Updated doc string with temporary bookmark commands.
+;;     bmkp-t-mark: Changed default attributes.
+;;     Bind: M-L to bmkp-temporary-bookmarking-mode, M-X to bmkp-bmenu-toggle-marked-temporary/savable
+;;           X M to bmkp-bmenu-mark-temporary-bookmarks, X S to bmkp-bmenu-show-only-temporary,
+;;           C-M-X to bmkp-bmenu-toggle-temporary.
+;;     bmkp-bmenu-show-only-bookmark-files: Bind to Y S, not X S.
+;;     bmkp-bmenu-mark-bookmark-file-bookmarks: Bind to Y M, not X M.
 ;; 2011/07/01 dadams
 ;;     bmkp-bmenu-change-sort-order, bmkp(-multi)-reverse-sort-order: Handle null CURRENT-BMK.
 ;; 2011/04/24 dadams

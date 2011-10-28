@@ -316,5 +316,6 @@ If I had time to go in and fix something, the highest priority would be to make 
 
 ry
 
+[new:SamAsk:2011-10-27] I have added lineno.el to marmalade repo (http://marmalade-repo.org/packages/lineno/0.1). Please remove it if I did the wrong thing.
 ----
 CategoryDisplay
