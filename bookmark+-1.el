@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Oct 27 17:19:00 2011 (-0700)
+;; Last-Updated: Fri Oct 28 08:29:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2271
+;;     Update #: 2280
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -297,10 +297,10 @@
 ;;    `bmkp-delete-autonamed-no-confirm',
 ;;    `bmkp-delete-autonamed-this-buffer-no-confirm',
 ;;    `bmkp-delete-bookmark-name-from-list',
-;;    `bmkp-desktop-alist-only', `bmkp-desktop-bookmark-p',
-;;    `bmkp-desktop-kill', `bmkp-dired-alist-only',
-;;    `bmkp-dired-bookmark-p', `bmkp-dired-subdirs',
-;;    `bmkp-dired-this-dir-alist-only',
+;;    `bmkp-delete-temporary-no-confirm', `bmkp-desktop-alist-only',
+;;    `bmkp-desktop-bookmark-p', `bmkp-desktop-kill',
+;;    `bmkp-dired-alist-only', `bmkp-dired-bookmark-p',
+;;    `bmkp-dired-subdirs', `bmkp-dired-this-dir-alist-only',
 ;;    `bmkp-dired-this-dir-bookmark-p', `bmkp-edit-tags-mode',
 ;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every', `bmkp-face-prop',
@@ -7883,15 +7883,18 @@ buffer part names the current buffer."
     (eval '(define-minor-mode bmkp-temporary-bookmarking-mode
             "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
-modification, deletion) are not automatically saved.  Details:
+modification, deletion) are NOT automatically saved.  Details:
 
  a. `bookmark-save-flag' is set to nil.
  b. `bmkp-current-bookmark-file' is set to a new, empty bookmark file
-    (using `make-temp-file').
+    in directory `temporary-file-directory' (via `make-temp-file').
  c. That file is not saved automatically.
 
 Non-interactively, turn temporary bookmarking on if and only if ARG is
-positive.  Non-interactively there is no prompt for confirmation."
+positive.  Non-interactively there is no prompt for confirmation.
+
+In the `*Bookmark List*' display, the major-mode mode-line indicator
+is `TEMPORARY ONLY' when this mode is on."
             :init-value nil :global t :group 'bookmark-plus
             :link `(url-link :tag "Send Bug Report"
                     ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
@@ -7927,15 +7930,18 @@ Don't forget to mention your Emacs and library versions."))
   (defun bmkp-temporary-bookmarking-mode (&optional arg)
     "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
-modification, deletion) are not automatically saved.  Details:
+modification, deletion) are NOT automatically saved.  Details:
 
  a. `bookmark-save-flag' is set to nil.
  b. `bmkp-current-bookmark-file' is set to a new, empty bookmark file
-    (using `make-temp-file').
+    in directory `temporary-file-directory' (via `make-temp-file').
  c. That file is not saved automatically.
 
 Non-interactively, turn temporary bookmarking on if and only if ARG is
-positive.  Non-interactively there is no prompt for confirmation."
+positive.  Non-interactively there is no prompt for confirmation.
+
+In the `*Bookmark List*' display, the major-mode mode-line indicator
+is `TEMPORARY ONLY' when this mode is on."
     (interactive "P")
     (setq bmkp-temporary-bookmarking-mode
           (if arg (> (prefix-numeric-value arg) 0) (not bmkp-temporary-bookmarking-mode)))
@@ -8003,18 +8009,25 @@ Return the full updated bookmark."
 
 ;;;###autoload
 (defun bmkp-delete-all-temporary-bookmarks ()
-  "Delete all temporary bookmarks.
+  "Delete all temporary bookmarks, after confirmation.
 These are bookmarks that are `bmkp-temporary-bookmark-p'.  You can
 make a bookmark temporary using `bmkp-make-bookmark-temporary' or
 `bmkp-toggle-temporary-bookmark'."
   (interactive)
   (let ((bmks-to-delete  (mapcar #'bookmark-name-from-full-record
-                                 (bmkp-autonamed-this-buffer-alist-only))))
+                                 (bmkp-temporary-alist-only))))
     (if (null bmks-to-delete)
-        (message "No autonamed bookmarks for buffer `%s'" (buffer-name))
-      (when (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? " (buffer-name)))
+        (message "No temporary bookmarks to delete")
+      (when (y-or-n-p (format "Delete ALL temporary bookmarks? "))
         (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk))
-        (message "Deleted all bookmarks for buffer `%s'" (buffer-name))))))
+        (message "Deleted all temporary bookmarks")))))
+
+;; You can use this in `kill-emacs-hook'.
+(defun bmkp-delete-temporary-no-confirm ()
+  "Delete all temporary bookmarks, without confirmation."
+  (when (and bookmarks-already-loaded bookmark-alist)
+    (let ((bmks-to-delete  (mapcar #'bookmark-name-from-full-record (bmkp-temporary-alist-only))))
+      (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk)))))
 
 ;;;###autoload
 (defun bmkp-delete-bookmarks (position allp &optional alist) ; Bound to `C-x p delete'

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version: 
-;; Last-Updated: Mon Apr 25 06:54:55 2011 (-0700)
+;; Last-Updated: Fri Oct 28 10:49:15 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 256
+;;     Update #: 273
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -478,17 +478,21 @@
                    'noerror)))
   'bmkp-set-bookmark-file-bookmark)
 (define-key-after menu-bar-bookmark-map [separator-delete] '("--") 'bmkp-toggle-autoname-bookmark-set)
-(define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
-  '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
-    :help "Delete the autonamed bookmark at point"
-    :visible (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
-              'noerror))
-  'bmkp-set-bookmark-file-bookmark)
+(define-key-after menu-bar-bookmark-map [bmkp-delete-all-temporary-bookmarks]
+  '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
+    :help "Delete the temporary bookmarks, (`X') whether visible here or not")
+  'separator-delete)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
   '(menu-item "Delete All Autonamed Bookmarks Here..."
     bmkp-delete-all-autonamed-for-this-buffer
     :help "Delete all autonamed bookmarks for the current buffer"
     :enable (mapcar #'bookmark-name-from-full-record (bmkp-autonamed-this-buffer-alist-only)))
+  'bmkp-delete-all-temporary-bookmarks)
+(define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
+  '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
+    :help "Delete the autonamed bookmark at point"
+    :visible (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
+              'noerror))
   'bmkp-toggle-autonamed-bookmark-set/delete)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
@@ -571,6 +575,10 @@
   '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks")
   'load)
+(define-key-after menu-bar-bookmark-map [bmkp-temporary-bookmarking-mode]
+  '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
+    :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)")
+  'load-read-only)
 
 
 ;; `bmkp-highlight-menu' of `Bookmarks' menu
@@ -649,11 +657,21 @@
                              "Highlight Jump using Crosshairs"
                              "Crosshairs highlighting is %s"
                              "Temporarily highlight visited bookmarks using crosshairs"))
+(define-key bmkp-options-menu [bmkp-toggle-saving-menu-list-state]
+  (bmkp-menu-bar-make-toggle bmkp-bmenu-state-file bmkp-bmenu-state-file
+                             "Autosave *Bookmark List* Display State"
+                             "Autosaving of `*Bookmark List*' display state is %s"
+                             "Autosave `*Bookmark List*' state (aka \"menu list\") when you quit it"))
+(define-key bmkp-options-menu [bmkp-toggle-saving-bookmark-file]
+  (bmkp-menu-bar-make-toggle bookmark-save-flag bookmark-save-flag
+                             "Autosave Bookmark File"
+                             "Autosaving of bookmarks is %s"
+                             "Automatically save a bookmark after setting or changing it"))
 (define-key bmkp-options-menu [bmkp-save-new-location-flag]
   (bmkp-menu-bar-make-toggle bmkp-save-new-location-flag bmkp-save-new-location-flag
-                             "Save after Relocating"
-                             "Saving relocated bookmarks is %s"
-                             "Save a bookmark after automatically relocating it"))
+                             "Autosave after Relocating"
+                             "Autosaving relocated bookmarks is %s"
+                             "Automatically save a bookmark after automatically relocating it"))
 (define-key bmkp-options-menu [bmkp-prompt-for-tags-flag]
   (bmkp-menu-bar-make-toggle bmkp-prompt-for-tags-flag bmkp-prompt-for-tags-flag
                              "Prompt for Tags when Setting"

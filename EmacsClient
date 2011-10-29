@@ -334,6 +334,37 @@ You can open a file in Emacs via Windows Send To by placing a shortcut to emacsc
 
 - Glen Cordrey
 
+I've used two ways to get EmacsClient into the SendTo on Windows 7.  First was to use the VBScript mentioned above, but I had to copy the script to the SendTo folder (%APPDATA%\Roaming\Microsoft\Windows\SendTo) not just a link/shortcut to it, and that meant altering the script to use a fixed path since the script was no longer in the same directory as emacsclientw.exe or runemacs.exe.
+<pre>
+Set objShell = WScript.CreateObject("WScript.Shell")
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+If WScript.Arguments.Count = 1 Then
+   objShell.Run("c:/sys/emacs-23.3/bin/emacsclientw.exe -na ""c:/sys/emacs-23.3/bin/runemacs.exe"" """ & WScript.Arguments(0) & """")
+Else
+   objShell.Run("c:/sys/emacs-23.3/bin/emacsclientw.exe -na ""c:/sys/emacs-23.3/bin/runemacs.exe"" ")
+end If
+</pre>
+(I'm not VBScript programmer so that could obviously be improved, but it was short and quick, and you'll need to modify paths as appropriate.)
+Benefit is that it sends the file to Emacs (starting Emacs if necessary) without a flashing command prompt.  Downside is that it has to show up with the ".vbs" extension to work.  Would rather it showed up in the SendTo menu as just "Emacs" and not "emacs.vbs".  Oh well.  Ideas?
+Second way was to create a batch file like described above, put it into Emacs' bin directory and create a shortcut to it in the SendTo folder.  Change the shortcut name to just "Emacs" and it looks better in the menu, but there is a command prompt window that flashes up. -- RobDavenport
+
+
+==== Emacsclient and Windows 7 Taskbar ====
+Wanted to have Emacs icon on taskbar that calls runemacs to get Emacs started (without command prompt windows flashing or odd submenus and with proper icon (putting .vbs scripts on the taskbar created pinned shortcuts to wscript with the runemacs.vbs as a submenu).  I found a tip here http://superuser.com/questions/259146/why-latest-emacs-version-dont-support-windows-7-taskbar and was able to do it by:
+
+1. Start Emacs via runemacs shortcut, no other Emacs process running previously.  Emacs icon shows up on taskbar when Emacs starts.
+
+2. Right-click on icon, select pin to taskbar.
+
+3. Shift-right-click on the icon and change the target from emacs.exe to runemacs.exe
+
+Emacsclient can be used (with -n -a arguments as above) but needs "%1" in shortcut to work and that creates an empty buffer '%1' which isn't ideal (suggestions?) so I just use runemacs.exe.  I don't drag-and-drop files to the taskbar icon (can't) just use it to start/focus Emacs, and I use other tips here to use emacsclient via SendTo or context menu options to send files. --RobDavenport
+
+And there's another possible method here: http://robert-adesam.blogspot.com/2011/01/emacsclient-setup-on-windows-7-starter.html.  He uses a bat-to-exe converter to create an executable to run a batch file that executes emacsclient as needed, but the exe can be put onto the taskbar (and the converter he mentions can have it run invisibly and with custom icon).  Might also be worth a look. --RobDavenport
+
+
+
 ==== Editing with Emacs from Web Browsers ====
 
 ===== With Firefox Add-on "It's All Text" + an Elisp file + =====

@@ -4,5 +4,42 @@ Here are things extending <code>makefile-mode</code>,
 
 * [http://user42.tuxfamily.org/make-mode-fillindent/index.html make-mode-fillindent.el] &mdash; paragraph filling for indented comments
 
+=== Extending makefile-mode for nmake ===
+
+I was always wondering why there are quite a lot of modes derived from
+<code>makefile-mode</code>: Obviously ''gmake'', but also ''automake''
+and ''imake'' mode, but no ''nmake'' mode.
+Maybe because it takes 5 minutes to look at the other derived modes and
+come up with your own derived mode for ''nmake''. At least if you are only
+looking for syntax highlighting and not for the other advanced features of
+the <code>makefile-mode</code>. So here is what I have
+in my .emacs file. (Note the ''require'' line: although the prefix for all
+variable and functions is ''makefile'', the filename itself is called
+<code>make-mode.el</code>)
+
+  (require 'make-mode)
+  
+  (defconst makefile-nmake-statements
+    `("!IF" "!ELSEIF" "!ELSE" "!ENDIF" "!MESSAGE" "!ERROR" "!INCLUDE" ,@makefile-statements)
+    "List of keywords understood by nmake.")
+  
+  (defconst makefile-nmake-font-lock-keywords
+    (makefile-make-font-lock-keywords
+     makefile-var-use-regex
+     makefile-nmake-statements
+     t))
+  
+  (define-derived-mode makefile-nmake-mode makefile-mode "nMakefile"
+    "An adapted `makefile-mode' that knows about nmake."
+    (setq font-lock-defaults
+          `(makefile-nmake-font-lock-keywords ,@(cdr font-lock-defaults))))
+
+And finally for convenience I add the ''.mak'' suffix to the ''auto-mode-alist'':
+
+  (setq auto-mode-alist
+        (cons '("\\.mak\\'" . makefile-nmake-mode) auto-mode-alist))
+
+-- RolfUnger
+
 ----
 CategoryModes

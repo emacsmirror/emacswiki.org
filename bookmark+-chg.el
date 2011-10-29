@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Oct 27 18:50:53 2011 (-0700)
+;; Last-Updated: Fri Oct 28 11:04:20 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13765
+;;     Update #: 13785
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/10/28 dadams
+;;     Added: bmkp-delete-temporary-no-confirm.
+;;     bmkp-delete-all-temporary-bookmarks: Rewrote (it was just a stub).
+;;     bmkp-bmenu-menubar-menu:
+;;       Added: bmkp-temporary-bookmarking-mode, bmkp-delete-all-temporary-bookmarks,
+;;              bmkp-bmenu-toggle-marked-temporary/savable.
+;;     bmkp-bmenu-show-menu: Added: bmkp-bmenu-show-only-temporary.
+;;     bmkp-bmenu-mark-menu:
+;;       Added: bmkp-bmenu-mark-temporary-bookmarks, bmkp-bmenu-mark-autonamed-bookmarks.
+;;     bmkp-bmenu-mouse-3-menu: Added: bmkp-bmenu-toggle-temporary.
+;;     bookmark-bmenu-mode: Updated doc string.
 ;; 2011/10/27 dadams
 ;;     Added: bmkp-autotemp-bookmark-predicates, bmkp-temporary-bookmarking-mode(-hook),
 ;;            bmkp-delete-all-temporary-bookmarks, bmkp-make-bookmark-(savable|temporary),
@@ -489,6 +500,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/10/28 dadams
+;;     menu-bar-bookmark-map:
+;;       Added: bmkp-delete-all-temporary-bookmarks, bmkp-temporary-bookmarking-mode.  Reordered.
+;;     bmkp-options-menu: Added: bmkp-toggle-saving-menu-list-state, bmkp-toggle-saving-bookmark-file.
 ;; 2011/04/24 dadams
 ;;     Added to Bookmarks menu and its Tags submenu: Purge Autofiles with No Tags.
 ;; 2011/04/23 dadams
