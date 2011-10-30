@@ -153,7 +153,7 @@ Multi-SMTP email sending in Gnus tortured me for long time. I searched for a sou
                                         ((string-match "myemail1@server1.com" from)"myemail1@server1.com")
                                 ;; Add more string-match lines for your email accounts
                                 ((string-match "myemail2@server2.com" from)"myemail2@server2.com"))))
-                  (setq message-sendmail-extra-arguments (list "-a" account))))))
+                  (setq message-sendmail-extra-arguments (list '"-a" account)))))) ; the original form of this script did not have the ' before "a" which causes a very difficult to track bug --frozencemetery
 
 (setq message-sendmail-envelope-from 'header)
 (add-hook 'message-send-mail-hook 'cg-feed-msmtp)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 22 13:48:56 2011 (-0700)
+;; Last-Updated: Sat Oct 29 06:57:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7567
+;;     Update #: 7569
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/10/29 dadams
+;;     icicle-delete-file: Add icicle-remove-candidate-display-others to action fn.  Remove S-delete.
 ;; 2011/10/21 dadams
 ;;     icicle-remove-entry-from-saved-completion-set: Bind icicle-remove-icicles-props-p to nil.
 ;;     icicle-execute-extended-command-1: Don't bind WAIT-TIME to 0 if CURR-MSG.

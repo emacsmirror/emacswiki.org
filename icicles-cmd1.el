@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 19:17:47 2011 (-0700)
+;; Last-Updated: Sat Oct 29 06:51:00 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22649
+;;     Update #: 22652
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5158,9 +5158,10 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
-  icicle-delete-file-or-directory       ; Function to perform the action
+  You can use `M-|' to open Dired on currently matching file names." ; Doc string
+  (lambda (file)                        ; Function to perform the action
+    (icicle-delete-file-or-directory file)
+    (icicle-remove-candidate-display-others 'ALL))
   "Delete file or directory: " default-directory nil t nil nil ; `read-file-name' args
   (icicle-file-bindings)                ; Bindings
   (icicle-bind-file-candidate-keys)     ; First code
