@@ -1,6 +1,6 @@
 This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 
-: .:: ''v13.2.1'' :: ''part of GNU Emacs'' ::.
+: .:: ''v13.2.2'' :: ''part of GNU Emacs'' ::.
 
 : It runs on Emacs 24.
 
@@ -905,6 +905,18 @@ Hi! I have what I think is a bug with whitespace-newline-mode in Emacs 24. When 
 
 [new:DrewAdams:2011-09-18 23:35 UTC]
 Yup, looks like a bug. Please file a report: `M-x report-emacs-bug'. -- DrewAdams
+
+[new::2011-10-30 23:10 UTC]
+: Hi Sarah,
+: Hi Drew,
+
+: This bug is fixed in version 13.2.2.
+
+: Thanks for report. -- ViniciusJoseLatorre
+
+----
+[new]
+If you also use Desktop.el to save and restore your sessions, then a word of warning about using global-whitespace-mode: Because the enabled modes for each buffer are saved in the desktop file and those modes are re-enabled at restore time, global-whitespace-mode is evaluated for each buffer which is restored; and because running global-whitespace-mode is an expensive operation which processes every current buffer, this becomes an o(n^2) operation over the course of the desktop restore, and absolutely kills the performance for large sessions.
 
 ----
 

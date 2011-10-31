@@ -165,6 +165,27 @@ So I need to have the shell buffer changes accordingly when I exit from a destin
 
 **If anyone has good ideas, its warm welcome here!.**
 
+<pre>
+--8<-------------------------- §separator§ ------------------------>8--
+,-----------
+|    DennyZhang: 
+|    If you are meaning invoke multiple shells, we basically
+|    have two ways: Ctrl+u Alt+x shell, or (shell shell-buffer-name).
+|    
+|    You can check below for detail.
+|        http://www.emacswiki.org/emacs/ShellMode#toc3
+|        EmacsWiki: Shell Mode
+|        http://mjtsai.com/blog/2003/01/02/multiple_emacs_shell_buff/
+|        Michael Tsai - Blog - Multiple Emacs Shell Buffers
+|    
+|    Hi David, I have implemented bunches of lisp functions, which
+|    serves as a handy shell extension. I use it everyday. Maybe you
+|    can have a look.
+|    http://hi.baidu.com/filebat/blog/item/262915d12a3299cf562c8481.html
+`-----------
+</pre>
+
+Yes. It is the native way. But a host name is more meaningful than a sequence number.  A similar problem occurs when find two files with the same name from different directories.  It would be more meaningful to attach a parent directory name as prefix in the buffer name than to attach a sequence number. But I didn't have time to make it. 
 
 == kill-shell-buffer-after-exit ==
 

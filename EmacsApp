@@ -109,6 +109,13 @@ To map the the *left alt key with META* and the *right alt key with ALT*, on the
 
 It should do the job for the behavior you expect. -- jbcarre
 
+Note: I just looked for a very long time trying to get my mac to use option anything and not get greek characters.  I've always like it bound to <super> instead I was getting opt-d => ∂ and ∫ for opt-b.  Setting the mac-right-option-modifier to nil keeps doing composition.  What fixed this for me was setting the options modifier to super like I was hoping for and now all is great on my mac.
+
+     (setq mac-option-modifier 'super)
+
+-- Cheers MSavoie
+
+
 == Questions ==
 
 * Can not set default window position and size by  ./Emacs.app/Contents/MacOS/Emacs -q -g 400x400 or org.gnu.Emacs.plist. Is there another way to set default window size except from .emacs?

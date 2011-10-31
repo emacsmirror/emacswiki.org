@@ -5,7 +5,7 @@
 ;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Keywords: data, wp
-;; Version: 13.2.1
+;; Version: 13.2.2
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is part of GNU Emacs.
@@ -814,13 +814,12 @@ Used when `whitespace-style' includes `tabs'."
 
 
 (defcustom whitespace-trailing-regexp
-  "\\(\\(\t\\| \\|\xA0\\|\x8A0\\|\x920\\|\xE20\\|\xF20\\)+\\)$"
+  "\\([\t \u00A0]+\\)$"
   "Specify trailing characters regexp.
 
 If you're using `mule' package, there may be other characters besides:
 
-   \" \"  \"\\t\"  \"\\xA0\"  \"\\x8A0\"  \"\\x920\"  \"\\xE20\"  \
-\"\\xF20\"
+   \" \"  \"\\t\"  \"\\u00A0\"
 
 that should be considered blank.
 
@@ -1107,11 +1106,10 @@ Any other value is treated as nil."
 
 ;;;###autoload
 (define-minor-mode whitespace-mode
-  "Toggle whitespace minor mode visualization (\"ws\" on modeline).
-
-If ARG is null, toggle whitespace visualization.
-If ARG is a number greater than zero, turn on visualization;
-otherwise, turn off visualization.
+  "Toggle whitespace visualization (Whitespace mode).
+With a prefix argument ARG, enable Whitespace mode if ARG is
+positive, and disable it otherwise.  If called from Lisp, enable
+the mode if ARG is omitted or nil.
 
 See also `whitespace-style', `whitespace-newline' and
 `whitespace-display-mappings'."
@@ -1131,11 +1129,10 @@ See also `whitespace-style', `whitespace-newline' and
 
 ;;;###autoload
 (define-minor-mode whitespace-newline-mode
-  "Toggle NEWLINE minor mode visualization (\"nl\" on modeline).
-
-If ARG is null, toggle NEWLINE visualization.
-If ARG is a number greater than zero, turn on visualization;
-otherwise, turn off visualization.
+  "Toggle newline visualization (Whitespace Newline mode).
+With a prefix argument ARG, enable Whitespace Newline mode if ARG
+is positive, and disable it otherwise.  If called from Lisp,
+enable the mode if ARG is omitted or nil.
 
 Use `whitespace-newline-mode' only for NEWLINE visualization
 exclusively.  For other visualizations, including NEWLINE
@@ -1148,9 +1145,10 @@ See also `whitespace-newline' and `whitespace-display-mappings'."
   :global     nil
   :group      'whitespace
   (let ((whitespace-style '(face newline-mark newline)))
-    (whitespace-mode whitespace-newline-mode)
-    ;; sync states (running a batch job)
-    (setq whitespace-newline-mode whitespace-mode)))
+    (whitespace-mode (if whitespace-newline-mode
+			 1 -1)))
+  ;; sync states (running a batch job)
+  (setq whitespace-newline-mode whitespace-mode))
 
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1159,11 +1157,10 @@ See also `whitespace-newline' and `whitespace-display-mappings'."
 
 ;;;###autoload
 (define-minor-mode global-whitespace-mode
-  "Toggle whitespace global minor mode visualization (\"WS\" on modeline).
-
-If ARG is null, toggle whitespace visualization.
-If ARG is a number greater than zero, turn on visualization;
-otherwise, turn off visualization.
+  "Toggle whitespace visualization globally (Global Whitespace mode).
+With a prefix argument ARG, enable Global Whitespace mode if ARG
+is positive, and disable it otherwise.  If called from Lisp,
+enable it if ARG is omitted or nil.
 
 See also `whitespace-style', `whitespace-newline' and
 `whitespace-display-mappings'."
@@ -1175,7 +1172,7 @@ See also `whitespace-style', `whitespace-newline' and
    (noninteractive			; running a batch job
     (setq global-whitespace-mode nil))
    (global-whitespace-mode		; global-whitespace-mode on
-    (save-excursion
+    (save-current-buffer
       (add-hook (if (boundp 'find-file-hook)
 		    'find-file-hook
 		  'find-file-hooks)
@@ -1186,7 +1183,7 @@ See also `whitespace-style', `whitespace-newline' and
 	(unless whitespace-mode
 	  (whitespace-turn-on-if-enabled)))))
    (t					; global-whitespace-mode off
-    (save-excursion
+    (save-current-buffer
       (remove-hook (if (boundp 'find-file-hook)
 		       'find-file-hook
 		     'find-file-hooks)
@@ -1223,11 +1220,10 @@ See also `whitespace-style', `whitespace-newline' and
 
 ;;;###autoload
 (define-minor-mode global-whitespace-newline-mode
-  "Toggle NEWLINE global minor mode visualization (\"NL\" on modeline).
-
-If ARG is null, toggle NEWLINE visualization.
-If ARG is a number greater than zero, turn on visualization;
-otherwise, turn off visualization.
+  "Toggle global newline visualization (Global Whitespace Newline mode).
+With a prefix argument ARG, enable Global Whitespace Newline mode
+if ARG is positive, and disable it otherwise.  If called from
+Lisp, enable it if ARG is omitted or nil.
 
 Use `global-whitespace-newline-mode' only for NEWLINE
 visualization exclusively.  For other visualizations, including
@@ -2460,9 +2456,8 @@ resultant list will be returned."
   "Match trailing spaces which do not contain the point at end of line."
   (let ((status t))
     (while (if (re-search-forward whitespace-trailing-regexp limit t)
-	       (save-match-data
-		 (= whitespace-point (match-end 1))) ;; loop if point at eol
-	     (setq status nil)))		     ;; end of buffer
+	       (= whitespace-point (match-end 1)) ;; loop if point at eol
+	     (setq status nil)))		  ;; end of buffer
     status))
 
 
@@ -2476,9 +2471,7 @@ beginning of buffer."
      ((= b 1)
       (setq r (and (/= whitespace-point 1)
 		   (looking-at whitespace-empty-at-bob-regexp)))
-      (if r
-	  (set-marker whitespace-bob-marker (match-end 1))
-	(set-marker whitespace-bob-marker b)))
+      (set-marker whitespace-bob-marker (if r (match-end 1) b)))
      ;; inside bob empty region
      ((<= limit whitespace-bob-marker)
       (setq r (looking-at whitespace-empty-at-bob-regexp))
@@ -2489,9 +2482,7 @@ beginning of buffer."
      ;; intersection with end of bob empty region
      ((<= b whitespace-bob-marker)
       (setq r (looking-at whitespace-empty-at-bob-regexp))
-      (if r
-	  (set-marker whitespace-bob-marker (match-end 1))
-	(set-marker whitespace-bob-marker b)))
+      (set-marker whitespace-bob-marker (if r (match-end 1) b)))
      ;; it is not inside bob empty region
      (t
       (setq r nil)))

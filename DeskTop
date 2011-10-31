@@ -182,7 +182,15 @@ Ordinary desktop files are used to record the information.
 The bookmark itself records only the location of the desktop file. Bookmarked desktops are intended to be used only as bookmarks, not in the ordinary way (e.g. at Emacs startup), so the locations of the desktop files used are unimportant. In particular, you can have any number of (bookmark) desktop files per directory.
 
 
+== Troubleshooting ==
 
+=== Restoring a large session is painfully slow ===
+
+Something to keep in mind is that all enabled modes for a buffer are saved in the desktop file, and re-enabled when restoring, and global modes in particular have the potential to cause performance issues.
+
+global-whitespace-mode is a current example -- when you enable it, it processes every buffer. As the mode is active for all buffers, it will be listed against every buffer in the desktop file, and hence the processing done by this mode when restoring n buffers is an o(n^2) operation.
+
+(The desktop-minor-mode-table variable looks like it provides a workaround for this problem, by enabling you to specify a 'nil' custom handler for modes which should not be enabled when restoring the desktop.)
 
 == Open Desktop Questions ==
 
