@@ -2,6 +2,17 @@ LispInteractionMode is the mode of the buffer first selected when Emacs starts. 
 
 See the section "Lisp Interaction" in the EmacsManual, for more details.
 
+==Changing *scratch* buffername permanently==
+
+[new]
+Because I'm using MultiScratch, but the naming-convention (the suffix is a needed number starting with 1, surrounded with angle parenthesis, eg. *scratch<1>*) from the MultiScratch, created scratch-buffers, are not compatible with the initial one. (multi-scratch-buffer-name is set to "scratch")
+
+So I need to change the initial *scratch* to *scratch<1>*, otherwise after creating further scratch it deny it service.
+But I don't see a variable for changing scratch-buffername?
+
+An other solution is, to rename the buffer before creating a second *scratch<2>* with MultiScratch. But how?
+
+I find MultiScratch realy usefull, but it seems also buggy. :-\ -- Michael
 
 == Emacs Lisp Transcript ==
 
@@ -50,7 +61,7 @@ nil
 "54321"
 }}}
 
-Here is the definition of `M-x elisp-transcript':
+Here is the definition of `M-x elisp-transcript', use it by EvaluatingExpressions or add it to your InitFile:
 
 {{{
 (defun elisp-transcript ()

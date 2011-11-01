@@ -2203,7 +2203,7 @@ snapshot.
 
 
 [:AutonamedBookmarks]
-=== Autonamed Bookmarks - Easy Come Easy Go ===
+== Autonamed Bookmarks - Easy Come Easy Go ==
 
 Sometimes it is convenient to quickly create and delete bookmarks
 whose names you don't really care about.  That is the purpose of
@@ -2211,30 +2211,6 @@ whose names you don't really care about.  That is the purpose of
 provided automatically, and it does not record any region
 information -- it records only a position.  An autonamed bookmark is nevertheless an
 ordinary, persistent bookmark.
-
-What if you want only temporary bookmarks, which are not saved to
-disk?  As always, you control saving of bookmarks using option
-'''`bookmark-save-flag''''.  Remember that you can toggle this option
-using command `bmkp-toggle-saving-bookmark-file' (bound to '''`##M-~##''''
-in the bookmark-list buffer).  Remember too that you can at any
-changing the set of bookmarks that are susceptible to being saved.
-
-You can, for example:
-
-1. Use '''`C-x p 0'''' (`bmkp-empty-file') to create a new, empty
-bookmark file.
-
-2. Use '''`C-x p L'''' (`bmkp-switch-bookmark-file') to switch to using
-that new, empty bookmark file.
-
-3. Use '''`M-x bmkp-toggle-saving-bookmark-file'''' to turn off
-auto-saving bookmarks to disk.
-
-From then on, bookmarks that you create will be stored on the new
-list, which will not be automatically saved to disk.  If you do
-not explicitly save it, the bookmarks will be lost when your Emacs
-session ends -- they are thus only temporary.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
-
 
 '''`C-x p RET'''' creates a bookmark at [[point]] without prompting you for
 the name.  It is named using the current buffer name
@@ -2289,7 +2265,7 @@ bookmarks using these commands:
 * `bmkp-set-autonamed-bookmark-at-line' -- At a line beginning
 * `bmkp-set-autonamed-regexp-buffer'    -- At buffer matches
 * `bmkp-set-autonamed-regexp-region'    -- At region matches
-* `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in *Occur*) --
+* `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in `*Occur*') --
 - At `occur' and `multi-occur' hits
 
 Autonamed bookmarks are normal bookmarks.  In particular, they are
@@ -2301,6 +2277,127 @@ that they are automatically deleted by adding
 
   (add-hook 'kill-buffer-hook 'bmkp-delete-autonamed-this-buffer-no-confirm)
   (add-hook 'kill-emacs-hook  'bmkp-delete-autonamed-no-confirm)
+
+
+
+
+
+
+
+
+
+[:TemporaryBookmarks]
+== Temporary Bookmarks ==
+
+Autonamed bookmarks are easy-come-easy-go in the sense that `C-x p
+RET' either sets (creates) one or deletes the one under the
+cursor.  But what about temporary bookmarks in general?  What if
+you want only bookmarks that are temporary, that is, not saved to
+disk?  Or what if you want certain kinds of bookmarks to always be
+temporary?  Or what if you want to toggle whether particular
+bookmarks get saved automatically?
+
+
+
+
+
+
+
+
+[:bmkp-temporary-bookmarking-mode]
+[:TemporaryBookmarkingMode]
+=== Temporary Bookmarking Mode ===
+
+As always, you can control whether the bookmarks in the current
+bookmark list are saved automatically using option
+'''`bookmark-save-flag''''.  Remember that you can toggle this option
+using command `bmkp-toggle-saving-bookmark-file' (bound to '''`##M-~##''''
+in the bookmark-list buffer).  Remember too that you can at any
+changing the set of bookmarks that are susceptible to being saved.
+
+You could, for example:
+
+1. Use `C-x p 0' (`bmkp-empty-file') to create a new, empty
+bookmark file.
+
+2. Use `C-x p L' (`bmkp-switch-bookmark-file') to switch to using
+that new, empty bookmark file.
+
+3. Use `M-x bmkp-toggle-saving-bookmark-file' to turn off
+auto-saving bookmarks to disk.
+
+This is essentially what the minor-mode toggle command
+'''`bmkp-temporary-bookmarking-mode'''' does.  When in this minor mode,
+bookmarks that you create are stored on the new bookmark list,
+which is '''not''' automatically saved to disk.  If you do not
+explicitly save it yourself then the bookmarks are lost when your
+Emacs session ends -- they are only temporary.
+
+This command is bound to '''`M-L'''' in the bookmark-list display buffer
+(`##*Bookmark List*##').  The suffix '''`L'''' indicates that this has to do
+with <u>'''''l'''''</u>oading a bookmark file.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
+
+
+
+
+
+
+
+
+[:bmkp-make-bookmark-temporary]
+[:bmkp-make-bookmark-savable]
+[:bmkp-toggle-temporary-bookmark]
+[:bmkp-toggle-autotemp-on-set]
+[:bmkp-delete-all-temporary-bookmarks]
+[:bmkp-autotemp-bookmark-predicates]
+
+[:MakingBookmarksTemporary]
+=== Making Bookmarks Temporary ===
+
+Instead of simply switching to a temporary bookmark list, so that
+'''''all''''' bookmarking is only temporary, you more often want to have
+some bookmarks be temporary while still ensuring that others get
+saved.  Or you temporarily want all new bookmarks that you ''create''
+and all bookmarks that you ''update'' to be temporary, without
+affecting other, unchanged bookmarks.
+
+You can control this at the level of individual bookmarks, types
+of bookmarks, or all bookmarks whenever they are set (created or
+updated).
+
+* At the ''individual-bookmark'' level, commands
+'''`bmkp-make-bookmark-temporary'''' and '''`bmkp-make-bookmark-savable''''
+prompt you for a bookmark name and then set its
+temporary/savable status.  Command
+'''`bmkp-toggle-temporary-bookmark'''' combines these commands,
+toggling the status for a given bookmark.
+In the bookmark list, this toggle is bound to '''`C-M-X''''.  There
+are also commands in the bookmark-list display to toggle the
+temporary/savable status of the marked bookmarks ('''`M-X''''), to
+mark the temporary bookmarks ('''`##X M##''''), and to show only the
+temporary bookmarks ('''`##X S##'''').
+
+* At the ''bookmark-type'' level, you can customize user option
+'''`bmkp-autotemp-bookmark-predicates''''.  It is a list of bookmark
+predicates -- typically type predicates -- that define which
+bookmarks are automatically made temporary whenever they are
+set.  The default value is `nil'.
+For example, if you wanted autonamed bookmarks to always be made
+temporary whenever created or updated, you would customize the
+option to include the predicate `bmkp-autonamed-bookmark-p'.
+The doc string for the option lists the predefined type
+predicates, but you can use any bookmark predicates.
+
+* Finally, you can toggle whether ''all'' bookmarks become temporary
+whenever they are created or updated, using command
+'''`bmkp-toggle-autotemp-on-set'''', which is bound globally to '''`C-x p x''''.
+
+You can delete all such temporary bookmarks from the current
+bookmark list using command '''`bmkp-delete-all-temporary-bookmarks''''
+(or by using `##X M##' to mark them in the bookmark-list display and
+then hitting `D' to delete thems).
+
+
 
 
 

@@ -1,0 +1,19 @@
+<b>##(message "hello, emacswiki!")##</b>
+
+Here are a few of my elisp projects:
+
+== Indent hints mode ==
+Provides "hints" and a spacing profile-switching mechanism to facilitate switching between using tabs and spaces while coding in a mixed environment.
+https://github.com/mgalgs/indent-hints-mode
+
+== make-readme-markdown ==
+Parses canonical header comments in elisp files and converts them into markdown text, suitable for GitHub README files.
+https://github.com/mgalgs/make-readme-markdown
+
+== Discussion ==
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 18 21:15:46 2011 (-0700)
+;; Last-Updated: Mon Oct 31 10:59:47 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13854
+;;     Update #: 13920
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -145,12 +145,15 @@
 ;;      (@> "Omitting Bookmarks from Display")
 ;;      (@> "Sorting Bookmarks")
 ;;    (@> "Bookmarks for Specific Files or Buffers")
-;;    (@> "Cycling, Navigation List, Autonaming")
+;;    (@> "Cycling, Navigation List")
 ;;      (@> "The Bookmark Navigation List")
 ;;      (@> "Cycling the Navigation List")
 ;;      (@> "Cycling Dynamic Sets of Bookmarks")
 ;;      (@> "Cycling in the Current Buffer")
-;;      (@> "Autonamed Bookmarks - Easy Come Easy Go")
+;;    (@> "Autonamed Bookmarks - Easy Come Easy Go")
+;;    (@> "Temporary Bookmarks")
+;;      (@> "Temporary Bookmarking Mode")
+;;      (@> "Making Bookmarks Temporary")
 ;;    (@> "Highlighting Bookmark Locations")
 ;;      (@> "Defining How to Highlight")
 ;;      (@> "Highlighting On Demand")
@@ -611,7 +614,7 @@
 ;;  You can capture the set of bookmarks corresponding to a `*Bookmark
 ;;  List*' display for use in navigation, that is, as the current
 ;;  "navigation list".  Navigation here includes jumping and cycling
-;;  - see (@> "Cycling, Navigation List, Autonaming").
+;;  - see (@> "Cycling, Navigation List").
 ;;
 ;;  To capture in the navigation list the bookmarks corresponding to
 ;;  either the current `*Bookmark List*' display or a bookmark-list
@@ -1857,8 +1860,8 @@
 ;;  particular interest, `C-x p .' opens the bookmark-list display for
 ;;  only those bookmarks.
  
-;;(@* "Cycling, Navigation List, Autonaming")
-;;  ** "Cycling, Navigation List, Autonaming" **
+;;(@* "Cycling, Navigation List")
+;;  ** "Cycling, Navigation List" **
 ;;
 ;;  Using completion to jump to a bookmark is handy.  It lets you
 ;;  choose a bookmark by its name and gives you direct ("random")
@@ -2110,10 +2113,9 @@
 ;;  *Bookmark List*'.  In that case, you use the navlist cycling keys
 ;;  (e.g. `C-x p f', not `C-x p n'), and the cycled set is a static
 ;;  snapshot.
-;;
-;;
+ 
 ;;(@* "Autonamed Bookmarks - Easy Come Easy Go")
-;; *** "Autonamed Bookmarks - Easy Come Easy Go" ***
+;; ** "Autonamed Bookmarks - Easy Come Easy Go" **
 ;;
 ;;  Sometimes it is convenient to quickly create and delete bookmarks
 ;;  whose names you don't really care about.  That is the purpose of
@@ -2121,31 +2123,6 @@
 ;;  provided automatically, and it does not record any region
 ;;  information - it records only a position.  An autonamed bookmark
 ;;  is nevertheless an ordinary, persistent bookmark.
-;;
-;;  What if you want only temporary bookmarks, which are not saved to
-;;  disk?  As always, you control saving of bookmarks using option
-;;  `bookmark-save-flag'.  Remember that you can toggle this option
-;;  using command `bmkp-toggle-saving-bookmark-file' (bound to `M-~'
-;;  in the bookmark-list buffer).  Remember too that you can at any
-;;  time change the set of available bookmarks, which means also
-;;  changing the set of bookmarks that are susceptible to being saved.
-;;
-;;  You can, for example:
-;;
-;;  1. Use `C-x p 0' (`bmkp-empty-file') to create a new, empty
-;;     bookmark file.
-;;
-;;  2. Use `C-x p L' (`bmkp-switch-bookmark-file') to switch to using
-;;     that new, empty bookmark file.
-;;
-;;  3. Use `M-x bmkp-toggle-saving-bookmark-file' to turn off
-;;     auto-saving bookmarks to disk.
-;;
-;;  From then on, bookmarks that you create will be stored on the new
-;;  list, which will not be automatically saved to disk.  If you do
-;;  not explicitly save it, the bookmarks will be lost when your Emacs
-;;  session ends - they are thus only temporary.
-;;  See (@> "Using Multiple Bookmark Files").
 ;;
 ;;  `C-x p RET' creates a bookmark at point without prompting you for
 ;;  the name.  It is named using the current buffer name preceded by
@@ -2198,7 +2175,7 @@
 ;;  * `bmkp-set-autonamed-bookmark-at-line' - At a line beginning
 ;;  * `bmkp-set-autonamed-regexp-buffer'    - At buffer matches
 ;;  * `bmkp-set-autonamed-regexp-region'    - At region matches
-;;  * `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in *Occur*) -
+;;  * `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in `*Occur*') -
 ;;    At `occur' and `multi-occur' hits
 ;;
 ;;  Autonamed bookmarks are normal bookmarks.  In particular, they are
@@ -2212,6 +2189,100 @@
 ;;              'bmkp-delete-autonamed-this-buffer-no-confirm)
 ;;    (add-hook 'kill-emacs-hook
 ;;              'bmkp-delete-autonamed-no-confirm)
+ 
+;;(@* "Temporary Bookmarks")
+;;  ** Temporary Bookmarks **
+;;
+;;  Autonamed bookmarks are easy-come-easy-go in the sense that `C-x p
+;;  RET' either sets (creates) one or deletes the one under the
+;;  cursor.  But what about temporary bookmarks in general?  What if
+;;  you want only bookmarks that are temporary, that is, not saved to
+;;  disk?  Or what if you want certain kinds of bookmarks to always be
+;;  temporary?  Or what if you want to toggle whether particular
+;;  bookmarks get saved automatically?
+;;
+;;(@* "Temporary Bookmarking Mode")
+;;  *** Temporary Bookmarking Mode ***
+;;
+;;  As always, you can control whether the bookmarks in the current
+;;  bookmark list are saved automatically using option
+;;  `bookmark-save-flag'.  Remember that you can toggle this option
+;;  using command `bmkp-toggle-saving-bookmark-file' (bound to `M-~'
+;;  in the bookmark-list buffer).  Remember too that you can at any
+;;  time change the set of available bookmarks (the bookmark list),
+;;  which means also changing the set of bookmarks that are
+;;  susceptible to being saved.
+;;
+;;  You could, for example:
+;;
+;;  1. Use `C-x p 0' (`bmkp-empty-file') to create a new, empty
+;;     bookmark file.
+;;
+;;  2. Use `C-x p L' (`bmkp-switch-bookmark-file') to switch to using
+;;     that new, empty bookmark file.
+;;
+;;  3. Use `M-x bmkp-toggle-saving-bookmark-file' to turn off
+;;     auto-saving bookmarks to disk.
+;;
+;;  This is essentially what the minor-mode toggle command
+;;  `bmkp-temporary-bookmarking-mode' does.  When in this minor mode,
+;;  bookmarks that you create are stored on the new bookmark list,
+;;  which is not automatically saved to disk.  If you do not
+;;  explicitly save it yourself then the bookmarks are lost when your
+;;  Emacs session ends - they are only temporary.
+;;
+;;  This command is bound to `M-L' in the bookmark-list display buffer
+;;  (`*Bookmark List*').  The suffix `L' indicates that this has to do
+;;  with loading a bookmark file.  See (@> "Using Multiple Bookmark Files").
+;;
+;;(@* "Making Bookmarks Temporary")
+;;  *** Making Bookmarks Temporary ***
+;;
+;;  Instead of simply switching to a temporary bookmark list, so that
+;;  *all* bookmarking is only temporary, you more often want to have
+;;  some bookmarks be temporary while still ensuring that others get
+;;  saved.  Or you temporarily want all new bookmarks that you create
+;;  and all bookmarks that you update to be temporary, without
+;;  affecting other, unchanged bookmarks.
+;;
+;;  You can control this at the level of individual bookmarks, types
+;;  of bookmarks, or all bookmarks whenever they are set (created or
+;;  updated).
+;;
+;;  * At the individual-bookmark level, commands
+;;    `bmkp-make-bookmark-temporary' and `bmkp-make-bookmark-savable'
+;;    prompt you for a bookmark name and then set its
+;;    temporary/savable status.  Command
+;;    `bmkp-toggle-temporary-bookmark' combines these commands,
+;;    toggling the status for a given bookmark.
+;;
+;;    In the bookmark list, this toggle is bound to `C-M-X'.  There
+;;    are also commands in the bookmark-list display to toggle the
+;;    temporary/savable status of the marked bookmarks (`M-X'), to
+;;    mark the temporary bookmarks (`X M'), and to show only the
+;;    temporary bookmarks (`X S').
+;;
+;;  * At the bookmark-type level, you can customize user option
+;;    `bmkp-autotemp-bookmark-predicates'.  It is a list of bookmark
+;;    predicates - typically type predicates - that define which
+;;    bookmarks are automatically made temporary whenever they are
+;;    set.  The default value is `nil'.
+;;
+;;    For example, if you wanted autonamed bookmarks to always be made
+;;    temporary whenever created or updated, you would customize the
+;;    option to include the predicate `bmkp-autonamed-bookmark-p'.
+;;    The doc string for the option lists the predefined type
+;;    predicates, but you can use any bookmark predicates.
+;;
+;;  * Finally, you can toggle whether *all* bookmarks become temporary
+;;    whenever they are created or updated, using command
+;;    `bmkp-toggle-autotemp-on-set', which is bound globally to `C-x p
+;;    x'.
+;;
+;;  You can delete all such temporary bookmarks from the current
+;;  bookmark list using command `bmkp-delete-all-temporary-bookmarks'
+;;  (or by using `X M' to mark them in the bookmark-list display and
+;;  then hitting `D' to delete thems).
  
 ;;(@* "Highlighting Bookmark Locations")
 ;;  ** Highlighting Bookmark Locations **
@@ -2258,7 +2329,7 @@
 ;;  highlighting).  These individual settings are saved as part of the
 ;;  bookmarks themselves.
 ;;
-;;  In the bookmark list (buffer `*Bookmark List*'):
+;;  In the bookmark list display (buffer `*Bookmark List*'):
 ;;
 ;;  * `H +'    - Set the highlighting for this line's bookmark
 ;;  * `H > +'  - Set the highlighting for the marked bookmarks

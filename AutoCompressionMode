@@ -36,6 +36,27 @@ And <code>.dict</code> files are UTF-8, so
 
     (modify-coding-system-alist 'file "\\.dict\\'" 'utf-8)
 
+== gunzip in dired no longer working in ubuntu ==
+
+[new]
+In Ubuntu 10.10 I have install via their repository 23.1.1 . It seems at least since this (ubuntu) release I can 
+no longer open .gz files in dired. They fail with (wrong-type-argument characterp "gzip")
+I toggled on debug and the full output is:
+
+Debugger entered--Lisp error: (wrong-type-argument characterp "gzip")
+  signal(wrong-type-argument (characterp "gzip"))
+  byte-code("<elided this bit seems to cause WIKI problems>" [error-code local-file visit notfound x file-error 3 signal "Opening input file" "Searching for program" error "Uncompression program `%s' not found"] 5)
+  jka-compr-insert-file-contents("/tmp/CNV00001.jpg.key.gz" t nil nil nil)
+  apply(jka-compr-insert-file-contents ("/tmp/CNV00001.jpg.key.gz" t nil nil nil))
+  jka-compr-handler(insert-file-contents "/tmp/CNV00001.jpg.key.gz" t nil nil nil)
+  insert-file-contents("/tmp/CNV00001.jpg.key.gz" t)
+  byte-code(" 	\")" [inhibit-read-only filename t insert-file-contents] 3)
+  find-file-noselect-1(#<buffer CNV00001.jpg.key.gz> "/tmp/CNV00001.jpg.key.gz" nil nil "/tmp/CNV00001.jpg.key.gz" (1084785 2050))
+  find-file-noselect("/tmp/CNV00001.jpg.key.gz" nil nil nil)
+  find-file("/tmp/CNV00001.jpg.key.gz")
+  dired-advertised-find-file()
+  call-interactively(dired-advertised-find-file nil nil)
+
 ----
 CategoryModes 
 CategoryExternalUtilities

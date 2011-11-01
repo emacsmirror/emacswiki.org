@@ -2520,19 +2520,20 @@ Keeps a record of which etags you have jumped to recently. I was going to write 
 
 (defun anything-c-source-tags-location-ring-candidates ()
   "Build a list of anything candidates from tags-location-ring"
-  (flet ((buf-fn (m)
-           (with-current-buffer (marker-buffer m)
-             (goto-char m)
-             (let ((line (car (split-string (thing-at-point 'line) "[\n\r]"))))
-               (format "%7d:%s:    %s" (line-number-at-pos) (marker-buffer m) line)))))
-    (with-current-buffer anything-current-buffer
-      (loop
-       with recip = nil
-       for i in (ring-elements tags-location-ring)
-       for tag = (unless (null (marker-buffer i)) (buf-fn i))
-       when (and tag (not (member tag recip)))
-       collect tag into recip
-       finally return recip))))
+  (when (boundp 'tags-location-ring)
+    (flet ((buf-fn (m)
+                   (with-current-buffer (marker-buffer m)
+                     (goto-char m)
+                     (let ((line (car (split-string (thing-at-point 'line) "[\n\r]"))))
+                       (format "%7d:%s:    %s" (line-number-at-pos) (marker-buffer m) line)))))
+      (with-current-buffer anything-current-buffer
+        (loop
+         with recip = nil
+         for i in (ring-elements tags-location-ring)
+         for tag = (unless (null (marker-buffer i)) (buf-fn i))
+         when (and tag (not (member tag recip)))
+         collect tag into recip
+         finally return recip)))))
 </pre>
 
 -- JeremyMoore 

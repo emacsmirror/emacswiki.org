@@ -606,6 +606,8 @@ This means that if there are spaces in any of the file names they will not be re
 Should be OK now.  Thx -- DrewAdams
 
 
+[new]
+Helllo, I'm using emacs from bzr, and some recent changes in trunk broke dired+ fancy highlighting. Rest of functionality seems to work fine.  -- [[Anonymous]]
 
 
 ----

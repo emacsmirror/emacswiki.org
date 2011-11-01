@@ -1,6 +1,6 @@
 ;;; ruby-block.el --- highlight matching block
 
-;; Copyright (C) 2007-2009  khiker
+;; Copyright (C) 2007-2011  khiker
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;; Keywords: languages, faces, ruby
@@ -12,11 +12,11 @@
 
 ;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; along with GNU Emacs; see the file COPYING.	If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
@@ -40,7 +40,8 @@
 ;;
 ;; Default is minibuffer.
 ;;
-;; Tested on Emacs 22.3.2 and Emacs 23.0.95.2.
+;; Tested on Emacs 23.3 and 24.0.90.
+;; ;; Probably works 22.3 and 23.1 (not tested).
 
 ;;; Note:
 
@@ -52,12 +53,12 @@
 
 ;; Variables:
 
-(defconst ruby-block-version "0.0.8"
+(defconst ruby-block-version "0.0.10"
   "Ruby block package version.")
 
 (defconst ruby-block-keyword-list
   (list "end" "for" "while" "until" "if" "class" "module"
-        "case" "unless" "def" "begin" "do")
+	"case" "unless" "def" "begin" "do")
   "Keyword for highlighting.")
 
 (defconst ruby-block-keyword-regex
@@ -71,12 +72,12 @@
 
 (defcustom ruby-block-delay 0.50
   "*Time in seconds to delay before showing a matching paren."
-  :type  'number
+  :type	 'number
   :group 'ruby-block)
 
 (defcustom ruby-block-highlight-face 'highlight
   "*Face for block highlighting."
-  :type  'face
+  :type	 'face
   :group 'ruby-block)
 
 (defcustom ruby-block-highlight-toggle 'minibuffer
@@ -85,14 +86,14 @@ Default is minibuffer. display to minibuffer.
 
 The possible choice is as follows.
 
-nil        => nothing
+nil	   => nothing
 minibuffer => minibuffer
-overlay    => overlay
-t          => minibuffer and overlay"
-  :type  '(choice (const :tag "nothing" nil)
-                  (const :tag "minibuffer" minibuffer)
-                  (const :tag "overlay" overlay)
-                  (const :tag "minibuffer and overlay" t))
+overlay	   => overlay
+t	   => minibuffer and overlay"
+  :type	 '(choice (const :tag "nothing" nil)
+		  (const :tag "minibuffer" minibuffer)
+		  (const :tag "overlay" overlay)
+		  (const :tag "minibuffer and overlay" t))
   :group 'ruby-block)
 
 (defvar ruby-block-timer nil)
@@ -118,7 +119,7 @@ to END keyword. this is Minor mode for ruby-mode only."
   (when ruby-block-timer
     (cancel-timer ruby-block-timer))
   (setq ruby-block-timer
-        (run-with-idle-timer ruby-block-delay t 'ruby-block-hook)))
+	(run-with-idle-timer ruby-block-delay t 'ruby-block-hook)))
 
 (defun ruby-block-stop-timer ()
   "stop timer."
@@ -130,97 +131,103 @@ to END keyword. this is Minor mode for ruby-mode only."
   "When Major-mode is ruby-mode, this package is running."
   (if (eq major-mode 'ruby-mode)
       (condition-case err
-          (ruby-block-function)
-        (error
-         (setq ruby-block-mode nil)
-         (message "Error: %S; ruby-block-mode now disabled." err)))
+	  (ruby-block-function)
+	(error
+	 (setq ruby-block-mode nil)
+	 (message "Error: %S; ruby-block-mode now disabled." err)))
     (setq ruby-block-mode nil)))
 
-(defun ruby-block-get-line-start-pos ()
-  (save-excursion
-    (let ((xor '(lambda (a b) (and (or a b) (not (and a b)))))
-          (point (point))
-          (count 0))
-      (while (and (not (funcall xor (bobp) (eolp)))
-                  (> point (point-min)))
-        (setq point (1- point))
-        (goto-char (1- (point))))
-      ;; delete linefeed of start point.
-      (when (and (eolp) (>= (point-max) (1+ point)))
-        (setq point (1+ point)))
-      point)))
+(defun ruby-block-line-beginning-position (pos)
+  (when pos
+    (save-excursion
+      (goto-char pos)
+      (let ((xor '(lambda (a b) (and (or a b) (not (and a b)))))
+	    (pos (point))
+	    (count 0))
+	(while (and (not (funcall xor (bobp) (eolp)))
+		    (> pos (point-min)))
+	  (setq pos (1- pos))
+	  (goto-char (1- (point))))
+	;; delete linefeed of start point.
+	(when (and (eolp) (>= (point-max) (1+ pos)))
+	  (setq pos (1+ pos)))
+	pos))))
 
-(defun ruby-block-get-line-end-pos ()
-  (save-excursion
-    (let ((xor '(lambda (a b) (and (or a b) (not (and a b)))))
-          (point (point)))
-      (while (and (not (funcall xor (eobp) (eolp)))
-                  (>= (point-max) point))
-        (setq point (1+ point))
-        (goto-char (1+ (point))))
-      point)))
+(defun ruby-block-line-end-position (pos)
+  (when pos
+    (save-excursion
+      (goto-char pos)
+      (let ((xor '(lambda (a b) (and (or a b) (not (and a b)))))
+	    (pos (point)))
+	(while (and (not (funcall xor (eobp) (eolp)))
+		    (>= (point-max) pos))
+	  (setq pos (1+ pos))
+	  (goto-char (1+ (point))))
+	pos))))
 
 (defun ruby-block-function ()
   "Point position's word decides behavior."
-  (let ((current (current-word)))
-    (setq current (car (member current ruby-block-keyword-list)))
-    (cond
-     ;; not keyword
-     ((null current)
-      nil)
-     ;; keyword "end"
-     ((and (string= "end" current)
-           (eq 'font-lock-keyword-face (get-text-property (point) 'face)))
-      (let ((point (ruby-block-get-corresponding-point))
-            (slinep 0)(elinep 0))
-        ;; get whole line(exists point). and, display minibuffer.
-        (when (> point 0)
-          (save-excursion
-            (goto-char point)
-            (setq slinep (ruby-block-get-line-start-pos)
-                  elinep (ruby-block-get-line-end-pos)))
-          ;; display line contents to minibuffer
-          (when (or (eq ruby-block-highlight-toggle t)
-                    (eq ruby-block-highlight-toggle 'minibuffer))
-            (message "%d: %s" (1+ (count-lines (point-min) slinep))
-                     (buffer-substring slinep elinep)))
-          ;; do overlay.
-          (when (or (eq ruby-block-highlight-toggle t)
-                    (eq ruby-block-highlight-toggle 'overlay))
-            (ruby-block-do-highlight slinep elinep)))))
-     ;; keyword except "end"
-     (t
-      nil))))
+  (let ((cur (current-word))
+	(face    (get-text-property (point) 'face)))
+    (when (and (member cur '("else" "end"))
+	       (eq face 'font-lock-keyword-face))
+      (let* ((pos (ruby-block-corresponding-position (point)))
+	     (sp  (ruby-block-line-beginning-position pos))
+	     (ep  (ruby-block-line-end-position pos)))
+	(when pos
+	  ;; display line contents to minibuffer
+	  (when (memq ruby-block-highlight-toggle '(t minibuffer))
+	    (message "%d: %s"
+		     (1+ (count-lines (point-min) sp)) (buffer-substring sp ep)))
+	  ;; do overlay
+	  (when (memq ruby-block-highlight-toggle '(t overlay))
+	    (ruby-block-do-highlight sp ep)))))))
 
-(defun ruby-block-get-corresponding-point ()
+(defun ruby-block-stmt-if (pos)
+  (save-excursion
+    (goto-char pos)
+    (let ((status 'skip))
+      (while (and (not (bolp))
+		  (eq status 'skip))
+	(forward-char -1)
+	(let ((ch (char-after)))
+	  (cond
+	   ((memq ch '(?\n ?\r ?\())
+	    (setq status t))
+	   ((memq ch '(32 \t))
+	    (setq status 'skip))
+	   (t
+	    (setq status nil)))))
+      (when (eq status 'skip)
+	(setq status t))
+      status)))
+
+(defun ruby-block-corresponding-position (pos)
   "Get point of corresponding line."
-  (let ((orig-col (- (point) (ruby-block-get-line-start-pos)))
-        (recent-col (- (point) (ruby-block-get-line-start-pos)))
-        (count 1)(check t)(point 0)(face "")(string ""))
-    (save-excursion
-      (while check
-        (if (re-search-backward ruby-block-keyword-regex (point-min) t 1)
-            (setq point  (match-beginning 1)
-                  face   (get-text-property point 'face)
-                  string (current-word))
-          (setq point -1 face "" string "" check nil))
-        (when (and (eq face 'font-lock-keyword-face)
-                   (not (string= string "elsif"))
-                   (member string ruby-block-keyword-list)
-                   ;; case: STMT if(or unless, while, untill) EXPR
-                   (if (member string '("if" "unless" "while" "until"))
-                       (let ((col (- point (ruby-block-get-line-start-pos))))
-                         (if (or (> (+ orig-col 3) col)
-                                 (> (+ recent-col 3) col))
-                             t nil))
-                     t))
-          (if (and (string= string "end") check)
-              (setq count (1+ count)
-                    recent-col (- (point) (ruby-block-get-line-start-pos)))
-            (setq count (1- count))))
-        (when (= count 0)
-          (setq check nil)))
-      point)))
+  (save-excursion
+    (goto-char pos)
+    (let ((key 1) pos face cur)
+      (while (and (> key 0)
+		  (re-search-backward ruby-block-keyword-regex nil t))
+	(setq pos (match-beginning 1)
+	      face (get-text-property pos 'face)
+	      cur (current-word))
+	(when (and (eq face 'font-lock-keyword-face)
+		   (not (string= cur "elsif"))
+		   (member cur ruby-block-keyword-list)
+		   ;; case: STMT if (or unless, while, untill) EXPR
+		   (cond
+		    ((member cur '("if" "unless" "while" "until"))
+		     (ruby-block-stmt-if pos))
+		    (t
+		     t)))
+	  (cond
+	   ((and (string= cur "end"))
+	    (setq key (1+ key)))
+	   (t
+	    (setq key (1- key))))))
+      (when (= key 0)
+	pos))))
 
 (defun ruby-block-do-highlight (beg end)
   "Do overlay corresponding line."
@@ -228,7 +235,7 @@ to END keyword. this is Minor mode for ruby-mode only."
       (move-overlay  ruby-block-highlight-overlay beg end)
     (setq ruby-block-highlight-overlay (make-overlay beg end)))
   (overlay-put ruby-block-highlight-overlay
-               'face ruby-block-highlight-face)
+	       'face ruby-block-highlight-face)
   (add-hook 'pre-command-hook 'ruby-block-highlight-done))
 
 (defun ruby-block-highlight-done ()
@@ -247,7 +254,7 @@ to END keyword. this is Minor mode for ruby-mode only."
 (provide 'ruby-block)
 
 ;; Local Variables:
-;; Coding: iso-2022-7bit
+;; Coding: utf-8
 ;; End:
 
 ;;; ruby-block.el ends here

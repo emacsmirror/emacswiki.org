@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Oct 24 07:23:45 2011 (-0700)
+;; Last-Updated: Mon Oct 31 15:13:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4182
+;;     Update #: 4186
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,7 +22,8 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
 ;;   `info', `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `pp',
-;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser'.
+;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -254,6 +255,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/10/31 dadams
+;;     dired-mode-hook: Call font-lock-refresh-defaults - see Emacs 24 bugs #6662 and #9919.
 ;; 2011/10/24 dadams
 ;;     Protect dired-show-file-type with fboundp.
 ;; 2011/09/03 dadams
@@ -1944,7 +1947,9 @@ In particular, inode number, number of hard links, and file size."
           '(lambda ()
             (set (make-local-variable 'font-lock-defaults)
              (cons '(dired-font-lock-keywords diredp-font-lock-keywords-1) ; Two levels.
-              (cdr font-lock-defaults)))))
+              (cdr font-lock-defaults)))
+            ;; Emacs 24+: Need to refresh `font-lock-keywords' from `font-lock-defaults'.
+            (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
  
 ;;; Function Definitions
 

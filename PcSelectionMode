@@ -13,6 +13,18 @@ Those key bindings are also available from DeleteSelectionMode and TransientMark
         (pc-selection-mode)
       (require 'pc-select))
 
+
+[new]
+My PcSelectionMode is working for emacs-22 in an XWindow console but it's not working for emacs-22 in a tty console (Ctrl Alt F2 or F3...). In a tty console, it does copy but it does not delete and does not reverse the video. I tried the both hacks below:
+
+ (if (fboundp 'pc-selection-mode)                                              
+      (pc-selection-mode)                                                   
+      (require 'pc-select))   
+
+ (custom-set-variables
+  '(pc-selection-mode t nil (pc-select))
+
+
 ----
 CategoryEmulation
 CategoryRegion

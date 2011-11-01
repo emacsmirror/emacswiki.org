@@ -1,11 +1,15 @@
 DocViewMode is another file mode viewer like DviViewMode which adds
-support for PDF and PS files written by TassiloHorn.  It's official
-part of [[Emacs]] 23.
+support for PDF and PS files written by TassiloHorn.  It's officially
+part of [[Emacs]] starting in version 23.
 
 Conversion is done with ghostscript and various other tools.  It even
-supports regexp search in documents.
+supports regexp search in documents.  According to the "Document View"
+section of the EmacsManual,
 
-To get it it's best to install Emacs 23 (the current CVS HEAD).
+: ''`gs' is a hard requirement.  For DVI files, `dvipdf' or `dvipdfm' is needed.  For OpenDocument and Microsoft Office documents, the `unoconv' tool is needed.''
+
+: ''The needed external tools for this document type have to be available, emacs needs to run in a graphical frame, and PNG image support has to be compiled into emacs.''
+
 
 You can get a snapshot of doc-view.el at [[doc-view.el]].
 
@@ -13,31 +17,22 @@ The homepage of DocViewMode is http://www.tsdh.de/cgi-bin/wiki.pl/doc-view.el.
 
 This can be customized via:
 
-  M-x customize-group doc-view RET
+  M-x customize-group RET doc-view RET
 
-== Required Software ==
+Emacs 23 Cygwin instructions 
 
-* Ghostscript.
-* Other Things?
+# Install several packages:
+## xpdf
+## ghostscript
+# Restart Emacs.
+# It should just work.
 
-=== Cygwin ===
+[new]
+I like to visit/read pdf-files in emacs, but one (or two) thing(s) that I miss: to save/load (automatically) the current/saved position or pagenumber.
+And if possible also the slice that I had set. -- Michael
 
-Emacs 23 Instructions.
-
-1. Install several packages:
-
-* xpdf
-* ghostscript
-
-2. Restart Emacs.
-
-3. It should just work.
-
-== Suggestion ==
-
-@laysakura suggested "Fix-to-window" feature.
-
-This feature will be available in the future version of Emacs :-D
+[new]
+I don't know about the latter, but it should be possible to use BookMarks to save the last position within DocView.  It would take making an EmacsLisp function and adding it to `kill-buffer-hook' -- AaronHawley
 
 ----
 MultimediaModes

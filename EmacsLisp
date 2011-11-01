@@ -23,20 +23,22 @@ with Emacs, see CommonLisp and [[Scheme]].
 
 For Emacs Lisp documentation, see the EmacsLispReference node.  For Emacs Lisp SelfDocumentation, see CodingStyle.
 
+For help on using other people's Emacs Lisp, see InstallingPackages.
+
 An introduction from the FreeSoftwareFoundation: EmacsLispIntro.
 
 A work-in-progress (perhaps to be perpetually unfinished) tutorial:
 http://www.gnuvola.org/software/elisp-tutorial/index.html
 
-See also [[LearningEmacs]].
+See also LearningEmacs.
 
 == Emacs Lisp features ==
-* [[ListStructure]]: like ((1 . 2) . (3 . 4))
-* [[BackquoteSyntax]]: what does it mean `(foo ,bar baz)
-* [[ListModification]]: operations which inspect and modify lists
+* ListStructure: like ##((1 . 2) . (3 . 4))##
+* BackquoteSyntax: what does it mean ##`(foo ,bar baz)##
+* ListModification: operations which inspect and modify lists
 * ...
 
-If you are wondering about all the quoting syntaxes like ?a 'b #c `(,d e) :f (g . h) etc., then see at the symbol glossary in [[CategoryGlossary]].
+If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see at the symbol glossary in CategoryGlossary.
 
 == Emacs Lisp vs. elisp ==
 

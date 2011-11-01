@@ -2,26 +2,27 @@
 [[zh:english]]
 [[fr:SectionElisp]]
 
-This is the EmacsWiki elisp area where we collect EmacsLisp files.  No login required, no ftp required, no password required.  It's as
+This is the EmacsWiki elisp area where we collect EmacsLisp files.  No login required, no version control required, no ftp required, no password required.  It's as
 simple as the wiki itself.  That also means that anybody can place
 malicious code in these !EmacsLisp files.  If in doubt, don't use them.
 
 == Downloading ==
 
-Some links to libraries show the library on a Wiki page with headers and footers. You can select the text, copy, then paste it locally. Or you can click the _Download_ link just below the page title, to see (or save) the library as plain text, without Wiki headers and footers.
+Some links to libraries show the library on a Wiki page with headers and footers. You can select the text, copy, then paste it locally. Or you can click the _Download_ link just below the page title, to see (or save) the library as plain text, without Wiki headers and footers.  Otherwise, you may have downloaded an HTML copy of the file and get an error like, "Loading library.el (source)... File mode specification error: (void-variable <!--)".  Be sure to go back to the page and click the "Download", then click save.
 
 Other links to libraries do not show the header and footer. You can either copy and paste the text or save the link target instead of following the link. These links are often (but not always) indicated by the prefix '''Download:'''. They always correspond to URLs that have `/download/' preceding the file name.
 
-Besides downloading individual libraries, you can also use a *version control system* to download the files.  See WikiDownload.
+Besides downloading individual libraries, you can also use Wget, Rsync or a *version control system* to download the files.  See WikiDownload.
 
 * [Self:action=elisp-area;context=0 Alphabetical list of all Elisp libraries on this Wiki]
 * [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological list of all Elisp libraries on this Wiki]
 ([http://www.emacswiki.org/elisp/changelog.html last seven days])
-* By Category -- Most of the links off of SiteMap are to '''categories''' pages, which link to relevant user-contributed libraries
+* By Category -- Most of the links off of SiteMap are to '''categories''' pages, which link to relevant 
+user-contributed libraries
+
+For help installing a library, see InstallingPackages.
 
 == Uploading ==
-
-=== Files ===
 
 Small files up to maybe 200k can be pasted into ordinary pages. Basic instructions follow but please also read and wherever possible '''follow the ElispAreaConventions'''.
 
@@ -49,16 +50,16 @@ Result:
 
 : Lisp:color-moccur.el (OccurBuffer)
 
-=== Large files ===
+== Uploading large files ==
 
 Gzip files and upload them.  Create a page to hold your file.  Use the filename as pagename, eg. color-theme.el.gz.  Edit the page, and click on the link below the save button that says to
 replace the text with a file.
 
-=== Non-Elisp packages and tarballs ===
+== Uploading Non-Elisp packages and tarballs ==
 
 You can store free software on [http://savannah.gnu.org/ Savannah].
 
-=== Code snippets ===
+== Code snippets ==
 
 For a small set of functions or code snippets, just
 put them on the wiki pages directly, or add them to the ElispCookbook.
@@ -112,13 +113,13 @@ implementation ##epackage.el## package manager. This a modern implementation of 
 
 == Tips ==
 
-Additional tips can be found on ElispAreaDiscussions
+Additional tips can be found on ElispAreaDiscussions.
 
-=== Version keyword ===
+=== Tip: Version keyword ===
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 277%
+%Id: 278%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

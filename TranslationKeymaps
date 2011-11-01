@@ -1,0 +1,21 @@
+See the section on "Translation Keymaps" in the EmacsManual for more information on this feature that can "translate certain event sequences into others during reading a key sequence".
+
+To have `S-SPC' behave as `RET' key use
+
+    (define-key key-translation-map (kbd "S-SPC") (kbd "RET"))
+
+It seem that this is not possible with keyboard-translate, For example: 
+<code>(keyboard-translate ?\C-t ?\C-f)</code> works.
+
+However, none of these work.
+
+   (keyboard-translate (kbd "S-SPC") [return])
+   (keyboard-translate ?\s-SPC [return])
+   (keyboard-translate ?\S-SPC [return])
+   (keyboard-translate [?\S-SPC] [return])
+   (keyboard-translate [(shift space)] [return])
+
+The problem is discussed here: http://article.gmane.org/gmane.emacs.help/80014
+
+----
+CategoryKeys

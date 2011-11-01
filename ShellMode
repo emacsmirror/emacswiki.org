@@ -121,6 +121,35 @@ The built-in mechanism for keeping Emacs apprised of the shell's current directo
 
 Here are alternative methods that track the cwd, regardless of what command is being used to set it: ShellDirtrackByPrompt ShellDirtrackByProcfs
 
+[new]
+I can't get dir tracking to work correctly. Either the regex isn't catching the prompt, or the prompt doesn't get read at the correct time. Either way, it doesn't work. Can someone point me to what I'm doing wrong?
+
+My bash shell prompt is defined this way in .bashrc:
+
+    export PS1='\h:\w\n> '
+
+...which looks like this in practice:
+
+    tnsfc64:~/elisp
+    > 
+
+I use this dir tracking code in my .emacs file:
+
+    (defun my-current-directory (text)
+      (if (string-match "\\w*:\\([^\n]+\\)\n> " text)
+          (setq cur-dir (substring text (match-beginning 1) (match-end 1)))
+        (cd cur-dir)
+        (message "dir tracking %s" cur-dir)))
+
+    (defun my-shell-setup ()
+      "Track current directory"
+      (add-hook 'comint-output-filter-functions 'my-current-directory nil t))
+
+    (setq shell-mode-hook 'my-shell-setup)
+
+Thanks,
+-Tennis
+
 == Show the current directory in the mode-line ==
 
 Restore some sanity to your PS1 by putting the full working directory in the mode-line: ModeLineDirtrack

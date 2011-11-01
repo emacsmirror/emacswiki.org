@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Oct 28 08:29:56 2011 (-0700)
+;; Last-Updated: Mon Oct 31 09:43:04 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2280
+;;     Update #: 2299
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -239,6 +239,7 @@
 ;;    `bmkp-this-buffer-bmenu-list', `bmkp-this-buffer-jump',
 ;;    `bmkp-this-buffer-jump-other-window',
 ;;    `bmkp-toggle-autonamed-bookmark-set/delete',
+;;    `bmkp-toggle-autotemp-on-set',
 ;;    `bmkp-toggle-bookmark-set-refreshes',
 ;;    `bmkp-toggle-saving-bookmark-file',
 ;;    `bmkp-toggle-saving-menu-list-state',
@@ -402,12 +403,13 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `bmkp-after-set-hook', `bmkp-bookmark-file-history',
-;;    `bmkp-bookmark-list-history', `bmkp-current-bookmark-file',
-;;    `bmkp-current-nav-bookmark', `bmkp-desktop-history',
-;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
-;;    `bmkp-edit-tags-mode-map', `bmkp-file-bookmark-handlers',
-;;    `bmkp-file-history', `bmkp-gnus-history', `bmkp-info-history',
+;;    `bmkp-after-set-hook', `bmkp-autotemp-all-when-set-p',
+;;    `bmkp-bookmark-file-history', `bmkp-bookmark-list-history',
+;;    `bmkp-current-bookmark-file', `bmkp-current-nav-bookmark',
+;;    `bmkp-desktop-history', `bmkp-dired-history',
+;;    `bmkp-edit-bookmark-record-mode-map', `bmkp-edit-tags-mode-map',
+;;    `bmkp-file-bookmark-handlers', `bmkp-file-history',
+;;    `bmkp-gnus-history', `bmkp-info-history',
 ;;    `bmkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bmkp-jump-display-function', `bmkp-jump-other-window-map',
 ;;    `bmkp-last-bmenu-state-file', `bmkp-last-bookmark-file',
@@ -973,6 +975,8 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-w3m-history ()              "History for W3M bookmarks.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")
+
+(defvar bmkp-autotemp-all-when-set-p nil "Non-nil means make any bookmark temporary whenever it is set.")
 
 (defvar bmkp-copied-tags ()
   "List of tags copied from a bookmark, for pasting to other bookmarks.")
@@ -1648,11 +1652,13 @@ bookmarks)."
                                                        (bmkp-this-buffer-alist-only)) nil 'MSG))
       (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
     ;; Maybe make bookmark temporary.
-    (catch 'bookmark-set
-      (dolist (pred  bmkp-autotemp-bookmark-predicates)
-        (when (and (functionp pred)  (funcall pred bname))
-          (bmkp-make-bookmark-temporary bname)
-          (throw 'bookmark-set t))))
+    (if bmkp-autotemp-all-when-set-p
+        (bmkp-make-bookmark-temporary bname)
+      (catch 'bookmark-set
+        (dolist (pred  bmkp-autotemp-bookmark-predicates)
+          (when (and (functionp pred)  (funcall pred bname))
+            (bmkp-make-bookmark-temporary bname)
+            (throw 'bookmark-set t)))))
     (run-hooks 'bmkp-after-set-hook)
     (if bookmark-use-annotations
         (bookmark-edit-annotation bname)
@@ -5924,7 +5930,7 @@ Handler function for record returned by `bmkp-make-bookmark-list-record'."
 
 ;; Bookmark-file bookmarks.
 ;;;###autoload
-(defun bmkp-set-bookmark-file-bookmark (file &optional msgp) ; Bound to `C-x p x'
+(defun bmkp-set-bookmark-file-bookmark (file &optional msgp) ; Bound to `C-x p y'
   "Create a bookmark that loads bookmark-file FILE when \"jumped\" to.
 You are prompted for the names of the bookmark file and the bookmark."
   (interactive (list (let ((insert-default-directory  t))
@@ -7880,7 +7886,7 @@ buffer part names the current buffer."
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.  Eval this so that even if the library is byte-compiled with Emacs 20,
     ;; loading it into Emacs 21+ will define variable `icicle-mode'.
-    (eval '(define-minor-mode bmkp-temporary-bookmarking-mode
+    (eval '(define-minor-mode bmkp-temporary-bookmarking-mode ; `M-L' in `*Bookmark List*'.
             "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
 modification, deletion) are NOT automatically saved.  Details:
@@ -7927,7 +7933,7 @@ Don't forget to mention your Emacs and library versions."))
                    (setq bmkp-temporary-bookmarking-mode  nil)))))
 
   ;; Emacs 20
-  (defun bmkp-temporary-bookmarking-mode (&optional arg)
+  (defun bmkp-temporary-bookmarking-mode (&optional arg) ; `M-L' in `*Bookmark List*'.
     "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
 modification, deletion) are NOT automatically saved.  Details:
@@ -7968,6 +7974,16 @@ is `TEMPORARY ONLY' when this mode is on."
           (t
            (when (interactive-p) (message "OK, canceled - bookmarking is NOT temporary"))
            (setq bmkp-temporary-bookmarking-mode  nil)))))
+
+;;;###autoload
+(defun bmkp-toggle-autotemp-on-set (arg &optional msgp) ; Bound to `C-x p x'
+  "Toggle automatically making any bookmark temporary whenever it is set."
+  (interactive "p\nt")
+  (setq bmkp-autotemp-all-when-set-p  (if arg
+                                          (> (prefix-numeric-value arg) 0)
+                                        (not bmkp-autotemp-all-when-set-p)))
+  (when msgp (message "Automatically making bookmarks temporary when set is now %s"
+                      (if bmkp-autotemp-all-when-set-p "ON" "OFF"))))
 
 ;;;###autoload
 (defun bmkp-toggle-temporary-bookmark (bookmark &optional msgp)

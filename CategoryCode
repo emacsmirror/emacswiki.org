@@ -1,7 +1,7 @@
 : "sometimes i feel like we're making emacs better and better because we don't know what to do with emacs once it is finished." -- AlexSchroeder on InternetRelayChat
 
 Click the heading to search for all pages belonging to the writing
-of lisp code.  These pages contain information for would-be authors of
+of Lisp code.  These pages contain information for would-be authors of
 new major and minor modes: EmacsLisp style, coding conventions,
 pointers and documentation to existing features.  What follows are
 some suggestions; find more other pages by searching for
@@ -17,6 +17,7 @@ tasks. -- JohnWiegley
 
 Ordered for pedagogy:
 
+* InstallingPackages -- How to load an EmacsLisp library that didn't come with Emacs.
 * EmacsLispReference -- Free manual for the EmacsLisp programming language.
 * EmacsLispIntro -- Free tutorial to EmacsLisp.
 * OnlineResources -- Some external sites have Emacs Lisp learning materials.
@@ -167,6 +168,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * FakeClosures -- How to fake a closure in Emacs Lisp.
 * DefiningErrors -- How to easily define errors types.
 * [http://user42.tuxfamily.org/bytecomp-simplify/index.html bytecomp-simplify.el] -- warnings for possible code simplifications
+* ThreadMacroFromClojure -- Threading expressions and how to do this in EmacsLisp
 
 == Discussion About Emacs Lisp ==
 
@@ -177,17 +179,3 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * WhyDoesElispSuck -- Why people say that EmacsLisp is a bad language, deprecated, not the ideal choice for the future, or <your remark here>...
 * RationalElispPackaging -- Design of a packaging system for Emacs Lisp software.
 * Emacs Internals -- I've been reading the source for a while. Trying to start annotate how to read the source for others. Here's a [http://members.cox.net/nish4111/modules.gif diagram] of how I see it presently. (Not sure if this is correct place to put this?)
-
-== Tiny Bits ==
-
-Little snippets of code that don't seem to belong anywhere else.
-
-* ThreadMacroFromClojure -- Threading expressions and how to do this in EmacsLisp
-
-
-[new]
-WikiTodo: This page still needs reorganization.
-
-
-
-

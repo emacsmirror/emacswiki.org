@@ -918,6 +918,10 @@ Yup, looks like a bug. Please file a report: `M-x report-emacs-bug'. -- DrewAdam
 [new]
 If you also use Desktop.el to save and restore your sessions, then a word of warning about using global-whitespace-mode: Because the enabled modes for each buffer are saved in the desktop file and those modes are re-enabled at restore time, global-whitespace-mode is evaluated for each buffer which is restored; and because running global-whitespace-mode is an expensive operation which processes every current buffer, this becomes an o(n^2) operation over the course of the desktop restore, and absolutely kills the performance for large sessions.
 
+whitespace.el should probably provide some custom support for the desktop library. See the help for the desktop-minor-mode-handlers variable, and the commentary in desktop.el.
+
+One option would be to enable whitespace-mode for each buffer instead of global-whitespace-mode. Another would be to just register that global-whitespace-mode was enabled, and use desktop-after-read-hook to enable it once only. I would think the latter is probably the preferable approach.
+
 ----
 
 CategoryCode,

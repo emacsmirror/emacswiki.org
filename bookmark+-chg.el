@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Oct 28 11:04:20 2011 (-0700)
+;; Last-Updated: Mon Oct 31 11:14:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13785
+;;     Update #: 13801
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/10/31 dadams
+;;     Added: bmkp-toggle-autotemp-on-set, bmkp-autotemp-all-when-set-p.
+;;     bookmark-set: If bmkp-autotemp-all-when-set-p call bmkp-make-bookmark-temporary.
 ;; 2011/10/28 dadams
 ;;     Added: bmkp-delete-temporary-no-confirm.
 ;;     bmkp-delete-all-temporary-bookmarks: Rewrote (it was just a stub).
@@ -373,6 +376,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/10/31 dadams
+;;     bookmark-bmenu-mode: Updated doc string with bmkp-toggle-autotemp-on-set.
+;;     bmkp-bmenu-menubar-menu: Added: bmkp-toggle-autotemp-on-set.
 ;; 2011/10/27 dadams
 ;;     Added: bmkp-X-mark, bmkp-bmenu-toggle-marked-temporary/savable, bmkp-bmenu-toggle-temporary,
 ;;            bmkp-bmenu-mark-autonamed-bookmarks, bmkp-bmenu-show-only-temporary,
@@ -500,6 +506,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/10/31 dadams
+;;     Bind bmkp-toggle-autotemp-on-set to C-x p x.  Move bmkp-set-bookmark-file-bookmark to C-x p y.
+;;     menu-bar-bookmark-map: Added: bmkp-toggle-autotemp-on-set.
 ;; 2011/10/28 dadams
 ;;     menu-bar-bookmark-map:
 ;;       Added: bmkp-delete-all-temporary-bookmarks, bmkp-temporary-bookmarking-mode.  Reordered.

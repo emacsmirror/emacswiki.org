@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Sep 13 22:29:06 2011 (-0700)
+;; Last-Updated: Mon Oct 31 13:42:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3052
+;;     Update #: 3057
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -18,9 +18,9 @@
 ;;
 ;;   `apropos', `apropos+', `avoid', `faces', `faces+', `fit-frame',
 ;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -535,10 +535,12 @@
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/10/31 dadams
+;;     hlt-highlight-regexp-region: No occurrences msg if no match, not msg how to unhighlight.
 ;; 2011/09/13 dadams
 ;;     hlt-highlight-property-with-value: Corrected interactive spec for VALUES.
 ;; 2011/07/24 dadams
@@ -1098,18 +1100,22 @@ things down.  Do you really want to highlight up to %d chars?  "
                                          reg-size))))))
       (error "OK, highlighting was cancelled")))
   (when (eq t msg-p) (message (concat "Highlighting occurrences of `" regexp "'...")))
-  (save-excursion
-    (goto-char start)
-    (while (and (< start end) (not (eobp)) (re-search-forward regexp end t))
-      (condition-case nil
-          (progn (forward-char 1) (setq start  (1+ (point))))
-        (end-of-buffer (setq start  end)))
-      (hlt-highlight-region (match-beginning (or nth 0))
-                            (match-end (or nth 0)) face nil mouse-p)))
-  (when (eq t msg-p)
-    (message "Highlighting occurrences of `%s' done.  %s" regexp
-             (substitute-command-keys
-              "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting.")))
+  (let ((hits-p  nil))
+    (save-excursion
+      (goto-char start)
+      (while (and (< start end) (not (eobp)) (re-search-forward regexp end t)
+                  (setq hits-p  t))
+        (condition-case nil
+            (progn (forward-char 1) (setq start  (1+ (point))))
+          (end-of-buffer (setq start  end)))
+        (hlt-highlight-region (match-beginning (or nth 0))
+                              (match-end (or nth 0)) face nil mouse-p)))
+    (when (eq t msg-p)
+      (if hits-p
+          (message "Highlighting occurrences of `%s' done.  %s" regexp
+                   (substitute-command-keys
+                    "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting."))
+        (message "No occurrences of `%s'" regexp))))
   (setq hlt-last-regexp  regexp))
 
 ;;;###autoload

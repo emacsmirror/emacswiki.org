@@ -1,6 +1,6 @@
 ( /John McCarthy, RIP. 1927-2011/ )
 
-<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at each level.
+<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
 
 Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
 

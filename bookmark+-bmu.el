@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Oct 28 10:14:16 2011 (-0700)
+;; Last-Updated: Mon Oct 31 09:30:37 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 863
+;;     Update #: 875
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1021,6 +1021,7 @@ General
 \\[bookmark-bmenu-load]\t- Add bookmarks from a different bookmark file (extra load)
 \\[bmkp-switch-bookmark-file]\t- Switch to a different bookmark file      (overwrite load)
 C-u \\[bmkp-switch-bookmark-file]\t- Switch back to the last bookmark file    (overwrite load)
+\\[bmkp-toggle-autotemp-on-set]\t- Toggle making bookmarks temporary when setting them
 \\[bmkp-temporary-bookmarking-mode]\t- Toggle temporary-only bookmarking (new, empty bookmark file)
 \\[bmkp-set-bookmark-file-bookmark]\t- Create a bookmark to a bookmark file \
 \(`\\[bmkp-bookmark-file-jump]' to load)
@@ -4012,6 +4013,12 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Current Status, Mode Help" bmkp-bmenu-mode-status-help :keys "?"
     :help "Describe `*Bookmark List*' and show its current status"))
 (define-key bmkp-bmenu-menubar-menu [top-sep2] '("--"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-temporary-bookmarking-mode]
+  '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
+    :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-toggle-autotemp-on-set]
+  '(menu-item "Toggle Automatically Making Temporary" bmkp-toggle-autotemp-on-set
+    :help "Toggle automatically making any bookmark temporary whenever it is set"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-toggle-saving-menu-list-state]
   '(menu-item "Toggle Autosaving Display State" bmkp-toggle-saving-menu-list-state
     :help "Toggle the value of option `bmkp-bmenu-state-file'"))
@@ -4019,9 +4026,6 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Toggle Autosaving Bookmark File" bmkp-toggle-saving-bookmark-file
     :help "Toggle the value of option `bookmark-save-flag'"))
 
-(define-key bmkp-bmenu-menubar-menu [bmkp-temporary-bookmarking-mode]
-  '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
-    :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-switch-bookmark-file]
   '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks"))
@@ -4393,15 +4397,15 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Mark Regexp Matches..." bmkp-bmenu-regexp-mark
     :help "Mark bookmarks that match a regexp that you enter"))
 
-(define-key bmkp-bmenu-menubar-menu [bmkp-delete-all-temporary-bookmarks]
-  '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
-    :help "Delete the temporary bookmarks, (`X') whether visible here or not"))
 (define-key bmkp-bmenu-menubar-menu [bookmark-bmenu-execute-deletions]
   '(menu-item "Delete Flagged (D)..." bookmark-bmenu-execute-deletions
     :help "Delete the (visible) bookmarks flagged `D'"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-delete-marked]
   '(menu-item "Delete Marked (>)..." bmkp-bmenu-delete-marked
     :help "Delete all (visible) bookmarks marked `>', after confirmation"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-delete-all-temporary-bookmarks]
+  '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
+    :help "Delete the temporary bookmarks, (`X') whether visible here or not"))
 
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-toggle-marked-temporary/savable]
   '(menu-item "Toggle Temporary/Savable (X) for Marked" bmkp-bmenu-toggle-marked-temporary/savable

@@ -434,6 +434,13 @@ Misc collection of ido changes, including making it behave better with dired's c
 Emacs 23 and lower: http://www0.fh-trier.de/~politza/emacs/ido-hacks.el.gz
 An Emacs 24 compatible version is available at https://github.com/scottjad/ido-hacks
 
+=== Multi-select ===
+Simple function that can be used to select multiple items using ##ido-completing-read## by injecting a "sentinel" value into the possible choices and reading in a loop until the user chooses the sentinel value. The selected choices are returned in a list.
+
+https://gist.github.com/1329188
+
+-- [[mgalgs]]
+
 == Icicles and Ido ==
 
 [[Icicles]] is similar to Ido in some ways, and the two are sometimes confused. In Icicles, you use the same [[minibuffer]] interface for files, [[buffer]]s, [[command]]s -- everything (even [[key]]s).  

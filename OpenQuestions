@@ -9,65 +9,9 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
-=== save and load position in doc-view-mode ===
-I like to visit/read pdf-files in emacs, but one (or two) thing(s) that I miss: to save/load (automatically) the current/saved position or pagenumber.
-And if possible also the slice that I had set. -- Michael
-
-[new]
-I don't know about the latter, but it should be possible to use BookMarks to save the last position within DocView.  It would take making an EmacsLisp function and adding it to `kill-buffer-hook' -- AaronHawley
-
-=== loading dos.el fails===
-I dropped dos.el in my lisp dir. and added in my .emacs
-
-<pre>
-(autoload 'dos-mode "dos" "Edit Dos scripts." t)
-(add-to-list 'auto-mode-alist '("\\.bat$" . dos-mode))
-</pre>
-
-and I see 
-<pre>
-Loading c:/emacs/emacs-22.3/lisp/progmodes/dos.el (source)...
-File mode specification error: (void-variable <!--)
-</pre>
-
-in Messages. if I try to evaluate the line in scratch it shows
-
-  autoload 'dos-mode "dos" "Edit Dos scripts." t nil
-
-in the status bar.
-Please, help in loading dos.el
-
-[new]
-Sounds like you saved the HTML version of the file, Lisp:dos.el when you should have clicked the "Download" link/button to get the plain text version, Download:dos.el.
-[new]
-Wow that was stupid of me. using Chrome clicking the download opens the text in a tab and I just did save page as. it had added html tags at the top and bottom. should've looked at the dos.el in emacs itself before posting.
-[new]
-Glad you figured it out.
-
 === extent-at function ===
 The latest available spice-mode, http://spice-mode.4t.com/, uses the *extent-at* function. This is not found in emacs 23.3. Did this function go away with some release? (That is hard to believe). Is it Xemacs-only? Note, this is also used in the verilog-mode (same URL). -- KevinBuchs
 
-
-[new]
-=== S-SPC definition ===
-I would like S-SPC behave as RET key using keyboard-translate. For example: 
-<code>(keyboard-translate ?\C-t ?\C-f)</code> works.
-
-However I don't know what to put in my case. I tried the followin possibilities:
-
-
-   (keyboard-translate (kbd "S-SPC") [return])
-   (keyboard-translate ?\s-SPC [return])
-   (keyboard-translate ?\S-SPC [return])
-   (keyboard-translate [?\S-SPC] [return])
-   (keyboard-translate [(shift space)] [return])
-
-and nothing works :( Any idea?
-
-
-: Ok, I found the answer myself. It seem that this is not possible with keyboard-translate, instead I use
-: <code>(define-key key-translation-map (kbd "S-SPC") (kbd "RET"))</code>
-: The problem is discussed here: http://article.gmane.org/gmane.emacs.help/80014
 
 ===How to Program/Customize Emacs Commands?===
 
@@ -105,60 +49,6 @@ Variable `custom-file' is an [[option]], but it is (exceptionally) usually bette
 
 HTH -- DrewAdams
 
-== gunzip in dired no longer working in ubuntu 10.10 builds of emacs ==
-[new]
-In Ubuntu 10.10 I have install via their repository 23.1.1 . It seems at least since this (ubuntu) release I can 
-no longer open .gz files in dired. They fail with (wrong-type-argument characterp "gzip")
-I toggled on debug and the full output is:
-
-Debugger entered--Lisp error: (wrong-type-argument characterp "gzip")
-  signal(wrong-type-argument (characterp "gzip"))
-  byte-code("<elided this bit seems to cause WIKI problems>" [error-code local-file visit notfound x file-error 3 signal "Opening input file" "Searching for program" error "Uncompression program `%s' not found"] 5)
-  jka-compr-insert-file-contents("/tmp/CNV00001.jpg.key.gz" t nil nil nil)
-  apply(jka-compr-insert-file-contents ("/tmp/CNV00001.jpg.key.gz" t nil nil nil))
-  jka-compr-handler(insert-file-contents "/tmp/CNV00001.jpg.key.gz" t nil nil nil)
-  insert-file-contents("/tmp/CNV00001.jpg.key.gz" t)
-  byte-code(" 	\")" [inhibit-read-only filename t insert-file-contents] 3)
-  find-file-noselect-1(#<buffer CNV00001.jpg.key.gz> "/tmp/CNV00001.jpg.key.gz" nil nil "/tmp/CNV00001.jpg.key.gz" (1084785 2050))
-  find-file-noselect("/tmp/CNV00001.jpg.key.gz" nil nil nil)
-  find-file("/tmp/CNV00001.jpg.key.gz")
-  dired-advertised-find-file()
-  call-interactively(dired-advertised-find-file nil nil)
-
-
-== Proportional Fonts and the Fill Column==
-
-[new] I've begun using Emacs 23 and have "prettified" my setup with beautiful, antialiased fonts. Finally I can use the world's best variable-width (proportional) text fonts with the world's best text editor -- it no longer looks like WordPerfect from 1987!
-
-However, there's a big problem. When you use a proportional font, the fill column does not work as expected: with a monospaced font at a particular size, it's easy to determine exactly how many characters you can get across your particular display screen. Not so with a proportional font! The best you can do is estimate, usually on the conservative side, and then go with that: but you'll still get lines that have too much empty whitespace on the right, and you'll still run into situations where words will wrap. So it's not possible (as far as I know) to use a proportional font with Emacs without this very basic problem.
-
-Does anyone know of a workaround? What I'm basically looking for is not fill-column anymore, but a way to instruct Emacs to not let text wrap to the end of line based on the size of the Emacs frame. Does anyone know if there is any development work going on to find a way to do proper line filling with proportional fonts? I'm completely stuck on this one, Google isn't helping, and I'd appreciate any info or advice. Thanks.
-
-[new]
-Newer versions of Emacs have `M-x toggle-word-wrap' that would give
-you a logical word wrap based on the current rendering of the font.
-The physical result is the file having long lines.  The modes `M-x
-auto-fill-mode' and `M-x fill-mode' physically add newlines to the
-file.  If they were font-sensitive than the filling would be silly if
-the file was viewed in a different font.
-
-== Help I'm in an infinite loop...==
-
-[new] I downloaded the latest, but when I run it it says something like "This version of Aquamacs won't work on this version of the os" or words to that effect. (I have MacOS X 10.4.11 on ppc). When I go to the bug page, it says "download the latest version".... Why not display on the download page which versions of OS each version works with?
-
-And on the reporting-bug page it says please use the bug-reporting feature of Aquamacs to report the bug.
-
-Begin reading this message, unless you have already begun to read it. (Knuth , Art of Computer Programing Vol1)
-
-
-[new:decaf:2011-09-26 09:23 UTC]
-I switched from Aquamacs for similar hassles. Why not use the plain [http://emacsformacosx.com/ emacs for mac]. Most "improvements" from Aquamacs are just configure options. At first I just copied them - but in the end it's easiest to just pick the ones you need. In my case all are options of the regular emacs.  -- decaf
-
-==Ediff opens a file selector window which hangs==
-
-[new]  I've used fink to get Emacs 23.1-104 installed on Mac OSX 10.6.4, and I use X11.  Most of the time I try to access a file, it works as normal where I enter text in the minibuffer, but I am having problems using ediff.  For some reason ediff launches a GUI file selector window which hangs intermittently, sometimes completely. Prior implementations of ediff just allowed me to enter the text of the two files in the mini-buffer.   Does anyone how to either a) get back to the old method, or b) fix whatever is hanging in the communication between the OS, emacs, and the file server?  Thank - Mark
-
-
 
 
 ==Buffer with different backgroundcolor, possible?==
@@ -172,29 +62,6 @@ Yes, with an overlay:
      (overlay-put overlay 'face (list ':background color))))
 
 --AmitPatel
-
-==Changing *scratch* buffername permanently==
-
-[new]
-Because I'm using MultiScratch, but the naming-convention (the suffix is a needed number starting with 1, surrounded with angle parenthesis, eg. *scratch<1>*) from the MultiScratch, created scratch-buffers, are not compatible with the initial one. (multi-scratch-buffer-name is set to "scratch")
-
-So I need to change the initial *scratch* to *scratch<1>*, otherwise after creating further scratch it deny it service.
-But I don't see a variable for changing scratch-buffername?
-
-An other solution is, to rename the buffer before creating a second *scratch<2>* with MultiScratch. But how?
-
-I find MultiScratch realy usefull, but it seems also buggy. :-\ -- Michael
-
-==de-/activate scrollbar==
-
-[new]
-
-Is it possible to (de)activate the scrollbar only in one buffer? -- Michael
-
-[new:DrewAdams:2010-07-03 21:40 UTC]
-Nope.  You can request that this feature be added, however, via `M-x send-emacs-bug-report'. 
-
-Scroll bars are used or not used for all windows of a frame.  The most you can do is turn scroll bars on/off for a given frame, using `toggle-scroll-bar'. -- DrewAdams
 
 
 ==resize buffer window on startup==
@@ -250,16 +117,6 @@ File an Emacs bug: `M-x report-emacs-bug'. Give a clear step-by-step recipe, sta
 I will do so. Since my post I found that I can "Run as Administrator" as a workaround. It appears that the ACL of newly created files is too strict for most tasks (at least that's my take: if I log in as a different user, I cannot access the files created by emacs as my principal login with *anything*). Now what's weird is that most other programs started as that very same user cannot access the file - so, it is impossible to icacls it. Looks as much a Vista bug as an Emacs bug...
 
 
-
-== PcSelectionMode in a tty console ==
-<code>[new]</code> My PcSelectionMode is working for emacs-22 in an XWindow console but it's not working for emacs-22 in a tty console (Ctrl Alt F2 or F3...). In a tty console, it does copy but it does not delete and does not reverse the video. I tried the both hacks below:
-
- (if (fboundp 'pc-selection-mode)                                              
-      (pc-selection-mode)                                                   
-      (require 'pc-select))   
-
- (custom-set-variables
-  '(pc-selection-mode t nil (pc-select))
 
 
 
@@ -410,36 +267,6 @@ I've got the W32 variant of Emacs installed onto a flash drive however I'm not s
 
 [new]
 :: Setting HOME from .emacs is problematic; .emacs is located in HOME.  That is why the article describes adding code to site-lisp/site-start.el, which can sit alongside emacs on the flash device.
-
-== shell-mode directory tracking ==
-[new]
-I can't get dir tracking to work correctly. Either the regex isn't catching the prompt, or the prompt doesn't get read at the correct time. Either way, it doesn't work. Can someone point me to what I'm doing wrong?
-
-My bash shell prompt is defined this way in .bashrc:
-
-    export PS1='\h:\w\n> '
-
-...which looks like this in practice:
-
-    tnsfc64:~/elisp
-    > 
-
-I use this dir tracking code in my .emacs file:
-
-    (defun my-current-directory (text)
-      (if (string-match "\\w*:\\([^\n]+\\)\n> " text)
-          (setq cur-dir (substring text (match-beginning 1) (match-end 1)))
-        (cd cur-dir)
-        (message "dir tracking %s" cur-dir)))
-
-    (defun my-shell-setup ()
-      "Track current directory"
-      (add-hook 'comint-output-filter-functions 'my-current-directory nil t))
-
-    (setq shell-mode-hook 'my-shell-setup)
-
-Thanks,
--Tennis
 
 ==undo list persistence?==
 [new]

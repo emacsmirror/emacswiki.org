@@ -106,52 +106,72 @@ Here's a stupid example - publish your currently running Emacs' contents:
  
  ;; End
 
-=== A blog with Elnode ===
+=== A WIKI with Elnode ===
 
-Here's the core of a blog app with elnode. Elnode is great at mapping other programs into HTTP, because of Emacs very good async program support.
+With the latest Elnode (0.9) I've been writing a WIKI engine. Mostly
+I've been doing this to make publishing my own blog with just
+EmacsLisp possible... but it's also kinda interesting.
 
-The following example uses two different command line programs:
+I invented a way of executing EmacsLisp in a child Emacs so that rendering would be relatively quick. 
 
-* crearecreoler.py
-** this takes a creole wiki file (which is how I store my blog files) and renders it to HTML and then through an XSLT to blog specific HTML
-* creare_top
-** renders the latest creole wiki file
+Anyway, here's the core of the WIKI:
 
-Using these two programs to do the work of rendering and non-HTTP specific stuff makes the elisp a snap. 
+{{{
+(require 'creole)
+(require 'elnode)
 
- ;; Elnode wiki server
+(defconst wiki-docroot "/home/nferrier/emacswiki"
+  "Where we will find the pages for our wiki.
 
- (require 'elnode)
+CSS files can be in a sub-directory 'css' and Javascript files
+can be in a subdirectory 'js'.
 
- (defun creole-wiki-handler (httpcon)
-   (elnode-test-path 
-    httpcon "~/blog"
-    (lambda (httpcon docroot targetfile)
-      (elnode-http-start httpcon 200 '("Content-type" . "text/html"))
-      (elnode-child-process 
-       httpcon 
-       "python" 
-       (expand-file-name "~/blog/_creare/crearecreoler.py")
-       (directory-file-name targetfile))
-      )))
+All other resources are assumed to be WIKI pages.")
 
- (defun creole-site-handler (httpcon)
-   (elnode-dispatcher 
-    httpcon
-    `(("sitemedia/\\(.*\\)$" . ,(elnode-webserver-handler-maker "~/blog/sitemedia"))
-      ("blog/$" . 
-       ,(lambda (httpcon)
-          (elnode-http-start httpcon 200 '("Content-type" . "text/html"))
-          (elnode-child-process httpcon "bash" 
-                                (expand-file-name "~/blog/_creare/creare_top"))))
-      ("blog/\\(.*\\)$" . creole-wiki-handler)
-      ("\\(.*\\)$" . creole-wiki-handler)
-      )))
+(defun wiki-handler-maker (docroot)
+  "Make a handler for serving Wiki pages in DOCROOT.
 
- (elnode-start 'creole-site-handler 8027 "localhost")
+This uses 'elnode-worker-elisp' to export WikiCreole pages to
+HTML with 'creole'."
+  (lambda (httpcon)
+    (elnode-test-path
+     httpcon wiki-docroot
+     (lambda (httpcon docroot target-path)
+       (elnode-http-start httpcon 200 `("Content-type" . "text/html"))
+       (elnode-worker-elisp
+           httpcon
+           ((target target-path))
+         (require 'creole)
+         (creole-wiki target))))))
 
- ;; End
 
-As you can see, it's really very simple. The programs are pretty easy
-to write and test and Elnode is just a Lisp-powerered mapping
-language.
+;; Setup the defaults
+
+(defconst wiki-webserver
+  (elnode-webserver-handler-maker wiki-docroot)
+  "The webserver handler.
+
+This is needed for serving Javascript or CSS files or any
+collateral files used by the WIKI, such as images or source
+code.")
+
+(defconst wiki-wikiserver
+  (wiki-handler-maker wiki-docroot)
+  "The WIKI handler.")
+
+(defconst wiki-urlmap
+  '(("/wiki/\\([A-Za-z0-9-]+\\)" . wiki-handler)
+    ("/css/.*" . wiki-webserver)
+    ("/js/.*" . wiki-webserver))
+  "The URL mappings for the wiki.")
+
+(provide 'wikiengine)
+}}}
+
+//elnode-worker-elisp// causes that //creole-wiki// function to be
+executed in a child Emacs. All the plumbing between it and the child
+HTTP connection is done automatically and all the time the main Elnode
+process is just dealing with IO in a very simple and scalable
+way. 
+
+Pretty easy, eh?
