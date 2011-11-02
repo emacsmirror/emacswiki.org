@@ -610,6 +610,12 @@ Should be OK now.  Thx -- DrewAdams
 Helllo, I'm using emacs from bzr, and some recent changes in trunk broke dired+ fancy highlighting. Rest of functionality seems to work fine.  -- [[Anonymous]]
 
 
+[new:DrewAdams:2011-11-01 14:25 UTC]
+Yes, they broke font-locking in the latest Emacs 24 pretest.  See Emacs bugs #9919 and #6662.
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=9919
+
+Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> yesterday, so it should be OK now.  Unfortunately, because of their change font-locking is now done twice: once with the default highlighting, once with the correct ('''Dired+''') highlighting.  You don't see this as a user, but it does theoretically slow things down a bit.  If they fix the bug then I'll be able to remove the call to refresh font-locking.  Be aware too that this will also affect other libraries that set font-lock highlighting. -- DrewAdams
+
 ----
 
 ----

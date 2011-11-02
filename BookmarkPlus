@@ -1691,7 +1691,7 @@ corresponding filter key, e.g. `F' for files -- see [[#FilteringBookmarks]], bel
 
 You can hide and show different sets of bookmarks in the bookmark 
 list.  There are commands to show only the bookmarks of a particular
-type  -- e.g. `##I S##' to show only the Info bookmarks.  These are, in
+type  -- e.g. `##I S##' to show only the Info bookmarks, `##X S##' to show only the temporary bookmarks.  These are, in
 effect, shortcuts for first marking those bookmarks and then
 showing only the marked bookmarks (and then unmarking).  For
 example, `##F S##' is a shortcut for `##F M >##' (and then `##U RET##').
@@ -2337,6 +2337,11 @@ This command is bound to '''`M-L'''' in the bookmark-list display buffer
 (`##*Bookmark List*##').  The suffix '''`L'''' indicates that this has to do
 with <u>'''''l'''''</u>oading a bookmark file.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
 
+In the bookmark-list display, temporary bookmarking mode is
+indicated in the mode line by '''`##TEMPORARY Bookmarking##'''' in place of
+'''`Bookmarks'''' as the mode name.
+
+
 
 
 
@@ -2396,6 +2401,14 @@ You can delete all such temporary bookmarks from the current
 bookmark list using command '''`bmkp-delete-all-temporary-bookmarks''''
 (or by using `##X M##' to mark them in the bookmark-list display and
 then hitting `D' to delete thems).
+
+In the bookmark-list display (buffer `##*Bookmark List*##'), temporary
+bookmarks are indicated with the mark '''`X'''' in the same column where
+the annotation mark `a' would otherwise appear.
+
+
+
+
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Oct 31 09:43:04 2011 (-0700)
+;; Last-Updated: Tue Nov  1 17:12:03 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 2299
+;;     Update #: 2307
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -235,7 +235,8 @@
 ;;    `bmkp-specific-files-jump-other-window',
 ;;    `bmkp-switch-bookmark-file',
 ;;    `bmkp-switch-to-last-bookmark-file', `bmkp-tag-a-file',
-;;    `bmkp-temporary-bookmarking-mode',
+;;    `bmkp-temporary-bookmarking-mode', `bmkp-temporary-jump',
+;;    `bmkp-temporary-jump-other-window',
 ;;    `bmkp-this-buffer-bmenu-list', `bmkp-this-buffer-jump',
 ;;    `bmkp-this-buffer-jump-other-window',
 ;;    `bmkp-toggle-autonamed-bookmark-set/delete',
@@ -5534,13 +5535,16 @@ the file is an image file then the description includes the following:
         (man-p            (bmkp-man-bookmark-p bookmark))
         (url-p            (bmkp-url-bookmark-p bookmark))
         (w3m-p            (bmkp-w3m-bookmark-p bookmark))
+        (temp-p           (bmkp-temporary-bookmark-p bookmark))
         (annot            (bookmark-get-annotation bookmark))
         no-position-p)
     (setq no-position-p  (not start))
     (when (or sequence-p function-p variable-list-p) (setq no-position-p  t))
-    (let* ((help-text
+    (let* ((temp-text  (if temp-p "TEMPORARY " ""))
+           (help-text
             (concat
-             (format "Bookmark `%s'\n%s\n\n" bname (make-string (+ 11 (length bname)) ?-))
+             (format "%sBookmark `%s'\n%s\n\n" temp-text bname
+                     (make-string (+ 11 (length temp-text) (length bname)) ?-))
              (cond (sequence-p       (format "Sequence:\n%s\n"
                                              (pp-to-string
                                               (bookmark-prop-get bookmark 'sequence))))
@@ -5980,7 +5984,7 @@ Handler function for record returned by `bmkp-make-bookmark-file-record'."
     (no-catch nil)))
 
 ;;;###autoload
-(defun bmkp-bookmark-file-jump (bookmark-name &optional switchp no-msg) ; `C-x j x'
+(defun bmkp-bookmark-file-jump (bookmark-name &optional switchp no-msg) ; `C-x j y'
   "Jump to a bookmark-file bookmark, which means load its bookmark file.
 With a prefix argument, switch to the new bookmark file.
 Otherwise, load it to supplement the current bookmark list."
@@ -6873,6 +6877,19 @@ for info about using a prefix argument."
      (let ((alist  (bmkp-specific-files-alist-only files)))
        (list files (bmkp-read-bookmark-for-type "specific-files " alist) current-prefix-arg))))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
+
+;;;###autoload
+(defun bmkp-temporary-jump (bookmark-name) ; `C-x j x'
+  "Jump to a temporary bookmark.
+This is a specialization of `bookmark-jump', but without a prefix arg."
+  (interactive (list (bmkp-read-bookmark-for-type "temporary " (bmkp-temporary-alist-only))))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer t))
+
+;;;###autoload
+(defun bmkp-temporary-jump-other-window (bookmark-name) ; `C-x 4 j x'
+  "`bmkp-temporary-jump', but in another window."
+  (interactive (list (bmkp-read-bookmark-for-type "temporary " (bmkp-temporary-alist-only) t)))
+  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window t))
 
 ;;;###autoload
 (defun bmkp-this-buffer-jump (bookmark-name &optional use-region-p) ; `C-x j .'

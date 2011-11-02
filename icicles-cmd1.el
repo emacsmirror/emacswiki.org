@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 29 06:51:00 2011 (-0700)
+;; Last-Updated: Tue Nov  1 20:39:19 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22652
+;;     Update #: 22677
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -58,6 +58,13 @@
 ;;    (+)`icicle-bookmark-all-tags-other-window',
 ;;    (+)`icicle-bookmark-all-tags-regexp',
 ;;    (+)`icicle-bookmark-all-tags-regexp-other-window',
+;;    (+)`icicle-bookmark-autofile',
+;;    (+)`icicle-bookmark-autofile-other-window',
+;;    (+)`icicle-bookmark-autonamed',
+;;    (+)`icicle-bookmark-autonamed-other-window',
+;;    (+)`icicle-bookmark-autonamed-this-buffer',
+;;    (+)`icicle-bookmark-autonamed-this-buffer-other-window',
+;;    (+)`icicle-bookmark-bookmark-file',
 ;;    (+)`icicle-bookmark-bookmark-list',
 ;;    `icicle-bookmark-bookmark-list-narrow',
 ;;    (+)`icicle-bookmark-cmd', (+)`icicle-bookmark-desktop',
@@ -120,6 +127,8 @@
 ;;    (+)`icicle-bookmark-specific-files',
 ;;    `icicle-bookmark-specific-files-narrow',
 ;;    (+)`icicle-bookmark-specific-files-other-window',
+;;    (+)`icicle-bookmark-temporary',
+;;    (+)`icicle-bookmark-temporary-other-window',
 ;;    (+)`icicle-bookmark-this-buffer',
 ;;    `icicle-bookmark-this-buffer-narrow',
 ;;    (+)`icicle-bookmark-this-buffer-other-window',
@@ -3975,6 +3984,10 @@ You are prompted for the FILES."
 
 
 ;; The following sexps macro-expand to define these commands:
+;;  `icicle-bookmark-autofile'               `icicle-bookmark-autofile-other-window'
+;;  `icicle-bookmark-autonamed'              `icicle-bookmark-autonamed-other-window'
+;;  `icicle-bookmark-autonamed-this-buffer'  `icicle-bookmark-autonamed-this-buffer-other-window'
+;;  `icicle-bookmark-bookmark-file',
 ;;  `icicle-bookmark-bookmark-list',
 ;;  `icicle-bookmark-desktop',
 ;;  `icicle-bookmark-dired',                 `icicle-bookmark-dired-other-window',
@@ -4005,15 +4018,45 @@ You are prompted for the FILES."
 ;;  `icicle-bookmark-all-tags-regexp',       `icicle-bookmark-all-tags-regexp-other-window'
 ;;  `icicle-bookmark-some-tags',             `icicle-bookmark-some-tags-other-window'
 ;;  `icicle-bookmark-some-tags-regexp',      `icicle-bookmark-some-tags-regexp-other-window'
+;;  `icicle-bookmark-temporary'              `icicle-bookmark-temporary-other-window'
 ;;  `icicle-bookmark-this-buffer',           `icicle-bookmark-this-buffer-other-window'
 ;;  `icicle-bookmark-url',                   `icicle-bookmark-url-other-window'
 ;;  `icicle-bookmark-w3m',                   `icicle-bookmark-w3m-other-window'
 
-;; Other-window means nothing for a bookmark list or a desktop.
+;;;###autoload (autoload 'icicle-bookmark-this-buffer "icicles-cmd1.el")
+(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'
+;;;###autoload (autoload 'icicle-bookmark-this-buffer-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
+;;;###autoload (autoload 'icicle-bookmark-specific-buffers "icicles-cmd1.el")
+(icicle-define-bookmark-command              "specific-buffers" nil           ; `C-x j = b'
+                                             (icicle-bookmarked-buffer-list))
+;;;###autoload (autoload 'icicle-bookmark-specific-buffers-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "specific-buffers" nil           ; `C-x 4 j = b'
+                                             (icicle-bookmarked-buffer-list))
+;;;###autoload (autoload 'icicle-bookmark-specific-files "icicles-cmd1.el")
+(icicle-define-bookmark-command              "specific-files" nil             ; `C-x j = f'
+                                             (icicle-bookmarked-file-list))
+;;;###autoload (autoload 'icicle-bookmark-specific-files-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "specific-files" nil             ; `C-x 4 j = f'
+                                             (icicle-bookmarked-file-list))
+;;;###autoload (autoload 'icicle-bookmark-autofile "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autofile")                      ; `C-x j a'
+;;;###autoload (autoload 'icicle-bookmark-autofile-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autofile")                      ; `C-x 4 j a'
+;;;###autoload (autoload 'icicle-bookmark-autonamed "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autonamed") ; `C-x j # #'
+;;;###autoload (autoload 'icicle-bookmark-autonamed-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autonamed") ; `C-x 4 j # #'
+;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autonamed-this-buffer") ; `C-x j # .'
+;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autonamed-this-buffer") ; `C-x 4 j # .'
 ;;;###autoload (autoload 'icicle-bookmark-non-file "icicles-cmd1.el")
 (icicle-define-bookmark-command              "non-file")                      ; `C-x j b'
 ;;;###autoload (autoload 'icicle-bookmark-non-file-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "non-file")                      ; `C-x 4 j b'
+
+;; Other-window means nothing for a bookmark list.
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-list "icicles-cmd1.el")
 (icicle-define-bookmark-command              "bookmark-list")                 ; `C-x j B'
 ;;;###autoload (autoload 'icicle-bookmark-dired "icicles-cmd1.el")
@@ -4036,6 +4079,8 @@ You are prompted for the FILES."
 (icicle-define-bookmark-command              "info")                          ; `C-x j i'
 ;;;###autoload (autoload 'icicle-bookmark-info-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "info")                          ; `C-x 4 j i'
+
+;; Other-window means nothing for a desktop.
 ;;;###autoload (autoload 'icicle-bookmark-desktop "icicles-cmd1.el")
 (icicle-define-bookmark-command              "desktop")                       ; `C-x j K'
 ;;;###autoload (autoload 'icicle-bookmark-local-file "icicles-cmd1.el")
@@ -4134,22 +4179,15 @@ You are prompted for the FILES."
 (icicle-define-bookmark-command              "w3m")                           ; `C-x j w'
 ;;;###autoload (autoload 'icicle-bookmark-w3m-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
-;;;###autoload (autoload 'icicle-bookmark-this-buffer "icicles-cmd1.el")
-(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'
-;;;###autoload (autoload 'icicle-bookmark-this-buffer-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
-;;;###autoload (autoload 'icicle-bookmark-specific-buffers "icicles-cmd1.el")
-(icicle-define-bookmark-command              "specific-buffers" nil           ; `C-x j = b'
-                                             (icicle-bookmarked-buffer-list))
-;;;###autoload (autoload 'icicle-bookmark-specific-buffers-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "specific-buffers" nil           ; `C-x 4 j = b'
-                                             (icicle-bookmarked-buffer-list))
-;;;###autoload (autoload 'icicle-bookmark-specific-files "icicles-cmd1.el")
-(icicle-define-bookmark-command              "specific-files" nil             ; `C-x j = f'
-                                             (icicle-bookmarked-file-list))
-;;;###autoload (autoload 'icicle-bookmark-specific-files-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "specific-files" nil             ; `C-x 4 j = f'
-                                             (icicle-bookmarked-file-list))
+;;;###autoload (autoload 'icicle-bookmark-temporary "icicles-cmd1.el")
+(icicle-define-bookmark-command              "temporary") ; `C-x j x'
+;;;###autoload (autoload 'icicle-bookmark-temporary-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "temporary") ; `C-x 4 j x'
+
+;; Other-window means nothing for a bookmark file.
+;;;###autoload (autoload 'icicle-bookmark-bookmark-file "icicles-cmd1.el")
+(icicle-define-bookmark-command              "bookmark-file")                 ; `C-x j y'
+
 ;;;###autoload
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
 

@@ -83,5 +83,8 @@ auto-fill-mode' and `M-x fill-mode' physically add newlines to the
 file.  If they were font-sensitive than the filling would be silly if
 the file was viewed in a different font.
 
+[new:DrewAdams:2011-11-01 14:17 UTC]
+: This section should not have been moved here -- it belongs somewhere else.  Filling and proportional fonts have nothing to do with ''anti-aliasing''. -- DrewAdams
+
 ----
 CategoryFaces

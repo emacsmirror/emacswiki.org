@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Oct 31 09:30:37 2011 (-0700)
+;; Last-Updated: Tue Nov  1 20:52:06 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 875
+;;     Update #: 883
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -236,8 +236,7 @@
 ;;    `bmkp-desktop-history', `bmkp-dired-history',
 ;;    `bmkp-file-history', `bmkp-gnus-history', `bmkp-highlight-menu',
 ;;    `bmkp-info-history', `bmkp-isearch-bookmarks' (Emacs 23+),
-;;    `bmkp-jump-display-function', `bmkp-jump-map', `bmkp-jump-menu',
-;;    `bmkp-jump-other-window-map', `bmkp-last-bmenu-bookmark'.
+;;    `bmkp-jump-display-function', `bmkp-last-bmenu-bookmark'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -983,8 +982,8 @@ Non-nil optional FULL means return the bookmark record, not the name."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Mode-line major-mode name indicates whether in temporary bookmarking minor mode.
-;; 2. The doc string is different.
+;; 1. Mode-line major-mode name is different, and indicates whether in temporary bookmarking minor mode.
+;; 2. Doc string is different.
 ;;
 (defun bookmark-bmenu-mode ()
   "Major mode for editing a list of bookmarks.
@@ -1072,6 +1071,10 @@ Jump to (Visit)
 \\[bmkp-jump-to-type]\t- Bookmark by type
 \\[bmkp-jump-in-navlist]\t- Bookmark in the navigation list
 \\[bmkp-lighted-jump]\t- Highlighted bookmark
+\\[bmkp-autofile-jump]\t- Autofile bookmark
+\\[bmkp-autonamed-jump]\t- Autonamed bookmark
+\\[bmkp-autonamed-this-buffer-jump]\t- Autonamed bookmark in buffer
+\\[bmkp-temporary-jump]\t- Temporary bookmark
 \\[bmkp-desktop-jump]\t- Desktop bookmark
 \\[bmkp-bookmark-list-jump]\t- Bookmark-list bookmark
 \\[bmkp-bookmark-file-jump]\t- Bookmark-file bookmark
@@ -1088,8 +1091,6 @@ Jump to (Visit)
 \\[bmkp-gnus-jump]\t- Gnus bookmark
 \\[bmkp-url-jump]\t- URL bookmark
 \\[bmkp-variable-list-jump]\t- Variable-list bookmark
-\\[bmkp-autonamed-jump]\t- Autonamed bookmark
-\\[bmkp-autonamed-this-buffer-jump]\t- Autonamed bookmark in buffer
 \\[bmkp-some-tags-jump]\t- Bookmark having some tags you specify
 \\[bmkp-all-tags-jump]\t- Bookmark having each tag you specify
 \\[bmkp-some-tags-regexp-jump]\t- Bookmark having a tag that matches a regexp
@@ -1368,7 +1369,7 @@ bmkp-use-region             - Activate saved region when visit?"
   (setq truncate-lines    t
         buffer-read-only  t
         major-mode        'bookmark-bmenu-mode
-        mode-name         (if bmkp-temporary-bookmarking-mode "TEMPORARY Bookmarks Menu" "Bookmark Menu"))
+        mode-name         (if bmkp-temporary-bookmarking-mode "TEMPORARY Bookmarking" "Bookmarks"))
   (if (fboundp 'run-mode-hooks)
       (run-mode-hooks 'bookmark-bmenu-mode-hook)
     (run-hooks 'bookmark-bmenu-mode-hook)))

@@ -99,7 +99,7 @@ keystrokes (/Emacs-native-keystrokes, ENK/). For example the WNK-keystroke to sa
 ^S and to paste (or /yank/) one presses ^V. The following picture shows the most common
 MS-Windows and Emacs keystrokes.
 
-[[image:WnkEnkShortcuts]]
+[[image:http://i1119.photobucket.com/albums/k630/DinGODzilla/ErgoEmacsWiki-3.png]]
  
 
 The table lists keystrokes of 5 common MS-Windows applications, and here (maybe rather
@@ -141,15 +141,15 @@ both some Emacs- and some Windows experience and they might well want a subset o
 redefinitions.
 
    ; Various settings:
-   (add-to-list 'load-path "~/elisp")  ;; Additional .el and .elc files can be placed here
-   (setq inhibit-splash-screen t)      ;; Don't show initial Emacs-logo and info
-   (cua-mode 1)                        ;; Enable ^Z, ^X, ^C, ^V, select with mouse and shift-cursor-movement
+   (add-to-list 'load-path "~/elisp")   ;; Additional .el and .elc files can be placed here
+   (setq inhibit-splash-screen t)       ;; Don't show initial Emacs-logo and info
+   (cua-mode 1)                       ;; Enable ^Z, ^X, ^C, ^V, select with mouse and shift-cursor-movement
    (transient-mark-mode 1)             ;; No region when it is not highlighted
-   (setq cua-keep-region-after-copy t) ;; Standard MS-Windows behaviour
+   (setq cua-keep-region-after-copy t)  ;; Standard MS-Windows behaviour
    (require 'cygwin-mount)             ;; Let emacs recognize cygwin ...
    (cygwin-mount-activate)             ;; ...paths (e.g. /usr/local/lib)
    (setq-default line-spacing 1)       ;; Add 1 pixel between lines
-   (recentf-mode)                      ;; Add menu-item "File--Open recent"
+   (recentf-mode)                     ;; Add menu-item "File--Open recent"
 
    ; Define some additional "native-Windows" keystrokes (^tab, Alt/F4, ^A, ^F, ^O,
    ; ^S, ^W) and redefine (some of) the overridden Emacs functions.

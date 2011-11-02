@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct 31 10:59:47 2011 (-0700)
+;; Last-Updated: Tue Nov  1 07:56:02 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13920
+;;     Update #: 13927
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1661,10 +1661,12 @@
 ;;
 ;;  You can hide and show different sets of bookmarks in the bookmark
 ;;  list.  There are commands to show only bookmarks of a particular
-;;  type - e.g. `I S' to show only Info bookmarks.  These are, in
-;;  effect, shortcuts for first marking those bookmarks and then
-;;  showing only the marked bookmarks (and then unmarking).  For
-;;  example, `F S' is a shortcut for `F M >' (and then `U RET').
+;;  type - e.g. `I S' to show only Info bookmarks, `X S' to show only
+;;  the temporary bookmarks.
+;;
+;;  These are, in effect, shortcuts for first marking those bookmarks
+;;  and then showing only the marked bookmarks (and then unmarking).
+;;  For example, `F S' is a shortcut for `F M >' (and then `U RET').
 ;;
 ;;  You can also filter to show only the bookmarks that match a given
 ;;  regexp.  There are two ways to do this:
@@ -2235,6 +2237,10 @@
 ;;  (`*Bookmark List*').  The suffix `L' indicates that this has to do
 ;;  with loading a bookmark file.  See (@> "Using Multiple Bookmark Files").
 ;;
+;;  In the bookmark-list display, temporary bookmarking mode is
+;;  indicated in the mode line by `TEMPORARY Bookmarking' in place of
+;;  `Bookmarks' as the mode name.
+;;
 ;;(@* "Making Bookmarks Temporary")
 ;;  *** Making Bookmarks Temporary ***
 ;;
@@ -2283,6 +2289,10 @@
 ;;  bookmark list using command `bmkp-delete-all-temporary-bookmarks'
 ;;  (or by using `X M' to mark them in the bookmark-list display and
 ;;  then hitting `D' to delete thems).
+;;
+;;  In the bookmark-list display (buffer `*Bookmark List*'), temporary
+;;  bookmarks are indicated with the mark `X' in the same column where
+;;  the annotation mark `a' would otherwise appear.
  
 ;;(@* "Highlighting Bookmark Locations")
 ;;  ** Highlighting Bookmark Locations **

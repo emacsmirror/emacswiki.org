@@ -1,27 +1,27 @@
 ;;; bookmark+-key.el --- Bookmark+ key and menu bindings.
-;; 
+;;
 ;; Filename: bookmark+-key.el
 ;; Description: Bookmark+ key and menu bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Version: 
-;; Last-Updated: Mon Oct 31 09:32:02 2011 (-0700)
+;; Version:
+;; Last-Updated: Tue Nov  1 20:56:54 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 303
+;;     Update #: 309
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    The Bookmark+ libraries are these:
 ;;
 ;;    `bookmark+.el'     - main (driver) library
@@ -45,7 +45,7 @@
 ;;
 ;;    2. From the Emacs-Wiki Web site:
 ;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
-;;    
+;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
 ;;       `Commentary'.
@@ -62,24 +62,24 @@
 ;;    `bmkp-set-map', `bmkp-tags-map', `bmkp-tags-menu'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; *This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -276,8 +276,8 @@
 (define-key bmkp-jump-map              "=f"   'bmkp-specific-files-jump) ; `C-x j = f'
 (define-key bmkp-jump-other-window-map "=f"   'bmkp-specific-files-jump-other-window) ; `C-x 4 j = f'
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
-  (define-key bmkp-jump-map              "a"  'bmkp-find-file) ; `C-x j a'
-  (define-key bmkp-jump-other-window-map "a"  'bmkp-find-file-other-window)) ; `C-x 4 j a'
+  (define-key bmkp-jump-map              "a"  'bmkp-autofile-jump) ; `C-x j a'
+  (define-key bmkp-jump-other-window-map "a"  'bmkp-autofile-jump-other-window)) ; `C-x 4 j a'
 (define-key bmkp-jump-map              "b"    'bmkp-non-file-jump) ; `C-x j b'
 (define-key bmkp-jump-other-window-map "b"    'bmkp-non-file-jump-other-window) ; `C-x 4 j b'
 (define-key bmkp-jump-map              "B"    'bmkp-bookmark-list-jump) ; `C-x j B'
@@ -383,7 +383,9 @@
 (define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump) ; `C-x j v'
 (define-key bmkp-jump-map              "w"    'bmkp-w3m-jump) ; `C-x j w'
 (define-key bmkp-jump-other-window-map "w"    'bmkp-w3m-jump-other-window) ; `C-x 4 j w'
-(define-key bmkp-jump-map              "x"    'bmkp-bookmark-file-jump) ; `C-x j x'
+(define-key bmkp-jump-map              "x"    'bmkp-temporary-jump) ; `C-x j x'
+(define-key bmkp-jump-other-window-map "x"    'bmkp-temporary-jump-other-window) ; `C-x 4 j x'
+(define-key bmkp-jump-map              "y"    'bmkp-bookmark-file-jump) ; `C-x j y'
 (define-key bmkp-jump-map              ":"    'bmkp-jump-to-type) ; `C-x j :'
 (define-key bmkp-jump-other-window-map ":"    'bmkp-jump-to-type-other-window) ; `C-x 4 j :'
 
@@ -734,6 +736,12 @@
 ;; `Jump To': Add jump menu also to the `Bookmark+' menu, and remove the two jump commands there.
 (define-key bmkp-bmenu-menubar-menu [jump] (cons "Jump To" bmkp-jump-menu))
 
+(define-key bmkp-jump-menu [bmkp-temporary-jump-other-window]
+  '(menu-item "Temporary..." bmkp-temporary-jump-other-window
+    :help "Jump to a temporary bookmark"))
+(define-key bmkp-jump-menu [bmkp-autofile-jump-other-window]
+  '(menu-item "Autofile..." bmkp-autofile-jump-other-window
+    :help "Jump to an autofile bookmark"))
 (define-key bmkp-jump-menu [bmkp-autonamed-this-buffer-jump]
   '(menu-item "Autonamed for This Buffer..." bmkp-autonamed-this-buffer-jump
     :help "Jump to an autonamed bookmark in this buffer"))

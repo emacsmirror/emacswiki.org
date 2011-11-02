@@ -53,7 +53,7 @@
 
 ;; Variables:
 
-(defconst ruby-block-version "0.0.10"
+(defconst ruby-block-version "0.0.11"
   "Ruby block package version.")
 
 (defconst ruby-block-keyword-list
@@ -169,7 +169,7 @@ to END keyword. this is Minor mode for ruby-mode only."
   "Point position's word decides behavior."
   (let ((cur (current-word))
 	(face    (get-text-property (point) 'face)))
-    (when (and (member cur '("else" "end"))
+    (when (and (member cur '("else" "elsif" "end"))
 	       (eq face 'font-lock-keyword-face))
       (let* ((pos (ruby-block-corresponding-position (point)))
 	     (sp  (ruby-block-line-beginning-position pos))

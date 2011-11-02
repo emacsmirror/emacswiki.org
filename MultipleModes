@@ -2,7 +2,7 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = multi-web-mode.el =
 
-Auto select major mode for HTML files when point is moving around. Check updates at [https://github.com/fgallina/multi-web-mode github]. Written by FabianGallina.
+Auto select major mode for HTML files when point is moving around. Check updates at [https://github.com/fgallina/multi-web-mode github]. Written by FabianGallina. (As of Y2011-M11-D01, guthub was last updated Y2011-M08-D21)
 
 = mumamo.el =
 

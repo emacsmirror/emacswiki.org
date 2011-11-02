@@ -1,11 +1,11 @@
 ;;; sqlparser-sqlserver-complete.el --- complete tablename and columnname when editing sql -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 Joseph
+;; Copyright (C) 2011 纪秀峰(Joseph)
 
 ;; Created: 2011年08月19日 星期五 00时38分17秒
-;; Last Updated: Joseph 2011-11-12 09:37:06 星期六
+;; Last Updated: Joseph 2011-11-02 15:24:58 星期三
 ;; Version: 0.1.2
-;; Author: Joseph  jixiuf@gmail.com
+;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: sql complete sqlserver
 ;; URL:http://www.emacswiki.org/emacs/download/sqlparser-sqlserver-complete.el
 ;;     https://github.com/jixiuf/sqlparser
@@ -92,6 +92,8 @@
 ;;    mode for editing sqlserver script
 ;;  `sqlparser-sqlserver-complete'
 ;;    complete tablename or column name depending on current point
+;;  `anything-sqlserver-complete'
+;;    call `anything' to complete tablename and column name for sqlserver.
 ;;
 ;;; Customizable Options:
 ;;
@@ -102,10 +104,13 @@
 
 
 (require 'sqlserver-query)
+(require 'thingatpt)
 (require 'anything nil t)
 
 (defvar sqlparser-sqlserver-connection nil)
 (make-variable-buffer-local 'sqlparser-sqlserver-connection)
+
+(defvar sqlparser-sqlserver-opened-connections nil)
 
 (defvar sqlserver-complete-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -140,44 +145,50 @@ position ."
     (goto-char (marker-position last-mark))
    ))
 
-(when (featurep 'anything)
-  (defvar anything-c-source-sqlserver-candidates nil)
-  (defvar anything-init-postion-4-sqlserver)
-  (defvar anything-c-source-sqlserver
-    '((name . "SQL Object:")
-      (init (lambda() (setq anything-init-postion-4-sqlserver (point))(setq anything-c-source-sqlserver-candidates (sqlparser-sqlserver-context-candidates))))
-      (candidates . anything-c-source-sqlserver-candidates)
-      (action . (("Complete" . (lambda(candidate) (goto-char anything-init-postion-4-sqlserver) (backward-delete-char (length (sqlparser-word-before-point-4-sqlserver))) (insert candidate)))))))
+(defvar anything-c-source-sqlserver-candidates nil)
+(defvar anything-init-postion-4-sqlserver)
+(defvar anything-c-source-sqlserver
+  '((name . "SQL Object:")
+    (init (lambda() (setq anything-init-postion-4-sqlserver (point))(setq anything-c-source-sqlserver-candidates (sqlparser-sqlserver-context-candidates))))
+    (candidates . anything-c-source-sqlserver-candidates)
+    (action . (("Complete" . (lambda(candidate) (goto-char anything-init-postion-4-sqlserver) (backward-delete-char (length (sqlparser-word-before-point-4-sqlserver))) (insert candidate)))))))
 
 ;;;###autoload
-  (defun anything-sqlserver-complete()
-    "call `anything' to complete tablename and column name for sqlserver."
-    (interactive)
-    (let ((anything-execute-action-at-once-if-one t)
-          (anything-quit-if-no-candidate
-           (lambda () (message "complete failed."))))
-      (anything '(anything-c-source-sqlserver)
-                ;; Initialize input with current symbol
-                (sqlparser-word-before-point-4-sqlserver)  nil nil))))
+(defun anything-sqlserver-complete()
+  "call `anything' to complete tablename and column name for sqlserver."
+  (interactive)
+  (let ((anything-execute-action-at-once-if-one t)
+        (anything-quit-if-no-candidate
+         (lambda () (message "complete failed."))))
+    (anything '(anything-c-source-sqlserver)
+              ;; Initialize input with current symbol
+              (regexp-quote (sqlparser-word-before-point-4-sqlserver))  nil nil)))
 
 (defun  sqlparser-sqlserver-context-candidates()
   "it will decide to complete tablename or columnname depend on
   current position."
-  (unless (and sqlparser-sqlserver-connection
-               (buffer-live-p (nth 1 sqlparser-sqlserver-connection))
-               (equal (process-status (nth 0  sqlparser-sqlserver-connection)) 'run))
-    (setq sqlparser-sqlserver-connection (call-interactively 'sqlserver-query-create-connection)))
+  (unless (sqlserver-query-connection-alive-p  sqlparser-sqlserver-connection)
+    (dolist (buf-conn-alist  sqlparser-sqlserver-opened-connections); close unused connections
+      (unless (and (bufferp (car buf-conn-alist))
+                   (buffer-live-p (car buf-conn-alist)))
+        (sqlserver-query-close-connection (nth 1 buf-conn-alist))))
+    (setq sqlparser-sqlserver-connection (call-interactively 'sqlserver-query-create-connection))
+    (add-to-list 'sqlparser-sqlserver-opened-connections (list (current-buffer) sqlparser-sqlserver-connection)))
+
   (let ((context (sqlparser-parse-4-sqlserver)) candidats)
     (cond
      ((string= "database" context)
       (setq candidats (sqlparser-sqlserver-all-databasename-candidates))
-     )
+      )
      ((string= "table" context)
       (setq candidats (sqlparser-sqlserver-tablename-schemaname-databasename-candidates))
-     )
+      )
      ((string= "column" context)
       (setq candidats ( sqlparser-sqlserver-column-candidates))
-     )
+      )
+     ((string= "procedure" context)
+      (setq candidats (sqlparser-sqlserver-all-procedures-candidates))
+      )
      ((null context) nil))
     candidats))
 
@@ -230,8 +241,10 @@ position ."
                              name2-prefix name2-suffix name1 (replace-regexp-in-string "_" "[_]" name2
                             )))
                 (setq sql (format
-                           "select '%s' + name +'%s' tablename from sys.tables where schema_name(schema_id) ='%s' and name like '%s%%'"
-                             name2-prefix name2-suffix name1  (replace-regexp-in-string "_" "[_]" name2)))
+                           "select '%s' + name +'%s' tablename from sys.tables where schema_name(schema_id) ='%s' and name like '%s%%' union select '%s' + name +'%s' tablename from sys.all_views where schema_name(schema_id) ='%s' and name like '%s%%' "
+                             name2-prefix name2-suffix name1  (replace-regexp-in-string "_" "[_]" name2)
+                             name2-prefix name2-suffix name1  (replace-regexp-in-string "_" "[_]" name2)
+                             ))
                )
              )
            )
@@ -249,8 +262,10 @@ position ."
                    (name3 (nth 1 fullname3))
                    (name3-suffix  (if (equal "[" name3-prefix) "]" ""))
                   )
-              (setq sql (format " SELECT '%s' + name + '%s' tablename FROM sys.tables WHERE exists (select name from sys.databases where name = '%s') and schema_name(schema_id)= '%s' and name LIKE '%s%%'"
-                                name3-prefix name3-suffix name1 name2      (replace-regexp-in-string "_" "[_]" name3))))))
+              (setq sql (format " SELECT '%s' + name + '%s' tablename FROM sys.tables WHERE exists (select name from sys.databases where name = '%s') and schema_name(schema_id)= '%s' and name LIKE '%s%%' union  SELECT '%s' + name + '%s' tablename FROM sys.all_views WHERE exists (select name from sys.databases where name = '%s') and schema_name(schema_id)= '%s' and name LIKE '%s%%'"
+                                name3-prefix name3-suffix name1 name2 (replace-regexp-in-string "_" "[_]" name3)
+                                name3-prefix name3-suffix name1 name2 (replace-regexp-in-string "_" "[_]" name3)
+                                )))))
     (mapcar 'car (sqlserver-query sql sqlparser-sqlserver-connection))))
 
 ;;(sqlparser-sqlserver-split-three "[abc]") return ("[" "abc" "]")
@@ -334,6 +349,14 @@ position ."
              (setq result (sqlparser-sqlserver-get-matched-columns tablename-string (nth 1 sub-prefix)))))
          )
     result))
+
+(defun sqlparser-sqlserver-all-procedures-candidates()
+  (let* ((prefix (sqlparser-word-before-point-4-sqlserver)) ;
+         sql)
+    (if (> (length prefix) 0)
+        (setq sql (format "SELECT name FROM sys.all_objects WHERE ([type] = 'P' OR [type] = 'X' OR [type] = 'PC') and  name like '%s%%'" prefix))
+      (setq sql "SELECT name FROM sys.all_objects WHERE ([type] = 'P' OR [type] = 'X' OR [type] = 'PC')"))
+    (mapcar 'car (sqlserver-query sql))))
 
 (defun sqlparser-sqlserver-all-tablename-candidates()
   (mapcar 'car (sqlserver-query "select name from sys.tables" sqlparser-sqlserver-connection)))
@@ -504,6 +527,9 @@ it will return 'table' ,or 'column' ,or nil.
     (when (search-backward-regexp "\\bgroup\\b" sql-start-pos t 1)
       (push   (list (- cur-pos (point)) "group") map))
     (goto-char cur-pos)
+    (when (search-backward-regexp "\\bexec\\b" sql-start-pos t 1)
+      (push (list (- cur-pos (point)) "exec") map))
+    (goto-char cur-pos)
     (setq map   (sort map (lambda (a b) (when (< (car a) (car b)) t))))
     (setq keyword  (car (cdar map)))
     (cond
@@ -522,6 +548,9 @@ it will return 'table' ,or 'column' ,or nil.
      ((string-match "use" keyword)
       (setq returnVal "database")
      )
+     ((string-match "exec" keyword)
+      (setq returnVal "procedure")
+      )
      ((string-match "table\\|from\\|alter\\|update" keyword)
       (setq returnVal "table")
      )
@@ -574,20 +603,19 @@ it will return 'table' ,or 'column' ,or nil.
 
 (defun sqlparser-get-prefix-4-sqlserver()
   "for example `tablename.col' `table.' `str'"
-  (let ((init-pos (point)) prefix)
-    (when (search-backward-regexp "[ \t\n,(;]+" (point-min) t)
-      (setq prefix (buffer-substring (match-end 0) init-pos)))
-    (goto-char init-pos)
-    (or prefix "")
-   ))
+  (with-syntax-table (copy-syntax-table (syntax-table))
+    (modify-syntax-entry ?.  "w");treat . as part of word
+    (modify-syntax-entry ?[  "w");treat [ as part of word
+    (modify-syntax-entry ?]  "w");treat ] as part of word
+    (or (thing-at-point 'word) "")))
 
 (defun sqlparser-word-before-point-4-sqlserver()
   "get word before current point or empty string."
-  (save-excursion
-    (let ((current-pos (point)))
-      (if (search-backward-regexp "\s-\\|[ \t]+\\|\\.\\|,\\|(" (point-at-bol) t)
-          (buffer-substring-no-properties (match-end 0) current-pos)
-        ""))))
+  (with-syntax-table (copy-syntax-table (syntax-table))
+    (modify-syntax-entry ?.  ".");treat . as punctuation character
+    (modify-syntax-entry ?[  "w");treat [ as part of word
+    (modify-syntax-entry ?]  "w");treat ] as part of word
+    (or (thing-at-point 'word) "")))
 
 (provide 'sqlparser-sqlserver-complete)
 ;;; sqlparser-sqlserver-complete.el ends here

@@ -9,7 +9,9 @@ My Emacs config file is published on github:
 [https://github.com/jixiuf/emacs_conf MyEmacsConfigFilesOnGitHub].
 
 All my code also available: [https://github.com/jixiuf GitHub].
-I have a Chinese blog at [http://blog.csdn.net/jixiuffff CSDN].
+I have a Chinese blog at [http://blog.csdn.net/jixiuffff CSDN] and [http://jixiuf.github.com/sitemap.html MyBlogOnGitHub].
+
+And I also put some screencasts on [http://code.google.com/p/screencast-repos/downloads/list googlecode].
 
 
 I wrote:
@@ -29,7 +31,7 @@ I wrote:
 * [[sqlparser-mysql-complete.el]] -- completing tablename or column name when editing sql for mysql .[2011-07-21]
 * [[sqlparser-oracle-complete.el]] -- completing tablename or column name when editing sql for oracle .[2011-07-31]
 * [[sqlparser-sqlserver-complete.el]] -- completing tablename or column name when editing sql for  sqlserver2005 and later .[2011-08-21]
-* [[oracle-shell-query.el]] --  execute sql query using sqlplus for oracle .[2011-07-31]
+* [[oracle-shell-query.el]] --  execute sql query using sqlplus for oracle .[2011-07-31](this is replaced by oracle-query.el)
 * [[oracle-query.el]] --  execute sql query using sqlplus for oracle .[2011-08-12]
 * [[sqlserver-query.el]] -- execute sql query using sqlcmd.exe or osql.exe * for sql server [2011-08-21]
 * Lisp:sqlserver-table2entity-4java.el -- generate entity for java from sqlserver tables [2011-09-27 14:26] 

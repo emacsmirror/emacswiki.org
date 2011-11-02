@@ -3,7 +3,7 @@
 ;; Copyright (C) 2011 Joseph 纪秀峰
 
 ;; Created: 2011年08月17日 星期三 22时11分54秒
-;; Last Updated: Joseph 2011-10-25 13:37:49 星期二
+;; Last Updated: Joseph 2011-11-02 15:08:24 星期三
 ;; Version: 0.1.4
 ;; Author: Joseph  纪秀峰 jixiuf@gmail.com
 ;; Keywords: sqlserver emacs sql sqlcmd.exe osql.exe
@@ -30,27 +30,6 @@
 ;;  execute sql using sqlcmd.exe or osql.exe and return as list .
 ;;  (sqlcmd.exe is recommended. ) (osql.exe is slow)
 
-;;; Commands:
-;;
-;; Below are complete command list:
-;;
-;;  `sqlserver-query-create-connection'
-;;    open connection with sqlcmd.exe or osql.exe.
-;;
-;;; Customizable Options:
-;;
-;; Below are customizable option list:
-;;
-;;  `sqlserver-connection-info'
-;;    sqlserver connection info .
-;;    default = (quote ((username . "sa") (password . "sa") (server-instance . "localhost\\SQLEXPRESS") (dbname . "master")))
-;;  `sqlserver-cmd'
-;;    sqlserver-cmd  now  support sqlcmd.exe and osql.exe
-;;    default = (quote sqlcmd)
-;;  `sqlserver-command-path'
-;;    path (without filename) of the sqlcmd.exe or osql.exe .
-;;    default = nil
-
 ;; (sqlserver-query "select empno,ename from emp where empno<=7499")
 ;; got : (("7369" "SMITH") ("7499" "ALLEN"))
 ;; (sqlserver-query-with-heading "select empno,ename from emp where empno<=7499")
@@ -60,8 +39,8 @@
 ;;
 ;; 1. you should custom these variable
 ;; `sqlserver-connection-info'
-;; `sqlserver-command-path' not needn't if `sqlserver-cmd' in under your PATH
-;;  `sqlserver-cmd' ;sqlcmd or osql
+;; `sqlserver-cmd' ;sqlcmd or osql
+;; `sqlserver-command-path' (not needn't if `sqlserver-cmd' in under your PATH)
 ;; for example
 ;; (setq sqlserver-connection-info
 ;;       '((username . "sa")
@@ -86,14 +65,36 @@
 ;; the normal way to use sqlserver-query.el is :
 ;; 1:
 ;; (defvar c nil)
-;; (unless (and c (equal (process-status (nth 0  c)) 'run))
-;;    (setq c (call-interactively 'sqlserver-query-create-connection)))
+;; (unless (sqlserver-query-connection-alive-p c)
+;;   (setq c (call-interactively 'sqlserver-query-create-connection)))
 ;; 2:
 ;;   (sqlserver-query "select empno from emp" c)
 ;;   or
 ;;   (sqlserver-query-with-heading "select empno from emp" c)
 ;; 3:
 ;;   (sqlserver-query-close-connection c)
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `sqlserver-query-create-connection'
+;;    open connection with sqlcmd.exe or osql.exe.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `sqlserver-connection-info'
+;;    sqlserver connection info .
+;;    default = (quote ((username . "sa") (password . "sa") (server-instance . "localhost\\SQLEXPRESS") (dbname . "master")))
+;;  `sqlserver-cmd'
+;;    sqlserver-cmd  now  support sqlcmd.exe and osql.exe
+;;    default = (quote sqlcmd)
+;;  `sqlserver-command-path'
+;;    path (without filename) of the sqlcmd.exe or osql.exe .
+;;    default = nil
+
 
 
 ;;; Code:
@@ -111,7 +112,7 @@
   "sqlserver connection info ."
   :group 'sqlserver-query
   :type 'alist)
-(make-variable-buffer-local 'sqlserver-connection-info)
+;; (make-variable-buffer-local 'sqlserver-connection-info)
 
 (defcustom sqlserver-cmd 'sqlcmd
   "sqlserver-cmd  now  support sqlcmd.exe and osql.exe
@@ -208,7 +209,6 @@ If you leave it nil, it will search the path for the executable."
 (defun sqlserver-query-read-connect-string()
   "set server dbname username password interactive"
   (let ((connection-info (copy-alist sqlserver-connection-info)))
-
     (setcdr  (assoc 'username connection-info)
              (read-string (format  "username(default:%s):"  (cdr (assoc 'username connection-info)))
                           "" nil   (cdr (assoc 'username connection-info))))
@@ -239,33 +239,42 @@ If you leave it nil, it will search the path for the executable."
      process
      (lambda (proc change)
        (when (string-match "\\(finished\\|exited\\|exited abnormally with code\\)" change)
+         (kill-buffer (process-buffer proc) )
          (message  (concat  (process-name proc) " exited")))))
     (list process
           (process-buffer process)
           connection-info)))
 
+(defun sqlserver-query-connection-alive-p(connection)
+  "test whether the connection is alive."
+  (and connection
+       (listp connection)
+       (processp (car connection))
+       (bufferp (nth 1 connection))
+       (buffer-live-p (nth 1 connection))
+       (equal (process-status (car connection)) 'run)))
+
 ;;;###autoload
 (defun sqlserver-query-close-connection(connection)
   "close connection.kill sqlserver process and buffer ."
-  (kill-process (nth 0 connection))
-  (kill-buffer (nth 1 connection))
-  (setq connection nil))
-
+  (when (sqlserver-query-connection-alive-p connection)
+    (process-send-string (car connection)  "exit\n"))
+  (sleep-for 0.1)
+  (when (sqlserver-query-connection-alive-p connection)
+    (kill-process (car connection))
+    (kill-buffer (nth 1 connection)))
+  )
 
 ;;(sqlserver-query "select empno from emp")
 ;;;###autoload
 (defun sqlserver-query-with-heading (sql &optional sqlserver-query-connection)
   "execute sql using `sqlcmd' or `osql' ,and return the result of it.
 the `car' of result is heading"
-  (let( (connection sqlserver-query-connection) process)
-    (unless connection
-      (unless (and sqlserver-query-default-connection
-                   (buffer-live-p (nth 1 sqlserver-query-default-connection))
-                   (equal (process-status (nth 0  sqlserver-query-default-connection)) 'run)
-                   )
-        (setq sqlserver-query-default-connection (call-interactively 'sqlserver-query-create-connection)))
-      (setq connection sqlserver-query-default-connection))
-    (setq process (car connection))
+  (let(  process)
+    (unless (sqlserver-query-connection-alive-p sqlserver-query-connection)
+      (setq-default sqlserver-query-default-connection (call-interactively 'sqlserver-query-create-connection))
+      (setq sqlserver-query-connection sqlserver-query-default-connection))
+    (setq process (car sqlserver-query-connection))
     (when (string-match "\\(.*\\);[ \t]*" sql) (setq sql (match-string 1 sql)))
     (with-current-buffer (process-buffer process)
       (delete-region (point-min) (point-max))

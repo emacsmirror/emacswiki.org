@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 29 06:57:43 2011 (-0700)
+;; Last-Updated: Tue Nov  1 20:39:36 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7569
+;;     Update #: 7583
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/11/01 dadams
+;;     Added: icicle-bookmark-autofile(-other-window),
+;;            icicle-bookmark-autonamed(-this-buffer)(-other-window), icicle-bookmark-bookmark-file,
+;;            icicle-bookmark-temporary(-other-window).
 ;; 2011/10/29 dadams
 ;;     icicle-delete-file: Add icicle-remove-candidate-display-others to action fn.  Remove S-delete.
 ;; 2011/10/21 dadams
@@ -5110,6 +5114,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/11/01 dadams
+;;     icicle-top-level-key-bindings: Added: icicle-bookmark-(autonamed(-this-buffer)|autofile|
+;;                                                            bookmark-file|temporary)(-other-window). 
 ;; 2011/10/10 dadams
 ;;     Removed use of icicle-kbd in option values, because byte-compile of defcustom does not eval.
 ;;     Removed eval-when-compile to load icicles-mac.

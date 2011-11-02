@@ -230,7 +230,7 @@ wraps at the last word) *unless* you have split the screen.
 
 * To turn wrapping *off* in the current buffer, do M-x toggle truncate lines RET.
 * To turn wrapping *on* in *all* split windows, do M-x customize option RET truncate partial width windows RET.
-* There is a package called LongLines to emulate Notepad-style wrapping.  It sucks.
+* There is a package called LongLines to emulate Notepad-style wrapping.  It sucks. VisualLineMode is better.
 * The M-q key will wrap the current paragraph.
 * Use M-x auto fill mode RET to wrap the current paragraph automatically whenever you press SPC.
 

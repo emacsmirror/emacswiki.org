@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 09:42:33 2011 (-0700)
+;; Last-Updated: Tue Nov  1 20:40:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 23029
+;;     Update #: 23033
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -127,6 +127,13 @@
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
+;;    `icicle-bookmark-autofile',
+;;    `icicle-bookmark-autofile-other-window',
+;;    `icicle-bookmark-autonamed',
+;;    `icicle-bookmark-autonamed-other-window',
+;;    `icicle-bookmark-autonamed-this-buffer',
+;;    `icicle-bookmark-autonamed-this-buffer-other-window',
+;;    `icicle-bookmark-bookmark-file',
 ;;    `icicle-bookmark-bookmark-list', `icicle-bookmark-cmd',
 ;;    `icicle-bookmark-desktop', `icicle-bookmark-dired',
 ;;    `icicle-bookmark-dired-other-window',
@@ -175,6 +182,8 @@
 ;;    `icicle-bookmark-specific-buffers-other-window',
 ;;    `icicle-bookmark-specific-files',
 ;;    `icicle-bookmark-specific-files-other-window',
+;;    `icicle-bookmark-temporary',
+;;    `icicle-bookmark-temporary-other-window',
 ;;    `icicle-bookmark-this-buffer',
 ;;    `icicle-bookmark-this-buffer-other-window',
 ;;    `icicle-bookmark-url', `icicle-bookmark-url-other-window'

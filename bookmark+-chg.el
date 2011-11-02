@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct 31 11:14:07 2011 (-0700)
+;; Last-Updated: Tue Nov  1 21:00:59 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 13801
+;;     Update #: 13814
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/01 dadams
+;;     Added: bmkp-temporary-jump(-other-window).
+;;     bmkp-bookmark-description: Title now indicates whether temporary.
 ;; 2011/10/31 dadams
 ;;     Added: bmkp-toggle-autotemp-on-set, bmkp-autotemp-all-when-set-p.
 ;;     bookmark-set: If bmkp-autotemp-all-when-set-p call bmkp-make-bookmark-temporary.
@@ -376,6 +379,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/11/01 dadams
+;;     bookmark-bmenu-mode: Changed mode-name var for mode line: Bookmarks, not Bookmark Menu.
+;;                          Updated doc string for autofile & temporary jump commands.
 ;; 2011/10/31 dadams
 ;;     bookmark-bmenu-mode: Updated doc string with bmkp-toggle-autotemp-on-set.
 ;;     bmkp-bmenu-menubar-menu: Added: bmkp-toggle-autotemp-on-set.
@@ -506,6 +512,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/11/01 dadams
+;;     Bind alias bmkp-autofile-jump(-*), not bmkp-find-file(-*) to C-x j a, so Icicles picks up key.
+;;     Bind bmkp-bookmark-file-jump to C-x j y, not C-x j x.  Bind bmkp-temporary-jump(-*) to C-x j x.
+;;     bmkp-jump-menu: Bind bmkp-(autofile|temporary)-jump-other-window.
 ;; 2011/10/31 dadams
 ;;     Bind bmkp-toggle-autotemp-on-set to C-x p x.  Move bmkp-set-bookmark-file-bookmark to C-x p y.
 ;;     menu-bar-bookmark-map: Added: bmkp-toggle-autotemp-on-set.

@@ -94,8 +94,6 @@ The Windows/NT ./configure script cannot deal with <code>--without-toolkit-scrol
 ----
 
 
-[new]
-
 Is it possible to (de)activate the scrollbar only in one buffer? -- Michael
 
 [new:DrewAdams:2010-07-03 21:40 UTC]

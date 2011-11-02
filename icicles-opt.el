@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  9 16:43:31 2011 (-0700)
+;; Last-Updated: Tue Nov  1 17:51:35 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4692
+;;     Update #: 4707
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3307,7 +3307,7 @@ toggle Icicle mode off and then back on."
      icicle-find-file-read-only-other-window                           t) ; `C-x 4 r'
     ;; There are no key bindings in vanilla Emacs for `insert-buffer'.
     ;; If you use `setup-keys.el', then these are its bindings: `C-S-insert', `M-S-f1'.
-    (insert-buffer                 icicle-insert-buffer                t)
+    (insert-buffer                 icicle-insert-buffer                t) ; `C-S-insert'
     (kill-buffer                   icicle-kill-buffer                  t) ; `C-x k'
     (kill-buffer-and-its-windows   icicle-kill-buffer                  t) ; `C-x k' (`misc-cmds.el')
     (other-window                  icicle-other-window-or-frame        t) ; `C-x o'
@@ -3321,8 +3321,9 @@ toggle Icicle mode off and then back on."
     (where-is                      icicle-where-is                     t) ; `C-h w'
     (,icicle-yank-function         icicle-yank-maybe-completing        t) ; `C-y'
 
-    ;; These are available only if you use library `bookmark+.el'.
-    ;;
+    ;; The following are available only if you use library `bookmark+.el'.
+
+    ;; Bookmark autofile tag commands
     ("\C-xjtaa"                    icicle-find-file-tagged ; `C-x j t a a'
      (featurep 'bookmark+))
     ("\C-x4jtaa"                   icicle-find-file-tagged-other-window ; `C-x 4 j t a a'
@@ -3349,7 +3350,21 @@ toggle Icicle mode off and then back on."
     (bmkp-find-file-some-tags-regexp-other-window
      icicle-find-file-some-tags-regexp-other-window
      (fboundp 'bmkp-find-file-some-tags-regexp-other-window)) ; `C-x 4 j t a % +'
-    ;;   (Other-window means nothing for a bookmark list or a desktop.)
+
+    ;; Bookmark jump commands
+    (bmkp-autonamed-jump icicle-bookmark-autonamed (fboundp 'bmkp-autonamed-jump)) ; `C-x j # #'
+    (bmkp-autonamed-jump-other-window
+     icicle-bookmark-autonamed-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j # #'
+    (bmkp-autonamed-this-buffer-jump
+     icicle-bookmark-autonamed-this-buffer (fboundp 'bmkp-autonamed-jump-this-buffer)) ; `C-x j # .'
+    (bmkp-autonamed-jump-this-buffer-other-window
+     icicle-bookmark-autonamed-this-buffer-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j # .'
+    (bmkp-autofile-jump icicle-bookmark-autofile (fboundp 'bmkp-autofile-jump)) ; `C-x j a'
+    (bmkp-autofile-jump-other-window
+     icicle-bookmark-autofile-other-window (fboundp 'bmkp-autofile-jump)) ; `C-x 4 j a'
+    ;;   (Other-window means nothing for a bookmark file, bookmark list, or desktop.)
+    (bmkp-bookmark-file-jump
+     icicle-bookmark-bookmark-file (fboundp 'bmkp-bookmark-file-jump)) ; `C-x j y'
     (bmkp-bookmark-list-jump
      icicle-bookmark-bookmark-list (fboundp 'bmkp-bookmark-list-jump)) ; `C-x j B'
     (bmkp-desktop-jump icicle-bookmark-desktop (fboundp 'bmkp-desktop-jump)) ; `C-x j K'
@@ -3391,9 +3406,18 @@ toggle Icicle mode off and then back on."
      icicle-bookmark-specific-files (fboundp 'bmkp-specific-files-jump)) ; `C-x j = f'
     (bmkp-specific-files-jump-other-window
      icicle-bookmark-specific-files-other-window (fboundp 'bmkp-specific-files-jump)) ; `C-x 4 j = f'
+    (bmkp-temporary-jump icicle-bookmark-temporary (fboundp 'bmkp-temporary-jump)) ; `C-x j x'
+    (bmkp-temporary-jump-other-window
+     icicle-bookmark-temporary-other-window (fboundp 'bmkp-temporary-jump)) ; `C-x 4 j x'
     (bmkp-this-buffer-jump icicle-bookmark-this-buffer (fboundp 'bmkp-this-buffer-jump)) ; `C-x j .'
     (bmkp-this-buffer-jump-other-window
      icicle-bookmark-this-buffer-other-window (fboundp 'bmkp-this-buffer-jump)) ; `C-x 4 j .'
+    (bmkp-url-jump icicle-bookmark-url (fboundp 'bmkp-url-jump)) ; `C-x j u'
+    (bmkp-url-jump-other-window icicle-bookmark-url-other-window (fboundp 'bmkp-url-jump)) ; `C-x 4 j u'
+    (bmkp-w3m-jump icicle-bookmark-w3m (fboundp 'bmkp-w3m-jump)) ; `C-x j w'
+    (bmkp-w3m-jump-other-window icicle-bookmark-w3m-other-window (fboundp 'bmkp-w3m-jump)) ; `C-x 4 j w'
+
+    ;; Bookmark tags jump commands 
     (bmkp-all-tags-jump icicle-bookmark-all-tags (fboundp 'bmkp-all-tags-jump)) ; `C-x j t *'
     (bmkp-all-tags-jump-other-window
      icicle-bookmark-all-tags-other-window (fboundp 'bmkp-all-tags-jump)) ; `C-x 4 j t *'
@@ -3451,10 +3475,6 @@ toggle Icicle mode off and then back on."
     (bmkp-file-this-dir-some-tags-regexp-jump-other-window
      icicle-bookmark-file-this-dir-some-tags-regexp-other-window
      (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump)) ; `C-x 4 j t % C-f +'
-    (bmkp-url-jump icicle-bookmark-url (fboundp 'bmkp-url-jump)) ; `C-x j u'
-    (bmkp-url-jump-other-window icicle-bookmark-url-other-window (fboundp 'bmkp-url-jump)) ; `C-x 4 j u'
-    (bmkp-w3m-jump icicle-bookmark-w3m (fboundp 'bmkp-w3m-jump)) ; `C-x j w'
-    (bmkp-w3m-jump-other-window icicle-bookmark-w3m-other-window (fboundp 'bmkp-w3m-jump)) ; `C-x 4 j w'
 
     ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
     ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.

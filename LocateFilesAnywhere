@@ -12,10 +12,12 @@ Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- y
 
 ** GlobalFF -- library ##globalff.el##, shows matching files with `locate' command as you type
 
-** LocateMode -- library ##gse-locate.el##.
 ** `<tt>[[IciclesUserDefinedCommands#icicle-locate|icicle-locate]]</tt>' -- Icicles [[multi-command]] wrapper for `locate' program.
 
-* [[Icicles - File-Name Input]] -- Provides '''[[Icicles]]''' [[regexp]] [[completion]] for [[command]]s like `find-file'. You can match any part(s) of a file name, including parts of any of its ancestor directories. No need for another, OS program, such as `find' or `locate'. Match also against file mofication date.
+** LocateMode -- library ##gse-locate.el##.
+
+
+* [[Icicles - File-Name Input]] -- Provides '''[[Icicles]]''' [[regexp]] [[completion]] for [[command]]s like `find-file'. You can match any part(s) of a file name, including parts of any of its ancestor directories. No need for another, OS program, such as `find' or `locate', but if you have `locate' then '''Icicles''' takes advantage of it. Match also against file mofication date. [[Icicles - Fuzzy Completion|Fuzzy completion]] too.
 
 * [[Icicles - Persistent Completions]] -- Save a set of completion candidates persistently. Create a persistent image of all of the files in your file system. Retrieve it quickly anytime, to find a file. 
 

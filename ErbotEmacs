@@ -70,7 +70,7 @@ documentation, see df above.
         accessible-keymaps ache aching acid acons acos
         activate-input-method active-minibuffer-window)
 
-To restrict the apropos to the commands erbot provides in IRC, you cam
+To restrict the apropos to the commands erbot provides in IRC, you can
 add the prefix "fs-"
 
     <deego> , a "^fs-.*wiki"
