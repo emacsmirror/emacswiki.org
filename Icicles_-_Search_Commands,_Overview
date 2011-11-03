@@ -265,6 +265,8 @@ minibuffer input.  You can do this at any time by using command
 to toggle [[user option]] 
 '''`<tt>[[Icicles - Customization and General Tips#icicle-hide-non-matching-lines-flag|icicle-hide-non-matching-lines-flag]]</tt>''''.
 
+
+[:SearchMumamoModes]
 The commands that search zones of text that have a given character
 (text or [[overlay]]) property value work with any kind of property.
 They work specially for properties `face' (or `font-lock-face')

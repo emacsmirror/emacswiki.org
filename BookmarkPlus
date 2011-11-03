@@ -111,6 +111,8 @@ same name but in different directories.
 * '''Bookmark-file bookmarks.''' You can bookmark a ''bookmark file''.  Jumping to such a bookmark
 loads the bookmarks in the file.  See [[#BookmarkFileBookmarks]].
 
+
+[:DesktopBookmarks]
 * '''Desktop bookmarks.'''  You can bookmark the current Emacs ''[[DeskTop|desktop]]'', as defined by library
 ##desktop.el## -- use command '''`bmkp-set-desktop-bookmark''''
 ('''`C-x p K'''').  You can "jump" to (that is, restore) a 

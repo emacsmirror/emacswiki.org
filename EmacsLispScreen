@@ -219,6 +219,9 @@ See also: WindowConfiguration, WindowsAndRegisters, EmacsScreen
 I want to let first sceen numbered as 1 instead 0, how to do ?
 [new]
 How do I deactivate elscreen once it was loaded?
+[new]
+I'm trying out elscreen, but when I switch buffers via "C-x b" which runs "switch-to-buffer", I see buffers from all screens when I tab complete.  Is there a way to set it up so only the current screen's buffers show?  Thanks!
+
 ----
 CategoryEmulation
 CategoryWindows

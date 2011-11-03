@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 22 13:42:27 2011 (-0700)
+;; Last-Updated: Wed Nov  2 16:43:07 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 4794
+;;     Update #: 4807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -106,6 +106,7 @@
 ;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
+;;    (+)`icicle-search-autonamed-bookmark',
 ;;    (+)`icicle-search-bookmark',
 ;;    (+)`icicle-search-bookmark-list-bookmark',
 ;;    `icicle-search-bookmark-list-marked',
@@ -134,6 +135,7 @@
 ;;    (+)`icicle-search-some-tags-regexp-bookmark',
 ;;    (+)`icicle-search-specific-buffers-bookmark',
 ;;    (+)`icicle-search-specific-files-bookmark',
+;;    (+)`icicle-search-temporary-bookmark',
 ;;    (+)`icicle-search-text-property', (+)`icicle-search-thing',
 ;;    (+)`icicle-search-this-buffer-bookmark',
 ;;    (+)`icicle-search-url-bookmark',
@@ -1553,7 +1555,7 @@ cycling, these keys with prefix `C-' act on the current face name:
     (defun icicle-show-faces (faces)
       "Show invisible faces that you choose.  Do nothing to other faces.
 Non-nil `hlt-act-on-any-face-flag' means choose from among all
-invisible faces.  Nil means choose only from among invisible faces
+invisible faces.  Nil means choose only from among invisible  faces
 used to highlight.
 
 When choosing faces, completion and cycling are available. During
@@ -3429,6 +3431,7 @@ In buffer `*Completions*', in addition to eliding the common match
 \(option `icicle-hide-common-match-in-Completions-flag', toggled
 anytime using `C-x .' - no prefix arg), you can elide all lines of a
 multi-line candidate that do not match your current minibuffer input.
+
 This hiding is governed by option
 `icicle-hide-non-matching-lines-flag', which you can toggle anytime
 during completion using `C-u C-x .' (this is not specfic to Icicles
@@ -4606,6 +4609,7 @@ future search commands, not the current one.)" ; Doc string
 ;;  `icicle-search-all-tags-bookmark'
 ;;  `icicle-search-all-tags-regexp-bookmark'
 ;;  `icicle-search-autofile-bookmark'
+;;  `icicle-search-autonamed-bookmark'
 ;;  `icicle-search-bookmark-list-bookmark'
 ;;  `icicle-search-desktop-bookmark'
 ;;  `icicle-search-dired-bookmark'
@@ -4621,6 +4625,7 @@ future search commands, not the current one.)" ; Doc string
 ;;  `icicle-search-some-tags-regexp-bookmark'
 ;;  `icicle-search-specific-buffers-bookmark'
 ;;  `icicle-search-specific-files-bookmark'
+;;  `icicle-search-temporary-bookmark'
 ;;  `icicle-search-this-buffer-bookmark'
 ;;  `icicle-search-url-bookmark'
 ;;  `icicle-search-w3m-bookmark'
@@ -4628,6 +4633,7 @@ future search commands, not the current one.)" ; Doc string
 (icicle-define-search-bookmark-command "all-tags" nil (bmkp-read-tags-completing))
 (icicle-define-search-bookmark-command "all-tags-regexp" nil (bmkp-read-tags-completing))
 (icicle-define-search-bookmark-command "autofile")
+(icicle-define-search-bookmark-command "autonamed")
 (icicle-define-search-bookmark-command "bookmark-list")
 (icicle-define-search-bookmark-command "desktop")
 (icicle-define-search-bookmark-command "dired")
@@ -4643,6 +4649,7 @@ future search commands, not the current one.)" ; Doc string
 (icicle-define-search-bookmark-command "some-tags-regexp" nil (bmkp-read-tags-completing))
 (icicle-define-search-bookmark-command "specific-buffers" nil (icicle-bookmarked-buffer-list))
 (icicle-define-search-bookmark-command "specific-files" nil (icicle-bookmarked-file-list))
+(icicle-define-search-bookmark-command "temporary")
 (icicle-define-search-bookmark-command "this-buffer")
 (icicle-define-search-bookmark-command "url")
 (icicle-define-search-bookmark-command "w3m")
@@ -6119,11 +6126,10 @@ Same as `icicle-imenu', except candidates are full definitions.
 This really means that a candidate is the text between the beginning
 of the Imenu regexp match and `forward-sexp' from there.
 
-Remember that non-nil option
-`icicle-hide-common-match-in-Completions-flag' hides, in
-`*Completions*', all lines of multi-line candidates that do not match
-your current minibuffer input.  You can toggle this at anytime during
-completion using `C-u C-x .'"
+Remember that non-nil option `icicle-hide-non-matching-lines-flag'
+hides, in `*Completions*', all lines of multi-line candidates that do
+not match your current minibuffer input.  You can toggle this at
+anytime during completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -6159,11 +6165,10 @@ search multiple regions, buffers, or files, see the doc for command
 Same as `icicle-imenu-command', except candidates are complete command
 definitions.
 
-Remember that non-nil option
-`icicle-hide-common-match-in-Completions-flag' hides, in
-`*Completions*', all lines of multi-line candidates that do not match
-your current minibuffer input.  You can toggle this at anytime during
-completion using `C-u C-x .'"
+Remember that non-nil option `icicle-hide-non-matching-lines-flag'
+hides, in `*Completions*', all lines of multi-line candidates that do
+not match your current minibuffer input.  You can toggle this at
+anytime during completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -6214,11 +6219,10 @@ search multiple regions, buffers, or files, see the doc for command
 Same as `icicle-imenu-non-interactive-function', except candidates are
 complete function definitions.
 
-Remember that non-nil option
-`icicle-hide-common-match-in-Completions-flag' hides, in
-`*Completions*', all lines of multi-line candidates that do not match
-your current minibuffer input.  You can toggle this at anytime during
-completion using `C-u C-x .'"
+Remember that non-nil option `icicle-hide-non-matching-lines-flag'
+hides, in `*Completions*', all lines of multi-line candidates that do
+not match your current minibuffer input.  You can toggle this at
+anytime during completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -6264,11 +6268,10 @@ search multiple regions, buffers, or files, see the doc for command
 Same as `icicle-imenu-non-interactive-function', except candidates are
 complete function definitions.
 
-Remember that non-nil option
-`icicle-hide-common-match-in-Completions-flag' hides, in
-`*Completions*', all lines of multi-line candidates that do not match
-your current minibuffer input.  You can toggle this at anytime during
-completion using `C-u C-x .'"
+Remember that non-nil option `icicle-hide-non-matching-lines-flag'
+hides, in `*Completions*', all lines of multi-line candidates that do
+not match your current minibuffer input.  You can toggle this at
+anytime during completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -6306,11 +6309,10 @@ search multiple regions, buffers, or files, see the doc for command
 Same as `icicle-imenu-variable', except candidates are complete
 variable definitions.
 
-Remember that non-nil option
-`icicle-hide-common-match-in-Completions-flag' hides, in
-`*Completions*', all lines of multi-line candidates that do not match
-your current minibuffer input.  You can toggle this at anytime during
-completion using `C-u C-x .'"
+Remember that non-nil option `icicle-hide-non-matching-lines-flag'
+hides, in `*Completions*', all lines of multi-line candidates that do
+not match your current minibuffer input.  You can toggle this at
+anytime during completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)
@@ -6347,11 +6349,10 @@ search multiple regions, buffers, or files, see the doc for command
 Same as `icicle-imenu-user-option', except candidates are complete
 option definitions.
 
-Remember that non-nil option
-`icicle-hide-common-match-in-Completions-flag' hides, in
-`*Completions*', all lines of multi-line candidates that do not match
-your current minibuffer input.  You can toggle this at anytime during
-completion using `C-u C-x .'"
+Remember that non-nil option `icicle-hide-non-matching-lines-flag'
+hides, in `*Completions*', all lines of multi-line candidates that do
+not match your current minibuffer input.  You can toggle this at
+anytime during completion using `C-u C-x .'"
   ;; Note: For this command, the candidate does not correspond to the regexp match.
   ;; Instead, it corresponds to that match plus text at the end to complete the definition.
   (interactive `(,@(icicle-region-or-buffer-limits)

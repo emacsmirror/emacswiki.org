@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  1 20:40:14 2011 (-0700)
+;; Last-Updated: Wed Nov  2 16:43:25 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 23033
+;;     Update #: 23035
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -301,7 +301,8 @@
 ;;    `icicle-resolve-file-name', `icicle-save-string-to-variable',
 ;;    `icicle-search', `icicle-search-all-tags-bookmark',
 ;;    `icicle-search-all-tags-regexp-bookmark',
-;;    `icicle-search-autofile-bookmark', `icicle-search-bookmark',
+;;    `icicle-search-autofile-bookmark',
+;;    `icicle-search-autonamed-bookmark', `icicle-search-bookmark',
 ;;    `icicle-search-bookmark-list-bookmark',
 ;;    `icicle-search-bookmark-list-marked',
 ;;    `icicle-search-bookmarks-together', `icicle-search-buffer',
@@ -323,6 +324,7 @@
 ;;    `icicle-search-some-tags-regexp-bookmark',
 ;;    `icicle-search-specific-buffers-bookmark',
 ;;    `icicle-search-specific-files-bookmark',
+;;    `icicle-search-temporary-bookmark',
 ;;    `icicle-search-text-property', `icicle-search-thing',
 ;;    `icicle-search-this-buffer-bookmark',
 ;;    `icicle-search-url-bookmark', `icicle-search-w3m-bookmark',

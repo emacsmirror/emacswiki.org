@@ -1,15 +1,6 @@
-I am Nurullah Akkaya, i am from [http://www.turkishembassy.org/ Turkey], big fan of emacs. 
-I been using it since around 2000. I use GNU Emacs 22 on OSX and GNU Emacs 23 on Debian.
-I use Emacs for pretty much everything except web browsing. 
+I am Nurullah Akkaya, from [http://www.turkishembassy.org/ Turkey], big emacs fan, been using it since around 2000, I use Emacs for pretty much everything except web browsing. 
 
-My personal home page is [http://nakkaya.com nakkaya.com] i can be reached at [http://nakkaya.com/Contact.html here].
-
-To teach my self a bit of lisp programming i created a couple of useless modes.
-
-
-* [http://nakkaya.com/nmapMode.html nmapMode]  an interface to nmap port scanner.
-* [http://nakkaya.com/dsniffMode.html dsniffMode]  an interface to dsniff.
-* [http://nakkaya.com/sudoEl.html sudoEl]  allow Emacs to start processes as root. Modified from [[SudoSave]]
+My personal home page is [http://nakkaya.com nakkaya.com], I can be reached at [http://nakkaya.com/contact.html here].
 
 [new]
 Welcome to the wiki -- GiorgosKeramidas

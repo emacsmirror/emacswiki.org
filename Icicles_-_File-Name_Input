@@ -29,6 +29,8 @@ the currently matching file names.  That is, it opens a special
 Dired buffer that contains ''only'' the matching files.  You are
 prompted for the Dired buffer name.  See [[Icicles - More About Multi-Commands#AlternativeActions|Alternative Actions]].
 
+
+[:icicle-bookmark-file-other-window]
 * '''`C-x m'''' (`icicle-bookmark-file-other-window') to visit a
 bookmarked file or directory.  This is available only if you use
 library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-command]], so you can

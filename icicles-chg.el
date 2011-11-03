@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  1 20:39:36 2011 (-0700)
+;; Last-Updated: Wed Nov  2 16:43:44 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7583
+;;     Update #: 7585
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -479,6 +479,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/11/02 dadams
+;;     Added: icicle-search-autonamed-bookmark, icicle-search-temporary-bookmark.
+;;     *-full search commands:
+;;       Corrected doc strings to refer to the right option, icicle-hide-non-matching-lines-flag.
 ;; 2011/10/22 dadams
 ;;     icicle-send-signal-to-process:
 ;;       Bind icicle-last-transform-function to nil, so icicle-toggle-transforming still works well.
