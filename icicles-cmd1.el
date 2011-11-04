@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  1 20:39:19 2011 (-0700)
+;; Last-Updated: Thu Nov  3 08:57:43 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 22677
+;;     Update #: 22681
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2529,6 +2529,11 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
   (when (string= "" cmd-name) (error "No command name"))
 
   (let* ((cmd                                       (intern cmd-name))
+         (fn                                        (symbol-function cmd))
+         (count                                     (prefix-numeric-value current-prefix-arg))
+         ;; Rebind alternative action functions to nil, so we don't override the command we call.
+         (icicle-candidate-alt-action-fn            nil)
+         (icicle-all-candidates-list-alt-action-fn  nil)
          ;; Rebind `icicle-candidate-action-fn' to a function that calls the
          ;; candidate CMD-NAME on a single argument that it reads.  This is
          ;; used only if CMD-NAME is a command that, itself, reads an input
@@ -2547,21 +2552,16 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                      (wrong-number-of-arguments ; Punt - show help.
                       (funcall #'icicle-help-on-candidate)))
                    (select-window (minibuffer-window))
-                   (select-frame-set-input-focus (selected-frame)))))
-         (fn                                        (symbol-function cmd))
-         (count                                     (prefix-numeric-value current-prefix-arg))
-         ;; Rebind alternative action functions to nil, so we don't override the command we call.
-         (icicle-candidate-alt-action-fn            nil)
-         (icicle-all-candidates-list-alt-action-fn  nil))
+                   (select-frame-set-input-focus (selected-frame))))))
     ;; Message showing what `cmd' is bound to.  This is pretty much a transcription of C code in
     ;; `keyboard.c'.  Not sure it DTRT when there is already a msg in the echo area.
     (when (and suggest-key-bindings (not executing-kbd-macro))
       (let* ((bindings   (where-is-internal cmd overriding-local-map t))
              (curr-msg   (current-message))
-             (wait-time  ;; $$$$$$ (if curr-msg
-                             (or (and (numberp suggest-key-bindings) suggest-key-bindings) 2)
-                         ;; $$$$$$  0)))
-               ))
+             ;; $$$$$$ (wait-time  (if curr-msg
+             ;; $$$$$$                 (or (and (numberp suggest-key-bindings) suggest-key-bindings) 2)
+             ;; $$$$$$              0))
+             (wait-time  (or (and (numberp suggest-key-bindings) suggest-key-bindings) 2)))
         (when (and bindings (not (and (vectorp bindings) (eq (aref bindings 0) 'mouse-movement))))
           (when (and (sit-for wait-time) (atom unread-command-events))
             (let ((message-log-max  nil)) ; Don't log this message.

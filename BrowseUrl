@@ -420,6 +420,33 @@ Emacs comes with `M-x goto-address'.  See GotoAddress.  Another option is Browse
 
 Not a minor mode, but maybe having it on all the time is better? -- AaronHawley
 
+=== Choose browser when using Org-mode's org-open-at-point (C-c C-o) ===
+
+If you want to be able to easily choose between different browsers
+(with w3m as the default) you can advise `org-open-at-point' with the
+following code (note, it uses choose-browser from above):
+[new]
+{{{
+(defadvice org-open-at-point (around org-open-at-point-choose-browser activate)
+  (let ((browse-url-browser-function
+         (cond ((equal (ad-get-arg 0) '(4))
+                'browse-url-generic)
+               ((equal (ad-get-arg 0) '(16))
+                'choose-browser)
+               (t
+                (lambda (url &optional new)
+                  (w3m-browse-url url t)))
+               )))
+    ad-do-it))
+}}}
+[new]
+
+Defaults to w3m: C-c C-o
+Defaults to external browser: C-u C-c C-o
+Choose w3m or external browser: C-u C-u C-c C-o
+
+-- AaronCulich
+
 ----
 CategoryDotEmacs CategoryHypermedia
 

@@ -61,6 +61,7 @@ Re-opening speedbar fixes the problem. Emacs 23.1.
 ----
 Setting the width doesn't appear to work (Emacs 23.1, Ubuntu 8.10). 
 
+In Emacs 23.3 and 24 it works, but in 24 a new problem appear, when clicking a file in speedbar it allways open a split window, it should use the same window one was previously editing in the same frame. -- AlvaroMartinez
 ----
 A few problems.  First, this is being tested on GNU Emacs 23.1.50.1 (i386-mingw-nt5.1.2600).
 # As noted above, window width setting does not seem to work.
