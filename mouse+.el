@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 11:42:00 2011 (-0800)
+;; Last-Updated: Fri Nov  4 08:50:56 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 514
+;;     Update #: 538
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse+.el
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -94,7 +94,7 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookie from non def* sexp.  Added for defface.
@@ -168,7 +168,7 @@
 
 (defconst mouse-scan-lines-overlay
     ;; Create and immediately delete, to get "overlay in no buffer".
-    (let ((ol (make-overlay (point-min) (point-min))))
+    (let ((ol  (make-overlay (point-min) (point-min))))
       (delete-overlay ol)
       (overlay-put ol 'face       'mouse-scan-lines)
       (overlay-put ol 'mouse-face 'mouse-scan-lines)
@@ -178,7 +178,7 @@
 
 (defconst mouse-flash-posn-overlay
     ;; Create and immediately delete, to get "overlay in no buffer".
-  (let ((ol (make-overlay (point-min) (point-min))))
+  (let ((ol  (make-overlay (point-min) (point-min))))
     (delete-overlay ol)
     (overlay-put ol 'face 'mouse-flash-position)
     (overlay-put ol 'mouse-face 'mouse-flash-position)
@@ -193,7 +193,7 @@
 (defun mouse-scan-lines-or-M-: (start-event)
   "In echo area, `M-:'.  Else, highlight current line, tracking pointer."
   (interactive "e")
-  (let ((win (posn-window (event-start start-event)))
+  (let ((win  (posn-window (event-start start-event)))
         (bufs (buffer-list))
         (M-:-cmd (key-binding "\M-:" t)))
     (cond ((and (window-minibuffer-p win) (not (minibuffer-window-active-p win)) M-:-cmd)
@@ -210,9 +210,9 @@
 (defun mouse-M-: (start-event)
   "In the echo area, do `M-:'.  Otherwise, do nothing."
   (interactive "e")
-  (let ((win (posn-window (event-start start-event)))
-        (bufs (buffer-list))
-        (M-:-cmd (key-binding "\M-:" t)))
+  (let ((win      (posn-window (event-start start-event)))
+        (bufs     (buffer-list))
+        (M-:-cmd  (key-binding "\M-:" t)))
     (cond ((and (window-minibuffer-p win) (not (minibuffer-window-active-p win)) M-:-cmd)
            (read-event)                 ; Ignore mouse up event.
            (while (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name (car bufs)))
@@ -229,22 +229,23 @@
   (interactive "e")
   (save-excursion
     (run-hooks 'mouse-leave-buffer-hook) ; Let temporary modes like isearch turn off.
-    (let* ((original-window (selected-window))
-           (echo-keystrokes 0)
-           (start-posn (event-start start-event))
-           (start-point (posn-point start-posn))
-           (start-window (posn-window start-posn))
-           (inhibit-field-text-motion t)) ; Just to be sure, for end-of-line.
+    (let* ((original-window            (selected-window))
+           (echo-keystrokes            0)
+           (start-posn                 (event-start start-event))
+           (start-point                (posn-point start-posn))
+           (start-window               (posn-window start-posn))
+           (inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
       (move-overlay mouse-scan-lines-overlay
                     (save-excursion (goto-char start-point) (beginning-of-line) (point))
                     (save-excursion (goto-char start-point) (end-of-line) (point)))
-      (let (event end end-point)
+      (let (event end  end-point)
         (track-mouse
-          (while (progn (setq event (read-event))
+          (while (progn (setq event  (read-event))
                         (or (mouse-movement-p event)
                             (memq (car-safe event) '(switch-frame select-window))))
             (unless (memq (car-safe event) '(switch-frame select-window))
-              (setq end (event-end event) end-point (posn-point end))
+              (setq end        (event-end event)
+                    end-point  (posn-point end))
               (when (and (eq (posn-window end) start-window) (integer-or-marker-p end-point))
                 (move-overlay
                  mouse-scan-lines-overlay
@@ -265,7 +266,7 @@ START is the position of the start of the current drag operation."
     ;; text to be selected.
     (goto-char start)
     (goto-char end)
-    (setq end (point)))
+    (setq end  (point)))
   (move-overlay ol end (min (point-max) (1+ end))))
 
 ;; Inspired from `mouse-drag-region'.  Candidate for binding to `down-mouse-2'.
@@ -273,9 +274,9 @@ START is the position of the start of the current drag operation."
 (defun mouse-flash-position-or-M-x (start-event)
   "In the echo area, do `M-x'.  Otherwise, do `mouse-flash-position'."
   (interactive "e")
-  (let ((win (posn-window (event-start start-event)))
-        (bufs (buffer-list))
-        (M-x-cmd (key-binding "\M-x" t)))
+  (let ((win      (posn-window (event-start start-event)))
+        (bufs     (buffer-list))
+        (M-x-cmd  (key-binding "\M-x" t)))
     (cond ((and (window-minibuffer-p win) (not (minibuffer-window-active-p win)) M-x-cmd)
            (read-event)                 ; Ignore mouse up event.
            (while (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name (car bufs)))
@@ -309,39 +310,39 @@ release `mouse-2'; release `C-g')."
 (defun mouse-flash-posn-track (start-event)
   "Track mouse drags by highlighting the mouse position"
   (mouse-minibuffer-check start-event)
-  (let* ((original-window (selected-window))
-         (echo-keystrokes 0)
-         (start-posn (event-start start-event))
-         (start-point (posn-point start-posn))
-         (start-window (posn-window start-posn))
-         (start-window-start (window-start start-window))
-         (start-hscroll (window-hscroll start-window))
-         (bounds (window-edges start-window))
-         (make-cursor-line-fully-visible nil)
-         (top (nth 1 bounds))
-         (bottom (if (window-minibuffer-p start-window)
-                     (nth 3 bounds)
-                   (1- (nth 3 bounds))))) ; 1-: Don't count the mode line.
+  (let* ((original-window                 (selected-window))
+         (echo-keystrokes                 0)
+         (start-posn                      (event-start start-event))
+         (start-point                     (posn-point start-posn))
+         (start-window                    (posn-window start-posn))
+         (start-window-start              (window-start start-window))
+         (start-hscroll                   (window-hscroll start-window))
+         (bounds                          (window-edges start-window))
+         (make-cursor-line-fully-visible  nil)
+         (top                             (nth 1 bounds))
+         (bottom                          (if (window-minibuffer-p start-window)
+                                              (nth 3 bounds)
+                                            (1- (nth 3 bounds))))) ; Don't count mode line.
     (mouse-move-flash-posn-overlay mouse-flash-posn-overlay start-point start-point)
     (overlay-put mouse-flash-posn-overlay 'window start-window)
     (deactivate-mark)
     (unwind-protect
          (let (event end end-point last-end-point)
            (track-mouse
-             (while (progn (setq event (read-event))
+             (while (progn (setq event  (read-event))
                            (or (mouse-movement-p event)
                                (memq (car-safe event) '(switch-frame select-window))))
                (unless (memq (car-safe event) '(switch-frame select-window))
-                 (setq end (event-end event)
-                       end-point (posn-point end))
-                 (when (numberp end-point) (setq last-end-point end-point))
+                 (setq end        (event-end event)
+                       end-point  (posn-point end))
+                 (when (numberp end-point) (setq last-end-point  end-point))
                  (cond
                    ((and (eq (posn-window end) start-window) ; Moving within original window.
                          (integer-or-marker-p end-point))
                     (mouse-move-flash-posn-overlay mouse-flash-posn-overlay
                                                    start-point end-point))
                    (t
-                    (let ((mouse-row (cddr (mouse-position))))
+                    (let ((mouse-row  (cddr (mouse-position))))
                       (cond
                         ((null mouse-row))
                         ((< mouse-row top)
@@ -353,28 +354,29 @@ release `mouse-2'; release `C-g')."
            ;; In case we did not get a mouse-motion event for the final move of
            ;; the mouse before a drag event, pretend that we did get one.
            (when (and (memq 'drag (event-modifiers (car-safe event)))
-                      (setq end (event-end event)  end-point (posn-point end))
+                      (setq end        (event-end event)
+                            end-point  (posn-point end))
                       (eq (posn-window end) start-window)
                       (integer-or-marker-p end-point))
              (mouse-move-flash-posn-overlay mouse-flash-posn-overlay start-point end-point))
            (when (consp event)          ; Handle the terminating event.
-             (let ((fun (key-binding (vector (car event)))))
+             (let ((fun  (key-binding (vector (car event)))))
                ;; Run the binding of the terminating up-event, if possible.
-               (let* ((stop-point (if (numberp (posn-point (event-end event)))
-                                      (posn-point (event-end event))
-                                    last-end-point))
-                      (drag-end (if (and stop-point (< stop-point start-point))
-                                    (overlay-start mouse-flash-posn-overlay)
-                                  (overlay-end mouse-flash-posn-overlay)))
-                      (drag-start (- (+ (overlay-end mouse-flash-posn-overlay)
-                                        (overlay-start mouse-flash-posn-overlay))
-                                     drag-end))
+               (let* ((stop-point  (if (numberp (posn-point (event-end event)))
+                                       (posn-point (event-end event))
+                                     last-end-point))
+                      (drag-end    (if (and stop-point (< stop-point start-point))
+                                       (overlay-start mouse-flash-posn-overlay)
+                                     (overlay-end mouse-flash-posn-overlay)))
+                      (drag-start  (- (+ (overlay-end mouse-flash-posn-overlay)
+                                         (overlay-start mouse-flash-posn-overlay))
+                                      drag-end))
                       last-command this-command)
                  (delete-overlay mouse-flash-posn-overlay)
                  (when (and (= start-hscroll (window-hscroll start-window))
                             (or end-point
                                 (= (window-start start-window) start-window-start)))
-                   (setq unread-command-events (cons event unread-command-events)))))))
+                   (setq unread-command-events  (cons event unread-command-events)))))))
       (delete-overlay mouse-flash-posn-overlay))))
 
 
@@ -390,9 +392,9 @@ If window is not the only one in frame, then delete it.
 Otherwise, this command effectively clones the frame and window."
   (interactive "e")
   (mouse-minibuffer-check event)
-  (let* ((window (posn-window (event-start event)))
-         (buf (window-buffer window))
-         (frame (make-frame)))
+  (let* ((window  (posn-window (event-start event)))
+         (buf     (window-buffer window))
+         (frame   (make-frame)))
     (select-frame frame)
     (switch-to-buffer buf)
     (save-window-excursion (select-window window)
@@ -416,7 +418,7 @@ If the click is in the echo area, then:
   If buffer `*Messages' is not displayed, display it.
   Else run the command bound to `M-x'."
     (interactive "e")
-    (let ((w (posn-window (event-start start-event))))
+    (let ((w  (posn-window (event-start start-event))))
       (if (and (window-minibuffer-p w)
                (not (minibuffer-window-active-p w)))
           (let* ((Messages-buf  (get-buffer-create "*Messages*"))
@@ -445,7 +447,10 @@ If the click is in the echo area, then:
 
 
 ;; REPLACES ORIGINAL in `mouse.el':
-;; Fixes bug when (x-get-selection 'SECONDARY) returns nil.
+;;
+;; 1. Use `yank-secondary' if defined.
+;; 2. If `mouse-yank-at-point', insert at point regardless of click position.
+;; 3. Fixes bug when (x-get-selection 'SECONDARY) returns nil.
 ;;
 ;;;###autoload
 (defun mouse-yank-secondary (click arg)
@@ -460,12 +465,12 @@ If command `yank-secondary' is defined (see library `second-sel.el'),
   ;; Give temporary modes such as isearch a chance to turn off.
   (run-hooks 'mouse-leave-buffer-hook)
   (or mouse-yank-at-point (mouse-set-point click))
-  (setq mouse-selection-click-count 0)
+  (setq mouse-selection-click-count  0)
   (if (not (fboundp 'yank-secondary))
-      (let ((secondary (x-get-selection 'SECONDARY)))
+      (let ((secondary  (x-get-selection 'SECONDARY)))
         (unless secondary (error "No secondary selection"))
         (funcall (if (fboundp 'insert-for-yank) 'insert-for-yank 'insert) secondary))
-    (setq this-command 'yank-secondary)
+    (setq this-command  'yank-secondary)
     (yank-secondary arg)))
 
 ;; Tell `delete-selection-mode' to replace active region by yanked secondary selection.
@@ -482,25 +487,25 @@ If command `yank-secondary' is defined (see library `second-sel.el'),
 ;  (interactive "e")
 ;  ;; Give temporary modes such as isearch a chance to turn off.
 ;  (run-hooks 'mouse-leave-buffer-hook)
-;  (let ((buffer (window-buffer))
+;  (let ((buffer  (window-buffer))
 ;        choice
 ;       base-size)
 ;    (save-excursion
 ;      (set-buffer (window-buffer (posn-window (event-start event))))
 ;      (when completion-reference-buffer   ; Defined in `simple.el'.
-;        (setq buffer completion-reference-buffer))
-;      (setq base-size completion-base-size)
+;        (setq buffer  completion-reference-buffer))
+;      (setq base-size  completion-base-size)
 ;      (save-excursion
 ;       (goto-char (posn-point (event-start event)))
 ;       (let (beg end)
 ;         (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
-;            (setq end (point))
-;            (setq beg (1+ (point))))
+;            (setq end  (point))
+;            (setq beg  (1+ (point))))
 ;         (unless beg (error "No completion here"))
-;         (setq beg (previous-single-property-change beg 'mouse-face))
-;         (setq end (or (next-single-property-change end 'mouse-face)
-;                       (point-max)))
-;         (setq choice (buffer-substring beg end)))))
+;         (setq beg  (previous-single-property-change beg 'mouse-face))
+;         (setq end  (or (next-single-property-change end 'mouse-face)
+;                        (point-max)))
+;         (setq choice  (buffer-substring beg end)))))
 ;    (save-window-excursion
 ;      (select-window (posn-window (event-start event)))
 ;      (when (one-window-p t 'selected-frame) (iconify-frame (selected-frame))))

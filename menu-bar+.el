@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jul 24 10:21:28 2011 (-0700)
+;; Last-Updated: Fri Nov  4 09:37:55 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3448
+;;     Update #: 3454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -18,8 +18,9 @@
 ;;
 ;;   `apropos', `apropos+', `avoid', `fit-frame', `frame-fns',
 ;;   `help+20', `info', `info+', `menu-bar', `misc-cmds', `misc-fns',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `naked', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -98,8 +99,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/11/04 dadams
+;;     Wrap (x-get-selection 'SECONDARY) everywhere in condition-case (Emacs 21 bug).
 ;; 2011/07/24 dadams
 ;;     menu-bar-(edit|sort)-region-menu: Disable these submenus if region is not active.
 ;;     Removed old Emacs19 commented code.
@@ -750,7 +753,11 @@ submenu of the \"Help\" menu."))
     '(menu-item "Paste Secondary" yank-secondary
       :help "Paste (yank) secondary selection."
       :enable
-      (and (fboundp 'x-get-selection) (x-get-selection 'SECONDARY) (not buffer-read-only))
+      (and (fboundp 'x-get-selection)
+       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
+           (x-get-selection 'SECONDARY)
+         (error nil))
+       (not buffer-read-only))
       :keys "\\[secondary-dwim]")
     'paste)
   (define-key-after menu-bar-edit-menu [primary-to-secondary] ; In `second-sel.el'
@@ -761,13 +768,21 @@ submenu of the \"Help\" menu."))
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
     '(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
-      :enable (and (fboundp 'x-get-selection) (x-get-selection 'SECONDARY))
+      :enable
+      (and (fboundp 'x-get-selection)
+       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
+           (x-get-selection 'SECONDARY)
+         (error nil)))
       :keys "C-- \\[secondary-dwim]")
     'primary-to-secondary)
   (define-key-after menu-bar-edit-menu [secondary-to-primary] ; In `second-sel.el'
     '(menu-item "Select Secondary as Region" secondary-to-primary
       :help "Go to the secondary selection and select it as the active region."
-      :enable (and (fboundp 'x-get-selection) (x-get-selection 'SECONDARY))
+      :enable
+      (and (fboundp 'x-get-selection)
+       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
+           (x-get-selection 'SECONDARY)
+         (error nil)))
       :keys "C-0 \\[secondary-dwim]")
     'secondary-swap-region))
 
@@ -1484,10 +1499,10 @@ setting the variable and displaying a status message (not MESSAGE)."
 (when (boundp 'doremi-push-frame-config-for-cmds-flag)
   (define-key menu-bar-options-menu [doremi-push-frame-config]
     (menu-bar-make-toggle-any-version menu-bar-doremi-push-frame-config
-                          doremi-push-frame-config-for-cmds-flag
-                          "Save Frame Configs (DoReMi)"
-                          "Saving frame configurations is %s for DoReMi commands"
-                          "Saving of frame configurations by DoReMi commands")))
+                                      doremi-push-frame-config-for-cmds-flag
+                                      "Save Frame Configs (DoReMi)"
+                                      "Saving frame configurations is %s for DoReMi commands"
+                                      "Saving of frame configurations by DoReMi commands")))
 (when (boundp 'fit-frame-inhibit-fitting-flag)
   (define-key menu-bar-options-menu [inhibit-fit-frame]
     (menu-bar-make-toggle-any-version menu-bar-inhibit-fit-frame fit-frame-inhibit-fitting-flag

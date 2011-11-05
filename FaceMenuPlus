@@ -1,4 +1,4 @@
-Library '''<tt>[[facemenu+.el]]</tt>''' enhances the following in ways that give you more ''direct manipulation'' of [[face]]s and face properties, such as color:
+Library '''[::Facemenu+]''' ('''<tt>[[facemenu+.el]]</tt>''') enhances the following in ways that give you more ''direct manipulation'' of [[face]]s and face properties, such as color:
 
 * the faces list display (buffer `*Faces', from `list-faces-display')
 * the colors list display (buffer `*Colors*', from `list-colors-display')

@@ -10,6 +10,23 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+
+
+== Site search misses main page for highlight.el ==
+
+Visit <tt>[[highlight.el]]</tt>. Click the title to google-search for references to that page.  There are 5 pages of hits, but none of them are HighLight, which is the main page documenting Lisp:highlight.el.  There is even a link ##Lisp:highlight.el## on page HighLight, so it can't just be a problem of using ##<tt>[[highlight.el]]</tt>## instead of ##Lisp:##.  Maybe the problem has something to do with case-sensitivity in the page name "##HighLight##"? -- DrewAdams
+
+[new]
+I think that's because when serving the page, the wiki tries to split page names based on !CamelCase -> Camel Case -- this is what Google picks up (in addition to the h1 header). Thus, if you search for "highlight" you won't find !HighLight because it registers as "High Light". If you search for "high light" instead, you'll find the correct page. Perhaps we should create a new page called Highlight, move the !HighLight content there, and have !HighLight redirect to Highlight? -- AlexSchroeder
+
+[new:DrewAdams:2011-11-04 20:17 UTC]
+Thanks for the explanation.  Still, I don't quite understand.  I thought that explicit links to the target page (<tt>[[highlight.el]]</tt> in this case) were taken into account, i.e. by picking up the link sources (sort of like Google does in general, when trying to rank a page).  How does a search for the text ##highlight## come into the picture?  Is the search only for the text ##highlight.el##, or are links taken into account?
+
+Wrt your suggestion, I don't think that's the solution here, but I might rename the page to something a bit different -- and less general sounding-- anyway.  Thx -- DrewAdams
+
+[new]
+I can't say I understand completely, either. Google ought to know that there is a page with Url bla/HighLight, title High Light and h1 HighLight -- why doesn't a search for "highlight" find it? I don't know. :(
+
 == Site is very slow now ==
 
 Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams

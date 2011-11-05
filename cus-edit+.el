@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Thu Mar 31 07:57:07 2011 (-0700)
+;; Last-Updated: Fri Nov  4 09:33:14 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 1274
+;;     Update #: 1279
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -294,7 +294,7 @@
 ;;
 ;;    `customp-buffer-create-hook', `customize-customized-ignore'.
 ;;
-;;    Emacs 20 only: `custom-buffer-verbose-help'.
+;;    `custom-buffer-verbose-help' (Emacs 20, 21 only).
 ;;
 ;;
 ;;  Commands defined here:
@@ -341,8 +341,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/11/04 dadams
+;;     custom-buffer-verbose-help: Defined for Emacs 21.4 also (all Emacs 21).
 ;; 2011/03/31 dadams
 ;;     custom-var-(matches|inherits)-type-p: Wrap string-match with save-match-data.
 ;; 2011/01/03 dadams
@@ -511,8 +513,7 @@ Items in this list are symbols naming faces or variables."
   :link '(emacs-commentary-link :tag "Commentary" "cus-edit+")
   )
 
-(unless (or (>= emacs-major-version 22)
-            (and (= emacs-major-version 21) (= emacs-minor-version 4)))
+(when (< emacs-major-version 22)
   (defcustom custom-buffer-verbose-help t
     "*If non-nil, include explanatory text in the customization buffer."
     :type 'boolean :group 'custom-buffer))

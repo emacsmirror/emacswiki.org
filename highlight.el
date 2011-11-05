@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Oct 31 13:42:55 2011 (-0700)
+;; Last-Updated: Fri Nov  4 10:44:49 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 3057
+;;     Update #: 3076
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -185,8 +185,8 @@
 ;;     `M-x hlt-choose-default-face'.
 ;;
 ;;  4. Highlight in any way provided by library `highlight.el'.  For
-;;     example, use `hlt-highlighter' (I bind it to `C-x mouse-2') to
-;;     drag-highlight as if using a marker pen.
+;;     example, use `hlt-highlighter' (personally, I bind it to `C-x
+;;     mouse-2') to drag-highlight as if using a marker pen.
 ;;
 ;;  5. Save your file.
 ;;
@@ -300,7 +300,8 @@
 ;;  properties to copy and yank, by default.  The default value of the
 ;;  option includes only `face', which means that only property `face'
 ;;  is copied and pasted.  That is typically what you want, for
-;;  highlighting purposes.
+;;  highlighting purposes.  A value of `t' for
+;;  `hlt-default-copy/yank-props' means use all properties.
 ;;
 ;;  You can further control which text properties are copied or yanked
 ;;  when you use the commands, by using a prefix argument.  A plain or
@@ -309,7 +310,7 @@
 ;;  prompted for which text properties to use, among those available.
 ;;
 ;;  For copying, the available properties are those among
-;;  `hlt-default-copy/yank-props' that are present at the copy
+;;  `hlt-default-copy/yank-props' that are also present at the copy
 ;;  position.  For yanking, the available properties are those among
 ;;  `hlt-default-copy/yank-props' that have previously (last) been
 ;;  copied.
@@ -539,6 +540,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/11/04 dadams
+;;     hlt-default-copy/yank-props: Allow a value of t, for all props.
+;;     hlt-props-to-copy/yank: Handle t value of hlt-default-copy/yank-props.
 ;; 2011/10/31 dadams
 ;;     hlt-highlight-regexp-region: No occurrences msg if no match, not msg how to unhighlight.
 ;; 2011/09/13 dadams
@@ -826,14 +830,14 @@ this option."
     :type 'boolean :group 'highlight)
 
   (defvar hlt-prop-highlighting-state '(nil . nil)
-    "Cons indicating state of property highlighting.
-The car indicates whether property highlighting is on.
+    "Cons representing the state of property highlighting.
+The car indicates whether property highlighting is on (nil means off).
 The cdr is the position of the last mouse click that changed state, as
 a marker."))
 
 ;;;###autoload
 (defcustom hlt-max-region-no-warning 100000
-  "*Max size (chars) of region to highlight without confirmation.
+  "*Maximum size (chars) of region to highlight without confirmation.
 This is used only for highlighting of a regexp, which can be slow."
   :type 'integer :group 'highlight)
 
@@ -855,8 +859,12 @@ affect both kinds of highlighting."
 (defcustom hlt-default-copy/yank-props '(face)
   "*Properties that `hlt-copy-props' and `hlt-yank-props' use by default.
 You can use a prefix argument with those commands to override the
-default behavior."
-  :type '(repeat symbol) :group 'highlight)
+default behavior.
+Either a list of properties (symbols) or `t', meaning all properties."
+  :type '(choice
+          (const :tag "All properties" t)
+          (repeat (symbol :tag "Property")))
+  :group 'highlight)
 
 (defvar hlt-last-regexp nil "The last regexp highlighted.")
 (defvar hlt-last-face 'highlight "The last face used by highlight commands.")
@@ -1408,7 +1416,7 @@ If the current value is nil, it is set to the last non-nil value."
 (defun hlt-yank-props (start end &optional arg msgp)
   "Yank (paste) copied text properties over the active region.
 Do nothing if there is no nonempty active region.
-By default, yank only the copied properties that are in
+By default, yank only the copied properties defined by
  `hlt-default-copy/yank-props'.
 With a plain or non-negative prefix arg, yank all copied properties.
 With a negative prefix arg, you are prompted for the copied properties
@@ -1471,7 +1479,8 @@ NOTE: If the list of copied text properties is empty, then yanking
 (defun hlt-copy-props (&optional position arg msgp)
   "Copy text properties at point for use by `hlt-yank-props'.
 Properties are copied to `hlt-copied-props'.
-By default, copy the `hlt-default-copy/yank-props' properties.
+By default, copy the properties defined by
+ `hlt-default-copy/yank-props'.
 With a plain or non-negative prefix arg, copy all properties.
 With a negative prefix arg, you are prompted for the properties to
  copy.  To finish entering properties, hit `RET RET' (i.e., twice)."
@@ -1493,8 +1502,8 @@ With a negative prefix arg, you are prompted for the properties to
   "Return a plist of properties to copy or yank.
 AVAIL-PROPS is a plist of available properties.
 ARG is from a raw prefix argument.
- If nil, then use the properties from AVAIL-PROPS that are also in
-  `hlt-default-copy/yank-props'.
+ If nil, then use the properties from AVAIL-PROPS that are also
+  among those specified by `hlt-default-copy/yank-props'.
  If a plain or non-negative prefix arg, then use all properties in
   AVAIL-PROPS.
  If a negative prefix arg, then prompt for the properties
@@ -1510,7 +1519,9 @@ ARG is from a raw prefix argument.
                avail-props
              (hlt-subplist (hlt-read-props-completing props-alist) avail-props))))
         (t                              ; Copy/yank the available default props.
-         (hlt-subplist hlt-default-copy/yank-props avail-props))))
+         (if (eq t hlt-default-copy/yank-props)
+             avail-props
+           (hlt-subplist hlt-default-copy/yank-props avail-props)))))
 
 (defun hlt-subplist (properties available)
   "Return a plist with entries from plist AVAILABLE for PROPERTIES.

@@ -1,4 +1,4 @@
-== Binaries for OS X (and OS 9) ==
+== Binaries for OS X ==
 
 Here are some Emacs and XEmacs binaries for OS X.
 
@@ -11,7 +11,15 @@ X11 Emacs is the "original" emacs running under X11 (installed by default in rec
 If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
 If you've used Emacs before and already have your own emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
 
-[http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Auf Deutsch] (in German).
+A similar page on a German blog: [http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
+
+=== OS X Binary Vanilla builds ===
+
+These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
+
+* [http://emacsformacosx.com/ GNU Emacs 23.3 (Cocoa)]
+
+The site makes available [http://emacsformacosx.com/builds Releases, Pretests & Nightlies].
 
 === OS X Distributions with extras ===
 
@@ -24,13 +32,6 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 * [http://homepage.mac.com/zenitani/emacs-e.html CarbonEmacsPackage] provides authentic look and feel of original Emacs, and is a Mac-friendly distribution based on an older version of Emacs, GNU Emacs 22.3. ([http://groups.google.com/group/carbon-emacs/browse_thread/thread/8d87f6babc1f3e29 Newer versions are not planned].) It uses the ".emacs" file under an user's home directory, making the migration from/to a UNIX/Linux environment easy and straightforward. It comes with tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.)  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-style print dialog (MacPrintMode) and support for filenames with accent signs.  A Universal Binary application is available.
 
 * [http://members.shaw.ca/akochoi-xemacs/ XEmacs 21.5.18 *beta*], AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
-
-
-=== OS X Binary Vanilla builds ===
-
-These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super).
-
-* [http://emacsformacosx.com/ GNU Emacs 23.3 (Cocoa)]
 
 
 == Building Emacs From Source ==
@@ -307,8 +308,7 @@ $ mv nextstep/Emacs.app /Applications
 (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
 </pre>
 
-Source: http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
-My recommendation for other how-to questions [http://www.mac-how.net Mac How]
+[http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html Source]
 
  
 === Changing the Scrollbar Appearance ===

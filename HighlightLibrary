@@ -1,4 +1,6 @@
-This page is about library <tt>[[highlight.el]]</tt>, by DrewAdams, which provides commands to highlight text. 
+This page is about library <tt>[[highlight.el]]</tt>, which provides commands to highlight text.
+
+ 
 
 [:FacemenuPlus]
 == Library `facemenu+.el' Puts Highlight on the Menu ==
@@ -216,7 +218,7 @@ User [[option]] '''`hlt-default-copy/yank-props'''' controls which text
 properties to copy and yank, by default.  The default value of the
 option includes only `face', which means that only property `face'
 is copied and pasted.  That is typically what you want, for
-highlighting purposes.
+highlighting purposes.  You can set the option value to any list of properties or to `t', meaning copy/yank all text properties present.
 
 You can further control which text properties are copied or yanked
 when you use the commands, by using a [[prefix argument]].  A plain or

@@ -1,11 +1,10 @@
-i'm **leo** aka [[halloleo]], formerly i used here the name leooo, but beacsue verywhere else on the net i'm now halloleo (particularly http://twitter/halloleo), i guess i should be it on emacswiki as well... so i move the [[leooo]] page here:
+My name is **Leo** aka [[halloleo]] and I love emacs. I use it on Windows and Mac OSX. It is my primary file manager, search-replace tool - and text editor. ;-)
 
+What do I like about emacs? Its unified interface on different platforms (short cuts) and its comprehensive set  features for text cut, paste and replace. (e.g. you can copy a filename and use it easily with a search-replace task.)
 
-i love emacs and use it on windows xp and mac os x. it is my primary file manager, search-replace tool and - text editor. ;-)
+What's on my WishList? Easier asynchronous actions (every longer elisp task locks up the whole emacs!) and if I'm really allowed to dream I'd like an "Eclipse mode" which accepts eclipse projects incl. build files and eclipse plugins...
 
-what do i like about emacs? its unified interface on different platforms (short cuts) and its very broad features of text cut and paste. (e.g. you can copy a filename and use it easily with a search-replace task.)
-
-what's on my WishList? a nicer platform-integrated look (e.g. icons in dired) and asynchronous actions (every longer elisp task locks up the whole emacs!)
+ps: Formerly I used here the name leooo, but because everywhere else on the net I'm halloleo (particularly [http://twitter/halloleo twitter], [http://www.flickr.com/photos/halloleo flickr] and [http://blog.halloleo.net my blog]) I  guess I should have that name on emacswiki as well... So I move the [[leooo]] page here.
 
 Welcome to the wiki!  I hope you don't mind when I delete your category page; I think CategoryCode or CategoryDirectories is better for LsLisp. -- AlexSchroeder
 

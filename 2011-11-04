@@ -1,0 +1,12 @@
+[new:AlexSchroeder:2011-11-04 23:55 UTC]
+I've been experimenting with a local *git* repository that doesn't take daily snapshots but checks in every change (with username and summary being used as author and commit message).
+If there's any problem posting, let me know via email -> <mailto:alex@gnu.org>.
+If there's any objection to beefing up one of the repositories (see WikiDownload), let me know as well.
+
+The only argument I see is that in a social space, perfect records run counter to human nature.
+I feel a bit more spied upon. I do realize, however, that not many people seem to share my opinion.
+
+If you feel that this change from anonymous 24h snapshots to more detailed logs makes you uncomfortable, speak up -- leave a comment on this page or send me an email. -- AlexSchroeder
+
+See also: MeatBall:RecordKeeper ("some people refuse to forgive, and thus they refuse to forget"), Community:ForgiveAndForget ("If you wrote aggravating stuff in the past, community members cannot easily dig up your statements and remind everybody of your past sins.")
+

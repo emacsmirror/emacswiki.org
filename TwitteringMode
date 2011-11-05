@@ -435,5 +435,10 @@ It is a very important function for twittering...
 
 --Cesc
 
+[new]
+After having trouble installing twittering-mode and EasyPG on the mac, I spent some time and managed to track down a copy of alpaca.el (0.13). I have created a repository for it [https://github.com/unpluggd/alpaca.el here] to make it a little easier to find for anyone wishing to use it in place of EasyPG.
+
+--unpluggd
+
 ----
 See also: [[Twitter]] [[Identica-mode]]
