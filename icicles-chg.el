@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  2 16:43:44 2011 (-0700)
+;; Last-Updated: Sat Nov  5 11:52:53 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 7585
+;;     Update #: 7586
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2794,6 +2794,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/11/05 dadams
+;;     icicle-nb-Completions-cols: Ensure return value is at least 1.  Thx to Michael Heerdegen.
 ;; 2011/10/21 dadams
 ;;     icicle-all-candidates-action-1: Bind icicle-minibuffer-message-ok-p to non-nil for LISTP.
 ;;     icicle-erase-minibuffer-or-history-element, icicle-(change|reverse)-sort-order,

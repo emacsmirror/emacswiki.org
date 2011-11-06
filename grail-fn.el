@@ -202,7 +202,8 @@
   "
   (let
     ((checked-path (or (file-path-if-readable path)
-                       (file-path-if-readable (concat path ".el")))))
+                       (file-path-if-readable (concat path ".el"))
+                       (file-path-if-readable (concat path ".elc")) )))
 
     (if checked-path
       (let
@@ -513,8 +514,9 @@
 ;; the grail install functions are overly simplistic in comparison.
 ;;----------------------------------------------------------------------
 
-(defconst elpa-url
-  "http://tromey.com/elpa/")
+(defconst elpa-url "http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/")
+
+;(defconst elpa-url "http://tromey.com/elpa/")
 
 (defun load-elpa-when-installed ()
   "load-elpa-when-installed
@@ -525,7 +527,7 @@
    t is returned if succesful, otherwise nil is returned.
   "
   (interactive)
-  (if (load-elisp-if-exists (concat grail-dist-elisp "package.el"))
+  (if (load-elisp-if-exists (concat grail-dist-elisp "package"))
     (progn
       (unless (dir-path-if-accessible grail-dist-elpa)
         (make-directory grail-dist-elpa t))
@@ -536,7 +538,7 @@
       ;; ELPA is loaded so do the ugly parts and hook into package.el's guts
       ;; to pick up it's modifications to load-path
 
-      (defadvice package-do-activate (after grail-snoop/do-activate)
+      (defadvice package-activate-1 (after grail-snoop/do-activate)
         (let
           ((snooped (car load-path))) ;; elpa always cons's the new path on the front.
           (when snooped
@@ -545,7 +547,7 @@
             (grail-extend-load-path))
           ))
 
-      (ad-activate 'package-do-activate)
+      (ad-activate 'package-activate-1)
 
       (let
         ((elpa-errors (diagnostic-load-elisp (package-initialize))))

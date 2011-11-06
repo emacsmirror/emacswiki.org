@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 18:05:13 2011 (-0700)
+;; Last-Updated: Sat Nov  5 11:51:52 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 17440
+;;     Update #: 17446
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -727,7 +727,8 @@ POSITION is a buffer position."
         (when mousef
           (goto-char mousef)
           (setq mouse-chgs  (1+ mouse-chgs)))))
-    (/ (1+ mouse-chgs) 2)))             ; Return # of columns.
+    ;; Handle the case where the `while' loop is skipped so `mouse-chgs' is still 0.
+    (max 1 (/ (1+ mouse-chgs) 2))))     ; Return # of columns.
 
 (defun icicle-column-wise-cand-nb (horiz-nb nb-cands rows cols)
   "Column-wise number of horizontal candidate number HORIZ-NB."
