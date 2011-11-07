@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  3 08:57:43 2011 (-0700)
+;; Last-Updated: Sun Nov  6 14:39:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22681
+;;     Update #: 22682
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5941,13 +5941,14 @@ For example, to show only names of files larger than 5000 bytes, set
                      (icicle-make-file+date-candidate file)
                    (list file)))
              (if icicle-locate-file-use-locate-p
-                 (let ((current-prefix-arg  nil)
-                       (cands               ()))
-                   (call-interactively #'locate)
-                   (dired-repeat-over-lines
-                    (count-lines (point-min) (point-max))
-                    (lambda () (push (dired-get-filename nil t) cands)))
-                   (nreverse cands))
+                 (save-window-excursion
+                   (let ((current-prefix-arg  nil)
+                         (cands               ()))
+                     (call-interactively #'locate)
+                     (dired-repeat-over-lines
+                      (count-lines (point-min) (point-max))
+                      (lambda () (push (dired-get-filename nil t) cands)))
+                     (nreverse cands)))
                (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
                                     nil icicle-locate-file-no-symlinks-p))))
     (use-dialog-box                     nil)

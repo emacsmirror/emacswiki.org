@@ -49,7 +49,7 @@ Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in a
 
 * <tt>[[face-remap+.el]]</tt> -- For ''all'' of the above, let buffer font resizing also zoom the [[window]] size accordingly (horizontally, vertically, or both). That way, you can take advantage of the space freed up by resizing (text-scaling) to a smaller font.
 
-* [[GlobalTextScaleMode]] -- Adjust font size for all buffers at once.
+* [[GlobalTextScaleMode]] -- Adjust font size for all buffers at once using face remapping (Emacs 23+).
 
 
 

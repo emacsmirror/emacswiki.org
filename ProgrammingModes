@@ -49,6 +49,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * GdbMode -- gdb user interface
 * GdlMode
 * GimpMode -- Script-fu programming for the GIMP GNU Image Manipulation Program.
+* [[GLSL]] -- !OpenGL Shading Language
 * GnomeWizard -- Gwizard
 * GoLispMode -- navigate lisp files as hypertext
 * GroovyMode

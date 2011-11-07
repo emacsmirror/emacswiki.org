@@ -2,7 +2,7 @@
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-11-19 10:11:44 星期六
+;; Last Updated: Joseph 2011-11-07 15:05:49 星期一
 ;; Version: 0.1.2
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
@@ -75,7 +75,7 @@
 ;;    default = "ctags"
 ;;  `ctags-update-other-options'
 ;;    other options for ctags
-;;    default = (concat " --exclude='*.elc'" " --exclude='*.class'" " --exclude='.git'" " --exclude='.svn'" ...)
+;;    default = (list "--exclude='*.elc'" "--exclude='*.class'" "--exclude='.git'" "--exclude='.svn'" ...)
 
 ;;; Code:
 
@@ -93,15 +93,15 @@ the ctags is under $PATH before `emacs-23.3/bin/'"
   :group 'ctags-update
   )
 (defcustom ctags-update-other-options
-  (concat
-   " --exclude='*.elc'"
-   " --exclude='*.class'"
-   " --exclude='.git'"
-   " --exclude='.svn'"
-   " --exclude='SCCS'"
-   " --exclude='RCS'"
-   " --exclude='CVS'"
-   " --exclude='EIFGEN'"
+  (list
+   "--exclude='*.elc'"
+   "--exclude='*.class'"
+   "--exclude='.git'"
+   "--exclude='.svn'"
+   "--exclude='SCCS'"
+   "--exclude='RCS'"
+   "--exclude='CVS'"
+   "--exclude='EIFGEN'"
    )
   "other options for ctags"
   :group 'ctags-update
@@ -127,17 +127,19 @@ the ctags is under $PATH before `emacs-23.3/bin/'"
     (fset 'ctags-update-file-truename 'symlink-expand-file-name)
   (fset 'ctags-update-file-truename 'file-truename))
 
-(defun ctags-update-command (tagfile-full-path &optional save-tagfile-to-as)
+(defun ctags-update-command-args (tagfile-full-path &optional save-tagfile-to-as)
   "`tagfile-full-path' is the full path of TAGS file . when files in or under the same directory
 with `tagfile-full-path' changed ,then TAGS file need to be updated. this function will generate
 the command to update TAGS"
-  (let ((cmd (format  "\"%s\" -f \"%s\" -e -R %s "
-                      ctags-update-command
-                      (get-system-file-path (or save-tagfile-to-as tagfile-full-path))
-                      ctags-update-other-options
-                      ;; (get-system-file-path (file-name-directory tagfile-full-path))
-                      )))
-    cmd))
+  (let ((args (apply 'list
+                     "-f"
+                     (get-system-file-path (or save-tagfile-to-as tagfile-full-path))
+                     "-e"
+                     "-R"
+                     ctags-update-other-options
+                     )))
+    args))
+
 
 (defun get-system-file-path(file-path)
   "when on windows `expand-file-name' will translate from \\ to /
@@ -181,9 +183,11 @@ generate a new TAGS file in directory"
                    (not (string-equal (ctags-update-file-truename tags-file-name)
                                       (ctags-update-file-truename (buffer-file-name))))))
       (cd (file-name-directory tags-file-name))
-      (setq process  (start-process-shell-command
-                      "update TAGS" " *update TAGS*"
-                      (ctags-update-command tags-file-name )))
+      (setq process
+            (apply 'start-process ;;
+                   "update TAGS" " *update TAGS*"
+                   ctags-update-command
+                   (ctags-update-command-args tags-file-name)))
       (set-process-sentinel process
                             (lambda (proc change)
                               (when (string-match "\\(finished\\|exited\\)" change)

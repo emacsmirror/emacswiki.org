@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Oct 14 14:44:58 2011 (-0700)
+;; Last-Updated: Sun Nov  6 15:18:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1055
+;;     Update #: 1057
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -1270,7 +1270,11 @@ it is displayed along with the global value."
 ;;; Add them here so this file can be byte-compiled with Emacs 22 and used with Emacs 23.
 (defmacro with-selected-frame (frame &rest body)
   "Execute the forms in BODY with FRAME as the selected frame.
-The value returned is the value of the last form in BODY.
+Save the selected frame, select FRAME, execute BODY, then restore the
+originally selected frame.
+This macro changes the order of neither the recently selected windows
+nor the buffers in the buffer list.  The value returned is the value
+of the last form in BODY.
 See also `with-temp-buffer'."
   (declare (indent 1) (debug t))
   (let ((old-frame   (make-symbol "old-frame"))

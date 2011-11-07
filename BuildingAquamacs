@@ -39,7 +39,7 @@ Note: the binary that you've just build will only run on your machine, with the 
 
 You may check out the latest revision of the Aquamacs24 branch, which contains the 2.x release series combined with Emacs 24 (in development, unstable!):
 
-  git checkout Aquamacs24
+  git checkout aquamacs24
 
 Then proceed with building as above.
 
