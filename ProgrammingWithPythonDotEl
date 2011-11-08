@@ -36,7 +36,7 @@ ElDoc,
 
 python.el includes a regexp for outliner-mode, and hs-mode too.
 
-Since white space is significant in python, correct indent functions are vital, thought these might overload the tab key.
+Since indentation is significant in python, correct indent functions are vital, thought these might overload the tab key.
 : guess indent? or do something! maybe a 'fix syntax' key? py-smart? -- CH
 : tab to guess or max indent, backspace to reduce? This appear to be a function already. -- CH
 

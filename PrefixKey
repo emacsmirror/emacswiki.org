@@ -1,3 +1,8 @@
+
+
+
+== Creating a prefix key ==
+
 Assume you want to add a new prefix key.  On a german keyboard, there
 is no way to enter å and Å, for example.  In Emacs, you can use `C-x 8
 / a' and `C-x 8 / A' respectively.  But, if you are used to
@@ -55,6 +60,32 @@ own command.
                          (lambda () (interactive) (insert "°")))
 
 Done.
+
+
+
+
+
+
+== Extending a prefix key ==
+
+Suppose you want to extend an existing prefix key or key sequence, e.g., `C-x 8'. That map (`iso-transl') is very useful, but not completely populated. E.g., "out of the box," it does not provide means for the user to input the Greek delta characters (widely used in science and math). Fortunately, one can augment or extend `iso-transl' very easily. In this case (thanks to [http://lists.gnu.org/archive/html/help-gnu-emacs/2011-11/msg00069.html Drew Adams]), put the following lines in your InitFile (or a file you load from your InitFile)
+
+    (define-key 'iso-transl-ctl-x-8-map "d" [?δ])
+    (define-key 'iso-transl-ctl-x-8-map "D" [?Δ])
+
+and restart emacs. One can then do, e.g., `C-x 8 D' to input the capital delta, Δ.
+
+
+[new:DrewAdams:2011-11-07 22:07 UTC]
+The reason an error is raised if you do not quote the symbol `iso-transl-ctl-x-8-map' is that that variable is not defined until library `iso-transl.el' is loaded.
+
+It so happens that in this case the symbol `iso-transl-ctl-x-8-map' also has a ''function'' definition -- it is a command -- and its function definition is the keymap.  That is not always the case for a prefix keymap.
+
+Of course, you will say, the function, like the variable, is not defined before library `iso-transl.el' is loaded.  So how does it work?
+
+The '''[[command]]''' `iso-transl-ctl-x-8-map' autoloads file `iso-transl.el' (which defines the keymap).  And the autoload identifies `iso-transl-ctl-x-8-map' as a keymap. -- DrewAdams
+
+
 
 == Duplicating prefix keys ==
 Since I'm a Windows user and use CUA, I copy C-x functionality onto the <C-lwindow>

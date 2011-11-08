@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  6 15:40:19 2011 (-0800)
+;; Last-Updated: Mon Nov  7 15:09:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7587
+;;     Update #: 7589
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/11/07 dadams
+;;     icicle-locate-file-1:
+;;       Use with-current-buffer with locate-buffer-name, to hide switch-to-buffer in locate.
 ;; 2011/11/06 dadams
 ;;     icicle-locate-file-1: Wrap use of external locate program in save-window-excursion.
 ;; 2011/11/01 dadams

@@ -3,3 +3,5 @@ This package allows you to create a multiple shells based on the directory of th
 Get it from https://github.com/metaperl/shell-current-directory
 
 or via EDAN: https://github.com/metaperl/edan
+
+For a different approach, see UsingMultipleShells
