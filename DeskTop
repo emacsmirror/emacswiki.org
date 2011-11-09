@@ -260,6 +260,21 @@ which is is *impossible* to say 'n' to! (Pressing 'n' simply repeats the message
 Let's just dump this in a sack in the local canal.
 ----
 
+----
+
+Not sure where to mention this but I recommend adding the &optional release argument to the desktop-save-in-desktop-dir. This can then be passed through to save-desktop if desired. I have manually added this into my distribution and causes no issues anywhere else. I think it should be added as below.
+
+    (defun desktop-save-in-desktop-dir (&optional release)
+      "Save the desktop in directory `desktop-dirname'."
+      (interactive)
+      (if desktop-dirname
+          (desktop-save desktop-dirname release)
+        (call-interactively 'desktop-save))
+      (message "Desktop saved in %s" (abbreviate-file-name desktop-dirname)))
+
+
+----
+
 See SessionManagement for other similar packages.
 
 ----

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 21.0
-;; Last-Updated: Wed Oct 19 11:28:14 2011 (-0700)
+;; Last-Updated: Tue Nov  8 09:32:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 640
+;;     Update #: 658
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/autofit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -124,6 +124,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/08 dadams
+;;     switch-to-buffer: Added Emacs 24+ version (they changed Emacs 24 again).
 ;; 2011/10-19 dadams
 ;;     Removed redefinition of pop-to-buffer-same-window (Emacs 24 pretest).
 ;; 2011/08/14 dadams
@@ -372,17 +374,18 @@ Return WINDOW."
 (or (fboundp 'old-switch-to-buffer)
     (fset 'old-switch-to-buffer (symbol-function 'switch-to-buffer)))
 
-;; REPLACES ORIGINAL (built-in):
-;; 1) Use `read-buffer' in interactive spec.
-;; 2) If current window is dedicated, then use another window.
-;;    NOTE: Emacs versions >= 19.34 signal error if dedicated window, instead
-;;          of using another one.  Don't know what the 19.28 version did.
-;;          Don't know if this is needed any more.
-;; 3) Resize frame to fit sole window if `autofit-frames-flag'
-;;    (unless BUFFER is already the `current-buffer').
-;;;###autoload
-(defun switch-to-buffer (buffer &optional norecord)
-  "Select buffer BUFFER in current window, unless the window is dedicated.
+(if (< emacs-major-version 24)
+
+    ;; REPLACES ORIGINAL (built-in):
+    ;; 1) Use `read-buffer' in interactive spec.
+    ;; 2) If current window is dedicated, then use another window.
+    ;;    NOTE: Emacs versions >= 19.34 signal error if dedicated window, instead
+    ;;          of using another one.  Don't know what the 19.28 version did.
+    ;;          Don't know if this is needed any more.
+    ;; 3) Resize frame to fit sole window if `autofit-frames-flag'
+    ;;    (unless BUFFER is already the `current-buffer').
+    (defun switch-to-buffer (buffer &optional norecord)
+      "Select buffer BUFFER in current window, unless the window is dedicated.
 If current window is dedicated (`window-dedicated-p'), then another window
 is used.
 
@@ -402,21 +405,60 @@ with correspondences between windows and buffers.
 
 Resize frame to fit sole window if `autofit-frames-flag'
 \(unless BUFFER is already the `current-buffer')."
-  (interactive
-   (list (read-buffer "Switch to buffer: "
-                      (if (fboundp 'another-buffer) ; In `misc-fns.el'.
-                          (another-buffer nil t)
-                        (other-buffer (current-buffer))))))
-  ;; If string arg, convert to a buffer.  If nil, use `other-buffer'.
-  (setq buffer  (if buffer (get-buffer-create buffer) (other-buffer)))
-  (let ((orig-buf  (current-buffer)))
-    (prog1 (if (window-dedicated-p (selected-window))
-               (switch-to-buffer-other-window buffer)
-             (old-switch-to-buffer buffer norecord))
-      (and (one-window-p t)
-           (not (eq buffer orig-buf))   ; Don't resize if same buffer.
-           autofit-frames-flag
-           (fit-frame)))))
+      (interactive
+       (list (read-buffer "Switch to buffer: "
+                          (if (fboundp 'another-buffer) ; In `misc-fns.el'.
+                              (another-buffer nil t)
+                            (other-buffer (current-buffer))))))
+      ;; If string arg, convert to a buffer.  If nil, use `other-buffer'.
+      (setq buffer  (if buffer (get-buffer-create buffer) (other-buffer)))
+      (let ((orig-buf  (current-buffer)))
+        (prog1 (if (window-dedicated-p (selected-window))
+                   (switch-to-buffer-other-window buffer)
+                 (old-switch-to-buffer buffer norecord))
+          (and (one-window-p t)
+               (not (eq buffer orig-buf)) ; Don't resize if same buffer.
+               autofit-frames-flag
+               (fit-frame)))))
+
+  ;; REPLACES ORIGINAL (built-in):
+  ;;
+  ;; Resize frame to fit sole window if `autofit-frames-flag'
+  ;; (unless BUFFER is already the `current-buffer').
+  ;;
+  (defun switch-to-buffer (buffer-or-name &optional norecord force-same-window)
+    "Switch to buffer BUFFER-OR-NAME in the selected window.
+Return the buffer switched to.
+
+If called interactively, prompt for the buffer name using the
+minibuffer.  The variable `confirm-nonexistent-file-or-buffer'
+determines whether to request confirmation before creating a new
+buffer.
+
+BUFFER-OR-NAME may be a buffer, a string (a buffer name), or nil.
+If BUFFER-OR-NAME is a string that does not identify an existing
+buffer, create a buffer with that name.  If BUFFER-OR-NAME is nil,
+switch to the buffer returned by `other-buffer'.
+
+Optional argument NORECORD non-nil means do not put the buffer
+specified by BUFFER-OR-NAME at the front of the buffer list and
+do not make the window displaying it the most recently selected
+one.
+
+If FORCE-SAME-WINDOW is non-nil, BUFFER-OR-NAME must be displayed in
+the selected window.  Signal an error if that is impossible (e.g. if
+the selected window is minibuffer-only).  If nil, BUFFER-OR-NAME may
+be displayed in another window."
+    (interactive
+     (list (read-buffer-to-switch "Switch to buffer: ") nil 'force-same-window))
+    (let ((orig-buf    (current-buffer))
+          (switch-buf  (old-switch-to-buffer
+                        buffer-or-name norecord force-same-window)))
+      (when (and (one-window-p t)
+                 (not (eq switch-buf orig-buf)) ; Don't resize if same buffer.
+                 autofit-frames-flag
+                 (fit-frame)))
+      switch-buf)))
 
 
 ;;; ;; REPLACES ORIGINAL in `window.el':

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Nov  1 17:12:03 2011 (-0700)
+;; Last-Updated: Tue Nov  8 10:26:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2307
+;;     Update #: 2320
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -278,7 +278,8 @@
 ;;    `bmkp-all-tags-alist-only', `bmkp-all-tags-regexp-alist-only',
 ;;    `bmkp-alpha-cp', `bmkp-alpha-p', `bmkp-annotated-alist-only',
 ;;    `bmkp-autofile-alist-only', `bmkp-autofile-bookmark-p',
-;;    `bmkp-autoname-bookmark', `bmkp-autonamed-alist-only',
+;;    `bmkp-autoname-bookmark-function-default',
+;;    `bmkp-autonamed-alist-only',
 ;;    `bmkp-autonamed-bookmark-for-buffer-p',
 ;;    `bmkp-autonamed-bookmark-p',
 ;;    `bmkp-autonamed-this-buffer-alist-only',
@@ -591,14 +592,17 @@
 ;;; User Options (Customizable) --------------------------------------
 
 ;;;###autoload
-(defcustom bmkp-autoname-bookmark-function 'bmkp-autoname-bookmark
-  "*Function to automatically name a bookmark at point (cursor position)."
+(defcustom bmkp-autoname-bookmark-function 'bmkp-autoname-bookmark-function-default
+  "*Function to automatically name a bookmark at point (cursor position).
+It should accept a buffer position as its (first) argument.
+The name returned should match the application of
+`bmkp-autoname-format' to the buffer name."
   :type 'function :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-autoname-format (if (> emacs-major-version 21) "^[0-9]\\{9\\} %s" "^[0-9]+ %s")
   "*Format string to match an autonamed bookmark name.
-It must have a single `%s' that to accept the buffer name."
+It must have a single `%s' to accept the buffer name."
   :type 'string :group 'bookmark-plus)
 
 ;;;###autoload
@@ -2008,8 +2012,7 @@ words from the buffer into the new bookmark name.
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
-  (interactive (list (bookmark-completing-read "Old bookmark name"
-                                               (bmkp-default-bookmark-name))))
+  (interactive (list (bookmark-completing-read "Old bookmark name" (bmkp-default-bookmark-name))))
   (bookmark-maybe-historicize-string old)
   (bookmark-maybe-load-default-file)
   (setq bookmark-current-point  (point)) ; `bookmark-current-point' is a free var here.
@@ -2054,8 +2057,7 @@ bookmarks.  See function `bookmark-load' for more about this.
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
-  (interactive (list (bookmark-completing-read "Insert bookmark contents"
-                                               (bmkp-default-bookmark-name))))
+  (interactive (list (bookmark-completing-read "Insert bookmark contents" (bmkp-default-bookmark-name))))
   (old-bookmark-insert bookmark-name))
 
 
@@ -2478,8 +2480,9 @@ Return a list of the new bookmark name and new file name."
            (bookmark-filename  (bookmark-get-filename bookmark-name))
            (new-bmk-name       (read-from-minibuffer "New bookmark name: " nil nil nil nil
                                                      bookmark-name))
-           (new-filename       (read-from-minibuffer "New file name (location): " nil nil nil nil
-                                                     bookmark-filename)))
+           (new-filename       (read-file-name "New file name (location): "
+                                               (and bookmark-filename
+                                                    (file-name-directory bookmark-filename)))))
       (when (and (or (not (equal new-bmk-name "")) (not (equal new-filename "")))
                  (y-or-n-p "Save changes? "))
         (bookmark-rename bookmark-name new-bmk-name 'batch)
@@ -7862,7 +7865,7 @@ You can use this only in `Occur' mode (commands such as `occur' and
 	(forward-line 1)))
     (when msgp (message "Set %d autonamed bookmarks" count))))
 
-(defun bmkp-autoname-bookmark (position)
+(defun bmkp-autoname-bookmark-function-default (position)
   "Return a bookmark name using POSITION and the current buffer name.
 The name is composed as follows:
  POSITION followed by a space and then the buffer name.

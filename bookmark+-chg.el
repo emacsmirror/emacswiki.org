@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov  1 21:00:59 2011 (-0700)
+;; Last-Updated: Tue Nov  8 10:38:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13814
+;;     Update #: 13820
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/08 dadams
+;;     bmkp-edit-bookmark: For new file name, use read-file-name, not read-from-minibuffer.
+;; 2011/11/03 dadams
+;;     Renamed: bmkp-autoname-bookmark to bmkp-autoname-bookmark-function-default.
 ;; 2011/11/01 dadams
 ;;     Added: bmkp-temporary-jump(-other-window).
 ;;     bmkp-bookmark-description: Title now indicates whether temporary.
