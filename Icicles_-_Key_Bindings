@@ -832,8 +832,7 @@ completions.  For explanation, see [[Icicles - Multi-Commands]], [[Icicles - Mor
 * '''`S-delete'''' -- `icicle-delete-candidate-object': delete object named by candidate
 
 (Some of these are only default key
- bindings.  You can customize the keys to use for
-`previous' and `next' actions, for instance.  The mouse wheel bindings are only for Emacs 22 and later.  The notation used here for the wheel bindings is that for Emacs on Windows; on other platforms different key notations are used for the wheel.  This same note applies to corresponding keys used with modifiers `C-M-' and `C-S-' -- see below.)
+ bindings.  You can customize the keys to use for candidate actions, for instance.  The mouse wheel bindings are only for Emacs 22 and later.  The notation used here for the wheel bindings is that for Emacs on Windows; on other platforms different key notations are used for the wheel.  This same note applies to corresponding keys used with modifiers `C-M-' and `C-S-' -- see below.)
 
 Except as noted, the bindings for `icicle-mouse-*' are actually in the `*Completions*' buffer.
 

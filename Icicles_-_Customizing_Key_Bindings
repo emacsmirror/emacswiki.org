@@ -37,6 +37,49 @@ There are some other user options that make it easy to customize
 '''Icicles''' key bindings.  Most of these are [[minibuffer]] key
 bindings.
 
+
+
+[:icicle-modal-cycle-down-keys]
+[:icicle-modal-cycle-up-keys]
+[:icicle-apropos-cycle-next-keys]
+[:icicle-apropos-cycle-previous-keys]
+[:icicle-prefix-cycle-next-keys]
+[:icicle-prefix-cycle-previous-keys]
+
+[:icicle-candidate-action-keys]
+[:icicle-modal-cycle-down-action-keys]
+[:icicle-modal-cycle-up-action-keys]
+[:icicle-apropos-cycle-next-action-keys]
+[:icicle-apropos-cycle-previous-action-keys]
+[:icicle-prefix-cycle-next-action-keys]
+[:icicle-prefix-cycle-previous-action-keys]
+
+[:icicle-modal-cycle-down-alt-action-keys]
+[:icicle-modal-cycle-up-alt-action-keys]
+[:icicle-apropos-cycle-next-alt-action-keys]
+[:icicle-apropos-cycle-previous-alt-action-keys]
+[:icicle-prefix-cycle-next-alt-action-keys]
+[:icicle-prefix-cycle-previous-alt-action-keys]
+
+[:icicle-candidate-help-keys]
+[:icicle-modal-cycle-down-help-keys]
+[:icicle-modal-cycle-up-help-keys]
+[:icicle-apropos-cycle-next-help-keys]
+[:icicle-apropos-cycle-previous-help-keys]
+[:icicle-prefix-cycle-next-help-keys]
+[:icicle-prefix-cycle-previous-help-keys]
+
+[:icicle-prefix-complete-keys]
+[:icicle-apropos-complete-keys]
+[:icicle-prefix-complete-no-display-keys]
+[:icicle-apropos-complete-no-display-keys]
+[:icicle-word-completion-keys]
+[:icicle-key-complete-keys]
+[:icicle-previous-candidate-keys]
+[:icicle-completing-read+insert-keys]
+[:icicle-read+insert-file-name-keys]
+[:icicle-search-from-isearch-keys]
+[:icicle-isearch-complete-keys]
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' ('''`down'''', `wheel-down').
  [[Icicles - Cycling Completions|Cycle]] to the next candidate (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' ('''`up'''', `wheel-up').
@@ -53,7 +96,7 @@ bindings.
  Act on the current completion candidate.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>'''' ('''`C-down'''', '''`C-wheel-down'''').
  Cycle to the next candidate and act on it (modal).
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>'''' ('''`C-up'''', `C-wheel-up''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>'''' ('''`C-up'''', '''`C-wheel-up'''').
  Cycle to the previous candidate and act on it (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-action-keys|icicle-apropos-cycle-next-action-keys]]</tt>'''' ('''`C-next'''').
  Cycle to the next apropos-completion candidate and act on it.
@@ -80,15 +123,15 @@ bindings.
  Display help for the current completion candidate.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-help-keys|icicle-modal-cycle-down-help-keys]]</tt>'''' ('''`C-M-down'''', '''`C-M-wheel-down'''').
  Cycle to the next candidate and show help for it (modal).
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>'''' ('''`C-S-up'''', '''`C-S-wheel-down'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-help-keys|icicle-modal-cycle-up-help-keys]]</tt>'''' ('''`C-M-up'''', '''`C-M-wheel-up'''').
  Cycle to the previous candidate and show help for it (modal).
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-alt-action-keys|icicle-apropos-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-next'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-help-keys|icicle-apropos-cycle-next-help-keys]]</tt>'''' ('''`C-M-next'''').
  Cycle to the next apropos-completion candidate and show help for it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-alt-action-keys|icicle-apropos-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-prior'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-help-keys|icicle-apropos-cycle-previous-help-keys]]</tt>'''' ('''`C-M-prior'''').
  Cycle to the previous apropos completion candidate and show help for it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-alt-action-keys|icicle-prefix-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-end'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-help-keys|icicle-prefix-cycle-next-help-keys]]</tt>'''' ('''`C-M-end'''').
  Cycle to the next prefix-completion candidate and show help for it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|icicle-prefix-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-home'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-help-keys|icicle-prefix-cycle-previous-help-keys]]</tt>'''' ('''`C-M-home'''').
  Cycle to the previous prefix completion candidate and show help for it.
 
 

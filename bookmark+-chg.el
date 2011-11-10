@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov  8 10:38:37 2011 (-0800)
+;; Last-Updated: Wed Nov  9 15:17:20 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13820
+;;     Update #: 13823
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/09 dadams
+;;     bmkp-jump-dired, bmkp-jump-man: Added bmkp-select-buffer-other-window to other-window fns.
 ;; 2011/11/08 dadams
 ;;     bmkp-edit-bookmark: For new file name, use read-file-name, not read-from-minibuffer.
 ;; 2011/11/03 dadams

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 09:41:07 2011 (-0700)
+;; Last-Updated: Wed Nov  9 09:17:11 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28527
+;;     Update #: 28528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6863,8 +6863,8 @@
 ;;    `S-delete'  - `icicle-delete-candidate-object': delete object
 ;;
 ;;  (Some of these are only default key bindings.  You can customize
-;;  the keys to use for `previous' and `next' actions, for instance.
-;;  The mouse-wheel bindings are only for Emacs 22 and later.  The
+;;  the keys to use for candidate actions, for instance.  The
+;;  mouse-wheel bindings are only for Emacs 22 and later.  The
 ;;  notation used here for the wheel bindings is that for Emacs on
 ;;  Windows; on other platforms different key notations are used for
 ;;  the wheel.  This same note applies to corresponding keys used with
