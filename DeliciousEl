@@ -19,17 +19,23 @@ partly rewritten and now maintained by Štěpán Němec.
 == Current status ==
 
 A new version will be released soon. The development version available in the
-priv branch of the repository (see below) should be perfectly
+dev branch of the repository (see below) should be perfectly
 "production-ready", but as I currently only use a quite limited subset of the
 functionality, I might very well be missing something. Bug reports and other
-constructive feedback much appreciated. -- Štěpán
+constructive feedback much appreciated.
+
+Note that right now (2011-11-10) the API is in a rather broken state, so a
+release is not going to happen until the post-acquisition-by-avos dust settles
+down on the Delicious side. I fix issues as I bump into them and still use
+delicious-el (the tip of the dev branch to be precise) with the current API
+without problems, but consider yourself warned. -- Štěpán
 
 == Get it ==
 
 A Git repository can be found at http://gitorious.org/delicious-el.
 
 For those who prefer tarballs, a
-[http://gitorious.org/delicious-el/delicious-el/archive-tarball/priv snapshot]
+[http://gitorious.org/delicious-el/delicious-el/archive-tarball/dev snapshot]
 can be had.
 
 John's original home page is still at http://wjsullivan.net/delicious-el.html.

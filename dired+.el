@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Oct 31 15:13:44 2011 (-0700)
+;; Last-Updated: Thu Nov 10 13:42:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4186
+;;     Update #: 4188
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -160,7 +160,7 @@
 ;;    `diredp-unmark-files-tagged-some', `diredp-unmark-region-files',
 ;;    `diredp-untag-this-file', `diredp-upcase-this-file',
 ;;    `diredp-w32-drives', `diredp-w32-drives-mode',
-;;    `toggle-dired-find-file-reuse-dir'.
+;;    `toggle-diredp-find-file-reuse-dir'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -273,7 +273,7 @@
 ;;            diredp-dired-plus-description(+links), diredp-send-bug-report.
 ;;     Bound diredp-describe-mode to whatever describe-mode is bound to.
 ;;     All menus, :enable with mark-active: Added transient-mark-mode and mark != point.
-;;     toggle-dired-find-file-reuse-dir: Swapped which one is the alias.
+;;     toggle-diredp-find-file-reuse-dir: Swapped which one is the alias.
 ;;     diredp-w32-list-mapped-drives: Display *Shell Command Output* at end.
 ;;     diredp-mouse-(describe-file|3-menu|mark/unmark|(find|view)-file(-other-window)):
 ;;       save-excursion set-buffer -> with-current-buffer.
@@ -497,7 +497,7 @@
 ;;     Alias dired-do-toggle to dired-toggle-marks, if defined.
 ;; 2005/11/02 dadams
 ;;     Added: dired-get-file-for-visit, dired(-mouse)-find-alternate-file*, 
-;;            toggle-dired-find-file-reuse-dir, dired+-subst-find-*.
+;;            togglep-dired-find-file-reuse-dir, dired+-subst-find-*.
 ;;     Use defface for all faces.  Renamed without "-face".  No longer require def-face-const.
 ;;     dired-simultaneous-find-file: Minor bug fix (typo).
 ;; 2005/07/10 dadams

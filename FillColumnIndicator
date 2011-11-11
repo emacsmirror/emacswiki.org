@@ -182,7 +182,11 @@ I want the fill-column indicator to be appear at column 80, but it only appears 
 
 Fci-mode uses whatever value you have ##fill-column## set to.  As 70 is the default, you probably haven't set ##fill-column## to your desired value.  You can use the command ##set-fill-column## to change the value of ##fill-column## in a buffer, or put ##(setq-default fill-column 80)## in your .emacs to set it globally. --AA
 
+=== Problems with redraw on window size increase ===
 
+[new]
+
+Nice plugin.  Exactly what I was looking for.  One small nit.  In both graphical and terminal emacs, when I increase the size of the window or terminal (for example, to maximize it) the text and other emacs UI elements automatically fill the newly expanded buffer, but the fill-column line does not.  Once I do anything (for example, move point) the fill-column line redraws itself down the remainder of the visible buffer area. --[::rlange]
 
 ----
 CategoryFilling 

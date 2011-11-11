@@ -17,9 +17,9 @@ directory tree you accumulate Dired buffers, one for each directory you visit.
 
 == Libraries that Provide for Reuse ==
 
-* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-dired-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
+* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-diredp-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
 
-: Use `toggle-dired-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(toggle-dired-find-file-reuse-dir 1)##.
+: Use `toggle-diredp-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(toggle-diredp-find-file-reuse-dir 1)##.
 
 : Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
 

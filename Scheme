@@ -1,4 +1,4 @@
-Scheme is a dialect of [[Lisp]] concentrating on the "functional" subset of Lisp that introduced lexical scoping, closures, first class continuations (to Lisp).  Originally developed by GeraldSussman and GuySteele, the language has a very concise and clear standard
+Scheme is a dialect of the LispLanguage concentrating on the "functional" subset of Lisp that introduced lexical scoping, closures, first class continuations (to Lisp).  Originally developed by GeraldSussman and GuySteele, the language has a very concise and clear standard
 (see [http://www.schemers.org/Documents/Standards/R5RS/ R5RS].  Many schemers are proud of the fact that the R5RS Scheme standard is about 50 pages, shorter than the index table of the CommonLisp specification (see [Groups:scheme+standard&selm=sfwwvh5hxxh.fsf%40world.std.com KentPitman's post] for another opinion.)
 
 * http://www.schemers.org/
@@ -63,5 +63,4 @@ Some of the code has been implemented in EmacsLisp:
 * Lisp:stream.el
 
 ----
-CategoryCode
-LispLispLisp
+CategoryProgramming

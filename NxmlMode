@@ -288,6 +288,28 @@ This is an error in nxml-mode, which doesn't have a schema to validate XHTML Tra
 
 -- Lucas
 [new]
+
+
+== Commenting comments ==
+
+nXML mode already tries to correctlt comment comments, but sadly still fails:
+
+Commenting
+<pre>
+<!-- foo -->
+</pre>
+produces
+<pre>
+<!-- <\!-- foo -\-> -->
+</pre>
+which still has an invalid "--" inside, it would be better to create
+<pre>
+<!-- <\!-\- foo -\-> -->
+</pre>
+instead.
+
+-- Daniel
+
 ----
 MarkupModes
 CategoryXML

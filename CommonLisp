@@ -1,4 +1,4 @@
-The first Lisp compiler was developed by JohnMcCarthy at Dartmouth College between 1955 and 1959.  This makes it the second oldest programming language in common use today (only Fortran is older, developed between 1954 and 1957).  Lisp went forth and grew many many dialects: the most notable of these are AutoLisp, EmacsLisp, Interlisp, MacLisp, [[Scheme]] and Common Lisp.
+The first LispLanguage compiler was developed by JohnMcCarthy at Dartmouth College between 1955 and 1959.  This makes it the second oldest programming language in common use today (only Fortran is older, developed between 1954 and 1957).  Lisp went forth and grew many many dialects: the most notable of these are AutoLisp, EmacsLisp, Interlisp, MacLisp, [[Scheme]] and Common Lisp.
 
 Around 1980, there were many dialects of Lisp in development: Interlisp at Xerox,
 MacLisp, Lisp Machine Lisp and NIL ("New Implementation of Lisp") at MIT, Portable
@@ -78,3 +78,6 @@ See CommonLispEmacs.
 * [http://www.elwoodcorp.com/alu/table/Lisp-History.html Kent Pitman, Brief History of the Lisp Language]
 * [http://www-2.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html Guy L Steele, Common Lisp: The Language, 2nd Edition]
 * [http://www8.informatik.uni-erlangen.de/html/lisp/histlit1.html Herbert Stoyan, Early LISP History (1956-1959)]
+
+----
+CategoryCode

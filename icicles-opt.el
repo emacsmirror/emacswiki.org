@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  1 17:51:35 2011 (-0700)
+;; Last-Updated: Thu Nov 10 13:51:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4707
+;;     Update #: 4709
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1911,7 +1911,7 @@ during minibuffer completion."
   ;;   (if (> emacs-major-version 21)
   ;;       '([backtab])
   ;;     '([S-tab] [S-iso-lefttab]))
-  "*Key sequences to use for `icicle-complete-key'.
+  "*Key sequences to use for `icicle-complete-keys'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards - for example, `S-tab' and `S-iso-lefttab'."

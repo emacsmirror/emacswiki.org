@@ -10,13 +10,11 @@ by allocating a new list with the exact same elements for the result.
 This introduces a problem for newbies, however.  Look at the following
 example:
 
-<pre>
   (setq test '(1 2 3))
   (sort test '>)
     => (3 2 1)
   test
     => (1)
-</pre>
 
 Test points to the first element of the list, 1.  As the elements are
 rearranged, however, the element 1 is no longer at the head of the
@@ -24,40 +22,33 @@ list.
 
 What the documentation suggests, therefore, is to reassign the result:
 
-<pre>
   (setq test '(1 2 3))
   (setq test (sort test '>))
     => (3 2 1)
   test
     => (3 2 1)
-</pre>
 
 What happens however, when you want both the old and the new value?
 You'll see that something is not right:
 
-<pre>
   (setq test '(1 2 3))
   (setq newtest (sort test '>))
     => (3 2 1)
   test
     => (1)
-</pre>
 
 What you need to do is to sort a copy of the list.  This is what sort
 is avoiding, so if you want it, you have to do it yourself.
 
-<pre>
   (setq test '(1 2 3))
   (setq newtest (sort (copy-sequence test) '>))
     => (3 2 1)
   test
     => (3 2 1)
-</pre>
 
 Watch out, this may also bite you in your code.  Sort changes the list
 -- and it may therefore change your code!  Self-modifying code!!
 
-<pre>
   (defun test ()
     (let ((a '(1 2 3)))
       (sort a '>)))
@@ -65,7 +56,7 @@ Watch out, this may also bite you in your code.  Sort changes the list
     => (3 2 1)
   (test)
     => (1)
-</pre>
+
 
 In the above code, the first call to test will change the definition
 of the function.  Internally, the a list has been changed to (1).
@@ -73,10 +64,8 @@ These bugs are hard to find.
 
 Just as a proof, here's what the definition of test looks like:
 
-<pre>
  (symbol-function 'test)
     => (lambda nil (let ((a (quote (1)))) (sort a (quote >))))
-</pre>
 
 As you can see, the list is in fact reduced to (1).
 
@@ -107,6 +96,206 @@ The solution is the same as for `sort':
       words)
     ==> ("baz" "bar" "foo")
 
+== nconc ==
+
+The modifying version of `append' is called `nconc'.  It modifies the
+arguments to produce its result.  The result of appending two lists
+twice is a CircularLists.
+
+  (let ((a '(1 2 3))
+        (b '(4 5 6)))
+    (nconc a b)
+    a)
+  ==> (1 2 3 4 5 6)
+  (let ((a '(1 2 3)))
+    (nconc a b)
+    (nconc a b)
+    a)
+  ==> (1 2 3 4 5 6 . #3)
+
+More directly,
+
+  (let ((a '(1 2 3)))
+    (nconc a a)
+    a)
+  ==> (1 2 3 1 2 . #3)
+
+To get an idea of how `nconc' has made it circular, notice how the
+modified list can be cdr'd for infinity.
+
+  (let ((a '(1 2 3)))
+    (nconc a a)
+    (list (nthcdr 3 a) (nthcdr 6 a) (nthcdr 9 a) "..."))
+  ==> ((1 2 3 1 2 . #2) (1 2 3 1 2 . #2) (1 2 3 1 2 . #2) "...")
+
+== Emacs Lisp ==
+
+Primitives aren't the only functions with this problem.  It is
+possible in EmacsLisp to write a function that is destructive.
+Perhaps the simplest example is a destructive `append' function like
+what was shown in the section above.
+
+Here's a functional programming version of `append' that doesn't
+modify its arguments.
+
+  (defun fpappend (ls1 ls2)
+    (if (null ls1)
+        ls2
+      (cons (car ls1) (fpappend (cdr ls1) ls2))))
+
+The above purely functional append procedure has limitations in Emacs
+Lisp, but this is how it should work.
+
+  (fpappend '() '())
+  ==> nil
+  (fpappend '(1 2) '())
+  ==> (1 2)
+  (fpappend '() '(1 2))
+  ==> (1 2)
+  (fpappend '(1 2) '(3 4))
+  ==> (1 2 3 4)
+  (fpappend (number-sequence 1 10) (number-sequence 11 20))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+  (fpappend (number-sequence 1 1000) (number-sequence 1001 2000))
+  ==> (error "Lisp nesting exceeds `max-lisp-eval-depth'")
+
+Here's a Lisp version of `nconc' that is destructive.
+
+  (defun nconc-lisp (ls1 ls2)
+    (let ((tail ls1))
+      (while (cdr tail)
+        (setq tail (cdr tail)))
+      (if (null tail)
+          (setq ls1 ls2)
+        (setcdr tail ls2)))
+    ls1)
+
+It works as an append function should.
+
+  (nconc-lisp '() '())
+  ==> nil
+  (nconc-lisp '(1 2) '())
+  ==> (1 2)
+  (nconc-lisp '() '(1 2))
+  ==> (1 2)
+  (nconc-lisp '(1 2) '(3 4))
+  ==> (1 2 3 4)
+  (nconc-lisp (number-sequence 1 10) (number-sequence 11 20))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+  (nconc-lisp (number-sequence 1 1000) (number-sequence 1001 2000))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 ...)
+
+And even misbehaves as the original `nconc' was shown to above -- by
+creating a circular list.
+
+  (let ((a '(1 2 3)))
+    (nconc-lisp a a))
+  ==> (1 2 3 1 2 . #2)
+
+And here's a "safe" version of `nconc' that appends but will avoid
+creating CircularLists.
+
+  (defun nconc-safe (ls1 ls2)
+    (let ((tail ls1))
+      (while (and (cdr tail) (not (eq tail ls2)))
+        (setq tail (cdr tail)))
+      (unless (eq tail ls2)
+        (if (null tail)
+            (setq ls1 ls2)
+          (setcdr tail ls2)))
+      ls1))
+  
+  (let ((a '(1 2 3))
+        (b '(4 5 6)))
+    (nconc-safe a b)
+    a)
+  ==> (1 2 3 4 5 6)
+  (let ((a '(1 2 3))
+        (b '(4 5 6)))
+    (nconc-safe a b)
+    (nconc-safe a b)
+    a)
+  ==> (1 2 3 4 5 6)
+
+Remember, this is what we got with the original, unsafe `nconc'.
+
+  (let ((a '(1 2 3))
+        (b '(4 5 6)))
+    (nconc a b)
+    (nconc a b)
+    a)
+  ==> (1 2 3 4 5 6 . #3)
+
+Here are versions of the three previous functions redefined to handle
+n-ary arguments rather than just two arguments, but were avoided
+previously to keep the examples above simpler.
+
+  (defun fpappend (&rest seqs)
+    (cond
+     ((null (cdr seqs)) (car seqs))
+     ((null (cdar seqs)) (cons (caar seqs)
+                               (apply 'fpappend (cdr seqs))))
+     (t (cons (caar seqs)
+              (apply 'fpappend (cons (cdar seqs) (cdr seqs)))))))
+  
+  (fpappend '())
+  ==> nil
+  (fpappend '(1 2))
+  ==> (1 2)
+  (fpappend '(1 2) '(3 4) '(5 6))
+  ==> (1 2 3 4 5 6)
+  (fpappend (number-sequence 1 10) (number-sequence 11 20))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+  (fpappend (number-sequence 1 1000) (number-sequence 1001 2000))
+  ==> (error "Lisp nesting exceeds `max-lisp-eval-depth'")
+  
+  (defun nconc-lisp (&rest seqs)
+    (let ((seq1 seqs))
+      (while (cdr seqs)
+        (let ((seq (car seqs)))
+          (while (cdr seq)
+            (setq seq (cdr seq)))
+          (setcdr seq (cadr seqs)))
+        (setq seqs (cdr seqs)))
+      (car seq1)))
+  
+  (nconc-lisp '())
+  ==> nil
+  (nconc-lisp '(1 2))
+  ==> (1 2)
+  (nconc-lisp '(1 2) '(3 4) '(5 6))
+  ==> (1 2 3 4 5 6)
+  (nconc-lisp (number-sequence 1 10) (number-sequence 11 20))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+  (nconc-lisp (number-sequence 1 1000) (number-sequence 1001 2000))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 ...)
+  
+  (defun nconc-safe (&rest seqs)
+    (let ((seq1 seqs))
+      (while (cdr seqs)
+        (let ((seq (car seqs)))
+          (while (and (cdr seq) (not (eq seq (cadr seqs))))
+            (setq seq (cdr seq)))
+          (unless (eq seq (cadr seqs))
+            (setcdr seq (cadr seqs))))
+        (setq seqs (cdr seqs)))
+      (car seq1)))
+  
+  (nconc-safe '())
+  ==> nil
+  (nconc-safe '(1 2))
+  ==> (1 2)
+  (nconc-safe '(1 2) '(3 4) '(5 6))
+  ==> (1 2 3 4 5 6)
+  (nconc-safe (number-sequence 1 10) (number-sequence 11 20))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+  (nconc-safe (number-sequence 1 1000) (number-sequence 1001 2000))
+  ==> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 ...)
+  (let ((a '(1 2 3)))
+    (nconc-safe a a)
+    a)
+  ==> (1 2 3)
+  
 == Etymological Note ==
 
 Common Lisp has a lot of destructive operations like this, and their names generally begin with "n", as in "nreverse", "nsubst", "nbutlast" and so on.  It's not mentioned very often, and in fact the Hyperspec doesn't even have a glossary entry for the term, but the "n" in this context stands for "non-consing" -- that is, these are functions that work by moving node pointers around in place, rather than consing (constructing) new nodes.

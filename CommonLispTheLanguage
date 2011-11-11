@@ -26,4 +26,4 @@ The default is to look for a local copy under <code>/usr/doc/html/cltl</code> bu
 For current Emacs (both GnuEmacs and [[XEmacs]]) the call <code>(make-hash-table 0)</code> needs to be changed to just <code>(make-hash-table)</code>.
 
 ----
-LispLispLisp
+CategoryProgramming

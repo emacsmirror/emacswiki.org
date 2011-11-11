@@ -13,7 +13,7 @@ Emacs or by adding it to your InitFile.
 
 To add a single directory to the front of your `load-path' (the final slash is needed for a directory):
 
-    (add-to-list 'load-path "~/.emacs.d/site-lisp/")
+    (add-to-list 'load-path "~/.emacs.d/user-lisp/")
 
 
 Interactively:
@@ -47,37 +47,37 @@ To add only some subdirectories, pass the list as a second argument.  For exampl
 
 You can of course bind `default-directory' around the call:
 
-   (let ((default-directory  "~/.emacs.d/site-lisp/"))
+   (let ((default-directory  "~/.emacs.d/user-lisp/"))
       (normal-top-level-add-subdirs-to-load-path 
         '("emms" "erc" "planner" "w3")))
 
 To have libraries in particular paths take precedence over other libraries elsewhere with the same name, put those
 paths at the beginning of `load-path'.
 
-    (let ((default-directory  "~/.emacs.d/site-lisp/"))
+    (let ((default-directory  "~/.emacs.d/user-lisp/"))
       (setq load-path
             (append
              (let ((load-path (copy-sequence load-path))) ;; Shadow
                (normal-top-level-add-subdirs-to-load-path))
              load-path)))
 
-Assuming that you install packages in ##~/.emacs.d/site-lisp/## and
+Assuming that you install packages in ##~/.emacs.d/user-lisp/## and
 that some of the installed packages are single libraries while others
 are placed inside their own sub-directories you need to combine the
 steps from above.
 
-    (let ((default-directory "~/.emacs.d/site-lisp/"))
+    (let ((default-directory "~/.emacs.d/user-lisp/"))
       (normal-top-level-add-to-load-path '("."))
       (normal-top-level-add-subdirs-to-load-path))
 
 Since various packages store information in ##~/.emacs.d/##, it is
 unwise to add all of its sub-directories to `load-path'.  Above we
-only added the sub-directory ##site-lisp## to avoid loading files that
+only added the sub-directory ##user-lisp## to avoid loading files that
 aren't libraries.
 
 To install all directories to the beginning of the `load-path' use:
 
-    (let ((default-directory "~/.emacs.d/site-lisp/"))
+    (let ((default-directory "~/.emacs.d/user-lisp/"))
       (setq load-path
             (append
              (let ((load-path (copy-sequence load-path))) ;; Shadow
@@ -90,7 +90,7 @@ If you are using Emacs 23 you can use `user-emacs-directory' to
 construct a path to one of its sub-directories.
 
     (concat user-emacs-directory
-            (convert-standard-filename "site-lisp/"))
+            (convert-standard-filename "user-lisp/"))
 
 Note how we use `convert-standard-file-name' to construct a path
 which is valid on all supported platforms.
