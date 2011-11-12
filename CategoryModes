@@ -50,6 +50,7 @@ Other pages (could this please be split in major and minor modes?):
 * EevMode -- lets you to interpret e-scripts(execute shell commands/follow EmacsLisp hyperlinks in a buffer)
 * EdiMode -- mode for editing EDI files
 * EmacsWikiMode
+* EpubMode -- mode for reading epub e-books in Emacs
 * FaqMode -- easy FAQ browsing
 * FetchmailMode -- mode for editing fetchmail configuration files
 * FortuneMode -- interface to write fortunes quickly

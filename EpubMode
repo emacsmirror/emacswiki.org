@@ -1,0 +1,15 @@
+ 
+Jayson Williams 
+2011-10-26
+Epub-mode for emacs
+
+<b>Epub-mode</b> for Emacs is a mode that allows reading epub documents in Emacs. Emacs can do everything you ever wanted to do with text. It seems to me like not being able to reading epub documents with Emacs is a gaping hole that epub-mode fills.
+
+Lisp:epubmode.el
+
+I am an amateur elisp coder with very little elisp experience. I am actively seeking help with this project.  If you have any elisp experience, and would like to see epubmode become a feature rich reality, consider lending a hand with development.  williams.jayson@gmail.com
+
+EPUB (short for electronic publication; alternatively capitalized as ePub, ePUB, EPub, or epub, with "EPUB" preferred by the vendor) is a free and open e-book standard by the International Digital Publishing Forum (IDPF). Files have the extension .epub. http://en.wikipedia.org/wiki/EPUB
+
+
+

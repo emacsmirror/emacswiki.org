@@ -294,5 +294,7 @@ There is a patch of php-mode to handle name spaces and # char comment : http://w
 [new]
 Can we get instructions for '''semantic-php-simplest-grammar.by'''? I've found [http://cedet.sourceforge.net/ lots of related info] but can't identify what is/isn't relevant! [http://cedet.sourceforge.net/addlang.shtml This] shows promise but only explains how to start a new language not how to use/activate them in ECB. Naturally there is a page already [http://www.emacswiki.org/emacs/HowToSetUpSemanticBovinatorForANewLanguage#toc3 here on the wiki] but this page is pretty much identical to CEDET's pages referring to reading "further" in the manual.
 
+[new]
+apparently, heredoc/newdoc syntax is not recognized and auto-indentation fails badly (tab/spaces before doc-string ending, which is not allowed)
 ----
 CategoryModes

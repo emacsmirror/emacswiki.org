@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Sep 25 10:42:18 2011 (-0700)
+;; Last-Updated: Fri Nov 11 17:14:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 903
+;;     Update #: 998
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,7 +63,8 @@
 ;;  User options defined here:
 ;;
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
-;;    `isearchp-regexp-quote-yank-flag', `isearchp-set-region-flag'.
+;;    `isearchp-mouse-2-flag', `isearchp-regexp-quote-yank-flag',
+;;    `isearchp-set-region-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -95,6 +96,7 @@
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
 ;;                          echo area, in face `isearch-fail'.
+;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
 ;;  `isearch-toggle-case-fold' - Show case sensitivity in mode-line.
 ;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'.
 ;;
@@ -137,6 +139,10 @@
 ;;
 ;;; Overview of Features ---------------------------------------------
 ;;
+;;  * Case-sensitivity is indicated in the mode line minor-mode
+;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
+;;    case-sensitive.
+;;
 ;;  * Ability to search ''within character-property zones''.  Example:
 ;;    search within zones having a `face' text property with a value
 ;;    of `font-lock-comment-face' or `font-lock-string-face'.  Search
@@ -165,7 +171,7 @@
 ;;    - Command `set-region-around-search-target' - manually set the
 ;;      region around the last search target.
 ;;
-;;  * option (`isearchp-regexp-quote-yank-flag') and command
+;;  * Option (`isearchp-regexp-quote-yank-flag') and command
 ;;    (`isearchp-toggle-regexp-quote-yank', bound to `C-`') to toggle
 ;;    quoting (escaping) of regexp special characters.  With escaping
 ;;    turned off, you can yank text such as `^\*.*' without it being
@@ -222,11 +228,11 @@
 ;;    `backward-char' is included in the list then `C-b' and `left'
 ;;    will just move the cursor backward over the search string so you
 ;;    can change, delete, or insert chars in the middle somewhere.
-;;    This makes the search string more minibuffer-like.\
+;;    This makes the search string more minibuffer-like.
 ;;
-;;  * Case-sensitivity is indicated in the mode line minor-mode
-;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
-;;    case-sensitive.
+;;  * You can, by default, select text with the mouse, then hit `C-s'
+;;    etc. to search for it.  This is controlled by user option
+;;    `isearchp-mouse-2-flag'.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -234,6 +240,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/11/11 dadams
+;;     Added defgroup for isearch-plus.  Added: isearchp-mouse-2-flag.
+;;     Added redefinition of isearch-mouse-2 that respects isearchp-mouse-2-flag.
+;;       And it works for Windows too and all Emacs versions.
+;;     Bind mouse-2 to isearch-mouse-2 and down-mouse-2 to ignore.
+;;     isearchp-highlight-lighter: Delete (isearch-mode isearch-mode) also from alist.
+;;     isearch-yank-string: Updated wrt Emacs 24 code.
 ;; 2011/09/25 dadams
 ;;     Added: isearchp-put-prop-on-region.
 ;;     isearchp-read-face-names: Added optional args empty-means-none-p, only-one-p.
@@ -365,6 +378,18 @@
 ;;(@* "Faces and Variables")
 
 ;;; Faces and Variables ----------------------------------------------
+(defgroup isearch-plus nil
+  "Isearch enhancements."
+  :prefix "isearchp-" :group 'isearch
+  :link `(url-link :tag "Send Bug Report"
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+Isearch+ bug: \
+&body=Describe bug here, starting with `emacs -Q'.  \
+Don't forget to mention your Emacs and library versions."))
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/isearch+.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/IsearchPlus")
+  :link '(emacs-commentary-link :tag "Commentary" "isearch+"))
+
 (when (> emacs-major-version 21)        ; Emacs 22+
   (defface isearch-fail
       '((((class color) (min-colors 88) (background dark))
@@ -375,7 +400,7 @@
         (((type tty) (class mono)) :inverse-video t)
         (t :background "gray"))
     "*Face for highlighting failed part in Isearch echo-area message."
-    :group 'isearch))
+    :group 'isearch-plus))
 
 (when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
 
@@ -435,14 +460,14 @@ and act on the buffer text."
                     ;; Use `symbolp' instead of `functionp' or `fboundp', in
                     ;; case the library defining the function is not loaded.
                     :match-alternatives (symbolp) :value ignore))
-    :group 'isearch))
+    :group 'isearch-plus))
 
 ;;;###autoload
 (defcustom isearchp-regexp-quote-yank-flag t
   "*Non-nil means escape special chars in text yanked for a regexp isearch.
 You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
 `C-`' during isearch."
-  :type 'boolean :group 'isearch)
+  :type 'boolean :group 'isearch-plus)
 
 ;;;###autoload
 (defcustom isearchp-set-region-flag nil
@@ -450,7 +475,19 @@ You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
 This is used only for Transient Mark mode.
 You can toggle this with `isearchp-toggle-set-region', bound to
 `C-SPC' during isearch."
-  :type 'boolean :group 'isearch)
+  :type 'boolean :group 'isearch-plus)
+
+;;;###autoload
+(defcustom isearchp-mouse-2-flag t
+  "*Non-nil means clicking `mouse-2' during Isearch yanks the selection.
+In that case, you can select text with the mouse, then hit `C-s' to
+search for it.
+
+If the value is nil, yank only if the `mouse-2' click is in the echo
+area.  If not in the echo area, invoke whatever `mouse-2' is bound to
+outside of Isearch."
+  :type 'boolean :group 'isearch-plus)
+
 
 (defvar isearchp-last-non-nil-invisible (or search-invisible 'open)
   "Last non-nil value of `search-invisible'.")
@@ -461,6 +498,11 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 ;;(@* "Keys and Hooks")
 
 ;;; Keys and Hooks ---------------------------------------------------
+
+
+(define-key isearch-mode-map [mouse-2]            'isearch-mouse-2)
+;; Must not be just `nil'.  Need to override a global binding such as `mouse-flash-position-or-M-x'.
+(define-key isearch-mode-map [down-mouse-2]       'ignore)
 
 (define-key isearch-mode-map [(control ?+)]    'isearchp-toggle-invisible)
 (define-key isearch-mode-map [(control ?`)]    'isearchp-toggle-regexp-quote-yank)
@@ -499,8 +541,10 @@ This is used only for Transient Mark mode."
   (let ((case-fold-search  isearch-case-fold-search))
     (when (and (eq case-fold-search t) search-upper-case)
       (setq case-fold-search  (isearch-no-upper-case-p isearch-string isearch-regexp)))
-    (setq minor-mode-alist  (delete '(isearch-mode " ISEARCH") minor-mode-alist)
-          minor-mode-alist  (delete '(isearch-mode " Isearch") minor-mode-alist))
+    ;; Vanilla Isearch uses the symbol `isearch-mode', hence the first of these.
+    (setq minor-mode-alist  (delete '(isearch-mode isearch-mode) minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " ISEARCH")   minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " Isearch")   minor-mode-alist))
     (add-to-list 'minor-mode-alist `(isearch-mode ,(if case-fold-search " ISEARCH" " Isearch"))))
   (condition-case nil
       (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
@@ -825,19 +869,50 @@ not necessarily fontify the whole buffer."
 (defun isearch-yank-string (string)
   "Yank STRING into Isearch search string."
   ;; Downcase the string if not supposed to case-fold yanked strings.
-  (if (and isearch-case-fold-search
-	   (eq 'not-yanks search-upper-case))
-      (setq string (downcase string)))
-  (when (and isearch-regexp isearchp-regexp-quote-yank-flag)
-    (setq string (regexp-quote string)))
-  (setq isearch-string (concat isearch-string string)
-	isearch-message
-	(concat isearch-message
-		(mapconcat 'isearch-text-char-description
-			   string ""))
-	;; Don't move cursor in reverse search.
-	isearch-yank-flag t)
-  (isearch-search-and-update))
+  (if (and isearch-case-fold-search  (eq 'not-yanks search-upper-case))
+      (setq string  (downcase string)))
+  (when (and isearch-regexp isearchp-regexp-quote-yank-flag)  (setq string  (regexp-quote string)))
+  (setq isearch-yank-flag  t)           ; Don't move cursor in reverse search.
+  (if (fboundp 'isearch-process-search-string) ; Emacs 24
+      (isearch-process-search-string string (mapconcat 'isearch-text-char-description string ""))
+    (setq isearch-string     (concat isearch-string string)
+          isearch-message    (concat isearch-message
+                                     (mapconcat 'isearch-text-char-description string "")))
+    (isearch-search-and-update)))
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; 1. Respect `isearchp-mouse-2-flag'.
+;;
+;; 2. Make it work for Windows etc. also.  Otherwise, `x-get-selection' returns nil - no good.
+;;
+(defun isearch-mouse-2 (click)          ; Bound to `mouse-2' in `isearch-mode-map'.
+  "Handle `mouse-2' in Isearch mode.
+If `isearchp-mouse-2-flag' is non-nil, yank the X selection.
+If `isearchp-mouse-2-flag' is nil, yank it only if the `mouse-2' click
+is in the echo area.  Otherwise, invoke whatever `mouse-2' is bound to
+outside of Isearch."
+  (interactive "e")
+  (if (not isearchp-mouse-2-flag)
+      (let ((win                            (posn-window (event-start click)))
+            (overriding-terminal-local-map  nil)
+            (binding                        (key-binding (this-command-keys-vector) t)))
+        (if (and (window-minibuffer-p win) (not (minibuffer-window-active-p win))) ; In echo area
+            ;; Not sure this is good enough, but this is what vanilla Emacs does here.
+            ;; Maybe need to set the X selection here too, just like below.
+            (isearch-yank-x-selection)
+          (when (functionp binding) (call-interactively binding))))
+    (when (and transient-mark-mode (/= (region-beginning) (region-end)))
+      ;; Need to do this for Windows etc.  Depending on your mouse/selection settings,
+      ;; `x-get-selection' (called by `isearch-yank-x-selection' returns nil - there
+      ;; is no string to yank.  So we call `x-set-selection' to set the PRIMARY selection.
+      (x-set-selection 'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end)))
+      (deactivate-mark)
+      (isearch-yank-x-selection))))
+
+
+
 
 ;; $$$$$$
 ;; (when (> emacs-major-version 21)        ; Emacs 22+

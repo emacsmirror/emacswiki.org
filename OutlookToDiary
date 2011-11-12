@@ -73,4 +73,8 @@ I wrote something similar: See *u-appt.el* at http://ulf.epplejasper.de/.
 This package should allow you to extract invitations that have been sent from Outlook (german and english) or Notes (german only). It shouldn't be too difficult to add other invitation-patterns and languages -- just send me samples.
 
 ----
+
+Emacs 22.1 introduced diary-from-outlook command which seems to be very similar to the code above.
+
+----
 CategoryCalendar

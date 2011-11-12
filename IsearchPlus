@@ -2,6 +2,8 @@ This page is about '''[::Isearch+]''', that is,  library <tt>[[isearch+.el]]</tt
 
 Features:
 
+* Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
+
 [:isearchp-char-prop-forward]
 [:isearchp-char-prop-forward-regexp]
 * Ability to search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-char-prop-forward''''.
@@ -63,7 +65,11 @@ removes all faces from the region.
 [:isearchp-initiate-edit-commands]
 * A [[user option]], '''`isearchp-initiate-edit-commands'''', that specifies [[command]]s whose [[key]]s will not exit Isearch but will instead initiate editing of the search string.  For example, if `backward-char' is included in the list then `C-b' and `left' will just move the [[cursor]] backward over the search string so you can change, delete, or insert chars in the middle somewhere.  This makes the search string more [[minibuffer]]-like.
 
-* Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
+
+[:isearchp-mouse-2-flag]
+* You can, by default, select text with the mouse, then hit `C-s'
+etc. to search for it.  This is controlled by [[user option]] '''`isearchp-mouse-2-flag''''.
+
 
 '''See Also:'''
 

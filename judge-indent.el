@@ -4,7 +4,7 @@
 
 ;; Author:   yascentur <screenname at gmail dot com>
 ;; Keywords: indent tab
-;; Version:  1.1.0
+;; Version:  1.1.1b
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,45 +21,46 @@
 
 ;;; Commentary:
 
-;; The `judge-indent-mode' judges, soon after finding file,
-;; indent and tab widths from following 8 (strictly 7) patterns.
-;; Then, you can add your code without breaking existing indent style.
+;; The `judge-indent-mode' distinguish, soon after finding file,
+;; indent and tab widths into following 9 (strictly 7) patterns.
+;; You can easily write your own code without breaking existing indent style.
 ;;
-;;   \  indent
-;;    \  2 4 8
-;; tab \------
-;;   4 | o c -
-;;   8 | o o c <- It can not distinguish when indent width equals to tab width.
-;; nil | o o o
+;;       \  indent
+;;        \  2 4 8
+;;     tab \------
+;;       2 | U - -
+;;       4 | X U -
+;;       8 | X X U <- It cannot distinguish between `U's.
+;;     nil | X X X
 
 ;;; Usage:
 
-;; Add following 3 lines into your emacs config file
-;;   (require 'judge-indent)
-;;   (global-judge-indent-mode t)
-;;   (setq judge-indent-major-modes '(c-mode python-mode sh-mode))
+;; Add following 3 lines into your emacs config file.
+;;     (require 'judge-indent)
+;;     (global-judge-indent-mode t)
+;;     (setq judge-indent-major-modes '(c-mode python-mode sh-mode))
 
 ;;; Customization:
 
-;; Set default indent width (2, 4 or 8)
-;;   (setq judge-indent-default-indent-width 4)
-;; Default: default value of `c-basic-offset' or 4
+;; Set default indent width (2, 4 or 8).
+;; Default: default value of `c-basic-offset' or 4.
+;;     (setq judge-indent-default-indent-width 2)
 ;;
-;; Set default tab width (4 or 8)
-;;   (setq judge-indent-default-tab-width 8)
-;; Default: default value of `tab-width' or 8
+;; Set default tab width (2, 4 or 8).
+;; Default: default value of `tab-width' or 8.
+;;     (setq judge-indent-default-tab-width 4)
 ;;
-;; Set flag of preferring tab or not when indent is not so deep
-;;   (setq judge-indent-prefer-tabs-mode nil)
-;; Default: default value of `indent-tabs-mode' or nil
+;; Set flag of preferring tab or not when indent is not so deep.
+;; Default: default value of `indent-tabs-mode' or nil.
+;;     (setq judge-indent-prefer-tabs-mode t)
 ;;
-;; Set relative tolerance [%] for judging indent and tab widths
-;;   (setq judge-indent-relative-tolerance 3)
-;; Default: 5 %
+;; Set relative tolerance [%] for judging indent and tab widths.
+;; Default: 5 %.
+;;     (setq judge-indent-relative-tolerance 3)
 ;;
-;; Set search limit for large size files
-;;   (setq judge-indent-search-limit 60000)
-;; Default: 30000 chars (equal to ca. 1000 lines)
+;; Set search limit for large size files.
+;; Default: 30000 chars (equal to ca. 1000 lines).
+;;     (setq judge-indent-search-limit 60000)
 
 ;;; Functions:
 
@@ -68,12 +69,12 @@
 ;; * judge-indent-region
 ;; * judge-indent-set-indent-tab-widths
 ;; * judge-indent-set-indent-width{2, 4, 8}-disable-tab
-;; * judge-indent-set-indent-width{2, 4, 8}-tab-width{2, 8}
+;; * judge-indent-set-indent-width{2, 4, 8}-tab-width{2, 4, 8}
 ;; * judge-indent-set-indent-width
 ;; * judge-indent-set-indent-width{2, 4, 8}
 ;; * judge-indent-set-tab-width
 ;; * judge-indent-disable-tab
-;; * judge-indent-set-tab-width{4, 8}
+;; * judge-indent-set-tab-width{2, 4, 8}
 ;; * judge-indent-message-indent-counts-buffer
 ;; * judge-indent-message-indent-counts-region
 
@@ -158,14 +159,28 @@
     (setq standard-indent                   indent))
   (when (boundp 'c-indent-level)
     (setq c-indent-level                    indent))
-  (when (boundp 'python-indent)
-    (setq python-indent                     indent))
   (when (boundp 'perl-indent-level)
     (setq perl-indent-level                 indent))
   (when (boundp 'cperl-indent-level)
     (setq cperl-indent-level                indent))
+  (when (boundp 'python-indent)
+    (setq python-indent                     indent))
   (when (boundp 'ruby-indent-level)
     (setq ruby-indent-level                 indent))
+  (when (boundp 'sh-basic-offset)
+    (setq sh-basic-offset                   indent))
+  (when (boundp 'awk-indent-level)
+    (setq awk-indent-level                  indent))
+  (when (boundp 'lua-indent-level)
+    (setq lua-indent-level                  indent))
+  (when (boundp 'pascal-indent-level)
+    (setq pascal-indent-level               indent))
+  (when (boundp 'delphi-indent-level)
+    (setq delphi-indent-level               indent))
+  (when (boundp 'erlang-indent-level)
+    (setq erlang-indent-level               indent))
+  (when (boundp 'smalltalk-indent-amount)
+    (setq smalltalk-indent-amount           indent))
   (when (boundp 'html-basic-offset)
     (setq html-basic-offset                 indent))
   (when (boundp 'sgml-basic-offset)
@@ -185,9 +200,7 @@
   (when (boundp 'js-indent-level)
     (setq js-indent-level                   indent))
   (when (boundp 'js2-basic-offset)
-    (setq js2-basic-offset                  indent))
-  (when (boundp 'sh-basic-offset)
-    (setq sh-basic-offset                   indent)))
+    (setq js2-basic-offset                  indent)))
 
 (defun judge-indent-set-indent-width (indent)
   "Set indent width"
@@ -239,6 +252,11 @@
   (interactive)
   (judge-indent-set-tab-width 0))
 
+(defun judge-indent-set-tab-width2 ()
+  "Set tab width to 2"
+  (interactive)
+  (judge-indent-set-tab-width 2))
+
 (defun judge-indent-set-tab-width4 ()
   "Set tab width to 4"
   (interactive)
@@ -276,6 +294,11 @@
   "Set indent width to 8 and disable tab"
   (interactive)
   (judge-indent-set-indent-tab-widths 8 0))
+
+(defun judge-indent-set-indent-width2-tab-width2 ()
+  "Set indent width to 2 and tab width to 2"
+  (interactive)
+  (judge-indent-set-indent-tab-widths 2 2))
 
 (defun judge-indent-set-indent-width2-tab-width4 ()
   "Set indent width to 2 and tab width to 4"
@@ -369,14 +392,18 @@
                                   judge-indent-search-limit t)
                   (<= (point) pos2))
         (unless (or (char-equal (char-after) ?\ )
-                    (char-equal (char-after) ?\t))
+                    (char-equal (char-after) ?\t)
+                    (char-equal (char-after) ?\n)
+                    (char-equal (char-after) ?\r))
           (incf count)))
       (goto-char pos1)
       (while (and (search-forward (concat "\r" string)
                                   judge-indent-search-limit t)
                   (<= (point) pos2))
         (unless (or (char-equal (char-after) ?\ )
-                    (char-equal (char-after) ?\t))
+                    (char-equal (char-after) ?\t)
+                    (char-equal (char-after) ?\n)
+                    (char-equal (char-after) ?\r))
           (incf count))))
     count))
 
