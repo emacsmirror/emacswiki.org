@@ -76,22 +76,22 @@ I, personally, wanted a one-space separation between the line number display and
 
 Putting the following in your .emacs yields almost the same result without modification of linum.el:
 
-    (setq linum-format "%d ")
+(setq linum-format "%d ")
 
 Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
 
-    (setq linum-format
-          (lambda (line)
-            (propertize (format
-                         (let ((w (length (number-to-string
-                                           (count-lines (point-min) (point-max))))))
-                           (concat "%" (number-to-string w) "d "))
-                         line)
-                        'face 'linum)))
+(setq linum-format
+(lambda (line)
+(propertize (format
+(let ((w (length (number-to-string
+(count-lines (point-min) (point-max))))))
+(concat "%" (number-to-string w) "d "))
+line)
+'face 'linum)))
 
 You can use `linum-before-numbering-hook' to count and store the number of lines only once per update. Thus you can avoid the somewhat expensive `count-lines' call for each updated line. And a more simplistic constant-width version of the above could look like:
 
-    (setq linum-format "%6d ")
+(setq linum-format "%6d ")
 
 == Linum: Numbering the last line of the buffer ==
 [new:AdamKerz:2009-05-08 01:35 UTC]
@@ -140,10 +140,10 @@ If this is seen as useful, I'd like for it to be incorporated into the original 
 [new:FlorianAdamsky:2010-08-15 11:41 UTC]
 I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mode or compilation-mode. Therefore I tried to hook on these modes, but this doesn't work for me (maybe a bug?) [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/addd8d997ff49c2e/d6b74c3ab8af2a8a]. So I tried to overwrite the function (linum-on), which works fine. Here is my solution:
 
-    (setq linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode))
-    (defun linum-on ()
-      (unless (or (minibufferp) (member major-mode linum-disabled-modes-list))
-        (linum-mode 1)))
+(setq linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode))
+(defun linum-on ()
+(unless (or (minibufferp) (member major-mode linum-disabled-modes-list))
+(linum-mode 1)))
 
 -- FlorianAdamsky
 
@@ -152,6 +152,51 @@ I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mo
 I have generalized this to a lisp add-on file Lisp:linum-off.el 
 
 -- MatthewFidler
+
+== Linum: Select lines my clicking ==
+[new:sabof:2011-11-12 12:40 UTC]
+Select lines by click-dragging on the margin.
+Tested with GNU Emacs 23.3
+{{{
+(defvar *linum-mdown-line* nil)
+
+(defun line-at-click ()
+  (save-excursion
+	(let ((click-y (cdr (cdr (mouse-position))))
+		  (line-move-visual-store line-move-visual))
+	  (setq line-move-visual t)
+	  (goto-char (window-start))
+	  (next-line (1- click-y))
+	  (setq line-move-visual line-move-visual-store)
+	  ;; If you are using tabbar substitute the next line with
+	  ;; (line-number-at-pos))))
+	  (1+ (line-number-at-pos)))))
+
+(defun md-select-linum ()
+  (interactive)
+  (goto-line (line-at-click))
+  (set-mark (point))
+  (setq *linum-mdown-line*
+		(line-number-at-pos)))
+
+(defun mu-select-linum ()
+  (interactive)
+  (when *linum-mdown-line*
+	(let (mu-line)
+	  ;; (goto-line (line-at-click))
+	  (setq mu-line (line-at-click))
+	  (goto-line (max *linum-mdown-line* mu-line))
+	  (set-mark (line-end-position))
+	  (goto-line (min *linum-mdown-line* mu-line))
+	  (setq *linum-mdown*
+			nil))))
+
+(global-set-key (kbd "<left-margin> <down-mouse-1>") 'md-select-linum)
+(global-set-key (kbd "<left-margin> <mouse-1>") 'mu-select-linum)
+(global-set-key (kbd "<left-margin> <drag-mouse-1>") 'mu-select-linum)
+}}}
+
+-- sabof
 
 == Setnu ==
 
@@ -169,11 +214,11 @@ take a look at setnu.el by KyleJones.
 [new]
 I couldn't find a function to toggle setnu mode on/off, so I wrote one:
 
-    (defun toggle-setnu-mode ()
-      (interactive)
-      (if setnu-mode
-        (setnu-mode -1)
-        (setnu-mode 1)))
+(defun toggle-setnu-mode ()
+(interactive)
+(if setnu-mode
+(setnu-mode -1)
+(setnu-mode 1)))
 
 I have this bound to C-n.
 
@@ -205,7 +250,7 @@ http://www.xs4all.nl/~suelette/underground/underground.txt (it's legally availab
 
 : As for my Emacs configuration, I will try to describe it to my best of knowledge:
 My computer have a pentium 3 1 giga hertz processor and 256 MB Ram. It runs debian sarge and linux 2.6 kernel. Emacs version is  "GNU Emacs 21.4.1 (i386-pc-linux-gnu, X toolkit, Xaw3d scroll bars)
- of 2005-03-17 on trouble, modified by Debian"
+of 2005-03-17 on trouble, modified by Debian"
 
 : I downloaded both setnu and setnu+ and put them in a folder on my loadpath. And added (require setnu+) to my InitFile. I am not sure what an extension really means, and I dont fully understand what require really do!
 
@@ -245,7 +290,7 @@ My computer have a pentium 3 1 giga hertz processor and 256 MB Ram. It runs debi
 [new:StefanKamphausen:2006-09-12 19:31 UTC] 
 : OK, using the stupid approach (emacs -q, manually loading line after line from my init files, each time performing a test for the problem) I found that the following in my custom.el introduces the problems:
 
-     (custom-set-variables '(global-font-lock-mode t nil (font-lock)))
+(custom-set-variables '(global-font-lock-mode t nil (font-lock)))
 
 : as soon as I load a file containing the above code setnu stops working in Gnu Emacs.  Any pointers?  How do you turn on font lock? -- StefanKamphausen
 
@@ -255,18 +300,18 @@ My computer have a pentium 3 1 giga hertz processor and 256 MB Ram. It runs debi
 [new:StefanKamphausen:2006-09-12 20:01 UTC]
 : OK, even simpler...
 
-     shell> emacs -q
-     ;; in *scratch* type sth with at least two lines:
-     (let ((x 0))
-       (print x))
-     ;; go to the beginning
-     ;; M-x mark-sexp, C-w, C-y ... everything is fine.  This is our test
-     ;; Now.. M-x load-library setnu  M-x setnu-mode
-     ;; perform the test... OK
-     ;; type
-     (global-font-lock-mode 1)
-     ;; C-x C-e
-     ;; perform the test.... OOOps (at least for me).  
+shell> emacs -q
+;; in *scratch* type sth with at least two lines:
+(let ((x 0))
+(print x))
+;; go to the beginning
+;; M-x mark-sexp, C-w, C-y ... everything is fine.  This is our test
+;; Now.. M-x load-library setnu  M-x setnu-mode
+;; perform the test... OK
+;; type
+(global-font-lock-mode 1)
+;; C-x C-e
+;; perform the test.... OOOps (at least for me).  
 
 : Result is shown [http://www.skamphausen.de/downloads/setnu-err.png here]
 
@@ -283,7 +328,7 @@ I tried using setnu+ with Aquamacs and when I add newlines to the current buffer
 This is fixed if you customize the variable setnu+-fit-frame-flag to nil
 
 (custom-set-variables
- '(setnu+-fit-frame-flag nil))
+'(setnu+-fit-frame-flag nil))
 
 this will leave the frame alone, and everything is fine.
 

@@ -46,5 +46,53 @@ recode it as UTF-8.  The important part is that I need to convert the
 old text into "unibyte" representation.  Without it, I will get the
 bytes used for the emacs-mule coding-system encoded as UTF-8.  
 
+== Forcing windows-1252 coding ==
+Symptom: some files that used to be opened with the right coding under Emacs 21 are now opened with raw coding under Emacs 23.
+This is especially true with some files that had french accents that are now shown with codes such as \340 for "acute a". 
+
+Root cause: unknown.
+
+proposed "Solutions" seen for this problem: this does not work in my case:
+ (prefer-coding-system 'windows-1252)
+
+Since Emacs is not able to guess the coding for these types of files, here are 3 ways to address the problem.
+
+* 1) On a file by file basis:
+reopen the file by forcing the coding with this utility function:
+
+    (defun has-revisit-file-with-coding-windows-1252 ()
+    "Re-opens currently visited file with the windows-1252 coding. (By: hassansrc at gmail dot com)
+    Example: 
+    the currently opened file has french accents showing as codes such as:
+        french: t\342ches et activit\340s   (\340 is shown as a unique char) 
+    then execute this function: has-revisit-file-with-coding-windows-1252
+      consequence: the file is reopened with the windows-1252 coding with no other action on the part of the user. 
+                   Hopefully, the accents are now shown properly.
+                   Otherwise, find another coding...
+    
+    "
+        (interactive)
+        (let ((coding-system-for-read 'windows-1252)
+    	  (coding-system-for-write 'windows-1252)
+    	  (coding-system-require-warning t)
+    	  (current-prefix-arg nil))
+          (message "has: Reopened file with coding set to windows-1252")
+          (find-alternate-file buffer-file-name)
+          )
+    )
+
+Other ways to deal with accents that appear as codes (ex:\340 for acute e) when visiting files:
+* 2)Intrusive way: put this at the beginning of the specific file that shows the problem :
+
+    ;;; Emacs 23 is unable to open this file properly:  -*- coding: windows-1252 -*-
+
+* 3) General solution: apply this recipe to all *.txt files (put it in your .emacs file):
+
+    (modify-coding-system-alist 'file "\\.txt\\'" 'windows-1252)
+
+These 3 solutions worked well under Emacs23 on Windows 7.
+
+HassanSrc
+
 ----
 CategoryInternationalization

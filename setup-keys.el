@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Jul 25 13:28:32 2011 (-0700)
+;; Last-Updated: Sat Nov 12 08:27:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1071
+;;     Update #: 1082
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `frame-cmds', `frame-fns', `help+20', `hexrgb', `highlight',
 ;;   `info', `info+', `isearch+', `iso-transl', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `pp', `pp+', `replace+', `ring', `ring+',
+;;   `mwheel', `naked', `pp', `pp+', `replace+', `ring', `ring+',
 ;;   `second-sel', `simple+', `strings', `thingatpt', `thingatpt+',
 ;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
 ;;   `widget'.
@@ -67,6 +67,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/12 dadams
+;;     Vars sub-*: Removed (when (fboundp '*)...) wrapper - define always.  But mention in doc
+;;       string that has no effect unless library loaded.
 ;; 2011/07/25 dadams
 ;;     Use eval-after-load where appropriate (e.g. instead of featurep/fboundp/boundp).
 ;; 2010/04/22 dadams
@@ -734,31 +737,34 @@
   "*Non-nil means `substitute-key-definition' of `*-of-line' commands
 by `*-of-line+', everywhere.
 This applies to `move-to-(beginning|end)-of-line', if defined, or to
-`(beginning|end)-of-line', otherwise.")
+`(beginning|end)-of-line', otherwise.
+This has no effect unless you use library `misc-cmds.el'.")
 
 (defvar sub-recenter-top-bottom t
   "*Non-nil means `substitute-key-definition' of `recenter' command
-by `sub-recenter-top-bottom', everywhere.")
+by `sub-recenter-top-bottom', everywhere.
+This has no effect unless you use library `misc-cmds.el'.")
 
-(when (fboundp 'kill-buffer-and-its-windows) ; Defined in `misc-cmds.el'.
-  (defvar sub-kill-buffer-and-its-windows t
-    "*Non-nil means `substitute-key-definition' of `kill-buffer' command
-by `kill-buffer-and-its-windows', everywhere."))
+(defvar sub-kill-buffer-and-its-windows t
+  "*Non-nil means `substitute-key-definition' of `kill-buffer' command
+by `kill-buffer-and-its-windows', everywhere.
+This has no effect unless you use library `misc-cmds.el'.")
 
 (defvar sub-pp-evals t
   "*Non-nil means `substitute-key-definition' of `eval-*' commands
 by `pp-eval-*', everywhere.  Thus, `pp-eval-expression' replaces
-`eval-expression' and `pp-eval-last-sexp' replaces `eval-last-sexp'")
+`eval-expression' and `pp-eval-last-sexp' replaces `eval-last-sexp'.
+This has no effect unless you use library `pp+.el'.")
 
-(when (fboundp 'query-replace-w-options) ; Defined in `replace+.el'.
-  (defvar sub-query-replace-w-options t
-    "*Non-nil means `substitute-key-definition' of `query-replace' command
-by `query-replace-w-options', everywhere."))
+(defvar sub-query-replace-w-options t
+  "*Non-nil means `substitute-key-definition' of `query-replace' command
+by `query-replace-w-options', everywhere.
+This has no effect unless you use library `replace+.el'.")
 
-(when (fboundp 'delete-windows-for) ; Defined in `frame-cmds.el'.
-  (defvar sub-delete-windows-for t
-    "*Non-nil means `substitute-key-definition' of `delete-window' command
-by `delete-windows-for', everywhere."))
+(defvar sub-delete-windows-for t
+  "*Non-nil means `substitute-key-definition' of `delete-window' command
+by `delete-windows-for', everywhere.
+This has no effect unless you use library `frame-cmds.el'.")
 
 
 ;;; Do these all *after* load `menu-bar+.el', since that sets original bindings.

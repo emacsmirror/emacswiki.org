@@ -88,6 +88,8 @@ One of the major influences in 2006/2007 on task organization has been the book 
 
 * Tutorials on specific features of org-mode are available on [http://orgmode.org/worg/|Worg] (a wiki generated from collaboratively edited org files)
 
+* How to use org-mode by someone who uses it well: [http://doc.norang.ca/org-mode.html the document that sealed the deal for me ] by BerntHansen 
+
 == Specific Tasks ==
 
 Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
