@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  7 15:09:31 2011 (-0800)
+;; Last-Updated: Sun Nov 13 18:43:20 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7589
+;;     Update #: 7591
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/11/13 dadams
+;;     icicle-locate-file-1: Corrected placement of kill-buffer in unwind-protect.
 ;; 2011/11/07 dadams
 ;;     icicle-locate-file-1:
 ;;       Use with-current-buffer with locate-buffer-name, to hide switch-to-buffer in locate.

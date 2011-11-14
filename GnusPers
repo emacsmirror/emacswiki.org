@@ -49,4 +49,10 @@ Sometimes the group name matching rules I have in `gnus-personality-electric-hea
 -- Øyvind Stegard
 
 ----
+Maybe the patches in Debian's bugtracker may be useful too, for instance : http://bugs.debian.org/cgi-bin/bugreport.cgi?msg=5;filename=patch;att=1;bug=448441 
+
+Hope this helps.
+
+-- Olivier Berger
+----
 CategoryGnus

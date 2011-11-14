@@ -67,6 +67,43 @@ Better yet, use this to separate threads (puts space before and after the horizo
 <pre>
 
 </pre>
+
+----
+<pre>
+
+</pre>
+
+Hi Draw,
+I have a minor issue or feature request. Whenever I try to connect to a remote server via tramp and C-x C-f, icicles connects to the server to complete filenames etc.  Is there any method to turn icicles off when I am entering a tramp path?
+Thank you  -- 85.181.227.84
+
+
+
+
+
+[new:DrewAdams:2011-11-13 19:04 UTC]
+Unfortunately, they change Tramp about every two minutes. ;-)  What is fixed in one version is broken in the next, and vice versa.
+
+In order to try to do anything about your problem, you will need to (a) state your Emacs version, (b) likewise your Tramp version (if not the one that came with your Emacs version), and (c) provide a complete, step-by-step recipe, starting from ##emacs -Q##.
+
+See also command `icicle-toggle-remote-file-testing' (`##C-^##' in minibuffer).  But even if you end up using that to work around a problem, please report to me as much as you can about the Tramp problem you encounter.  Please report by email, as it is much easier to correspond that way: `M-x icicle-send-bug-report'.  Thx -- DrewAdams
+
+
+[new]
+Nvm., I had set `icicle-highlight-input-completion-failure' to `always'.
+Thank you for your help -- 85.181.227.84
+
+[new:DrewAdams:2011-11-13 21:36 UTC]
+Dunno "nvm", but I guess you're saying that you no longer have a problem, after changing `icicle-highlight-input-completion-failure'  to something else.  If so, let me know if you think it would help to modify the doc somewhere.  I've moved this to IciclesIssuesClosed, assuming I understood correctly that it's OK. -- DrewAdams
+
+
+
+
+
+
+<pre>
+
+</pre>
 ----
 <pre>
 

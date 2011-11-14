@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Nov 11 17:14:33 2011 (-0800)
+;; Last-Updated: Sun Nov 13 12:13:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 998
+;;     Update #: 1031
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -79,8 +79,8 @@
 ;;    `isearchp-highlight-lighter', `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
 ;;    `isearchp-remove-duplicates', `isearchp-set-region',
-;;    `isearchp-some', `isearchp-update-edit-init-commands' (Emacs
-;;    22+).
+;;    `isearchp-set-sel-and-yank', `isearchp-some',
+;;    `isearchp-update-edit-init-commands' (Emacs 22+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -240,6 +240,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/11/13 dadams
+;;     Added: isearchp-set-sel-and-yank.
+;;     isearch-mouse-2: Use isearchp-set-sel-and-yank, even for nil case.
+;;                      Don't require transient-mark-mode.
 ;; 2011/11/11 dadams
 ;;     Added defgroup for isearch-plus.  Added: isearchp-mouse-2-flag.
 ;;     Added redefinition of isearch-mouse-2 that respects isearchp-mouse-2-flag.
@@ -639,8 +643,7 @@ for case-sensitive."
   (describe-function 'isearch-forward)
   (isearch-done)
   (isearch-clean-overlays)
-  (save-excursion
-    (set-buffer "*Help*")
+  (with-current-buffer "*Help*"
     (goto-char (point-max))
     (let ((buffer-read-only nil))
       (insert (substitute-command-keys "
@@ -885,7 +888,7 @@ not necessarily fontify the whole buffer."
 ;;
 ;; 1. Respect `isearchp-mouse-2-flag'.
 ;;
-;; 2. Make it work for Windows etc. also.  Otherwise, `x-get-selection' returns nil - no good.
+;; 2. Works for older Emacs versions too: Set X selection, so `x-get-selection' returns non-nil.
 ;;
 (defun isearch-mouse-2 (click)          ; Bound to `mouse-2' in `isearch-mode-map'.
   "Handle `mouse-2' in Isearch mode.
@@ -894,23 +897,29 @@ If `isearchp-mouse-2-flag' is nil, yank it only if the `mouse-2' click
 is in the echo area.  Otherwise, invoke whatever `mouse-2' is bound to
 outside of Isearch."
   (interactive "e")
+  ;; For both the nil and non-nil `isearchp-mouse-2-flag' cases we need to explicitly set the X
+  ;; selection, otherwise things won't work for older Emacs versions and depending on your
+  ;; platform.  If not for that need, in Emacs 24+ we could simply use this for the non-nil case,
+  ;; and make no change at all for the nil case:
+  ;;
+  ;; (let ((select-active-regions  t))
+  ;;   (deactivate-mark)
+  ;;   (isearch-yank-x-selection))
+  ;;
   (if (not isearchp-mouse-2-flag)
       (let ((win                            (posn-window (event-start click)))
             (overriding-terminal-local-map  nil)
             (binding                        (key-binding (this-command-keys-vector) t)))
         (if (and (window-minibuffer-p win) (not (minibuffer-window-active-p win))) ; In echo area
-            ;; Not sure this is good enough, but this is what vanilla Emacs does here.
-            ;; Maybe need to set the X selection here too, just like below.
-            (isearch-yank-x-selection)
+            (isearchp-set-sel-and-yank)
           (when (functionp binding) (call-interactively binding))))
-    (when (and transient-mark-mode (/= (region-beginning) (region-end)))
-      ;; Need to do this for Windows etc.  Depending on your mouse/selection settings,
-      ;; `x-get-selection' (called by `isearch-yank-x-selection' returns nil - there
-      ;; is no string to yank.  So we call `x-set-selection' to set the PRIMARY selection.
-      (x-set-selection 'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end)))
-      (deactivate-mark)
-      (isearch-yank-x-selection))))
+    (when (/= (region-beginning) (region-end)) (isearchp-set-sel-and-yank))))
 
+(defun isearchp-set-sel-and-yank ()
+  "Set X selection and yank it into echo area."
+  (x-set-selection 'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end)))
+  (deactivate-mark)
+  (isearch-yank-x-selection))
 
 
 

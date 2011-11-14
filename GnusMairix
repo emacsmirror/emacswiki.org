@@ -48,23 +48,11 @@ Main features of nnmairix:
 
 == Setting up nnmairix.el ==
 
-nnmairix is now part of Gnus and is currently in CVS.
-If you don't want to completely 
-switch to CVS Gnus, you can download the latest revision of nnmairix from CVS:
+nnmairix is now part of Gnus and is distributed with GNU Emacs 23.2.
 
-http://quimby.gnus.org/cgi-bin/cvsweb.cgi/gnus/lisp/nnmairix.el?rev=HEAD
+You can find the documentation here:
 
-nnmairix should always work with the latest NoGnus release.
-
-Put it in your emacs search path and put
-<code>(require 'nnmairix)</code> into your .gnus (preferrably at the
-beginning). You may also want to byte-compile it.
-
-The documentation is also in CVS. You can checkout the latest TexInfo from
-
-http://quimby.gnus.org/cgi-bin/cvsweb.cgi/gnus/texi/gnus.texi?rev=HEAD
-
-and compile it yourself using <code>makeinfo --force gnus.texi</code>. 
+https://www.gnu.org/software/emacs/manual/html_node/gnus/nnmairix.html
 
 For a quick overview, you can also access the current nnmairix docs at
 

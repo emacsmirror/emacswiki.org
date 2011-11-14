@@ -618,6 +618,8 @@ Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> yesterday, so it shoul
 
 [new]
 Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the extra highlighting I set up some (very rough) face customizations that I edited:
+
+<pre>
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -635,7 +637,32 @@ Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the ex
  '(diredp-symlink ((t (:foreground "#F0DFAF"))))
  '(slime-repl-inputed-output-face ((t :background "#41363C" :foreground "#ECBCBC"))))
 
- --[[Anonymous]]
+</pre>
+
+-- [[Anonymous]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ----
 
 ----
