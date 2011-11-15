@@ -1,0 +1,20 @@
+<b>windcycle</b> - is simple window management for emacs that uses [WindMove WindMove] and adds additional functionality
+
+You can get latest source from [https://github.com/troydm/emacs-stuff/blob/master/windcycle.el here]
+
+Simply add 
+(require 'windcycle)
+to your .emacs
+
+How to use it?
+* To switch between windows you can use C-x + arrow or M + arrow
+* To resize window hold C-S and use arrow keys
+* To swap buffers between windows hold C-M and use arrow keys
+* To split window horizontally and vertically use C-x - and C-x | keys
+* To close window use C-x x key
+
+[https://github.com/troydm/ troydm]
+
+[new] nice! But I think you can use windmove-find-other-window to ease your code -- [[BaManzi]]
+----
+CategoryWindows

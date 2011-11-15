@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Nov 13 12:13:38 2011 (-0800)
+;; Last-Updated: Mon Nov 14 14:45:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1031
+;;     Update #: 1070
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -240,6 +240,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/11/14 dadams
+;;     Bind switch-frame event to ignore in Isearch.
+;;     Added and commented out: isearchp-switch-frame-or-exit.
 ;; 2011/11/13 dadams
 ;;     Added: isearchp-set-sel-and-yank.
 ;;     isearch-mouse-2: Use isearchp-set-sel-and-yank, even for nil case.
@@ -503,10 +506,30 @@ outside of Isearch."
 
 ;;; Keys and Hooks ---------------------------------------------------
 
-
-(define-key isearch-mode-map [mouse-2]            'isearch-mouse-2)
+(define-key isearch-mode-map [mouse-2]         'isearch-mouse-2)
 ;; Must not be just `nil'.  Need to override a global binding such as `mouse-flash-position-or-M-x'.
-(define-key isearch-mode-map [down-mouse-2]       'ignore)
+(define-key isearch-mode-map [down-mouse-2]    'ignore)
+
+;; Must not be just `nil'.  Otherwise, if click `mouse-2' in a standalone minibuffer frame then
+;; the `switch-frame' event exits Isearch and the following `down-mouse-2' invokes, e.g.,
+;; `mouse-flash-position-or-M-x'.
+(define-key isearch-mode-map [switch-frame]    'ignore)
+
+;;; Use this instead of `ignore' for `switch-frame', if you want it to exit Isearch when you switch
+;;; to any frame other than a standalone minibuffer frame.
+;;; (defun isearchp-switch-frame-or-exit ()
+;;;   "Return nil if switch to minibuffer frame.  Else exit Isearch.
+;;; Bind to `switch-frame' event."
+;;;   (interactive)
+;;;   (let* ((vec   (this-command-keys-vector))
+;;;          (evnt  (aref vec 0)))
+;;;     (unless (and (consp evnt) (eq 'switch-frame (car evnt))
+;;;                  (cadr evnt) (window-minibuffer-p
+;;;                               (frame-selected-window (cadr evnt))))
+;;;       (isearch-done)
+;;;       (isearch-clean-overlays))))
+
+;;; (define-key isearch-mode-map [switch-frame]    'isearchp-switch-frame-or-exit)
 
 (define-key isearch-mode-map [(control ?+)]    'isearchp-toggle-invisible)
 (define-key isearch-mode-map [(control ?`)]    'isearchp-toggle-regexp-quote-yank)
@@ -906,14 +929,14 @@ outside of Isearch."
   ;;   (deactivate-mark)
   ;;   (isearch-yank-x-selection))
   ;;
-  (if (not isearchp-mouse-2-flag)
-      (let ((win                            (posn-window (event-start click)))
-            (overriding-terminal-local-map  nil)
-            (binding                        (key-binding (this-command-keys-vector) t)))
-        (if (and (window-minibuffer-p win) (not (minibuffer-window-active-p win))) ; In echo area
-            (isearchp-set-sel-and-yank)
-          (when (functionp binding) (call-interactively binding))))
-    (when (/= (region-beginning) (region-end)) (isearchp-set-sel-and-yank))))
+  (if isearchp-mouse-2-flag
+      (when (/= (region-beginning) (region-end)) (isearchp-set-sel-and-yank))
+    (let ((win                            (posn-window (event-start click)))
+          (overriding-terminal-local-map  nil)
+          (binding                        (key-binding (this-command-keys-vector) t)))
+      (if (and (window-minibuffer-p win) (not (minibuffer-window-active-p win))) ; In echo area
+          (isearchp-set-sel-and-yank)
+        (when (functionp binding) (call-interactively binding))))))
 
 (defun isearchp-set-sel-and-yank ()
   "Set X selection and yank it into echo area."

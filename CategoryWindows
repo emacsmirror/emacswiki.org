@@ -13,6 +13,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 * Use arrow keys to choose
 ** WindMove
 ** WindowNavigation
+** [[windcycle]]
 * Use a window name or number to choose
 ** [[Icicles]]: `C-u C-x o' in Icicle mode -- Cycle/filter/complete window names to choose a window
 ** NumberedWindows
