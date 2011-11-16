@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Tue Nov  1 20:56:54 2011 (-0700)
+;; Last-Updated: Tue Nov 15 10:43:15 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 309
+;;     Update #: 318
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -129,7 +129,7 @@
   (define-key bookmark-map "U"    'bmkp-unlight-bookmarks) ; `C-x p U'
   (define-key bookmark-map "\C-u" 'bmkp-unlight-bookmark-here) ; `C-x p C-u'
   (define-key bookmark-map "="    'bmkp-bookmarks-lighted-at-point)) ; `C-x p ='
-(define-key bookmark-map "."      'bmkp-this-buffer-bmenu-list) ; `C-x p .'
+(define-key bookmark-map "."      'bmkp-this-file/buffer-bmenu-list) ; `C-x p .'
 (define-key bookmark-map "?"      'bmkp-describe-bookmark) ; `C-x p ?'
 (define-key bookmark-map ":"      'bmkp-choose-navlist-of-type) ; `C-x p :'
 (define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete) ; `C-x p RET'
@@ -137,34 +137,34 @@
 
 ;; If you use Emacs before Emacs 22, then you will want to bind the commands
 ;; whose names do *not* end in `-repeat' to keys that are easily repeatable.
-;; For example, you might want to bind `bmkp-next-bookmark-this-buffer'
-;; (not `bmkp-next-bookmark-this-buffer-repeat') to a key such as [f2].
+;; For example, you might want to bind `bmkp-next-bookmark-this-file/buffer'
+;; (not `bmkp-next-bookmark-this-file/buffer-repeat') to a key such as [f2].
 ;;
 (when (> emacs-major-version 21)
-  (define-key bookmark-map [down]       'bmkp-next-bookmark-this-buffer-repeat) ; `C-x p down'
-  (define-key bookmark-map "n"          'bmkp-next-bookmark-this-buffer-repeat) ; `C-x p n'
-  (define-key bookmark-map "\C-n"       'bmkp-next-bookmark-this-buffer-repeat) ; `C-x p C-n'
+  (define-key bookmark-map [down]       'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p down'
+  (define-key bookmark-map "n"          'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p n'
+  (define-key bookmark-map "\C-n"       'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p C-n'
 
   ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
-  ;; For older Emacs versions you can bind the wheel event to `bmkp-next-bookmark-this-buffer'
+  ;; For older Emacs versions you can bind the wheel event to `bmkp-next-bookmark-this-file/buffer'
   ;; in the global map.  IOW, prior to Emacs 23.3 a mouse event won't work with `repeat'.
   (when (and (boundp 'mouse-wheel-up-event)
              (or (> emacs-major-version 23)
                  (and (= emacs-major-version 23) (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-up-event))
-      'bmkp-next-bookmark-this-buffer-repeat)) ; `C-x p mouse-wheel-up'
-  (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-buffer-repeat) ; `C-x p up'
-  (define-key bookmark-map "p"          'bmkp-previous-bookmark-this-buffer-repeat) ; `C-x p p'
-  (define-key bookmark-map "\C-p"       'bmkp-previous-bookmark-this-buffer-repeat) ; `C-x p C-p'
+      'bmkp-next-bookmark-this-file/buffer-repeat)) ; `C-x p mouse-wheel-up'
+  (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p up'
+  (define-key bookmark-map "p"          'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p p'
+  (define-key bookmark-map "\C-p"       'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p C-p'
 
   ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
-  ;; For older Emacs versions you can bind the wheel event to `bmkp-previous-bookmark-this-buffer'
+  ;; For older Emacs versions you can bind the wheel event to `bmkp-previous-bookmark-this-file/buffer'
   ;; in the global map.  IOW, prior to Emacs 23.3 a mouse event won't work with `repeat'.
   (when (and (boundp 'mouse-wheel-down-event)
              (or (> emacs-major-version 23)
                  (and (= emacs-major-version 23) (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-down-event))
-      'bmkp-previous-bookmark-this-buffer-repeat)) ; `C-x p mouse-wheel-down'
+      'bmkp-previous-bookmark-this-file/buffer-repeat)) ; `C-x p mouse-wheel-down'
   (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat) ; `C-x p right'
   (define-key bookmark-map "f"          'bmkp-next-bookmark-repeat) ; `C-x p f'
   (define-key bookmark-map "\C-f"       'bmkp-next-bookmark-repeat) ; `C-x p C-f'
@@ -521,16 +521,16 @@
   '(menu-item "Show Bookmark List" bookmark-bmenu-list
     :help "Open the list of bookmarks in buffer `*Bookmark List*'")
   'separator-0)
-(define-key-after menu-bar-bookmark-map [bmkp-this-buffer-bmenu-list]
-  '(menu-item "Show Bookmark List for This Buffer" bmkp-this-buffer-bmenu-list
-    :help "Open `*Bookmark List*' for the bookmarks in the current buffer (only)"
-    :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only)))
+(define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
+  '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
+    :help "Open `*Bookmark List*' for the bookmarks in the current file or buffer (only)"
+    :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-file/buffer-alist-only)))
   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-navlist-bmenu-list]
   '(menu-item "Show Bookmark List for Navlist" bmkp-navlist-bmenu-list
     :help "Open `*Bookmark List*' for bookmarks in navlist (only)"
     :enable bmkp-nav-alist)
-  'bmkp-this-buffer-bmenu-list)
+  'bmkp-this-file/buffer-bmenu-list)
 
 (define-key-after menu-bar-bookmark-map [separator-2] '("--") 'bmkp-navlist-bmenu-list)
 (define-key-after menu-bar-bookmark-map [bmkp-choose-navlist-of-type]

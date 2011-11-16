@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Nov  1 20:52:06 2011 (-0700)
+;; Last-Updated: Tue Nov 15 08:33:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 883
+;;     Update #: 885
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1034,7 +1034,7 @@ C-u \\[bmkp-switch-bookmark-file]\t- Switch back to the last bookmark file    (o
 \\[bmkp-choose-navlist-from-bookmark-list]\t- Set the navlist to the bookmarks of a \
 bookmark-list bookmark
 \\[bmkp-navlist-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in navlist
-\\[bmkp-this-buffer-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in current buffer
+\\[bmkp-this-file/buffer-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in current file/buffer
 \\[bmkp-delete-bookmarks]\t- Delete some bookmarks at point or all in buffer
 
 \\[bmkp-toggle-bookmark-set-refreshes]
@@ -1362,7 +1362,7 @@ bmkp-save-new-location-flag - Save if bookmark relocated?
 bmkp-sequence-jump-display-function - How to display a sequence
 bmkp-sort-comparer          - Predicates for sorting bookmarks
 bmkp-su-or-sudo-regexp      - Bounce-show each end of region?
-bmkp-this-buffer-cycle-sort-comparer -  This-buffer cycling sort
+bmkp-this-file/buffer-cycle-sort-comparer -  cycling sort for here
 bmkp-use-region             - Activate saved region when visit?"
   (kill-all-local-variables)
   (use-local-map bookmark-bmenu-mode-map)

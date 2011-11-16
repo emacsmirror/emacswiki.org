@@ -9,7 +9,7 @@
 
 Austin Haas has created an actionscript-mode for AS3:
 
-* [http://austin.pettomato.com/actionscript-mode.el Latest version here]
+* [https://github.com/austinhaas/actionscript-mode Latest version here]
 * A recent version is archived here: Lisp:actionscript-mode-haas-7.0.el
 ** This does not work with newer Emacsen (CC-mode 5.30 and up)
 *** Is this comment referring to an older version? Because there was a time when my actionscript-mode didn't work with Emacs22, but it wasn't this version. As far as I know, this version works fine and it doesn't depend on cc-mode at all. - Austin Haas

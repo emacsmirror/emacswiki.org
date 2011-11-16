@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Nov  9 15:14:09 2011 (-0800)
+;; Last-Updated: Tue Nov 15 13:29:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2322
+;;     Update #: 2391
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -126,8 +126,10 @@
 ;;    `bmkp-cycle-specific-files',
 ;;    `bmkp-cycle-specific-files-other-window',
 ;;    `bmkp-cycle-this-buffer', `bmkp-cycle-this-buffer-other-window',
-;;    `bmkp-cycle-variable-list', `bmkp-cycle-url',
-;;    `bmkp-cycle-url-other-window',
+;;    `bmkp-cycle-this-file', `bmkp-cycle-this-file/buffer',
+;;    `bmkp-cycle-this-file/buffer-other-window',
+;;    `bmkp-cycle-this-file-other-window', `bmkp-cycle-variable-list',
+;;    `bmkp-cycle-url', `bmkp-cycle-url-other-window',
 ;;    `bmkp-delete-all-autonamed-for-this-buffer',
 ;;    `bmkp-delete-all-temporary-bookmarks', `bmkp-delete-bookmarks',
 ;;    `bmkp-describe-bookmark', `bmkp-describe-bookmark-internals',
@@ -181,8 +183,11 @@
 ;;    `bmkp-next-bookmark-list-bookmark-repeat',
 ;;    `bmkp-next-bookmark-repeat', `bmkp-next-bookmark-this-buffer',
 ;;    `bmkp-next-bookmark-this-buffer-repeat',
-;;    `bmkp-next-bookmark-w32', `bmkp-next-bookmark-w32-repeat',
-;;    `bmkp-next-desktop-bookmark',
+;;    `bmkp-next-bookmark-this-file',
+;;    `bmkp-next-bookmark-this-file/buffer',
+;;    `bmkp-next-bookmark-this-file/buffer-repeat',
+;;    `bmkp-next-bookmark-this-file-repeat', `bmkp-next-bookmark-w32',
+;;    `bmkp-next-bookmark-w32-repeat', `bmkp-next-desktop-bookmark',
 ;;    `bmkp-next-desktop-bookmark-repeat', `bmkp-next-dired-bookmark',
 ;;    `bmkp-next-dired-bookmark-repeat', `bmkp-next-file-bookmark',
 ;;    `bmkp-next-file-bookmark-repeat', `bmkp-next-gnus-bookmark',
@@ -210,6 +215,10 @@
 ;;    `bmkp-previous-bookmark', `bmkp-previous-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-this-buffer',
 ;;    `bmkp-previous-bookmark-this-buffer-repeat',
+;;    `bmkp-previous-bookmark-this-file',
+;;    `bmkp-previous-bookmark-this-file/buffer',
+;;    `bmkp-previous-bookmark-this-file/buffer-repeat',
+;;    `bmkp-previous-bookmark-this-file-repeat',
 ;;    `bmkp-previous-bookmark-w32',
 ;;    `bmkp-previous-bookmark-w32-repeat',
 ;;    `bmkp-purge-notags-autofiles', `bmkp-read-bookmark-for-type',
@@ -239,6 +248,7 @@
 ;;    `bmkp-temporary-jump-other-window',
 ;;    `bmkp-this-buffer-bmenu-list', `bmkp-this-buffer-jump',
 ;;    `bmkp-this-buffer-jump-other-window',
+;;    `bmkp-this-file-bmenu-list', `bmkp-this-file/buffer-bmenu-list',
 ;;    `bmkp-toggle-autonamed-bookmark-set/delete',
 ;;    `bmkp-toggle-autotemp-on-set',
 ;;    `bmkp-toggle-bookmark-set-refreshes',
@@ -248,8 +258,7 @@
 ;;    `bmkp-untag-a-file', `bmkp-url-target-set', `bmkp-url-jump',
 ;;    `bmkp-url-jump-other-window', `bmkp-use-bookmark-file-create',
 ;;    `bmkp-variable-list-jump', `bmkp-version', `bmkp-w3m-jump',
-;;    `bmkp-w3m-jump-other-window', `old-bookmark-insert',
-;;    `old-bookmark-relocate'.
+;;    `bmkp-w3m-jump-other-window', `old-bookmark-insert'.
 ;;
 ;;  User options defined here:
 ;;
@@ -268,7 +277,7 @@
 ;;    `bmkp-show-end-of-region', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-temporary-bookmarking-mode',
 ;;    `bmkp-temporary-bookmarking-mode-hook',
-;;    `bmkp-this-buffer-cycle-sort-comparer', `bmkp-use-region',
+;;    `bmkp-this-file/buffer-cycle-sort-comparer', `bmkp-use-region',
 ;;    `bmkp-w3m-allow-multi-tabs'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -394,11 +403,12 @@
 ;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
 ;;    `bmkp-temporary-bookmark-p', `bmkp-this-buffer-alist-only',
 ;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
-;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
-;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
-;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
-;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
-;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
+;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
+;;    `bmkp-unmarked-bookmarks-only', `bmkp-upcase',
+;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
+;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
+;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
+;;    `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -895,8 +905,9 @@ use either \\[customize] or command `bmkp-temporary-bookmarking-mode'."
   :type 'hook :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-this-buffer-cycle-sort-comparer '((bmkp-position-cp))
-  "*`bmkp-sort-comparer' value for cycling this-buffer bookmarks.
+(defcustom bmkp-this-file/buffer-cycle-sort-comparer '((bmkp-position-cp))
+  "*`bmkp-sort-comparer' value for cycling this-file/buffer bookmarks.
+Use bookmarks for the currently visited file or (non-file) buffer.
 Some values you might want to use: ((bmkp-position-cp)),
  ((bmkp-bookmark-creation-cp)), ((bmkp-visited-more-cp)).
 See `bmkp-sort-comparer'."
@@ -1918,11 +1929,9 @@ Return nil or signal `file-error'."
 ;; 1. Added bookmark default for interactive use.
 ;; 2. Added note about `S-delete' to doc string.
 ;; 3. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
-;; 4. Refresh menu list, to show new location.
+;; 4. Update Dired location too, for Dired bookmark.
+;; 5. Refresh menu list, to show new location.
 ;;
-(or (fboundp 'old-bookmark-relocate)
-(fset 'old-bookmark-relocate (symbol-function 'bookmark-relocate)))
-
 ;;;###autoload
 (defun bookmark-relocate (bookmark-name) ; Not bound
   "Relocate the bookmark named BOOKMARK-NAME to another file.
@@ -1933,9 +1942,19 @@ Useful when a file has been renamed after a bookmark was set in it.
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
-  (interactive (list (bookmark-completing-read "Bookmark to relocate"
-                                               (bmkp-default-bookmark-name))))
-  (old-bookmark-relocate bookmark-name)
+  (interactive (list (bookmark-completing-read "Bookmark to relocate" (bmkp-default-bookmark-name))))
+  (bookmark-maybe-historicize-string bookmark-name)
+  (bookmark-maybe-load-default-file)
+  (let* ((bookmark-filename  (bookmark-get-filename bookmark-name))
+         (new-filename       (abbreviate-file-name
+                              (expand-file-name (read-file-name (format "Relocate %s to: " bookmark-name)
+                                                                (file-name-directory bookmark-filename))))))
+    (bookmark-set-filename bookmark-name new-filename)
+    ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
+    (let ((dired-dir  (bookmark-prop-get bookmark-name 'dired-directory)))
+      (when (and dired-dir (equal dired-dir bookmark-filename))
+        (bookmark-prop-set bookmark-name 'dired-directory new-filename))))
+  (bmkp-maybe-save-bookmarks)
   (when (and (get-buffer "*Bookmark List*") (get-buffer-window (get-buffer "*Bookmark List*") 0)
              bookmark-bmenu-toggle-filenames)
     (with-current-buffer (get-buffer "*Bookmark List*")
@@ -2846,8 +2865,7 @@ so bookmarks will subsequently be saved to FILE.
 still use `bookmark-default-file' for the initial set of bookmarks."
   (interactive
    (list
-    (let ((bfile  (if (bmkp-same-file-p bmkp-current-bookmark-file
-                                        bmkp-last-bookmark-file)
+    (let ((bfile  (if (bmkp-same-file-p bmkp-current-bookmark-file bmkp-last-bookmark-file)
                       bookmark-default-file
                     bmkp-last-bookmark-file)))
       (bmkp-read-bookmark-file-name "Switch to bookmark file: "
@@ -3047,7 +3065,36 @@ It is a good idea to set BOOKMARK to the result of this call."
     (if namep (bookmark-name-from-full-record bookmark) bookmark))) ; Return updated bookmark or name.
 
 ;;;###autoload
-(defun bmkp-this-buffer-bmenu-list ()   ; Bound to `C-x p .'
+(defun bmkp-this-file/buffer-bmenu-list () ; Bound to `C-x p .'
+  "Show the bookmark list just for bookmarks for the current file/buffer.
+If visiting a file, this is `bmkp-this-file-bmenu-list'.  Otherwise,
+this is `bmkp-this-buffer-bmenu-list'."
+  (interactive)
+  (if (buffer-file-name) (bmkp-this-file-bmenu-list) (bmkp-this-buffer-bmenu-list)))
+
+;;;###autoload
+(defun bmkp-this-file-bmenu-list ()
+  "Show the bookmark list just for bookmarks for the current file.
+Set `bmkp-last-specific-file' to the current file name.
+If the current buffer is not visiting a file, prompt for the file name."
+  (interactive)
+  (setq bmkp-last-specific-file     (or (buffer-file-name) (read-file-name "File: "))
+        bmkp-bmenu-filter-function  'bmkp-last-specific-file-alist-only
+        bmkp-bmenu-title            (format "File `%s' Bookmarks" bmkp-last-specific-file))
+  (let ((bookmark-alist         (funcall bmkp-bmenu-filter-function))
+        (bmkp-bmenu-state-file  nil))   ; Prevent restoring saved state.
+    (unless bookmark-alist (error "No bookmarks for file `%s'" bmkp-last-specific-file))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order)
+                               (format "Only bookmarks for file `%s' are shown"
+                                       bmkp-last-specific-file)))
+  (raise-frame))
+
+;;;###autoload
+(defun bmkp-this-buffer-bmenu-list ()
   "Show the bookmark list just for bookmarks for the current buffer.
 Set `bmkp-last-specific-buffer' to the current buffer name."
   (interactive)
@@ -3692,10 +3739,18 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-this-buffer-p (bookmark)
   "Return non-nil if BOOKMARK's buffer is the current buffer.
-But return nil for bookmarks, such as desktops, that are not really
-associated with a buffer, even if they have a `buffer-name' entry.
+But return nil if BOOKMARK has an associated file, but it is not the
+ buffer's file.
+And return nil for bookmarks, such as desktops, that are not really
+ associated with a buffer, even if they have a `buffer-name' entry.
 BOOKMARK is a bookmark name or a bookmark record."
-  (and (equal (bmkp-get-buffer-name bookmark) (buffer-name))
+  (and (let ((this-file  (and (buffer-file-name)  (bookmark-buffer-file-name)))
+             (bmk-file   (and (bmkp-file-bookmark-p bookmark)  (bookmark-get-filename bookmark))))
+         ;; Two possibilities:
+         ;; * Neither buffer nor bookmark has a file, and the buffer names are the same.
+         ;; * Both have files, and they are the same file.
+         (or (and (not this-file) (not bmk-file)  (equal (bmkp-get-buffer-name bookmark) (buffer-name)))
+             (and this-file bmk-file  (bmkp-same-file-p this-file bmk-file))))
        (not (bmkp-desktop-bookmark-p        bookmark))
        (not (bmkp-bookmark-file-bookmark-p  bookmark))
        (not (bmkp-sequence-bookmark-p       bookmark))
@@ -3703,13 +3758,14 @@ BOOKMARK is a bookmark name or a bookmark record."
        (not (bmkp-variable-list-bookmark-p  bookmark))))
 
 (defun bmkp-this-file-p (bookmark)
-  "Return non-nil if BOOKMARK's filename is the current (absolute) file name.
+  "Return non-nil if BOOKMARK's file is the visited file.
 BOOKMARK is a bookmark name or a bookmark record."
-  (let ((bmk-file   (bookmark-get-filename bookmark))
-        (this-file  (or (buffer-file-name)  (and (eq major-mode 'dired-mode)  (if (consp dired-directory)
-                                                                                  (car dired-directory)
-                                                                                dired-directory)))))
-    (and bmk-file (equal bmk-file this-file))))
+  (let ((bmk-file   (and (bmkp-file-bookmark-p bookmark)  (bookmark-get-filename bookmark)))
+        (this-file  (or (and (buffer-file-name) (bookmark-buffer-file-name))
+                        (and (eq major-mode 'dired-mode)  (if (consp dired-directory)
+                                                              (car dired-directory)
+                                                            dired-directory)))))
+    (and bmk-file (bmkp-same-file-p this-file bmk-file))))
 
 (defun bmkp-last-specific-buffer-p (bookmark)
   "Return t if BOOKMARK's `buffer-name' is `bmkp-last-specific-buffer'.
@@ -4083,15 +4139,26 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-temporary-bookmark-p bookmark-alist))
 
+(defun bmkp-this-file/buffer-alist-only ()
+  "`bookmark-alist', with only bookmarks for the current file/buffer.
+A new list is returned (no side effects).
+If visiting a file, this is `bmkp-this-file-alist-only'.
+Otherwise, this is `bmkp-this-buffer-alist-only'."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)
+                      bookmark-alist))
+
 (defun bmkp-this-buffer-alist-only ()
   "`bookmark-alist', with only bookmarks for the current buffer.
-A new list is returned (no side effects)."
+A new list is returned (no side effects).
+See `bmkp-this-buffer-p'."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-this-buffer-p bookmark-alist))
 
 (defun bmkp-this-file-alist-only ()
   "`bookmark-alist', with only bookmarks for the current file.
-A new list is returned (no side effects)."
+A new list is returned (no side effects).
+See `bmkp-this-file-p'."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-this-file-p bookmark-alist))
 
@@ -7491,6 +7558,78 @@ In Lisp code:
   (bmkp-cycle increment 'OTHER-WINDOW startoverp))
 
 ;;;###autoload
+(defun bmkp-cycle-this-file/buffer (increment &optional other-window startoverp)
+  "Cycle through bookmarks for this file/buffer by INCREMENT (default: 1).
+If visiting a file, this is `bmkp-cycle-this-file'.
+Otherwise, this is `bmkp-cycle-this-buffer'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) nil startovr)))
+  (if (buffer-file-name)
+      (bmkp-cycle-this-file increment other-window startoverp)
+    (bmkp-cycle-this-buffer increment other-window startoverp)))
+
+;;;###autoload
+(defun bmkp-cycle-this-file/buffer-other-window (increment &optional startoverp)
+  "Same as `bmkp-cycle-this-file/buffer' but use other window."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle-this-file/buffer increment 'OTHER-WINDOW startoverp))
+
+;;;###autoload
+(defun bmkp-cycle-this-file (increment &optional other-window startoverp)
+  "Cycle through bookmarks for this file by INCREMENT (default: 1).
+Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
+Interactively, the prefix arg determines INCREMENT:
+ Plain `C-u': 1
+ otherwise: the numeric prefix arg value 
+
+Plain `C-u' also means start over at first bookmark.
+
+You can cycle among bookmarks beyond the current file using
+`bmkp-cycle' and `bmkp-cycle-other-window.'
+
+You can set your preferred sort order for this-file bookmarks by
+customizing option `bmkp-this-file/buffer-cycle-sort-comparer'.
+
+To change the sort order without customizing, you can use \
+`\\[bmkp-this-file-bmenu-list]' to
+show the `*Bookmark List*' with only this file's bookmarks, sort
+them there, and use `\\[bmkp-choose-navlist-from-bookmark-list]', choosing \
+`CURRENT *Bookmark List*' as
+the navigation list.
+
+Then you can cycle the bookmarks using `bmkp-cycle'
+\(`\\[bmkp-next-bookmark-repeat]' etc.), instead of `bmkp-cycle-this-file'.
+
+In Lisp code:
+ Non-nil OTHER-WINDOW means jump to the bookmark in another window.
+ Non-nil STARTOVERP means reset `bmkp-current-nav-bookmark' to the
+ first bookmark in the navlist."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) nil startovr)))
+  (bookmark-maybe-load-default-file)
+  (let ((bmkp-sort-comparer  bmkp-this-file/buffer-cycle-sort-comparer))
+    (setq bmkp-nav-alist  (bmkp-sort-omit (bmkp-this-file-alist-only))))
+  (unless bmkp-nav-alist (error "No bookmarks for this file"))
+  (unless (and bmkp-current-nav-bookmark (not startoverp)
+               (bookmark-get-bookmark bmkp-current-nav-bookmark 'NOERROR)
+               (bmkp-this-file-p bmkp-current-nav-bookmark)) ; Exclude desktops etc.
+    (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist)))
+  (if (bmkp-cycle-1 increment other-window startoverp)
+      (unless (or (bmkp-sequence-bookmark-p bmkp-current-nav-bookmark)
+                  (bmkp-function-bookmark-p bmkp-current-nav-bookmark))
+        (message "Position: %9d, Bookmark: `%s'"
+                 (point) (bookmark-name-from-full-record bmkp-current-nav-bookmark)))
+    (message "Invalid bookmark: `%s'" (bookmark-name-from-full-record bmkp-current-nav-bookmark))))
+
+;;;###autoload
+(defun bmkp-cycle-this-file-other-window (increment &optional startoverp)
+  "Same as `bmkp-cycle-this-file' but use other window."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle-this-file increment 'OTHER-WINDOW startoverp))
+
+;;;###autoload
 (defun bmkp-cycle-this-buffer (increment &optional other-window startoverp)
   "Cycle through bookmarks in this buffer by INCREMENT (default: 1).
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
@@ -7504,7 +7643,7 @@ You can cycle among bookmarks beyond the current buffer using
 `bmkp-cycle' and `bmkp-cycle-other-window.'
 
 You can set your preferred sort order for this-buffer bookmarks by
-customizing option `bmkp-this-buffer-cycle-sort-comparer'.
+customizing option `bmkp-this-file/buffer-cycle-sort-comparer'.
 
 To change the sort order without customizing, you can use \
 `\\[bmkp-this-buffer-bmenu-list]' to
@@ -7523,7 +7662,7 @@ In Lisp code:
   (interactive (let ((startovr  (consp current-prefix-arg)))
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) nil startovr)))
   (bookmark-maybe-load-default-file)
-  (let ((bmkp-sort-comparer  bmkp-this-buffer-cycle-sort-comparer))
+  (let ((bmkp-sort-comparer  bmkp-this-file/buffer-cycle-sort-comparer))
     (setq bmkp-nav-alist  (bmkp-sort-omit (bmkp-this-buffer-alist-only))))
   (unless bmkp-nav-alist (error "No bookmarks in this buffer"))
   (unless (and bmkp-current-nav-bookmark (not startoverp)
@@ -7545,7 +7684,7 @@ In Lisp code:
   (bmkp-cycle-this-buffer increment 'OTHER-WINDOW startoverp))
 
 (defun bmkp-cycle-1 (increment &optional other-window startoverp)
-  "Helper for `bmkp-cycle' and `bmkp-cycle-this-buffer'.
+  "Helper for `bmkp-cycle*' commands.
 Do nothing if `bmkp-current-nav-bookmark' is an invalid bookmark.
 Return `bmkp-current-nav-bookmark', or nil if invalid.
 
@@ -7627,6 +7766,79 @@ See `bmkp-next-bookmark-repeat'."
   (bmkp-repeat-command 'bmkp-previous-bookmark))
 
 ;;;###autoload
+(defun bmkp-next-bookmark-this-file/buffer (n &optional startoverp) ; Bind to repeatable key, e.g. `S-f2'
+  "Jump to the Nth-next bookmark for the current file/buffer.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one.
+See also `bmkp-cycle-this-file/buffer'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle-this-file/buffer n nil startoverp))
+
+;;;###autoload
+(defun bmkp-previous-bookmark-this-file/buffer (n &optional startoverp) ; Bind to repeatable key, e.g. `f2'
+  "Jump to the Nth-previous bookmark for the current file/buffer.
+See `bmkp-next-bookmark-this-file/buffer'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle-this-file/buffer (- n) nil startoverp))
+
+;;;###autoload
+(defun bmkp-next-bookmark-this-file/buffer-repeat (arg) ; `C-x p down', `C-x p n', `C-x p C-n'
+  "Jump to the Nth next bookmark for the current file/buffer.
+This is a repeatable version of `bmkp-next-bookmark-this-file/buffer'.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one (and no repeat)."
+  (interactive "P")
+  (require 'repeat)
+  (bmkp-repeat-command 'bmkp-next-bookmark-this-file/buffer))
+
+;;;###autoload
+(defun bmkp-previous-bookmark-this-file/buffer-repeat (arg) ; `C-x p up', `C-x p p', `C-x p C-p'
+  "Jump to the Nth previous bookmark for the current file/buffer.
+See `bmkp-next-bookmark-this-file/buffer-repeat'."
+  (interactive "P")
+  (require 'repeat)
+  (bmkp-repeat-command 'bmkp-previous-bookmark-this-file/buffer))
+
+;;;###autoload
+(defun bmkp-next-bookmark-this-file (n &optional startoverp) ; Bind to repeatable key, e.g. `S-f2'
+  "Jump to the Nth-next bookmark for the current file.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one.
+See also `bmkp-cycle-this-file'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle-this-file n nil startoverp))
+
+;;;###autoload
+(defun bmkp-previous-bookmark-this-file (n &optional startoverp) ; Bind to repeatable key, e.g. `f2'
+  "Jump to the Nth-previous bookmark for the current file.
+See `bmkp-next-bookmark-this-file'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle-this-file (- n) nil startoverp))
+
+;;;###autoload
+(defun bmkp-next-bookmark-this-file-repeat (arg)
+  "Jump to the Nth next bookmark for the current file.
+This is a repeatable version of `bmkp-next-bookmark-this-file'.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one (and no repeat)."
+  (interactive "P")
+  (require 'repeat)
+  (bmkp-repeat-command 'bmkp-next-bookmark-this-file))
+
+;;;###autoload
+(defun bmkp-previous-bookmark-this-file-repeat (arg)
+  "Jump to the Nth previous bookmark for the current file.
+See `bmkp-next-bookmark-this-file-repeat'."
+  (interactive "P")
+  (require 'repeat)
+  (bmkp-repeat-command 'bmkp-previous-bookmark-this-file))
+
+
+;;;###autoload
 (defun bmkp-next-bookmark-this-buffer (n &optional startoverp) ; Bind to repeatable key, e.g. `S-f2'
   "Jump to the Nth-next bookmark in the current buffer.
 N defaults to 1, meaning the next one.
@@ -7645,7 +7857,7 @@ See `bmkp-next-bookmark-this-buffer'."
   (bmkp-cycle-this-buffer (- n) nil startoverp))
 
 ;;;###autoload
-(defun bmkp-next-bookmark-this-buffer-repeat (arg) ; `C-x p down', `C-x p n', `C-x p C-n'
+(defun bmkp-next-bookmark-this-buffer-repeat (arg)
   "Jump to the Nth next bookmark in the current buffer.
 This is a repeatable version of `bmkp-next-bookmark-this-buffer'.
 N defaults to 1, meaning the next one.
@@ -7655,7 +7867,7 @@ Plain `C-u' means start over at the first one (and no repeat)."
   (bmkp-repeat-command 'bmkp-next-bookmark-this-buffer))
 
 ;;;###autoload
-(defun bmkp-previous-bookmark-this-buffer-repeat (arg) ; `C-x p up', `C-x p p', `C-x p C-p'
+(defun bmkp-previous-bookmark-this-buffer-repeat (arg)
   "Jump to the Nth previous bookmark in the current buffer.
 See `bmkp-next-bookmark-this-buffer-repeat'."
   (interactive "P")

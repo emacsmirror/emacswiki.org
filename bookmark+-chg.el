@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Nov  9 15:17:20 2011 (-0800)
+;; Last-Updated: Tue Nov 15 13:27:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13823
+;;     Update #: 13845
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/15 dadams
+;;     bookmark-relocate: Redefine without using old-*.  Update Dired location too.
+;;     Added: bmkp-cycle-this-file(/buffer)(-other-window),
+;;            bmkp-(next|previous)-bookmark-this-file(/buffer)(-repeat),
+;;            bmkp-this-file(/buffer)-bmenu-list, bmkp-this-file/buffer-alist-only.
+;;     Renamed bmkp-this-buffer-cycle-sort-comparer to bmkp-this-file/buffer-cycle-sort-comparer.
+;;     bmkp-this-buffer-p: Return nil if bookmark has a file diff from buffer.
+;;     bmkp-this-file-p:
+;;       Ensure bmkp-file-bookmark-p and bookmark-buffer-file-name.  Use bmkp-same-file-p.
 ;; 2011/11/09 dadams
 ;;     bmkp-jump-dired, bmkp-jump-man: Added bmkp-select-buffer-other-window to other-window fns.
 ;; 2011/11/08 dadams
@@ -518,6 +527,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/11/15 dadams
+;;     Bind *-this-file/buffer*, not *-this-buffer*.
 ;; 2011/11/01 dadams
 ;;     Bind alias bmkp-autofile-jump(-*), not bmkp-find-file(-*) to C-x j a, so Icicles picks up key.
 ;;     Bind bmkp-bookmark-file-jump to C-x j y, not C-x j x.  Bind bmkp-temporary-jump(-*) to C-x j x.
@@ -557,6 +568,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2011/11/15 dadams
+;;     Applied renaming: bmkp-this-buffer-cycle-sort-comparer to *-this-file/buffer*.
 ;; 2011/08/09 dadams
 ;;     Bind icicle-unpropertize-completion-result-flag to t for all calls to completing-read.
 ;; 2011/04/12

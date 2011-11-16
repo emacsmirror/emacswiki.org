@@ -2149,15 +2149,19 @@ relevant commands (e.g. `bmkp-next-autonamed-bookmark-repeat', `bmkp-previous-au
 
 
 
-
+[:bmkp-next-bookmark-this-file/buffer-repeat]
+[:bmkp-previous-bookmark-this-file/buffer-repeat]
+[:bmkp-next-bookmark-this-file/buffer]
+[:bmkp-previous-bookmark-this-file/buffer]
+[:bmkp-this-file/buffer-cycle-sort-comparer]
 [:CyclingCurrentBuffer]
 === Cycling in the Current Buffer ===
 
 You can navigate the bookmarks in the current buffer by cycling as well as jumping.  It is convenient to have
 dedicated keys for this, separate from the keys to cycle the
 navigation list.  The following keys are defined, corresponding to commands
-'''`bmkp-next-bookmark-this-buffer-repeat'''' and
-'''`bmkp-previous-bookmark-this-buffer-repeat'''':
+'''`bmkp-next-bookmark-this-file/buffer-repeat'''' and
+'''`bmkp-previous-bookmark-this-file/buffer-repeat'''':
 
 Next:     '''`C-x p n'''', '''`C-x p C-n'''', '''`C-x p down''''
 
@@ -2168,8 +2172,8 @@ use the mouse wheel to cycle: `C-x p' then just rotate the wheel.
 
 Again, you can bind any keys you want to these commands (e.g. `f2', `S-f2').  If you
 do not need to use a [[prefix key]], then bind commands
-`bmkp-next-bookmark-this-buffer' and
-`bmkp-previous-bookmark-this-buffer' (no ##-repeat##).
+`bmkp-next-bookmark-this-file/buffer' and
+`bmkp-previous-bookmark-this-file/buffer' (no ##-repeat##).
 
 You can also cycle among just the highlighted bookmarks in the
 current buffer -- see [[#UsingHighlightedBookmarks|Using Highlighted Bookmarks]].
@@ -2184,7 +2188,7 @@ snapshot -- see [[#BookmarkNavigationList|The Bookmark Navigation List]].
 By default, you cycle the current-buffer bookmarks in ''order of
 their positions'' in the buffer, top to bottom.  If you want a
 different order, you can customize [[option]]
-'''`bmkp-this-buffer-cycle-sort-comparer''''.
+'''`bmkp-this-file/buffer-cycle-sort-comparer''''.
 
 Alternatively, you can use '''`##C-x p .##'''' to display the `##*Bookmark
 List*##' with only the current buffer's bookmarks, sort them there,

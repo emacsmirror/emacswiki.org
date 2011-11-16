@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 23 10:47:38 2011 (-0700)
+;; Last-Updated: Tue Nov 15 12:42:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4468
+;;     Update #: 4486
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -79,6 +79,7 @@
 ;;              have been REDEFINED HERE:
 ;;
 ;;  `Info-find-emacs-command-nodes' - Added in-progress message.
+;;  `Info-find-file' (Emacs 23+) - Handle virtual books.
 ;;  `Info-find-node', `Info-find-node-2' -
 ;;     Call `fit-frame' if `Info-fit-frame-flag'.
 ;;  `Info-fontify-node' -
@@ -176,8 +177,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/11/15 dadams
+;;     Added: redefinition of Info-find-file for Emacs 23+, to handle virtual books.
 ;; 2011/08/23 dadams
 ;;     Removed hard-code removal of info from same-window-(regexps|buffer-names).  Thx to PasJa.
 ;; 2011/02/06 dadams
@@ -954,6 +957,65 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 
 
 ;; REPLACE ORIGINAL in `info.el':
+;; 
+;; Added final clause to `cond', to handle virtual books.
+;;
+(when (> emacs-major-version 22)
+  (defun Info-find-file (filename &optional noerror)
+    "Return expanded FILENAME, or t if FILENAME is \"dir\".
+Optional second argument NOERROR, if t, means if file is not found
+just return nil (no error)."
+    ;; Convert filename to lower case if not found as specified.
+    ;; Expand it.
+    (cond
+      ((Info-virtual-call (Info-virtual-fun 'find-file filename nil) filename noerror))
+      ((stringp filename)
+       (let (temp temp-downcase found)
+         (setq filename  (substitute-in-file-name filename))
+         (let ((dirs  (if (string-match "^\\./" filename)
+                          '("./")       ; If specified name starts with `./' then just try current dir.
+                        (if (file-name-absolute-p filename)
+                            '(nil)      ; No point in searching for an absolute file name
+                          (if Info-additional-directory-list
+                              (append Info-directory-list Info-additional-directory-list)
+                            Info-directory-list)))))
+           ;; Fall back on the installation directory if we can't find the info node anywhere else.
+           (when installation-directory
+             (setq dirs  (append dirs (list (expand-file-name "info" installation-directory)))))
+           ;; Search the directory list for file FILENAME.
+           (while (and dirs (not found))
+             (setq temp           (expand-file-name filename (car dirs)))
+             (setq temp-downcase  (expand-file-name (downcase filename) (car dirs)))
+             ;; Try several variants of specified name.
+             (let ((suffix-list  Info-suffix-list)
+                   (lfn          (if (fboundp 'msdos-long-file-names) (msdos-long-file-names) t)))
+               (while (and suffix-list (not found))
+                 (cond ((info-file-exists-p
+                         (info-insert-file-contents-1 temp (car (car suffix-list)) lfn))
+                        (setq found temp))
+                       ((info-file-exists-p
+                         (info-insert-file-contents-1 temp-downcase (car (car suffix-list)) lfn))
+                        (setq found temp-downcase))
+                       ((and (fboundp 'msdos-long-file-names)
+                             lfn
+                             (info-file-exists-p
+                              (info-insert-file-contents-1 temp (car (car suffix-list)) nil)))
+                        (setq found  temp)))
+                 (setq suffix-list  (cdr suffix-list))))
+             (setq dirs  (cdr dirs))))
+         (if found
+             (setq filename  found)
+           (if noerror
+               (setq filename nil)
+             (error "Info file %s does not exist" filename)))
+         filename))
+      ((member filename '(apropos history toc))  filename))) ; Handle virtual books - `toc'.
+  )
+
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
 ;; Call `fit-frame' if `Info-fit-frame-flag'.
 ;;
 (when (< emacs-major-version 21)

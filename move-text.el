@@ -1,10 +1,13 @@
 ;;; Filename: move-text.el
+;;; move-text.el --- Move current line or region with M-up or M-down.
+
 ;; Description: Move current line or region with M-up or M-down.
 ;; Author: Jason M <jasonm23@gmail.com>
-;; Extracted from basic-edit-toolkit.el by Andy Stewart. 
+;; Extracted from basic-edit-toolkit.el by Andy Stewart.
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Keywords: edit
 ;; Compatibility: GNU Emacs 23.0.60.1
+;; Version: 1.0
 ;;
 ;;; This file is NOT part of GNU Emacs
 
@@ -26,10 +29,10 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-;; 
-;; MoveText is extracted from Basic edit toolkit. 
+;;
+;; MoveText is extracted from Basic edit toolkit.
 ;; It allows you to move the current line using M-up / M-down
-;; if a region is marked, it will move the region instead. 
+;; if a region is marked, it will move the region instead.
 ;;
 
 ;;; Installation:
@@ -42,11 +45,12 @@
 ;; And the following to your ~/.emacs startup file.
 ;;
 ;; (require 'move-text)
+;; (move-text-default-bindings)
 ;;
 
 ;;; Acknowledgements:
 ;;
-;;  Feature extracted from basid-edit-toolket.el - by Andy Stewart. (LazyCat)
+;;  Feature extracted from basid-edit-toolkit.el - by Andy Stewart. (LazyCat)
 ;;
 
 ;;; Code:
@@ -74,20 +78,27 @@
         (forward-line -1))
       (move-to-column column t)))))
 
+;;;###autoload
 (defun move-text-down (arg)
   "Move region (transient-mark-mode active) or current line
   arg lines down."
   (interactive "*p")
   (move-text-internal arg))
 
+;;;###autoload
 (defun move-text-up (arg)
   "Move region (transient-mark-mode active) or current line
   arg lines up."
   (interactive "*p")
   (move-text-internal (- arg)))
 
+;;;###autoload
+(defun move-text-default-bindings ()
+  "Bind `move-text-up' and `move-text-down' to M-up and M-down."
+  (global-set-key [M-up] 'move-text-up)
+  (global-set-key [M-down] 'move-text-down))
+
+
 (provide 'move-text)
 
-;; Default key bindings. (Eclipse style)
-(global-set-key [M-up] 'move-text-up)
-(global-set-key [M-down] 'move-text-down)
+;;; move-text.el ends here

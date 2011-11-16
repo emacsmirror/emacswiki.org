@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov  1 07:56:02 2011 (-0700)
+;; Last-Updated: Tue Nov 15 12:45:48 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13927
+;;     Update #: 13930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2080,8 +2080,8 @@
 ;;  well as jumping.  It is convenient to have dedicated keys for
 ;;  this, separate from the keys to cycle the navigation list.  The
 ;;  following keys are defined, corresponding to commands
-;;  `bmkp-next-bookmark-this-buffer-repeat' and
-;;  `bmkp-previous-bookmark-this-buffer-repeat':
+;;  `bmkp-next-bookmark-this-file/buffer-repeat' and
+;;  `bmkp-previous-bookmark-this-file/buffer-repeat':
 ;;
 ;;  Next:     `C-x p n', `C-x p C-n', `C-x p down'
 ;;  Previous: `C-x p p', `C-x p C-p', `C-x p up'
@@ -2091,8 +2091,8 @@
 ;;
 ;;  Again, you can bind any keys you want to these commands
 ;;  (e.g. `f2', `S-f2').  If you do not need to use a prefix key, then
-;;  bind commands `bmkp-next-bookmark-this-buffer' and
-;;  `bmkp-previous-bookmark-this-buffer' (no -repeat).
+;;  bind commands `bmkp-next-bookmark-this-file/buffer' and
+;;  `bmkp-previous-bookmark-this-file/buffer' (no -repeat).
 ;;
 ;;  You can also cycle among just the highlighted bookmarks in the
 ;;  current buffer - see (@> "Using Highlighted Bookmarks").
@@ -2107,7 +2107,7 @@
 ;;  By default, you cycle the current-buffer bookmarks in order of
 ;;  their positions in the buffer, top to bottom.  If you want a
 ;;  different order, you can customize option
-;;  `bmkp-this-buffer-cycle-sort-comparer'.
+;;  `bmkp-this-file/buffer-cycle-sort-comparer'.
 ;;
 ;;  Alternatively, you can use `C-x p .' to display the `*Bookmark
 ;;  List*' with only the current buffer's bookmarks, sort them there,

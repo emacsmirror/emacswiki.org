@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2111, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Aug  9 10:27:52 2011 (-0700)
+;; Last-Updated: Tue Nov 15 10:49:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 737
+;;     Update #: 739
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -201,7 +201,7 @@
 ;; bmkp-remove-if, bmkp-remove-if-not, bmkp-repeat-command,
 ;; bmkp-sequence-bookmark-p, bmkp-sort-omit,
 ;; bmkp-specific-buffers-alist-only, bmkp-this-buffer-alist-only,
-;; bmkp-this-buffer-cycle-sort-comparer, bmkp-this-buffer-p
+;; bmkp-this-file/buffer-cycle-sort-comparer, bmkp-this-buffer-p
 
 (require 'pp+ nil t) ;; pp-read-expression-map
 
@@ -971,7 +971,7 @@ In Lisp code:
   (interactive (let ((startovr  (consp current-prefix-arg)))
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) nil startovr)))
   (bookmark-maybe-load-default-file)
-  (let ((bmkp-sort-comparer  bmkp-this-buffer-cycle-sort-comparer))
+  (let ((bmkp-sort-comparer  bmkp-this-file/buffer-cycle-sort-comparer))
     (setq bmkp-nav-alist  (bmkp-sort-omit (bmkp-this-buffer-lighted-alist-only))))
   (unless bmkp-nav-alist (error "No lighted bookmarks for cycling"))
   (unless (and bmkp-current-nav-bookmark (not startoverp)
@@ -1200,7 +1200,7 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not (lambda (bmk) (bmkp-lighted-p bmk)) bookmark-alist))
 
 (defun bmkp-this-buffer-lighted-alist-only ()
-  "`bookmark-alist', with only highlighted bookmarks for current buffer.
+  "`bookmark-alist', with only highlighted bookmarks for the current buffer.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lambda (bmk) (and (bmkp-this-buffer-p bmk) (bmkp-lighted-p bmk)))

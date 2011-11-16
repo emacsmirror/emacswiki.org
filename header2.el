@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Wed May 11 07:18:45 2011 (-0700)
+;; Last-Updated: Tue Nov 15 13:49:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1803
+;;     Update #: 1811
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -161,8 +161,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/11/15 dadams
+;;     header-date-string:
+;;       Use UTC format from http://www.w3.org/TR/NOTE-datetime.  Thx to Lennart Borgman.
 ;; 2011/02/03 dadams
 ;;     Added: header-auto-update-enabled.
 ;;     auto-update-file-header: Respect header-auto-update-enabled.  Thx to Le Wang.
@@ -554,7 +557,7 @@ packages."
   (format-time-string
    (cond ((stringp header-date-format) header-date-format)
          (header-date-format "%a %b %e %T %Y (%z)")
-         (t "%a %b %e %T %Y (UTC)"))
+         (t                  "%Y-%m-%dT%T%z")) ; An alternative: "%a %b %e %T %Y (UTC)"
    (current-time)
    (not header-date-format)))
 
