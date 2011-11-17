@@ -1,0 +1,59 @@
+== About ==
+
+jdone is abbr for *job done* diary.
+
+== Target audience ==
+
+ * Emacs users.
+ * Advanced users and developers (command line tools coming soon).
+
+== Project goal ==
+
+ * Record job you done.
+ * Integrate with tools to automatically record events.
+ * Maintain basic TODO list for short task.
+
+Personally I was motivated to develop this project by necessity analyze how I
+spend time to find bottleneck and improve my productivity.
+
+Also you can record your activity to get proof that you make a lot of work to
+your boss...
+
+== Home page ==
+
+[http://jdone.sourceforge.net/ Home page.]
+
+[http://sourceforge.net/p/jdone/ SourceForge home page.]
+
+[http://sourceforge.net/projects/jdone SourceForge (old look) home page.]
+
+== License statement ==
+
+All files released for free use without any restrictions and warranty.
+
+See LICENSE file from distribuition.
+
+== Getting sources (VCS) ==
+
+To clone repository run::
+
+  $ hg clone http://hg.code.sf.net/p/jdone/code jdone-hg
+
+== How it work ==
+
+All message stored in ``~/.jdonedb/current`` file and look like::
+
+  ================================================================
+  date: 2011-11-16 02:35:25+0200
+  app: hg
+   Commit from: /home/user/devel/my-devel/jdone/
+   Using jdone.el in Emacs.
+  ================================================================
+  date: 2011-11-10 22:23:00+0200
+   http://conkeror.org/Installation
+
+Project provide basic CGI script written in GNU Bash language to publish
+``~/.jdonedb/current``.
+
+Look INSTALL_ for more info.
+

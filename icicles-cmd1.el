@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 13 17:40:34 2011 (-0800)
+;; Last-Updated: Wed Nov 16 09:20:10 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22689
+;;     Update #: 22696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5218,7 +5218,6 @@ During completion (`*': requires library `Bookmark+'):
 ;;;###autoload (autoload 'icicle-dired "icicles-cmd1.el")
 (icicle-define-file-command icicle-dired
   "Multi-command version of `dired'.
-
 During completion (`*': requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
@@ -6325,6 +6324,11 @@ the behavior."                          ; Doc string
 If `icicle-bookmark-types' is non-nil, then it is a list of bookmark
 types and only bookmarks of those types are candidates.
 
+If `icicle-show-multi-completion-flag' is non-nil, then completion
+candidates are multi-completions, with first part the bookmark name
+and second part the bookmark's file or buffer name.  Otherwise, the
+candidates are just the bookmark names.
+
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 
@@ -6430,8 +6434,7 @@ The list of bookmark names (strings) is returned." ; Doc string
                                                 (file      (bookmark-get-filename bmk))
                                                 (buf       (bmkp-get-buffer-name bmk))
                                                 (file/buf
-                                                 (if (and buf
-                                                          (equal file bmkp-non-file-filename))
+                                                 (if (and buf (equal file bmkp-non-file-filename))
                                                      buf
                                                    file))
                                                 (tags      (bmkp-get-tags bmk)))
@@ -6469,7 +6472,7 @@ The list of bookmark names (strings) is returned." ; Doc string
 ;;   "Choose file (`RET' when done): "     ; `completing-read' args
 ;;   (mapcar #'list (directory-files default-directory nil icicle-re-no-dot))
 ;;   nil nil nil 'file-name-history nil nil
-;;   ((file-names nil)                     ; Additional bindings
+;;   ((file-names ())                      ; Additional bindings
 ;;    (icicle-delete-candidate-object  'icicle-delete-file-or-directory) ; `S-delete' deletes file.
 ;;    (icicle-use-candidates-only-once-flag  t))
 ;;   nil nil                               ; First code, undo code
@@ -6529,7 +6532,7 @@ Ido-like behavior."                     ; Doc string
   (icicle-file-bindings                 ; Bindings
    ((prompt                             (or icicle-prompt ; Allow override.
                                             "Choose file (`RET' when done): "))
-    (file-names                         nil)
+    (file-names                         ())
     (icicle-comp-base-is-default-dir-p  t)
     ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
     ))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  2 16:43:07 2011 (-0700)
+;; Last-Updated: Wed Nov 16 09:26:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4807
+;;     Update #: 4818
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3805,7 +3805,7 @@ The arguments are the same as for `icicle-search'."
          (dolist (file  where)
            (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                               scan-fn-or-regexp args)))
-        ((consp where)                  ; Search all bookmarked regions.
+        ((consp where)                  ; Search bookmarks - just their regions if defined.
          (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
          (let ((non-existent-buffers  ())
                buf+beg buf beg end)
@@ -3814,14 +3814,14 @@ The arguments are the same as for `icicle-search'."
                    buf      (car buf+beg)
                    beg      (cdr buf+beg)
                    end      (bmkp-get-end-position bmk))
-             (when (= beg end)          ; Prevent using an empty search region with bookmarks etc.
+             (when (= beg end)          ; Search whole buffer if bookmarked region is empty.
                (setq beg  nil
                      end  nil))
              (if (bufferp buf)
                  (icicle-search-define-candidates-1 buf beg end scan-fn-or-regexp args)
                (push buf non-existent-buffers)))
            (when non-existent-buffers
-             (message "Skipping regions in non-existent buffers: `%s'"
+             (message "Skipping non-existent buffers: `%s'"
                       (mapconcat #'identity (icicle-remove-duplicates non-existent-buffers)
                                  "', `"))
              (sit-for 3))))
@@ -4442,7 +4442,7 @@ together instead of one at a time.
 If you use library `Bookmark+' then:
 
 a. If a bookmark specifies a nonempty region, then search only the text
-  in that region.
+  in that region.  Otherwise, search the whole bookmarked buffer/file.
 
 b. The candidate bookmarks are those in the current `*Bookmark List*'
   display (list `bmkp-sorted-alist', to be precise).  This means that
@@ -5570,17 +5570,18 @@ search multiple regions, buffers, or files, see the doc for command
 ;;;###autoload
 (defun icicle-search-bookmarks-together (scan-fn-or-regexp require-match ; Bound to `M-s M-s J'.
                                          &rest args)
-  "Search bookmarked regions (together).
+  "Search bookmarks, together.
 The arguments are the same as for `icicle-search', but without
 arguments BEG, END, and WHERE.
 
 This is the same as using a plain prefix arg, `C-u', with
 `icicle-search'.
 
-You first choose all of the bookmarked buffers/regions to search.
-Then your input is matched against a multi-completion composed of (a)
-the region text that matches the context regexp and (b) the region's
-buffer name.
+You choose the bookmarks to search.
+If `icicle-show-multi-completion-flag' is non-nil, then completion
+candidates are multi-completions, with first part the bookmark name
+and second part the bookmark's file or buffer name.  Otherwise, the
+candidates are just the bookmark names.
 
 You can alternatively choose to search, not the search contexts as
 defined by the context regexp, but the non-contexts, that is, the text

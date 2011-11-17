@@ -60,7 +60,7 @@ traditional archive distribution approach:
 [[image:EpackagePictureDelpsDiagram]]
 
 In the picture above, the user downloads *yellow pages* that contains
-information about available packages. At upper left: when a prospective developer
+information about available packages. At upper right: when a prospective developer
 wants to make an epackage available for others, he first
 [http://help.github.com/forking/ forks] the
 current *yellow pages*, adds new information to it and sends a
@@ -89,9 +89,9 @@ only deltas are transferred.
 
 == Developers ==
 
-To make an Emacs extension available in DELPS /epackage/ format, read the
-Specification to understand the directory layout and used files,
-then clone "Epackage template files" mentioned below.
+To make an Emacs extension available in /epackage/ format, read the
+specification to understand the directory layout and used files.
+After that, clone "Epackage template files" mentioned below.
 The "Epackage template files" link also contains README at Github
 to quickly explain the procedure.
 
@@ -107,7 +107,7 @@ rest of the framework (Yellow pages, epackage repositories, developer
 templates) are also available below.
 
 * Epackage main project hub (epackage.el):
-  http://freshmeat.net/projects/emacs-epackage
+  http://freecode.com/projects/emacs-epackage
 * Epackage template files for developers:
   https://github.com/jaalto/project--emacs-epackage-template
 * Epackage sources list Yellow Pages for developers:
@@ -115,8 +115,7 @@ templates) are also available below.
 
 == Download and Install ==
 
-The reference implementation of DELPS, the epackage.el, is available
-at Savannah. Mirror at Github,
+The reference implementation is available at Savannah. Mirror at Github:
 
     #  Location where you keep your Emacs extensions
     mkdir -p $HOME/emacs.d/packages
@@ -164,7 +163,7 @@ The epackage manager can also be called from command line UI:
 == Contact ==
 
 Please send comments, suggestion, ideas, bug reports to me directly
-or to the bug tracker. please Do not send questions to this page.
+or to the bug tracker. Please Do not send questions to this page.
 Thanks --Jari.
 
 * Bug Tracker: https://savannah.nongnu.org/bugs/?group=emacs-epackage
@@ -175,7 +174,7 @@ Thanks --Jari.
 
 2010-12. A rudimentary implementation of early concept of the software
 is available for testing. The full buffer mode based UI (like in ELPA)
-is planned to be ready somewhere around 2011-2012.
+is planned to be ready somewhere around 2012.
 
 [[image:EpackagePictureUiCommandLine]]
 

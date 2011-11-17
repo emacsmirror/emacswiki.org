@@ -22,7 +22,7 @@ The supported bug tracking systems include:
 * Savannah trackers (only: jump to tracker; "Goto URL by bug number")
 * Savannah trackers (only: jump to tracker; "Goto URL by bug number")
 * Sourceforge bugs (only: jump to tracker; "Goto URL by bug number")
-* Gnome. KDE, MySQL, Freshmeat, Sourceforge, Perl CPAN, Mercurial bugs (only: jump to tracker; "Goto URL by bug number")
+* Gnome. KDE, MySQL, Freecode, Sourceforge, Perl CPAN, Mercurial bugs (only: jump to tracker; "Goto URL by bug number")
 * Sourceware aka RedHat where various GNU projects like GDB are hosted (only: jump to tracker; "Goto URL by bug number")
 
 The interface is integrated to Gnus:
@@ -48,11 +48,11 @@ Alternatively, start composing mail with `C-x m' and see menu "Tbts".
 Put the following in your ~/.emacs InitFile:
 
 {{{
-(setq tinydebian-:load-hook 'tinydebian-install)
+(setq tinydebian--load-hook 'tinydebian-install)
 (require 'tinydebian)
 }}}
 
-Instead of <code>require</code>, it is possisble to autoloads the code on demand:
+Instead of <code>require</code>, it is possible to autoload the code on demand:
 
 {{{
 (autoload 'turn-on-tinydebian-mail-mode "tinydebian")
@@ -60,7 +60,7 @@ Instead of <code>require</code>, it is possisble to autoloads the code on demand
 (autoload 'tinydebian-bts-mode-gnus-summary-maybe-turn-on "tinydebian")
 (autoload 'tinydebian-bts-mode-maybe-turn-on "tinydebian")
 
-(setq tinydebian-:load-hook 'tinydebian-install)
+(setq tinydebian--load-hook 'tinydebian-install)
 
 (add-hook 'message-mode-hook
           'turn-on-tinydebian-mail-mode)

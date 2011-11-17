@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.72
+;; Version: 1.75
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -41,6 +41,11 @@
 
 ;; Configuration
 ;; =============
+
+;; By default, fci-mode draws its vertical indicator at the fill column.  If
+;; you'd like it to be drawn at another column, set `fci-rule-column' to a
+;; different value.  The default behavior is specified by setting
+;; `fci-rule-column' to nil.
 
 ;; On graphical displays the fill-column rule is drawn using a bitmap
 ;; image.  Its color is controlled by the variable `fci-rule-color', whose
@@ -109,6 +114,19 @@
 ;;   black.  Explicitly setting `fci-rule-image-format' to a different value
 ;;   will usually resolve such issues.
 
+;; o Fci-mode in not currently compatible with Emacs's
+;;   `show-trailing-whitespace' feature (given the way the latter is
+;;   implemented, such compatilibility is going to be hard to achieve).  A
+;;   workaround is to configure `whitespace-mode' to replicate the
+;;   functionality of show-trailing-whitespace.  This can be done with the
+;;   following setting:
+;;
+;;     (setq whitespace-style '(face trailing))
+;;
+;;  With this, whitespace-mode produces the same basic effect as a non-nil
+;;  value of show-trailing-whitespace, and compatibility with fci-mode is not
+;;  a problem.
+
 ;; Known Issues
 ;; ============
 
@@ -161,6 +179,22 @@
   :group 'convenience
   :group 'fill)
 
+;; We should be using :validate instead of :match, but that seems not to
+;; work with defcustom widgets.
+(defcustom fci-rule-column nil
+  "Controls where fci-mode displays a vertical line (rule).
+
+If nil, the rule is drawn at the fill column.  Otherwise, it is
+drawn at the column given by this variable.
+
+Changes to this variable do not take effect until the mode
+function `fci-mode' is run."
+  :group 'fill-column-indicator
+  :tag "Fill-Column rule column"
+  :type '(choice (symbol :tag "Use the fill column" 'fill-column)
+                 (integer :tag "Use a custom column"
+                          :match (lambda (w val) (fci-posint-p val)))))
+
 (defcustom fci-rule-color "#cccccc"
   "Color used to draw the fill-column rule.
 
@@ -170,8 +204,6 @@ function `fci-mode' is run."
   :tag "Fill-column rule color"
   :type 'color)
 
-;; We should be using :validate instead of :match, but that seems not to
-;; work with defcustom widgets.
 (defcustom fci-rule-width 2
   "Width in pixels of the fill-column rule on graphical displays.
 Note that a value greater than the default character width is
@@ -181,7 +213,7 @@ Changes to this variable do not take effect until the mode
 function `fci-mode' is run."
   :tag "Fill-Column Rule Width"
   :group 'fill-column-indicator
-  :type  '(integer :match (lambda (w val) (wholenump val))))
+  :type  '(integer :match (lambda (w val) (fci-posint-p val))))
 
 (defcustom fci-rule-image-format
   (if (image-type-available-p 'xpm) 'xpm 'pbm)
@@ -336,12 +368,15 @@ U+E000-U+F8FF, inclusive)."
 ;;; Miscellaneous Utilities
 ;;; ---------------------------------------------------------------------
 
+(defun fci-posint-p (x)
+  (and (wholenump x)
+       (/= 0 x)))
+
 (if (fboundp 'characterp)
     (defalias 'fci-character-p 'characterp)
   ;; For v22.
   (defun fci-character-p (c)
-    (and (wholenump c)
-         (/= 0 c)
+    (and (fci-posint-p c)
          ;; MAX_CHAR in v22 is (0x1F << 14).  We don't worry about
          ;; generic chars.
          (< c 507904))))
@@ -362,7 +397,7 @@ thin line (a `rule') at the fill column.
 With prefix ARG, turn fci-mode on if and only if ARG is positive.
 
 The following options control the appearance of the fill-column
-rule: `fci-rule-width', `fci-rule-color',
+rule: `fci-rule-column', `fci-rule-width', `fci-rule-color',
 `fci-rule-character', and `fci-rule-character-color'.  For
 further options, see the Customization menu or the package
 file.  (See the latter for tips on troubleshooting.)"
@@ -378,11 +413,11 @@ file.  (See the latter for tips on troubleshooting.)"
             (fci-set-local-vars)
             (dolist (hook fci-hook-assignments)
               (add-hook (car hook) (cdr hook) nil t))
-            (setq fci-column fill-column
+            (setq fci-column (or fci-rule-column fill-column)
                   fci-tab-width tab-width
                   fci-limit (if fci-newline-sentinel
-                                (1+ (- fill-column (length fci-saved-eol)))
-                              fill-column))
+                                (1+ (- fci-column (length fci-saved-eol)))
+                              fci-column))
             (fci-make-overlay-strings)
             (fci-full-update))
         (error
@@ -407,17 +442,23 @@ file.  (See the latter for tips on troubleshooting.)"
   "Check that all user options for fci-mode have valid values."
   (unless (memq fci-rule-image-format '(xpm xbm pbm))
     (error "Unrecognized value of `fci-rule-image-format'"))
-  (when (and fci-rule-character-color
-             (not (color-defined-p fci-rule-character-color)))
-    (signal 'wrong-type-argument `(color-defined-p ,fci-rule-character-color)))
-  (let ((checks `((color-defined-p . ,fci-rule-color)
-                  (fci-character-p . ,fci-rule-character)
-                  (fci-character-p . ,fci-blank-char)
-                  (fci-character-p . ,fci-eol-char)
-                  (wholenump . ,fci-rule-width))))
+  ;; If the third element of a binding form is t, then nil is an acceptable
+  ;; value for the variable; otherwise, the variable must satisfy the given
+  ;; predicate.
+  (let ((checks `((,fci-rule-color color-defined-p)
+                  (,fci-rule-column fci-posint-p t)
+                  (,fci-rule-width fci-posint-p t)
+                  (,fci-rule-character-color color-defined-p t)
+                  (,fci-rule-character fci-character-p)
+                  (,fci-blank-char fci-character-p)
+                  (,fci-eol-char fci-character-p))))
     (dolist (check checks)
-      (unless (funcall (car check) (cdr check))
-        (signal 'wrong-type-argument (list (car check) (cdr check)))))))
+      (let ((value (nth 0 check))
+            (pred (nth 1 check))
+            (nil-is-ok (nth 2 check)))
+        (unless (or (and nil-is-ok (null value))
+                    (funcall pred value))
+          (signal 'wrong-type-argument (list pred value)))))))
 
 (defun fci-process-display-table ()
   "Set up a buffer-local display table for fci-mode."
@@ -551,7 +592,6 @@ file.  (See the latter for tips on troubleshooting.)"
             :data ,data
             :mask heuristic
             :ascent center)))
-
 
 ;; Generate the display spec for the rule.  Basic idea is to use a "cascading
 ;; display property" to display the textual rule if the display doesn't
@@ -723,6 +763,8 @@ file.  (See the latter for tips on troubleshooting.)"
                                (max (window-start win) start)))
                        (< max-end win-end))
               (setq max-end win-end)))
+          ;; FIX ME:  Check whether we can just set lossage to (length
+          ;; delenda).
           (unless (= max-end (point-max))
             (save-excursion
               (goto-char start)
@@ -783,8 +825,7 @@ file.  (See the latter for tips on troubleshooting.)"
 ;;    horizontal scrolling.  We detect such situations and force a return
 ;;    from hscrolling to bring our requested cursor position back into view.
 ;; These are all fast tests, so despite the large remit this function
-;; doesn't have any effect on editing speed.  (Typical case run-time
-;; benchmarks at 10e-6 on my machine.) 
+;; doesn't have any effect on editing speed. 
 (defun fci-post-command-check ()
   (cond
    ((not (and buffer-display-table
@@ -796,7 +837,7 @@ file.  (See the latter for tips on troubleshooting.)"
          (not (and (= (frame-char-width) fci-char-width)
                    (= (frame-char-height) fci-char-height))))
     (fci-mode 1))
-   ((not (and (= fill-column fci-column)
+   ((not (and (= (or fci-rule-column fill-column) fci-column)
               (= tab-width fci-tab-width)))
     (fci-mode 1))
    ((and (< 0 (window-hscroll))

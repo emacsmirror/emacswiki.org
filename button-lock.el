@@ -4,8 +4,8 @@
 ;;
 ;; Author: D Roland Walker <walker@pobox.com>
 ;; URL: https://github.com/rolandwalker/button-lock/raw/master/button-lock.el
-;; Version: 0.81
-;; Last-Updated: 29 May 2011
+;; Version: 0.82
+;; Last-Updated: 16 Nov 2011
 ;; EmacsWiki: ButtonLockMode
 ;; Keywords: mouse, button, hyperlink
 ;;
@@ -30,36 +30,38 @@
 ;;    (require 'button-lock)
 ;;    (global-button-lock-mode 1)
 ;;
-;;    ; add a button to the current buffer
-;;    (button-lock-set-button "\\<print\\>" 'beginning-of-line)
+;;    ; add a mouseable button to all occurences of a word
+;;    (button-lock-set-button "hello" 'beginning-of-line)
 ;;
-;;    ; to remove that button later, pass all the same arguments
-;;    ; to button-lock-unset-button
-;;    (button-lock-unset-button "\\<print\\>" 'beginning-of-line)
+;;    ; to remove that button later, pass all the same arguments to
+;;    ; button-lock-unset-button
+;;    (button-lock-unset-button "hello" 'beginning-of-line)
 ;;
-;;    ; or to remove the most recently added button
+;;    ; or, to remove the most recently added button
 ;;    (button-lock-pop-button)
 ;;
 ;;    ; create a fancy raised button
-;;    (button-lock-set-button "print" #'(lambda ()
-;;                                        (interactive)
-;;                                        (save-match-data
-;;                                          (if (re-search-forward "print" nil t)
-;;                                              (goto-char (match-beginning 0))
-;;                                            (goto-char (point-min))
-;;                                            (if (re-search-forward "print" nil t)
-;;                                                (goto-char (match-beginning 0))))))
+;;    (button-lock-set-button "hello" #'(lambda ()
+;;                                              (interactive)
+;;                                              (save-match-data
+;;                                                (deactivate-mark)
+;;                                                (if (re-search-forward "hello" nil t)
+;;                                                    (goto-char (match-beginning 0))
+;;                                                  (goto-char (point-min))
+;;                                                  (deactivate-mark)
+;;                                                  (if (re-search-forward "hello" nil t)
+;;                                                      (goto-char (match-beginning 0))))))
 ;;                            :face 'custom-button-face :mouse-face 'custom-button-mouse)
 ;;
 ;;    ; activate hyperlinks
 ;;    (button-lock-set-button "\\<http://[^[:space:]\n]+"
 ;;                            'browse-url-at-mouse
-;;                            :face 'link :policy 'prepend)
+;;                            :face 'link :face-policy 'prepend)
 ;;
 ;;    ; activate hyperlinks only in lines that begin with a comment character
 ;;    (button-lock-set-button "^\\s-*\\s<.*?\\<\\(http://[^[:space:]\n]+\\)"
 ;;                            'browse-url-at-mouse
-;;                            :face 'link :policy 'prepend :grouping 1)
+;;                            :face 'link :face-policy 'prepend :grouping 1)
 ;;
 ;;    ; turn folding-mode delimiters into mouseable buttons
 ;;    (add-hook 'folding-mode-hook  #'(lambda ()
@@ -81,7 +83,7 @@
 ;;                            :keyboard-binding "RET")
 ;;
 ;;    ; define a global button, to be set whenever the minor mode is activated
-;;    (button-lock-set-global-button '("\\<print\\>" 'beginning-of-line))
+;;    (button-lock-set-global-button '("hello" 'beginning-of-line))
 ;;
 ;; See Also
 ;;
@@ -291,12 +293,12 @@ mode."
      (when (called-interactively-p)
        (message "button-lock mode disabled"))))
 
-; The define-globalized-minor-mode macro adds some complexity and causes some bugs.
-; Specifically, it will cause multiple cycles of on/off toggling at each open, particularly
-; when used by both wiki-nav.el and button-lock.el.
-;
-; This setup does not eliminate multiple invocations of the minor mode.  However it seems
-; that the second invocation is the needed one, so no questions asked.
+;; The define-globalized-minor-mode macro adds some complexity and causes some bugs.
+;; Specifically, it will cause multiple cycles of on/off toggling at each open, particularly
+;; when used by both wiki-nav.el and button-lock.el.
+;;
+;; This setup does not eliminate multiple invocations of the minor mode.  However it seems
+;; that the second invocation is the needed one, so no questions asked.
 (define-minor-mode global-button-lock-mode
   "Toggle global `button-lock-mode'.
 
@@ -315,7 +317,7 @@ mode."
          (dolist (buf (buffer-list))
            (with-current-buffer buf
              (maybe-local-button-lock)))
-         ; seems to work fine without find-file hooks
+         ;; seems to work fine without find-file hooks
         (add-hook 'after-change-major-mode-hook 'maybe-local-button-lock))
     (remove-hook 'after-change-major-mode-hook  'maybe-local-button-lock)
     (dolist (buf (buffer-list))
@@ -400,8 +402,7 @@ buffer."
                                  s-mouse-4
                                  s-mouse-5
                                  s-wheel-down
-                                 s-wheel-up
-                                 )
+                                 s-wheel-up)
 
 "Attach mouse actions to text via `font-lock-mode'.
 
@@ -424,8 +425,8 @@ By default, :FACE has no properties, and :FACE-POLICY is :APPEND.
 This means that other, existing text properties will take
 priority, and that clickable text will not be distinguished
 without a mouseover.  To change this, try adding the arguments
-\":face 'link :policy 'prepend.\" Alternatively, `button-lock-face'
-may be customized.
+\":face 'link :face-policy 'prepend.\" Alternatively,
+`button-lock-face' may be customized.
 
 :MOUSE-FACE is the font face to set on mouseovers.  It defaults
 to `button-lock-mouse-face'.
@@ -483,7 +484,7 @@ The button value can be passed to `button-lock-extend-binding'."
         (message "button-lock mode is not active")
         nil)
 
-    ; else (not button-lock-mode)
+    ;; else (not button-lock-mode)
     (let ((map (make-sparse-keymap))
           (properties nil)
           (success nil)
@@ -543,8 +544,8 @@ The button value can be passed to `button-lock-extend-binding'."
                      s-mouse-4
                      s-mouse-5
                      s-wheel-down
-                     s-wheel-up
-                     ))
+                     s-wheel-up))
+
         (when (symbol-value var)
           (define-key map `[,var] (symbol-value var))))
 
@@ -577,7 +578,7 @@ The button value can be passed to `button-lock-extend-binding'."
             (when success
               (setq button-lock-button-list (delete fl-keyword button-lock-button-list)))
             (button-lock-maybe-unbuttonify-buffer))   ; cperl-mode workaround
-        ; else
+        ;; else
         (condition-case nil
             (setq success (font-lock-add-keywords nil fl-keyword))
           (error nil))
@@ -614,7 +615,7 @@ MOUSE-BINDING in order to set only a KEYBOARD-BINDING."
       (progn
         (message "no such button")
         nil)
-    ; else
+    ;; else
     (let ((success nil)
           (map nil))
       (condition-case nil
@@ -622,7 +623,7 @@ MOUSE-BINDING in order to set only a KEYBOARD-BINDING."
         (error nil))
       (if (not success)
           nil
-        ; else
+        ;; else
         (setq map (nth 3 (nth 1 (nth 1 (nth 1 (car (car (member existing-button button-lock-button-list))))))))
         (when mouse-binding
           (define-key map `[,mouse-binding] action))
@@ -651,10 +652,10 @@ which should always be 1."
        (progn
          (message "button-lock mode is not active")
          nil)
-     ; else
+     ;; else
      (if (not button-lock-button-list)
          nil
-       ; else
+       ;; else
        (let ((fl-keyword nil)
              (num (length button-lock-button-list)))
          (when first
@@ -681,7 +682,7 @@ mode is not active."
       (progn
         (message "button-lock mode is not active")
         nil)
-    ; else
+    ;; else
     (let ((fl-keyword nil)
           (num (length button-lock-button-list)))
       (while (setq fl-keyword (pop button-lock-button-list))
@@ -730,7 +731,7 @@ definitions removed, which should always be 1."
   (interactive)
   (if (not button-lock-global-button-list)
       nil
-    ; else
+    ;; else
     (let ((num (length button-lock-global-button-list)))
       (when first
         (setq button-lock-global-button-list (nreverse button-lock-global-button-list)))
@@ -770,7 +771,7 @@ such property around the point."
     (setq property (or property 'button-lock))
     (if (not (get-text-property pos property))
         nil
-      ; else
+      ;; else
       (setq start pos)
       (setq end pos)
       (while (and (> start (point-min))

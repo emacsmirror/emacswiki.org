@@ -4,10 +4,11 @@
 ;;
 ;; Author: D Roland Walker <walker@pobox.com>
 ;; URL: https://github.com/rolandwalker/button-lock/raw/master/wiki-nav.el
-;; Version: 0.11
-;; Last-Updated: 29 May 2011
+;; Version: 0.12
+;; Last-Updated: 16 Nov 2011
 ;; EmacsWiki: WikiNavMode
 ;; Keywords: mouse, button, hyperlink, navigation
+;; Package-Requires: ((button-lock "0.8"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -464,7 +465,7 @@ Set this value to the empty string to disable the feature entirely."
     map))
 
 (defvar wiki-nav-flash-overlay
-  ; Create and immediately delete, to get "overlay in no buffer".
+  ;; Create and immediately delete, to get "overlay in no buffer".
   (let ((ol (make-overlay (point-min) (point-min))))
     (delete-overlay ol)
     (overlay-put ol 'face      'wiki-nav-flash-face)
@@ -600,8 +601,8 @@ If called with negative ARG, remove the link."
       (point-min)
     (- (point) 1)))
 
-; was doing this by scanning text properties, but that fails when
-; font-lock has not fontified the whole buffer
+;; was doing this by scanning text properties, but that
+;; fails when font-lock has not fontified the whole buffer
 (defun wiki-nav-find-any-link (&optional arg)
   "Skip forward to the next defined wiki-nav link.
 
@@ -622,11 +623,12 @@ previous defined wiki-nav link."
       (setq search-function 're-search-backward)
       (setq wrap-point (point-max))
       (setq look-function 'wiki-nav-point-before))
-    ; get out of the current link if we are in one
+    ;; get out of the current link if we are in one
     (when (and (get-text-property (funcall look-function) 'wiki-nav)
                (setq newpos (funcall skip-function (point) 'wiki-nav)))
       (goto-char newpos))
-    ; find the next link
+    ;; find the next link
+    (deactivate-mark)
     (if (funcall search-function (concat (if (member major-mode wiki-nav-comment-only-modes) "\\s<[^\n]*?" "")
                                          "\\("
                                          (regexp-quote wiki-nav-link-start)
@@ -634,14 +636,15 @@ previous defined wiki-nav link."
                                          wiki-nav-link-text
                                          "\\)"
                                          (regexp-quote wiki-nav-link-stop)
-                                         "\\)"
-                                         ) nil t)
+                                         "\\)")
+                 nil t)
 
         (progn
           (goto-char (match-beginning 2))
           (wiki-nav-flash-show))
-      ; else
+      ;; else
       (goto-char wrap-point)
+      (deactivate-mark)
       (when (funcall search-function (concat (if (member major-mode wiki-nav-comment-only-modes) "\\s<[^\n]*?" "")
                                              "\\("
                                              (regexp-quote wiki-nav-link-start)
@@ -649,8 +652,8 @@ previous defined wiki-nav link."
                                              wiki-nav-link-text
                                              "\\)"
                                              (regexp-quote wiki-nav-link-stop)
-                                             "\\)"
-                                             ) nil t)
+                                             "\\)")
+                     nil t)
         (goto-char (match-beginning 2))
         (wiki-nav-flash-show)))))
 
@@ -674,7 +677,7 @@ previous defined wiki-nav link."
   (interactive)
   (wiki-nav-action-1 (point)))
 
-; Monolithic function to dispatch any link action.
+;; Monolithic function to dispatch any link action.
 (defun wiki-nav-action-1 (pos)
   "Dispatch the default navigation action for the wiki-nav link at POS."
   (let ((bounds (button-lock-find-extent pos 'wiki-nav))
@@ -722,13 +725,13 @@ previous defined wiki-nav link."
             (cond
              ((and (> (length wiki-nav-function-link-pattern) 0)
                    (string-match wiki-nav-function-link-pattern string))
-                 ; imenu return value is not helpful.  It also sometimes changes the mark. Wrap it in an excursion
+                 ;; imenu return value is not helpful.  It also sometimes changes the mark. Wrap it in an excursion
                  (when (and (setq new-point (save-excursion (imenu (url-unhex-string (match-string 1 string))) (point)))
                             (not (= new-point (point))))
                    (goto-char new-point)
                    (wiki-nav-flash-show)
                    (setq found :func))
-                 ; return to the original buffer on failure
+                 ;; return to the original buffer on failure
                  (unless found
                    (when (and visit
                               (> (length string) 0))
@@ -737,8 +740,8 @@ previous defined wiki-nav link."
                    (goto-char point-start)))
              ((and (> (length wiki-nav-line-number-link-pattern) 0)
                    (string-match wiki-nav-line-number-link-pattern string))
-                 ; For line-number scheme, go as far as possible, but don't set found unless successful.
-                 ; Don't worry about returning to original buffer on failure.
+                 ;; For line-number scheme, go as far as possible, but don't set found unless successful.
+                 ;; Don't worry about returning to original buffer on failure.
                  (let ((ln (string-to-number (match-string 1 string))))
                    (widen)
                    (goto-char (point-min))
@@ -748,6 +751,7 @@ previous defined wiki-nav link."
                        (setq found :line))))
              (t
               (setq string (regexp-quote (url-unhex-string string)))
+              (deactivate-mark)
               (if (funcall search-function (concat  (if (member major-mode wiki-nav-comment-only-modes) "\\s<[^\n]*?" "")
                                                    "\\("
                                                    (regexp-quote wiki-nav-link-start)
@@ -755,14 +759,15 @@ previous defined wiki-nav link."
                                                    "[[:space:]<>]*" string "[[:space:]]*"
                                                    "\\)"
                                                    (regexp-quote wiki-nav-link-stop)
-                                                   "\\)"
-                                                   ) nil t)
+                                                   "\\)")
+                           nil t)
                   (progn
                     (setq found :jump)
                     (goto-char (match-beginning 2))
                     (wiki-nav-flash-show))
-                ; else
+                ;; else
                 (goto-char wrap-point)
+                (deactivate-mark)
                 (if (funcall search-function (concat (if (member major-mode wiki-nav-comment-only-modes) "\\s<[^\n]*?" "")
                                                      "\\("
                                                      (regexp-quote wiki-nav-link-start)
@@ -770,13 +775,13 @@ previous defined wiki-nav link."
                                                      "[[:space:]<>]*" string "[[:space:]]*"
                                                      "\\)"
                                                      (regexp-quote wiki-nav-link-stop)
-                                                     "\\)"
-                                                     ) nil t)
+                                                     "\\)")
+                             nil t)
                     (progn
                       (setq found :wrap)
                       (goto-char (match-beginning 2))
                       (wiki-nav-flash-show))))
-              ; return to the original buffer on failure
+              ;; return to the original buffer on failure
               (unless found
                 (when (and visit
                            (> (length string) 0))
@@ -790,7 +795,7 @@ previous defined wiki-nav link."
              ((or (not found)
                   (and (>= (point) (- (car bounds) (length wiki-nav-link-start)))
                        (<= (point) (+ (cadr bounds) (length wiki-nav-link-stop)))))
-                 ; give failure message even when wiki-nav-less-feedback is set
+                 ;; give failure message even when wiki-nav-less-feedback is set
                  (message "no matching link found"))
              ((eq found :wrap)
                  (unless wiki-nav-less-feedback

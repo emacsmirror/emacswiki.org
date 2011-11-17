@@ -1,0 +1,38 @@
+= screensend.el =
+
+Simple Emacs script to allow you to send selected blocks of text to a
+running screen or tmux session. This is useful for sending text to interactive
+programs like clojure, psql, etc. in cases where the built-in term-mode is
+too slow.
+
+== Github Page: ==
+
+[https://github.com/benbooth5/screensend.el screensend.el]
+
+== Usage: ==
+
+    ; for screen
+    (require 'screensend)
+    (global-set-key [f4] 'screen-select)
+    (global-set-key [f5] 'screen-send)
+  
+    ; for tmux
+    (require 'screensend)
+    (global-set-key [f4] 'tmux-select)
+    (global-set-key [f5] 'tmux-send)
+
+Start a screen session:
+
+    screen -S mysession
+
+Or if you're using tmux:
+  
+    tmux new-session -s mysession
+
+Now press F4 and select "mysession"
+
+Now either select some text or place the cursor in between a text paragraph 
+and hit F5.
+
+The selected text is transmitted to the screen session.
+

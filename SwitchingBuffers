@@ -61,7 +61,7 @@ A solution without this problem is demonstrated by Microsoft Windows. On this pl
 
       (defun switch-to-previous-buffer ()
       (interactive)
-      (switch-to-buffer (other-buffer)))
+      (switch-to-buffer (other-buffer (current-buffer) 1)))
 
 I have this (or something similar) bound to F1 and it is really handy. Saves me from the Ctrl-key sickness also... :) -- MaDa
 

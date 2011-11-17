@@ -38,7 +38,7 @@ and the URLs in the current line are buttonized.
 (global-set-key "\C-cmu1"  'tinyurl-mode-1) ; Toggle for current buffer
 
 ;; OPTIONAL: Attach to VM, RMAIL, Gnus etc.
-;; (add-hook 'tinyurl-:load-hook  'tinyurl-install-to-packages)
+;; (add-hook 'tinyurl--load-hook  'tinyurl-install-to-packages)
 
 ;; OPTIONAL: Select backend for EMAIL urls. See variable's documentation.
 (setq mail-user-agent 'message-user-agent)

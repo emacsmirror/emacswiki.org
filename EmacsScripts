@@ -42,7 +42,7 @@ The semicolon is a command delimiter in all three shells.  And, in all
 three shells, the exec command has the same meaning.  Hence,
 
 
-   :;exec emacs -batch -l $0 -f main $*
+   :;exec emacs -batch -l "$0" -f main "$@"
 
 
 will have Emacs interpreting the current script, with the entry
@@ -54,7 +54,7 @@ is a self-evaluating constant in current versions of Emacs) and the
 remainder of the line is ignored as a comment.
 
 
-The remaining arguments, $*, are accessabile by way of the variable
+The remaining arguments, "$@", are accessabile by way of the variable
 "command-line-args-left".  Setting this variable to nil or calling the
 function kill-emacs at the exit point of the script will prevent Emacs
 from loading the remaining arguments as files or directories into
@@ -88,8 +88,8 @@ self-evaluating in all versions of Emacs.
 The following script runs on Linux and Windows. It should also run on Mac X.
 
 
-    :;exec emacs -batch -l    $0  -f : $* --no-site-file -q  # -*- Emacs-Lisp -*-
-    ;     @emacs -batch -l "%~f0" -f : %* --no-site-file -q  & goto :EOF
+    :;exec emacs -batch -l   "$0" -f : "$@" --no-site-file -q  # -*- Emacs-Lisp -*-
+    ;     @emacs -batch -l "%~f0" -f :  %*  --no-site-file -q  & goto :EOF
     ;
     ; This script will obfuscate a text file, by loading it in, then repeatedly
     ; doing pairs of ^F and ^T commands throughout, and then saving it.  The original
@@ -143,8 +143,8 @@ invisible to Scheme (and eLisp).  Hence scripts that run in emacs + windows + un
 
 Here is another one - - if you ever need a random number on the fly, emacs can provide it.
 
-    :;exec emacs -batch -l    $0  $* --no-site-file -q  # -*- Emacs-Lisp -*-
-    ;     @emacs -batch -l "%~f0" %* --no-site-file -q  & goto :EOF
+    :;exec emacs -batch -l   "$0" "$@" --no-site-file -q  # -*- Emacs-Lisp -*-
+    ;     @emacs -batch -l "%~f0"  %*  --no-site-file -q  & goto :EOF
     ;
     ; Gives a (usually) big random integer number, with no arguments.
     ;                  If a positive integer n is given, the range is [0,n) .

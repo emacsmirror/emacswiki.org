@@ -12,6 +12,10 @@ To toggle graphical indication of the fill column in a buffer, use the command #
 
 The following are the basic configuration options.  For further advanced options, see the headers in the package file.  Buffer-local values of the following are supported (so one can, e.g., use a rule of different appearance in different buffers).
 
+=== General Configuration ===
+
+<b>Location</b>.   By default fci-mode draws a vertical line at the fill column.  If you'd like it to be drawn at a different location, set ##fci-rule-column## to the desired column number.  (A case in which this is useful is when you want to fill comments at, for example, column 70, but want a vertical rule at column 80 or 100 to indicate the maximum line length for code.)  The default behavior is specified by setting fci-rule-column to nil.
+
 === Graphical Displays ===
 
 On graphical displays (displays that can display images) the fill-column rule is drawn using bitmap images.
@@ -187,6 +191,10 @@ Fci-mode uses whatever value you have ##fill-column## set to.  As 70 is the defa
 [new]
 
 Nice plugin.  Exactly what I was looking for.  One small nit.  In both graphical and terminal emacs, when I increase the size of the window or terminal (for example, to maximize it) the text and other emacs UI elements automatically fill the newly expanded buffer, but the fill-column line does not.  Once I do anything (for example, move point) the fill-column line redraws itself down the remainder of the visible buffer area. --[::rlange]
+
+[new:AlpAker:2011-11-16 15:40 UTC]
+
+Thanks for pointing that out.  I have a fix, but I'd like to test it a little before posting a new version.  Check back after the weekend.
 
 ----
 CategoryFilling 
