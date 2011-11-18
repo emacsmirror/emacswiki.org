@@ -29,6 +29,16 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 {{{
         (add-to-list 'load-path "/path/to/foo/twittering-mode-X.X.X")
 }}}
+NOTE: For twittering-mode-2.0.0, if you have the latest emacs (or version 22 or later), you only need to put /twittering-mode.el/ in your load path; you do not need the other directories or files that are in the archive file.
+For example,
+if you have this in your `.emacs`:
+{{{
+(add-to-list 'load-path "~/.emacs.d/site-lisp/")
+}}}
+just
+{{{
+mv twittering-mode-2.0.0/twittering-mode.el ~/.emacs.d/site-lisp/
+}}}
 * Install cURL, wget, gnutls, or openssl for using SSL connection.
 * Proceed to **Set up your Emacs**
 
@@ -226,6 +236,21 @@ twittering-mode also provides hooks that are run when new tweets arrive. This ex
                     "New tweets"
                     (format "You have %d new tweet%s"
                             n (if (> n 1) "s" ""))))))
+
+== URL shortening service ==
+The default URL shortening service for twittering-mode-2.0.0 is /tinyurl.com/.
+
+You can use /bit.ly/ (or /j.mp/); add these lines to your `.emacs`
+{{{
+(setq twittering-tinyurl-service 'bit.ly)
+(setq twittering-bitly-login "YOURbitlyUsername")
+(setq twittering-bitly-api-key "YOURbitlyAPIkey")
+}}}
+If your not sure what your username is, look at your /bit.ly/ "Public Timeline" to find it --> https://bitly.com/u/USERNAME
+
+Find your API Key in /bit.ly/ settings.
+
+You can also set your default short domain (e.g., /j.mp/) in the /bit.ly/ settings.
 
 == Enabling Spell Check for Tweets ==
 Add the hook below to enable spell checking before tweets

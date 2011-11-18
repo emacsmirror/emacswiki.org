@@ -5,7 +5,7 @@ There is also a page on other BooksAboutEmacs. For an introduction to Emacs, see
 
 Emacs comes with a tutorial, which can be accessed using <tt>C-h t</tt> or the Help menu.  It will walk you step-by-step through an editing session in which you will learn the basics of using Emacs as an editor. See EmacsTutorial.
 
-Emacs also comes with a complete manual, called the EmacsManual.
+Emacs also comes with a complete manual, called the EmacsManual. It might be helpful to know some EmacsDocumentationNotation.
 
 If you wish to extend Emacs, you can do so using EmacsLisp, or Elisp for short.  You can learn the basics of simple Emacs Lisp programming by reading the EmacsLispIntro, and a complete reference manual for Emacs Lisp is available in the EmacsLispReference.
 

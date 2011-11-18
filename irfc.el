@@ -1306,9 +1306,9 @@ ALIST contain special properties for overlay."
 (defun irfc-overlay-remove-all ()
   "Remove all overlays from current buffer."
   (mapc (lambda (lst)
-          (while lst
-            (delete-overlay (car lst))
-            (setq lst (cdr lst))))
+          (when lst
+            (delete-overlay lst)
+            ))
         (let ((lists (overlay-lists)))
           (nconc (car lists) (cdr lists)))))
 

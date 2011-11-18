@@ -1,0 +1,26 @@
+This page describes notation conventions used in Emacs documentation. The EmacsManual provides a page of notation conventions but it does not cover everything. 
+
+
+
+== Backtick-Apostrophe Notation: `...' ==
+
+Emacs documentation abounds with short phrases, usually [[command]] names (e.g., `next-line') and [[key sequence]]s (e.g. `C-x 4 f'), that are enclosed by two marks.  See EmacsKeyNotation for more about the notation for key sequences.
+
+The opening mark is accent grave or backtick ('''##`##'''). The ending mark is an apostrophe ('''##'##'''). The origins of this convention are uncertain, but an inquiry on the email list: ##help-gnu-emacs@gnu.org## yielded these suggestions and ideas
+
+# It is used by Texinfo for symbols in programming languages. Note the printed manuals simply use a monospace font.
+# In a font used originally, these two characters (##`##, ##'##) were single quotes with curves inward. That is, they were symmetrical. Nowadays, the second of these (apostrophe) is typically vertical, not curved or slanted.
+# It was used to mark italics
+
+
+=== Discussion of `...' Notation ===
+
+The ##`...'## notation dates from plain text-only communication: email etc.  Keep in mind that Emacs still is mainly a plain-text editor.  It still uses mainly fixed-width fonts by default, because it is mainly used with code, by programmers.
+The ##`...'## convention is simple and clear.  It is also easy to parse, and hence highlight -- as is done on ThisWiki, for instance. -- DrewAdams
+
+
+
+----
+
+CategoryHelp
+CategoryDocumentation

@@ -1,0 +1,5 @@
+code-imports is a package for managing import files in C/C++ and Java, most useful for those working with larger codebases or standard ordering rules.  The package is hosted on github [https://github.com/ahyatt/code-imports].
+
+It allows two major pieces of functionality: organizing imports according to a set of rules, and quickly making an import statement out of a visited file.
+
+code-imports works with emacs 23 and above.

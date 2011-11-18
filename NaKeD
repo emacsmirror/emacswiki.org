@@ -1,4 +1,4 @@
-This page is about library '''NaKeD''', <tt>[[naked.el]]</tt>, which provides for <u>'''''n'''''</u>o-<u>'''''a'''''</u>ngles <u>'''''k'''''e</u>y <u>'''''d'''''</u>escriptions.  It lets you use [[key sequence|key-sequence]] descriptions that do not bother with '''angle brackets''': '''`##<##'''' and '''`##>##''''.
+This page is about library '''%%NaKeD%%''', <tt>[[naked.el]]</tt>, which provides for <u>'''''n'''''</u>o-<u>'''''a'''''</u>ngles <u>'''''k'''''e</u>y <u>'''''d'''''</u>escriptions.  It lets you use [[key sequence|key-sequence]] descriptions that do not bother with '''angle brackets''': '''`##<##'''' and '''`##>##''''.
 
 Prior to Emacs 21, vanilla GnuEmacs did not bother with angle brackets either, but someone around the turn of the century had the bright idea that Emacs could not do without them.  So instead of the `delete' key we now have the `##<delete>##' key.  And instead of `C-x M-delete' we now have 
 `##C-x M-<delete>##'.  ''On n'arrete pas le progres !''
@@ -17,7 +17,7 @@ So go ahead and ''go '''NaKeD''''' -- shed your angles.
 
 Here's what you need.  It won't completely purge Emacs from insulting you with the occasional pair of angle brackets, but it at least lets you DTRT in code you write:
 
-* Use function `naked-key-description' instead of `key-description'.  The former outputs naked key descriptions: no angle brackets around function keys.  E.g., if ##KEY## is the sequence of events produced by holding the ##Shift## key while hitting the ##Insert## key, then ##(naked-key-description KEY)## returns ##"S-insert"## (and not ##"S-<insert>"##).  (Internally, this sequence of events is the vector [S-insert].)
+* Use function `naked-key-description' instead of `key-description'.  The former outputs naked key descriptions: no angle brackets around function keys.  E.g., if ##KEY## is the sequence of events produced by holding the ##Shift## key while hitting the ##Insert## key, then ##(naked-key-description KEY)## returns ##"S-insert"## (and not ##"S-<insert>"##).  (Internally, this sequence of events is the vector ##[S-insert]##.)
 
 * Use [[macro]] `naked' instead of macro `kbd'.  The former expects its argument key-sequence description to use naked keys, not clothed in angle brackets.  E.g., ##(naked "C-M-delete")## has the same effect as ##(kbd "C-M-<delete>")##.
 
@@ -28,7 +28,7 @@ Here's what you need.  It won't completely purge Emacs from insulting you with t
 But you can also have it both ways if or when you might need to: All of these accept an optional argument ##ANGLES## which, if non-`nil', returns the behavior to the brain-dead vanilla one, expecting function keys to be fully clothed in angle brackets.  Example:
 ##(naked "C-M-<delete>" t)##
 
-Enjoy!
+''Enjoy!''
 
 
 ----

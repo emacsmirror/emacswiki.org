@@ -10,6 +10,8 @@
 ;; function from the original. I couldn't find the contact details for the original author
 ;; (the weblink is dead), but I'm posting to emacswiki anyway for the benefit of others.
 ;; Joe Bloggs (<vapniks@yahoo.com>).
+;; I have also altered the defadvice for delete-file and delete-directory to handle the case
+;; where the home directory is in a different partition.
 
 ;;; Limitation of Warranty
 
@@ -81,8 +83,6 @@
 ;;  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ;;  NOTE: I (Joe Bloggs - vapniks@yahoo.com) have now changed this function to use
 ;;        the `system-type' variable since I was having problems with the original function.
-;;        I could not find the contact details of the original author (the weblink is dead)
-;;        but I am posting this on emacswiki anyway for the benefit of others.
 
 ;;  (4) The name of this file trashcan.el might conflict with other Lisp files
 
@@ -364,6 +364,9 @@ therefore is more dangerous than delete-file"
   (if (not (eq major-mode 'dired-mode))
       (error "You must be in dired mode to execute dired-internal-do-deletions"))
 
+
+  (if (string-match "^/[a-z0-9]*:" (car (car l)))
+      ad-do-it
   ;;(debug)
 
   (let ((ptr l))
@@ -426,7 +429,7 @@ therefore is more dangerous than delete-file"
 
 	    ;;(debug)
 	    (trashcan--rename-to-trash list)
-	    (revert-buffer))))))
+	    (revert-buffer)))))))
 
 (defun trashcan--make-absolute (filename)
   (setq filename (expand-file-name filename))
@@ -454,7 +457,12 @@ variable trashcan-patch-delete-stuff-p"
   ;;(if (string-match
 
   (if (or (not trashcan-patch-delete-stuff-p)
-	  (string-match "^#.*#$" (file-name-nondirectory filename)))
+	  (string-match "^#.*#$" (file-name-nondirectory filename))
+          ;; following three lines added by me (Joe Bloggs) since I have home dir in seperate partition
+          ;; and it gets stuck in an infinite loop without these lines
+          (and (file-name-directory filename)
+               (not (or (string-match (concat "^" (expand-file-name "~") "/") (file-name-directory filename))
+                        (string-match "^~/" (file-name-directory filename))))))
       (progn
 	;;(beeps "file=%s" (file-name-nondirectory filename))
 	ad-do-it)
@@ -477,7 +485,12 @@ See the variable trashcan-patch-delete-stuff-p"
   ;;(beeps "Calling delete-directory")
   ;;(beeps "directory=%s" directory)
   (if (or (not trashcan-patch-delete-stuff-p)
-	  (string-match "^#.*#$" (file-name-nondirectory directory)))
+	  (string-match "^#.*#$" (file-name-nondirectory directory))
+          ;; following three lines added by me (Joe Bloggs) since I have home dir in seperate partition
+          ;; and it gets stuck in an infinite loop without these lines
+          (and (file-name-directory filename)
+               (not (or (string-match (concat "^" (expand-file-name "~") "/") (file-name-directory filename))
+                        (string-match "^~/" (file-name-directory filename))))))
       ad-do-it
     (setq directory (trashcan--make-absolute directory))
     ;;(debug)

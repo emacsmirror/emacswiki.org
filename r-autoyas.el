@@ -6,10 +6,10 @@
 ;; Maintainer: Sven Hartenstein
 
 ;; Created: Fri Mar 25 10:36:08 2011 (-0500)
-;; Version: 0.20
-;; Last-Updated: Wed Nov 16 14:34:26 2011 (-0600)
+;; Version: 0.22
+;; Last-Updated: Thu Nov 17 09:06:18 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 781
+;;     Update #: 789
 ;; URL: http://www.svenhartenstein.de/Software/R-autoyas
 ;; Keywords: R yasnippet
 ;; Compatibility:
@@ -53,6 +53,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 17-Nov-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Nov 17 09:05:49 2011 (-0600) #787 (Matthew L. Fidler)
+;;    Fixed `r-autoyas-defined-p'
+;; 17-Nov-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Nov 17 08:48:03 2011 (-0600) #784 (Matthew L. Fidler)
+;;    Added Forward compatablilty for (interactive-p)
+;; 17-Nov-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Nov 16 14:40:52 2011 (-0600) #782 (Matthew L. Fidler)
+;;    Changed the order of r-autoyas alais of old
 ;; 16-Nov-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Nov 16 14:10:32 2011 (-0600) #758 (Matthew L. Fidler)
 ;;    Changed ignored expressions to only be ignore when using a
@@ -199,12 +208,12 @@
 :type '(repeat (string :tag "Package Name"))
 :group 'r-autoyas)
 
-(defalias 'r-autoyas-ignored-functions r-autoyas-paren-ignored-functions)
 (defcustom r-autoyas-paren-ignored-functions
 '("function" "for" "if" "cos" "sin" "exp" "tan" "data.frame" "cat" "print" "seq" "rbind" "cbind")
 "List of functions to ignore when creating auto-snippets by inserting a parenthesis"
 :type '(repeat (string :tag "Ignored R function"))
 :group 'r-autoyas)
+(defalias 'r-autoyas-ignored-functions r-autoyas-paren-ignored-functions)
 
 (defcustom r-autoyas-number-of-commas-before-return 4
 "Defines the number of commas before the snippet is inserted as:
@@ -766,6 +775,7 @@ ad-do-it)))
 (setq ret nil)
 (when with-paren
 (setq tmp (substring tmp 0 -1)))
+(ess-command (concat "existsFunction(\"" tmp "\");\n")
 (get-buffer-create "*r-autoyas*"))
 (with-current-buffer "*r-autoyas*"
 (goto-char (point-min))
@@ -775,9 +785,10 @@ ad-do-it)))
 (setq ret tmp))
 (when (and ret with-paren (member ret r-autoyas-paren-ignored-functions))
 (setq ret nil))
-(when (interactive-p)
+(when (or (and (fboundp 'interactive-p) (interactive-p))
+(and (fboundp 'called-interactively-p) (called-interactively-p)))
 (message "Defined: %s" ret))
-(symbol-value 'ret)))))
+(symbol-value 'ret))))))
 
 ;;;###autoload
 (add-hook 'ess-mode-hook

@@ -1,4 +1,6 @@
-In Emacs documentation, [[key sequence]] notation can be confusing for an EmacsNewbie. Here is an overview:
+This page is about the notation of [[key sequence]]s in Emacs documentation and in Emacs itself (GUI, terminal-mode).  
+
+== Overview ==
 
 ; C-: means (press and hold) the Control key
 ; M-: means the [[Meta]] key (the Alt key, on most keyboards)
@@ -9,10 +11,27 @@ In Emacs documentation, [[key sequence]] notation can be confusing for an EmacsN
 ; ESC: means the Escape key
 ; TAB: means the Tab key
 
-A notation such as `C-M-' (or, equivalently, `M-C') means press and hold ''both'' Control and Meta (Alt) keys.
+A notation such as `C-M-s' (or, equivalently, `M-C-x') means press and hold ''both'' Control and Meta (Alt) keys while hitting the `x' key.
 
 See the section "Kinds of User Input" in the EmacsManual ([[Manual:User Input]]).
 
+
+
+
+== Angle-Bracket Notation ==
+
+Some keys are referred to as "function" keys or "pseudo" keys.  This includes keys that are not among the keyboard function keys `F1',...`F12'.  It includes keys that might not be on your keyboard, but are on other keyboards.  It even includes keys, such as `##<insert-file>##', that are not on any keyboard, anywhere.  For one thing, Emacs treats menu bindings as key bindings: a menu item is implemented as a pseudo key.
+
+Starting with release 21, the GnuEmacs maintainers decided to denote such keys by enclosing their names in angle brackets: '''##<...>##'''.  Examples: `##<delete>##' is the Delete key, `##<insert>##' is the Insert key, and `##<tab>##' is the Tab key (or rather it is sometimes, depending on your keyboard).
+
+Modifier keys that are part of a key sequence that contains a pseudo key are sometimes written inside the angle brackets: `##<S-tab>##', `##<C-insert>##'.  And sometimes they are written outside: `##S-<tab>##', `##C-<insert>##'.
+
+Are the angle brackets really ''necessary'', in order to disambiguate keys?  No.
+
+If you would like to do without the angle brackets, at least in most interactive contexts (i.e., not hard-coded, literal occurrences), you can do so.  Just use library NaKeD (No Angles Key Descriptions).  
+
+
 ----
 CategoryHelp
+CategoryDocumentation
 CategoryKeys

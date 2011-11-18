@@ -4,6 +4,8 @@ I used to contribute to the JDE project.  I currently make minor contributions t
 
 I used to work on the [[Google_Wave_for_Emacs]] project, a project to create a client for Google Wave in emacs.  But, Wave got de-prioritized.  I may try to spin the websockets library out of it, though.
 
+Currently I maintain the CodeImports library, which is a package for managing imports in C++ and Java code.
+
 
 [new:DrewAdams:2010-01-19 04:57 UTC]
 Welcome to the wiki. -- DrewAdams

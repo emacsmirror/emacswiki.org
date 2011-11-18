@@ -1,5 +1,14 @@
 Sometimes you want to bind a key to some code.  You can use a lambda
-to create an anonymous function; but that is not enough.  You must
+to create an anonymous function; but that is not enough.
+
+    (global-set-key (kbd "C-c t")
+                    (lambda ()
+                      (set-default 'truncate-partial-width-windows
+                                   (not truncate-partial-width-windows))
+                      (message "truncate-partial-width-windows: %S"
+                               truncate-partial-width-windows)))
+
+You must
 make it interactive, too:
 
     (global-set-key (kbd "C-c t")
@@ -24,6 +33,30 @@ Then:
                                       (not truncate-partial-width-windows))
                          (message "truncate-partial-width-windows: %S"
                                   truncate-partial-width-windows)))
+
+[new]
+But the macro is only useful in narrow situations, since interactive can often take arguments.
+For example,
+
+    (global-set-key "\C-w"
+     (lambda (beg end &optional arg)
+       "Kill between BEG and END, but delete if prefix argument ARG."
+       (interactive "*r\nP")
+       (if arg 
+           (delete-region beg end)
+         (kill-region beg end))))
+
+Better to just make an InteractiveFunction ("command"), no matter how small,
+and add its symbol to the map, rather than adding its LambdaExpression.
+
+    (global-set-key "\C-w" 'my-kill-region-or-delete)
+
+    (defun my-kill-region-or-delete (beg end &optional arg)
+      "Kill between BEG and END, but delete if prefix argument ARG."
+      (interactive "*r\nP")
+      (if arg 
+          (delete-region beg end)
+        (kill-region beg end))))
 
 ----
 CategoryCode
