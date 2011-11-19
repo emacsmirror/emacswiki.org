@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Tue Nov 15 10:43:15 2011 (-0800)
+;; Last-Updated: Fri Nov 18 17:27:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 318
+;;     Update #: 324
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -296,6 +296,8 @@
 (define-key bmkp-jump-other-window-map "h"    'bmkp-lighted-jump-other-window) ; `C-x 4 j h'
 (define-key bmkp-jump-map              "i"    'bmkp-info-jump) ; `C-x j i'
 (define-key bmkp-jump-other-window-map "i"    'bmkp-info-jump-other-window) ; `C-x 4 j i'
+(define-key bmkp-jump-map              "\M-i" 'bmkp-image-jump) ; `C-x j M-i'
+(define-key bmkp-jump-other-window-map "\M-i" 'bmkp-image-jump-other-window) ; `C-x 4 j M-i'
 (define-key bmkp-jump-map              "j"    'bookmark-jump) ; `C-x j j'
 (put 'bookmark-jump :advertised-binding "\C-xjj")
 
@@ -779,6 +781,9 @@
 (define-key bmkp-jump-menu [bmkp-info-jump-other-window]
   '(menu-item "Info Node..." bmkp-info-jump-other-window :help "Jump to an Info bookmark"
     :enable (bmkp-info-alist-only)))
+(define-key bmkp-jump-menu [bmkp-image-jump-other-window]
+  '(menu-item "Image..." bmkp-image-jump-other-window :help "Jump to an image-file bookmark"
+    :enable (bmkp-image-alist-only)))
 (define-key bmkp-jump-menu [bmkp-non-file-jump-other-window]
   '(menu-item "Buffer (Non-File)..." bmkp-non-file-jump-other-window
     :help "Jump to a non-file (buffer) bookmark" :enable (bmkp-non-file-alist-only)))

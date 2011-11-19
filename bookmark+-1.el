@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Nov 15 13:29:21 2011 (-0800)
+;; Last-Updated: Fri Nov 18 16:53:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2391
+;;     Update #: 2411
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -168,6 +168,7 @@
 ;;    `bmkp-find-file-some-tags-regexp',
 ;;    `bmkp-find-file-some-tags-regexp-other-window',
 ;;    `bmkp-gnus-jump', `bmkp-gnus-jump-other-window',
+;;    `bmkp-image-jump', `bmkp-image-jump-other-window',
 ;;    `bmkp-info-jump', `bmkp-info-jump-other-window',
 ;;    `bmkp-jump-in-navlist', `bmkp-jump-in-navlist-other-window',
 ;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
@@ -296,7 +297,6 @@
 ;;    `bmkp-bookmark-last-access-cp', `bmkp-bookmark-file-alist-only',
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
-;;    `bmkp-bookmark-image-bookmark-p',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-name-member',
 ;;    `bmkp-bookmark-type', `bmkp-buffer-last-access-cp',
 ;;    `bmkp-buffer-names', `bmkp-compilation-file+line-at',
@@ -339,7 +339,8 @@
 ;;    `bmkp-get-visit-time', `bmkp-get-visits-count',
 ;;    `bmkp-gnus-alist-only', `bmkp-gnus-bookmark-p', `bmkp-gnus-cp',
 ;;    `bmkp-goto-position', `bmkp-handle-region-default',
-;;    `bmkp-handler-cp', `bmkp-has-tag-p', `bmkp-info-alist-only',
+;;    `bmkp-handler-cp', `bmkp-has-tag-p', `bmkp-image-alist-only',
+;;    `bmkp-image-bookmark-p', `bmkp-info-alist-only',
 ;;    `bmkp-info-bookmark-p', `bmkp-info-cp', `bmkp-isearch-bookmarks'
 ;;    (Emacs 23+), `bmkp-isearch-bookmarks-regexp' (Emacs 23+),
 ;;    `bmkp-isearch-next-bookmark-buffer' (Emacs 23+), `bmkp-jump-1',
@@ -421,7 +422,7 @@
 ;;    `bmkp-desktop-history', `bmkp-dired-history',
 ;;    `bmkp-edit-bookmark-record-mode-map', `bmkp-edit-tags-mode-map',
 ;;    `bmkp-file-bookmark-handlers', `bmkp-file-history',
-;;    `bmkp-gnus-history', `bmkp-info-history',
+;;    `bmkp-gnus-history', `bmkp-image-history', `bmkp-info-history',
 ;;    `bmkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bmkp-jump-display-function', `bmkp-jump-other-window-map',
 ;;    `bmkp-last-bmenu-state-file', `bmkp-last-bookmark-file',
@@ -623,11 +624,11 @@ accepts as its (first) argument a bookmark or bookmark name.
 These are the predefined type predicates:
  `bmkp-autofile-bookmark-p', `bmkp-autonamed-bookmark-for-buffer-p',
  `bmkp-autonamed-bookmark-p', `bmkp-bookmark-file-bookmark-p',
- `bmkp-bookmark-image-bookmark-p', `bmkp-bookmark-list-bookmark-p',
- `bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
- `bmkp-dired-this-dir-bookmark-p', `bmkp-file-bookmark-p',
- `bmkp-file-remote-p', `bmkp-file-this-dir-bookmark-p',
- `bmkp-function-bookmark-p', `bmkp-gnus-bookmark-p',
+ `bmkp-bookmark-list-bookmark-p', `bmkp-desktop-bookmark-p',
+ `bmkp-dired-bookmark-p', `bmkp-dired-this-dir-bookmark-p',
+ `bmkp-file-bookmark-p', `bmkp-file-remote-p',
+ `bmkp-file-this-dir-bookmark-p', `bmkp-function-bookmark-p',
+ `bmkp-gnus-bookmark-p', `bmkp-image-bookmark-p', 
  `bmkp-info-bookmark-p', `bmkp-last-specific-buffer-p',
  `bmkp-last-specific-file-p', `bmkp-local-directory-bookmark-p',
  `bmkp-local-file-bookmark-p', `bmkp-man-bookmark-p',
@@ -958,6 +959,7 @@ handler for a given file."
                              ("file"             . bmkp-file-history)
                              ("file-this-dir"    . bmkp-file-history)
                              ("gnus"             . bmkp-gnus-history)
+                             ("image"            . bmkp-image-history)
                              ("info"             . bmkp-info-history)
                              ("local-file"       . bmkp-local-file-history)
                              ("man"              . bmkp-man-history)
@@ -977,6 +979,7 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-dired-history ()            "History for Dired bookmarks.")
 (defvar bmkp-file-history ()             "History for file bookmarks.")
 (defvar bmkp-gnus-history ()             "History for Gnus bookmarks.")
+(defvar bmkp-image-history ()            "History for image-file bookmarks.")
 (defvar bmkp-info-history ()             "History for Info bookmarks.")
 (defvar bmkp-last-bmenu-state-file nil   "Last value of option `bmkp-bmenu-state-file'.")
 (defvar bmkp-local-file-history ()       "History for local-file bookmarks.")
@@ -1319,6 +1322,7 @@ See `bookmark-jump-other-window'."
 ;;    then return the value of that property.
 ;; 2. Handle the should-not-happen case of non-string, non-cons.
 ;; 3. Document NOERROR in doc string.
+;;
 (defun bookmark-get-bookmark (bookmark &optional noerror)
   "Return the bookmark record corresponding to BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -1818,7 +1822,10 @@ See `bookmark-jump', in particular for info about using a prefix arg."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Different relocation message for non-file bookmark.
+;; 1. If bookmark has its own handler but that is not a defined function, use the default handler.
+;;    This lets Emacs 22, for instance, handle Emacs 23+ image bookmarks.
+;;
+;; 2. Different relocation message for non-file bookmark.
 ;;
 (defun bookmark-handle-bookmark (bookmark)
   "Call BOOKMARK's handler, or `bookmark-default-handler' if it has none.
@@ -1831,7 +1838,7 @@ is handled as follows:
  If BOOKMARK has no `filename' entry, do nothing.
  Else prompt to relocate the file.
    If relocated, then try again to handle.  Else raise a file error."
-  (if (bookmark-get-handler bookmark)
+  (if (functionp (bookmark-get-handler bookmark))
       (funcall (bookmark-get-handler bookmark) (bookmark-get-bookmark bookmark))
     (condition-case err
         (funcall 'bookmark-default-handler (bookmark-get-bookmark bookmark))
@@ -3601,18 +3608,6 @@ expected to be the file name prefixed by PREFIX (a string)."
 BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bmkp-jump-bookmark-file))
 
-(defun bmkp-bookmark-image-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK is an image-file bookmark.
-BOOKMARK is a bookmark name or a bookmark record."
-  (or (eq (bookmark-get-handler bookmark) 'image-bookmark-jump)
-      (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
-           (bmkp-file-bookmark-p bookmark)
-           (not (bmkp-dired-bookmark-p bookmark))
-           (if (fboundp 'string-match-p)
-               (string-match-p (image-file-name-regexp) (bookmark-get-filename bookmark))
-             (save-match-data
-               (string-match (image-file-name-regexp) (bookmark-get-filename bookmark)))))))
-
 (defun bmkp-bookmark-list-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a bookmark-list bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -3668,6 +3663,18 @@ BOOKMARK is a bookmark name or a bookmark record."
 BOOKMARK is a bookmark name or a bookmark record."
   (memq (bookmark-get-handler bookmark)
         '(gnus-summary-bookmark-jump bmkp-jump-gnus bmkext-jump-gnus)))
+
+(defun bmkp-image-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an image-file bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (or (eq (bookmark-get-handler bookmark) 'image-bookmark-jump)
+      (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+           (bmkp-file-bookmark-p bookmark)
+           (not (bmkp-dired-bookmark-p bookmark))
+           (if (fboundp 'string-match-p)
+               (string-match-p (image-file-name-regexp) (bookmark-get-filename bookmark))
+             (save-match-data
+               (string-match (image-file-name-regexp) (bookmark-get-filename bookmark)))))))
 
 (defun bmkp-info-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an Info bookmark.
@@ -4002,6 +4009,12 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-gnus-bookmark-p bookmark-alist))
 
+(defun bmkp-image-alist-only ()
+  "`bookmark-alist', filtered to retain only image-file bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-image-bookmark-p bookmark-alist))
+
 (defun bmkp-info-alist-only ()
   "`bookmark-alist', filtered to retain only Info bookmarks.
 A new list is returned (no side effects)."
@@ -4145,8 +4158,7 @@ A new list is returned (no side effects).
 If visiting a file, this is `bmkp-this-file-alist-only'.
 Otherwise, this is `bmkp-this-buffer-alist-only'."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)
-                      bookmark-alist))
+  (bmkp-remove-if-not (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p) bookmark-alist))
 
 (defun bmkp-this-buffer-alist-only ()
   "`bookmark-alist', with only bookmarks for the current buffer.
@@ -5586,7 +5598,7 @@ the file is an image file then the description includes the following:
   (let ((bname            (bookmark-name-from-full-record bookmark))
         (buf              (bmkp-get-buffer-name bookmark))
         (file             (bookmark-get-filename bookmark))
-        (image-p          (bmkp-bookmark-image-bookmark-p bookmark))
+        (image-p          (bmkp-image-bookmark-p bookmark))
         (location         (bookmark-prop-get bookmark 'location))
         (start            (bookmark-get-position bookmark))
         (end              (bmkp-get-end-position bookmark))
@@ -6774,6 +6786,26 @@ for info about using a prefix argument."
      (list (bmkp-read-bookmark-for-type "Gnus " alist t nil 'bmkp-gnus-history)
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
+
+;;;###autoload
+(defun bmkp-image-jump (bookmark-name &optional use-region-p) ; `C-x j I'
+  "Jump to an image-file bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
+  (interactive
+   (let ((alist  (bmkp-image-alist-only)))
+     (list (bmkp-read-bookmark-for-type "image " alist nil nil 'bmkp-image-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
+
+;;;###autoload
+(defun bmkp-image-jump-other-window (bookmark-name &optional use-region-p) ; `C-x j I'
+  "`bmkp-image-jump', but in another window."
+  (interactive
+   (let ((alist  (bmkp-image-alist-only)))
+     (list (bmkp-read-bookmark-for-type "image " alist t nil 'bmkp-image-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bmkp-info-jump (bookmark-name &optional use-region-p) ; `C-x j i'

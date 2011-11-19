@@ -2942,7 +2942,13 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 
 
 
+----
 
+Here is an icon you can to indicate image-file bookmarks in the `##*Bookmark List*##' display, if you don't have another that you prefer.  Save it and set option `bmkp-image-bookmark-image-file' to its location.
+
+[[image:BookmarkPlusImageFileDefaultIcon]]
+
+----
 
 
 

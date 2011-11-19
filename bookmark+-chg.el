@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov 15 13:27:39 2011 (-0800)
+;; Last-Updated: Fri Nov 18 17:30:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13845
+;;     Update #: 13870
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/18 dadams
+;;     Renamed: bmkp-bookmark-image-bookmark-p to bmkp-image-bookmark-p.
+;;     Added: bmkp-image-alist-only, bmkp-image-jump(-other-window), bmkp-image-history.
+;;     bookmark-handle-bookmark: If bmk has handler but it's not a function, use default handler.
+;;     bmkp-autotemp-bookmark-predicates: Update doc string to include bmkp-image-bookmark-p.
+;;     bmkp-types-alist: Added entry for images.
 ;; 2011/11/15 dadams
 ;;     bookmark-relocate: Redefine without using old-*.  Update Dired location too.
 ;;     Added: bmkp-cycle-this-file(/buffer)(-other-window),
@@ -394,6 +400,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/11/18 dadams
+;;     Added: bmkp-bmenu-mark-image-bookmarks, bmkp-bmenu-show-only-image-files,
+;;            bmkp-bmenu-image-bookmark-icon-file.
+;;     bmkp-bmenu-list-1: Show icon image for image-file bookmarks.
+;;     bookmark-bmenu-mode: Add to doc string: bmkp-image-jump, bmkp-bmenu-mark-image-bookmarks,
+;;                                             bmkp-bmenu-show-only-image-files.
+;;     bmkp-bmenu-mode-status-help: Added image icon to legend.
+;;     Bound keys: M-I M-M, M-I M-S to *-mark-image-bookmarks *-show-only-image-files.
+;;     Added to menus (Mark, Show): bmkp-bmenu-mark-image-bookmarks, bmkp-bmenu-show-only-image-files.
 ;; 2011/11/01 dadams
 ;;     bookmark-bmenu-mode: Changed mode-name var for mode line: Bookmarks, not Bookmark Menu.
 ;;                          Updated doc string for autofile & temporary jump commands.
@@ -527,6 +542,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/11/18 dadams
+;;     Bind bmkp-image-jump(-other-window) to C-x (4) j M-i.
+;;     bmkp-jump-menu: Add bmkp-image-jump-other-window.
 ;; 2011/11/15 dadams
 ;;     Bind *-this-file/buffer*, not *-this-buffer*.
 ;; 2011/11/01 dadams

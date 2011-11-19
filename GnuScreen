@@ -113,26 +113,27 @@ in the remote server's ##.bashrc## file.
 
 == 256 Colours under Gnu Screen ==
 
+Put the following line into your `.screenrc`:
 
-To make emacs use 256 colours under Gnu Screen, try putting the following line into your .screenrc:
+    term screen-256color
 
-    term xterm-256color
+You will also need to create a file called `term/screen-256color.el`someplace your load-path can find.  Inside the file, put the following code block into it:
 
-You might also have to install ncurses-term. On debian systems you can just do:
+    (defun terminal-init-screen ()
+      "Terminal initialization function for screen-256color."
+      (load "term/xterm")
+      (xterm-register-default-colors)
+      (tty-set-up-initial-frame-faces))
 
-    sudo aptitude install ncurses-term
+If the planets have aligned correctly, you should know see colors other than the standard 8/16.  You can verify this using `M-x list-colors-display`; if you set things up correctly there should be lots of colors
 
-In debian, this stops colour bash prompts from working. The fix to that is to edit .bashrc, find the line below
+There is a possibility that your distro might not include any terminfo data for screen-256color by default.  On Debian systems, you can install it yourself:
 
-    # set a fancy prompt (non-color, unless we know we "want" color)
+    # aptitude install ncurses-term
 
-and change the case statement to include screen-256color
+If this does not work either, the last resort is to attempt setting using `term xterm-256color` in your `.screenrc`.  This should work fine, but is a bodge since the terminal is technically screen itself, not the xterm.  If it breaks, you get to keep both pieces.
 
-    case "$TERM" in
-    xterm-color|screen|xterm-256color)
-
-See [http://push.cx/2008/256-color-xterms-in-ubuntu here] and [http://www.enigmacurry.com/2009/01/20/256-colors-on-the-linux-terminal/ here] for more details.
-
+Thanks to [http://www.xvx.ca/~awg/emacs-colors-howto.txt] for helping find some correct information.
 
 ----
 CategoryRelated
