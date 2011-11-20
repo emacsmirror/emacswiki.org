@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Nov 18 17:24:55 2011 (-0800)
+;; Last-Updated: Sat Nov 19 07:58:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 937
+;;     Update #: 949
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -559,18 +559,25 @@ was the last time you used it."
   :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-bmenu-image-bookmark-icon-file (and (fboundp 'display-images-p) (display-images-p)
-                                                    (convert-standard-filename
-                                                     "~/.emacs-bmk-bmenu-image-file-icon.png"))
+(defcustom bmkp-bmenu-image-bookmark-icon-file
+  (and (fboundp 'display-images-p) (display-images-p)
+       (let ((bmk-img    (convert-standard-filename "~/.emacs-bmk-bmenu-image-file-icon.png"))
+             (emacs-img  (convert-standard-filename
+                          (concat data-directory "images/gnus/exit-gnus.xpm"))))
+         (or (and (file-readable-p bmk-img)    bmk-img)
+             (and (file-readable-p emacs-img)  emacs-img))))
   "*Iconic image file to show next to image-file bookmarks.
-If nil, show no image.
-Otherwise, this is an absolute file name, possibly containing `~',
-\(the value is not expanded).
+If nil, show no image.  Otherwise, this is an absolute file name,
+possibly containing `~', (the value is not expanded).
 
 Use any image file that Emacs can display, but you probably want to
 use a small, iconic image - say 16x16 pixels.
 
-If you don't have another image that you prefer, you can use this one:
+The default image, which you are sure to have in any Emacs version
+that supports images, is 24x24 pixels.  That wastes vertical space, so
+you probably want to use something smaller.
+
+If you don't have another image that you prefer, try this one (16x16):
 http://www.emacswiki.org/emacs/BookmarkPlusImageFileDefaultIcon"
   :type '(choice
           (file  :tag "Use iconic image file")

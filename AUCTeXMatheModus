@@ -2,7 +2,7 @@ Mittels
 
     (LaTeX-math-mode) 
 
-in der <code>.emacs</code> (oder einem anderen init-file) wird der Mathemodus von <nowiki>AUCTeX</nowiki> aktiviert, der die Eingabe vieler mathematischer Symbole noch vereinfacht. 
+in der <code>.emacs</code> (oder einer anderen init-Datei) wird der Mathematikmodus von <nowiki>AUCTeX</nowiki> aktiviert, der die Eingabe vieler mathematischer Symbole noch vereinfacht. 
 
 Sicherlich ist <code>\alpha</code> für ein griechisches Alpha leicht zu merken, insebesondere leichter als "Einfügen, Sonderzeichen, Griechisches Alphabet, ..." ;-). Andererseits ist 
 

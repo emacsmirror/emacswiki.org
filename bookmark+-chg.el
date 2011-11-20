@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov 18 17:30:08 2011 (-0800)
+;; Last-Updated: Sat Nov 19 08:00:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13870
+;;     Update #: 13872
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,7 +54,7 @@
 ;;       `Commentary'.
 ;;
 ;;    (The commentary links in #1 and #3 work only if you put library
-;;    `bookmark+-doc.el' in your `load-path'.)
+ ;;    `bookmark+-doc.el' in your `load-path'.)
 ;;
 ;;
 ;;    ****** NOTE ******
@@ -400,6 +400,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/11/19 dadams
+;;     bmkp-bmenu-image-bookmark-icon-file: Default to an existing Emacs image file, not nil.
 ;; 2011/11/18 dadams
 ;;     Added: bmkp-bmenu-mark-image-bookmarks, bmkp-bmenu-show-only-image-files,
 ;;            bmkp-bmenu-image-bookmark-icon-file.

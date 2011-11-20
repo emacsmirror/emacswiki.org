@@ -2015,8 +2015,8 @@ displayed now).  See [[#StateRestoration|State-Restoring Commands and Bookmarks]
 If you do not define the navigation list before you start cycling,
 it is automatically defined as follows:
 
-* If you cycle using a current-buffer cycling key such as `C-x p down' (see [[#CyclingCurrentBuffer|Cycling in the Current Buffer]]) then the
-bookmarks in the current buffer are used as the navlist.
+* If you cycle using a current-file/buffer cycling key such as `C-x p down' (see [[#CyclingCurrentBuffer|Cycling in the Current File/Buffer]]) then the
+bookmarks in the current file or buffer are used as the navlist.
 
 * Otherwise, a snapshot is taken of the the bookmarks currently in
 the global bookmark list (the value of variable
@@ -2132,9 +2132,9 @@ provides separate cycling commands for most types of bookmark.
 
 By default, these different kinds of cycling commands are not
 bound to any keys, with the exception of the commands for cycling
-the current buffer.  This exception includes cycling all bookmarks
-for the current buffer (see [[#CyclingCurrentBuffer|Cycling in the Current Buffer]]
-and cycling only the highlighted bookmarks for the current buffer
+the current file or buffer.  This exception includes cycling all bookmarks
+for the current file/buffer (see [[#CyclingCurrentBuffer|Cycling in the Current File/Buffer]]
+and cycling only the highlighted bookmarks for the current file/buffer
 (see [[#UsingHighlightedBookmarks|Using Highlighted Bookmarks]]).  Keys `C-x p down' and
 `C-x p C-down' are defined for these two kinds of current-buffer
 cycling.
@@ -2149,15 +2149,15 @@ relevant commands (e.g. `bmkp-next-autonamed-bookmark-repeat', `bmkp-previous-au
 
 
 
-[:bmkp-next-bookmark-this-file/buffer-repeat]
-[:bmkp-previous-bookmark-this-file/buffer-repeat]
-[:bmkp-next-bookmark-this-file/buffer]
-[:bmkp-previous-bookmark-this-file/buffer]
-[:bmkp-this-file/buffer-cycle-sort-comparer]
+[:bmkp-next-bookmark-this-file-or-buffer-repeat]
+[:bmkp-previous-bookmark-this-file-or-buffer-repeat]
+[:bmkp-next-bookmark-this-file-or-buffer]
+[:bmkp-previous-bookmark-this-file-or-buffer]
+[:bmkp-this-file-or-buffer-cycle-sort-comparer]
 [:CyclingCurrentBuffer]
-=== Cycling in the Current Buffer ===
+=== Cycling in the Current File/Buffer ===
 
-You can navigate the bookmarks in the current buffer by cycling as well as jumping.  It is convenient to have
+You can navigate the bookmarks in the current file or buffer by cycling as well as jumping.  It is convenient to have
 dedicated keys for this, separate from the keys to cycle the
 navigation list.  The following keys are defined, corresponding to commands
 '''`bmkp-next-bookmark-this-file/buffer-repeat'''' and
@@ -2176,27 +2176,44 @@ do not need to use a [[prefix key]], then bind commands
 `bmkp-previous-bookmark-this-file/buffer' (no ##-repeat##).
 
 You can also cycle among just the highlighted bookmarks in the
-current buffer -- see [[#UsingHighlightedBookmarks|Using Highlighted Bookmarks]].
+current file or buffer -- see [[#UsingHighlightedBookmarks|Using Highlighted Bookmarks]].
 
-Current-buffer cycling (all bookmarks or only the highlighted
+Cycling among bookmarks for the current file or buffer (whether all bookmarks or only the highlighted
 ones) is dynamic: the current set of bookmarks is cycled, not a
-static snapshot.  The navlist is automatically updated to the
+static snapshot taken at some point in past.  The navlist is automatically updated to the
 current dynamic set each time you cycle.  This is different from
 the usual cycling of the navlist, where it is taken as a static
 snapshot -- see [[#BookmarkNavigationList|The Bookmark Navigation List]].
 
-By default, you cycle the current-buffer bookmarks in ''order of
-their positions'' in the buffer, top to bottom.  If you want a
+By default, you cycle among the bookmarks for the current file or
+buffer in ''order of their buffer positions'', top to bottom.  If you want a
 different order, you can customize [[option]]
 '''`bmkp-this-file/buffer-cycle-sort-comparer''''.
 
 Alternatively, you can use '''`##C-x p .##'''' to display the `##*Bookmark
-List*##' with only the current buffer's bookmarks, sort them there,
+List*##' with only the current file/buffer's bookmarks, sort them there,
 and then use '''`C-x p B'''' to set the navigation list to '''`##CURRENT *Bookmark List*##''''.  In that case, you use the navlist cycling keys
 (e.g. `C-x p f', not `C-x p n'), and the cycled set is a static
 snapshot.
 
+Note that the keys mentioned here cycle bookmarks for the current
+file if visiting a file, or the current buffer otherwise.  There
+are also commands (unbound to keys) for cycling bookmarks for the
+current file only or the current buffer only.
 
+The bookmarks for the current buffer are those that were created
+in a buffer of exactly the same name.  If one buffer visits a file
+`##foo.el##', and another buffer visits a different file of the same
+name (i.e., in a different directory), the second buffer will have
+the name `##foo.el<2>##'.  The buffer name is recorded when you create
+a bookmark.  If you later use same-buffer cycling then the
+bookmarks cycled are only those created with the same buffer name
+as the current buffer.
+
+This is the reason why the `*-file/buffer*' commands are bound to
+keys.  They are usually what you want.  They try first to work
+with bookmarks for the same file as the current buffer, if it is
+visiting a file.
 
 
 
@@ -2221,7 +2238,7 @@ ordinary, persistent bookmark.
 '''`C-x p RET'''' creates a bookmark at [[point]] without prompting you for
 the name.  It is named using the current buffer name
 preceded by the position in the buffer.  For example, the
-autonamed bookmark in buffer ##foo.el## at position 58356 is
+autonamed bookmark in buffer `##foo.el##' at position 58356 is
 `##000058356 foo.el##'.
 
 (You can customize the format of autonamed bookmarks using options
@@ -2642,7 +2659,18 @@ the file name is absolute.  Bookmarks for buffer `##foo.el##' include
 all files named `##foo.el##', whereas bookmarks for file
 `##/project1/lisp/foo.el##' include only the files in that one directory.
 
-'''Bookmark+''' provides some commands to handle these use cases.  The
+Another important difference is that when multiple buffers visit
+different files that have the same relative file name (i.e., in
+different directories), Emacs makes the buffer names unique by
+appending `##<N>##' as needed, where `##N##' is 2, 3,...  When you create
+a bookmark, the current buffer name is recorded as the bookmark's
+buffer.  If the current buffer is not visiting a file, then the
+bookmark created is a non-file bookmark.  In that case, to use the
+bookmark later you must have a buffer of the same name
+(e.g. `##foo.el<2>##').
+
+'''Bookmark+''' provides commands to handle these different use cases:
+specific files and specific buffers.  The
 keys bound to these commands use `f' for file and `b' for buffer.
 In the bookmark-list display, the following keys affect the
 bookmarks for a particular file or buffer whose name you provide
@@ -3058,7 +3086,7 @@ Also, is there any way to jump straight to the bookmark position instead of the 
 [new:DrewAdams:2010-09-23 04:07 UTC]
 I think '''Bookmark+''' offers everything that ##bm.el## (VisibleBookmarks) offers, and quite a bit more. See these sections for details: 
 
-* ''Cycling'' -- see [[#CyclingNavlistAutonaming|Cycling, Navigation List, Autonaming]].  For cycling in the current buffer see [[#CyclingCurrentBuffer|Cycling in the Current Buffer]] -- use `C-x p down' (or ##up##).  (To cycle among only highlighted bookmarks, you can use `C-x p C-down'. To jump to only a highlighted bookmark, you can use `C-x j h'.)
+* ''Cycling'' -- see [[#CyclingNavlistAutonaming|Cycling, Navigation List, Autonaming]].  For cycling in the current file or buffer see [[#CyclingCurrentBuffer|Cycling in the Current File/Buffer]] -- use `C-x p down' (or ##up##).  (To cycle among only highlighted bookmarks, you can use `C-x p C-down'. To jump to only a highlighted bookmark, you can use `C-x j h'.)
 
 * ''Quick setting and editing'' -- See [[#AutonamedBookmarks|Autonamed Bookmarks]] -- just use `C-x p RET' to set/delete.
 

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov 15 12:45:48 2011 (-0800)
+;; Last-Updated: Sat Nov 19 08:54:30 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13930
+;;     Update #: 13948
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -149,7 +149,7 @@
 ;;      (@> "The Bookmark Navigation List")
 ;;      (@> "Cycling the Navigation List")
 ;;      (@> "Cycling Dynamic Sets of Bookmarks")
-;;      (@> "Cycling in the Current Buffer")
+;;      (@> "Cycling in the Current File/Buffer")
 ;;    (@> "Autonamed Bookmarks - Easy Come Easy Go")
 ;;    (@> "Temporary Bookmarks")
 ;;      (@> "Temporary Bookmarking Mode")
@@ -1840,11 +1840,22 @@
 ;;  `/project1/lisp/foo.el' include only the files in that one
 ;;  directory.
 ;;
-;;  Bookmark+ provides some commands to handle these use cases.  The
-;;  keys bound to these commands use `f' for file and `b' for buffer.
-;;  In the bookmark-list display, the following keys affect the
-;;  bookmarks for a particular file or buffer whose name you provide
-;;  (with completion).
+;;  Another important difference is that when multiple buffers visit
+;;  different files that have the same relative file name (i.e., in
+;;  different directories), Emacs makes the buffer names unique by
+;;  appending `<N>' as needed, where `N' is 2, 3,...  When you create
+;;  a bookmark, the current buffer name is recorded as the bookmark's
+;;  buffer.  If the current buffer is not visiting a file, then the
+;;  bookmark created is a non-file bookmark.  In that case, to use the
+;;  bookmark later you must have a buffer of the same name
+;;  (e.g. `foo.el<2>').
+;;
+;;  Bookmark+ provides commands to handle these different use cases:
+;;  specific files and specific buffers.  The keys bound to these
+;;  commands use `f' for file and `b' for buffer.  In the
+;;  bookmark-list display, the following keys affect the bookmarks for
+;;  a particular file or buffer whose name you provide (with
+;;  completion).
 ;;
 ;;  * `= f M' and `= b M' - mark 
 ;;  * `= f S' and `= b S' - show (only)
@@ -1954,9 +1965,10 @@
 ;;  If you do not define the navigation list before you start cycling,
 ;;  it is automatically defined as follows:
 ;;
-;;  * If you cycle using a current-buffer cycling key such as `C-x p
-;;    down' (see (@> "Cycling in the Current Buffer")) then the
-;;    bookmarks in the current buffer are used as the navlist.
+;;  * If you cycle using a current-file/buffer cycling key such as
+;;    `C-x p down' (see (@> "Cycling in the Current File/Buffer"))
+;;    then the bookmarks in the current file or buffer are used as the
+;;    navlist.
 ;;
 ;;  * Otherwise, a snapshot is taken of the the bookmarks currently in
 ;;    the global bookmark list (the value of variable
@@ -2057,12 +2069,13 @@
 ;;
 ;;  By default, these different kinds of cycling commands are not
 ;;  bound to any keys, with the exception of the commands for cycling
-;;  the current buffer.  This exception includes cycling all bookmarks
-;;  for the current buffer (see (@> "Cycling in the Current Buffer")
-;;  and cycling only the highlighted bookmarks for the current buffer
-;;  (see (@> "Using Highlighted Bookmarks")).  Keys `C-x p down' and
-;;  `C-x p C-down' are defined for these two kinds of current-buffer
-;;  cycling.
+;;  the current fle or buffer.  This exception includes cycling all
+;;  bookmarks for the current file/buffer
+;;  (see (@> "Cycling in the Current File/Buffer")
+;;  and cycling only the highlighted bookmarks for the current
+;;  file/buffer (see (@> "Using Highlighted Bookmarks")).  Keys `C-x p
+;;  down' and `C-x p C-down' are defined for these two kinds of
+;;  current-buffer cycling.
 ;;
 ;;  If you often want to cycle among the bookmarks of some other
 ;;  particular kind (e.g. only the autonamed bookmarks), then you can
@@ -2073,13 +2086,13 @@
 ;;  them.
 ;;
 ;;
-;;(@* "Cycling in the Current Buffer")
-;; *** "Cycling in the Current Buffer" ***
+;;(@* "Cycling in the Current File/Buffer")
+;; *** "Cycling in the Current File/Buffer" ***
 ;;
-;;  You can navigate the bookmarks in the current buffer by cycling as
-;;  well as jumping.  It is convenient to have dedicated keys for
-;;  this, separate from the keys to cycle the navigation list.  The
-;;  following keys are defined, corresponding to commands
+;;  You can navigate the bookmarks in the current file or buffer by
+;;  cycling as well as jumping.  It is convenient to have dedicated
+;;  keys for this, separate from the keys to cycle the navigation
+;;  list.  The following keys are defined, corresponding to commands
 ;;  `bmkp-next-bookmark-this-file/buffer-repeat' and
 ;;  `bmkp-previous-bookmark-this-file/buffer-repeat':
 ;;
@@ -2095,26 +2108,46 @@
 ;;  `bmkp-previous-bookmark-this-file/buffer' (no -repeat).
 ;;
 ;;  You can also cycle among just the highlighted bookmarks in the
-;;  current buffer - see (@> "Using Highlighted Bookmarks").
+;;  current file or buffer - see (@> "Using Highlighted Bookmarks").
 ;;
-;;  Current-buffer cycling (all bookmarks or only the highlighted
-;;  ones) is dynamic: the current set of bookmarks is cycled, not a
-;;  static snapshot.  The navlist is automatically updated to the
-;;  current dynamic set each time you cycle.  This is different from
-;;  the usual cycling of the navlist, where it is taken as a static
-;;  snapshot - see (@> "The Bookmark Navigation List").
+;;  Cycling among bookmarks for the current file or buffer (whether
+;;  all or only the highlighted ones) is dynamic: the current set of
+;;  bookmarks is cycled, not a static snapshot taken at some point in
+;;  past.  The navlist is automatically updated to the current dynamic
+;;  set each time you cycle.  This is different from the usual cycling
+;;  of the navlist, where it is taken as a static snapshot -
+;;  see (@> "The Bookmark Navigation List").
 ;;
-;;  By default, you cycle the current-buffer bookmarks in order of
-;;  their positions in the buffer, top to bottom.  If you want a
-;;  different order, you can customize option
+;;  By default, you cycle among the bookmarks for the current file or
+;;  buffer in order of their buffer positions, top to bottom.  If you
+;;  want a different order, you can customize option
 ;;  `bmkp-this-file/buffer-cycle-sort-comparer'.
 ;;
 ;;  Alternatively, you can use `C-x p .' to display the `*Bookmark
-;;  List*' with only the current buffer's bookmarks, sort them there,
-;;  and then use `C-x p B' to set the navigation list to `CURRENT
-;;  *Bookmark List*'.  In that case, you use the navlist cycling keys
-;;  (e.g. `C-x p f', not `C-x p n'), and the cycled set is a static
-;;  snapshot.
+;;  List*' with only the current file/buffer's bookmarks, sort them
+;;  there, and then use `C-x p B' to set the navigation list to
+;;  `CURRENT *Bookmark List*'.  In that case, you use the navlist
+;;  cycling keys (e.g. `C-x p f', not `C-x p n'), and the cycled set
+;;  is a static snapshot.
+;;
+;;  Note that the keys mentioned here cycle bookmarks for the current
+;;  file if visiting a file, or the current buffer otherwise.  There
+;;  are also commands (unbound to keys) for cycling bookmarks for the
+;;  current file only or the current buffer only.
+;;
+;;  The bookmarks for the current buffer are those that were created
+;;  in a buffer of exactly the same name.  If one buffer visits a file
+;;  `foo.el', and another buffer visits a different file of the same
+;;  name (i.e., in a different directory), the second buffer will have
+;;  the name `foo.el<2>'.  The buffer name is recorded when you create
+;;  a bookmark.  If you later use same-buffer cycling then the
+;;  bookmarks cycled are only those created with the same buffer name
+;;  as the current buffer.
+;;
+;;  This is the reason why the `*-file/buffer*' commands are bound to
+;;  keys.  They are usually what you want.  They try first to work
+;;  with bookmarks for the same file as the current buffer, if it is
+;;  visiting a file.
  
 ;;(@* "Autonamed Bookmarks - Easy Come Easy Go")
 ;; ** "Autonamed Bookmarks - Easy Come Easy Go" **
