@@ -10,3 +10,7 @@ If you feel that this change from anonymous 24h snapshots to more detailed logs 
 
 See also: MeatBall:RecordKeeper ("some people refuse to forgive, and thus they refuse to forget"), Community:ForgiveAndForget ("If you wrote aggravating stuff in the past, community members cannot easily dig up your statements and remind everybody of your past sins.")
 
+[new:AlexSchroeder:2011-11-20 23:49 UTC]
+I've hooked Emacs Wiki up to ##https://github.com/emacsmirror/emacswiki.org## (slow load because of thousands of files).
+Let me know if there's anything wrong.
+I /push/ once an hour, at the moment.
