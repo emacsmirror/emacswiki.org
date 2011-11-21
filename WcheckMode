@@ -1,6 +1,7 @@
 == Download ==
 
-Download the code from [https://github.com/tlikonen/wcheck-mode GitHub] repository.
+Download the code from [https://github.com/tlikonen/wcheck-mode GitHub]
+repository or from [http://marmalade-repo.org/ Marmalade] package archive.
 
 Note: There have been some backward-incompatible changes in 2011-06-29
 and some of the configuration options used in previous versions do not
