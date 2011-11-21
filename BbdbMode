@@ -32,6 +32,9 @@ You will need to change it to:
 
 Or else message-mode will not set up new mail buffers correctly.
 
+[new:PhilHudson:2011-11-21 23:05 UTC]
+I have detected (I think) that the old function <code>bbdb-address-zip</code> is replaced by the new function <code>bbdb-address-postcode</code>. I need to know the replacements for <code>bbdb-address-location</code> and <code>bbdb-format-streets</code>. Anyone?
+
 ----
 CategoryBbdb
 CategoryMailAddons
