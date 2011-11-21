@@ -14,7 +14,9 @@ ErcNickNotify is a mode that popup notify window when someone call you in [[ERC]
 
 Note: BEWARE OF INSTALLING THIS!  This means that every notification you get is a command sent to bash.  If somone sends you the following:
 
+{{{
 <foouser> yourusername: `rm -rf ~`
+}}}
 
 ... there goes your home directory.
 
