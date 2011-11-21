@@ -11,3 +11,6 @@
 || bbdb-use-pop-up  ||||  bbdb-pop-up-layout||
 || bbdb-pop-up-target-lines  ||||  bbdb-pop-up-window-size||
 || bbdb-canonicalize-net-hook  ||||  bbdb-canonicalize-mail-function||
+|| bbdb-address-zip |||| ? bbdb-address-postcode ? ||
+|| bbdb-address-location |||| ? ||
+|| bbdb-format-streets |||| ? ||
