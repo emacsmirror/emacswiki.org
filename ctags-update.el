@@ -2,7 +2,7 @@
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-11-07 15:05:49 星期一
+;; Last Updated: Joseph 2011-11-21 18:02:16 星期一
 ;; Version: 0.1.2
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
@@ -73,6 +73,9 @@
 ;;  `ctags-update-command'
 ;;    now it only support `exuberant-ctags'
 ;;    default = "ctags"
+;;  `ctags-update-delay-seconds'
+;;    seconds between each `ctags-update'.
+;;    default = (* 5 60)
 ;;  `ctags-update-other-options'
 ;;    other options for ctags
 ;;    default = (list "--exclude='*.elc'" "--exclude='*.class'" "--exclude='.git'" "--exclude='.svn'" ...)
@@ -92,6 +95,14 @@ the ctags is under $PATH before `emacs-23.3/bin/'"
   :type 'string
   :group 'ctags-update
   )
+
+(defcustom ctags-update-delay-seconds  (* 5 60) ; 5 mins
+  "seconds between each `ctags-update'.
+current-time - last-time must bigger than this value ,then
+ctags-update will be called"
+  :type 'integer
+  :group 'ctags-update)
+
 (defcustom ctags-update-other-options
   (list
    "--exclude='*.elc'"
@@ -105,8 +116,11 @@ the ctags is under $PATH before `emacs-23.3/bin/'"
    )
   "other options for ctags"
   :group 'ctags-update
-  :type 'string
-  )
+  :type 'string)
+
+(defvar ctags-update-last-update-time
+  "make sure when user first call `ctags-update' it can run immediately "
+  (- (time-to-seconds (current-time)) ctags-update-delay-seconds 1))
 
 (defvar ctags-update-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -131,15 +145,20 @@ the ctags is under $PATH before `emacs-23.3/bin/'"
   "`tagfile-full-path' is the full path of TAGS file . when files in or under the same directory
 with `tagfile-full-path' changed ,then TAGS file need to be updated. this function will generate
 the command to update TAGS"
-  (let ((args (apply 'list
-                     "-f"
-                     (get-system-file-path (or save-tagfile-to-as tagfile-full-path))
-                     "-e"
-                     "-R"
-                     ctags-update-other-options
-                     )))
+  ;; on windows "ctags -R d:/.emacs.d"  works , but "ctags -R d:/.emacs.d/" doesn't
+  (let*( (tagdir-with-slash-appended (expand-file-name (file-name-directory tagfile-full-path)))
+         (length-of-tagfile-directory (length tagdir-with-slash-appended))
+         (tagdir-without-slash-appended (substring tagdir-with-slash-appended 0 (1- length-of-tagfile-directory)))
+         (args
+          (append
+           (list "-f")
+           (list (get-system-file-path (or save-tagfile-to-as tagfile-full-path)))
+           (list "-e")
+           ctags-update-other-options
+           (list "-R")
+           (list tagdir-without-slash-appended)
+           )))
     args))
-
 
 (defun get-system-file-path(file-path)
   "when on windows `expand-file-name' will translate from \\ to /
@@ -179,10 +198,13 @@ generate a new TAGS file in directory"
                               (expand-file-name
                                "TAGS" (read-directory-name "Generate new TAGS to:" ))))
               (and (not (get-process "update TAGS"));;if "update TAGS" process is not already running
+                   (> (- (time-to-seconds (current-time))
+                         ctags-update-last-update-time)
+                      ctags-update-delay-seconds)
                    (setq tags-file-name (ctags-update-find-tags-file))
                    (not (string-equal (ctags-update-file-truename tags-file-name)
                                       (ctags-update-file-truename (buffer-file-name))))))
-      (cd (file-name-directory tags-file-name))
+      (setq ctags-update-last-update-time (time-to-seconds (current-time)));;update time
       (setq process
             (apply 'start-process ;;
                    "update TAGS" " *update TAGS*"
@@ -194,7 +216,6 @@ generate a new TAGS file in directory"
                                 (kill-buffer " *update TAGS*")
                                 (message "TAGS in parent directory is updated. "  )
                                 ))))))
-
 ;;;###autoload
 (define-minor-mode ctags-update-minor-mode
   "auto update TAGS using `exuberant-ctags' in parent directory."
@@ -209,6 +230,5 @@ generate a new TAGS file in directory"
     (remove-hook 'after-save-hook 'ctags-update)
     )
   )
-
 (provide 'ctags-update)
 ;;; ctags-update.el ends here
