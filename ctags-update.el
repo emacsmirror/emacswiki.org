@@ -1,8 +1,8 @@
-;;; ctags-update.el --- auto update TAGS in parent directory using exuberant-ctags -*- coding:utf-8 -*-
+;;; ctags-update.el --- auto update TAGS in parent directory using exuberant-ctags
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-11-21 20:45:17 星期一
+;; Last Updated: Joseph 2011-11-21 20:56:01 星期一
 ;; Version: 0.1.3
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
@@ -35,9 +35,6 @@
 ;; And the following to your ~/.emacs startup file.
 ;;
 ;; (require 'ctags-update)
-;; (ctags-update-minor-mode 1)
-;;or
-;; (autoload 'ctags-update-minor-mode "ctags-update" "update TAGS using ctags" t)
 ;; (ctags-update-minor-mode 1)
 
 ;; then when you save a file ,`ctags-update' will recursively searches each
@@ -199,9 +196,10 @@ generate a new TAGS file in directory"
                               (expand-file-name
                                "TAGS" (read-directory-name "Generate new TAGS to:" ))))
               (and (not (get-process "update TAGS"));;if "update TAGS" process is not already running
-                   (> (- (time-to-seconds (current-time))
-                         ctags-update-last-update-time)
-                      ctags-update-delay-seconds)
+                   (or (interactive-p)
+                       (> (- (time-to-seconds (current-time))
+                             ctags-update-last-update-time)
+                          ctags-update-delay-seconds))
                    (setq tags-file-name (ctags-update-find-tags-file))
                    (not (string-equal (ctags-update-file-truename tags-file-name)
                                       (ctags-update-file-truename (buffer-file-name))))))
@@ -217,6 +215,7 @@ generate a new TAGS file in directory"
                                 (kill-buffer " *update TAGS*")
                                 (message "TAGS in parent directory is updated. "  )
                                 ))))))
+
 ;;;###autoload
 (define-minor-mode ctags-update-minor-mode
   "auto update TAGS using `exuberant-ctags' in parent directory."
@@ -232,4 +231,9 @@ generate a new TAGS file in directory"
     )
   )
 (provide 'ctags-update)
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+
 ;;; ctags-update.el ends here
