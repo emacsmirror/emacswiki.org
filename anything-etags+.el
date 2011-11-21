@@ -1,11 +1,11 @@
-;;; anything-etags+.el ---Another Etags anything.el interface
+ ;;; anything-etags+.el ---Another Etags anything.el interface
 
 ;; Description: Another Etags anything.el interface
 ;; Filename: anything-etags+.el
 ;; Created: 2011-02-23
-;; Last Updated: Joseph 2011-10-22 18:06:22 星期六
+;; Last Updated: Joseph 2011-11-21 14:15:38 星期一
 ;; Version: 0.1.4
-;; Author: Joseph <jixiuf@gmail.com>
+;; Author: 纪秀峰(Joseph) <jixiuf@gmail.com>
 ;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; URL:http://www.emacswiki.org/emacs/anything-etags+.el
@@ -491,17 +491,21 @@ needn't search tag file again."
   (catch 'failed
     (let ((case-fold-search (anything-etags+-case-fold-search))
           tag-info tag-line src-file-name full-tagname
-          tag-regex candidates)
-      (if (string-match "\\\\_<\\|\\\\_>" tagname)
+          tag-regex
+          tagname-regexp-quoted
+          candidates)
+      (if (string-match "\\\\_<\\|\\\\_>[ \t]*" tagname)
           (progn
-            (setq tagname (replace-regexp-in-string "\\\\_<\\|\\\\_>" ""  tagname))
-            (setq tag-regex (concat "^.*?\\(" "\^?\\(.+[:.']" tagname "\\)\^A"
-                                    "\\|" "\^?" tagname "\^A"
-                                    "\\|" "\\<" tagname "[ \f\t()=,;]*\^?[0-9,]"
+            (setq tagname (replace-regexp-in-string "\\\\_<\\|\\\\_>[ \t]*" ""  tagname))
+            (setq tagname-regexp-quoted (regexp-quote tagname))
+            (setq tag-regex (concat "^.*?\\(" "\^?\\(.+[:.']"  tagname-regexp-quoted "\\)\^A"
+                                    "\\|" "\^?"  tagname-regexp-quoted "\^A"
+                                    "\\|" "\\<"  tagname-regexp-quoted "[ \f\t()=,;]*\^?[0-9,]"
                                     "\\)")))
-        (setq tag-regex (concat "^.*?\\(" "\^?\\(.+[:.'].*" tagname ".*\\)\^A"
-                                "\\|" "\^?.*" tagname ".*\^A"
-                                "\\|" ".*" tagname ".*[ \f\t()=,;]*\^?[0-9,]"
+        (setq tagname-regexp-quoted (regexp-quote tagname))
+        (setq tag-regex (concat "^.*?\\(" "\^?\\(.+[:.'].*"  tagname-regexp-quoted ".*\\)\^A"
+                                "\\|" "\^?.*"  tagname-regexp-quoted ".*\^A"
+                                "\\|" ".*"  tagname-regexp-quoted ".*[ \f\t()=,;]*\^?[0-9,]"
                                 "\\)")))
       (with-current-buffer tag-table-buffer
         (modify-syntax-entry ?_ "w")
@@ -613,7 +617,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
         (anything-idle-delay 0))
     ;; Initialize input with current symbol
     (anything-etags+-select-internal
-     (concat "\\_<" (regexp-quote (thing-at-point 'symbol)) "\\_>"
+     (concat "\\_<" (thing-at-point 'symbol) "\\_>"
              (if (featurep 'anything-match-plugin) " "))
      "Find Tag: ")))
 
@@ -633,7 +637,7 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
     (volatile);;candidates
     (pattern-transformer (lambda (anything-pattern)
                            (setq anything-etags+-untransformed-anything-pattern anything-pattern)
-                           (replace-regexp-in-string "\\\\_<\\|\\\\_>" ""  anything-pattern)))
+                           (regexp-quote (replace-regexp-in-string "\\\\_<\\|\\\\_>[ \t]*" ""  anything-pattern))))
     (requires-pattern  . 3);;need at least 3 char
     (delayed);; (setq anything-idle-delay-4-anthing-etags+ 1)
     (action ("Goto the location" . anything-c-etags+-goto-location))))
@@ -794,5 +798,4 @@ If SYMBOL-NAME is non-nil, jump tag position with SYMBOL-NAME."
               ""  nil nil "\t")))
 
 (provide 'anything-etags+)
-
 ;;;anything-etags+.el ends here.
