@@ -377,8 +377,7 @@ You may, for example, enable urgency hint when the activity list is updated and 
 <pre>
 (defun x-urgency-hint (frame arg &optional source)
   (let* ((wm-hints (append (x-window-property 
-			    "WM_HINTS" frame "WM_HINTS" 
-			    (if source source frame) nil t) nil))
+			    "WM_HINTS" frame "WM_HINTS" source nil t) nil))
 	 (flags (car wm-hints)))
     (setcar wm-hints
 	    (if arg
