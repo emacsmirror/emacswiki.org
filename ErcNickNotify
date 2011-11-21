@@ -12,6 +12,12 @@ ErcNickNotify is a mode that popup notify window when someone call you in [[ERC]
 }}}    
 : in ~/.emacs
 
+Note: BEWARE OF INSTALLING THIS!  This means that every notification you get is a command sent to bash.  If somone sends you the following:
+
+<foouser> yourusername: `rm -rf ~`
+
+... there goes your home directory.
+
 ==Customize==
 * `erc-nick-notify-delay'
 : The delay time that between two messages.
