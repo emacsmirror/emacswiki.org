@@ -77,13 +77,6 @@ blank lines. --JoeE (Originally posted on WishList)
 ** Look at the variable comment-empty-lines. --StefanReichoer
 (Answered on WishList)
 
-* I have never been able to comment multiple lines of code using comment-region. The first word of the first line is always left uncommented, because the region does not include it. This happens when I place the mark in the first location on that line (or an empty line preceding it). What could be causing this, and how can it be avoided?
-
-[new:DrewAdams:2011-10-28 20:05 UTC]
-:: No idea.  It doesn't sound like the problem is with `comment-region', if the [[region]] does not include the first word (?).  I think you're saying that you do `C-SPC' at the beginning of a line, move point down to the beginning of another line, activate the region, and invoke `comment-region', but the full lines are not commented out; what is commented out does not correspond to what you saw highlighted as the active region.  I've never seen that happen. -- DrewAdams
-
-** Actually, with transient mark mode on, the highlighting matches the comments. Somehow I'd acquired the misconception that the mark was supposed to work that way, and that it was just counter-intuitive to me.  But now I know to ask questions about how the mark works. Thanks!
-
 
  
 [new]
